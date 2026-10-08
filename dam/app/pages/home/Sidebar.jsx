@@ -39,12 +39,12 @@ export function Sidebar({ mode = 'browse', active, onOpen, onAdd, onFiles, files
   const [filter, setFilter] = React.useState('');
   return (
     <NavPane label={mode === 'search' ? 'Search filters' : 'Categories and collections'} title="Asset Manager" rail={<>
-        <ToolRail.Item icon="home" label="Home" onClick={() => onOpen('categories', 'All Categories')} />
+        <ToolRail.Item icon="home" label="Home" onClick={() => onOpen('categories', 'All categories')} />
         <ToolRail.Item icon="folder-open" label="Files" pressed={!!filesOpen} onClick={onFiles} />
-        <ToolRail.Item icon="grid-2x2" label="Categories" pressed={mode === 'browse' && active === 'All Categories'} onClick={() => onOpen('categories', 'All Categories')} />
-        <ToolRail.Item icon="briefcase" label="Collections" onClick={() => onOpen('collections', 'All Collections')} />
+        <ToolRail.Item icon="grid-2x2" label="Categories" pressed={mode === 'browse' && active === 'All categories'} onClick={() => onOpen('categories', 'All categories')} />
+        <ToolRail.Item icon="briefcase" label="Collections" onClick={() => onOpen('collections', 'All collections')} />
       </>} footer={<Button size="sm" variant="ghost" icon="gear" href="settings-system.html">System settings</Button>} header={<>
-        <Button size="sm" variant="ghost" icon="home" onClick={() => onOpen('categories', 'All Categories')}>Home</Button>
+        <Button size="sm" variant="ghost" icon="home" onClick={() => onOpen('categories', 'All categories')}>Home</Button>
         <Button size="sm" variant="ghost" icon="folder-open" pressed={!!filesOpen} onClick={onFiles}>Files</Button>
       </>}>
       <Section title="Categories" icon="grid-2x2">
@@ -58,12 +58,12 @@ export function Sidebar({ mode = 'browse', active, onOpen, onAdd, onFiles, files
       </Section>
       {mode === 'browse' ? (
         <>
-          <Section title="Saved Searches" icon="search">
+          <Section title="Saved searches" icon="search">
             <AddLink label="Add saved search" onClick={() => onAdd('saveSearchModal')} />
             <NavList label="Saved searches" value={active} onSelect={(id) => onOpen('saved', id)}
               items={saved.map((s) => ({ id: s.name, label: s.name, icon: 'doc-search', actions: onRemoveSaved ? <Button size="xs" variant="ghost" iconOnly icon="close" label={'Remove ' + s.name} onClick={() => onRemoveSaved(s.name)} /> : null }))} />
           </Section>
-          <Section title="Recent Imports" icon="clock">
+          <Section title="Recent imports" icon="clock">
             <NavList label="Recent imports" value={active} onSelect={(id) => onOpen('import', id)} items={D.RECENT_IMPORTS.map(([d, n]) => ({ id: d, label: d, icon: 'download-alt', count: n }))} />
           </Section>
           <Section title="Trash" icon="trash-simple" defaultOpen={false}>

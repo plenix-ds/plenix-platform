@@ -30,7 +30,7 @@ const FOLDERS = [
 const DEFAULT_FOLDER = 'digital-assets';
 
 // DATA: the categories to pick from come from the back end.
-const CATEGORIES = ['Banner Icon', 'Bookshelf', 'Borders - Arch', 'Borders - Banner', 'Borders - Circular', 'Borders - Divider', 'Borders - Linear',
+const CATEGORIES = ['Banner icon', 'Bookshelf', 'Borders - Arch', 'Borders - Banner', 'Borders - Circular', 'Borders - Divider', 'Borders - Linear',
   'Borders - Page', 'Branding - Churches', 'Branding - CYC', 'Branding - Diakonia', 'Certificates', 'Clergy', 'Covers', 'Cross - Traditional', 'Crosses',
   'Dome', 'Embroideries', 'Fonts', 'Galloons', 'Korban Stamp', 'Ornamental Elements', 'Presentation Folders'];
 
@@ -46,16 +46,16 @@ const TYPE_FILTERS = [
 // DATA: metadata field groups come from the back end. Each field is "Label" or "Label|source tag"; a leading "*" marks a
 // field that is checked by default.
 const META_GROUPS = [
-  ['General', 'all', ['*Name', '*Description', '*Tags', 'Keywords', '*Rating', 'Edit Status', 'Language', 'Version', 'Summary']],
-  ['Categorization', 'all', ['*Category', 'Category ID', 'Parent Category', 'Category Path', 'Display Order', 'Asset Type', 'Classification']],
+  ['General', 'all', ['*Name', '*Description', '*Tags', 'Keywords', '*Rating', 'Edit status', 'Language', 'Version', 'Summary']],
+  ['Categorization', 'all', ['*Category', 'Category ID', 'Parent category', 'Category path', 'Display order', 'Asset type', 'Classification']],
   ['Ownership & Rights', 'all', ['Owner', 'Creator|EXIF: Artist', 'Copyright|EXIF: Copyright', 'Copyright Notice|IPTC: CopyrightNotice',
-    'Rights Usage Terms|XMP: UsageTerms', 'License', 'Permissions', 'Author', 'Created By', 'Modified By']],
+    'Rights Usage Terms|XMP: UsageTerms', 'License', 'Permissions', 'Author', 'Created by', 'Modified by']],
   ['Dates', 'all', ['Date Created|EXIF: DateTimeOriginal', 'Date Modified|EXIF: ModifyDate', 'Date Digitized|EXIF: CreateDate',
-    'GPS Date/Time|EXIF: GPSDateStamp', 'Import Date', 'Publish Date', 'Expiration Date']],
-  ['File Properties', 'all', ['File Name', 'File Type', 'MIME Type', 'File Size', 'Source Path', 'Archive Source Path', 'File URL', 'Data Type',
+    'GPS Date/Time|EXIF: GPSDateStamp', 'Import date', 'Publish date', 'Expiration date']],
+  ['File properties', 'all', ['File name', 'File type', 'MIME type', 'File size', 'Source path', 'Archive source path', 'File URL', 'Data type',
     'Thumbnail', 'Checksum / MD5']],
   ['Dimensions & Resolution', 'image,video', ['Width|EXIF: ImageWidth', 'Height|EXIF: ImageHeight', 'DPI / Resolution|EXIF: XResolution',
-    'Resolution Unit|EXIF: ResolutionUnit', 'Orientation|EXIF: Orientation', 'Pixel Aspect Ratio']],
+    'Resolution Unit|EXIF: ResolutionUnit', 'Orientation|EXIF: Orientation', 'Pixel aspect ratio']],
   ['Camera & Lens', 'image,video', ['Camera Make|EXIF: Make', 'Camera Model|EXIF: Model', 'Camera Serial #|EXIF: SerialNumber',
     'Lens Type|EXIF: LensModel', 'Lens Make|EXIF: LensMake', 'Lens Serial #|EXIF: LensSerialNumber', 'Firmware|EXIF: Software']],
   ['Exposure & Shooting', 'image', ['Focal Length|EXIF: FocalLength', 'Focal Length (35mm)|EXIF: FocalLengthIn35mmFormat', 'Aperture|EXIF: FNumber',
@@ -64,7 +64,7 @@ const META_GROUPS = [
     'Flash Comp.|EXIF: FlashCompensation', 'White Balance|EXIF: WhiteBalance', 'Scene Type|EXIF: SceneCaptureType', 'Light Source|EXIF: LightSource',
     'Subject Distance|EXIF: SubjectDistance', 'Focus Mode|EXIF: FocusMode', 'Digital Zoom|EXIF: DigitalZoomRatio', 'Sharpness|EXIF: Sharpness',
     'Contrast|EXIF: Contrast', 'Saturation|EXIF: Saturation', 'Brightness|EXIF: BrightnessValue']],
-  ['Color & Image', 'image', ['Color Space|EXIF: ColorSpace', 'Color Profile|EXIF: ICCProfileName', 'Color Type', 'Bit Depth|EXIF: BitsPerSample',
+  ['Color & Image', 'image', ['Color Space|EXIF: ColorSpace', 'Color Profile|EXIF: ICCProfileName', 'Color type', 'Bit Depth|EXIF: BitsPerSample',
     'Compression|EXIF: Compression', 'Photometric Interp.|EXIF: PhotometricInterpretation', 'Image Unique ID|EXIF: ImageUniqueID']],
   ['Location (GPS)', 'image,video', ['GPS Latitude|EXIF: GPSLatitude', 'GPS Longitude|EXIF: GPSLongitude', 'GPS Altitude|EXIF: GPSAltitude',
     'GPS Speed|EXIF: GPSSpeed', 'GPS Direction|EXIF: GPSImgDirection', 'GPS Area Info|EXIF: GPSAreaInformation']],
@@ -72,10 +72,10 @@ const META_GROUPS = [
     'Credit|IPTC: Credit', 'Source|IPTC: Source', 'Contact Info|IPTC: Contact', 'Object Name|IPTC: ObjectName', 'Category Code|IPTC: Category',
     'Supplemental Cat.|IPTC: SupplementalCategories', 'Urgency|IPTC: Urgency', 'Instructions|IPTC: SpecialInstructions', 'Subject Code|XMP: Subject',
     'Scene Code|IPTC: Scene', 'Intellectual Genre|IPTC: IntellectualGenre']],
-  ['IPTC Location', 'image', ['Sub-location|IPTC: Sub-location', 'City|IPTC: City', 'State / Province|IPTC: Province-State',
+  ['IPTC location', 'image', ['Sub-location|IPTC: Sub-location', 'City|IPTC: City', 'State / Province|IPTC: Province-State',
     'Country|IPTC: Country-PrimaryLocationName', 'Country Code|IPTC: Country-PrimaryLocationCode']],
   ['Video — Stream', 'video', ['Duration|FFmpeg: Duration', 'Frame Rate|FFmpeg: r_frame_rate', 'Video Codec|FFmpeg: codec_name',
-    'Codec Profile|FFmpeg: profile', 'Video Bitrate|FFmpeg: bit_rate', 'Video Resolution', 'Aspect Ratio|FFmpeg: display_aspect_ratio',
+    'Codec Profile|FFmpeg: profile', 'Video Bitrate|FFmpeg: bit_rate', 'Video resolution', 'Aspect Ratio|FFmpeg: display_aspect_ratio',
     'Pixel Format|FFmpeg: pix_fmt', 'Color Primaries|FFmpeg: color_primaries', 'Color Transfer|FFmpeg: color_transfer', 'Rotation|FFmpeg: rotate',
     'Audio Codec|FFmpeg: audio codec_name', 'Audio Bitrate|FFmpeg: audio bit_rate', 'Sample Rate|FFmpeg: sample_rate',
     'Audio Channels|FFmpeg: channels', 'Audio Language|FFmpeg: language', 'Subtitle Tracks|FFmpeg: subtitle streams']],
@@ -92,12 +92,12 @@ const META_GROUPS = [
     'ReplayGain|ID3v2: TXXX']],
   ['Audio — Stream', 'audio', ['Duration|FFmpeg: Duration', 'Audio Codec|FFmpeg: codec_name', 'Bitrate|FFmpeg: bit_rate', 'Bitrate Mode|CBR / VBR',
     'Sample Rate|FFmpeg: sample_rate', 'Channels|FFmpeg: channels', 'Bit Depth|FFmpeg: bits_per_sample']],
-  ['Document', 'document', ['Page Count', 'Word Count', 'Character Count', 'Title|PDF: Title', 'Subject|PDF: Subject', 'PDF Producer|PDF: Producer',
+  ['Document', 'document', ['Page count', 'Word count', 'Character count', 'Title|PDF: Title', 'Subject|PDF: Subject', 'PDF Producer|PDF: Producer',
     'PDF Creator Tool|PDF: Creator', 'PDF Version|PDF: PDFVersion', 'Encrypted|PDF: Encryption']],
-  ['3D / Model', '3d', ['Geometry Type|mesh, NURBS, solid', 'Vertex Count', 'Face / Polygon Count', 'Edge Count', 'Object Count', 'Material Count',
-    'Texture Count', 'UV Maps', 'Bounding Box', 'Scene Units|mm, cm, m, in', 'Up Axis|Y-up, Z-up', 'Animation|has animations',
+  ['3D / Model', '3d', ['Geometry Type|mesh, NURBS, solid', 'Vertex count', 'Face / Polygon Count', 'Edge count', 'Object count', 'Material count',
+    'Texture count', 'UV maps', 'Bounding box', 'Scene Units|mm, cm, m, in', 'Up Axis|Y-up, Z-up', 'Animation|has animations',
     'Rigged|has armature', 'File Format|FBX, OBJ, GLTF, USD...', 'Render Engine|Cycles, Eevee, V-Ray...', 'Source Application|Blender, Maya, 3ds Max...']],
-  ['Distribution', 'all', ['Channels', 'Auto Assigned Media', 'Published Locations', 'Conversion Preset']],
+  ['Distribution', 'all', ['Channels', 'Auto assigned media', 'Published locations', 'Conversion preset']],
   ['Custom', 'all', ['Custom Field 1', 'Custom Field 2', 'Custom Field 3']],
 ].map(([name, types, fields], g) => ({
   name, types: types.split(','),
@@ -214,11 +214,11 @@ function FilesPane({ queue, addFiles, removeFile, clearQueue }) {
         <Text as="p" variant="label">Drag &amp; drop files or folders</Text>
         <Text as="p" variant="secondary">or choose an option below</Text>
         <Inline justify="center" className="plx-u-mt-stack-sm">
-          <Button size="sm" icon="text-card" onClick={() => filesInput.current.click()}>Browse Files</Button>
-          <Button size="sm" icon="folder-open" onClick={() => folderInput.current.click()}>Browse Folder</Button>
+          <Button size="sm" icon="text-card" onClick={() => filesInput.current.click()}>Browse files</Button>
+          <Button size="sm" icon="folder-open" onClick={() => folderInput.current.click()}>Browse folder</Button>
         </Inline>
-        <input ref={filesInput} type="file" multiple hidden onChange={fromInput} aria-label="Browse Files" />
-        <input ref={folderInput} type="file" multiple hidden webkitdirectory="" directory="" onChange={fromInput} aria-label="Browse Folder" />
+        <input ref={filesInput} type="file" multiple hidden onChange={fromInput} aria-label="Browse files" />
+        <input ref={folderInput} type="file" multiple hidden webkitdirectory="" directory="" onChange={fromInput} aria-label="Browse folder" />
       </DropZone>
       <Inline justify="center" className="plx-u-mt-stack-sm"><Text variant="secondary">or import from URL</Text></Inline>
       <Inline>
@@ -278,7 +278,7 @@ function CategoriesPane() {
         )) : <EmptyState>No data</EmptyState>}
       </Stack>
       <Inline justify="between">
-        <Button variant="ghost" size="xs" icon="plus" onClick={() => setAdding(true)} aria-expanded={adding}>New Category</Button>
+        <Button variant="ghost" size="xs" icon="plus" onClick={() => setAdding(true)} aria-expanded={adding}>New category</Button>
         {adding ? <Button variant="ghost" size="xs" iconOnly icon="close" label="Cancel new category" title="Cancel new category" onClick={() => setAdding(false)} /> : null}
       </Inline>
       {adding ? (
@@ -316,7 +316,7 @@ function MetadataPane() {
 
   return (
     <Stack as="section" gap="sm" aria-labelledby="upl-meta">
-      <Text as="h3" id="upl-meta" variant="heading">Visible Metadata</Text>
+      <Text as="h3" id="upl-meta" variant="heading">Visible metadata</Text>
       <Text as="p" variant="secondary">All metadata is always stored. Checked fields are shown by default in this category's view.</Text>
       <SearchField label="Search fields" placeholder="Search fields..." value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} />
       <RadioGroup name="metaTypeFilter" aria-label="Field type" layout="row" value={type} onChange={setType} options={TYPE_FILTERS} />
@@ -361,7 +361,7 @@ function UploadFlow({ onClose }) {
     onClose();
   };
   return (
-    <Dialog open onClose={onClose} title="Upload Assets" icon="upload" size="xl" flush
+    <Dialog open onClose={onClose} title="Upload assets" icon="upload" size="xl" flush
       footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" onClick={upload}>Upload</Button></>}>
       <Columns count={3} divided>
         <FilesPane queue={queue} addFiles={addFiles} removeFile={(id) => setQueue((cur) => cur.filter((q) => q.id !== id))} clearQueue={() => setQueue([])} />

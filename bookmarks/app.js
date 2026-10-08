@@ -2211,7 +2211,7 @@ function CatEditModal({
 }) {
   const nameRef = useRef(null);
   const fileRef = useRef(null);
-  const title = catEdit.isNew ? catEdit.type === 'cat' ? 'New Category' : 'New Subcategory' : catEdit.type === 'cat' ? 'Edit Category' : 'Edit Subcategory';
+  const title = catEdit.isNew ? catEdit.type === 'cat' ? 'New category' : 'New subcategory' : catEdit.type === 'cat' ? 'Edit category' : 'Edit subcategory';
   const color = catEdit.color || 'var(--plx-sys-action-primary-background)';
   return /*#__PURE__*/React.createElement(_plenixPlatform.Dialog, {
     open: true,

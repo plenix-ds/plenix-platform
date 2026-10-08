@@ -26,8 +26,8 @@ import {
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
 // Colors are stored without the leading # (a category color is a record value, not a style).
 const CATEGORY_COLORS = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
-const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category Path', 'File Size', 'Dimensions', 'Date Created',
-  'Date Modified', 'Camera Model', 'Aperture', 'Color Profile', 'GPS Location', 'Edit Status', 'Owner'];
+const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category path', 'File size', 'Dimensions', 'Date created',
+  'Date modified', 'Camera model', 'Aperture', 'Color profile', 'GPS location', 'Edit status', 'Owner'];
 // DATA: [field, type, shown]
 const CATEGORY_FIELDS = [['name', 'text', true], ['description', 'textarea', true], ['categorypath', 'text', true], ['parentid', 'text', true],
   ['displayorder', 'number', true], ['color', 'text', true], ['owner', 'text', true], ['viewgroups', 'list', true], ['editgroups', 'list', false],
@@ -37,11 +37,11 @@ const ASSET_FIELDS = [['name', 'text', true], ['assettitle', 'text', true], ['so
   ['fileformat', 'text', true], ['width', 'number', true], ['height', 'number', true], ['description', 'textarea', true],
   ['category', 'list dropdown', true], ['editstatus', 'list dropdown', true], ['assetaddeddate', 'date', true], ['assetmodificationdate', 'date', true]];
 // DATA: the category's edit form (Edit Fields) and the fields that can be added to it.
-const CATEGORY_FORM_FIELDS = [{ name: 'Category Name', type: 'Text' }, { name: 'Description', type: 'Text Area' }, { name: 'Tags', type: 'Tags' }];
-const ADDABLE_FIELDS = ['Archive Source Path', 'Auto Assigned Media', 'Categories', 'Category ID', 'Color', 'Custom Field 1', 'Custom Field 2',
-  'Display Order', 'Parent Category', 'Permissions', 'Source Path', 'Thumbnail'];
+const CATEGORY_FORM_FIELDS = [{ name: 'Category name', type: 'Text' }, { name: 'Description', type: 'Text area' }, { name: 'Tags', type: 'Tags' }];
+const ADDABLE_FIELDS = ['Archive source path', 'Auto assigned media', 'Categories', 'Category ID', 'Color', 'Custom Field 1', 'Custom Field 2',
+  'Display order', 'Parent category', 'Permissions', 'Source path', 'Thumbnail'];
 // DATA: [name, asset count]
-const CATEGORIES = [['Banner Icon', 24], ['Bookshelf', 18], ['Borders - Arch', 31], ['Borders - Circular', 42], ['Branding - Churches', 28],
+const CATEGORIES = [['Banner icon', 24], ['Bookshelf', 18], ['Borders - Arch', 31], ['Borders - Circular', 42], ['Branding - Churches', 28],
   ['Branding - CYC', 5], ['Branding - Diakonia', 15], ['Certificate - Baptism', 89], ['Certificate - Masters', 47],
   ['Clergy - Metropolitan Serapion', 62], ['Clergy - Pope Shenouda III', 210], ['Clergy - Pope Tawadros II', 45], ['Cross - Traditional', 78],
   ['Dome', 33], ['Embroideries', 156], ['Fonts', 18]];
@@ -118,7 +118,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
         <Button type="submit" form={uid} variant="primary">Save</Button>
       </Footer>)}>
       <Stack as="form" id={uid} noValidate onSubmit={save}>
-        <Field label="Category Name"><Input name="categoryName" placeholder="Enter category name..." {...text('name')} /></Field>
+        <Field label="Category name"><Input name="categoryName" placeholder="Enter category name..." {...text('name')} /></Field>
         <Field label="Description"><Textarea name="description" placeholder="Optional description..." {...text('description')} /></Field>
         <div className="plx-field plx-field--stacked">
           <div className="plx-field__head"><label className="plx-field__label" htmlFor={uid + 'tags'}>Tags</label></div>
@@ -132,11 +132,11 @@ export function NewCatDialog({ open, onClose, onSave }) {
           </div>
         </div>
         <div className="plx-field plx-field--stacked">
-          <div className="plx-field__head"><span className="plx-field__label" id={uid + 'color'}>Category Color</span></div>
+          <div className="plx-field__head"><span className="plx-field__label" id={uid + 'color'}>Category color</span></div>
           <div className="plx-field__control">
             <Inline role="group" aria-labelledby={uid + 'color'} wrap className="plx-u-gap-y-stack-sm">
-              <div className="plx-layout--width-xs"><Input name="categoryColor" type="color" aria-label="Category Color" value={color} onChange={(e) => pick(e.target.value)} /></div>
-              <div className="plx-layout--width-md"><Input name="categoryColor2" aria-label="Category Color" data value={hex} onChange={(e) => typeHex(e.target.value)} /></div>
+              <div className="plx-layout--width-xs"><Input name="categoryColor" type="color" aria-label="Category color" value={color} onChange={(e) => pick(e.target.value)} /></div>
+              <div className="plx-layout--width-md"><Input name="categoryColor2" aria-label="Category color" data value={hex} onChange={(e) => typeHex(e.target.value)} /></div>
               <Inline gap="xs" wrap>
                 {CATEGORY_COLORS.map((c) => (
                   <Button key={c} size="sm" aria-label={'Color ' + HASH + c} pressed={color.toLowerCase() === HASH + c} onClick={() => pick(HASH + c)}><ColorSwatch color={HASH + c} size="sm" shape="square" /></Button>
@@ -175,11 +175,11 @@ function NameDialog({ open, onClose, onSave, title, icon, nameLabel, nameField, 
 }
 
 export function SaveSearchDialog(props) {
-  return <NameDialog {...props} title="Save Search" icon="save" nameLabel="Search Name" nameField="searchName" placeholder="e.g. High-res crosses" saved="Search saved" />;
+  return <NameDialog {...props} title="Save search" icon="save" nameLabel="Search name" nameField="searchName" placeholder="e.g. High-res crosses" saved="Search saved" />;
 }
 
 export function NewCollectionDialog(props) {
-  return <NameDialog {...props} title="Collections › Add New" icon="briefcase-plus" nameLabel="Collection Name" nameField="collectionName" placeholder="Enter collection name..." saved="Collection created" />;
+  return <NameDialog {...props} title="Collections › Add New" icon="briefcase-plus" nameLabel="Collection name" nameField="collectionName" placeholder="Enter collection name..." saved="Collection created" />;
 }
 
 /* ── Advanced Sort ── */
@@ -195,13 +195,13 @@ export function AdvancedSortDialog({ open, onClose, value, onApply }) {
     onClose();
   };
   return (
-    <Dialog open={open} onClose={onClose} title="Advanced Sort" icon="sort"
+    <Dialog open={open} onClose={onClose} title="Advanced sort" icon="sort"
       footer={<Footer onCancel={onClose}><Button variant="primary" onClick={apply}>Apply</Button></Footer>}>
       <Stack>
-        <Field label="Sort By Field"><Input name="sortByField" type="search" placeholder="Search fields..." value={q} onChange={(e) => setQ(e.target.value)} /></Field>
+        <Field label="Sort by field"><Input name="sortByField" type="search" placeholder="Search fields..." value={q} onChange={(e) => setQ(e.target.value)} /></Field>
         <Stack gap="xs" maxHeight="md">
           {fields.length
-            ? <RadioGroup aria-label="Sort By Field" name="advSortField" value={draft.field} onChange={(f) => setDraft({ ...draft, field: f })} options={fields.map((f) => ({ value: f, label: f }))} />
+            ? <RadioGroup aria-label="Sort by field" name="advSortField" value={draft.field} onChange={(f) => setDraft({ ...draft, field: f })} options={fields.map((f) => ({ value: f, label: f }))} />
             : <EmptyState>{EMPTY_TEXT}</EmptyState>}
         </Stack>
         <RadioGroup label="Direction" name="advSortDir" layout="row" value={draft.direction} onChange={(d) => setDraft({ ...draft, direction: d })}
@@ -236,12 +236,12 @@ function FieldVisibilityDialog({ open, onClose, value, onSave, title, descriptio
 }
 
 export function EditFieldsCatDialog(props) {
-  return <FieldVisibilityDialog {...props} title="Edit Category Fields" fields={CATEGORY_FIELDS}
+  return <FieldVisibilityDialog {...props} title="Edit category fields" fields={CATEGORY_FIELDS}
     description="Choose which category attributes to show in the detail panel. Drag to reorder." />;
 }
 
 export function EditFieldsFileDialog(props) {
-  return <FieldVisibilityDialog {...props} title="Edit Asset Fields" fields={ASSET_FIELDS}
+  return <FieldVisibilityDialog {...props} title="Edit asset fields" fields={ASSET_FIELDS}
     description="Choose which metadata fields to show in the detail panel. Drag to reorder." />;
 }
 
@@ -256,13 +256,13 @@ export function CatEditFieldsDialog({ open, onClose, onDone }) {
   const add = (e) => { const n = e.target.value; if (n) setFields(fields.concat({ name: n, type: '—' })); };
   const done = () => { if (onDone) onDone({ fields, forAllUsers: forAll }); onClose(); };
   return (
-    <Dialog open={open} onClose={onClose} title="Edit Fields" icon="fields"
+    <Dialog open={open} onClose={onClose} title="Edit fields" icon="fields"
       footer={<Footer onCancel={onClose}><Button variant="primary" onClick={done}>Done</Button></Footer>}>
       <Stack>
         <Inline justify="end">
-          <Checkbox name="editForAllUsers" label="Edit For All Users" checked={forAll} onChange={(e) => setForAll(e.target.checked)} />
+          <Checkbox name="editForAllUsers" label="Edit for all users" checked={forAll} onChange={(e) => setForAll(e.target.checked)} />
         </Inline>
-        <Table caption="Edit Fields" rows={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} columns={[
+        <Table caption="Edit fields" rows={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} columns={[
           { key: 'handle', header: 'Order', render: () => <Text variant="secondary"><Icon name="merge" size="xs" /></Text> },
           { key: 'name', header: 'Field', emphasis: true },
           { key: 'type', header: 'Type', render: (r) => <Text variant="secondary">{r.type}</Text> },

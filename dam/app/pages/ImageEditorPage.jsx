@@ -15,10 +15,10 @@ const PRESETS = {
 };
 const PRESET_FILES = { 'Black&White': 'black-white' };
 const RATIOS = { '1:1 (Square)': '1 / 1', '16:9': '16 / 9', '9:16': '9 / 16', '4:3': '4 / 3', '3:4': '3 / 4', '2:1': '2 / 1', '1:2': '1 / 2' };
-const RATIO_CHOICES = ['Original', 'Free Transform'].concat(Object.keys(RATIOS));
+const RATIO_CHOICES = ['Original', 'Free transform'].concat(Object.keys(RATIOS));
 const FONTS = ['Lato', 'Arvo', 'Caveat', 'Corinthia', 'DancingScript', 'KodeMono', 'MadimiOne', 'MajorMonoDisplay', 'Montserrat', 'OpenSans'];
 const EXPORTS = ['PNG', 'JPEG', 'SVG', 'TIFF', 'PSD', 'EPS', 'GIF', 'BMP', 'WebP', 'PDF'];
-const SLIDERS = [['brightness', 'Brightness', -100, 100, '%'], ['contrast', 'Contrast', -100, 100, '%'], ['saturation', 'Saturation', -100, 100, '%'], ['hueRotation', 'Hue Rotation', 0, 360, ''],
+const SLIDERS = [['brightness', 'Brightness', -100, 100, '%'], ['contrast', 'Contrast', -100, 100, '%'], ['saturation', 'Saturation', -100, 100, '%'], ['hueRotation', 'Hue rotation', 0, 360, ''],
   ['vibrance', 'Vibrance', -100, 100, ''], ['blur', 'Blur', 0, 20, ''], ['noise', 'Noise', 0, 100, ''], ['pixelate', 'Pixelate', 0, 50, '']];
 const TOOLS = [['filters', 'Filters', 'ed-filters'], ['crop', 'Crop', 'ed-crop'], ['rotate', 'Rotate', 'ed-rotate-cw'], ['text', 'Text', 'ed-text'], ['image', 'Image', 'ed-image']];
 const START = { brightness: 0, contrast: 0, saturation: 0, hueRotation: 0, vibrance: 0, blur: 0, noise: 0, pixelate: 0, sharpen: false, emboss: false, edge: false,
@@ -84,7 +84,7 @@ export function ImageEditorPage() {
         <Toolbar.Group>
           <Button variant="primary" onClick={() => say('Saved')}>Save</Button>
           <Button onClick={() => say('Saved as a copy')}>Save as</Button>
-          <Menu label="Export As" trigger={<Button caret>Export As</Button>}>
+          <Menu label="Export as" trigger={<Button caret>Export as</Button>}>
             {EXPORTS.map((x) => <MenuItem key={x} onSelect={() => say('Exported as ' + x)}>{x}</MenuItem>)}
           </Menu>
         </Toolbar.Group>
@@ -127,7 +127,7 @@ export function ImageEditorPage() {
     ),
     crop: (
       <>
-        <Field label="Aspect Ratio"><Select name="aspectRatio" value={ratio} onChange={(e) => setRatio(e.target.value)}>{RATIO_CHOICES.map((r) => <option key={r}>{r}</option>)}</Select></Field>
+        <Field label="Aspect ratio"><Select name="aspectRatio" value={ratio} onChange={(e) => setRatio(e.target.value)}>{RATIO_CHOICES.map((r) => <option key={r}>{r}</option>)}</Select></Field>
         <Inline>
           <Button variant="primary" onClick={() => { const c = RATIOS[ratio] ? ratio : ''; change({ crop: c }, c ? 'Cropped to ' + ratio : 'Crop cleared'); }}>Crop</Button>
           <Button onClick={() => { setRatio('Original'); change({ crop: '' }, 'Crop cleared'); }}>Reset</Button>
@@ -145,8 +145,8 @@ export function ImageEditorPage() {
     text: (
       <>
         <Input name="text" placeholder="Enter text..." aria-label="Text" value={text.text} onChange={(e) => setText({ ...text, text: e.target.value })} />
-        <Field label="Font Family"><Select name="fontFamily" value={text.font} onChange={(e) => setText({ ...text, font: e.target.value })}>{FONTS.map((x) => <option key={x}>{x}</option>)}</Select></Field>
-        <SegmentedControl label="Font Weight" value={text.weight} onChange={(w) => setText({ ...text, weight: w })} options={['Regular', 'Bold', 'Italic'].map((w) => ({ value: w, label: w }))} />
+        <Field label="Font family"><Select name="fontFamily" value={text.font} onChange={(e) => setText({ ...text, font: e.target.value })}>{FONTS.map((x) => <option key={x}>{x}</option>)}</Select></Field>
+        <SegmentedControl label="Font weight" value={text.weight} onChange={(w) => setText({ ...text, weight: w })} options={['Regular', 'Bold', 'Italic'].map((w) => ({ value: w, label: w }))} />
         <Field label="Color">
           <Inline>
             <Input name="color" type="color" aria-label="Color" className="plx-u-w-40px plx-u-h-28px plx-u-p-0" value={text.color} onChange={(e) => setText({ ...text, color: e.target.value })} />

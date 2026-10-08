@@ -25,9 +25,9 @@ import {
    "assets", even for one item or for categories) */
 const things = (count, kind = 'asset', pre = '') => count + ' ' + pre + (kind === 'category' ? (count === 1 ? 'category' : 'categories') : (count === 1 ? 'asset' : 'assets'));
 
-const COLLECTIONS = ['Liturgical Art Collection', 'Social Media Assets', 'Website Banners', 'Print Materials', 'Clergy Portraits', 'Certificate Templates'];
-const MOVE_CATEGORIES = ['Banner Icon', 'Bookshelf', 'Borders - Arch', 'Borders - Circular', 'Branding - Churches', 'Cross - Traditional', 'Dome', 'Embroideries'];
-const CHANGE_CATEGORIES = ['Banner Icon', 'Borders - Arch', 'Branding - Churches', 'Dome', 'Embroideries', 'Fonts'];
+const COLLECTIONS = ['Liturgical Art Collection', 'Social Media Assets', 'Website Banners', 'Print Materials', 'Clergy Portraits', 'Certificate templates'];
+const MOVE_CATEGORIES = ['Banner icon', 'Bookshelf', 'Borders - Arch', 'Borders - Circular', 'Branding - Churches', 'Cross - Traditional', 'Dome', 'Embroideries'];
+const CHANGE_CATEGORIES = ['Banner icon', 'Borders - Arch', 'Branding - Churches', 'Dome', 'Embroideries', 'Fonts'];
 const CURRENT_CATEGORY = 'Cross - Traditional';
 const CURRENT_TAGS = ['coptic', 'orthodox', 'cross', 'gold', 'traditional'];
 const SUGGESTED_TAGS = ['church', 'liturgical', 'icon', 'border', 'certificate', 'branding'];
@@ -35,21 +35,21 @@ const CART_ITEMS = 2;
 const SHARE_LINK = 'https://plenix.lacopts.org/share/xK9m2pQ';
 // the people an asset is shared with besides the signed-in person (who comes from the Platform session and can edit)
 const SHARED_WITH = [
-  { name: 'John Deacon', permission: 'Can View' },
+  { name: 'John Deacon', permission: 'Can view' },
 ];
 const DOWNLOAD_ESTIMATE = '~24.5 MB';
 
 // DATA: choice lists (from the back end later).
 const CART_FORMATS = ['Original / Source File', 'Web Optimized (1200px max)', 'Social Media (1080 × 1080)', 'Custom Size...'];
-const CART_FILE_TYPES = ['Keep Original Format', 'PNG', 'JPG (80% quality)', 'WebP', 'SVG (vector only)', 'PDF'];
+const CART_FILE_TYPES = ['Keep original format', 'PNG', 'JPG (80% quality)', 'WebP', 'SVG (vector only)', 'PDF'];
 const STATUSES = [
-  { value: 'Approved', tone: 'success' }, { value: 'Pending Review', tone: 'warning' }, { value: 'In Progress', tone: 'info' },
+  { value: 'Approved', tone: 'success' }, { value: 'Pending review', tone: 'warning' }, { value: 'In progress', tone: 'info' },
   { value: 'Draft', tone: 'neutral' }, { value: 'Archived', tone: 'danger' },
 ];
-const PERMISSIONS = ['Can View', 'Can Edit', 'Admin'];
+const PERMISSIONS = ['Can view', 'Can edit', 'Admin'];
 const EXPIRATIONS = ['Never', '24 hours', '7 days', '30 days', '90 days'];
 const DOWNLOAD_FORMATS = ['Original / Source Files', 'Web Optimized (1200px, 72dpi)', 'Print Ready (300dpi)', 'Custom Size...'];
-const DOWNLOAD_FILE_TYPES = ['Keep Original Format', 'PNG', 'JPG (80% quality)', 'WebP', 'PDF'];
+const DOWNLOAD_FILE_TYPES = ['Keep original format', 'PNG', 'JPG (80% quality)', 'WebP', 'PDF'];
 const CONVERT_TO = ['PNG', 'JPG (80% quality)', 'JPG (100% quality)', 'WebP', 'SVG', 'PDF', 'TIFF'];
 const UNITS = ['px', '%', 'in', 'cm'];
 const META_TYPES = [
@@ -65,49 +65,49 @@ const META_GROUPS = [
     ['name', 'Name', 'text', 'Leave blank to keep current'], ['description', 'Description', 'textarea', 'Leave blank to keep current'],
     ['tags', 'Tags', 'text', 'Comma-separated tags...'], ['keywords', 'Keywords', 'text', 'Comma-separated keywords...'],
     ['rating', 'Rating', 'rating'],
-    ['editStatus', 'Edit Status', 'select', ['Complete', 'New', 'In Progress', 'Pending Review', 'Draft', 'Archived']],
+    ['editStatus', 'Edit status', 'select', ['Complete', 'New', 'In progress', 'Pending review', 'Draft', 'Archived']],
     ['language', 'Language', 'select', ['English', 'Arabic', 'Coptic', 'French', 'Spanish']],
     ['version', 'Version', 'text', 'e.g. 1.0'], ['summary', 'Summary', 'textarea', 'Brief summary...']] },
   { title: 'Categorization', types: ['all'], fields: [
-    ['category', 'Category', 'text', 'Type to search...'], ['parentCategory', 'Parent Category', 'text', 'Parent category name'],
-    ['displayOrder', 'Display Order', 'number', '0'],
-    ['assetType', 'Asset Type', 'select', ['Image', 'Video', 'Audio', 'Document', '3D Model', 'Font']],
+    ['category', 'Category', 'text', 'Type to search...'], ['parentCategory', 'Parent category', 'text', 'Parent category name'],
+    ['displayOrder', 'Display order', 'number', '0'],
+    ['assetType', 'Asset type', 'select', ['Image', 'Video', 'Audio', 'Document', '3D Model', 'Font']],
     ['classification', 'Classification', 'text', 'Classification']] },
   { title: 'Ownership & Rights', types: ['all'], fields: [
     ['owner', 'Owner', 'text', 'Asset owner'], ['creator', 'Creator', 'text', 'Artist / Creator'],
-    ['copyright', 'Copyright', 'text', 'e.g. Coptic Orthodox Diocese of LA'], ['copyrightNotice', 'Copyright Notice', 'text', 'IPTC copyright notice'],
-    ['usageTerms', 'Usage Terms', 'select', ['Internal Use Only', 'Church Use - Non-Commercial', 'Creative Commons - Attribution', 'Public Domain', 'All Rights Reserved']],
+    ['copyright', 'Copyright', 'text', 'e.g. Coptic Orthodox Diocese of LA'], ['copyrightNotice', 'Copyright notice', 'text', 'IPTC copyright notice'],
+    ['usageTerms', 'Usage terms', 'select', ['Internal use only', 'Church Use - Non-Commercial', 'Creative Commons - Attribution', 'Public domain', 'All Rights Reserved']],
     ['license', 'License', 'text', 'License type'], ['author', 'Author', 'text', 'Author name']] },
   { title: 'Dates', types: ['all'], fields: [
-    ['dateCreated', 'Date Created', 'date'], ['dateModified', 'Date Modified', 'date'],
-    ['publishDate', 'Publish Date', 'date'], ['expirationDate', 'Expiration Date', 'date']] },
+    ['dateCreated', 'Date created', 'date'], ['dateModified', 'Date modified', 'date'],
+    ['publishDate', 'Publish date', 'date'], ['expirationDate', 'Expiration date', 'date']] },
   { title: 'Dimensions & Resolution', types: ['image', 'video'], fields: [
     ['width', 'Width', 'number', 'px'], ['height', 'Height', 'number', 'px'], ['dpi', 'DPI', 'number', '72'],
     ['orientation', 'Orientation', 'select', ['Horizontal', 'Vertical', 'Square']]] },
   { title: 'Camera & Lens', types: ['image', 'video'], fields: [
-    ['cameraMake', 'Camera Make', 'text', 'e.g. Canon'], ['cameraModel', 'Camera Model', 'text', 'e.g. EOS R5'],
-    ['lensType', 'Lens Type', 'text', 'e.g. RF 24-70mm']] },
+    ['cameraMake', 'Camera make', 'text', 'e.g. Canon'], ['cameraModel', 'Camera model', 'text', 'e.g. EOS R5'],
+    ['lensType', 'Lens type', 'text', 'e.g. RF 24-70mm']] },
   { title: 'Exposure & Shooting', types: ['image'], fields: [
-    ['focalLength', 'Focal Length', 'text', 'e.g. 50mm'], ['aperture', 'Aperture', 'text', 'e.g. f/2.8'],
-    ['shutterSpeed', 'Shutter Speed', 'text', 'e.g. 1/125'], ['iso', 'ISO', 'number', 'e.g. 400'],
-    ['whiteBalance', 'White Balance', 'select', ['Auto', 'Daylight', 'Cloudy', 'Tungsten', 'Fluorescent', 'Flash']],
+    ['focalLength', 'Focal length', 'text', 'e.g. 50mm'], ['aperture', 'Aperture', 'text', 'e.g. f/2.8'],
+    ['shutterSpeed', 'Shutter speed', 'text', 'e.g. 1/125'], ['iso', 'ISO', 'number', 'e.g. 400'],
+    ['whiteBalance', 'White balance', 'select', ['Auto', 'Daylight', 'Cloudy', 'Tungsten', 'Fluorescent', 'Flash']],
     ['flash', 'Flash', 'select', ['Fired', 'Did not fire', 'Auto']]] },
   { title: 'Color & Image', types: ['image'], fields: [
-    ['colorSpace', 'Color Space', 'select', ['sRGB', 'Adobe RGB', 'ProPhoto RGB', 'Display P3']],
-    ['colorProfile', 'Color Profile', 'text', 'ICC profile name'], ['bitDepth', 'Bit Depth', 'select', ['8', '16', '32']]] },
+    ['colorSpace', 'Color space', 'select', ['sRGB', 'Adobe RGB', 'ProPhoto RGB', 'Display P3']],
+    ['colorProfile', 'Color profile', 'text', 'ICC profile name'], ['bitDepth', 'Bit depth', 'select', ['8', '16', '32']]] },
   { title: 'Location (GPS)', types: ['image', 'video'], fields: [
-    ['gpsLatitude', 'GPS Latitude', 'text', 'e.g. 34.0522'], ['gpsLongitude', 'GPS Longitude', 'text', 'e.g. -118.2437'],
-    ['gpsAltitude', 'GPS Altitude', 'text', 'meters']] },
+    ['gpsLatitude', 'GPS latitude', 'text', 'e.g. 34.0522'], ['gpsLongitude', 'GPS longitude', 'text', 'e.g. -118.2437'],
+    ['gpsAltitude', 'GPS altitude', 'text', 'meters']] },
   { title: 'IPTC / XMP', types: ['image'], fields: [
     ['headline', 'Headline', 'text', 'IPTC headline'], ['caption', 'Caption', 'textarea', 'Caption / abstract'],
     ['byLine', 'By-line', 'text', 'Photographer / creator'], ['credit', 'Credit', 'text', 'Credit line'],
     ['source', 'Source', 'text', 'Original source'], ['instructions', 'Instructions', 'textarea', 'Special instructions']] },
-  { title: 'IPTC Location', types: ['image'], fields: [
+  { title: 'IPTC location', types: ['image'], fields: [
     ['subLocation', 'Sub-location', 'text', 'Specific location'], ['city', 'City', 'text', 'City'],
     ['stateProvince', 'State / Province', 'text', 'State or province'], ['country', 'Country', 'text', 'Country name']] },
   { title: 'Video — Stream', types: ['video'], fields: [
-    ['duration', 'Duration', 'text', 'HH:MM:SS', true], ['frameRate', 'Frame Rate', 'text', 'e.g. 29.97', true],
-    ['videoCodec', 'Video Codec', 'text', 'e.g. H.264', true], ['videoBitrate', 'Video Bitrate', 'text', 'e.g. 5000 kbps', true],
+    ['duration', 'Duration', 'text', 'HH:MM:SS', true], ['frameRate', 'Frame rate', 'text', 'e.g. 29.97', true],
+    ['videoCodec', 'Video codec', 'text', 'e.g. H.264', true], ['videoBitrate', 'Video bitrate', 'text', 'e.g. 5000 kbps', true],
     ['resolution', 'Resolution', 'text', 'e.g. 1920x1080', true]] },
   { title: 'Audio — ID3 Tags', types: ['audio'], fields: [
     ['title', 'Title', 'text', 'Track title'], ['artist', 'Artist', 'text', 'Artist name'], ['album', 'Album', 'text', 'Album name'],
@@ -115,34 +115,34 @@ const META_GROUPS = [
     ['composer', 'Composer', 'text', 'Composer name'], ['comment', 'Comment', 'textarea', 'Comment']] },
   { title: 'Audio — Stream', types: ['audio'], fields: [
     ['duration2', 'Duration', 'text', 'HH:MM:SS', true], ['codec', 'Codec', 'text', 'e.g. AAC', true],
-    ['bitrate', 'Bitrate', 'text', 'e.g. 320 kbps', true], ['sampleRate', 'Sample Rate', 'text', 'e.g. 44100 Hz', true]] },
+    ['bitrate', 'Bitrate', 'text', 'e.g. 320 kbps', true], ['sampleRate', 'Sample rate', 'text', 'e.g. 44100 Hz', true]] },
   { title: 'Document', types: ['document'], fields: [
     ['title2', 'Title', 'text', 'Document title'], ['subject', 'Subject', 'text', 'Subject'],
-    ['pageCount', 'Page Count', 'number', '', true], ['pdfProducer', 'PDF Producer', 'text', '', true]] },
+    ['pageCount', 'Page count', 'number', '', true], ['pdfProducer', 'PDF producer', 'text', '', true]] },
   { title: '3D / Model', types: ['3d'], fields: [
-    ['geometryType', 'Geometry Type', 'select', ['Mesh', 'NURBS', 'Solid']], ['vertexCount', 'Vertex Count', 'number', '', true],
-    ['faceCount', 'Face Count', 'number', '', true], ['sceneUnits', 'Scene Units', 'select', ['mm', 'cm', 'm', 'in']],
-    ['upAxis', 'Up Axis', 'select', ['Y-up', 'Z-up']], ['fileFormat', 'File Format', 'text', 'e.g. FBX, GLTF', true],
-    ['sourceApp', 'Source App', 'text', 'e.g. Blender', true]] },
+    ['geometryType', 'Geometry type', 'select', ['Mesh', 'NURBS', 'Solid']], ['vertexCount', 'Vertex count', 'number', '', true],
+    ['faceCount', 'Face count', 'number', '', true], ['sceneUnits', 'Scene units', 'select', ['mm', 'cm', 'm', 'in']],
+    ['upAxis', 'Up axis', 'select', ['Y-up', 'Z-up']], ['fileFormat', 'File format', 'text', 'e.g. FBX, GLTF', true],
+    ['sourceApp', 'Source app', 'text', 'e.g. Blender', true]] },
   { title: 'Distribution', types: ['all'], fields: [
     ['channels', 'Channels', 'text', 'Distribution channels'],
-    ['conversionPreset', 'Conversion Preset', 'select', ['Web Optimized', 'Print Ready', 'Social Media', 'Original']]] },
+    ['conversionPreset', 'Conversion preset', 'select', ['Web optimized', 'Print ready', 'Social Media', 'Original']]] },
 ];
 
 /* ── wording and the legacy action map (plenix.js bulkAction) ── */
 const BULK_ACTIONS = {
   'Download': 'baDownload', 'Download as': 'baDownloadAs', 'Delete': 'baDelete',
-  'Add to Collection': 'baCollection', 'Move': 'baMove', 'Change Category': 'baChangeCategory',
-  'Add to Cart': 'baCart', 'Change Status': 'baStatus', 'Update Metadata': 'baMetadata',
-  'Edit Tags': 'baTags', 'Rating': 'baRating', 'Share': 'baShare',
-  'Delete Category': 'baDelete', 'Move Category': 'baMove',
-  'Change Category Status': 'baStatus', 'Share Category': 'baShare',
-  'Rename Category': 'baRename', 'Edit Category': 'baMetadata',
+  'Add to Collection': 'baCollection', 'Move': 'baMove', 'Change category': 'baChangeCategory',
+  'Add to Cart': 'baCart', 'Change status': 'baStatus', 'Update metadata': 'baMetadata',
+  'Edit tags': 'baTags', 'Rating': 'baRating', 'Share': 'baShare',
+  'Delete category': 'baDelete', 'Move category': 'baMove',
+  'Change category status': 'baStatus', 'Share category': 'baShare',
+  'Rename category': 'baRename', 'Edit category': 'baMetadata',
 };
-// Buttons on the category bar (index.html #catBulkBar); 'Download Category' and 'Download Category as' have no dialog.
-const CATEGORY_ACTIONS = ['Delete Category', 'Move Category', 'Change Category Status', 'Share Category', 'Rename Category', 'Edit Category', 'Download Category', 'Download Category as'];
+// Buttons on the category bar (index.html #catBulkBar); 'Download category' and 'Download Category as' have no dialog.
+const CATEGORY_ACTIONS = ['Delete category', 'Move category', 'Change category status', 'Share category', 'Rename category', 'Edit category', 'Download category', 'Download Category as'];
 // .single-only buttons: disabled while more than one item is selected.
-const SINGLE_ONLY = ['Rename Category', 'Edit Category', 'Edit Image', 'Regenerate Thumbnail'];
+const SINGLE_ONLY = ['Rename category', 'Edit category', 'Edit image', 'Regenerate thumbnail'];
 
 export function bulkDialogFor(action) {
   const id = BULK_ACTIONS[action];
@@ -206,7 +206,7 @@ function CollectionInner({ open, onClose, count, kind, onApply, onCreateCollecti
         <div role="group" aria-label="Collections" className="plx-stack plx-stack--gap-xs plx-layout--max-sm">
           {shown.length ? shown.map((c) => <Checkbox key={c} label={c} checked={picked.indexOf(c) >= 0} onChange={() => toggle(c)} />) : <NoData />}
         </div>
-        <div><Button size="sm" icon="plus" onClick={() => { if (onCreateCollection) onCreateCollection(); }}>Create New Collection</Button></div>
+        <div><Button size="sm" icon="plus" onClick={() => { if (onCreateCollection) onCreateCollection(); }}>Create new collection</Button></div>
       </Stack>
     </Dialog>
   );
@@ -232,7 +232,7 @@ function MoveInner({ open, onClose, count, kind, onApply }) {
   const [dest, setDest] = React.useState(null);
   const [removeCurrent, setRemoveCurrent] = React.useState(false);
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="move" title="Move Assets" description={'Select destination category for ' + things(count, kind)}
+    <Dialog open={open} onClose={onClose} size="sm" icon="move" title="Move assets" description={'Select destination category for ' + things(count, kind)}
       footer={<Footer onClose={onClose} label="Move" onApply={onApply} values={{ category: dest, removeFromCurrentCategory: removeCurrent }} />}>
       <Stack>
         <CategoryPicker label="Search categories" placeholder="Type to search..." name="searchCategories" list={MOVE_CATEGORIES} value={dest} onChange={setDest} />
@@ -249,14 +249,14 @@ export function BaChangeCategoryDialog({ open, onClose, count = 1, kind = 'asset
 function ChangeCategoryInner({ open, onClose, count, kind, currentCategory, onApply }) {
   const [dest, setDest] = React.useState(null);
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="folder" title="Change Category" description={'Reassign ' + things(count, kind) + ' to a different category'}
-      footer={<Footer onClose={onClose} label="Change Category" onApply={onApply} values={{ category: dest }} />}>
+    <Dialog open={open} onClose={onClose} size="sm" icon="folder" title="Change category" description={'Reassign ' + things(count, kind) + ' to a different category'}
+      footer={<Footer onClose={onClose} label="Change category" onApply={onApply} values={{ category: dest }} />}>
       <Stack>
         <div className="plx-stack plx-stack--gap-xs">
-          <Caption>Current Category</Caption>
+          <Caption>Current category</Caption>
           <TagList><Tag>{currentCategory}</Tag></TagList>
         </div>
-        <CategoryPicker label="New Category" placeholder="Type to search categories..." name="newCategory" list={CHANGE_CATEGORIES} value={dest} onChange={setDest} />
+        <CategoryPicker label="New category" placeholder="Type to search categories..." name="newCategory" list={CHANGE_CATEGORIES} value={dest} onChange={setDest} />
       </Stack>
     </Dialog>
   );
@@ -273,8 +273,8 @@ function CartInner({ open, onClose, count, kind, onApply }) {
     <Dialog open={open} onClose={onClose} size="sm" icon="plus" title="Add to Cart" description={'Add ' + things(count, kind) + ' to your download cart'}
       footer={<Footer onClose={onClose} label="Add to Cart" onApply={onApply} values={{ format, fileType }} />}>
       <Stack>
-        <RadioGroup label="Download Format" name="cartFmt" value={format} onChange={setFormat} options={CART_FORMATS.map((v) => ({ value: v, label: v }))} />
-        <Field label="File Type">
+        <RadioGroup label="Download format" name="cartFmt" value={format} onChange={setFormat} options={CART_FORMATS.map((v) => ({ value: v, label: v }))} />
+        <Field label="File type">
           <Select name="fileType" value={fileType} onChange={(e) => setFileType(e.target.value)}>{CART_FILE_TYPES.map((v) => <option key={v}>{v}</option>)}</Select>
         </Field>
         <Caption>{'Items in your cart: ' + CART_ITEMS + ' • Adding ' + count + ' more'}</Caption>
@@ -288,14 +288,14 @@ export function BaStatusDialog({ open, onClose, count = 1, kind = 'asset', onApp
   return <StatusInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function StatusInner({ open, onClose, count, kind, onApply }) {
-  const [status, setStatus] = React.useState('Pending Review');
+  const [status, setStatus] = React.useState('Pending review');
   const [note, setNote] = React.useState('');
   const options = STATUSES.map((s) => ({ value: s.value, label: <span className="plx-inline plx-inline--gap-sm plx-layout--align-center"><StatusDot tone={s.tone} />{s.value}</span> }));
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="circle-check" title="Change Status" description={'Set edit status for ' + things(count, kind, 'selected ')}
-      footer={<Footer onClose={onClose} label="Apply Status" onApply={onApply} values={{ status, note }} />}>
+    <Dialog open={open} onClose={onClose} size="sm" icon="circle-check" title="Change status" description={'Set edit status for ' + things(count, kind, 'selected ')}
+      footer={<Footer onClose={onClose} label="Apply status" onApply={onApply} values={{ status, note }} />}>
       <Stack>
-        <RadioGroup label="New Status" name="bulkStatus" value={status} onChange={setStatus} options={options} />
+        <RadioGroup label="New status" name="bulkStatus" value={status} onChange={setStatus} options={options} />
         <Field label="Note (optional)">
           <Textarea name="noteOptional" placeholder="Add a reason for the status change..." value={note} onChange={(e) => setNote(e.target.value)} />
         </Field>
@@ -327,8 +327,8 @@ function MetadataInner({ open, onClose, count, kind, onApply }) {
   const toggle = (t) => setOpenGroups(openGroups.indexOf(t) >= 0 ? openGroups.filter((g) => g !== t) : openGroups.concat(t));
   const shows = (g) => type === 'all' || g.types.indexOf('all') >= 0 || g.types.indexOf(type) >= 0;
   return (
-    <Dialog open={open} onClose={onClose} size="lg" icon="fields" title="Update Metadata" description={'Batch-edit metadata for ' + things(count, kind, 'selected ')}
-      footer={<Footer onClose={onClose} label="Save Metadata" onApply={onApply} values={{ fields: values, overwrite, appendTags }} />}>
+    <Dialog open={open} onClose={onClose} size="lg" icon="fields" title="Update metadata" description={'Batch-edit metadata for ' + things(count, kind, 'selected ')}
+      footer={<Footer onClose={onClose} label="Save metadata" onApply={onApply} values={{ fields: values, overwrite, appendTags }} />}>
       <Stack>
         <SegmentedControl label="Asset type" size="sm" options={META_TYPES} value={type} onChange={setType} />
         <div className="plx-stack plx-stack--gap-sm plx-layout--max-lg">
@@ -367,20 +367,20 @@ function TagsInner({ open, onClose, count, kind, onApply }) {
   const clickSuggested = (s) => setSuggested(s.on ? suggested.filter((x) => x !== s) : suggested.map((x) => (x === s ? { t: x.t, on: true } : x)));
   const values = { add: add.split(',').map((t) => t.trim()).filter(Boolean), current, added: suggested.filter((s) => s.on).map((s) => s.t) };
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="tags" title="Edit Tags" description={'Add or remove tags for ' + things(count, kind, 'selected ')}
-      footer={<Footer onClose={onClose} label="Apply Tags" onApply={onApply} values={values} />}>
+    <Dialog open={open} onClose={onClose} size="sm" icon="tags" title="Edit tags" description={'Add or remove tags for ' + things(count, kind, 'selected ')}
+      footer={<Footer onClose={onClose} label="Apply tags" onApply={onApply} values={values} />}>
       <Stack>
-        <Field label="Add Tags"><Input name="addTags" placeholder="Type tags separated by commas..." value={add} onChange={(e) => setAdd(e.target.value)} /></Field>
+        <Field label="Add tags"><Input name="addTags" placeholder="Type tags separated by commas..." value={add} onChange={(e) => setAdd(e.target.value)} /></Field>
         <div className="plx-stack plx-stack--gap-xs">
           <Caption>Current Tags (click × to remove)</Caption>
           {current.length ? (
-            <TagList label="Current Tags">{current.map((t) => <Tag key={t} onRemove={() => setCurrent(current.filter((x) => x !== t))}>{t}</Tag>)}</TagList>
+            <TagList label="Current tags">{current.map((t) => <Tag key={t} onRemove={() => setCurrent(current.filter((x) => x !== t))}>{t}</Tag>)}</TagList>
           ) : <NoData />}
         </div>
         <div className="plx-stack plx-stack--gap-xs">
           <Caption>Suggested Tags (click to add)</Caption>
           {suggested.length ? (
-            <TagList label="Suggested Tags">
+            <TagList label="Suggested tags">
               {suggested.map((s) => (
                 <Chip key={s.t} selected={s.on} aria-label={s.on ? 'Remove tag ' + s.t : undefined} onClick={() => clickSuggested(s)}>
                   {s.on ? <>{s.t} <span aria-hidden="true">×</span></> : s.t}
@@ -401,8 +401,8 @@ export function BaRatingDialog({ open, onClose, count = 1, kind = 'asset', onApp
 function RatingInner({ open, onClose, count, kind, onApply }) {
   const [stars, setStars] = React.useState(0);
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="sparkle" title="Set Rating" description={'Rate ' + things(count, kind, 'selected ')}
-      footer={<Footer onClose={onClose} label="Apply Rating" onApply={onApply} values={{ rating: stars }} />}>
+    <Dialog open={open} onClose={onClose} size="sm" icon="sparkle" title="Set rating" description={'Rate ' + things(count, kind, 'selected ')}
+      footer={<Footer onClose={onClose} label="Apply rating" onApply={onApply} values={{ rating: stars }} />}>
       <div className="plx-inline plx-inline--gap-sm plx-layout--align-center">
         <Rating label="Rating" value={stars} onChange={setStars} />
         <Button variant="ghost" size="sm" onClick={() => setStars(0)}>Clear</Button>
@@ -419,7 +419,7 @@ function ShareInner({ open, onClose, count, kind, onApply }) {
   const toast = useToast();
   const [person, setPerson] = React.useState('');
   const { account } = useSession();
-  const [people, setPeople] = React.useState(() => [{ name: account.name, permission: 'Can Edit' }].concat(SHARED_WITH));
+  const [people, setPeople] = React.useState(() => [{ name: account.name, permission: 'Can edit' }].concat(SHARED_WITH));
   const [expiration, setExpiration] = React.useState('30 days');
   const [opts, setOpts] = React.useState({ allowDownloads: true, requirePassword: false, notifyRecipientsByEmail: false });
   const check = (k, label) => <Checkbox name={k} label={label} checked={opts[k]} onChange={(e) => setOpts({ ...opts, [k]: e.target.checked })} />;
@@ -427,11 +427,11 @@ function ShareInner({ open, onClose, count, kind, onApply }) {
     <Dialog open={open} onClose={onClose} size="sm" icon="share" title="Share" description={'Share ' + things(count, kind, 'selected ')}
       footer={<Footer onClose={onClose} label="Share" onApply={onApply} values={{ link: SHARE_LINK, invite: person, people, expiration, ...opts }} />}>
       <Stack>
-        <Field label="Share Link">
+        <Field label="Share link">
           <Input name="shareLink" readOnly data value={SHARE_LINK} />
         </Field>
         <div><Button size="sm" onClick={() => toast.show('Link copied', { tone: 'success' })}>Copy</Button></div>
-        <Field label="Share With People">
+        <Field label="Share with people">
           <Input name="shareWithPeople" placeholder="Enter name or email..." value={person} onChange={(e) => setPerson(e.target.value)} />
         </Field>
         {people.length ? (
@@ -448,7 +448,7 @@ function ShareInner({ open, onClose, count, kind, onApply }) {
             ))}
           </div>
         ) : <NoData />}
-        <Field label="Link Expiration">
+        <Field label="Link expiration">
           <Select name="linkExpiration" value={expiration} onChange={(e) => setExpiration(e.target.value)}>{EXPIRATIONS.map((o) => <option key={o}>{o}</option>)}</Select>
         </Field>
         <div>
@@ -473,7 +473,7 @@ function DownloadInner({ open, onClose, count, kind, onApply }) {
       footer={<Footer onClose={onClose} label="Download" onApply={onApply} values={{ format, fileType }} />}>
       <Stack>
         <RadioGroup label="Format" name="dlFmt" value={format} onChange={setFormat} options={DOWNLOAD_FORMATS.map((v) => ({ value: v, label: v }))} />
-        <Field label="File Type">
+        <Field label="File type">
           <Select name="fileType" value={fileType} onChange={(e) => setFileType(e.target.value)}>{DOWNLOAD_FILE_TYPES.map((v) => <option key={v}>{v}</option>)}</Select>
         </Field>
         <Caption>Estimated download: <Text variant="data">{DOWNLOAD_ESTIMATE}</Text> (ZIP archive)</Caption>
@@ -490,10 +490,10 @@ function DownloadAsInner({ open, onClose, count, kind, onApply }) {
   const [v, setV] = React.useState({ convertTo: CONVERT_TO[0], width: '', height: '', unit: 'px', maintainAspectRatio: true, stripMetadata: false });
   const set = (k) => (e) => setV({ ...v, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value });
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="download-alt" title="Download As" description={'Convert and download ' + things(count, kind, 'selected ')}
+    <Dialog open={open} onClose={onClose} size="sm" icon="download-alt" title="Download as" description={'Convert and download ' + things(count, kind, 'selected ')}
       footer={<Footer onClose={onClose} label="Download" onApply={onApply} values={v} />}>
       <Stack>
-        <Field label="Convert To">
+        <Field label="Convert to">
           <Select name="convertTo" value={v.convertTo} onChange={set('convertTo')}>{CONVERT_TO.map((o) => <option key={o}>{o}</option>)}</Select>
         </Field>
         <Fieldset legend="Resize">
@@ -522,11 +522,11 @@ export function BaRenameDialog({ open, onClose, itemName = CURRENT_CATEGORY, onA
 function RenameInner({ open, onClose, itemName, onApply }) {
   const [name, setName] = React.useState('');
   return (
-    <Dialog open={open} onClose={onClose} size="sm" icon="rename" title="Rename Category" description="Rename selected category"
+    <Dialog open={open} onClose={onClose} size="sm" icon="rename" title="Rename category" description="Rename selected category"
       footer={<Footer onClose={onClose} label="Rename" onApply={onApply} values={{ currentName: itemName, newName: name }} />}>
       <Stack>
-        <Field label="Current Name"><Input name="currentName" readOnly value={itemName} /></Field>
-        <Field label="New Name"><Input name="newName" placeholder="Enter new name..." value={name} onChange={(e) => setName(e.target.value)} /></Field>
+        <Field label="Current name"><Input name="currentName" readOnly value={itemName} /></Field>
+        <Field label="New name"><Input name="newName" placeholder="Enter new name..." value={name} onChange={(e) => setName(e.target.value)} /></Field>
       </Stack>
     </Dialog>
   );

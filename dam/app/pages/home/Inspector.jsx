@@ -35,7 +35,7 @@ function Tags({ initial, act }) {
         {tags.map((t) => <Tag key={t} onRemove={() => setTags(tags.filter((x) => x !== t))} removeLabel={'Remove tag ' + t}>{t}</Tag>)}
         <TagInput value={text} onChange={(e) => setText(e.target.value)} onKeyDown={add} placeholder="+ add tag" aria-label="Add tag" />
       </TagList>
-      <div><Button size="sm" icon="sparkle" onClick={act('AI Tagging', 'info')}>AI Tagging</Button></div>
+      <div><Button size="sm" icon="sparkle" onClick={act('AI tagging', 'info')}>AI tagging</Button></div>
     </>
   );
 }
@@ -91,7 +91,7 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
             <Accordion title="General">
               <Row label="Name"><Input name="name" {...text('name')} /></Row>
               <Row label="Parent"><Select name="parent" {...text('parent')}>{c.parents.map((p) => <option key={p}>{p}</option>)}</Select></Row>
-              <Row label="Display Order"><Input name="displayOrder" type="number" {...text('order')} /></Row>
+              <Row label="Display order"><Input name="displayOrder" type="number" {...text('order')} /></Row>
               <Row label="Color">
                 <Inline>
                   <Input name="color" type="color" aria-label="Color" className="plx-u-w-40px plx-u-h-28px plx-u-p-0" {...text('color')} />
@@ -106,10 +106,10 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
             <Accordion title="Tags"><Tags initial={c.tags} act={act} /></Accordion>
             <Accordion title="Stats"><PropertyList>{c.stats.map(([k, v]) => <PropertyList.Item key={k} label={k} data>{v}</PropertyList.Item>)}</PropertyList></Accordion>
             <Accordion title="Permissions" defaultOpen={false}><PropertyList>{c.permissions.map(([k, v]) => <PropertyList.Item key={k} label={k}>{v}</PropertyList.Item>)}</PropertyList></Accordion>
-            <Accordion title="Custom Fields" defaultOpen={false}>
+            <Accordion title="Custom fields" defaultOpen={false}>
               <Text as="p" variant="secondary">Category-specific fields added to assets</Text>
               {c.customFields.map(([k, ph]) => <Row key={k} label={k}><Input name={k.toLowerCase()} placeholder={ph} {...text(k.toLowerCase())} /></Row>)}
-              <div><Button size="xs" variant="ghost" icon="plus" onClick={act('Add Field', 'success')}>Add Field</Button></div>
+              <div><Button size="xs" variant="ghost" icon="plus" onClick={act('Add field', 'success')}>Add field</Button></div>
             </Accordion>
           </Stack>) },
         { value: 'downloads', label: 'Downloads', content: <Stack><Downloads groups={D.CATEGORY_DOWNLOADS} act={act} /></Stack> },
@@ -148,7 +148,7 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
               <Row label="Edit status"><Select name="editStatus" {...text('status')}>{D.ASSET_STATUSES.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Category"><Input name="category" {...text('cat')} /></Row>
               <Row label="Copyright"><Input name="copyright" placeholder="e.g. Diocese of LA" {...text('copyright')} /></Row>
-              <Row label="Usage Rights"><Select name="usageRights" {...text('rights')}><option value="">-- Select --</option>{D.USAGE_RIGHTS.map((p) => <option key={p}>{p}</option>)}</Select></Row>
+              <Row label="Usage rights"><Select name="usageRights" {...text('rights')}><option value="">-- Select --</option>{D.USAGE_RIGHTS.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Rating"><Rating value={f.rating} onChange={(v) => setF({ ...f, rating: v })} label="Rating" /></Row>
               <Field label="Description"><Textarea name="description" rows={2} placeholder="Add description..." {...text('description')} /></Field>
             </Accordion>
@@ -156,7 +156,7 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
           </Stack>) },
         { value: 'downloads', label: 'Downloads', content: (
           <Stack>
-            <Downloads groups={[{ title: 'Source File', items: [[asset.typeIcon, asset.file, asset.size + ' · ' + asset.fmt]] }].concat(D.ASSET_DOWNLOADS)} act={act} />
+            <Downloads groups={[{ title: 'Source file', items: [[asset.typeIcon, asset.file, asset.size + ' · ' + asset.fmt]] }].concat(D.ASSET_DOWNLOADS)} act={act} />
           </Stack>) },
         { value: 'versions', label: 'Versions', content: (
           <ActivityList label="Versions">

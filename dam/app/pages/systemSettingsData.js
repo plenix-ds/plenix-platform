@@ -11,15 +11,15 @@ export const PROPERTIES = {
 };
 export const RESULT_VIEWS = ['Columns', 'Gallery', 'Grid', 'Map', 'Table'];
 export const ENABLED_FOR = [['Administrators', true], ['Catalogs Admins', true], ['Uploaders', true], ['Users', true], ['Anonymous', false]];
-export const ACTIONS = [['View Details', 'All'], ['Edit Metadata', 'Entity Editor, Administrators'], ['Delete', 'Administrators'], ['Download Original', 'Entity Editor, Administrators'], ['Share', 'All']];
+export const ACTIONS = [['View details', 'All'], ['Edit metadata', 'Entity Editor, Administrators'], ['Delete', 'Administrators'], ['Download original', 'Entity Editor, Administrators'], ['Share', 'All']];
 export const VIEW_ALL = [['Administrators', true], ['Catalogs Admins', true], ['Uploaders', false]];
 export const EDIT_ALL = [['Administrators', true], ['Catalogs Admins', true]];
 
 export const FIELDS = [
-  ['Asset Title', 'assettitle', 'textbox'], ['Caption', 'headline', 'textbox'], ['Description', 'longcaption', 'textbox'], ['Categories', 'category', 'list'],
-  ['Asset Type', 'assettype', 'list'], ['Author', 'creator', 'text'], ['Copyright Notice', 'copyrightnotice', 'textbox'], ['Copyright Status', 'copyrightstatus', 'list'],
-  ['Color Space', 'colorspace', 'list'], ['File Format', 'fileformat', 'textbox'], ['File Size', 'filesize', 'number'], ['Created On', 'assetcreationdate', 'date'],
-  ['Asset Expired', 'assetexpired', 'boolean'], ['Face Profiles', 'faceprofiles', 'nested'], ['GEO Location', 'geo_point', 'geo_point'],
+  ['Asset title', 'assettitle', 'textbox'], ['Caption', 'headline', 'textbox'], ['Description', 'longcaption', 'textbox'], ['Categories', 'category', 'list'],
+  ['Asset type', 'assettype', 'list'], ['Author', 'creator', 'text'], ['Copyright notice', 'copyrightnotice', 'textbox'], ['Copyright status', 'copyrightstatus', 'list'],
+  ['Color space', 'colorspace', 'list'], ['File format', 'fileformat', 'textbox'], ['File size', 'filesize', 'number'], ['Created on', 'assetcreationdate', 'date'],
+  ['Asset expired', 'assetexpired', 'boolean'], ['Face profiles', 'faceprofiles', 'nested'], ['GEO location', 'geo_point', 'geo_point'],
 ];
 export const FIELD_TOTAL = 214;
 
@@ -52,22 +52,22 @@ export const USERS = [
 
 export const GROUPS = ['Administrators', 'Catalogs Admins', 'Uploaders', 'Users'];
 
-export const PERMISSION_ROLES = ['Entity Owner', 'Administrators', 'Entity Editor', 'Users', 'Anonymous'];
+export const PERMISSION_ROLES = ['Entity owner', 'Administrators', 'Entity editor', 'Users', 'Anonymous'];
 export const PERMISSION_AREAS = [
   { id: 'app', label: 'Application', total: 34, items: [
     ['Application', 'Enables access to the Plenix application.'], ['Home', 'Enables the home button.'], ['Settings', 'Enables access to application management settings.'],
-    ['Multiple Files', 'Enables various actions across multiple assets simultaneously.'], ['Table Columns', 'Enables the customization of search result columns in table view.'],
-    ['Download Original', 'Enables downloading of the original asset.'], ['Edit Users and Groups', 'Allows user to create and edit users or groups.'],
-    ['My Account Area', 'Enables a page that edits user data and updates passwords.'], ['Category Navigation', 'Enables the Category Navigation in the sidebar.'],
-    ['View AI Agent', 'Enables AI Chat Agent.']] },
-  { id: 'asset', label: 'Asset Management', total: 65, items: [
-    ['Upload Files', 'Enables the upload of assets.'], ['Delete', 'Enables removal of an asset, and the option to remove the original.'],
+    ['Multiple files', 'Enables various actions across multiple assets simultaneously.'], ['Table columns', 'Enables the customization of search result columns in table view.'],
+    ['Download original', 'Enables downloading of the original asset.'], ['Edit Users and Groups', 'Allows user to create and edit users or groups.'],
+    ['My account area', 'Enables a page that edits user data and updates passwords.'], ['Category navigation', 'Enables the Category Navigation in the sidebar.'],
+    ['View AI agent', 'Enables AI Chat Agent.']] },
+  { id: 'asset', label: 'Asset management', total: 65, items: [
+    ['Upload files', 'Enables the upload of assets.'], ['Delete', 'Enables removal of an asset, and the option to remove the original.'],
     ['Share', 'Enables the share button. Parent of email, embed, publish and social media share.'], ['Watermark', 'System-wide watermarking across all assets.'],
-    ['Approve/Reject Workflow', 'Enables Approve/Reject options.'], ['Edit All Assets', 'Allow editing and viewing of any asset.'],
-    ['Permissions', 'Enables permission alteration for media assets.'], ['Media Editor', 'Enables access to Media Editor.'], ['View Faceprofiles', 'View Asset Face Profile Detection.']] },
-  { id: 'library', label: 'Library Management', total: 18, items: [
-    ['Create New Collection', 'Allows creation of new collections.'], ['Create New Library', 'Allows creation of new libraries.'],
-    ['Pick Any Library', 'Asset can be added to any library.'], ['Add files to Bookmarks', 'Enables users to add files to their Bookmarks.']] },
+    ['Approve/Reject Workflow', 'Enables Approve/Reject options.'], ['Edit all assets', 'Allow editing and viewing of any asset.'],
+    ['Permissions', 'Enables permission alteration for media assets.'], ['Media editor', 'Enables access to Media Editor.'], ['View faceprofiles', 'View Asset Face Profile Detection.']] },
+  { id: 'library', label: 'Library management', total: 18, items: [
+    ['Create new collection', 'Allows creation of new collections.'], ['Create new library', 'Allows creation of new libraries.'],
+    ['Pick any library', 'Asset can be added to any library.'], ['Add files to Bookmarks', 'Enables users to add files to their Bookmarks.']] },
   { id: 'api', label: 'Programming API', total: 4, items: [['Programming API', 'Enables REST API access to this catalog.']] },
 ];
 
@@ -79,12 +79,12 @@ export const EMAIL_TEMPLATES = [
   ['Email sent when assets are approved', 'collection-assets-approved.html'],
   ['Email sent when assets are rejected', 'collection-assets-rejected.html'],
   ['Email sent when a user is added to a collection', 'collection-add-new-follower.html'],
-  ['Asset Renewal Notification', 'assetrenew.html'],
+  ['Asset renewal notification', 'assetrenew.html'],
 ];
 
 export const CATALOG_PARAMETERS = [
-  ['Application Site Title', 'sitetitle', 'Plenix Library'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN Prefix', 'cdn_prefix', '—'],
-  ['AWS Bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'],
+  ['Application site title', 'sitetitle', 'Plenix Library'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN prefix', 'cdn_prefix', '—'],
+  ['AWS bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'],
   ['AI: Ollama Server', 'ollama-url', 'https://ollama.example.com'], ['AI: Translate Server', 'ai_translate_server', 'http://translate.example.com:48991'],
   ['AI: Vectorizer Server', 'ai_vectorizer_server', 'http://vectorizer.example.com:48981'], ['Face: Faceprofile Server', 'faceprofileserver', '—'],
   ['Catalog Asset Edit Groups', 'catalogasseteditgroups', 'administrators users'], ['Admin Catalog Asset View Groups', 'catalogassetviewgroups', 'administrators'],
@@ -96,7 +96,7 @@ export const VERSIONS = [['Plenix Server', '11.2218'], ['Plenix', '11.375'], ['E
 export const LOG_PATH = '/opt/plenix/logs/server.log';
 
 export const DB_TABLES = ['asset', 'category', 'user', 'group', 'order', 'library', 'librarycollection', 'customization', 'entityperson', 'faceprofilegroup', 'module', 'permission'];
-export const DB_COLUMNS = ['AI Tags', 'Album', 'Asset Title', 'Asset Type', 'Artist', 'Categories', 'Created On'];
+export const DB_COLUMNS = ['AI tags', 'Album', 'Asset title', 'Asset type', 'Artist', 'Categories', 'Created on'];
 export const DB_ROWS = [
   ['gold, ornate', '—', 'korban_stamp_010', 'Image', '—', 'Korban Stamp', 'Aug 18, 2026'],
   ['certificate, church', '—', 'certificate_christ_the_teacher', '3D Models', '—', 'Certificates', 'Aug 15, 2026'],
@@ -106,16 +106,16 @@ export const DB_ROWS = [
 export const DB_TOTAL = { records: '4,546', pages: 227 };
 
 export const CUSTOMIZATIONS = [
-  ['Supporting Table', 'Entity Source Type', 'searchcategory', '9/1/26, 11:30 AM'], ['Module', 'Person', '—', '9/1/26, 11:30 AM'],
-  ['Supporting Table', 'Start Category ID', 'desktopsyncfolder', '9/1/26, 11:30 AM'], ['Module', 'Document', '—', '9/1/26, 11:30 AM'],
-  ['Module', 'Media Profile', '—', '9/1/26, 11:30 AM'], ['Module', 'Categories', '—', '9/1/26, 11:30 AM'],
+  ['Supporting table', 'Entity source type', 'searchcategory', '9/1/26, 11:30 AM'], ['Module', 'Person', '—', '9/1/26, 11:30 AM'],
+  ['Supporting table', 'Start category ID', 'desktopsyncfolder', '9/1/26, 11:30 AM'], ['Module', 'Document', '—', '9/1/26, 11:30 AM'],
+  ['Module', 'Media profile', '—', '9/1/26, 11:30 AM'], ['Module', 'Categories', '—', '9/1/26, 11:30 AM'],
 ];
 
 export const SCHEDULED = [
-  ['Auto assign Entity Image', 'autoassignproxyimage.html', 'Runs: 2,736 · Repeats every 1m'], ['Publish Assets', 'publishassets.html', 'Runs: 541 · Repeats every 5m'],
-  ['Send Collection Chat Notifications', 'notifycollectionchatnotifications.html', 'Runs: 541 · Repeats every 5m'], ['Run media conversions', 'runconversions.html', 'Runs: 550 · Repeats every 5m'],
-  ['Transcript Audio', 'autotranscode.html', 'Runs: 541 · Repeats every 5m'], ['Semantic Index New', 'semanticscan.html', 'Runs: 270 · Repeats every 10m'],
-  ['Import Hot Folders', 'importhotfolders.html', 'Runs: 270 · Repeats every 10m'], ['Check Permission Changes', 'checkpermissionhistory.html', 'Runs: 277 · Repeats every 10m'],
+  ['Auto assign Entity Image', 'autoassignproxyimage.html', 'Runs: 2,736 · Repeats every 1m'], ['Publish assets', 'publishassets.html', 'Runs: 541 · Repeats every 5m'],
+  ['Send collection chat notifications', 'notifycollectionchatnotifications.html', 'Runs: 541 · Repeats every 5m'], ['Run media conversions', 'runconversions.html', 'Runs: 550 · Repeats every 5m'],
+  ['Transcript audio', 'autotranscode.html', 'Runs: 541 · Repeats every 5m'], ['Semantic Index New', 'semanticscan.html', 'Runs: 270 · Repeats every 10m'],
+  ['Import hot folders', 'importhotfolders.html', 'Runs: 270 · Repeats every 10m'], ['Check permission changes', 'checkpermissionhistory.html', 'Runs: 277 · Repeats every 10m'],
   ['Apply Google Vision', 'applygooglevision.html', 'Runs: 180 · Repeats every 15m'], ['Apply Google Transcode', 'applygoogletranscode.html', 'Runs: 180 · Repeats every 15m'],
-  ['Asset Metadata Notification', 'assetmetadata.html', 'Runs: 30 · Repeats every 30m'],
+  ['Asset metadata notification', 'assetmetadata.html', 'Runs: 30 · Repeats every 30m'],
 ];

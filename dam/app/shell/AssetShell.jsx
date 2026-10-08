@@ -1,5 +1,5 @@
 /* Plenix asset app · shell (app/shell/AssetShell.jsx): what every asset page shares, in React.
-   <AssetPage title="My Account" current="account" sideNav={<NavPane…/>} panel={<SidePanel…/>}>…</AssetPage> renders the AppShell — skip link, header, the page's <main>
+   <AssetPage title="My account" current="account" sideNav={<NavPane…/>} panel={<SidePanel…/>}>…</AssetPage> renders the AppShell — skip link, header, the page's <main>
    (with its visually hidden h1) and the StatusBar (the toast host is mounted around every page by app/assets.jsx). current: "account" | "system" marks the account
    button as the current place on the settings pages. On the home page, onSearch(query) and onUpload() handle search and
    upload in place (query: the initial search text); elsewhere they go to the home page (index.html?q=… / ?upload=1).

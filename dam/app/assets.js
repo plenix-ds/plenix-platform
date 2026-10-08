@@ -18,7 +18,7 @@ var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix asset app · shell (app/shell/AssetShell.jsx): what every asset page shares, in React.
-   <AssetPage title="My Account" current="account" sideNav={<NavPane…/>} panel={<SidePanel…/>}>…</AssetPage> renders the AppShell — skip link, header, the page's <main>
+   <AssetPage title="My account" current="account" sideNav={<NavPane…/>} panel={<SidePanel…/>}>…</AssetPage> renders the AppShell — skip link, header, the page's <main>
    (with its visually hidden h1) and the StatusBar (the toast host is mounted around every page by app/assets.jsx). current: "account" | "system" marks the account
    button as the current place on the settings pages. On the home page, onSearch(query) and onUpload() handle search and
    upload in place (query: the initial search text); elsewhere they go to the home page (index.html?q=… / ?upload=1).
@@ -132,7 +132,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const PAGE_SIZES = ['6', '8', '12', '15', '20', '30', '36', '50', '100', '200'];
 const LAST_VIEWED = 'finder/find';
 const SECTIONS = [{
-  heading: 'My Account',
+  heading: 'My account',
   items: [{
     id: 'profile',
     label: 'Profile',
@@ -193,16 +193,16 @@ function Profile() {
       type: "submit",
       variant: "primary"
     }, "Save"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      onClick: () => toast.show('Change Password')
-    }, "Change Password"))
+      onClick: () => toast.show('Change password')
+    }, "Change password"))
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "First Name",
+    label: "First name",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "firstName",
     autoComplete: "given-name"
   }, field('firstName')))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Last Name",
+    label: "Last name",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "lastName",
@@ -261,9 +261,9 @@ function Preferences() {
     actions: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       type: "submit",
       variant: "primary"
-    }, "Save Preferences")
+    }, "Save preferences")
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Default Theme",
+    label: "Default theme",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
     name: "defaultTheme",
@@ -295,10 +295,10 @@ function Preferences() {
     creatable: true,
     onCreate: create('rows')
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Receive Album Notifications",
+    label: "Receive album notifications",
     layout: "row"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
-    label: "Receive Album Notifications",
+    label: "Receive album notifications",
     labelHidden: true,
     checked: prefs.album,
     onChange: e => set('album')(e.target.checked)
@@ -311,16 +311,16 @@ function Preferences() {
     checked: prefs.approval,
     onChange: e => set('approval')(e.target.checked)
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Preferred Date Format",
+    label: "Preferred date format",
     layout: "inline",
     info: "Accepted formats: yyyy-MM-dd, MM-dd-yyyy, dd-MM-yyyy"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "preferredDateFormat",
-    placeholder: "Preferred Date Format",
+    placeholder: "Preferred date format",
     value: prefs.dateFormat,
     onChange: e => set('dateFormat')(e.target.value)
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Last Viewed Application",
+    label: "Last viewed application",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     as: "output",
@@ -330,12 +330,12 @@ function Preferences() {
 function MyAccountPage() {
   const [section, go] = useSection();
   return /*#__PURE__*/_react.default.createElement(_AssetShell.AssetPage, {
-    title: "My Account",
+    title: "My account",
     current: "account",
     sideNav: /*#__PURE__*/_react.default.createElement(_plenixPlatform.NavPane, {
       as: "div",
       label: "Settings sections",
-      title: "My Account",
+      title: "My account",
       header: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "sm",
         variant: "ghost",
@@ -390,10 +390,10 @@ const PROPERTIES = exports.PROPERTIES = {
 };
 const RESULT_VIEWS = exports.RESULT_VIEWS = ['Columns', 'Gallery', 'Grid', 'Map', 'Table'];
 const ENABLED_FOR = exports.ENABLED_FOR = [['Administrators', true], ['Catalogs Admins', true], ['Uploaders', true], ['Users', true], ['Anonymous', false]];
-const ACTIONS = exports.ACTIONS = [['View Details', 'All'], ['Edit Metadata', 'Entity Editor, Administrators'], ['Delete', 'Administrators'], ['Download Original', 'Entity Editor, Administrators'], ['Share', 'All']];
+const ACTIONS = exports.ACTIONS = [['View details', 'All'], ['Edit metadata', 'Entity Editor, Administrators'], ['Delete', 'Administrators'], ['Download original', 'Entity Editor, Administrators'], ['Share', 'All']];
 const VIEW_ALL = exports.VIEW_ALL = [['Administrators', true], ['Catalogs Admins', true], ['Uploaders', false]];
 const EDIT_ALL = exports.EDIT_ALL = [['Administrators', true], ['Catalogs Admins', true]];
-const FIELDS = exports.FIELDS = [['Asset Title', 'assettitle', 'textbox'], ['Caption', 'headline', 'textbox'], ['Description', 'longcaption', 'textbox'], ['Categories', 'category', 'list'], ['Asset Type', 'assettype', 'list'], ['Author', 'creator', 'text'], ['Copyright Notice', 'copyrightnotice', 'textbox'], ['Copyright Status', 'copyrightstatus', 'list'], ['Color Space', 'colorspace', 'list'], ['File Format', 'fileformat', 'textbox'], ['File Size', 'filesize', 'number'], ['Created On', 'assetcreationdate', 'date'], ['Asset Expired', 'assetexpired', 'boolean'], ['Face Profiles', 'faceprofiles', 'nested'], ['GEO Location', 'geo_point', 'geo_point']];
+const FIELDS = exports.FIELDS = [['Asset title', 'assettitle', 'textbox'], ['Caption', 'headline', 'textbox'], ['Description', 'longcaption', 'textbox'], ['Categories', 'category', 'list'], ['Asset type', 'assettype', 'list'], ['Author', 'creator', 'text'], ['Copyright notice', 'copyrightnotice', 'textbox'], ['Copyright status', 'copyrightstatus', 'list'], ['Color space', 'colorspace', 'list'], ['File format', 'fileformat', 'textbox'], ['File size', 'filesize', 'number'], ['Created on', 'assetcreationdate', 'date'], ['Asset expired', 'assetexpired', 'boolean'], ['Face profiles', 'faceprofiles', 'nested'], ['GEO location', 'geo_point', 'geo_point']];
 const FIELD_TOTAL = exports.FIELD_TOTAL = 214;
 const ASSET_TYPES = exports.ASSET_TYPES = [['3D Modeling', 'stl obj gltf glb fbx blend usd usda usdz 3ds dae abc ply wrl x3d step stp iges igs', 0], ['Archives', 'zip rar 7z tar gz bz2 xz cab iso dmg', 1], ['Audio', 'mp3 wav flac aac ogg wma m4a aiff alac opus mid midi amr', 2], ['Documents', 'pdf doc docx ppt pptx xls xlsx rtf odt ods odp txt csv tsv epub pages numbers keynote indd indt idml xml html dita ditamap shtml', 3], ['Fonts', 'ttf otf woff woff2 eot', 4], ['Images', 'jpg jpeg tiff tif gif png webp avif heic heif jxl pbm pgm pnm ppm hdr exr bmp icr tga svg svgz psd psb jp2 cr2 cr3 arw nef nrw orf raf raw2 dng 3fr iiq pef srw x3f gpr rwl dcr mrw erf kdc cdr cdt cmx cpx pat ai eps wmf emf', 5], ['Video', 'mp4 mov avi flv wmv mkv mpg mpeg m4v webm ogv 3gp 3g2 maf ts vob divx rm rmvb asf m2ts mts', 6]];
 const HOT_FOLDERS = exports.HOT_FOLDERS = [{
@@ -404,43 +404,43 @@ const HOT_FOLDERS = exports.HOT_FOLDERS = [{
 const CONVERSIONS = exports.CONVERSIONS = [['Image 3000x3000 JPG', 'image3000x3000.jpg', 'Yes', 'Yes', 'Image'], ['Webp Image 3000x3000', 'image3000x3000.webp', 'Yes', 'Yes', 'Image'], ['Webp Image 550x550', 'image550x550.webp', 'Yes', 'Yes', 'Image, Documents, Video'], ['Webp Image 200 Thumbnail', 'image200x200.webp', 'Yes', 'Yes', 'Image, Documents, Video'], ['Webp Image Large Watermarked', 'image3000x3000wm.webp', 'Yes', 'No', 'Image, Documents'], ['Video HLS', 'video.m3u8', 'Yes', 'Yes', 'Video'], ['Video MP4 480p', 'video.mp4', 'Yes', 'No', 'Video'], ['Video Proxy MOV', 'VideoProxy.mov', 'Yes', 'No', 'Video'], ['Mp3 Audio', 'audio.mp3', 'Yes', 'Yes', 'Audio'], ['Document Large Webp Image', 'image3000x3000.webp', 'Yes', 'Yes', 'Documents']];
 const USERS = exports.USERS = [['admin', 'Administrator Administrator', 'admin@lighthouseway.org', 'Administrators', 'Dec 18, 2023', 'Sep 1, 2026'], ['agent', 'Plenix Finder AI Helper', '—', null, 'Sep 1, 2026', '—'], ['raphael', 'Fr. Raphael Maher', 'raphael@lighthouseway.org', 'Administrators', 'Sep 1, 2026', 'Sep 19, 2026'], ['testuser', '—', '—', null, 'Dec 18, 2023', 'Feb 13, 2015']];
 const GROUPS = exports.GROUPS = ['Administrators', 'Catalogs Admins', 'Uploaders', 'Users'];
-const PERMISSION_ROLES = exports.PERMISSION_ROLES = ['Entity Owner', 'Administrators', 'Entity Editor', 'Users', 'Anonymous'];
+const PERMISSION_ROLES = exports.PERMISSION_ROLES = ['Entity owner', 'Administrators', 'Entity editor', 'Users', 'Anonymous'];
 const PERMISSION_AREAS = exports.PERMISSION_AREAS = [{
   id: 'app',
   label: 'Application',
   total: 34,
-  items: [['Application', 'Enables access to the Plenix application.'], ['Home', 'Enables the home button.'], ['Settings', 'Enables access to application management settings.'], ['Multiple Files', 'Enables various actions across multiple assets simultaneously.'], ['Table Columns', 'Enables the customization of search result columns in table view.'], ['Download Original', 'Enables downloading of the original asset.'], ['Edit Users and Groups', 'Allows user to create and edit users or groups.'], ['My Account Area', 'Enables a page that edits user data and updates passwords.'], ['Category Navigation', 'Enables the Category Navigation in the sidebar.'], ['View AI Agent', 'Enables AI Chat Agent.']]
+  items: [['Application', 'Enables access to the Plenix application.'], ['Home', 'Enables the home button.'], ['Settings', 'Enables access to application management settings.'], ['Multiple files', 'Enables various actions across multiple assets simultaneously.'], ['Table columns', 'Enables the customization of search result columns in table view.'], ['Download original', 'Enables downloading of the original asset.'], ['Edit Users and Groups', 'Allows user to create and edit users or groups.'], ['My account area', 'Enables a page that edits user data and updates passwords.'], ['Category navigation', 'Enables the Category Navigation in the sidebar.'], ['View AI agent', 'Enables AI Chat Agent.']]
 }, {
   id: 'asset',
-  label: 'Asset Management',
+  label: 'Asset management',
   total: 65,
-  items: [['Upload Files', 'Enables the upload of assets.'], ['Delete', 'Enables removal of an asset, and the option to remove the original.'], ['Share', 'Enables the share button. Parent of email, embed, publish and social media share.'], ['Watermark', 'System-wide watermarking across all assets.'], ['Approve/Reject Workflow', 'Enables Approve/Reject options.'], ['Edit All Assets', 'Allow editing and viewing of any asset.'], ['Permissions', 'Enables permission alteration for media assets.'], ['Media Editor', 'Enables access to Media Editor.'], ['View Faceprofiles', 'View Asset Face Profile Detection.']]
+  items: [['Upload files', 'Enables the upload of assets.'], ['Delete', 'Enables removal of an asset, and the option to remove the original.'], ['Share', 'Enables the share button. Parent of email, embed, publish and social media share.'], ['Watermark', 'System-wide watermarking across all assets.'], ['Approve/Reject Workflow', 'Enables Approve/Reject options.'], ['Edit all assets', 'Allow editing and viewing of any asset.'], ['Permissions', 'Enables permission alteration for media assets.'], ['Media editor', 'Enables access to Media Editor.'], ['View faceprofiles', 'View Asset Face Profile Detection.']]
 }, {
   id: 'library',
-  label: 'Library Management',
+  label: 'Library management',
   total: 18,
-  items: [['Create New Collection', 'Allows creation of new collections.'], ['Create New Library', 'Allows creation of new libraries.'], ['Pick Any Library', 'Asset can be added to any library.'], ['Add files to Bookmarks', 'Enables users to add files to their Bookmarks.']]
+  items: [['Create new collection', 'Allows creation of new collections.'], ['Create new library', 'Allows creation of new libraries.'], ['Pick any library', 'Asset can be added to any library.'], ['Add files to Bookmarks', 'Enables users to add files to their Bookmarks.']]
 }, {
   id: 'api',
   label: 'Programming API',
   total: 4,
   items: [['Programming API', 'Enables REST API access to this catalog.']]
 }];
-const EMAIL_TEMPLATES = exports.EMAIL_TEMPLATES = [['Administrative notification when assets have been published', 'admintemplate.html'], ['Confirmation email sent to user after assets have been successfully shared', 'usertemplate.html'], ['Email sent when a user shares an asset', 'sharetemplate.html'], ['Email sent when assets are added or removed from a collection', 'collection-count-modified.html'], ['Email sent when assets are approved', 'collection-assets-approved.html'], ['Email sent when assets are rejected', 'collection-assets-rejected.html'], ['Email sent when a user is added to a collection', 'collection-add-new-follower.html'], ['Asset Renewal Notification', 'assetrenew.html']];
-const CATALOG_PARAMETERS = exports.CATALOG_PARAMETERS = [['Application Site Title', 'sitetitle', 'Plenix Library'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN Prefix', 'cdn_prefix', '—'], ['AWS Bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'], ['AI: Ollama Server', 'ollama-url', 'https://ollama.example.com'], ['AI: Translate Server', 'ai_translate_server', 'http://translate.example.com:48991'], ['AI: Vectorizer Server', 'ai_vectorizer_server', 'http://vectorizer.example.com:48981'], ['Face: Faceprofile Server', 'faceprofileserver', '—'], ['Catalog Asset Edit Groups', 'catalogasseteditgroups', 'administrators users'], ['Admin Catalog Asset View Groups', 'catalogassetviewgroups', 'administrators']];
+const EMAIL_TEMPLATES = exports.EMAIL_TEMPLATES = [['Administrative notification when assets have been published', 'admintemplate.html'], ['Confirmation email sent to user after assets have been successfully shared', 'usertemplate.html'], ['Email sent when a user shares an asset', 'sharetemplate.html'], ['Email sent when assets are added or removed from a collection', 'collection-count-modified.html'], ['Email sent when assets are approved', 'collection-assets-approved.html'], ['Email sent when assets are rejected', 'collection-assets-rejected.html'], ['Email sent when a user is added to a collection', 'collection-add-new-follower.html'], ['Asset renewal notification', 'assetrenew.html']];
+const CATALOG_PARAMETERS = exports.CATALOG_PARAMETERS = [['Application site title', 'sitetitle', 'Plenix Library'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN prefix', 'cdn_prefix', '—'], ['AWS bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'], ['AI: Ollama Server', 'ollama-url', 'https://ollama.example.com'], ['AI: Translate Server', 'ai_translate_server', 'http://translate.example.com:48991'], ['AI: Vectorizer Server', 'ai_vectorizer_server', 'http://vectorizer.example.com:48981'], ['Face: Faceprofile Server', 'faceprofileserver', '—'], ['Catalog Asset Edit Groups', 'catalogasseteditgroups', 'administrators users'], ['Admin Catalog Asset View Groups', 'catalogassetviewgroups', 'administrators']];
 const CATALOG_TOTAL = exports.CATALOG_TOTAL = 'roughly 130';
 const SERVER_STATUS = exports.SERVER_STATUS = [['Node ID', 'plenix003'], ['Cluster ID', 'plenix-cluster'], ['Catalog ID', 'finder/catalog']];
 const VERSIONS = exports.VERSIONS = [['Plenix Server', '11.2218'], ['Plenix', '11.375'], ['Elasticsearch (Lucene)', '5.5.4'], ['Groovy', '2.4.11'], ['Velocity Engine', '2.3'], ['Apache PDFBox', '2.0.6']];
 const LOG_PATH = exports.LOG_PATH = '/opt/plenix/logs/server.log';
 const DB_TABLES = exports.DB_TABLES = ['asset', 'category', 'user', 'group', 'order', 'library', 'librarycollection', 'customization', 'entityperson', 'faceprofilegroup', 'module', 'permission'];
-const DB_COLUMNS = exports.DB_COLUMNS = ['AI Tags', 'Album', 'Asset Title', 'Asset Type', 'Artist', 'Categories', 'Created On'];
+const DB_COLUMNS = exports.DB_COLUMNS = ['AI tags', 'Album', 'Asset title', 'Asset type', 'Artist', 'Categories', 'Created on'];
 const DB_ROWS = exports.DB_ROWS = [['gold, ornate', '—', 'korban_stamp_010', 'Image', '—', 'Korban Stamp', 'Aug 18, 2026'], ['certificate, church', '—', 'certificate_christ_the_teacher', '3D Models', '—', 'Certificates', 'Aug 15, 2026'], ['cross, gold', 'Website Assets', 'Coptic_Cross_Gold', 'Image', 'Mina Fahim', 'Crosses', 'Aug 10, 2026'], ['baptism, sacrament', '—', 'Certificate_Baptism_v3', 'Documents', '—', 'Certificate - Baptism', 'Aug 8, 2026']];
 const DB_TOTAL = exports.DB_TOTAL = {
   records: '4,546',
   pages: 227
 };
-const CUSTOMIZATIONS = exports.CUSTOMIZATIONS = [['Supporting Table', 'Entity Source Type', 'searchcategory', '9/1/26, 11:30 AM'], ['Module', 'Person', '—', '9/1/26, 11:30 AM'], ['Supporting Table', 'Start Category ID', 'desktopsyncfolder', '9/1/26, 11:30 AM'], ['Module', 'Document', '—', '9/1/26, 11:30 AM'], ['Module', 'Media Profile', '—', '9/1/26, 11:30 AM'], ['Module', 'Categories', '—', '9/1/26, 11:30 AM']];
-const SCHEDULED = exports.SCHEDULED = [['Auto assign Entity Image', 'autoassignproxyimage.html', 'Runs: 2,736 · Repeats every 1m'], ['Publish Assets', 'publishassets.html', 'Runs: 541 · Repeats every 5m'], ['Send Collection Chat Notifications', 'notifycollectionchatnotifications.html', 'Runs: 541 · Repeats every 5m'], ['Run media conversions', 'runconversions.html', 'Runs: 550 · Repeats every 5m'], ['Transcript Audio', 'autotranscode.html', 'Runs: 541 · Repeats every 5m'], ['Semantic Index New', 'semanticscan.html', 'Runs: 270 · Repeats every 10m'], ['Import Hot Folders', 'importhotfolders.html', 'Runs: 270 · Repeats every 10m'], ['Check Permission Changes', 'checkpermissionhistory.html', 'Runs: 277 · Repeats every 10m'], ['Apply Google Vision', 'applygooglevision.html', 'Runs: 180 · Repeats every 15m'], ['Apply Google Transcode', 'applygoogletranscode.html', 'Runs: 180 · Repeats every 15m'], ['Asset Metadata Notification', 'assetmetadata.html', 'Runs: 30 · Repeats every 30m']];
+const CUSTOMIZATIONS = exports.CUSTOMIZATIONS = [['Supporting table', 'Entity source type', 'searchcategory', '9/1/26, 11:30 AM'], ['Module', 'Person', '—', '9/1/26, 11:30 AM'], ['Supporting table', 'Start category ID', 'desktopsyncfolder', '9/1/26, 11:30 AM'], ['Module', 'Document', '—', '9/1/26, 11:30 AM'], ['Module', 'Media profile', '—', '9/1/26, 11:30 AM'], ['Module', 'Categories', '—', '9/1/26, 11:30 AM']];
+const SCHEDULED = exports.SCHEDULED = [['Auto assign Entity Image', 'autoassignproxyimage.html', 'Runs: 2,736 · Repeats every 1m'], ['Publish assets', 'publishassets.html', 'Runs: 541 · Repeats every 5m'], ['Send collection chat notifications', 'notifycollectionchatnotifications.html', 'Runs: 541 · Repeats every 5m'], ['Run media conversions', 'runconversions.html', 'Runs: 550 · Repeats every 5m'], ['Transcript audio', 'autotranscode.html', 'Runs: 541 · Repeats every 5m'], ['Semantic Index New', 'semanticscan.html', 'Runs: 270 · Repeats every 10m'], ['Import hot folders', 'importhotfolders.html', 'Runs: 270 · Repeats every 10m'], ['Check permission changes', 'checkpermissionhistory.html', 'Runs: 277 · Repeats every 10m'], ['Apply Google Vision', 'applygooglevision.html', 'Runs: 180 · Repeats every 15m'], ['Apply Google Transcode', 'applygoogletranscode.html', 'Runs: 180 · Repeats every 15m'], ['Asset metadata notification', 'assetmetadata.html', 'Runs: 30 · Repeats every 30m']];
   } },
   "dam/app/pages/SystemSettingsPage.jsx": { deps: {"react":null,"plenix-platform":null,"../shell/AssetShell.jsx":"dam/app/shell/AssetShell.jsx","./systemSettingsData.js":"dam/app/pages/systemSettingsData.js"}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 "use strict";
@@ -472,11 +472,11 @@ const NAV = [{
     icon: 'settings-metadata'
   }, {
     id: 'asset-types',
-    label: 'Asset Types',
+    label: 'Asset types',
     icon: 'settings-categories'
   }, {
     id: 'hot-folders',
-    label: 'Hot Folders',
+    label: 'Hot folders',
     icon: 'folder-add'
   }, {
     id: 'transcoding',
@@ -496,7 +496,7 @@ const NAV = [{
     icon: 'briefcase'
   }, {
     id: 'permissions',
-    label: 'Site Permissions',
+    label: 'Site permissions',
     icon: 'settings-permissions'
   }]
 }, {
@@ -504,11 +504,11 @@ const NAV = [{
   collapsible: true,
   items: [{
     id: 'email-templates',
-    label: 'Email Templates',
+    label: 'Email templates',
     icon: 'settings-email'
   }, {
     id: 'catalog-parameters',
-    label: 'Catalog Parameters',
+    label: 'Catalog parameters',
     icon: 'settings-catalog'
   }, {
     id: 'server',
@@ -685,7 +685,7 @@ function Properties({
     act: act,
     saved: "Save"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Files Properties",
+    title: "Files properties",
     description: "Module-level configuration for the asset table.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
@@ -697,13 +697,13 @@ function Properties({
       content: /*#__PURE__*/_react.default.createElement("div", {
         className: "plx-settings__rows"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Default Record Label",
+        label: "Default record label",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('defaultRecordLabel'))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Tab Ordering",
+        label: "Tab ordering",
         layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('tabOrdering'))), sw('enableUploading', 'Enable Uploading'), sw('enableOnSearch', 'Enable On Search'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Default Results View",
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('tabOrdering'))), sw('enableUploading', 'Enable uploading'), sw('enableOnSearch', 'Enable on search'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+        label: "Default results view",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
         options: views,
@@ -727,36 +727,36 @@ function Properties({
           }
         }
       })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Default Sort Field",
+        label: "Default sort field",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('defaultSortField', {
-        placeholder: 'Default Sort Field'
+        placeholder: 'Default sort field'
       }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Upload Sourcepath",
+        label: "Upload sourcepath",
         layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('uploadSourcepath'))), sw('autoCreateEntities', 'Auto Create Entities'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Root Folder Path",
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('uploadSourcepath'))), sw('autoCreateEntities', 'Auto create entities'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+        label: "Root folder path",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('rootFolderPath', {
-        placeholder: 'Root Folder Path'
+        placeholder: 'Root folder path'
       }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Auto Create At Folder Level",
+        label: "Auto create at folder level",
         layout: "inline",
         info: "Scan deep A/B/C, B = 2"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('autoCreateAtFolderLevel'))), sw('semanticEnabled', 'Semantic Enabled'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "AI Search Prompt",
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('autoCreateAtFolderLevel'))), sw('semanticEnabled', 'Semantic enabled'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+        label: "AI search prompt",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchPrompt', {
-        placeholder: 'AI Search Prompt'
+        placeholder: 'AI search prompt'
       }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "AI Search Contains",
+        label: "AI search contains",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchContains', {
-        placeholder: 'AI Search Contains'
+        placeholder: 'AI search contains'
       }))))
     }, {
       value: 'enabled',
-      label: 'Enabled For',
+      label: 'Enabled for',
       content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
         caption: "Enabled for",
         pinFirst: true,
@@ -787,21 +787,21 @@ function Properties({
       })
     }, {
       value: 'view-all',
-      label: 'View All Folders',
+      label: 'View all folders',
       content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can view all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
         caption: "View all folders",
         pinFirst: true,
         rows: viewAll,
-        columns: [roleCol, switchCol('View All')]
+        columns: [roleCol, switchCol('View all')]
       }))
     }, {
       value: 'edit-all',
-      label: 'Edit All Folders',
+      label: 'Edit all folders',
       content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can edit all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
         caption: "Edit all folders",
         pinFirst: true,
         rows: editAll,
-        columns: [roleCol, switchCol('Edit All')]
+        columns: [roleCol, switchCol('Edit all')]
       }))
     }]
   }), /*#__PURE__*/_react.default.createElement("div", {
@@ -834,7 +834,7 @@ function Fields({
         "aria-label": "New field name"
       }), /*#__PURE__*/_react.default.createElement(B, {
         icon: "add",
-        label: "Add Field",
+        label: "Add field",
         act: act
       }), /*#__PURE__*/_react.default.createElement(Search, {
         value: q,
@@ -847,7 +847,7 @@ function Fields({
         empty: "No fields match",
         columns: [{
           key: 'name',
-          header: 'Field Name',
+          header: 'Field name',
           emphasis: true
         }, {
           key: 'id2',
@@ -855,16 +855,16 @@ function Fields({
           data: true
         }, {
           key: 'type',
-          header: 'Field Type'
+          header: 'Field type'
         }]
       }), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.FIELD_TOTAL + ' fields'))
     }, {
       value: 'edit-views',
-      label: 'Edit Views',
+      label: 'Edit views',
       content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure which fields appear on the asset edit form, and in what order.")
     }, {
       value: 'app-views',
-      label: 'Application Views',
+      label: 'Application views',
       content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure which fields appear in application-wide views such as search results and tables.")
     }]
   }));
@@ -884,16 +884,16 @@ function AssetTypes({
   } : t));
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
-    saved: "Save Changes"
+    saved: "Save changes"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Asset Types",
+    title: "Asset types",
     description: "The file-format categories assets are classified under, used to route transcoding and preview generation.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(Bar, {
     label: "Asset type actions"
   }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "add",
-    label: "Add Asset Type",
+    label: "Add asset type",
     act: act
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
     variant: "contained",
@@ -941,14 +941,14 @@ function AssetTypes({
     className: "plx-settings__actions"
   }, /*#__PURE__*/_react.default.createElement(Actions, {
     act: act,
-    save: "Save Changes"
+    save: "Save changes"
   })));
 }
 function HotFolders({
   act
 }) {
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Hot Folders",
+    title: "Hot folders",
     description: "Watched folders that are automatically scanned and imported as assets.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
@@ -957,11 +957,11 @@ function HotFolders({
     label: "Hot folder actions"
   }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "add",
-    label: "Add Hot Folder",
+    label: "Add hot folder",
     act: act
   }), /*#__PURE__*/_react.default.createElement(B, {
     icon: "schedule",
-    label: "Schedule Importing",
+    label: "Schedule importing",
     act: act
   })), D.HOT_FOLDERS.map(f => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
     key: f.name,
@@ -998,12 +998,12 @@ function Transcoding({
     label: "Transcoding",
     items: [{
       value: 'presets',
-      label: 'Preset Configuration',
+      label: 'Preset configuration',
       content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Bar, {
         label: "Conversion actions"
       }, /*#__PURE__*/_react.default.createElement(B, {
         icon: "add",
-        label: "Add New Conversion",
+        label: "Add new conversion",
         act: act
       })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
         caption: "Conversion presets",
@@ -1015,17 +1015,17 @@ function Transcoding({
           emphasis: true
         }, {
           key: 'file',
-          header: 'Generated File',
+          header: 'Generated file',
           data: true
         }, {
           key: 'system',
-          header: 'System Defined'
+          header: 'System defined'
         }, {
           key: 'onImport',
-          header: 'On Import'
+          header: 'On import'
         }, {
           key: 'media',
-          header: 'Media Type'
+          header: 'Media type'
         }]
       }))
     }, {
@@ -1051,7 +1051,7 @@ function Users({
     label: "User actions"
   }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "add",
-    label: "Create User",
+    label: "Create user",
     act: act
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
     label: "Maintenance"
@@ -1095,7 +1095,7 @@ function Users({
       data: true
     }, {
       key: 'login',
-      header: 'Last Login',
+      header: 'Last login',
       data: true
     }]
   })));
@@ -1106,7 +1106,7 @@ function Groups({
   const [names, setNames] = _react.default.useState(D.GROUPS);
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
-    saved: "Save Changes"
+    saved: "Save changes"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
     title: "Groups",
     description: "Groups a user can be assigned to. Permissions are configured separately under Site Permissions.",
@@ -1115,7 +1115,7 @@ function Groups({
     label: "Group actions"
   }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "add",
-    label: "Add Group",
+    label: "Add group",
     act: act
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
     variant: "contained",
@@ -1140,22 +1140,22 @@ function Groups({
     className: "plx-settings__actions"
   }, /*#__PURE__*/_react.default.createElement(Actions, {
     act: act,
-    save: "Save Changes",
-    del: "Delete Group"
+    save: "Save changes",
+    del: "Delete group"
   })));
 }
 function Permissions({
   act
 }) {
   const [role, setRole] = _react.default.useState('Administrators');
-  const [area, setArea] = _react.default.useState('Show All');
+  const [area, setArea] = _react.default.useState('Show all');
   const [checked, setChecked] = _react.default.useState(() => Object.fromEntries(D.PERMISSION_AREAS.flatMap(a => a.items.map(it => [a.id + ':' + it[0], true]))));
-  const areas = D.PERMISSION_AREAS.filter(a => area === 'Show All' || a.label === area);
+  const areas = D.PERMISSION_AREAS.filter(a => area === 'Show all' || a.label === area);
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
     saved: "Save"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Site Permissions",
+    title: "Site permissions",
     description: "Individually named permissions, grouped by area, assigned per role.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
@@ -1179,7 +1179,7 @@ function Permissions({
     name: "view",
     value: area,
     onChange: e => setArea(e.target.value)
-  }, ['Show All'].concat(D.PERMISSION_AREAS.map(a => a.label)).map(r => /*#__PURE__*/_react.default.createElement("option", {
+  }, ['Show all'].concat(D.PERMISSION_AREAS.map(a => a.label)).map(r => /*#__PURE__*/_react.default.createElement("option", {
     key: r
   }, r))))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
     key: area,
@@ -1215,7 +1215,7 @@ function EmailTemplates({
   act
 }) {
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Email Templates",
+    title: "Email templates",
     description: "The notification emails the catalog sends, and the template file behind each one.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
@@ -1251,9 +1251,9 @@ function CatalogParameters({
   const rows = D.CATALOG_PARAMETERS.filter(r => match(q, r));
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
-    saved: "Save Changes"
+    saved: "Save changes"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Catalog Parameters",
+    title: "Catalog parameters",
     description: "Catalog-wide configuration keys \u2014 storage, AI providers, and access defaults.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
@@ -1278,7 +1278,7 @@ function CatalogParameters({
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     type: "submit",
     variant: "primary"
-  }, "Save Changes")));
+  }, "Save changes")));
 }
 function Server({
   act
@@ -1300,21 +1300,21 @@ function Server({
       label: 'Database',
       content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Sub, {
         first: true
-      }, "Server Status"), kv(D.SERVER_STATUS), /*#__PURE__*/_react.default.createElement("div", {
+      }, "Server status"), kv(D.SERVER_STATUS), /*#__PURE__*/_react.default.createElement("div", {
         className: "plx-u-mt-stack-md"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
         label: "Server status actions"
       }, /*#__PURE__*/_react.default.createElement(B, {
         icon: "refresh",
-        label: "Clear Cached Data",
+        label: "Clear cached data",
         tone: "info",
         act: act
       }), /*#__PURE__*/_react.default.createElement(B, {
         icon: "database",
-        label: "Change Elasticsearch Database Master",
+        label: "Change Elasticsearch database master",
         tone: "info",
         act: act
-      }))), /*#__PURE__*/_react.default.createElement(Sub, null, "Data Management"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+      }))), /*#__PURE__*/_react.default.createElement(Sub, null, "Data management"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
         label: "Data management"
       }, /*#__PURE__*/_react.default.createElement(B, {
         icon: "refresh",
@@ -1323,25 +1323,25 @@ function Server({
         act: act
       }), /*#__PURE__*/_react.default.createElement(B, {
         icon: "alert",
-        label: "View Mapping Conflicts",
+        label: "View mapping conflicts",
         tone: "info",
         act: act
       }), /*#__PURE__*/_react.default.createElement(B, {
         icon: "list-bullets",
-        label: "View Basic Mappings",
+        label: "View basic mappings",
         tone: "info",
         act: act
       }), /*#__PURE__*/_react.default.createElement(B, {
         icon: "import",
-        label: "Reload Sets",
+        label: "Reload sets",
         tone: "info",
         act: act
-      })), /*#__PURE__*/_react.default.createElement(Sub, null, "Database Snapshots"), /*#__PURE__*/_react.default.createElement(Lead, null, "Snapshots are used by Elasticsearch to store and restore database data."), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(B, {
+      })), /*#__PURE__*/_react.default.createElement(Sub, null, "Database snapshots"), /*#__PURE__*/_react.default.createElement(Lead, null, "Snapshots are used by Elasticsearch to store and restore database data."), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(B, {
         icon: "snapshot",
-        label: "View Snapshots",
+        label: "View snapshots",
         tone: "info",
         act: act
-      })), /*#__PURE__*/_react.default.createElement(Sub, null, "Data Entities"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+      })), /*#__PURE__*/_react.default.createElement(Sub, null, "Data entities"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
         label: "Data entities"
       }, /*#__PURE__*/_react.default.createElement(B, {
         icon: "add",
@@ -1349,7 +1349,7 @@ function Server({
         act: act
       }), /*#__PURE__*/_react.default.createElement(B, {
         icon: "save-doc",
-        label: "Save All Modules",
+        label: "Save all modules",
         act: act
       })))
     }, {
@@ -1381,8 +1381,8 @@ function Database({
   const columns = D.DB_COLUMNS.map((c, j) => ({
     key: 'c' + j,
     header: c,
-    emphasis: c === 'Asset Title',
-    data: c === 'Created On'
+    emphasis: c === 'Asset title',
+    data: c === 'Created on'
   }));
   const grid = cap => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
     caption: cap,
@@ -1415,7 +1415,7 @@ function Database({
     onChange: setTable
   })), /*#__PURE__*/_react.default.createElement(B, {
     icon: "add",
-    label: "New Table",
+    label: "New table",
     tone: "info",
     act: act
   }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
@@ -1428,7 +1428,7 @@ function Database({
         label: "Record actions"
       }, /*#__PURE__*/_react.default.createElement(B, {
         icon: "add",
-        label: "Add New",
+        label: "Add new",
         act: act
       }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
         label: "Transfer"
@@ -1448,14 +1448,14 @@ function Database({
         act: act
       })), /*#__PURE__*/_react.default.createElement(B, {
         icon: "doc-text",
-        label: "Export Text",
+        label: "Export text",
         tone: "info",
         act: act
       }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "sm",
         iconOnly: true,
         icon: "close",
-        label: "Reset Settings",
+        label: "Reset settings",
         onClick: act('Settings reset', 'info')
       }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
         label: "Delete",
@@ -1472,8 +1472,8 @@ function Database({
       }, 'Delete ' + D.DB_TOTAL.records + ' Records'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
         icon: "trash",
         danger: true,
-        onSelect: act('Delete Table', 'warning')
-      }, "Delete Table")), /*#__PURE__*/_react.default.createElement(Search, {
+        onSelect: act('Delete table', 'warning')
+      }, "Delete table")), /*#__PURE__*/_react.default.createElement(Search, {
         value: q,
         onChange: setQ,
         label: "Search"
@@ -1497,15 +1497,15 @@ function Database({
       }, grid('Table: ' + table + ', expanded')))
     }, {
       value: 'fields',
-      label: 'Customize Fields',
+      label: 'Customize fields',
       content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure the fields available on this table \u2014 the same editor as Files > Fields, scoped to this table.")
     }, {
       value: 'views',
-      label: 'Customize Views',
+      label: 'Customize views',
       content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure how records in this table are displayed in lists and edit forms.")
     }, {
       value: 'elastic',
-      label: 'Elastic System Info',
+      label: 'Elastic system info',
       content: /*#__PURE__*/_react.default.createElement(Lead, null, "Raw Elasticsearch mapping and index info for this table.")
     }]
   })));
@@ -1667,12 +1667,12 @@ function Content({
 function SystemSettingsPage() {
   const [section, go] = useSection();
   return /*#__PURE__*/_react.default.createElement(_AssetShell.AssetPage, {
-    title: "System Settings",
+    title: "System settings",
     current: "system",
     sideNav: /*#__PURE__*/_react.default.createElement(_plenixPlatform.NavPane, {
       as: "div",
       label: "Settings sections",
-      title: "System Settings",
+      title: "System settings",
       header: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "sm",
         variant: "ghost",
@@ -1713,17 +1713,17 @@ const folder = (name, children) => ({
   icon: 'folder',
   children
 });
-const FOLDERS = exports.FOLDERS = [folder('All', [folder('Digital Assets', [folder('Banner Icon'), folder('Bookshelf'), folder('Borders', [folder('Arch'), folder('Banner'), folder('Circular'), folder('Divider'), folder('Linear'), folder('Page')]), folder('Branding', [folder('Churches'), folder('CYC'), folder('Diakonia'), folder('LACopts')]), folder('Certificates'), folder('Clergy'), folder('Crosses'), folder('Embroideries'), folder('Fonts')]), folder('Documents', [folder('Manuals'), folder('Templates')]), folder('Facial Profiles'), folder('Users')])];
+const FOLDERS = exports.FOLDERS = [folder('All', [folder('Digital Assets', [folder('Banner icon'), folder('Bookshelf'), folder('Borders', [folder('Arch'), folder('Banner'), folder('Circular'), folder('Divider'), folder('Linear'), folder('Page')]), folder('Branding', [folder('Churches'), folder('CYC'), folder('Diakonia'), folder('LACopts')]), folder('Certificates'), folder('Clergy'), folder('Crosses'), folder('Embroideries'), folder('Fonts')]), folder('Documents', [folder('Manuals'), folder('Templates')]), folder('Facial Profiles'), folder('Users')])];
 const FOLDERS_OPEN = exports.FOLDERS_OPEN = ['all', 'digital-assets'];
 
 // the sidebar lists (the first row of each is the "All …" view)
-const CATEGORIES = exports.CATEGORIES = [['All Categories', '4,546', true], ['Branding', '326', true], ['Crosses', '1,284', true], ['Banner Icon', '18'], ['Bookshelf', '18'], ['Borders', '245'], ['Certificates', '387'], ['Clergy', '512'], ['Covers', '198'], ['Dome', '14'], ['Embroideries', '31'], ['Fonts', '22'], ['Galloons', '27'], ['Korban Stamp', '8'], ['Ornamental Elements', '45'], ['Presentation Folders', '12']].map(([name, count, pinned]) => ({
+const CATEGORIES = exports.CATEGORIES = [['All categories', '4,546', true], ['Branding', '326', true], ['Crosses', '1,284', true], ['Banner icon', '18'], ['Bookshelf', '18'], ['Borders', '245'], ['Certificates', '387'], ['Clergy', '512'], ['Covers', '198'], ['Dome', '14'], ['Embroideries', '31'], ['Fonts', '22'], ['Galloons', '27'], ['Korban Stamp', '8'], ['Ornamental Elements', '45'], ['Presentation Folders', '12']].map(([name, count, pinned]) => ({
   name,
   count,
   pinned: !!pinned
 }));
 const CATEGORIES_SHOWN = exports.CATEGORIES_SHOWN = 7;
-const COLLECTIONS = exports.COLLECTIONS = [['All Collections', '305', true], ['Website Assets', '84', true], ['Social Media', '42', true], ['Print Ready', '156'], ['Needs Review', '23']].map(([name, count, pinned]) => ({
+const COLLECTIONS = exports.COLLECTIONS = [['All collections', '305', true], ['Website Assets', '84', true], ['Social Media', '42', true], ['Print ready', '156'], ['Needs review', '23']].map(([name, count, pinned]) => ({
   name,
   count,
   pinned: !!pinned
@@ -1747,8 +1747,8 @@ const SAVED_SEARCHES = exports.SAVED_SEARCHES = [{
   }
 }];
 const RECENT_IMPORTS = exports.RECENT_IMPORTS = [['Aug 31, 2026', 28], ['Aug 24, 2026', 112], ['Aug 15, 2026', 67]];
-const TRASH = exports.TRASH = [['Deleted Assets', 12]];
-const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner Icon', 24, 5, 'Aug 28, 2026'], ['Bookshelf', 18, 6, 'Aug 25, 2026'], ['Borders - Arch', 31, 7, 'Aug 22, 2026'], ['Borders - Circular', 42, 8, 'Aug 20, 2026'], ['Branding - Churches', 28, 9, 'Aug 18, 2026'], ['Branding - CYC', 5, 10, 'Aug 15, 2026'], ['Branding - Diakonia', 15, 11, 'Aug 12, 2026'], ['Certificate - Baptism', 89, 12, 'Aug 10, 2026'], ['Certificate - Masters', 47, 13, 'Aug 8, 2026'], ['Clergy - Metropolitan Serapion', 62, 14, 'Aug 5, 2026'], ['Clergy - Pope Shenouda III', 210, 15, 'Aug 2, 2026'], ['Clergy - Pope Tawadros II', 45, 16, 'Jul 30, 2026'], ['Cross - Traditional', 78, 17, 'Jul 25, 2026'], ['Dome', 33, 18, 'Jul 20, 2026'], ['Embroideries', 156, 19, 'Jul 15, 2026'], ['Fonts', 18, 20, 'Jul 10, 2026']].map(([name, count, thumb, modified], i) => ({
+const TRASH = exports.TRASH = [['Deleted assets', 12]];
+const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner icon', 24, 5, 'Aug 28, 2026'], ['Bookshelf', 18, 6, 'Aug 25, 2026'], ['Borders - Arch', 31, 7, 'Aug 22, 2026'], ['Borders - Circular', 42, 8, 'Aug 20, 2026'], ['Branding - Churches', 28, 9, 'Aug 18, 2026'], ['Branding - CYC', 5, 10, 'Aug 15, 2026'], ['Branding - Diakonia', 15, 11, 'Aug 12, 2026'], ['Certificate - Baptism', 89, 12, 'Aug 10, 2026'], ['Certificate - Masters', 47, 13, 'Aug 8, 2026'], ['Clergy - Metropolitan Serapion', 62, 14, 'Aug 5, 2026'], ['Clergy - Pope Shenouda III', 210, 15, 'Aug 2, 2026'], ['Clergy - Pope Tawadros II', 45, 16, 'Jul 30, 2026'], ['Cross - Traditional', 78, 17, 'Jul 25, 2026'], ['Dome', 33, 18, 'Jul 20, 2026'], ['Embroideries', 156, 19, 'Jul 15, 2026'], ['Fonts', 18, 20, 'Jul 10, 2026']].map(([name, count, thumb, modified], i) => ({
   id: i,
   name,
   count,
@@ -1758,7 +1758,7 @@ const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner Icon', 24, 5, 'Aug 28,
 }));
 const CATEGORY_TOTAL = exports.CATEGORY_TOTAL = 48;
 const CATEGORY_COUNT_LABEL = exports.CATEGORY_COUNT_LABEL = '52 categories';
-const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'raphael'], ['Social Media', 42, 'Aug 25, 2026', 'raphael'], ['Print Ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs Review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
+const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'raphael'], ['Social Media', 42, 'Aug 25, 2026', 'raphael'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
   id: i,
   name,
   count,
@@ -1797,12 +1797,12 @@ const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
   color: '#d4a843' /* plx-allow-hex */,
   copyright: 'Coptic Orthodox Church',
   rights: 'Internal',
-  rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public Domain'],
+  rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
   rating: 0,
   description: 'Traditional Coptic cross designs and variations',
   tags: ['cross', 'traditional', 'coptic'],
-  stats: [['Total Assets', '78'], ['Storage Used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
-  permissions: [['Owner', 'raphael'], ['View Groups', 'administrators, users, guest'], ['Edit Groups', 'administrators']],
+  stats: [['Total assets', '78'], ['Storage used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
+  permissions: [['Owner', 'raphael'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
   customFields: [['Style', 'e.g. Byzantine, Nubian...'], ['Material', 'e.g. Wood, Stone, Metal...'], ['Origin', 'e.g. Egypt, Ethiopia...']]
 };
 const COLLECTION_DETAIL = exports.COLLECTION_DETAIL = {
@@ -1810,7 +1810,7 @@ const COLLECTION_DETAIL = exports.COLLECTION_DETAIL = {
   count: '84 assets'
 };
 const CATEGORY_DOWNLOADS = exports.CATEGORY_DOWNLOADS = [{
-  title: 'Download Entire Category',
+  title: 'Download entire category',
   items: [['file-zip', 'All Files (Source)', '78 files · ~1.4 GB']]
 }, {
   title: 'Download by File Type',
@@ -1826,8 +1826,8 @@ const ASSET_DOWNLOADS = exports.ASSET_DOWNLOADS = [{
   title: 'Variations',
   items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '180 KB'], ['file-png', 'Social Media (1080×1080)', '520 KB']]
 }];
-const ASSET_STATUSES = exports.ASSET_STATUSES = ['Complete', 'New', 'In Progress', 'Pending Review', 'Archived'];
-const USAGE_RIGHTS = exports.USAGE_RIGHTS = ['Internal Use Only', 'Church Use', 'Creative Commons', 'Public Domain'];
+const ASSET_STATUSES = exports.ASSET_STATUSES = ['Complete', 'New', 'In progress', 'Pending review', 'Archived'];
+const USAGE_RIGHTS = exports.USAGE_RIGHTS = ['Internal use only', 'Church Use', 'Creative Commons', 'Public domain'];
 const VERSIONS = exports.VERSIONS = [{
   label: 'Version 3 (Current)',
   date: 'Aug 12, 2026 at 2:45 PM',
@@ -1844,7 +1844,7 @@ const VERSIONS = exports.VERSIONS = [{
 }];
 
 // the options menu on a category card
-const CARD_MENU = exports.CARD_MENU = [['fields', 'Edit Category', 'Edit category'], ['rename', 'Rename', 'Rename'], ['image-a-2', 'Set Thumbnail', 'Set thumbnail'], ['menu-lines', 'Visible Metadata', 'Manage metadata'], ['move', 'Move To...', 'Move'], ['lock', 'Permissions', 'Permissions'], ['trash-detail', 'Delete', 'Delete']];
+const CARD_MENU = exports.CARD_MENU = [['fields', 'Edit category', 'Edit category'], ['rename', 'Rename', 'Rename'], ['image-a-2', 'Set thumbnail', 'Set thumbnail'], ['menu-lines', 'Visible metadata', 'Manage metadata'], ['move', 'Move To...', 'Move'], ['lock', 'Permissions', 'Permissions'], ['trash-detail', 'Delete', 'Delete']];
   } },
   "dam/app/pages/home/Sidebar.jsx": { deps: {"react":null,"plenix-platform":null,"./homeData.js":"dam/app/pages/home/homeData.js"}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 "use strict";
@@ -1946,7 +1946,7 @@ function Sidebar({
     rail: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToolRail.Item, {
       icon: "home",
       label: "Home",
-      onClick: () => onOpen('categories', 'All Categories')
+      onClick: () => onOpen('categories', 'All categories')
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToolRail.Item, {
       icon: "folder-open",
       label: "Files",
@@ -1955,12 +1955,12 @@ function Sidebar({
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToolRail.Item, {
       icon: "grid-2x2",
       label: "Categories",
-      pressed: mode === 'browse' && active === 'All Categories',
-      onClick: () => onOpen('categories', 'All Categories')
+      pressed: mode === 'browse' && active === 'All categories',
+      onClick: () => onOpen('categories', 'All categories')
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToolRail.Item, {
       icon: "briefcase",
       label: "Collections",
-      onClick: () => onOpen('collections', 'All Collections')
+      onClick: () => onOpen('collections', 'All collections')
     })),
     footer: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       size: "sm",
@@ -1972,7 +1972,7 @@ function Sidebar({
       size: "sm",
       variant: "ghost",
       icon: "home",
-      onClick: () => onOpen('categories', 'All Categories')
+      onClick: () => onOpen('categories', 'All categories')
     }, "Home"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       size: "sm",
       variant: "ghost",
@@ -2016,7 +2016,7 @@ function Sidebar({
     active: active,
     onOpen: onOpen
   })), mode === 'browse' ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Section, {
-    title: "Saved Searches",
+    title: "Saved searches",
     icon: "search"
   }, /*#__PURE__*/_react.default.createElement(AddLink, {
     label: "Add saved search",
@@ -2039,7 +2039,7 @@ function Sidebar({
       }) : null
     }))
   })), /*#__PURE__*/_react.default.createElement(Section, {
-    title: "Recent Imports",
+    title: "Recent imports",
     icon: "clock"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.NavList, {
     label: "Recent imports",
@@ -2140,8 +2140,8 @@ function Tags({
   })), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     icon: "sparkle",
-    onClick: act('AI Tagging', 'info')
-  }, "AI Tagging")));
+    onClick: act('AI tagging', 'info')
+  }, "AI tagging")));
 }
 function Downloads({
   groups,
@@ -2270,7 +2270,7 @@ function CategoryInspector({
       }, text('parent')), c.parents.map(p => /*#__PURE__*/_react.default.createElement("option", {
         key: p
       }, p)))), /*#__PURE__*/_react.default.createElement(Row, {
-        label: "Display Order"
+        label: "Display order"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
         name: "displayOrder",
         type: "number"
@@ -2327,7 +2327,7 @@ function CategoryInspector({
         key: k,
         label: k
       }, v)))), /*#__PURE__*/_react.default.createElement(Accordion, {
-        title: "Custom Fields",
+        title: "Custom fields",
         defaultOpen: false
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
         as: "p",
@@ -2342,8 +2342,8 @@ function CategoryInspector({
         size: "xs",
         variant: "ghost",
         icon: "plus",
-        onClick: act('Add Field', 'success')
-      }, "Add Field"))))
+        onClick: act('Add field', 'success')
+      }, "Add field"))))
     }, {
       value: 'downloads',
       label: 'Downloads',
@@ -2451,7 +2451,7 @@ function AssetDetail({
         name: "copyright",
         placeholder: "e.g. Diocese of LA"
       }, text('copyright')))), /*#__PURE__*/_react.default.createElement(Row, {
-        label: "Usage Rights"
+        label: "Usage rights"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, _extends({
         name: "usageRights"
       }, text('rights')), /*#__PURE__*/_react.default.createElement("option", {
@@ -2484,7 +2484,7 @@ function AssetDetail({
       label: 'Downloads',
       content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(Downloads, {
         groups: [{
-          title: 'Source File',
+          title: 'Source file',
           items: [[asset.typeIcon, asset.file, asset.size + ' · ' + asset.fmt]]
         }].concat(D.ASSET_DOWNLOADS),
         act: act
@@ -2577,24 +2577,24 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
 // Colors are stored without the leading # (a category color is a record value, not a style).
 const CATEGORY_COLORS = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
-const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category Path', 'File Size', 'Dimensions', 'Date Created', 'Date Modified', 'Camera Model', 'Aperture', 'Color Profile', 'GPS Location', 'Edit Status', 'Owner'];
+const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category path', 'File size', 'Dimensions', 'Date created', 'Date modified', 'Camera model', 'Aperture', 'Color profile', 'GPS location', 'Edit status', 'Owner'];
 // DATA: [field, type, shown]
 const CATEGORY_FIELDS = [['name', 'text', true], ['description', 'textarea', true], ['categorypath', 'text', true], ['parentid', 'text', true], ['displayorder', 'number', true], ['color', 'text', true], ['owner', 'text', true], ['viewgroups', 'list', true], ['editgroups', 'list', false], ['visibility', 'list', true], ['defaultstatus', 'list', false], ['defaultcopyright', 'text', false], ['defaulttags', 'list', false], ['totalassets', 'number', true], ['storageused', 'number', false], ['datecreated', 'date', true], ['datemodified', 'date', true]];
 const ASSET_FIELDS = [['name', 'text', true], ['assettitle', 'text', true], ['sourcepath', 'text', true], ['filesize', 'number', true], ['fileformat', 'text', true], ['width', 'number', true], ['height', 'number', true], ['description', 'textarea', true], ['category', 'list dropdown', true], ['editstatus', 'list dropdown', true], ['assetaddeddate', 'date', true], ['assetmodificationdate', 'date', true]];
 // DATA: the category's edit form (Edit Fields) and the fields that can be added to it.
 const CATEGORY_FORM_FIELDS = [{
-  name: 'Category Name',
+  name: 'Category name',
   type: 'Text'
 }, {
   name: 'Description',
-  type: 'Text Area'
+  type: 'Text area'
 }, {
   name: 'Tags',
   type: 'Tags'
 }];
-const ADDABLE_FIELDS = ['Archive Source Path', 'Auto Assigned Media', 'Categories', 'Category ID', 'Color', 'Custom Field 1', 'Custom Field 2', 'Display Order', 'Parent Category', 'Permissions', 'Source Path', 'Thumbnail'];
+const ADDABLE_FIELDS = ['Archive source path', 'Auto assigned media', 'Categories', 'Category ID', 'Color', 'Custom Field 1', 'Custom Field 2', 'Display order', 'Parent category', 'Permissions', 'Source path', 'Thumbnail'];
 // DATA: [name, asset count]
-const CATEGORIES = [['Banner Icon', 24], ['Bookshelf', 18], ['Borders - Arch', 31], ['Borders - Circular', 42], ['Branding - Churches', 28], ['Branding - CYC', 5], ['Branding - Diakonia', 15], ['Certificate - Baptism', 89], ['Certificate - Masters', 47], ['Clergy - Metropolitan Serapion', 62], ['Clergy - Pope Shenouda III', 210], ['Clergy - Pope Tawadros II', 45], ['Cross - Traditional', 78], ['Dome', 33], ['Embroideries', 156], ['Fonts', 18]];
+const CATEGORIES = [['Banner icon', 24], ['Bookshelf', 18], ['Borders - Arch', 31], ['Borders - Circular', 42], ['Branding - Churches', 28], ['Branding - CYC', 5], ['Branding - Diakonia', 15], ['Certificate - Baptism', 89], ['Certificate - Masters', 47], ['Clergy - Metropolitan Serapion', 62], ['Clergy - Pope Shenouda III', 210], ['Clergy - Pope Tawadros II', 45], ['Cross - Traditional', 78], ['Dome', 33], ['Embroideries', 156], ['Fonts', 18]];
 const TAGS = [['cross', 312], ['certificate', 189], ['clergy', 156], ['branding', 87], ['border', 74], ['ornament', 53], ['coptic', 42]];
 // DATA: type groups; a group with types is checked through them, a group without is checked itself.
 const TYPE_GROUPS = [{
@@ -2741,7 +2741,7 @@ function NewCatDialog({
     noValidate: true,
     onSubmit: save
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Category Name"
+    label: "Category name"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "categoryName",
     placeholder: "Enter category name..."
@@ -2780,7 +2780,7 @@ function NewCatDialog({
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-field__label",
     id: uid + 'color'
-  }, "Category Color")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "Category color")), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__control"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
     role: "group",
@@ -2792,14 +2792,14 @@ function NewCatDialog({
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "categoryColor",
     type: "color",
-    "aria-label": "Category Color",
+    "aria-label": "Category color",
     value: color,
     onChange: e => pick(e.target.value)
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-layout--width-md"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "categoryColor2",
-    "aria-label": "Category Color",
+    "aria-label": "Category color",
     data: true,
     value: hex,
     onChange: e => typeHex(e.target.value)
@@ -2888,9 +2888,9 @@ function NameDialog({
 }
 function SaveSearchDialog(props) {
   return /*#__PURE__*/_react.default.createElement(NameDialog, _extends({}, props, {
-    title: "Save Search",
+    title: "Save search",
     icon: "save",
-    nameLabel: "Search Name",
+    nameLabel: "Search name",
     nameField: "searchName",
     placeholder: "e.g. High-res crosses",
     saved: "Search saved"
@@ -2900,7 +2900,7 @@ function NewCollectionDialog(props) {
   return /*#__PURE__*/_react.default.createElement(NameDialog, _extends({}, props, {
     title: "Collections \u203A Add New",
     icon: "briefcase-plus",
-    nameLabel: "Collection Name",
+    nameLabel: "Collection name",
     nameField: "collectionName",
     placeholder: "Enter collection name...",
     saved: "Collection created"
@@ -2932,7 +2932,7 @@ function AdvancedSortDialog({
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
     open: open,
     onClose: onClose,
-    title: "Advanced Sort",
+    title: "Advanced sort",
     icon: "sort",
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onCancel: onClose
@@ -2941,7 +2941,7 @@ function AdvancedSortDialog({
       onClick: apply
     }, "Apply"))
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Sort By Field"
+    label: "Sort by field"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "sortByField",
     type: "search",
@@ -2952,7 +2952,7 @@ function AdvancedSortDialog({
     gap: "xs",
     maxHeight: "md"
   }, fields.length ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.RadioGroup, {
-    "aria-label": "Sort By Field",
+    "aria-label": "Sort by field",
     name: "advSortField",
     value: draft.field,
     onChange: f => setDraft({
@@ -3066,14 +3066,14 @@ function FieldVisibilityDialog({
 }
 function EditFieldsCatDialog(props) {
   return /*#__PURE__*/_react.default.createElement(FieldVisibilityDialog, _extends({}, props, {
-    title: "Edit Category Fields",
+    title: "Edit category fields",
     fields: CATEGORY_FIELDS,
     description: "Choose which category attributes to show in the detail panel. Drag to reorder."
   }));
 }
 function EditFieldsFileDialog(props) {
   return /*#__PURE__*/_react.default.createElement(FieldVisibilityDialog, _extends({}, props, {
-    title: "Edit Asset Fields",
+    title: "Edit asset fields",
     fields: ASSET_FIELDS,
     description: "Choose which metadata fields to show in the detail panel. Drag to reorder."
   }));
@@ -3113,7 +3113,7 @@ function CatEditFieldsDialog({
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
     open: open,
     onClose: onClose,
-    title: "Edit Fields",
+    title: "Edit fields",
     icon: "fields",
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onCancel: onClose
@@ -3125,11 +3125,11 @@ function CatEditFieldsDialog({
     justify: "end"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Checkbox, {
     name: "editForAllUsers",
-    label: "Edit For All Users",
+    label: "Edit for all users",
     checked: forAll,
     onChange: e => setForAll(e.target.checked)
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: "Edit Fields",
+    caption: "Edit fields",
     rows: fields.map(f => ({
       id: f.name,
       ...f
@@ -3510,7 +3510,7 @@ const FOLDERS = [{
 const DEFAULT_FOLDER = 'digital-assets';
 
 // DATA: the categories to pick from come from the back end.
-const CATEGORIES = ['Banner Icon', 'Bookshelf', 'Borders - Arch', 'Borders - Banner', 'Borders - Circular', 'Borders - Divider', 'Borders - Linear', 'Borders - Page', 'Branding - Churches', 'Branding - CYC', 'Branding - Diakonia', 'Certificates', 'Clergy', 'Covers', 'Cross - Traditional', 'Crosses', 'Dome', 'Embroideries', 'Fonts', 'Galloons', 'Korban Stamp', 'Ornamental Elements', 'Presentation Folders'];
+const CATEGORIES = ['Banner icon', 'Bookshelf', 'Borders - Arch', 'Borders - Banner', 'Borders - Circular', 'Borders - Divider', 'Borders - Linear', 'Borders - Page', 'Branding - Churches', 'Branding - CYC', 'Branding - Diakonia', 'Certificates', 'Clergy', 'Covers', 'Cross - Traditional', 'Crosses', 'Dome', 'Embroideries', 'Fonts', 'Galloons', 'Korban Stamp', 'Ornamental Elements', 'Presentation Folders'];
 
 // DATA: the category color swatches (hex digits; "#" is added where the value is used).
 const SWATCHES = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
@@ -3537,7 +3537,7 @@ const TYPE_FILTERS = [{
 
 // DATA: metadata field groups come from the back end. Each field is "Label" or "Label|source tag"; a leading "*" marks a
 // field that is checked by default.
-const META_GROUPS = [['General', 'all', ['*Name', '*Description', '*Tags', 'Keywords', '*Rating', 'Edit Status', 'Language', 'Version', 'Summary']], ['Categorization', 'all', ['*Category', 'Category ID', 'Parent Category', 'Category Path', 'Display Order', 'Asset Type', 'Classification']], ['Ownership & Rights', 'all', ['Owner', 'Creator|EXIF: Artist', 'Copyright|EXIF: Copyright', 'Copyright Notice|IPTC: CopyrightNotice', 'Rights Usage Terms|XMP: UsageTerms', 'License', 'Permissions', 'Author', 'Created By', 'Modified By']], ['Dates', 'all', ['Date Created|EXIF: DateTimeOriginal', 'Date Modified|EXIF: ModifyDate', 'Date Digitized|EXIF: CreateDate', 'GPS Date/Time|EXIF: GPSDateStamp', 'Import Date', 'Publish Date', 'Expiration Date']], ['File Properties', 'all', ['File Name', 'File Type', 'MIME Type', 'File Size', 'Source Path', 'Archive Source Path', 'File URL', 'Data Type', 'Thumbnail', 'Checksum / MD5']], ['Dimensions & Resolution', 'image,video', ['Width|EXIF: ImageWidth', 'Height|EXIF: ImageHeight', 'DPI / Resolution|EXIF: XResolution', 'Resolution Unit|EXIF: ResolutionUnit', 'Orientation|EXIF: Orientation', 'Pixel Aspect Ratio']], ['Camera & Lens', 'image,video', ['Camera Make|EXIF: Make', 'Camera Model|EXIF: Model', 'Camera Serial #|EXIF: SerialNumber', 'Lens Type|EXIF: LensModel', 'Lens Make|EXIF: LensMake', 'Lens Serial #|EXIF: LensSerialNumber', 'Firmware|EXIF: Software']], ['Exposure & Shooting', 'image', ['Focal Length|EXIF: FocalLength', 'Focal Length (35mm)|EXIF: FocalLengthIn35mmFormat', 'Aperture|EXIF: FNumber', 'Max Aperture|EXIF: MaxApertureValue', 'Shutter Speed|EXIF: ExposureTime', 'ISO|EXIF: ISO', 'Exposure Program|EXIF: ExposureProgram', 'Exposure Mode|EXIF: ExposureMode', 'Exposure Comp.|EXIF: ExposureCompensation', 'Metering Mode|EXIF: MeteringMode', 'Flash|EXIF: Flash', 'Flash Comp.|EXIF: FlashCompensation', 'White Balance|EXIF: WhiteBalance', 'Scene Type|EXIF: SceneCaptureType', 'Light Source|EXIF: LightSource', 'Subject Distance|EXIF: SubjectDistance', 'Focus Mode|EXIF: FocusMode', 'Digital Zoom|EXIF: DigitalZoomRatio', 'Sharpness|EXIF: Sharpness', 'Contrast|EXIF: Contrast', 'Saturation|EXIF: Saturation', 'Brightness|EXIF: BrightnessValue']], ['Color & Image', 'image', ['Color Space|EXIF: ColorSpace', 'Color Profile|EXIF: ICCProfileName', 'Color Type', 'Bit Depth|EXIF: BitsPerSample', 'Compression|EXIF: Compression', 'Photometric Interp.|EXIF: PhotometricInterpretation', 'Image Unique ID|EXIF: ImageUniqueID']], ['Location (GPS)', 'image,video', ['GPS Latitude|EXIF: GPSLatitude', 'GPS Longitude|EXIF: GPSLongitude', 'GPS Altitude|EXIF: GPSAltitude', 'GPS Speed|EXIF: GPSSpeed', 'GPS Direction|EXIF: GPSImgDirection', 'GPS Area Info|EXIF: GPSAreaInformation']], ['IPTC / XMP', 'image', ['Headline|IPTC: Headline', 'Caption|IPTC: Caption-Abstract', 'By-line|IPTC: By-line', 'By-line Title|IPTC: By-lineTitle', 'Credit|IPTC: Credit', 'Source|IPTC: Source', 'Contact Info|IPTC: Contact', 'Object Name|IPTC: ObjectName', 'Category Code|IPTC: Category', 'Supplemental Cat.|IPTC: SupplementalCategories', 'Urgency|IPTC: Urgency', 'Instructions|IPTC: SpecialInstructions', 'Subject Code|XMP: Subject', 'Scene Code|IPTC: Scene', 'Intellectual Genre|IPTC: IntellectualGenre']], ['IPTC Location', 'image', ['Sub-location|IPTC: Sub-location', 'City|IPTC: City', 'State / Province|IPTC: Province-State', 'Country|IPTC: Country-PrimaryLocationName', 'Country Code|IPTC: Country-PrimaryLocationCode']], ['Video — Stream', 'video', ['Duration|FFmpeg: Duration', 'Frame Rate|FFmpeg: r_frame_rate', 'Video Codec|FFmpeg: codec_name', 'Codec Profile|FFmpeg: profile', 'Video Bitrate|FFmpeg: bit_rate', 'Video Resolution', 'Aspect Ratio|FFmpeg: display_aspect_ratio', 'Pixel Format|FFmpeg: pix_fmt', 'Color Primaries|FFmpeg: color_primaries', 'Color Transfer|FFmpeg: color_transfer', 'Rotation|FFmpeg: rotate', 'Audio Codec|FFmpeg: audio codec_name', 'Audio Bitrate|FFmpeg: audio bit_rate', 'Sample Rate|FFmpeg: sample_rate', 'Audio Channels|FFmpeg: channels', 'Audio Language|FFmpeg: language', 'Subtitle Tracks|FFmpeg: subtitle streams']], ['Video — Container Tags', 'video', ['Title|MP4: moov/udta ©nam', 'Artist|MP4: ©ART', 'Album|MP4: ©alb', 'Comment|MP4: ©cmt', 'Genre|MP4: ©gen / gnre', 'Year|MP4: ©day', 'Encoder|MP4: ©too', 'MKV Title|Matroska: TagName', 'MKV Date|Matroska: DateUTC', 'MKV Muxing App|Matroska: MuxingApp', 'MKV Writing App|Matroska: WritingApp', 'AVI Title|RIFF INFO: INAM', 'AVI Artist|RIFF INFO: IART', 'AVI Comment|RIFF INFO: ICMT', 'AVI Software|RIFF INFO: ISFT', 'WMV Title|ASF: Title', 'WMV Author|ASF: Author', 'WMV Description|ASF: Description', 'WMV Rating|ASF: Rating']], ['Audio — ID3 Tags', 'audio', ['Title|ID3v2: TIT2', 'Subtitle|ID3v2: TIT3', 'Artist|ID3v2: TPE1', 'Album Artist|ID3v2: TPE2', 'Album|ID3v2: TALB', 'Year|ID3v2: TDRC', 'Track Number|ID3v2: TRCK', 'Disc Number|ID3v2: TPOS', 'Genre|ID3v2: TCON', 'Composer|ID3v2: TCOM', 'Conductor|ID3v2: TPE3', 'Lyricist|ID3v2: TEXT', 'Publisher|ID3v2: TPUB', 'Encoded By|ID3v2: TENC', 'BPM|ID3v2: TBPM', 'Initial Key|ID3v2: TKEY', 'ISRC|ID3v2: TSRC', 'Comment|ID3v2: COMM', 'Lyrics|ID3v2: USLT', 'Album Art|ID3v2: APIC', 'Copyright|ID3v2: TCOP', 'Grouping|ID3v2: TIT1', 'Compilation|ID3v2: TCMP', 'Mood|ID3v2: TMOO', 'Media Type|ID3v2: TMED', 'ReplayGain|ID3v2: TXXX']], ['Audio — Stream', 'audio', ['Duration|FFmpeg: Duration', 'Audio Codec|FFmpeg: codec_name', 'Bitrate|FFmpeg: bit_rate', 'Bitrate Mode|CBR / VBR', 'Sample Rate|FFmpeg: sample_rate', 'Channels|FFmpeg: channels', 'Bit Depth|FFmpeg: bits_per_sample']], ['Document', 'document', ['Page Count', 'Word Count', 'Character Count', 'Title|PDF: Title', 'Subject|PDF: Subject', 'PDF Producer|PDF: Producer', 'PDF Creator Tool|PDF: Creator', 'PDF Version|PDF: PDFVersion', 'Encrypted|PDF: Encryption']], ['3D / Model', '3d', ['Geometry Type|mesh, NURBS, solid', 'Vertex Count', 'Face / Polygon Count', 'Edge Count', 'Object Count', 'Material Count', 'Texture Count', 'UV Maps', 'Bounding Box', 'Scene Units|mm, cm, m, in', 'Up Axis|Y-up, Z-up', 'Animation|has animations', 'Rigged|has armature', 'File Format|FBX, OBJ, GLTF, USD...', 'Render Engine|Cycles, Eevee, V-Ray...', 'Source Application|Blender, Maya, 3ds Max...']], ['Distribution', 'all', ['Channels', 'Auto Assigned Media', 'Published Locations', 'Conversion Preset']], ['Custom', 'all', ['Custom Field 1', 'Custom Field 2', 'Custom Field 3']]].map(([name, types, fields], g) => ({
+const META_GROUPS = [['General', 'all', ['*Name', '*Description', '*Tags', 'Keywords', '*Rating', 'Edit status', 'Language', 'Version', 'Summary']], ['Categorization', 'all', ['*Category', 'Category ID', 'Parent category', 'Category path', 'Display order', 'Asset type', 'Classification']], ['Ownership & Rights', 'all', ['Owner', 'Creator|EXIF: Artist', 'Copyright|EXIF: Copyright', 'Copyright Notice|IPTC: CopyrightNotice', 'Rights Usage Terms|XMP: UsageTerms', 'License', 'Permissions', 'Author', 'Created by', 'Modified by']], ['Dates', 'all', ['Date Created|EXIF: DateTimeOriginal', 'Date Modified|EXIF: ModifyDate', 'Date Digitized|EXIF: CreateDate', 'GPS Date/Time|EXIF: GPSDateStamp', 'Import date', 'Publish date', 'Expiration date']], ['File properties', 'all', ['File name', 'File type', 'MIME type', 'File size', 'Source path', 'Archive source path', 'File URL', 'Data type', 'Thumbnail', 'Checksum / MD5']], ['Dimensions & Resolution', 'image,video', ['Width|EXIF: ImageWidth', 'Height|EXIF: ImageHeight', 'DPI / Resolution|EXIF: XResolution', 'Resolution Unit|EXIF: ResolutionUnit', 'Orientation|EXIF: Orientation', 'Pixel aspect ratio']], ['Camera & Lens', 'image,video', ['Camera Make|EXIF: Make', 'Camera Model|EXIF: Model', 'Camera Serial #|EXIF: SerialNumber', 'Lens Type|EXIF: LensModel', 'Lens Make|EXIF: LensMake', 'Lens Serial #|EXIF: LensSerialNumber', 'Firmware|EXIF: Software']], ['Exposure & Shooting', 'image', ['Focal Length|EXIF: FocalLength', 'Focal Length (35mm)|EXIF: FocalLengthIn35mmFormat', 'Aperture|EXIF: FNumber', 'Max Aperture|EXIF: MaxApertureValue', 'Shutter Speed|EXIF: ExposureTime', 'ISO|EXIF: ISO', 'Exposure Program|EXIF: ExposureProgram', 'Exposure Mode|EXIF: ExposureMode', 'Exposure Comp.|EXIF: ExposureCompensation', 'Metering Mode|EXIF: MeteringMode', 'Flash|EXIF: Flash', 'Flash Comp.|EXIF: FlashCompensation', 'White Balance|EXIF: WhiteBalance', 'Scene Type|EXIF: SceneCaptureType', 'Light Source|EXIF: LightSource', 'Subject Distance|EXIF: SubjectDistance', 'Focus Mode|EXIF: FocusMode', 'Digital Zoom|EXIF: DigitalZoomRatio', 'Sharpness|EXIF: Sharpness', 'Contrast|EXIF: Contrast', 'Saturation|EXIF: Saturation', 'Brightness|EXIF: BrightnessValue']], ['Color & Image', 'image', ['Color Space|EXIF: ColorSpace', 'Color Profile|EXIF: ICCProfileName', 'Color type', 'Bit Depth|EXIF: BitsPerSample', 'Compression|EXIF: Compression', 'Photometric Interp.|EXIF: PhotometricInterpretation', 'Image Unique ID|EXIF: ImageUniqueID']], ['Location (GPS)', 'image,video', ['GPS Latitude|EXIF: GPSLatitude', 'GPS Longitude|EXIF: GPSLongitude', 'GPS Altitude|EXIF: GPSAltitude', 'GPS Speed|EXIF: GPSSpeed', 'GPS Direction|EXIF: GPSImgDirection', 'GPS Area Info|EXIF: GPSAreaInformation']], ['IPTC / XMP', 'image', ['Headline|IPTC: Headline', 'Caption|IPTC: Caption-Abstract', 'By-line|IPTC: By-line', 'By-line Title|IPTC: By-lineTitle', 'Credit|IPTC: Credit', 'Source|IPTC: Source', 'Contact Info|IPTC: Contact', 'Object Name|IPTC: ObjectName', 'Category Code|IPTC: Category', 'Supplemental Cat.|IPTC: SupplementalCategories', 'Urgency|IPTC: Urgency', 'Instructions|IPTC: SpecialInstructions', 'Subject Code|XMP: Subject', 'Scene Code|IPTC: Scene', 'Intellectual Genre|IPTC: IntellectualGenre']], ['IPTC location', 'image', ['Sub-location|IPTC: Sub-location', 'City|IPTC: City', 'State / Province|IPTC: Province-State', 'Country|IPTC: Country-PrimaryLocationName', 'Country Code|IPTC: Country-PrimaryLocationCode']], ['Video — Stream', 'video', ['Duration|FFmpeg: Duration', 'Frame Rate|FFmpeg: r_frame_rate', 'Video Codec|FFmpeg: codec_name', 'Codec Profile|FFmpeg: profile', 'Video Bitrate|FFmpeg: bit_rate', 'Video resolution', 'Aspect Ratio|FFmpeg: display_aspect_ratio', 'Pixel Format|FFmpeg: pix_fmt', 'Color Primaries|FFmpeg: color_primaries', 'Color Transfer|FFmpeg: color_transfer', 'Rotation|FFmpeg: rotate', 'Audio Codec|FFmpeg: audio codec_name', 'Audio Bitrate|FFmpeg: audio bit_rate', 'Sample Rate|FFmpeg: sample_rate', 'Audio Channels|FFmpeg: channels', 'Audio Language|FFmpeg: language', 'Subtitle Tracks|FFmpeg: subtitle streams']], ['Video — Container Tags', 'video', ['Title|MP4: moov/udta ©nam', 'Artist|MP4: ©ART', 'Album|MP4: ©alb', 'Comment|MP4: ©cmt', 'Genre|MP4: ©gen / gnre', 'Year|MP4: ©day', 'Encoder|MP4: ©too', 'MKV Title|Matroska: TagName', 'MKV Date|Matroska: DateUTC', 'MKV Muxing App|Matroska: MuxingApp', 'MKV Writing App|Matroska: WritingApp', 'AVI Title|RIFF INFO: INAM', 'AVI Artist|RIFF INFO: IART', 'AVI Comment|RIFF INFO: ICMT', 'AVI Software|RIFF INFO: ISFT', 'WMV Title|ASF: Title', 'WMV Author|ASF: Author', 'WMV Description|ASF: Description', 'WMV Rating|ASF: Rating']], ['Audio — ID3 Tags', 'audio', ['Title|ID3v2: TIT2', 'Subtitle|ID3v2: TIT3', 'Artist|ID3v2: TPE1', 'Album Artist|ID3v2: TPE2', 'Album|ID3v2: TALB', 'Year|ID3v2: TDRC', 'Track Number|ID3v2: TRCK', 'Disc Number|ID3v2: TPOS', 'Genre|ID3v2: TCON', 'Composer|ID3v2: TCOM', 'Conductor|ID3v2: TPE3', 'Lyricist|ID3v2: TEXT', 'Publisher|ID3v2: TPUB', 'Encoded By|ID3v2: TENC', 'BPM|ID3v2: TBPM', 'Initial Key|ID3v2: TKEY', 'ISRC|ID3v2: TSRC', 'Comment|ID3v2: COMM', 'Lyrics|ID3v2: USLT', 'Album Art|ID3v2: APIC', 'Copyright|ID3v2: TCOP', 'Grouping|ID3v2: TIT1', 'Compilation|ID3v2: TCMP', 'Mood|ID3v2: TMOO', 'Media Type|ID3v2: TMED', 'ReplayGain|ID3v2: TXXX']], ['Audio — Stream', 'audio', ['Duration|FFmpeg: Duration', 'Audio Codec|FFmpeg: codec_name', 'Bitrate|FFmpeg: bit_rate', 'Bitrate Mode|CBR / VBR', 'Sample Rate|FFmpeg: sample_rate', 'Channels|FFmpeg: channels', 'Bit Depth|FFmpeg: bits_per_sample']], ['Document', 'document', ['Page count', 'Word count', 'Character count', 'Title|PDF: Title', 'Subject|PDF: Subject', 'PDF Producer|PDF: Producer', 'PDF Creator Tool|PDF: Creator', 'PDF Version|PDF: PDFVersion', 'Encrypted|PDF: Encryption']], ['3D / Model', '3d', ['Geometry Type|mesh, NURBS, solid', 'Vertex count', 'Face / Polygon Count', 'Edge count', 'Object count', 'Material count', 'Texture count', 'UV maps', 'Bounding box', 'Scene Units|mm, cm, m, in', 'Up Axis|Y-up, Z-up', 'Animation|has animations', 'Rigged|has armature', 'File Format|FBX, OBJ, GLTF, USD...', 'Render Engine|Cycles, Eevee, V-Ray...', 'Source Application|Blender, Maya, 3ds Max...']], ['Distribution', 'all', ['Channels', 'Auto assigned media', 'Published locations', 'Conversion preset']], ['Custom', 'all', ['Custom Field 1', 'Custom Field 2', 'Custom Field 3']]].map(([name, types, fields], g) => ({
   name,
   types: types.split(','),
   fields: fields.map((f, i) => {
@@ -3780,17 +3780,17 @@ function FilesPane({
     size: "sm",
     icon: "text-card",
     onClick: () => filesInput.current.click()
-  }, "Browse Files"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+  }, "Browse files"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     icon: "folder-open",
     onClick: () => folderInput.current.click()
-  }, "Browse Folder")), /*#__PURE__*/_react.default.createElement("input", {
+  }, "Browse folder")), /*#__PURE__*/_react.default.createElement("input", {
     ref: filesInput,
     type: "file",
     multiple: true,
     hidden: true,
     onChange: fromInput,
-    "aria-label": "Browse Files"
+    "aria-label": "Browse files"
   }), /*#__PURE__*/_react.default.createElement("input", {
     ref: folderInput,
     type: "file",
@@ -3799,7 +3799,7 @@ function FilesPane({
     webkitdirectory: "",
     directory: "",
     onChange: fromInput,
-    "aria-label": "Browse Folder"
+    "aria-label": "Browse folder"
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
     justify: "center",
     className: "plx-u-mt-stack-sm"
@@ -3941,7 +3941,7 @@ function CategoriesPane() {
     icon: "plus",
     onClick: () => setAdding(true),
     "aria-expanded": adding
-  }, "New Category"), adding ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+  }, "New category"), adding ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     variant: "ghost",
     size: "xs",
     iconOnly: true,
@@ -4027,7 +4027,7 @@ function MetadataPane() {
     as: "h3",
     id: "upl-meta",
     variant: "heading"
-  }, "Visible Metadata"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+  }, "Visible metadata"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
   }, "All metadata is always stored. Checked fields are shown by default in this category's view."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SearchField, {
@@ -4112,7 +4112,7 @@ function UploadFlow({
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
     open: true,
     onClose: onClose,
-    title: "Upload Assets",
+    title: "Upload assets",
     icon: "upload",
     size: "xl",
     flush: true,
@@ -4198,62 +4198,62 @@ const GROUPS = [{
   title: 'General',
   types: ['all'],
   shown: 4,
-  fields: [['Name', 'name', 'name'], ['Description', 'description', 'assetsearchdescription'], ['Tags', 'tags', 'tags'], ['Rating', 'rating', 'assetvotes'], ['Keywords', 'keywords', 'keywords'], ['Edit Status', 'editStatus', 'editstatus'], ['Language', 'language', 'language'], ['Version', 'version', 'version'], ['Summary', 'summary', 'summary']]
+  fields: [['Name', 'name', 'name'], ['Description', 'description', 'assetsearchdescription'], ['Tags', 'tags', 'tags'], ['Rating', 'rating', 'assetvotes'], ['Keywords', 'keywords', 'keywords'], ['Edit status', 'editStatus', 'editstatus'], ['Language', 'language', 'language'], ['Version', 'version', 'version'], ['Summary', 'summary', 'summary']]
 }, {
   title: 'Categorization',
   types: ['all'],
   shown: 2,
-  fields: [['Category', 'category', 'category'], ['Data Type', 'dataType', 'datatype'], ['Category ID', 'categoryId', 'categoryid'], ['Parent Category', 'parentCategory', 'parentcategory'], ['Category Path', 'categoryPath', 'categorypath'], ['Display Order', 'displayOrder', 'displayorder'], ['Asset Type', 'assetType', 'assettype'], ['Classification', 'classification', 'classification']]
+  fields: [['Category', 'category', 'category'], ['Data type', 'dataType', 'datatype'], ['Category ID', 'categoryId', 'categoryid'], ['Parent category', 'parentCategory', 'parentcategory'], ['Category path', 'categoryPath', 'categorypath'], ['Display order', 'displayOrder', 'displayorder'], ['Asset type', 'assetType', 'assettype'], ['Classification', 'classification', 'classification']]
 }, {
   title: 'Ownership & Rights',
   types: ['all'],
   shown: 2,
-  fields: [['Owner', 'owner', 'owner'], ['Creator', 'creator', 'creator'], ['Copyright', 'copyright', 'copyright'], ['Copyright Notice', 'copyrightNotice', 'copyrightnotice'], ['Rights Usage Terms', 'rightsUsageTerms', 'usageterms'], ['License', 'license', 'license'], ['Author', 'author', 'author'], ['Created By', 'createdBy', 'createdby'], ['Modified By', 'modifiedBy', 'modifiedby']]
+  fields: [['Owner', 'owner', 'owner'], ['Creator', 'creator', 'creator'], ['Copyright', 'copyright', 'copyright'], ['Copyright notice', 'copyrightNotice', 'copyrightnotice'], ['Rights usage terms', 'rightsUsageTerms', 'usageterms'], ['License', 'license', 'license'], ['Author', 'author', 'author'], ['Created by', 'createdBy', 'createdby'], ['Modified by', 'modifiedBy', 'modifiedby']]
 }, {
   title: 'Dates',
   types: ['all'],
   shown: 2,
-  fields: [['Date Added', 'dateAdded', 'assetaddeddate'], ['Date Modified', 'dateModified', 'assetmodificationdate'], ['Date Created', 'dateCreated', 'datetimeoriginal'], ['Date Digitized', 'dateDigitized', 'createdate'], ['GPS Date/Time', 'gpsDateTime', 'gpsdatestamp'], ['Import Date', 'importDate', 'importdate'], ['Publish Date', 'publishDate', 'publishdate'], ['Expiration Date', 'expirationDate', 'expirationdate']]
+  fields: [['Date added', 'dateAdded', 'assetaddeddate'], ['Date modified', 'dateModified', 'assetmodificationdate'], ['Date created', 'dateCreated', 'datetimeoriginal'], ['Date digitized', 'dateDigitized', 'createdate'], ['GPS Date/Time', 'gpsDateTime', 'gpsdatestamp'], ['Import date', 'importDate', 'importdate'], ['Publish date', 'publishDate', 'publishdate'], ['Expiration date', 'expirationDate', 'expirationdate']]
 }, {
-  title: 'File Properties',
+  title: 'File properties',
   types: ['all'],
   shown: 3,
-  fields: [['File Name', 'fileName', 'name'], ['File Type', 'fileType', 'fileformat'], ['File Size', 'fileSize', 'filesize'], ['MIME Type', 'mimeType', 'mimetype'], ['Source Path', 'sourcePath', 'sourcepath'], ['Archive Source Path', 'archiveSourcePath', 'archivesourcepath'], ['Checksum / MD5', 'checksumMd5', 'md5hex'], ['Asset ID', 'assetId', 'id']]
+  fields: [['File name', 'fileName', 'name'], ['File type', 'fileType', 'fileformat'], ['File size', 'fileSize', 'filesize'], ['MIME type', 'mimeType', 'mimetype'], ['Source path', 'sourcePath', 'sourcepath'], ['Archive source path', 'archiveSourcePath', 'archivesourcepath'], ['Checksum / MD5', 'checksumMd5', 'md5hex'], ['Asset ID', 'assetId', 'id']]
 }, {
   title: 'Dimensions & Resolution',
   types: ['image', 'video'],
   shown: 2,
-  fields: [['Width', 'width', 'width'], ['Height', 'height', 'height'], ['DPI / Resolution', 'dpiResolution', 'xresolution'], ['Resolution Unit', 'resolutionUnit', 'resolutionunit'], ['Orientation', 'orientation', 'orientation'], ['Pixel Aspect Ratio', 'pixelAspectRatio', 'pixelaspectratio']]
+  fields: [['Width', 'width', 'width'], ['Height', 'height', 'height'], ['DPI / Resolution', 'dpiResolution', 'xresolution'], ['Resolution unit', 'resolutionUnit', 'resolutionunit'], ['Orientation', 'orientation', 'orientation'], ['Pixel aspect ratio', 'pixelAspectRatio', 'pixelaspectratio']]
 }, {
   title: 'Camera & Lens',
   types: ['image', 'video'],
   shown: 2,
-  fields: [['Camera Make', 'cameraMake', 'make'], ['Camera Model', 'cameraModel', 'model'], ['Camera Serial #', 'cameraSerial', 'serialnumber'], ['Lens Type', 'lensType', 'lensmodel'], ['Lens Make', 'lensMake', 'lensmake'], ['Firmware', 'firmware', 'software']]
+  fields: [['Camera make', 'cameraMake', 'make'], ['Camera model', 'cameraModel', 'model'], ['Camera Serial #', 'cameraSerial', 'serialnumber'], ['Lens type', 'lensType', 'lensmodel'], ['Lens make', 'lensMake', 'lensmake'], ['Firmware', 'firmware', 'software']]
 }, {
   title: 'Exposure & Shooting',
   types: ['image'],
   shown: 4,
-  fields: [['Focal Length', 'focalLength', 'focallength'], ['Aperture', 'aperture', 'fnumber'], ['Shutter Speed', 'shutterSpeed', 'exposuretime'], ['ISO', 'iso', 'iso'], ['Exposure Program', 'exposureProgram', 'exposureprogram'], ['Exposure Mode', 'exposureMode', 'exposuremode'], ['Metering Mode', 'meteringMode', 'meteringmode'], ['Flash', 'flash', 'flash'], ['White Balance', 'whiteBalance', 'whitebalance'], ['Scene Type', 'sceneType', 'scenecapturetype'], ['Contrast', 'contrast', 'contrast'], ['Saturation', 'saturation', 'saturation'], ['Sharpness', 'sharpness', 'sharpness']]
+  fields: [['Focal length', 'focalLength', 'focallength'], ['Aperture', 'aperture', 'fnumber'], ['Shutter speed', 'shutterSpeed', 'exposuretime'], ['ISO', 'iso', 'iso'], ['Exposure program', 'exposureProgram', 'exposureprogram'], ['Exposure mode', 'exposureMode', 'exposuremode'], ['Metering mode', 'meteringMode', 'meteringmode'], ['Flash', 'flash', 'flash'], ['White balance', 'whiteBalance', 'whitebalance'], ['Scene type', 'sceneType', 'scenecapturetype'], ['Contrast', 'contrast', 'contrast'], ['Saturation', 'saturation', 'saturation'], ['Sharpness', 'sharpness', 'sharpness']]
 }, {
   title: 'Color & Image',
   types: ['image'],
   shown: 2,
-  fields: [['Color Space', 'colorSpace', 'colorspace'], ['Color Profile', 'colorProfile', 'iccprofilename'], ['Bit Depth', 'bitDepth', 'bitspersample'], ['Compression', 'compression', 'compression'], ['Color Type', 'colorType', 'colortype']]
+  fields: [['Color space', 'colorSpace', 'colorspace'], ['Color profile', 'colorProfile', 'iccprofilename'], ['Bit depth', 'bitDepth', 'bitspersample'], ['Compression', 'compression', 'compression'], ['Color type', 'colorType', 'colortype']]
 }, {
   title: 'Location (GPS)',
   types: ['image', 'video'],
   shown: 2,
-  fields: [['GPS Latitude', 'gpsLatitude', 'gpslatitude'], ['GPS Longitude', 'gpsLongitude', 'gpslongitude'], ['GPS Altitude', 'gpsAltitude', 'gpsaltitude'], ['GPS Speed', 'gpsSpeed', 'gpsspeed'], ['GPS Direction', 'gpsDirection', 'gpsimgdirection']]
+  fields: [['GPS latitude', 'gpsLatitude', 'gpslatitude'], ['GPS longitude', 'gpsLongitude', 'gpslongitude'], ['GPS altitude', 'gpsAltitude', 'gpsaltitude'], ['GPS speed', 'gpsSpeed', 'gpsspeed'], ['GPS direction', 'gpsDirection', 'gpsimgdirection']]
 }, {
   title: 'IPTC / XMP',
   types: ['image'],
   shown: 2,
-  fields: [['Headline', 'headline', 'headline'], ['Caption', 'caption', 'caption-abstract'], ['By-line', 'byLine', 'by-line'], ['Credit', 'credit', 'credit'], ['Source', 'source', 'source'], ['City', 'city', 'city'], ['Country', 'country', 'country'], ['Subject Code', 'subjectCode', 'subject'], ['Urgency', 'urgency', 'urgency'], ['Instructions', 'instructions', 'specialinstructions']]
+  fields: [['Headline', 'headline', 'headline'], ['Caption', 'caption', 'caption-abstract'], ['By-line', 'byLine', 'by-line'], ['Credit', 'credit', 'credit'], ['Source', 'source', 'source'], ['City', 'city', 'city'], ['Country', 'country', 'country'], ['Subject code', 'subjectCode', 'subject'], ['Urgency', 'urgency', 'urgency'], ['Instructions', 'instructions', 'specialinstructions']]
 }, {
   title: 'Video — Stream',
   types: ['video'],
   shown: 4,
-  fields: [['Duration', 'duration', 'duration'], ['Frame Rate', 'frameRate', 'r_frame_rate'], ['Video Codec', 'videoCodec', 'codec_name'], ['Video Resolution', 'videoResolution', 'videoresolution'], ['Codec Profile', 'codecProfile', 'profile'], ['Video Bitrate', 'videoBitrate', 'bit_rate'], ['Aspect Ratio', 'aspectRatio', 'display_aspect_ratio'], ['Pixel Format', 'pixelFormat', 'pix_fmt'], ['Color Primaries', 'colorPrimaries', 'color_primaries'], ['Rotation', 'rotation', 'rotate'], ['Audio Codec', 'audioCodec', 'audio_codec_name'], ['Audio Bitrate', 'audioBitrate', 'audio_bit_rate'], ['Sample Rate', 'sampleRate', 'sample_rate'], ['Audio Channels', 'audioChannels', 'channels'], ['Subtitle Tracks', 'subtitleTracks', 'subtitle_streams']]
+  fields: [['Duration', 'duration', 'duration'], ['Frame rate', 'frameRate', 'r_frame_rate'], ['Video codec', 'videoCodec', 'codec_name'], ['Video resolution', 'videoResolution', 'videoresolution'], ['Codec profile', 'codecProfile', 'profile'], ['Video bitrate', 'videoBitrate', 'bit_rate'], ['Aspect ratio', 'aspectRatio', 'display_aspect_ratio'], ['Pixel format', 'pixelFormat', 'pix_fmt'], ['Color primaries', 'colorPrimaries', 'color_primaries'], ['Rotation', 'rotation', 'rotate'], ['Audio codec', 'audioCodec', 'audio_codec_name'], ['Audio bitrate', 'audioBitrate', 'audio_bit_rate'], ['Sample rate', 'sampleRate', 'sample_rate'], ['Audio channels', 'audioChannels', 'channels'], ['Subtitle tracks', 'subtitleTracks', 'subtitle_streams']]
 }, {
   title: 'Video — Container Tags',
   types: ['video'],
@@ -4263,37 +4263,37 @@ const GROUPS = [{
   title: 'Audio — ID3 Tags',
   types: ['audio'],
   shown: 4,
-  fields: [['Title', 'title2', 'id3_tit2'], ['Artist', 'artist2', 'id3_tpe1'], ['Album', 'album2', 'id3_talb'], ['Genre', 'genre2', 'id3_tcon'], ['Album Artist', 'albumArtist', 'id3_tpe2'], ['Year', 'year2', 'id3_tdrc'], ['Track Number', 'trackNumber', 'id3_trck'], ['Disc Number', 'discNumber', 'id3_tpos'], ['Composer', 'composer', 'id3_tcom'], ['Conductor', 'conductor', 'id3_tpe3'], ['Lyricist', 'lyricist', 'id3_text'], ['Publisher', 'publisher', 'id3_tpub'], ['BPM', 'bpm', 'id3_tbpm'], ['ISRC', 'isrc', 'id3_tsrc'], ['Lyrics', 'lyrics', 'id3_uslt'], ['Album Art', 'albumArt', 'id3_apic'], ['Copyright', 'copyright2', 'id3_tcop'], ['Mood', 'mood', 'id3_tmoo'], ['ReplayGain', 'replaygain', 'id3_txxx']]
+  fields: [['Title', 'title2', 'id3_tit2'], ['Artist', 'artist2', 'id3_tpe1'], ['Album', 'album2', 'id3_talb'], ['Genre', 'genre2', 'id3_tcon'], ['Album artist', 'albumArtist', 'id3_tpe2'], ['Year', 'year2', 'id3_tdrc'], ['Track number', 'trackNumber', 'id3_trck'], ['Disc number', 'discNumber', 'id3_tpos'], ['Composer', 'composer', 'id3_tcom'], ['Conductor', 'conductor', 'id3_tpe3'], ['Lyricist', 'lyricist', 'id3_text'], ['Publisher', 'publisher', 'id3_tpub'], ['BPM', 'bpm', 'id3_tbpm'], ['ISRC', 'isrc', 'id3_tsrc'], ['Lyrics', 'lyrics', 'id3_uslt'], ['Album art', 'albumArt', 'id3_apic'], ['Copyright', 'copyright2', 'id3_tcop'], ['Mood', 'mood', 'id3_tmoo'], ['ReplayGain', 'replaygain', 'id3_txxx']]
 }, {
   title: 'Audio — Stream',
   types: ['audio'],
   shown: 3,
-  fields: [['Duration', 'duration2', 'duration'], ['Audio Codec', 'audioCodec2', 'codec_name'], ['Bitrate', 'bitrate', 'bit_rate'], ['Bitrate Mode', 'bitrateMode', 'bitrate_mode'], ['Sample Rate', 'sampleRate2', 'sample_rate'], ['Channels', 'channels', 'channels'], ['Bit Depth', 'bitDepth2', 'bits_per_sample']]
+  fields: [['Duration', 'duration2', 'duration'], ['Audio codec', 'audioCodec2', 'codec_name'], ['Bitrate', 'bitrate', 'bit_rate'], ['Bitrate mode', 'bitrateMode', 'bitrate_mode'], ['Sample rate', 'sampleRate2', 'sample_rate'], ['Channels', 'channels', 'channels'], ['Bit depth', 'bitDepth2', 'bits_per_sample']]
 }, {
   title: 'Document',
   types: ['document'],
   shown: 2,
-  fields: [['Page Count', 'pageCount', 'pagecount'], ['Title', 'title3', 'pdf_title'], ['Word Count', 'wordCount', 'wordcount'], ['Character Count', 'characterCount', 'charcount'], ['Subject', 'subject', 'pdf_subject'], ['PDF Producer', 'pdfProducer', 'pdf_producer'], ['PDF Creator Tool', 'pdfCreatorTool', 'pdf_creator'], ['PDF Version', 'pdfVersion', 'pdfversion'], ['Encrypted', 'encrypted', 'encryption']]
+  fields: [['Page count', 'pageCount', 'pagecount'], ['Title', 'title3', 'pdf_title'], ['Word count', 'wordCount', 'wordcount'], ['Character count', 'characterCount', 'charcount'], ['Subject', 'subject', 'pdf_subject'], ['PDF producer', 'pdfProducer', 'pdf_producer'], ['PDF creator tool', 'pdfCreatorTool', 'pdf_creator'], ['PDF version', 'pdfVersion', 'pdfversion'], ['Encrypted', 'encrypted', 'encryption']]
 }, {
   title: '3D / Model',
   types: ['3d'],
   shown: 3,
-  fields: [['Geometry Type', 'geometryType', 'geometrytype'], ['Vertex Count', 'vertexCount', 'vertexcount'], ['Face / Polygon Count', 'facePolygonCount', 'facecount'], ['Material Count', 'materialCount', 'materialcount'], ['Texture Count', 'textureCount', 'texturecount'], ['UV Maps', 'uvMaps', 'uvmaps'], ['Bounding Box', 'boundingBox', 'boundingbox'], ['Scene Units', 'sceneUnits', 'sceneunits'], ['Animation', 'animation', 'hasanimation'], ['Rigged', 'rigged', 'hasarmature'], ['Source Application', 'sourceApplication', 'sourceapp']]
+  fields: [['Geometry type', 'geometryType', 'geometrytype'], ['Vertex count', 'vertexCount', 'vertexcount'], ['Face / Polygon Count', 'facePolygonCount', 'facecount'], ['Material count', 'materialCount', 'materialcount'], ['Texture count', 'textureCount', 'texturecount'], ['UV maps', 'uvMaps', 'uvmaps'], ['Bounding box', 'boundingBox', 'boundingbox'], ['Scene units', 'sceneUnits', 'sceneunits'], ['Animation', 'animation', 'hasanimation'], ['Rigged', 'rigged', 'hasarmature'], ['Source application', 'sourceApplication', 'sourceapp']]
 }, {
   title: 'Status & Workflow',
   types: ['all'],
   shown: 3,
-  fields: [['Edit Status', 'editStatus2', 'editstatus'], ['Import Status', 'importStatus', 'importstatus'], ['Preview Status', 'previewStatus', 'previewstatus'], ['Push Status', 'pushStatus', 'pushstatus'], ['Approval Status', 'approvalStatus', 'approvalstatus'], ['Conversion Status', 'conversionStatus', 'conversionstatus'], ['Locked', 'locked', 'islocked']]
+  fields: [['Edit status', 'editStatus2', 'editstatus'], ['Import status', 'importStatus', 'importstatus'], ['Preview status', 'previewStatus', 'previewstatus'], ['Push status', 'pushStatus', 'pushstatus'], ['Approval status', 'approvalStatus', 'approvalstatus'], ['Conversion status', 'conversionStatus', 'conversionstatus'], ['Locked', 'locked', 'islocked']]
 }, {
   title: 'AI & Semantic',
   types: ['all'],
   shown: 2,
-  fields: [['Semantic Indexed', 'semanticIndexed', 'semanticindexed'], ['AI Tags', 'aiTags', 'aitags'], ['Facial Recognition', 'facialRecognition', 'facialrecognition'], ['CLIP Embedding', 'clipEmbedding', 'clipembedding']]
+  fields: [['Semantic indexed', 'semanticIndexed', 'semanticindexed'], ['AI tags', 'aiTags', 'aitags'], ['Facial recognition', 'facialRecognition', 'facialrecognition'], ['CLIP embedding', 'clipEmbedding', 'clipembedding']]
 }, {
   title: 'Distribution',
   types: ['all'],
   shown: 2,
-  fields: [['Channels', 'channels2', 'distributionchannels'], ['Published Locations', 'publishedLocations', 'publishedlocations'], ['Auto Assigned Media', 'autoAssignedMedia', 'autoassignedmedia'], ['Conversion Preset', 'conversionPreset', 'conversionpreset']]
+  fields: [['Channels', 'channels2', 'distributionchannels'], ['Published locations', 'publishedLocations', 'publishedlocations'], ['Auto assigned media', 'autoAssignedMedia', 'autoassignedmedia'], ['Conversion preset', 'conversionPreset', 'conversionpreset']]
 }];
 
 // Back-end field key for each field name, for the page to build its query from `value.fields`.
@@ -4487,9 +4487,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 /* "3 selected assets", "1 category": the count with its noun in the right number (the legacy text always said
    "assets", even for one item or for categories) */
 const things = (count, kind = 'asset', pre = '') => count + ' ' + pre + (kind === 'category' ? count === 1 ? 'category' : 'categories' : count === 1 ? 'asset' : 'assets');
-const COLLECTIONS = ['Liturgical Art Collection', 'Social Media Assets', 'Website Banners', 'Print Materials', 'Clergy Portraits', 'Certificate Templates'];
-const MOVE_CATEGORIES = ['Banner Icon', 'Bookshelf', 'Borders - Arch', 'Borders - Circular', 'Branding - Churches', 'Cross - Traditional', 'Dome', 'Embroideries'];
-const CHANGE_CATEGORIES = ['Banner Icon', 'Borders - Arch', 'Branding - Churches', 'Dome', 'Embroideries', 'Fonts'];
+const COLLECTIONS = ['Liturgical Art Collection', 'Social Media Assets', 'Website Banners', 'Print Materials', 'Clergy Portraits', 'Certificate templates'];
+const MOVE_CATEGORIES = ['Banner icon', 'Bookshelf', 'Borders - Arch', 'Borders - Circular', 'Branding - Churches', 'Cross - Traditional', 'Dome', 'Embroideries'];
+const CHANGE_CATEGORIES = ['Banner icon', 'Borders - Arch', 'Branding - Churches', 'Dome', 'Embroideries', 'Fonts'];
 const CURRENT_CATEGORY = 'Cross - Traditional';
 const CURRENT_TAGS = ['coptic', 'orthodox', 'cross', 'gold', 'traditional'];
 const SUGGESTED_TAGS = ['church', 'liturgical', 'icon', 'border', 'certificate', 'branding'];
@@ -4498,21 +4498,21 @@ const SHARE_LINK = 'https://plenix.lacopts.org/share/xK9m2pQ';
 // the people an asset is shared with besides the signed-in person (who comes from the Platform session and can edit)
 const SHARED_WITH = [{
   name: 'John Deacon',
-  permission: 'Can View'
+  permission: 'Can view'
 }];
 const DOWNLOAD_ESTIMATE = '~24.5 MB';
 
 // DATA: choice lists (from the back end later).
 const CART_FORMATS = ['Original / Source File', 'Web Optimized (1200px max)', 'Social Media (1080 × 1080)', 'Custom Size...'];
-const CART_FILE_TYPES = ['Keep Original Format', 'PNG', 'JPG (80% quality)', 'WebP', 'SVG (vector only)', 'PDF'];
+const CART_FILE_TYPES = ['Keep original format', 'PNG', 'JPG (80% quality)', 'WebP', 'SVG (vector only)', 'PDF'];
 const STATUSES = [{
   value: 'Approved',
   tone: 'success'
 }, {
-  value: 'Pending Review',
+  value: 'Pending review',
   tone: 'warning'
 }, {
-  value: 'In Progress',
+  value: 'In progress',
   tone: 'info'
 }, {
   value: 'Draft',
@@ -4521,10 +4521,10 @@ const STATUSES = [{
   value: 'Archived',
   tone: 'danger'
 }];
-const PERMISSIONS = ['Can View', 'Can Edit', 'Admin'];
+const PERMISSIONS = ['Can view', 'Can edit', 'Admin'];
 const EXPIRATIONS = ['Never', '24 hours', '7 days', '30 days', '90 days'];
 const DOWNLOAD_FORMATS = ['Original / Source Files', 'Web Optimized (1200px, 72dpi)', 'Print Ready (300dpi)', 'Custom Size...'];
-const DOWNLOAD_FILE_TYPES = ['Keep Original Format', 'PNG', 'JPG (80% quality)', 'WebP', 'PDF'];
+const DOWNLOAD_FILE_TYPES = ['Keep original format', 'PNG', 'JPG (80% quality)', 'WebP', 'PDF'];
 const CONVERT_TO = ['PNG', 'JPG (80% quality)', 'JPG (100% quality)', 'WebP', 'SVG', 'PDF', 'TIFF'];
 const UNITS = ['px', '%', 'in', 'cm'];
 const META_TYPES = [{
@@ -4553,19 +4553,19 @@ const KEEP = '-- Keep current --';
 const META_GROUPS = [{
   title: 'General',
   types: ['all'],
-  fields: [['name', 'Name', 'text', 'Leave blank to keep current'], ['description', 'Description', 'textarea', 'Leave blank to keep current'], ['tags', 'Tags', 'text', 'Comma-separated tags...'], ['keywords', 'Keywords', 'text', 'Comma-separated keywords...'], ['rating', 'Rating', 'rating'], ['editStatus', 'Edit Status', 'select', ['Complete', 'New', 'In Progress', 'Pending Review', 'Draft', 'Archived']], ['language', 'Language', 'select', ['English', 'Arabic', 'Coptic', 'French', 'Spanish']], ['version', 'Version', 'text', 'e.g. 1.0'], ['summary', 'Summary', 'textarea', 'Brief summary...']]
+  fields: [['name', 'Name', 'text', 'Leave blank to keep current'], ['description', 'Description', 'textarea', 'Leave blank to keep current'], ['tags', 'Tags', 'text', 'Comma-separated tags...'], ['keywords', 'Keywords', 'text', 'Comma-separated keywords...'], ['rating', 'Rating', 'rating'], ['editStatus', 'Edit status', 'select', ['Complete', 'New', 'In progress', 'Pending review', 'Draft', 'Archived']], ['language', 'Language', 'select', ['English', 'Arabic', 'Coptic', 'French', 'Spanish']], ['version', 'Version', 'text', 'e.g. 1.0'], ['summary', 'Summary', 'textarea', 'Brief summary...']]
 }, {
   title: 'Categorization',
   types: ['all'],
-  fields: [['category', 'Category', 'text', 'Type to search...'], ['parentCategory', 'Parent Category', 'text', 'Parent category name'], ['displayOrder', 'Display Order', 'number', '0'], ['assetType', 'Asset Type', 'select', ['Image', 'Video', 'Audio', 'Document', '3D Model', 'Font']], ['classification', 'Classification', 'text', 'Classification']]
+  fields: [['category', 'Category', 'text', 'Type to search...'], ['parentCategory', 'Parent category', 'text', 'Parent category name'], ['displayOrder', 'Display order', 'number', '0'], ['assetType', 'Asset type', 'select', ['Image', 'Video', 'Audio', 'Document', '3D Model', 'Font']], ['classification', 'Classification', 'text', 'Classification']]
 }, {
   title: 'Ownership & Rights',
   types: ['all'],
-  fields: [['owner', 'Owner', 'text', 'Asset owner'], ['creator', 'Creator', 'text', 'Artist / Creator'], ['copyright', 'Copyright', 'text', 'e.g. Coptic Orthodox Diocese of LA'], ['copyrightNotice', 'Copyright Notice', 'text', 'IPTC copyright notice'], ['usageTerms', 'Usage Terms', 'select', ['Internal Use Only', 'Church Use - Non-Commercial', 'Creative Commons - Attribution', 'Public Domain', 'All Rights Reserved']], ['license', 'License', 'text', 'License type'], ['author', 'Author', 'text', 'Author name']]
+  fields: [['owner', 'Owner', 'text', 'Asset owner'], ['creator', 'Creator', 'text', 'Artist / Creator'], ['copyright', 'Copyright', 'text', 'e.g. Coptic Orthodox Diocese of LA'], ['copyrightNotice', 'Copyright notice', 'text', 'IPTC copyright notice'], ['usageTerms', 'Usage terms', 'select', ['Internal use only', 'Church Use - Non-Commercial', 'Creative Commons - Attribution', 'Public domain', 'All Rights Reserved']], ['license', 'License', 'text', 'License type'], ['author', 'Author', 'text', 'Author name']]
 }, {
   title: 'Dates',
   types: ['all'],
-  fields: [['dateCreated', 'Date Created', 'date'], ['dateModified', 'Date Modified', 'date'], ['publishDate', 'Publish Date', 'date'], ['expirationDate', 'Expiration Date', 'date']]
+  fields: [['dateCreated', 'Date created', 'date'], ['dateModified', 'Date modified', 'date'], ['publishDate', 'Publish date', 'date'], ['expirationDate', 'Expiration date', 'date']]
 }, {
   title: 'Dimensions & Resolution',
   types: ['image', 'video'],
@@ -4573,31 +4573,31 @@ const META_GROUPS = [{
 }, {
   title: 'Camera & Lens',
   types: ['image', 'video'],
-  fields: [['cameraMake', 'Camera Make', 'text', 'e.g. Canon'], ['cameraModel', 'Camera Model', 'text', 'e.g. EOS R5'], ['lensType', 'Lens Type', 'text', 'e.g. RF 24-70mm']]
+  fields: [['cameraMake', 'Camera make', 'text', 'e.g. Canon'], ['cameraModel', 'Camera model', 'text', 'e.g. EOS R5'], ['lensType', 'Lens type', 'text', 'e.g. RF 24-70mm']]
 }, {
   title: 'Exposure & Shooting',
   types: ['image'],
-  fields: [['focalLength', 'Focal Length', 'text', 'e.g. 50mm'], ['aperture', 'Aperture', 'text', 'e.g. f/2.8'], ['shutterSpeed', 'Shutter Speed', 'text', 'e.g. 1/125'], ['iso', 'ISO', 'number', 'e.g. 400'], ['whiteBalance', 'White Balance', 'select', ['Auto', 'Daylight', 'Cloudy', 'Tungsten', 'Fluorescent', 'Flash']], ['flash', 'Flash', 'select', ['Fired', 'Did not fire', 'Auto']]]
+  fields: [['focalLength', 'Focal length', 'text', 'e.g. 50mm'], ['aperture', 'Aperture', 'text', 'e.g. f/2.8'], ['shutterSpeed', 'Shutter speed', 'text', 'e.g. 1/125'], ['iso', 'ISO', 'number', 'e.g. 400'], ['whiteBalance', 'White balance', 'select', ['Auto', 'Daylight', 'Cloudy', 'Tungsten', 'Fluorescent', 'Flash']], ['flash', 'Flash', 'select', ['Fired', 'Did not fire', 'Auto']]]
 }, {
   title: 'Color & Image',
   types: ['image'],
-  fields: [['colorSpace', 'Color Space', 'select', ['sRGB', 'Adobe RGB', 'ProPhoto RGB', 'Display P3']], ['colorProfile', 'Color Profile', 'text', 'ICC profile name'], ['bitDepth', 'Bit Depth', 'select', ['8', '16', '32']]]
+  fields: [['colorSpace', 'Color space', 'select', ['sRGB', 'Adobe RGB', 'ProPhoto RGB', 'Display P3']], ['colorProfile', 'Color profile', 'text', 'ICC profile name'], ['bitDepth', 'Bit depth', 'select', ['8', '16', '32']]]
 }, {
   title: 'Location (GPS)',
   types: ['image', 'video'],
-  fields: [['gpsLatitude', 'GPS Latitude', 'text', 'e.g. 34.0522'], ['gpsLongitude', 'GPS Longitude', 'text', 'e.g. -118.2437'], ['gpsAltitude', 'GPS Altitude', 'text', 'meters']]
+  fields: [['gpsLatitude', 'GPS latitude', 'text', 'e.g. 34.0522'], ['gpsLongitude', 'GPS longitude', 'text', 'e.g. -118.2437'], ['gpsAltitude', 'GPS altitude', 'text', 'meters']]
 }, {
   title: 'IPTC / XMP',
   types: ['image'],
   fields: [['headline', 'Headline', 'text', 'IPTC headline'], ['caption', 'Caption', 'textarea', 'Caption / abstract'], ['byLine', 'By-line', 'text', 'Photographer / creator'], ['credit', 'Credit', 'text', 'Credit line'], ['source', 'Source', 'text', 'Original source'], ['instructions', 'Instructions', 'textarea', 'Special instructions']]
 }, {
-  title: 'IPTC Location',
+  title: 'IPTC location',
   types: ['image'],
   fields: [['subLocation', 'Sub-location', 'text', 'Specific location'], ['city', 'City', 'text', 'City'], ['stateProvince', 'State / Province', 'text', 'State or province'], ['country', 'Country', 'text', 'Country name']]
 }, {
   title: 'Video — Stream',
   types: ['video'],
-  fields: [['duration', 'Duration', 'text', 'HH:MM:SS', true], ['frameRate', 'Frame Rate', 'text', 'e.g. 29.97', true], ['videoCodec', 'Video Codec', 'text', 'e.g. H.264', true], ['videoBitrate', 'Video Bitrate', 'text', 'e.g. 5000 kbps', true], ['resolution', 'Resolution', 'text', 'e.g. 1920x1080', true]]
+  fields: [['duration', 'Duration', 'text', 'HH:MM:SS', true], ['frameRate', 'Frame rate', 'text', 'e.g. 29.97', true], ['videoCodec', 'Video codec', 'text', 'e.g. H.264', true], ['videoBitrate', 'Video bitrate', 'text', 'e.g. 5000 kbps', true], ['resolution', 'Resolution', 'text', 'e.g. 1920x1080', true]]
 }, {
   title: 'Audio — ID3 Tags',
   types: ['audio'],
@@ -4605,19 +4605,19 @@ const META_GROUPS = [{
 }, {
   title: 'Audio — Stream',
   types: ['audio'],
-  fields: [['duration2', 'Duration', 'text', 'HH:MM:SS', true], ['codec', 'Codec', 'text', 'e.g. AAC', true], ['bitrate', 'Bitrate', 'text', 'e.g. 320 kbps', true], ['sampleRate', 'Sample Rate', 'text', 'e.g. 44100 Hz', true]]
+  fields: [['duration2', 'Duration', 'text', 'HH:MM:SS', true], ['codec', 'Codec', 'text', 'e.g. AAC', true], ['bitrate', 'Bitrate', 'text', 'e.g. 320 kbps', true], ['sampleRate', 'Sample rate', 'text', 'e.g. 44100 Hz', true]]
 }, {
   title: 'Document',
   types: ['document'],
-  fields: [['title2', 'Title', 'text', 'Document title'], ['subject', 'Subject', 'text', 'Subject'], ['pageCount', 'Page Count', 'number', '', true], ['pdfProducer', 'PDF Producer', 'text', '', true]]
+  fields: [['title2', 'Title', 'text', 'Document title'], ['subject', 'Subject', 'text', 'Subject'], ['pageCount', 'Page count', 'number', '', true], ['pdfProducer', 'PDF producer', 'text', '', true]]
 }, {
   title: '3D / Model',
   types: ['3d'],
-  fields: [['geometryType', 'Geometry Type', 'select', ['Mesh', 'NURBS', 'Solid']], ['vertexCount', 'Vertex Count', 'number', '', true], ['faceCount', 'Face Count', 'number', '', true], ['sceneUnits', 'Scene Units', 'select', ['mm', 'cm', 'm', 'in']], ['upAxis', 'Up Axis', 'select', ['Y-up', 'Z-up']], ['fileFormat', 'File Format', 'text', 'e.g. FBX, GLTF', true], ['sourceApp', 'Source App', 'text', 'e.g. Blender', true]]
+  fields: [['geometryType', 'Geometry type', 'select', ['Mesh', 'NURBS', 'Solid']], ['vertexCount', 'Vertex count', 'number', '', true], ['faceCount', 'Face count', 'number', '', true], ['sceneUnits', 'Scene units', 'select', ['mm', 'cm', 'm', 'in']], ['upAxis', 'Up axis', 'select', ['Y-up', 'Z-up']], ['fileFormat', 'File format', 'text', 'e.g. FBX, GLTF', true], ['sourceApp', 'Source app', 'text', 'e.g. Blender', true]]
 }, {
   title: 'Distribution',
   types: ['all'],
-  fields: [['channels', 'Channels', 'text', 'Distribution channels'], ['conversionPreset', 'Conversion Preset', 'select', ['Web Optimized', 'Print Ready', 'Social Media', 'Original']]]
+  fields: [['channels', 'Channels', 'text', 'Distribution channels'], ['conversionPreset', 'Conversion preset', 'select', ['Web optimized', 'Print ready', 'Social Media', 'Original']]]
 }];
 
 /* ── wording and the legacy action map (plenix.js bulkAction) ── */
@@ -4627,24 +4627,24 @@ const BULK_ACTIONS = {
   'Delete': 'baDelete',
   'Add to Collection': 'baCollection',
   'Move': 'baMove',
-  'Change Category': 'baChangeCategory',
+  'Change category': 'baChangeCategory',
   'Add to Cart': 'baCart',
-  'Change Status': 'baStatus',
-  'Update Metadata': 'baMetadata',
-  'Edit Tags': 'baTags',
+  'Change status': 'baStatus',
+  'Update metadata': 'baMetadata',
+  'Edit tags': 'baTags',
   'Rating': 'baRating',
   'Share': 'baShare',
-  'Delete Category': 'baDelete',
-  'Move Category': 'baMove',
-  'Change Category Status': 'baStatus',
-  'Share Category': 'baShare',
-  'Rename Category': 'baRename',
-  'Edit Category': 'baMetadata'
+  'Delete category': 'baDelete',
+  'Move category': 'baMove',
+  'Change category status': 'baStatus',
+  'Share category': 'baShare',
+  'Rename category': 'baRename',
+  'Edit category': 'baMetadata'
 };
-// Buttons on the category bar (index.html #catBulkBar); 'Download Category' and 'Download Category as' have no dialog.
-const CATEGORY_ACTIONS = ['Delete Category', 'Move Category', 'Change Category Status', 'Share Category', 'Rename Category', 'Edit Category', 'Download Category', 'Download Category as'];
+// Buttons on the category bar (index.html #catBulkBar); 'Download category' and 'Download Category as' have no dialog.
+const CATEGORY_ACTIONS = ['Delete category', 'Move category', 'Change category status', 'Share category', 'Rename category', 'Edit category', 'Download category', 'Download Category as'];
 // .single-only buttons: disabled while more than one item is selected.
-const SINGLE_ONLY = ['Rename Category', 'Edit Category', 'Edit Image', 'Regenerate Thumbnail'];
+const SINGLE_ONLY = ['Rename category', 'Edit category', 'Edit image', 'Regenerate thumbnail'];
 function bulkDialogFor(action) {
   const id = BULK_ACTIONS[action];
   if (!id) return null;
@@ -4790,7 +4790,7 @@ function CollectionInner({
     onClick: () => {
       if (onCreateCollection) onCreateCollection();
     }
-  }, "Create New Collection"))));
+  }, "Create new collection"))));
 }
 
 /* ── category pickers (selectOnly 'selected') shared by baMove and baChangeCategory ── */
@@ -4856,7 +4856,7 @@ function MoveInner({
     onClose: onClose,
     size: "sm",
     icon: "move",
-    title: "Move Assets",
+    title: "Move assets",
     description: 'Select destination category for ' + things(count, kind),
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
@@ -4915,11 +4915,11 @@ function ChangeCategoryInner({
     onClose: onClose,
     size: "sm",
     icon: "folder",
-    title: "Change Category",
+    title: "Change category",
     description: 'Reassign ' + things(count, kind) + ' to a different category',
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
-      label: "Change Category",
+      label: "Change category",
       onApply: onApply,
       values: {
         category: dest
@@ -4927,8 +4927,8 @@ function ChangeCategoryInner({
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-stack plx-stack--gap-xs"
-  }, /*#__PURE__*/_react.default.createElement(Caption, null, "Current Category"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagList, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tag, null, currentCategory))), /*#__PURE__*/_react.default.createElement(CategoryPicker, {
-    label: "New Category",
+  }, /*#__PURE__*/_react.default.createElement(Caption, null, "Current category"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagList, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tag, null, currentCategory))), /*#__PURE__*/_react.default.createElement(CategoryPicker, {
+    label: "New category",
     placeholder: "Type to search categories...",
     name: "newCategory",
     list: CHANGE_CATEGORIES,
@@ -4980,7 +4980,7 @@ function CartInner({
       }
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RadioGroup, {
-    label: "Download Format",
+    label: "Download format",
     name: "cartFmt",
     value: format,
     onChange: setFormat,
@@ -4989,7 +4989,7 @@ function CartInner({
       label: v
     }))
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "File Type"
+    label: "File type"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
     name: "fileType",
     value: fileType,
@@ -5023,7 +5023,7 @@ function StatusInner({
   kind,
   onApply
 }) {
-  const [status, setStatus] = _react.default.useState('Pending Review');
+  const [status, setStatus] = _react.default.useState('Pending review');
   const [note, setNote] = _react.default.useState('');
   const options = STATUSES.map(s => ({
     value: s.value,
@@ -5038,11 +5038,11 @@ function StatusInner({
     onClose: onClose,
     size: "sm",
     icon: "circle-check",
-    title: "Change Status",
+    title: "Change status",
     description: 'Set edit status for ' + things(count, kind, 'selected '),
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
-      label: "Apply Status",
+      label: "Apply status",
       onApply: onApply,
       values: {
         status,
@@ -5050,7 +5050,7 @@ function StatusInner({
       }
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RadioGroup, {
-    label: "New Status",
+    label: "New status",
     name: "bulkStatus",
     value: status,
     onChange: setStatus,
@@ -5137,11 +5137,11 @@ function MetadataInner({
     onClose: onClose,
     size: "lg",
     icon: "fields",
-    title: "Update Metadata",
+    title: "Update metadata",
     description: 'Batch-edit metadata for ' + things(count, kind, 'selected '),
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
-      label: "Save Metadata",
+      label: "Save metadata",
       onApply: onApply,
       values: {
         fields: values,
@@ -5239,16 +5239,16 @@ function TagsInner({
     onClose: onClose,
     size: "sm",
     icon: "tags",
-    title: "Edit Tags",
+    title: "Edit tags",
     description: 'Add or remove tags for ' + things(count, kind, 'selected '),
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
-      label: "Apply Tags",
+      label: "Apply tags",
       onApply: onApply,
       values: values
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Add Tags"
+    label: "Add tags"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "addTags",
     placeholder: "Type tags separated by commas...",
@@ -5257,14 +5257,14 @@ function TagsInner({
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-stack plx-stack--gap-xs"
   }, /*#__PURE__*/_react.default.createElement(Caption, null, "Current Tags (click \xD7 to remove)"), current.length ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagList, {
-    label: "Current Tags"
+    label: "Current tags"
   }, current.map(t => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tag, {
     key: t,
     onRemove: () => setCurrent(current.filter(x => x !== t))
   }, t))) : /*#__PURE__*/_react.default.createElement(NoData, null)), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-stack plx-stack--gap-xs"
   }, /*#__PURE__*/_react.default.createElement(Caption, null, "Suggested Tags (click to add)"), suggested.length ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagList, {
-    label: "Suggested Tags"
+    label: "Suggested tags"
   }, suggested.map(s => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Chip, {
     key: s.t,
     selected: s.on,
@@ -5305,11 +5305,11 @@ function RatingInner({
     onClose: onClose,
     size: "sm",
     icon: "sparkle",
-    title: "Set Rating",
+    title: "Set rating",
     description: 'Rate ' + things(count, kind, 'selected '),
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
-      label: "Apply Rating",
+      label: "Apply rating",
       onApply: onApply,
       values: {
         rating: stars
@@ -5359,7 +5359,7 @@ function ShareInner({
   } = (0, _plenixPlatform.useSession)();
   const [people, setPeople] = _react.default.useState(() => [{
     name: account.name,
-    permission: 'Can Edit'
+    permission: 'Can edit'
   }].concat(SHARED_WITH));
   const [expiration, setExpiration] = _react.default.useState('30 days');
   const [opts, setOpts] = _react.default.useState({
@@ -5396,7 +5396,7 @@ function ShareInner({
       }
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Share Link"
+    label: "Share link"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "shareLink",
     readOnly: true,
@@ -5408,7 +5408,7 @@ function ShareInner({
       tone: 'success'
     })
   }, "Copy")), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Share With People"
+    label: "Share with people"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "shareWithPeople",
     placeholder: "Enter name or email...",
@@ -5433,7 +5433,7 @@ function ShareInner({
   }, PERMISSIONS.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o
   }, o)))))) : /*#__PURE__*/_react.default.createElement(NoData, null), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Link Expiration"
+    label: "Link expiration"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
     name: "linkExpiration",
     value: expiration,
@@ -5495,7 +5495,7 @@ function DownloadInner({
       label: v
     }))
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "File Type"
+    label: "File type"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
     name: "fileType",
     value: fileType,
@@ -5548,7 +5548,7 @@ function DownloadAsInner({
     onClose: onClose,
     size: "sm",
     icon: "download-alt",
-    title: "Download As",
+    title: "Download as",
     description: 'Convert and download ' + things(count, kind, 'selected '),
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
@@ -5557,7 +5557,7 @@ function DownloadAsInner({
       values: v
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Convert To"
+    label: "Convert to"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
     name: "convertTo",
     value: v.convertTo,
@@ -5631,7 +5631,7 @@ function RenameInner({
     onClose: onClose,
     size: "sm",
     icon: "rename",
-    title: "Rename Category",
+    title: "Rename category",
     description: "Rename selected category",
     footer: /*#__PURE__*/_react.default.createElement(Footer, {
       onClose: onClose,
@@ -5643,13 +5643,13 @@ function RenameInner({
       }
     })
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Current Name"
+    label: "Current name"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "currentName",
     readOnly: true,
     value: itemName
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "New Name"
+    label: "New name"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "newName",
     placeholder: "Enter new name...",
@@ -5886,7 +5886,7 @@ function HomePage() {
   const [saved, setSaved] = _react.default.useState(D.SAVED_SEARCHES);
   const [query, setQuery] = _react.default.useState(params.get('q') || '');
   const [heading, setHeading] = _react.default.useState('');
-  const [active, setActive] = _react.default.useState('All Categories');
+  const [active, setActive] = _react.default.useState('All categories');
   const [mode, setMode] = _react.default.useState('grid');
   const [size, setSize] = _react.default.useState('L');
   const [sortLabel, setSortLabel] = _react.default.useState('Sort');
@@ -5948,7 +5948,7 @@ function HomePage() {
       });
       return;
     }
-    if (kind === 'categories' && name === 'All Categories') showView('categories');else if (kind === 'collections' && name === 'All Collections') showView('collections');else openCategory(name);
+    if (kind === 'categories' && name === 'All categories') showView('categories');else if (kind === 'collections' && name === 'All collections') showView('collections');else openCategory(name);
   };
   const search = q => {
     setQuery(q);
@@ -6119,7 +6119,7 @@ function HomePage() {
       items: [{
         id: 'd',
         label: 'Download',
-        onSelect: () => bulk('Download Category')
+        onSelect: () => bulk('Download category')
       }, {
         id: 'da',
         label: 'Download as',
@@ -6130,34 +6130,34 @@ function HomePage() {
       label: 'Delete',
       icon: 'trash-detail',
       danger: true,
-      onSelect: () => bulk('Delete Category')
+      onSelect: () => bulk('Delete category')
     }, {
       id: 'move',
       label: 'Move',
       icon: 'move',
-      onSelect: () => bulk('Move Category')
+      onSelect: () => bulk('Move category')
     }, {
       id: 'rename',
       label: 'Rename',
       icon: 'rename',
       single: true,
-      onSelect: () => bulk('Rename Category')
+      onSelect: () => bulk('Rename category')
     }, {
       id: 'meta',
-      label: 'Edit Metadata',
+      label: 'Edit metadata',
       icon: 'fields',
       single: true,
-      onSelect: () => bulk('Edit Category')
+      onSelect: () => bulk('Edit category')
     }, {
       id: 'status',
-      label: 'Change Status',
+      label: 'Change status',
       icon: 'circle-check',
-      onSelect: () => bulk('Change Category Status')
+      onSelect: () => bulk('Change category status')
     }, {
       id: 'share',
       label: 'Share',
       icon: 'share',
-      onSelect: () => bulk('Share Category')
+      onSelect: () => bulk('Share category')
     }]
   });
   const item = (label, action, extra) => ({
@@ -6182,16 +6182,16 @@ function HomePage() {
       id: 'edit',
       label: 'Edit',
       icon: 'fields',
-      items: [item('Multi Edit', 'Multi Edit'), item('Edit Image', 'Edit Image', {
+      items: [item('Multi edit', 'Multi edit'), item('Edit image', 'Edit image', {
         single: true
-      }), item('Update Metadata', 'Update Metadata'), item('Approve', 'Approve'), item('Reject', 'Reject'), item('Export', 'Export'), item('Delete Selected Assets', 'Delete', {
+      }), item('Update metadata', 'Update metadata'), item('Approve', 'Approve'), item('Reject', 'Reject'), item('Export', 'Export'), item('Delete selected assets', 'Delete', {
         danger: true
-      }), item('Print Assets', 'Print Assets')]
+      }), item('Print assets', 'Print assets')]
     }, {
       id: 'add',
-      label: 'Add To',
+      label: 'Add to',
       icon: 'briefcase-plus',
-      items: [item('Cart', 'Add to Cart'), item('Bookmarks', 'Add to Bookmarks'), item('Document', 'Add to Document'), item('Person', 'Add to Person'), item('Categories', 'Add to Categories'), item('Collections', 'Add to Collections'), item('Media Profile', 'Add to Media Profile')]
+      items: [item('Cart', 'Add to Cart'), item('Bookmarks', 'Add to Bookmarks'), item('Document', 'Add to Document'), item('Person', 'Add to Person'), item('Categories', 'Add to Categories'), item('Collections', 'Add to Collections'), item('Media profile', 'Add to Media Profile')]
     }, {
       id: 'move',
       label: 'Move',
@@ -6201,7 +6201,7 @@ function HomePage() {
       id: 'share',
       label: 'Share',
       icon: 'share',
-      items: [item('Email Assets', 'Email Assets'), item('Publish Assets to Server', 'Publish Assets to Server')]
+      items: [item('Email assets', 'Email assets'), item('Publish Assets to Server', 'Publish Assets to Server')]
     }, {
       id: 'publish',
       label: 'Publish',
@@ -6209,10 +6209,10 @@ function HomePage() {
       onSelect: () => bulk('Publish')
     }, {
       id: 'thumb',
-      label: 'Regenerate Thumbnail',
+      label: 'Regenerate thumbnail',
       icon: 'image-b-2',
       single: true,
-      onSelect: () => bulk('Regenerate Thumbnail')
+      onSelect: () => bulk('Regenerate thumbnail')
     }]
   });
   const found = findAssets(find);
@@ -6322,7 +6322,7 @@ function HomePage() {
       }),
       columns: [{
         key: 'name',
-        header: 'Category Name',
+        header: 'Category name',
         sortable: true,
         emphasis: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
@@ -6370,7 +6370,7 @@ function HomePage() {
       }),
       columns: [{
         key: 'name',
-        header: 'Collection Name',
+        header: 'Collection name',
         sortable: true,
         emphasis: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
@@ -6463,7 +6463,7 @@ function HomePage() {
         data: true
       }, {
         key: 'date',
-        header: 'Date Added',
+        header: 'Date added',
         sortable: true,
         data: true
       }, {
@@ -6500,8 +6500,8 @@ function HomePage() {
     }),
     onPerPageChange: () => {}
   });
-  const title = view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : heading || 'Search Results';
-  const countText = view === 'categories' ? D.CATEGORY_COUNT_LABEL : view === 'collections' ? D.COLLECTION_CARDS.length + ' collections' : heading === 'Search Results' ? D.SEARCH_COUNT + ' assets found for "' + (query || D.SEARCH_QUERY) + '"' : '';
+  const title = view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : heading || 'Search results';
+  const countText = view === 'categories' ? D.CATEGORY_COUNT_LABEL : view === 'collections' ? D.COLLECTION_CARDS.length + ' collections' : heading === 'Search results' ? D.SEARCH_COUNT + ' assets found for "' + (query || D.SEARCH_QUERY) + '"' : '';
 
   /* ── panes ── */
   const sidebar = /*#__PURE__*/_react.default.createElement(_Sidebar.Sidebar, {
@@ -6623,8 +6623,9 @@ function HomePage() {
   }, countText) : null), view === 'categories' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     variant: "primary",
+    icon: "add",
     onClick: () => openDialog('newCatModal')
-  }, "+ New Category") : null, view === 'collections' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+  }, "New category") : null, view === 'collections' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     variant: "primary",
     onClick: () => openDialog('newCollectionModal')
@@ -6709,10 +6710,10 @@ const RATIOS = {
   '2:1': '2 / 1',
   '1:2': '1 / 2'
 };
-const RATIO_CHOICES = ['Original', 'Free Transform'].concat(Object.keys(RATIOS));
+const RATIO_CHOICES = ['Original', 'Free transform'].concat(Object.keys(RATIOS));
 const FONTS = ['Lato', 'Arvo', 'Caveat', 'Corinthia', 'DancingScript', 'KodeMono', 'MadimiOne', 'MajorMonoDisplay', 'Montserrat', 'OpenSans'];
 const EXPORTS = ['PNG', 'JPEG', 'SVG', 'TIFF', 'PSD', 'EPS', 'GIF', 'BMP', 'WebP', 'PDF'];
-const SLIDERS = [['brightness', 'Brightness', -100, 100, '%'], ['contrast', 'Contrast', -100, 100, '%'], ['saturation', 'Saturation', -100, 100, '%'], ['hueRotation', 'Hue Rotation', 0, 360, ''], ['vibrance', 'Vibrance', -100, 100, ''], ['blur', 'Blur', 0, 20, ''], ['noise', 'Noise', 0, 100, ''], ['pixelate', 'Pixelate', 0, 50, '']];
+const SLIDERS = [['brightness', 'Brightness', -100, 100, '%'], ['contrast', 'Contrast', -100, 100, '%'], ['saturation', 'Saturation', -100, 100, '%'], ['hueRotation', 'Hue rotation', 0, 360, ''], ['vibrance', 'Vibrance', -100, 100, ''], ['blur', 'Blur', 0, 20, ''], ['noise', 'Noise', 0, 100, ''], ['pixelate', 'Pixelate', 0, 50, '']];
 const TOOLS = [['filters', 'Filters', 'ed-filters'], ['crop', 'Crop', 'ed-crop'], ['rotate', 'Rotate', 'ed-rotate-cw'], ['text', 'Text', 'ed-text'], ['image', 'Image', 'ed-image']];
 const START = {
   brightness: 0,
@@ -6845,10 +6846,10 @@ function ImageEditorPage() {
   }, "Save"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     onClick: () => say('Saved as a copy')
   }, "Save as"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
-    label: "Export As",
+    label: "Export as",
     trigger: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       caret: true
-    }, "Export As")
+    }, "Export as")
   }, EXPORTS.map(x => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
     key: x,
     onSelect: () => say('Exported as ' + x)
@@ -6944,7 +6945,7 @@ function ImageEditorPage() {
       height: "56"
     }), /*#__PURE__*/_react.default.createElement("span", null, name))))),
     crop: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-      label: "Aspect Ratio"
+      label: "Aspect ratio"
     }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
       name: "aspectRatio",
       value: ratio,
@@ -7000,7 +7001,7 @@ function ImageEditorPage() {
         text: e.target.value
       })
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-      label: "Font Family"
+      label: "Font family"
     }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
       name: "fontFamily",
       value: text.font,
@@ -7011,7 +7012,7 @@ function ImageEditorPage() {
     }, FONTS.map(x => /*#__PURE__*/_react.default.createElement("option", {
       key: x
     }, x)))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SegmentedControl, {
-      label: "Font Weight",
+      label: "Font weight",
       value: text.weight,
       onChange: w => setText({
         ...text,

@@ -96,7 +96,7 @@ export function HomePage() {
   const [saved, setSaved] = React.useState(D.SAVED_SEARCHES);
   const [query, setQuery] = React.useState(params.get('q') || '');
   const [heading, setHeading] = React.useState('');
-  const [active, setActive] = React.useState('All Categories');
+  const [active, setActive] = React.useState('All categories');
   const [mode, setMode] = React.useState('grid');
   const [size, setSize] = React.useState('L');
   const [sortLabel, setSortLabel] = React.useState('Sort');
@@ -123,8 +123,8 @@ export function HomePage() {
   const onSidebar = (kind, name) => {
     setActive(name);
     if (kind === 'saved') { const s = saved.find((x) => x.name === name); openFind({ query: s ? s.query : '', filters: s ? s.filters : {}, saved: name }); return; }
-    if (kind === 'categories' && name === 'All Categories') showView('categories');
-    else if (kind === 'collections' && name === 'All Collections') showView('collections');
+    if (kind === 'categories' && name === 'All categories') showView('categories');
+    else if (kind === 'collections' && name === 'All collections') showView('collections');
     else openCategory(name);
   };
   const search = (q) => { setQuery(q); setActive(null); openFind({ query: q }); };
@@ -170,13 +170,13 @@ export function HomePage() {
   const catBulk = (
     <BulkActions count={selCats.length} total={D.CATEGORY_CARDS.length} noun="category" plural="categories" onSelectAll={() => setSelCats(D.CATEGORY_CARDS.map((c) => c.id))} onClear={() => setSelCats([])}
       label="Category actions" actions={[
-        { id: 'dl', label: 'Download', icon: 'download-tray', items: [{ id: 'd', label: 'Download', onSelect: () => bulk('Download Category') }, { id: 'da', label: 'Download as', onSelect: () => bulk('Download Category as') }] },
-        { id: 'del', label: 'Delete', icon: 'trash-detail', danger: true, onSelect: () => bulk('Delete Category') },
-        { id: 'move', label: 'Move', icon: 'move', onSelect: () => bulk('Move Category') },
-        { id: 'rename', label: 'Rename', icon: 'rename', single: true, onSelect: () => bulk('Rename Category') },
-        { id: 'meta', label: 'Edit Metadata', icon: 'fields', single: true, onSelect: () => bulk('Edit Category') },
-        { id: 'status', label: 'Change Status', icon: 'circle-check', onSelect: () => bulk('Change Category Status') },
-        { id: 'share', label: 'Share', icon: 'share', onSelect: () => bulk('Share Category') },
+        { id: 'dl', label: 'Download', icon: 'download-tray', items: [{ id: 'd', label: 'Download', onSelect: () => bulk('Download category') }, { id: 'da', label: 'Download as', onSelect: () => bulk('Download Category as') }] },
+        { id: 'del', label: 'Delete', icon: 'trash-detail', danger: true, onSelect: () => bulk('Delete category') },
+        { id: 'move', label: 'Move', icon: 'move', onSelect: () => bulk('Move category') },
+        { id: 'rename', label: 'Rename', icon: 'rename', single: true, onSelect: () => bulk('Rename category') },
+        { id: 'meta', label: 'Edit metadata', icon: 'fields', single: true, onSelect: () => bulk('Edit category') },
+        { id: 'status', label: 'Change status', icon: 'circle-check', onSelect: () => bulk('Change category status') },
+        { id: 'share', label: 'Share', icon: 'share', onSelect: () => bulk('Share category') },
       ]} />
   );
   const item = (label, action, extra) => ({ id: action, label, onSelect: () => bulk(action), ...extra });
@@ -184,12 +184,12 @@ export function HomePage() {
     <BulkActions count={selAssets.length} total={D.ASSETS.length} noun="asset" onSelectAll={() => setSelAssets(D.ASSETS.map((a) => a.id))} onClear={() => setSelAssets([])}
       label="Asset actions" actions={[
         { id: 'dl', label: 'Download', icon: 'download-tray', items: [item('Download', 'Download'), item('Download as', 'Download as')] },
-        { id: 'edit', label: 'Edit', icon: 'fields', items: [item('Multi Edit', 'Multi Edit'), item('Edit Image', 'Edit Image', { single: true }), item('Update Metadata', 'Update Metadata'), item('Approve', 'Approve'), item('Reject', 'Reject'), item('Export', 'Export'), item('Delete Selected Assets', 'Delete', { danger: true }), item('Print Assets', 'Print Assets')] },
-        { id: 'add', label: 'Add To', icon: 'briefcase-plus', items: [item('Cart', 'Add to Cart'), item('Bookmarks', 'Add to Bookmarks'), item('Document', 'Add to Document'), item('Person', 'Add to Person'), item('Categories', 'Add to Categories'), item('Collections', 'Add to Collections'), item('Media Profile', 'Add to Media Profile')] },
+        { id: 'edit', label: 'Edit', icon: 'fields', items: [item('Multi edit', 'Multi edit'), item('Edit image', 'Edit image', { single: true }), item('Update metadata', 'Update metadata'), item('Approve', 'Approve'), item('Reject', 'Reject'), item('Export', 'Export'), item('Delete selected assets', 'Delete', { danger: true }), item('Print assets', 'Print assets')] },
+        { id: 'add', label: 'Add to', icon: 'briefcase-plus', items: [item('Cart', 'Add to Cart'), item('Bookmarks', 'Add to Bookmarks'), item('Document', 'Add to Document'), item('Person', 'Add to Person'), item('Categories', 'Add to Categories'), item('Collections', 'Add to Collections'), item('Media profile', 'Add to Media Profile')] },
         { id: 'move', label: 'Move', icon: 'move', onSelect: () => bulk('Move') },
-        { id: 'share', label: 'Share', icon: 'share', items: [item('Email Assets', 'Email Assets'), item('Publish Assets to Server', 'Publish Assets to Server')] },
+        { id: 'share', label: 'Share', icon: 'share', items: [item('Email assets', 'Email assets'), item('Publish Assets to Server', 'Publish Assets to Server')] },
         { id: 'publish', label: 'Publish', icon: 'upload', onSelect: () => bulk('Publish') },
-        { id: 'thumb', label: 'Regenerate Thumbnail', icon: 'image-b-2', single: true, onSelect: () => bulk('Regenerate Thumbnail') },
+        { id: 'thumb', label: 'Regenerate thumbnail', icon: 'image-b-2', single: true, onSelect: () => bulk('Regenerate thumbnail') },
       ]} />
   );
 
@@ -227,7 +227,7 @@ export function HomePage() {
     ) : (
       <Table caption="Categories" pinFirst selectable selected={selCats} onSelectionChange={setSelCats} sort={tableSort} onSortChange={setTableSort} onRowClick={(r) => openCategory(r.name)}
         rows={sortRows(D.CATEGORY_CARDS, tableSort, { count: 'num', modified: 'date' })} columns={[
-          { key: 'name', header: 'Category Name', sortable: true, emphasis: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
+          { key: 'name', header: 'Category name', sortable: true, emphasis: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
           { key: 'count', header: 'Assets', sortable: true, data: true }, { key: 'modified', header: 'Modified', sortable: true, data: true },
           { key: 'status', header: 'Status', sortable: true, render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
     );
@@ -239,7 +239,7 @@ export function HomePage() {
     ) : (
       <Table caption="Collections" pinFirst sort={tableSort} onSortChange={setTableSort} onRowClick={(r) => openCategory(r.name)}
         rows={sortRows(D.COLLECTION_CARDS, tableSort, { count: 'num', updated: 'date' })} columns={[
-          { key: 'name', header: 'Collection Name', sortable: true, emphasis: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
+          { key: 'name', header: 'Collection name', sortable: true, emphasis: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
           { key: 'count', header: 'Assets', sortable: true, data: true }, { key: 'updated', header: 'Updated', sortable: true, data: true }, { key: 'owner', header: 'Owner', sortable: true }]} />
     );
   } else {
@@ -257,7 +257,7 @@ export function HomePage() {
         rows={sortRows(list, tableSort, { size: 'size', date: 'date' })} columns={[
           { key: 'name', header: 'Name', sortable: true, emphasis: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
           { key: 'cat', header: 'Category', sortable: true, render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
-          { key: 'badge', header: 'Format', sortable: true }, { key: 'size', header: 'Size', sortable: true, data: true }, { key: 'date', header: 'Date Added', sortable: true, data: true },
+          { key: 'badge', header: 'Format', sortable: true }, { key: 'size', header: 'Size', sortable: true, data: true }, { key: 'date', header: 'Date added', sortable: true, data: true },
           { key: 'status', header: 'Status', sortable: true, render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
     );
   }
@@ -266,9 +266,9 @@ export function HomePage() {
       : view === 'find' ? null
       : <Pagination page={1} pageCount={27} total={D.ASSET_TOTAL} perPage={8} perPageOptions={[8, 16, 32, 64]} onPageChange={(n) => toast.show('Page ' + n, { tone: 'info' })} onPerPageChange={() => {}} />;
 
-  const title = view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : (heading || 'Search Results');
+  const title = view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : (heading || 'Search results');
   const countText = view === 'categories' ? D.CATEGORY_COUNT_LABEL : view === 'collections' ? D.COLLECTION_CARDS.length + ' collections'
-    : heading === 'Search Results' ? D.SEARCH_COUNT + ' assets found for "' + (query || D.SEARCH_QUERY) + '"' : '';
+    : heading === 'Search results' ? D.SEARCH_COUNT + ' assets found for "' + (query || D.SEARCH_QUERY) + '"' : '';
 
   /* ── panes ── */
   const sidebar = <Sidebar mode={view === 'search' ? 'search' : 'browse'} active={active} saved={saved} onRemoveSaved={(n) => setSaved(saved.filter((x) => x.name !== n))} onOpen={onSidebar} onAdd={(id) => (id === 'saveSearchModal' ? saveSearch() : openDialog(id))}
@@ -308,7 +308,7 @@ export function HomePage() {
               <Text as="h2" id="home-title" variant="title">{title}</Text>
               {countText ? <Text variant="secondary">{countText}</Text> : null}
             </Inline>
-            {view === 'categories' ? <Button size="sm" variant="primary" onClick={() => openDialog('newCatModal')}>+ New Category</Button> : null}
+            {view === 'categories' ? <Button size="sm" variant="primary" icon="add" onClick={() => openDialog('newCatModal')}>New category</Button> : null}
             {view === 'collections' ? <Button size="sm" variant="primary" onClick={() => openDialog('newCollectionModal')}>+ New Collection</Button> : null}
           </Inline>
           {toolbar}

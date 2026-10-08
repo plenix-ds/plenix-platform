@@ -10,13 +10,13 @@ import * as D from './systemSettingsData.js';
 const NAV = [
   { heading: 'Content', collapsible: true, items: [
     { id: 'properties', label: 'Properties', icon: 'settings-general' }, { id: 'fields', label: 'Fields', icon: 'settings-metadata' },
-    { id: 'asset-types', label: 'Asset Types', icon: 'settings-categories' }, { id: 'hot-folders', label: 'Hot Folders', icon: 'folder-add' },
+    { id: 'asset-types', label: 'Asset types', icon: 'settings-categories' }, { id: 'hot-folders', label: 'Hot folders', icon: 'folder-add' },
     { id: 'transcoding', label: 'Transcoding', icon: 'settings-camera' }] },
   { heading: 'People & Access', collapsible: true, items: [
     { id: 'users', label: 'Users', icon: 'settings-users' }, { id: 'groups', label: 'Groups', icon: 'briefcase' },
-    { id: 'permissions', label: 'Site Permissions', icon: 'settings-permissions' }] },
+    { id: 'permissions', label: 'Site permissions', icon: 'settings-permissions' }] },
   { heading: 'System', collapsible: true, items: [
-    { id: 'email-templates', label: 'Email Templates', icon: 'settings-email' }, { id: 'catalog-parameters', label: 'Catalog Parameters', icon: 'settings-catalog' },
+    { id: 'email-templates', label: 'Email templates', icon: 'settings-email' }, { id: 'catalog-parameters', label: 'Catalog parameters', icon: 'settings-catalog' },
     { id: 'server', label: 'Server', icon: 'settings-maintenance' }, { id: 'database', label: 'Database', icon: 'settings-database' },
     { id: 'customizations', label: 'Customizations', icon: 'settings-customize' }, { id: 'scheduler', label: 'Scheduler', icon: 'settings-scheduler' }] },
 ];
@@ -61,32 +61,32 @@ function Properties({ act }) {
   const roleCol = { key: 'name', header: 'Group / Role', emphasis: true };
   return (
     <Form act={act} saved="Save">
-      <RecordPage.Header title="Files Properties" description="Module-level configuration for the asset table." headingLevel={2} />
+      <RecordPage.Header title="Files properties" description="Module-level configuration for the asset table." headingLevel={2} />
       <Tabs variant="contained" label="Files properties" items={[
         { value: 'props', label: 'Properties', content: (
           <div className="plx-settings__rows">
-            <Field label="Default Record Label" layout="inline"><Input {...text('defaultRecordLabel')} /></Field>
-            <Field label="Tab Ordering" layout="inline"><Input {...text('tabOrdering')} /></Field>
-            {sw('enableUploading', 'Enable Uploading')}
-            {sw('enableOnSearch', 'Enable On Search')}
-            <Field label="Default Results View" layout="inline">
+            <Field label="Default record label" layout="inline"><Input {...text('defaultRecordLabel')} /></Field>
+            <Field label="Tab ordering" layout="inline"><Input {...text('tabOrdering')} /></Field>
+            {sw('enableUploading', 'Enable uploading')}
+            {sw('enableOnSearch', 'Enable on search')}
+            <Field label="Default results view" layout="inline">
               <Combobox options={views} value={p.defaultResultsView} onChange={(v) => setP({ ...p, defaultResultsView: v })} creatable
                 onCreate={(t) => { const v = t.trim(); if (v) { setViews(views.concat({ value: v, label: v })); setP({ ...p, defaultResultsView: v }); } }} />
             </Field>
-            <Field label="Default Sort Field" layout="inline"><Input {...text('defaultSortField', { placeholder: 'Default Sort Field' })} /></Field>
-            <Field label="Upload Sourcepath" layout="inline"><Input {...text('uploadSourcepath')} /></Field>
-            {sw('autoCreateEntities', 'Auto Create Entities')}
-            <Field label="Root Folder Path" layout="inline"><Input {...text('rootFolderPath', { placeholder: 'Root Folder Path' })} /></Field>
-            <Field label="Auto Create At Folder Level" layout="inline" info="Scan deep A/B/C, B = 2"><Input {...text('autoCreateAtFolderLevel')} /></Field>
-            {sw('semanticEnabled', 'Semantic Enabled')}
-            <Field label="AI Search Prompt" layout="inline"><Textarea {...text('aiSearchPrompt', { placeholder: 'AI Search Prompt' })} /></Field>
-            <Field label="AI Search Contains" layout="inline"><Textarea {...text('aiSearchContains', { placeholder: 'AI Search Contains' })} /></Field>
+            <Field label="Default sort field" layout="inline"><Input {...text('defaultSortField', { placeholder: 'Default sort field' })} /></Field>
+            <Field label="Upload sourcepath" layout="inline"><Input {...text('uploadSourcepath')} /></Field>
+            {sw('autoCreateEntities', 'Auto create entities')}
+            <Field label="Root folder path" layout="inline"><Input {...text('rootFolderPath', { placeholder: 'Root folder path' })} /></Field>
+            <Field label="Auto create at folder level" layout="inline" info="Scan deep A/B/C, B = 2"><Input {...text('autoCreateAtFolderLevel')} /></Field>
+            {sw('semanticEnabled', 'Semantic enabled')}
+            <Field label="AI search prompt" layout="inline"><Textarea {...text('aiSearchPrompt', { placeholder: 'AI search prompt' })} /></Field>
+            <Field label="AI search contains" layout="inline"><Textarea {...text('aiSearchContains', { placeholder: 'AI search contains' })} /></Field>
           </div>) },
-        { value: 'enabled', label: 'Enabled For', content: <Table caption="Enabled for" pinFirst rows={enabled} columns={[roleCol, switchCol('Enabled')]} /> },
+        { value: 'enabled', label: 'Enabled for', content: <Table caption="Enabled for" pinFirst rows={enabled} columns={[roleCol, switchCol('Enabled')]} /> },
         { value: 'actions', label: 'Actions', content: <Table caption="Actions" pinFirst rows={rowsOf(D.ACTIONS, ['name', 'roles'])}
           columns={[{ key: 'name', header: 'Action', emphasis: true }, { key: 'roles', header: 'Roles' }, { key: 'status', header: 'Status', render: () => <Badge tone="success">Active</Badge> }]} /> },
-        { value: 'view-all', label: 'View All Folders', content: <><Lead>Groups and roles that can view all folders for this module.</Lead><Table caption="View all folders" pinFirst rows={viewAll} columns={[roleCol, switchCol('View All')]} /></> },
-        { value: 'edit-all', label: 'Edit All Folders', content: <><Lead>Groups and roles that can edit all folders for this module.</Lead><Table caption="Edit all folders" pinFirst rows={editAll} columns={[roleCol, switchCol('Edit All')]} /></> },
+        { value: 'view-all', label: 'View all folders', content: <><Lead>Groups and roles that can view all folders for this module.</Lead><Table caption="View all folders" pinFirst rows={viewAll} columns={[roleCol, switchCol('View all')]} /></> },
+        { value: 'edit-all', label: 'Edit all folders', content: <><Lead>Groups and roles that can edit all folders for this module.</Lead><Table caption="Edit all folders" pinFirst rows={editAll} columns={[roleCol, switchCol('Edit all')]} /></> },
       ]} />
       <div className="plx-settings__actions"><Actions act={act} /></div>
     </Form>
@@ -104,14 +104,14 @@ function Fields({ act }) {
           <>
             <Bar label="Field actions">
               <Input name="newFieldName" width="lg" placeholder="New field name..." aria-label="New field name" />
-              <B icon="add" label="Add Field" act={act} />
+              <B icon="add" label="Add field" act={act} />
               <Search value={q} onChange={setQ} label={'Search ' + D.FIELD_TOTAL + ' fields'} />
             </Bar>
-            <Table caption="Fields" pinFirst rows={rows} empty="No fields match" columns={[{ key: 'name', header: 'Field Name', emphasis: true }, { key: 'id2', header: 'ID', data: true }, { key: 'type', header: 'Field Type' }]} />
+            <Table caption="Fields" pinFirst rows={rows} empty="No fields match" columns={[{ key: 'name', header: 'Field name', emphasis: true }, { key: 'id2', header: 'ID', data: true }, { key: 'type', header: 'Field type' }]} />
             <CountNote>{'Showing ' + rows.length + ' of ' + D.FIELD_TOTAL + ' fields'}</CountNote>
           </>) },
-        { value: 'edit-views', label: 'Edit Views', content: <Lead>Configure which fields appear on the asset edit form, and in what order.</Lead> },
-        { value: 'app-views', label: 'Application Views', content: <Lead>Configure which fields appear in application-wide views such as search results and tables.</Lead> },
+        { value: 'edit-views', label: 'Edit views', content: <Lead>Configure which fields appear on the asset edit form, and in what order.</Lead> },
+        { value: 'app-views', label: 'Application views', content: <Lead>Configure which fields appear in application-wide views such as search results and tables.</Lead> },
       ]} />
     </div>
   );
@@ -121,9 +121,9 @@ function AssetTypes({ act }) {
   const [types, setTypes] = React.useState(D.ASSET_TYPES.map(([name, ext, order]) => ({ name, ext, paths: '', order: String(order) })));
   const edit = (i, k) => (e) => setTypes(types.map((t, j) => (j === i ? { ...t, [k]: e.target.value } : t)));
   return (
-    <Form act={act} saved="Save Changes">
-      <RecordPage.Header title="Asset Types" description="The file-format categories assets are classified under, used to route transcoding and preview generation." headingLevel={2} />
-      <Bar label="Asset type actions"><B icon="add" label="Add Asset Type" act={act} /></Bar>
+    <Form act={act} saved="Save changes">
+      <RecordPage.Header title="Asset types" description="The file-format categories assets are classified under, used to route transcoding and preview generation." headingLevel={2} />
+      <Bar label="Asset type actions"><B icon="add" label="Add asset type" act={act} /></Bar>
       <Tabs variant="contained" label="Asset types" items={types.map((t, i) => ({ value: String(i), label: D.ASSET_TYPES[i][0], content: (
         <div className="plx-settings__rows">
           <Sub first>Properties</Sub>
@@ -132,7 +132,7 @@ function AssetTypes({ act }) {
           <Field label="Paths" layout="inline"><Input name="paths" placeholder="Paths" value={t.paths} onChange={edit(i, 'paths')} /></Field>
           <Field label="Ordering" layout="inline"><Input name="ordering" width="sm" value={t.order} onChange={edit(i, 'order')} /></Field>
         </div>) }))} />
-      <div className="plx-settings__actions"><Actions act={act} save="Save Changes" /></div>
+      <div className="plx-settings__actions"><Actions act={act} save="Save changes" /></div>
     </Form>
   );
 }
@@ -140,9 +140,9 @@ function AssetTypes({ act }) {
 function HotFolders({ act }) {
   return (
     <div>
-      <RecordPage.Header title="Hot Folders" description="Watched folders that are automatically scanned and imported as assets." headingLevel={2} />
+      <RecordPage.Header title="Hot folders" description="Watched folders that are automatically scanned and imported as assets." headingLevel={2} />
       <SettingsSection card>
-        <Bar label="Hot folder actions"><B icon="add" label="Add Hot Folder" act={act} /><B icon="schedule" label="Schedule Importing" act={act} /></Bar>
+        <Bar label="Hot folder actions"><B icon="add" label="Add hot folder" act={act} /><B icon="schedule" label="Schedule importing" act={act} /></Bar>
         {D.HOT_FOLDERS.map((f) => (
           <Inline key={f.name} gap="md">
             <Icon name="folder" size="lg" />
@@ -163,12 +163,12 @@ function Transcoding({ act }) {
     <div>
       <RecordPage.Header title="Transcoding" description="Conversion presets generated for each uploaded asset, by media type." headingLevel={2} />
       <Tabs variant="contained" label="Transcoding" items={[
-        { value: 'presets', label: 'Preset Configuration', content: (
+        { value: 'presets', label: 'Preset configuration', content: (
           <>
-            <Bar label="Conversion actions"><B icon="add" label="Add New Conversion" act={act} /></Bar>
+            <Bar label="Conversion actions"><B icon="add" label="Add new conversion" act={act} /></Bar>
             <Table caption="Conversion presets" pinFirst rows={rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media'])} columns={[
-              { key: 'name', header: 'Conversion', emphasis: true }, { key: 'file', header: 'Generated File', data: true }, { key: 'system', header: 'System Defined' },
-              { key: 'onImport', header: 'On Import' }, { key: 'media', header: 'Media Type' }]} />
+              { key: 'name', header: 'Conversion', emphasis: true }, { key: 'file', header: 'Generated file', data: true }, { key: 'system', header: 'System defined' },
+              { key: 'onImport', header: 'On import' }, { key: 'media', header: 'Media type' }]} />
           </>) },
         { value: 'publishing', label: 'Publishing', content: <Lead>Configure which conversions are pushed to publishing targets.</Lead> },
       ]} />
@@ -184,14 +184,14 @@ function Users({ act }) {
       <RecordPage.Header title="Users" description="Manage user accounts and view login activity." headingLevel={2} />
       <SettingsSection card>
         <Bar label="User actions">
-          <B icon="add" label="Create User" act={act} />
+          <B icon="add" label="Create user" act={act} />
           <ButtonGroup label="Maintenance"><B icon="import" label="Import / Export" act={act} /><B icon="refresh" label="Reindex" tone="info" act={act} /></ButtonGroup>
           <Search value={q} onChange={setQ} label="Search users" />
         </Bar>
         <Table caption="Users" pinFirst empty="No users match" rows={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
           { key: 'user', header: 'Username', emphasis: true }, { key: 'name', header: 'Name' }, { key: 'email', header: 'Email' },
           { key: 'role', header: 'Role', render: (r) => (r.role ? <Badge tone="info">{r.role}</Badge> : '—') },
-          { key: 'created', header: 'Created', data: true }, { key: 'login', header: 'Last Login', data: true }]} />
+          { key: 'created', header: 'Created', data: true }, { key: 'login', header: 'Last login', data: true }]} />
       </SettingsSection>
     </div>
   );
@@ -200,30 +200,30 @@ function Users({ act }) {
 function Groups({ act }) {
   const [names, setNames] = React.useState(D.GROUPS);
   return (
-    <Form act={act} saved="Save Changes">
+    <Form act={act} saved="Save changes">
       <RecordPage.Header title="Groups" description="Groups a user can be assigned to. Permissions are configured separately under Site Permissions." headingLevel={2} />
-      <Bar label="Group actions"><B icon="add" label="Add Group" act={act} /></Bar>
+      <Bar label="Group actions"><B icon="add" label="Add group" act={act} /></Bar>
       <Tabs variant="contained" label="Groups" items={D.GROUPS.map((g, i) => ({ value: String(i), label: g, content: (
         <div className="plx-settings__rows">
           <Sub first>Properties</Sub>
           <Field label="Name" layout="inline"><Input name="name" value={names[i]} onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} /></Field>
         </div>) }))} />
-      <div className="plx-settings__actions"><Actions act={act} save="Save Changes" del="Delete Group" /></div>
+      <div className="plx-settings__actions"><Actions act={act} save="Save changes" del="Delete group" /></div>
     </Form>
   );
 }
 
 function Permissions({ act }) {
   const [role, setRole] = React.useState('Administrators');
-  const [area, setArea] = React.useState('Show All');
+  const [area, setArea] = React.useState('Show all');
   const [checked, setChecked] = React.useState(() => Object.fromEntries(D.PERMISSION_AREAS.flatMap((a) => a.items.map((it) => [a.id + ':' + it[0], true]))));
-  const areas = D.PERMISSION_AREAS.filter((a) => area === 'Show All' || a.label === area);
+  const areas = D.PERMISSION_AREAS.filter((a) => area === 'Show all' || a.label === area);
   return (
     <Form act={act} saved="Save">
-      <RecordPage.Header title="Site Permissions" description="Individually named permissions, grouped by area, assigned per role." headingLevel={2} />
+      <RecordPage.Header title="Site permissions" description="Individually named permissions, grouped by area, assigned per role." headingLevel={2} />
       <SettingsSection card headingLevel={3} title="Select a Role" description="Choose the role you want to configure. The permissions below apply only to that role — use View to narrow the list to a single area, or leave it on Show All to see everything at once.">
         <Field label="Role" layout="inline"><Select name="role" value={role} onChange={(e) => setRole(e.target.value)}>{D.PERMISSION_ROLES.concat('+ Add New Role').map((r) => <option key={r}>{r}</option>)}</Select></Field>
-        <Field label="View" layout="inline"><Select name="view" value={area} onChange={(e) => setArea(e.target.value)}>{['Show All'].concat(D.PERMISSION_AREAS.map((a) => a.label)).map((r) => <option key={r}>{r}</option>)}</Select></Field>
+        <Field label="View" layout="inline"><Select name="view" value={area} onChange={(e) => setArea(e.target.value)}>{['Show all'].concat(D.PERMISSION_AREAS.map((a) => a.label)).map((r) => <option key={r}>{r}</option>)}</Select></Field>
       </SettingsSection>
       <Tabs key={area} variant="contained" label={'Permissions for ' + role} items={areas.map((a) => ({ value: a.id, label: a.label, content: (
         <>
@@ -244,7 +244,7 @@ function Permissions({ act }) {
 function EmailTemplates({ act }) {
   return (
     <div>
-      <RecordPage.Header title="Email Templates" description="The notification emails the catalog sends, and the template file behind each one." headingLevel={2} />
+      <RecordPage.Header title="Email templates" description="The notification emails the catalog sends, and the template file behind each one." headingLevel={2} />
       <SettingsSection card>
         <Table caption="Email templates" pinFirst rows={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
           { key: 'name', header: 'Template', emphasis: true }, { key: 'file', header: 'File', data: true },
@@ -258,8 +258,8 @@ function CatalogParameters({ act }) {
   const [q, setQ] = React.useState('');
   const rows = D.CATALOG_PARAMETERS.filter((r) => match(q, r));
   return (
-    <Form act={act} saved="Save Changes">
-      <RecordPage.Header title="Catalog Parameters" description="Catalog-wide configuration keys — storage, AI providers, and access defaults." headingLevel={2} />
+    <Form act={act} saved="Save changes">
+      <RecordPage.Header title="Catalog parameters" description="Catalog-wide configuration keys — storage, AI providers, and access defaults." headingLevel={2} />
       <SettingsSection card actions={null}>
         <Inline wrap className="plx-u-gap-cluster-sm plx-u-mb-stack-md"><Search value={q} onChange={setQ} label="Search catalog settings" /></Inline>
         <PropertyList>
@@ -269,7 +269,7 @@ function CatalogParameters({ act }) {
         </PropertyList>
         <CountNote>{'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings'}</CountNote>
       </SettingsSection>
-      <div className="plx-settings__actions"><Button type="submit" variant="primary">Save Changes</Button></div>
+      <div className="plx-settings__actions"><Button type="submit" variant="primary">Save changes</Button></div>
     </Form>
   );
 }
@@ -282,16 +282,16 @@ function Server({ act }) {
       <Tabs variant="contained" label="Server" items={[
         { value: 'database', label: 'Database', content: (
           <>
-            <Sub first>Server Status</Sub>
+            <Sub first>Server status</Sub>
             {kv(D.SERVER_STATUS)}
-            <div className="plx-u-mt-stack-md"><ButtonGroup label="Server status actions"><B icon="refresh" label="Clear Cached Data" tone="info" act={act} /><B icon="database" label="Change Elasticsearch Database Master" tone="info" act={act} /></ButtonGroup></div>
-            <Sub>Data Management</Sub>
-            <ButtonGroup label="Data management"><B icon="refresh" label="Reindex" tone="info" act={act} /><B icon="alert" label="View Mapping Conflicts" tone="info" act={act} /><B icon="list-bullets" label="View Basic Mappings" tone="info" act={act} /><B icon="import" label="Reload Sets" tone="info" act={act} /></ButtonGroup>
-            <Sub>Database Snapshots</Sub>
+            <div className="plx-u-mt-stack-md"><ButtonGroup label="Server status actions"><B icon="refresh" label="Clear cached data" tone="info" act={act} /><B icon="database" label="Change Elasticsearch database master" tone="info" act={act} /></ButtonGroup></div>
+            <Sub>Data management</Sub>
+            <ButtonGroup label="Data management"><B icon="refresh" label="Reindex" tone="info" act={act} /><B icon="alert" label="View mapping conflicts" tone="info" act={act} /><B icon="list-bullets" label="View basic mappings" tone="info" act={act} /><B icon="import" label="Reload sets" tone="info" act={act} /></ButtonGroup>
+            <Sub>Database snapshots</Sub>
             <Lead>Snapshots are used by Elasticsearch to store and restore database data.</Lead>
-            <div><B icon="snapshot" label="View Snapshots" tone="info" act={act} /></div>
-            <Sub>Data Entities</Sub>
-            <ButtonGroup label="Data entities"><B icon="add" label="Create" act={act} /><B icon="save-doc" label="Save All Modules" act={act} /></ButtonGroup>
+            <div><B icon="snapshot" label="View snapshots" tone="info" act={act} /></div>
+            <Sub>Data entities</Sub>
+            <ButtonGroup label="Data entities"><B icon="add" label="Create" act={act} /><B icon="save-doc" label="Save all modules" act={act} /></ButtonGroup>
           </>) },
         { value: 'versions', label: 'Versions', content: (
           <>{kv(D.VERSIONS)}<CountNote>Full dependency list runs to 100+ jars · <Button size="xs" variant="link" onClick={act('View all', 'info')}>View all</Button></CountNote></>) },
@@ -307,7 +307,7 @@ function Database({ act }) {
   const [q, setQ] = React.useState('');
   const [expanded, setExpanded] = React.useState(false);
   const rows = D.DB_ROWS.filter((r) => match(q, r)).map((r, i) => Object.assign({ id: i }, ...D.DB_COLUMNS.map((c, j) => ({ ['c' + j]: r[j] }))));
-  const columns = D.DB_COLUMNS.map((c, j) => ({ key: 'c' + j, header: c, emphasis: c === 'Asset Title', data: c === 'Created On' }));
+  const columns = D.DB_COLUMNS.map((c, j) => ({ key: 'c' + j, header: c, emphasis: c === 'Asset title', data: c === 'Created on' }));
   const grid = (cap) => <Table caption={cap} pinFirst rows={rows} columns={columns} empty="No records match" />;
   return (
     <div>
@@ -317,20 +317,20 @@ function Database({ act }) {
           <Sub flush>{'Table: ' + table}</Sub>
           <Inline>
             <Stack className="plx-u-w-200px"><Combobox label="Table" options={D.DB_TABLES.map((t) => ({ value: t, label: t }))} value={table} onChange={setTable} /></Stack>
-            <B icon="add" label="New Table" tone="info" act={act} />
+            <B icon="add" label="New table" tone="info" act={act} />
           </Inline>
         </Inline>
         <Tabs variant="contained" label={'Table ' + table} items={[
           { value: 'data', label: 'Data', content: (
             <>
               <Bar label="Record actions">
-                <B icon="add" label="Add New" act={act} />
+                <B icon="add" label="Add new" act={act} />
                 <ButtonGroup label="Transfer"><B icon="refresh" label="Reindex" tone="info" act={act} /><B icon="import" label="Import" act={act} /><B icon="export" label="Export" tone="info" act={act} /></ButtonGroup>
-                <B icon="doc-text" label="Export Text" tone="info" act={act} />
-                <Button size="sm" iconOnly icon="close" label="Reset Settings" onClick={act('Settings reset', 'info')} />
+                <B icon="doc-text" label="Export text" tone="info" act={act} />
+                <Button size="sm" iconOnly icon="close" label="Reset settings" onClick={act('Settings reset', 'info')} />
                 <Menu label="Delete" trigger={<Button size="sm" variant="danger-secondary" icon="trash" caret>Delete</Button>}>
                   <MenuItem icon="trash" danger onSelect={act('Delete ' + D.DB_TOTAL.records + ' Records', 'warning')}>{'Delete ' + D.DB_TOTAL.records + ' Records'}</MenuItem>
-                  <MenuItem icon="trash" danger onSelect={act('Delete Table', 'warning')}>Delete Table</MenuItem>
+                  <MenuItem icon="trash" danger onSelect={act('Delete table', 'warning')}>Delete table</MenuItem>
                 </Menu>
                 <Search value={q} onChange={setQ} label="Search" />
               </Bar>
@@ -339,9 +339,9 @@ function Database({ act }) {
               <CountNote>{'Found ' + D.DB_TOTAL.records + ' Records · Page 1 of ' + D.DB_TOTAL.pages + ' · '}<Button size="xs" variant="link" onClick={act('Forward', 'info')}>Forward »</Button></CountNote>
               <Dialog open={expanded} onClose={() => setExpanded(false)} title={'Table: ' + table} icon="expand" size="full">{grid('Table: ' + table + ', expanded')}</Dialog>
             </>) },
-          { value: 'fields', label: 'Customize Fields', content: <Lead>Configure the fields available on this table — the same editor as Files &gt; Fields, scoped to this table.</Lead> },
-          { value: 'views', label: 'Customize Views', content: <Lead>Configure how records in this table are displayed in lists and edit forms.</Lead> },
-          { value: 'elastic', label: 'Elastic System Info', content: <Lead>Raw Elasticsearch mapping and index info for this table.</Lead> },
+          { value: 'fields', label: 'Customize fields', content: <Lead>Configure the fields available on this table — the same editor as Files &gt; Fields, scoped to this table.</Lead> },
+          { value: 'views', label: 'Customize views', content: <Lead>Configure how records in this table are displayed in lists and edit forms.</Lead> },
+          { value: 'elastic', label: 'Elastic system info', content: <Lead>Raw Elasticsearch mapping and index info for this table.</Lead> },
         ]} />
       </SettingsSection>
     </div>
@@ -415,7 +415,7 @@ function Content({ section }) {
 export function SystemSettingsPage() {
   const [section, go] = useSection();
   return (
-    <AssetPage title="System Settings" current="system" sideNav={<NavPane as="div" label="Settings sections" title="System Settings" header={<Button size="sm" variant="ghost" icon="home" href="index.html">Home</Button>} footer={<Button size="sm" variant="ghost" icon="arrow-left" href="index.html">Back to Asset Manager</Button>}><NavList label="Settings sections" value={section} onSelect={go} groups={NAV} /></NavPane>}>
+    <AssetPage title="System settings" current="system" sideNav={<NavPane as="div" label="Settings sections" title="System settings" header={<Button size="sm" variant="ghost" icon="home" href="index.html">Home</Button>} footer={<Button size="sm" variant="ghost" icon="arrow-left" href="index.html">Back to Asset Manager</Button>}><NavList label="Settings sections" value={section} onSelect={go} groups={NAV} /></NavPane>}>
       <Content section={section} />
     </AssetPage>
   );
