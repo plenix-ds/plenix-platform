@@ -29,7 +29,7 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [ ] 2. Save in the design system (item 8): Save opens a pull request; only Authentik Editors (and Admins) may save; a save service on the Plenix VM; the Authentik proxy provider and application (owner to approve Claude creating them through Authentik's admin shell).
 - [ ] 3. Starter template (item 12): plenix-ds/plenix-starter with a CDN (plain HTML) starter and a Vite + React + TypeScript starter, both on the shell, page kinds and tokens.
 - [ ] 4. Form controls on component tokens (item 9): Input, Select, Checkbox, Radio, Switch and Field get the Button treatment. Tokens done (batch 223: 149 tokens, zero visual change); variant pages and the Edit dialog next.
-- [ ] Owner to decide: a compact Checkbox row is 26px (its 2px padding plus the label line), above the 24px compact control role and off the 4px grid; found in batch 223, unchanged since before.
+- [x] (batch 224) A compact Checkbox is 24px: no top and bottom padding in compact (owner chose A).
 - [ ] 5. Build the placeholders the next project needs (item 11): owner to name the project or the items.
 - [ ] Owner: check drive D: (chkdsk, SMART); create the DS_TOKEN secret so CI also tests the design system.
 - [ ] Claude (read-only): confirm Proxmox backups of container 104 (Authentik: accounts and groups).

@@ -46,6 +46,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   change). tests/layout.test.js (12 checks) runs in `npm test` and CI. (batch 217)
 
 ### Changed (visual)
+- Checkbox in compact density: no top and bottom padding, so a single-line Checkbox, Radio or row is 24px (the
+  compact control role, on the 4px grid) instead of 26px. Standard and comfortable are unchanged. Token: a compact
+  value for --plx-comp-check-padding-block. On the app pages only the 10 checkboxes of Asset Manager › System settings
+  change (their padding; their rows keep their height). (batch 224)
 - Settings pages follow the standard (settings → contained): the Settings app and the Asset Manager's settings are one
   centered column at the 960px form width. SettingsLayout's own 900px limit is removed. (batch 218)
 - Design system: lists of token and class links stand 12px apart (a 26px pitch), so each is a 24px touch target;

@@ -135,6 +135,11 @@
     "metadata-group-gap": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
+    },
+    "check-padding-block": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "Compact: no padding, so a single-line Checkbox is the 24px compact control role (owner, batch 224)."
     }
   }
 }

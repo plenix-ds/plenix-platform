@@ -8,13 +8,13 @@ const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // the samples: each drawn once per density region; the expected height is the density's control role ('min': at least
-// the role, its content may be taller: a compact Checkbox is 26px, its padding and label line, an open finding of batch 223)
+// the role, for a sample whose content may be taller)
 const SAMPLES = [
   ['Button', '<button class="plx-button">Save</button>', 'control-height-standard'],
   ['Button sm', '<button class="plx-button plx-button--size-sm">Save</button>', 'control-height-toolbar'],
   ['Input', '<input class="plx-input" aria-label="Name">', 'control-height-standard'],
   ['Select', '<span class="plx-select"><select class="plx-input plx-select__control" aria-label="Status"><option>Open</option></select></span>', 'control-height-standard'],
-  ['Checkbox', '<label class="plx-check"><input type="checkbox" class="plx-check__input"><span class="plx-check__label">Done</span></label>', 'control-height-inline', 'min'],
+  ['Checkbox', '<label class="plx-check"><input type="checkbox" class="plx-check__input"><span class="plx-check__label">Done</span></label>', 'control-height-inline'],
   ['Switch', '<label class="plx-switch"><input type="checkbox" role="switch" class="plx-switch__input"><span class="plx-switch__track"></span><span class="plx-switch__label">On</span></label>', 'control-height-inline'],
 ];
 (async () => {

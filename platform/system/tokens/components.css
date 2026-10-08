@@ -364,6 +364,7 @@
   --plx-comp-metadata-icon-gap: var(--plx-ref-space-4px);
   --plx-comp-metadata-title-gap: var(--plx-ref-space-4px);
   --plx-comp-metadata-group-gap: var(--plx-ref-space-8px);
+  --plx-comp-check-padding-block: 0;
 }
 [data-plx-density="comfortable"],:root[data-plx-density-policy="comfortable"]:not([data-plx-density]){
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);
