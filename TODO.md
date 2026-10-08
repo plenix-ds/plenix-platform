@@ -17,14 +17,21 @@ Phase 2 · safe to change
 - [x] 6. Checks on every push (batch 209): build, system and spec checks, release build, Button visual snapshot, every page (629), axe-core accessibility scan (418 known issues, may only go down). Waiting on the owner: a DS_TOKEN secret so CI also checks out the private design system (deploy keys are disabled in the plenix-ds organization).
 - [x] 7. TypeScript definitions for @plenix-ds/react (batch 209), generated from the header comments; released in 0.2.0.
 
+Fix what was found (owner's choice, before items 8, 9, 11; batches 211–215, released in 0.3.0)
+- [x] Accessibility: axe-core issues 418 → 3 (contrast per the owner's color decisions; ARIA; keyboard access to scroll areas).
+- [x] Documentation findings: keyboard and focus, right to left, translatable words (`strings`), image fallbacks, font sizes in rem, and more. The list is in Plenix - DAM/audit/findings-2026-10-08.md.
+- [ ] Owner: the 3 remaining target-size issues. These are the design system's stacked class-name links (14px). Fixing them means giving them taller lines on every design-system page.
+- [ ] Owner: the Asset Manager's Title Case labels ("Edit Status", "Import Date"…). Which are field names and which are actions?
+- [ ] Owner: the five layout modes on `data-plx-layout` are declared, but no CSS reads them. Implement them, or document them as a label only?
+
 Phase 3 · editable and governed
-- [ ] 8. The save server (below: design-system.lighthouseway.org) writes token changes, rebuilds, logs who changed what.
+- [ ] 8. The save server. Decided: Save opens a pull request on GitHub (a save service on the Plenix VM applies the change, rebuilds, runs the checks, opens the PR); sign-in through the owner's Authentik (auth.lighthouseway.org), a "Plenix editors" group. Owner step: a proxy provider and application in Authentik (steps to follow).
 - [ ] 9. Variant pages and the token Edit dialog for every component (the Button pattern).
 - [x] 10. Contribution model (batch 210): CONTRIBUTING.md (stages, who decides, the rules, the review checklist), a Component proposal issue form and a pull request checklist on GitHub.
 
 Phase 4 · grow
 - [ ] 11. Build the placeholders the next projects need.
-- [ ] 12. Starter template: a new project wired to Plenix in one command.
+- [ ] 12. Starter template: plenix-ds/plenix-starter with both a CDN (plain HTML) starter and a Vite + React + TypeScript starter (recommended; the owner was unsure, so this goes ahead unless they say otherwise).
 
 ## Not urgent: own mirror of the Plenix packages and repos (added 2026-10-08)
 
