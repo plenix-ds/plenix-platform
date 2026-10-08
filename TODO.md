@@ -13,9 +13,9 @@ Phase 1 · a trustworthy foundation
 - [ ] 4. Owner: check drive D: (`chkdsk D: /scan`) and memory (Windows Memory Diagnostic): two corrupted writes on 2026-10-08.
 
 Phase 2 · safe to change
-- [ ] 5. Versioning rules and CHANGELOG.md (what is breaking for a component, token or class).
-- [ ] 6. CI on every change: build, check-system, check-spec, visual snapshot diff, accessibility scan.
-- [ ] 7. TypeScript definitions for @plenix-ds/react.
+- [x] 5. VERSIONING.md and CHANGELOG.md (batch 209); the Release workflow takes its notes from the changelog.
+- [x] 6. Checks on every push (batch 209): build, system and spec checks, release build, Button visual snapshot, every page (629), axe-core accessibility scan (418 known issues, may only go down). Waiting on the owner: a DS_TOKEN secret so CI also checks out the private design system (deploy keys are disabled in the plenix-ds organization).
+- [x] 7. TypeScript definitions for @plenix-ds/react (batch 209), generated from the header comments; released in 0.2.0.
 
 Phase 3 · editable and governed
 - [ ] 8. The save server (below: design-system.lighthouseway.org) writes token changes, rebuilds, logs who changed what.
