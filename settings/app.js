@@ -3110,6 +3110,24 @@ function FeatureArea({
     item: item
   }))));
 }
+
+// the theme: the themes the design system defines (THEMES); the choice is kept for every page (batch 219)
+function ThemeChoice() {
+  const {
+    theme,
+    setTheme,
+    themes
+  } = (0, _plenixPlatform.useTheme)();
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+    "aria-label": "Theme",
+    value: theme,
+    onChange: e => setTheme(e.target.value),
+    options: themes.map(t => ({
+      value: t.name,
+      label: t.label
+    }))
+  });
+}
 function Settings({
   prefs,
   setPrefs,
@@ -3763,7 +3781,10 @@ function Settings({
     }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
       title: "Theme"
     }, /*#__PURE__*/React.createElement(Row, {
-      label: "Color theme"
+      label: "Theme",
+      desc: "The look of every Plenix application; themes are defined in the design system"
+    }, /*#__PURE__*/React.createElement(ThemeChoice, null)), /*#__PURE__*/React.createElement(Row, {
+      label: "Mode"
     }, /*#__PURE__*/React.createElement(Seg, {
       opts: [{
         v: "light",

@@ -2,7 +2,7 @@
 /* Plenix · Semantic tokens (platform/system/tokens/semantic.css): stable roles every component uses, --plx-sys-*.
    Static roles sit on :root. Roles that change with density are set on :root and on every density context
    ([data-plx-density]), and touch and mobile override them (also inside density contexts), so a region can be denser than
-   its page and the environment still wins. Colors and elevation are resolved by the theme (themes/plenix.css). */
+   its page and the environment still wins. Colors and elevation are resolved by the theme (themes/<name>.css, one per theme; the default is themes/default.css). */
 :root {
   /* ── ICONS: the default icon box. 16px while the icon files are drawn edge to edge; after the redraw (Iconography),
      20px for pointer and 24px for touch and mobile ── */

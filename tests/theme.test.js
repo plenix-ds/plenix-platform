@@ -1,0 +1,94 @@
+// Plenix tests · themes (platform/standards/themes.json): the ability to add a theme and switch to it.
+// In a temporary copy of the token source it adds a sample theme (the default theme with two roles pointed at other
+// palette colors), builds it, and checks: the theme's stylesheet and the theme list are generated; a theme that writes a
+// color literal, or leaves out a role, is rejected; in a page, switching data-plx-theme changes the roles (light and dark)
+// and PlenixWorkspace.setTheme is remembered for the next page. The repository itself is never changed.
+//   node tests/theme.test.js
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { ROOT, serve, launch, sleep } = require('./lib.js');
+
+const res = [], check = (n, ok, d) => res.push([n, ok, d]);
+const copyDir = (a, b) => { fs.mkdirSync(b, { recursive: true }); for (const e of fs.readdirSync(a, { withFileTypes: true })) { const s = path.join(a, e.name), t = path.join(b, e.name); if (e.isDirectory()) copyDir(s, t); else fs.copyFileSync(s, t); } };
+// a temporary copy with the builders and the token source
+function stage(name, edit) {
+  const T = fs.mkdtempSync(path.join(os.tmpdir(), 'plx-theme-' + name + '-'));
+  for (const d of ['platform/tokens', 'platform/standards', 'platform/system']) copyDir(path.join(ROOT, d), path.join(T, d));
+  fs.mkdirSync(path.join(T, 'platform', 'providers'), { recursive: true });
+  for (const f of ['build-tokens.js', 'build-standards.js']) fs.copyFileSync(path.join(ROOT, f), path.join(T, f));
+  edit(T);
+  return T;
+}
+// the sample theme: the default theme's two token files, with the link role and the canvas pointed at other palette colors
+function addSample(T, change) {
+  const tok = path.join(T, 'platform', 'tokens');
+  for (const mode of ['light', 'dark']) {
+    const j = JSON.parse(fs.readFileSync(path.join(tok, 'theme-default.' + mode + '.tokens.json'), 'utf8'));
+    change(j, mode);
+    fs.writeFileSync(path.join(tok, 'theme-sample.' + mode + '.tokens.json'), JSON.stringify(j, null, 2));
+  }
+  const std = JSON.parse(fs.readFileSync(path.join(T, 'platform', 'standards', 'themes.json'), 'utf8'));
+  std.themes.sample = { label: 'Sample', description: 'A test theme.', light: 'theme-sample.light.tokens.json', dark: 'theme-sample.dark.tokens.json' };
+  fs.writeFileSync(path.join(T, 'platform', 'standards', 'themes.json'), JSON.stringify(std, null, 2));
+}
+const build = (T) => { require(path.join(T, 'build-tokens.js'))(T); require(path.join(T, 'build-standards.js'))(T); };
+const fails = (T) => { try { require(path.join(T, 'build-tokens.js'))(T); return false; } catch (e) { return String(e.message); } };
+
+(async () => {
+  // 1. a good sample theme builds
+  const good = stage('good', (T) => addSample(T, (j, mode) => {
+    j['plx-sys']['content-link'].$value = mode === 'light' ? '{plx-ref.color-purple-600}' : '{plx-ref.color-purple-200}';
+    j['plx-sys']['surface-canvas'].$value = mode === 'light' ? '{plx-ref.color-blue-50}' : '{plx-ref.color-gray-800}';
+  }));
+  build(good);
+  const css = fs.readFileSync(path.join(good, 'platform', 'system', 'themes', 'sample.css'), 'utf8');
+  const index = fs.readFileSync(path.join(good, 'platform', 'system', 'themes', 'index.css'), 'utf8');
+  const list = fs.readFileSync(path.join(good, 'platform', 'providers', 'themes.js'), 'utf8');
+  check('a new theme gets its own stylesheet', /\[data-plx-theme="sample"\]/.test(css) && /--plx-sys-content-link: var\(--plx-ref-color-purple-600\)/.test(css), css.slice(0, 200));
+  check('the new theme is loaded after the default theme', /default\.css[\s\S]*sample\.css/.test(index), index);
+  check('the apps are offered the new theme', /name: "sample"/.test(list) && /label: "Sample"/.test(list), '');
+
+  // 2. the rules: no color literals; every role of the default theme
+  const lit = stage('literal', (T) => addSample(T, (j) => { j['plx-sys']['content-link'].$value = '#ff0000'; }));
+  const e1 = fails(lit);
+  check('a theme that writes a color is rejected', !!e1 && /writes a color/.test(e1), e1);
+  const miss = stage('missing', (T) => addSample(T, (j) => { delete j['plx-sys']['content-link']; }));
+  const e2 = fails(miss);
+  check('a theme that leaves out a role is rejected', !!e2 && /same roles/.test(e2), e2);
+
+  // 3. in a page: switching changes the roles, in light and dark; the choice is remembered
+  const shot = path.join(__dirname, '.theme-sample.css');
+  fs.copyFileSync(path.join(good, 'platform', 'system', 'themes', 'sample.css'), shot);
+  const page = path.join(__dirname, '.theme-test.html');
+  fs.writeFileSync(page, '<!doctype html><html lang="en"><head><meta charset="utf-8"><script src="../platform/providers/theme-boot.js"></script>'
+    + '<link rel="stylesheet" href="../platform/platform.css"><link rel="stylesheet" href=".theme-sample.css"></head><body><p>Theme</p></body></html>');
+  const server = await serve(8800);
+  const browser = await launch();
+  const p = await browser.newPage();
+  const url = 'http://127.0.0.1:8800/Plenix/tests/.theme-test.html';
+  await p.goto(url, { waitUntil: 'networkidle0' }); await sleep(300);
+  const read = () => p.evaluate(() => { const s = getComputedStyle(document.documentElement); return { theme: document.documentElement.getAttribute('data-plx-theme'), link: s.getPropertyValue('--plx-sys-content-link').trim(), canvas: s.getPropertyValue('--plx-sys-surface-canvas').trim() }; });
+  const d0 = await read();
+  check('a page starts on the default theme', d0.theme === 'default', JSON.stringify(d0));
+  await p.evaluate(() => window.PlenixWorkspace.setTheme('sample')); await sleep(100);
+  const s1 = await read();
+  check('switching to the new theme changes its roles', s1.theme === 'sample' && s1.link !== d0.link && s1.canvas !== d0.canvas, JSON.stringify([d0, s1]));
+  await p.evaluate(() => document.documentElement.setAttribute('data-plx-mode', 'dark')); await sleep(100);
+  const s2 = await read();
+  check('the new theme has its own dark values', s2.link !== s1.link, JSON.stringify(s2));
+  await p.goto(url, { waitUntil: 'networkidle0' }); await sleep(300);
+  const s3 = await read();
+  check('the chosen theme is remembered on the next page', s3.theme === 'sample', JSON.stringify(s3));
+  await p.evaluate(() => window.PlenixWorkspace.clearTheme()); await sleep(100);
+  const s4 = await read();
+  check('clearing it goes back to the default theme', s4.theme === 'default' && s4.link === d0.link, JSON.stringify(s4));
+  await browser.close(); server.close();
+  for (const f of [shot, page]) fs.unlinkSync(f);
+  for (const T of [good, lit, miss]) fs.rmSync(T, { recursive: true, force: true });
+
+  const bad = res.filter((r) => !r[1]);
+  res.forEach(([n, ok, d]) => console.log((ok ? '  ok   ' : '  FAIL ') + n + (ok ? '' : ' · ' + String(d).slice(0, 200))));
+  console.log((bad.length ? 'THEME_FAIL ' : 'THEME_OK ') + (res.length - bad.length) + '/' + res.length);
+  process.exit(bad.length ? 1 : 0);
+})().catch((e) => { console.error(e); process.exit(1); });

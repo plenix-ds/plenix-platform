@@ -7,6 +7,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Added
+- Themes, defined in the design system (platform/standards/themes.json): a theme is a full set of semantic roles,
+  light and dark, pointing to the shared palette. The current look is the "default" theme (was "plenix"; files
+  theme-default.*.tokens.json, system/themes/default.css). build-tokens.js makes one stylesheet per theme and rejects a
+  theme that writes a color literal or leaves out a role; build-standards.js makes the theme list (providers/themes.js,
+  THEMES) and system/themes/index.css. Switching: data-plx-theme on <html>, PlenixWorkspace.setTheme / clearTheme
+  (remembered for every page), `useTheme()`; Settings › Appearance has Theme and Mode. tests/theme.test.js (10 checks)
+  builds a sample theme in a temporary copy and switches to it. (batch 219)
 - The layout standard, defined in the design system (platform/standards/layout.json): the five layout modes (widths,
   alignment, what they hide) and which kind of page gets which mode. build-standards.js generates the code the apps run
   (providers/pageLayouts.js, system/layout-modes.css); check-system rejects a hand edit (rule generated) and an app that

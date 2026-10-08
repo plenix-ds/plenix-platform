@@ -12,3 +12,5 @@ packages/
 release/
 tests/.visual-button.html
 tests/.layout-test.html
+tests/.theme-sample.css
+tests/.theme-test.html

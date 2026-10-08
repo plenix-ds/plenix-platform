@@ -2,9 +2,9 @@
   "$description": "theme-plenix tokens written under :root,[data-plx-theme=\"plenix\"][data-plx-mode=\"light\"]",
   "$extensions": {
     "com.plenix": {
-      "output": "platform/system/themes/plenix.css",
-      "selector": ":root,[data-plx-theme=\"plenix\"][data-plx-mode=\"light\"]",
-      "opener": ":root,[data-plx-theme=\"plenix\"][data-plx-mode=\"light\"]{"
+      "output": "platform/system/themes/default.css",
+      "selector": ":root,[data-plx-theme=\"default\"][data-plx-mode=\"light\"]",
+      "opener": ":root,[data-plx-theme=\"default\"][data-plx-mode=\"light\"]{"
     }
   },
   "plx-sys": {

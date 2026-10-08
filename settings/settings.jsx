@@ -4,7 +4,7 @@
    tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
    SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
    the design system (../platform/design-system/), the point of truth. */
-import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession } from 'plenix-platform';
+import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -486,6 +486,9 @@ function FeatureArea({area,stats}){
   );
 }
 
+// the theme: the themes the design system defines (THEMES); the choice is kept for every page (batch 219)
+function ThemeChoice(){const {theme,setTheme,themes}=useTheme();return <Select aria-label="Theme" value={theme} onChange={(e)=>setTheme(e.target.value)} options={themes.map(t=>({value:t.name,label:t.label}))}/>;}
+
 export function Settings({prefs,setPrefs,startCat="general",onBack}){
   const [cat,setCat]=useState(startCat);
   const {account}=useSession(); // who is signed in (the Platform session)
@@ -696,7 +699,8 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     appearance:(
       <Screen title="Appearance" desc="Theme, header style, accent color and typography.">
         <SettingsSection title="Theme">
-          <Row label="Color theme"><Seg opts={[{v:"light",l:"Light"},{v:"dark",l:"Dark"},{v:"system",l:"System"}]} val={prefs.theme||"light"} onChange={v=>set("theme",v)}/></Row>
+          <Row label="Theme" desc="The look of every Plenix application; themes are defined in the design system"><ThemeChoice/></Row>
+          <Row label="Mode"><Seg opts={[{v:"light",l:"Light"},{v:"dark",l:"Dark"},{v:"system",l:"System"}]} val={prefs.theme||"light"} onChange={v=>set("theme",v)}/></Row>
         </SettingsSection>
         <DensityChoice/>
         <SettingsSection title="Header and accent">

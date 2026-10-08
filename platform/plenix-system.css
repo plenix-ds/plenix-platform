@@ -4,7 +4,7 @@
 @import url("system/tokens/reference.css");
 @import url("system/tokens/semantic.css");
 @import url("system/tokens/components.css");
-@import url("system/themes/plenix.css");
+@import url("system/themes/index.css");   /* every theme (generated from platform/standards/themes.json) */
 @import url("system/radius.css");
 @import url("system/controls.css");
 @import url("system/density.css");

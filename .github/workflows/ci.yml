@@ -59,6 +59,9 @@ jobs:
       - name: Layout modes
         run: node tests/layout.test.js
 
+      - name: Themes
+        run: node tests/theme.test.js
+
       - name: Every page
         run: node tests/pages.test.js
 

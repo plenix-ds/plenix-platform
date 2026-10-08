@@ -8,6 +8,8 @@
      data-plx-mode: on <html>: "light" (default) | "dark" | "system" (follows the system setting live)
      data-plx-density-policy: on <html> or a region: the density a page or region asks for when the user has not chosen
      data-plx-density-view: on <html>: the name of a workspace or view whose density is saved on its own ("audit-log")
+     data-plx-theme: on <html>: the theme (default "default"; the themes are in platform/standards/themes.json)
+     PlenixWorkspace.setTheme(name), clearTheme(), theme(): the person's theme, kept for every page
      PlenixWorkspace.setDensity(d): the user's choice, kept for every page
      PlenixWorkspace.setViewDensity(view, d): a saved density for one workspace or view
      PlenixWorkspace.clearDensity(): forget the user's choice (back to view, policy, standard)
@@ -29,7 +31,11 @@
 (function () {
   'use strict';
   var root = document.documentElement;
-  if (!root.hasAttribute('data-plx-theme')) root.setAttribute('data-plx-theme', 'plenix');   // the one theme so far; data-plx-mode: light unless the page sets dark
+  // the theme (batch 219): the person's choice, kept for every page (PlenixWorkspace.setTheme), else the default theme; the
+  // themes are defined in the design system (platform/standards/themes.json). A page that sets data-plx-theme keeps it.
+  var THEME_KEY = 'plenix.theme', THEME_NAME = /^[a-z][a-z0-9-]*$/, chosenTheme = null;
+  try { chosenTheme = localStorage.getItem(THEME_KEY); } catch (e) { /* storage unavailable */ }
+  if (!root.hasAttribute('data-plx-theme')) root.setAttribute('data-plx-theme', chosenTheme && THEME_NAME.test(chosenTheme) ? chosenTheme : 'default');
 
   // mode: <html data-plx-mode="system"> follows the system setting live (light or dark; data-plx-mode-auto marks it);
   // "light" or "dark" fixes it. (Moved here from the asset app's include.js.)
@@ -157,7 +163,11 @@
   }
   Object.keys(LIMITS).forEach(function (p) { var v = parseInt(store.get('plenix.panel.' + p), 10); if (v) setPanelWidth(p, v); });
 
+  // the theme: set it now and remember it for every page; clearTheme goes back to the default theme
+  function setTheme(name) { if (!THEME_NAME.test(String(name))) return; store.set(THEME_KEY, name); root.setAttribute('data-plx-theme', name); }
+  function clearTheme() { store.set(THEME_KEY, null); root.setAttribute('data-plx-theme', 'default'); }
   window.PlenixWorkspace = {
+    setTheme: setTheme, clearTheme: clearTheme, theme: function () { return root.getAttribute('data-plx-theme'); },
     setDensity: setDensity, setViewDensity: setViewDensity, clearDensity: clearDensity,
     density: function () { return root.getAttribute('data-plx-density'); },
     densitySource: function () { var c = chosen(); return c ? c.source : root.hasAttribute('data-plx-density-policy') ? 'policy' : 'system'; },

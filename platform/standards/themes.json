@@ -1,0 +1,12 @@
+{
+  "$description": "The Plenix themes: each theme is a full set of semantic role values (surfaces, content, borders, actions, feedback…), in a light and a dark version, in platform/tokens/theme-<name>.light.tokens.json and .dark.tokens.json. This is the design system's definition: build-tokens.js generates one stylesheet per theme (platform/system/themes/<name>.css) and build-standards.js the list the apps offer (providers/themes.js, system/themes/index.css). A theme must define every role the default theme defines, and only point to palette colors (no new colors). Add a theme by adding its two token files and an entry here; pages switch with data-plx-theme on <html> (PlenixWorkspace.setTheme, useTheme).",
+  "default": "default",
+  "themes": {
+    "default": {
+      "label": "Default",
+      "description": "The Plenix look: blue accent header, light gray canvas, white surfaces.",
+      "light": "theme-default.light.tokens.json",
+      "dark": "theme-default.dark.tokens.json"
+    }
+  }
+}
