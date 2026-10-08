@@ -2,6 +2,18 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Not urgent: own mirror of the Plenix packages and repos (added 2026-10-08)
+
+Keep a copy of the @plenix-ds packages (and the plenix-ds repos) on our own servers, so installs keep working if GitHub is down and projects use one registry address.
+
+- [ ] Owner to choose:
+  - (A, recommended) Proxy and pre-fetch: Verdaccio in Docker on the Plenix VM copies from GitHub Packages, and each release asks it for the new version right away. GitHub stays the one place releases are published; the copies cannot differ. Needs a read-only GitHub token (classic, read:packages only) on the VM.
+  - (B) Publish to both: the release publishes to GitHub Packages and, separately, to Verdaccio. Fully independent copies, but they drift if one publish fails, and the registry must accept publishing from the internet (a publishing password stored in GitHub).
+- [ ] Address: `registry.lighthouseway.org` (recommended; owner adds the DNS record, then an NPM proxy host and certificate) or `design-system.lighthouseway.org/npm/`.
+- [ ] Access: who may install (default: accounts created on the registry).
+- [ ] Repos: Forgejo (forgejo.lighthouseway.org) pull-mirrors plenix-ds/plenix-platform and plenix-ds/plenix-design-system on a schedule.
+- Done when: `npm install @plenix-ds/react` works against the registry address with GitHub unreachable, and Forgejo shows both repos up to date.
+
 ## Hosting: Plenix VM (added 2026-10-08)
 
 Proxmox VM 130 "Plenix" (Debian 12 cloud image, 6 cores, 16 GB RAM, 200 GB on Storage, 10.0.0.30, starts on boot). Nginx serves `/srv/plenix/www` for plenix.lighthouseway.org (→ /Plenix/dashboard/) and design-system.lighthouseway.org (→ /Plenix/platform/design-system/); Docker CE is installed for the open-source apps. Firewall: SSH and HTTP from the LAN only; SSH by key only (user `plenix`). Snapshot `base-nginx-docker` is the clean state. Publish with `bash deploy.sh`.
