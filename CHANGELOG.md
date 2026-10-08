@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- The five layout modes, built: `<AppShell layout="fluid | contained | hybrid | multi-pane | focus">` sets
+  `data-plx-layout` on the shell and the main region, and app-shell.css draws each mode: contained centers the content
+  at the 960px form width; hybrid caps paragraphs at 760px and forms at 960px; multi-pane makes each pane scroll on its
+  own; focus hides the navigation and the inspector. The suite apps are fluid, the image editor is focus (no visual
+  change). tests/layout.test.js (12 checks) runs in `npm test` and CI. (batch 217)
+
 ### Changed (visual)
 - Asset Manager: interface labels in sentence case (299 labels, e.g. "Save changes", "GPS latitude", "Move assets"); content keeps its capitals (asset titles, people, category, collection, group and preset names). "New category" uses the add icon instead of a typed "+". (batch 216)
 

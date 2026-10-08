@@ -52,7 +52,7 @@ function Suite({ app, render }) {
     : find ? <FindWorkspace key={find.app} app={find.app} query={find.query} onQuery={(q) => { setFind({ ...find, query: q }); setHq(q); }} onOpen={openResult} onAskAI={(q) => { setFind(null); setAi(q); }} />
     : render({ prefs, setPrefs });
   return (
-    <AppShell mainClassName="plx-shell-main"
+    <AppShell layout="fluid" mainClassName="plx-shell-main"
       footer={<StatusBar start={<span>{SUITE.length - 1} applications · Lighthouse Way</span>} end={<span>Synced just now</span>} />}
       sideNav={HAS_NAV.includes(app) ? <LeftNav section={app} sub={sub} setSub={setSub} onSettings={() => { location.href = settingsPage(SETTINGS_FOR[app] || 'general'); }} /> : null}
       header={<AppHeader tone={tone} currentApp={inSuite ? app : null} appsRoot="../" appName={inSuite ? undefined : label}
@@ -61,7 +61,7 @@ function Suite({ app, render }) {
           value={hq} onChange={(e) => setHq(e.target.value)} onClear={() => setHq('')} onKeyDown={(e) => { if (e.key === 'Enter') { setAi(null); setFind({ app: inSuite && app !== 'home' ? app : 'home', query: hq.trim() }); } }} />}
         account={<AppHeader.Account current={app === 'settings' ? (location.hash === '#account' ? 'account' : 'settings') : undefined}
           myAccount={{ href: settingsPage('account') }} settings={{ href: settingsPage('general') }} />} />}>
-      <div data-plx-layout="fluid" className="plx-app-shell__page">{main}</div>
+      <div className="plx-app-shell__page">{main}</div>
       {capture ? <CaptureUI onClose={() => setCapture(false)} /> : null}
     </AppShell>
   );

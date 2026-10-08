@@ -11,6 +11,12 @@
      sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
      panel: the inspector panel on the right (SidePanel)
      footer: the footer across the bottom (StatusBar)
+     layout: the page's layout mode (default "fluid"):
+       "fluid": the page content uses the main region's full width (dashboards, workspaces)
+       "contained": the content is one centered column at most 960px wide (the form width; settings, forms)
+       "hybrid": full width, with its paragraphs at most 760px and its forms at most 960px wide (a workspace with text)
+       "multi-pane": the main region is a row of panes that each scroll on their own; the page never scrolls as a whole
+       "focus": the navigation and the inspector panel are hidden for one task; the header and the footer stay
      mainId: the main region's id, the skip link's target (default "main")
      mainClassName: more classes on the main region
      className: more classes on the shell
@@ -34,6 +40,7 @@
      Below 768px the navigation is a rail; Expand opens it over the main region, and Escape or a click outside closes it.
      Inspector panel: see SidePanel (--plx-sys-panel-inspector-width by density; it collapses to a rail).
      The main region fills the rest and scrolls itself; the content grid lives in it.
+     The layout mode is data-plx-layout on the shell and on the main region; app-shell.css draws each mode (batch 217).
      A skip link is the first stop.
      PageContent fills the rest of the main region (beside a SecondaryPane, if any) and scrolls itself.
      PageContent keeps the layout padding (--plx-sys-space-layout-*) and stacks its parts --plx-sys-space-stack-md apart.
@@ -50,6 +57,8 @@ import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
 
 const STRINGS = { skip: 'Skip to main content' };
+// the five layout modes (the Layout foundation; app-shell.css draws them)
+const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
 
 export const LayoutContext = React.createContext(null);
 export const useAppLayout = () => React.useContext(LayoutContext);
@@ -75,7 +84,7 @@ export function useMedia(query) {
 export const readPref = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key)); return v === null || v === undefined ? fallback : v; } catch (e) { return fallback; } };
 export const writePref = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* not stored: it lasts for this visit */ } };
 
-export function AppShell({ header, sideNav, panel, footer, mainId = 'main', mainClassName, strings, className, children }) {
+export function AppShell({ header, sideNav, panel, footer, layout = 'fluid', mainId = 'main', mainClassName, strings, className, children }) {
   const t = Object.assign({}, STRINGS, strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
   const [expanded, setExpanded] = React.useState(() => readPref('plenix.sideNav.expanded', true));
@@ -104,12 +113,12 @@ export function AppShell({ header, sideNav, panel, footer, mainId = 'main', main
   [hasSide, slotEl, registerPortal, small, mode, overlay, expanded, width, setWidth, toggle]);
   return (
     <LayoutContext.Provider value={ctx}>
-      <div className={cx('plx-app-shell', className)}>
+      <div className={cx('plx-app-shell', className)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>
         <a className="plx-app-shell__skip" href={'#' + mainId}>{t.skip}</a>
         {header}
         <div className="plx-app-shell__body">
           {sideNav || <div ref={setSlotEl} className="plx-app-shell__slot" />}
-          <main id={mainId} tabIndex={-1} className={cx('plx-app-shell__main', mainClassName)}>{children}</main>
+          <main id={mainId} tabIndex={-1} className={cx('plx-app-shell__main', mainClassName)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>{children}</main>
           {panel}
         </div>
         {footer}

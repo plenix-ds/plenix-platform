@@ -7152,6 +7152,7 @@ function ImageEditorPage() {
   const toolLabel = TOOLS.find(t => t[0] === tool)[1];
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.AppShell, {
     header: header,
+    layout: "focus",
     mainClassName: "plx-shell-main"
   }, /*#__PURE__*/_react.default.createElement("h1", {
     className: "plx-visually-hidden"

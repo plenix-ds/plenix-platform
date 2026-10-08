@@ -7142,6 +7142,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
      panel: the inspector panel on the right (SidePanel)
      footer: the footer across the bottom (StatusBar)
+     layout: the page's layout mode (default "fluid"):
+       "fluid": the page content uses the main region's full width (dashboards, workspaces)
+       "contained": the content is one centered column at most 960px wide (the form width; settings, forms)
+       "hybrid": full width, with its paragraphs at most 760px and its forms at most 960px wide (a workspace with text)
+       "multi-pane": the main region is a row of panes that each scroll on their own; the page never scrolls as a whole
+       "focus": the navigation and the inspector panel are hidden for one task; the header and the footer stay
      mainId: the main region's id, the skip link's target (default "main")
      mainClassName: more classes on the main region
      className: more classes on the shell
@@ -7165,6 +7171,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Below 768px the navigation is a rail; Expand opens it over the main region, and Escape or a click outside closes it.
      Inspector panel: see SidePanel (--plx-sys-panel-inspector-width by density; it collapses to a rail).
      The main region fills the rest and scrolls itself; the content grid lives in it.
+     The layout mode is data-plx-layout on the shell and on the main region; app-shell.css draws each mode (batch 217).
      A skip link is the first stop.
      PageContent fills the rest of the main region (beside a SecondaryPane, if any) and scrolls itself.
      PageContent keeps the layout padding (--plx-sys-space-layout-*) and stacks its parts --plx-sys-space-stack-md apart.
@@ -7178,6 +7185,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const STRINGS = {
   skip: 'Skip to main content'
 };
+// the five layout modes (the Layout foundation; app-shell.css draws them)
+const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
 const LayoutContext = exports.LayoutContext = /*#__PURE__*/_react.default.createContext(null);
 const useAppLayout = () => _react.default.useContext(LayoutContext);
 /* the shell's sizes and breakpoints come from the tokens, never from numbers here:
@@ -7224,6 +7233,7 @@ function AppShell({
   sideNav,
   panel,
   footer,
+  layout = 'fluid',
   mainId = 'main',
   mainClassName,
   strings,
@@ -7284,7 +7294,8 @@ function AppShell({
   return /*#__PURE__*/_react.default.createElement(LayoutContext.Provider, {
     value: ctx
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-app-shell', className)
+    className: (0, _cx.cx)('plx-app-shell', className),
+    "data-plx-layout": LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'
   }, /*#__PURE__*/_react.default.createElement("a", {
     className: "plx-app-shell__skip",
     href: '#' + mainId
@@ -7296,7 +7307,8 @@ function AppShell({
   }), /*#__PURE__*/_react.default.createElement("main", {
     id: mainId,
     tabIndex: -1,
-    className: (0, _cx.cx)('plx-app-shell__main', mainClassName)
+    className: (0, _cx.cx)('plx-app-shell__main', mainClassName),
+    "data-plx-layout": LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'
   }, children), panel), footer));
 }
 

@@ -11,3 +11,4 @@ shared - Copy/
 packages/
 release/
 tests/.visual-button.html
+tests/.layout-test.html

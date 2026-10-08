@@ -1999,6 +1999,7 @@ function Suite({
     setPrefs
   });
   return /*#__PURE__*/React.createElement(_plenixPlatform.AppShell, {
+    layout: "fluid",
     mainClassName: "plx-shell-main",
     footer: /*#__PURE__*/React.createElement(_plenixPlatform.StatusBar, {
       start: /*#__PURE__*/React.createElement("span", null, SUITE.length - 1, " applications \xB7 Lighthouse Way"),
@@ -2051,7 +2052,6 @@ function Suite({
       })
     })
   }, /*#__PURE__*/React.createElement("div", {
-    "data-plx-layout": "fluid",
     className: "plx-app-shell__page"
   }, main), capture ? /*#__PURE__*/React.createElement(_capture.CaptureUI, {
     onClose: () => setCapture(false)

@@ -11,7 +11,8 @@
    - Columns by main-region width: under 600px 4, 600–1023px 8, 1024–1439px 12, 1440px and wider 16. Never more than 16:
      at 1920px and wider, extra width goes to the work surface, extra regions or comparison, not to more columns.
    - Density changes gutters and margins (12/16/24px), never the column count or the shell's structure.
-   - Every page declares a layout mode: data-plx-layout="fluid | contained | hybrid | multi-pane | focus" on .plx-shell-main.
+   - Every page picks a layout mode with AppShell's layout prop ("fluid | contained | hybrid | multi-pane | focus"); it is
+     data-plx-layout on the shell and the main region, and patterns/AppShell/app-shell.css draws each mode (batch 217).
    Loaded after density.css. */
 
 /* ── the application shell: header across, then navigation | main | inspector ── */
