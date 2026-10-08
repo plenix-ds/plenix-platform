@@ -1,0 +1,51 @@
+# Plenix release: builds the Platform and publishes the four packages (@plenix-ds/tokens, icons, styles, react) to
+# GitHub Packages. Runs when a version tag is pushed (v0.1.0, v0.2.0 …); the tag must match "version" in package.json.
+# The CDN files and the JSON API are published to design-system.lighthouseway.org by deploy.sh.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: '@plenix-ds'
+
+      - name: Tag matches package.json
+        run: |
+          v=$(node -p "require('./package.json').version")
+          [ "v$v" = "${GITHUB_REF_NAME}" ] || { echo "Tag ${GITHUB_REF_NAME} does not match package.json version $v"; exit 1; }
+
+      - run: npm ci
+
+      - name: Build and check
+        run: |
+          node build-app.js
+          node check-system.js
+          node build-packages.js
+
+      - name: Publish packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for p in tokens icons styles react; do
+            (cd packages/$p && npm publish)
+          done
+
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" --title "Plenix ${GITHUB_REF_NAME}" --notes "Packages: @plenix-ds/tokens, @plenix-ds/icons, @plenix-ds/styles, @plenix-ds/react ${GITHUB_REF_NAME#v}. CDN: https://design-system.lighthouseway.org/cdn/${GITHUB_REF_NAME#v}/ · API: https://design-system.lighthouseway.org/api/v1/"

@@ -1,3 +1,3 @@
 [submodule "platform/design-system"]
 	path = platform/design-system
-	url = https://github.com/LighthouseCollection/plenix-design-system.git
+	url = https://github.com/plenix-ds/plenix-design-system.git

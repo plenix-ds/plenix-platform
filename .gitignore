@@ -8,3 +8,5 @@ build.log
 Archived/
 shared - Copy/
 *.bak
+packages/
+release/
