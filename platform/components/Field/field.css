@@ -1,22 +1,22 @@
 /* Plenix · Field (platform/components/Field). Gaps from the form spacing tokens (density); no outer margin. */
 .plx-field{display:grid;min-inline-size:0;}
 .plx-field--stacked{row-gap:var(--plx-comp-field-label-control-gap);}
-.plx-field--inline{align-items:center;column-gap:var(--plx-sys-space-inline-sm);grid-template-columns:var(--plx-ref-size-160px) minmax(0,1fr);}
-.plx-field--row{align-items:center;column-gap:var(--plx-sys-space-inline-lg);grid-template-columns:minmax(0,1fr) auto;}
-.plx-field__head{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-wrap:wrap;min-inline-size:0;}
-.plx-field--row .plx-field__head{align-items:flex-start;flex-direction:column;row-gap:var(--plx-sys-space-stack-xs);}
-.plx-field__label{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-sys-font-weight-medium);line-height:var(--plx-ref-size-16px);}
-.plx-field--row .plx-field__label{font-size:var(--plx-ref-font-size-13);line-height:var(--plx-ref-size-20px);}
-.plx-field__required{color:var(--plx-sys-feedback-danger-content);}
+.plx-field--inline{align-items:center;column-gap:var(--plx-comp-field-inline-gap);grid-template-columns:var(--plx-comp-field-inline-grid-template-columns);}
+.plx-field--row{align-items:center;column-gap:var(--plx-comp-field-row-gap);grid-template-columns:minmax(0,1fr) auto;}
+.plx-field__head{align-items:center;column-gap:var(--plx-comp-field-head-gap);display:flex;flex-wrap:wrap;min-inline-size:0;}
+.plx-field--row .plx-field__head{align-items:flex-start;flex-direction:column;row-gap:var(--plx-comp-field-row-head-row-gap);}
+.plx-field__label{color:var(--plx-comp-field-label-text);font-family:var(--plx-comp-field-label-font-family);font-size:var(--plx-comp-field-label-font-size);font-weight:var(--plx-comp-field-label-font-weight);line-height:var(--plx-comp-field-label-line-height);}
+.plx-field--row .plx-field__label{font-size:var(--plx-comp-field-row-label-font-size);line-height:var(--plx-comp-field-row-label-line-height);}
+.plx-field__required{color:var(--plx-comp-field-required-text);}
 .plx-field__control{display:grid;min-inline-size:0;row-gap:var(--plx-comp-field-control-helper-gap);}
-.plx-field__description{color:var(--plx-sys-content-subtle);font-size:var(--plx-ref-font-size-11);}
-.plx-field--row .plx-field__description{font-size:var(--plx-ref-font-size-12);}
-.plx-field__error{color:var(--plx-sys-feedback-danger-content);font-size:var(--plx-ref-font-size-11);}
-.plx-field__info{align-items:center;appearance:none;background-color:var(--plx-sys-border-default);block-size:var(--plx-ref-size-16px);border-bottom-left-radius:var(--plx-sys-shape-pill);border-bottom-right-radius:var(--plx-sys-shape-pill);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-shape-pill);border-top-right-radius:var(--plx-sys-shape-pill);border-top-style:none;border-top-width:0;color:var(--plx-sys-content-inverse);cursor:pointer;display:inline-flex;font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-10);font-weight:var(--plx-sys-font-weight-bold);inline-size:var(--plx-ref-size-16px);justify-content:center;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;}
-.plx-field__info::before{content:"";inset-block-end:calc(var(--plx-sys-space-inset-xs) * -1);inset-block-start:calc(var(--plx-sys-space-inset-xs) * -1);inset-inline-end:calc(var(--plx-sys-space-inset-xs) * -1);inset-inline-start:calc(var(--plx-sys-space-inset-xs) * -1);position:absolute;}
+.plx-field__description{color:var(--plx-comp-field-description-text);font-size:var(--plx-comp-field-description-font-size);}
+.plx-field--row .plx-field__description{font-size:var(--plx-comp-field-row-description-font-size);}
+.plx-field__error{color:var(--plx-comp-field-error-text);font-size:var(--plx-comp-field-error-font-size);}
+.plx-field__info{align-items:center;appearance:none;background-color:var(--plx-comp-field-info-background);block-size:var(--plx-comp-field-info-height);border-bottom-left-radius:var(--plx-comp-field-info-radius);border-bottom-right-radius:var(--plx-comp-field-info-radius);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-comp-field-info-radius);border-top-right-radius:var(--plx-comp-field-info-radius);border-top-style:none;border-top-width:0;color:var(--plx-comp-field-info-text);cursor:pointer;display:inline-flex;font-family:var(--plx-comp-field-info-font-family);font-size:var(--plx-comp-field-info-font-size);font-weight:var(--plx-comp-field-info-font-weight);inline-size:var(--plx-comp-field-info-width);justify-content:center;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;}
+.plx-field__info::before{content:"";inset-block-end:var(--plx-comp-field-info-before-inset-block-end);inset-block-start:var(--plx-comp-field-info-before-inset-block-start);inset-inline-end:var(--plx-comp-field-info-before-inset-inline-end);inset-inline-start:var(--plx-comp-field-info-before-inset-inline-start);position:absolute;}
 .plx-field__info:hover,.plx-field__info[aria-expanded="true"],
-.plx-field__info.is-hover{background-color:var(--plx-sys-action-primary-background);}
+.plx-field__info.is-hover{background-color:var(--plx-comp-field-info-hover-background);}
 .plx-field__info:focus-visible,
-.plx-field__info.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
-.plx-field__info-text{background-color:var(--plx-sys-surface-sunken);border-bottom-left-radius:var(--plx-sys-radius-surface-4px);border-bottom-right-radius:var(--plx-sys-radius-surface-4px);border-top-left-radius:var(--plx-sys-radius-surface-4px);border-top-right-radius:var(--plx-sys-radius-surface-4px);color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-11);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
-.plx-field--inline.plx-field--label-sm{grid-template-columns:var(--plx-sys-label-width-sm) minmax(0,1fr);}
+.plx-field__info.is-focus-visible{outline-color:var(--plx-comp-field-info-focus-outline-color);outline-offset:var(--plx-comp-field-info-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-field-info-focus-outline-width);}
+.plx-field__info-text{background-color:var(--plx-comp-field-info-text-background);border-bottom-left-radius:var(--plx-comp-field-info-text-radius);border-bottom-right-radius:var(--plx-comp-field-info-text-radius);border-top-left-radius:var(--plx-comp-field-info-text-radius);border-top-right-radius:var(--plx-comp-field-info-text-radius);color:var(--plx-comp-field-info-text-text);font-size:var(--plx-comp-field-info-text-font-size);padding-block-end:var(--plx-comp-field-info-text-padding-block);padding-block-start:var(--plx-comp-field-info-text-padding-block);padding-inline-end:var(--plx-comp-field-info-text-padding-inline);padding-inline-start:var(--plx-comp-field-info-text-padding-inline);}
+.plx-field--inline.plx-field--label-sm{grid-template-columns:var(--plx-comp-field-inline-label-sm-grid-template-columns);}

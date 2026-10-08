@@ -13,6 +13,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   context. No app page used a density region, so nothing changed on screen; tests/density.test.js guards it. (batch 221)
 
 ### Added
+- Form controls on component tokens: Input, Textarea, Select, Checkbox, Radio group, Choice card, Switch and Field
+  take their look from 149 new `--plx-comp-input-*`, `-select-*`, `-textarea-*`, `-check-*`, `-radio-group-*`,
+  `-choice-*`, `-switch-*` and `-field-*` tokens in components.tokens.json, each pointing to the same role as before. A
+  new tool, tokenize-component.js, does this for any stylesheet (the Button treatment of batch 207 as a tool);
+  tests/style-compare.js compares the computed styles of two copies element by element. No visual change: 129,485
+  values on the 14 app pages and 20,069 on the form controls are identical, the pixel comparison is identical.
+  tests/density.test.js now also checks Select, Checkbox and Switch in each density region (18 of 18). (batch 223)
 - Foundations belong to the theme: each theme has a foundations file (theme-<name>.tokens.json) with its typefaces,
   font weights, letter spacing, shape (radius scale), border widths and styles, motion (durations, easing, stagger),
   opacity levels and focus ring, as `--plx-sys-typeface-*`, `-font-weight-*`, `-letter-spacing-*`, `-shape-*`,

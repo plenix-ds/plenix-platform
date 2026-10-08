@@ -7,11 +7,15 @@ const fs = require('fs');
 const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
-// the samples: each drawn once per density region; the expected height is the density's control role
+// the samples: each drawn once per density region; the expected height is the density's control role ('min': at least
+// the role, its content may be taller: a compact Checkbox is 26px, its padding and label line, an open finding of batch 223)
 const SAMPLES = [
   ['Button', '<button class="plx-button">Save</button>', 'control-height-standard'],
   ['Button sm', '<button class="plx-button plx-button--size-sm">Save</button>', 'control-height-toolbar'],
   ['Input', '<input class="plx-input" aria-label="Name">', 'control-height-standard'],
+  ['Select', '<span class="plx-select"><select class="plx-input plx-select__control" aria-label="Status"><option>Open</option></select></span>', 'control-height-standard'],
+  ['Checkbox', '<label class="plx-check"><input type="checkbox" class="plx-check__input"><span class="plx-check__label">Done</span></label>', 'control-height-inline', 'min'],
+  ['Switch', '<label class="plx-switch"><input type="checkbox" role="switch" class="plx-switch__input"><span class="plx-switch__track"></span><span class="plx-switch__label">On</span></label>', 'control-height-inline'],
 ];
 (async () => {
   const regions = ['compact', 'standard', 'comfortable'].map((d) => '<div data-plx-density="' + d + '" data-region="' + d + '">' + SAMPLES.map((s, i) => '<span data-s="' + i + '">' + s[1] + '</span>').join('') + '</div>').join('');
@@ -26,14 +30,15 @@ const SAMPLES = [
         const el = r.querySelector('[data-s="' + i + '"]').firstElementChild;
         const probe = document.createElement('div'); probe.setAttribute('class', 'plx-u-h-0'); r.appendChild(probe);
         const want = parseFloat(getComputedStyle(r).getPropertyValue('--plx-sys-' + s[2])) * parseFloat(getComputedStyle(document.documentElement).fontSize);
-        out.push({ region: r.dataset.region, name: s[0], got: Math.round(el.getBoundingClientRect().height), want: Math.round(want) });
+        out.push({ region: r.dataset.region, name: s[0], got: Math.round(el.getBoundingClientRect().height), want: Math.round(want), min: s[3] === 'min' });
       });
     });
     return out;
   }, SAMPLES);
   await browser.close(); fs.unlinkSync(file);
-  const bad = rows.filter((r) => r.got !== r.want);
-  rows.forEach((r) => console.log((r.got === r.want ? '  ok   ' : '  FAIL ') + r.name + ' in a ' + r.region + ' region: ' + r.got + 'px (its role: ' + r.want + 'px)'));
+  const fine = (r) => (r.min ? r.got >= r.want : r.got === r.want);
+  const bad = rows.filter((r) => !fine(r));
+  rows.forEach((r) => console.log((fine(r) ? '  ok   ' : '  FAIL ') + r.name + ' in a ' + r.region + ' region: ' + r.got + 'px (its role: ' + (r.min ? 'at least ' : '') + r.want + 'px)'));
   console.log((bad.length ? 'DENSITY_FAIL ' : 'DENSITY_OK ') + (rows.length - bad.length) + '/' + rows.length);
   process.exit(bad.length ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });
