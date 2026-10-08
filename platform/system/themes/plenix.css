@@ -18,10 +18,10 @@
   --plx-sys-state-selected: var(--plx-ref-color-blue-100);
   --plx-sys-content-default: var(--plx-ref-color-black);
   --plx-sys-content-muted: var(--plx-ref-color-gray-700);
-  --plx-sys-content-subtle: var(--plx-ref-color-gray-600);
+  --plx-sys-content-subtle: var(--plx-ref-color-gray-700);
   --plx-sys-content-disabled: var(--plx-ref-color-gray-500);
   --plx-sys-content-inverse: var(--plx-ref-color-white);
-  --plx-sys-content-link: var(--plx-ref-color-blue-400);
+  --plx-sys-content-link: var(--plx-ref-color-blue-600);
   --plx-sys-border-default: var(--plx-ref-color-gray-300);
   --plx-sys-border-subtle: var(--plx-ref-color-gray-200);
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);

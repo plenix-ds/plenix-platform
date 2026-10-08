@@ -15,6 +15,8 @@
 .plx-chat__message--mine .plx-chat__bubble{background-color:var(--plx-sys-action-primary-background);border-bottom-color:var(--plx-sys-action-primary-background);border-left-color:var(--plx-sys-action-primary-background);border-right-color:var(--plx-sys-action-primary-background);border-top-color:var(--plx-sys-action-primary-background);color:var(--plx-sys-action-primary-content);}
 .plx-chat__meta{align-items:baseline;column-gap:var(--plx-sys-space-inline-xs);display:flex;font-size:var(--plx-ref-font-size-11);}
 .plx-chat__author{font-weight:var(--plx-ref-font-weight-semibold-600);}
-.plx-chat__time{font-family:var(--plx-sys-font-data);font-variant-numeric:tabular-nums;opacity:var(--plx-ref-opacity-70);}
+.plx-chat__time{font-family:var(--plx-sys-font-data);font-variant-numeric:tabular-nums;}
+/* the time is quieter on the others' messages; on your own (white on the accent) it stays full white for contrast (batch 212) */
+.plx-chat__message:not(.plx-chat__message--mine) .plx-chat__time{opacity:var(--plx-ref-opacity-70);}
 .plx-chat__composer{align-items:flex-end;border-block-start-color:var(--plx-sys-border-divider);border-block-start-style:solid;border-block-start-width:var(--plx-ref-border-width-1px);column-gap:var(--plx-sys-space-inline-sm);display:flex;padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
 .plx-chat__field{flex-basis:0%;flex-grow:1;min-inline-size:0;resize:none;}

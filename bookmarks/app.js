@@ -237,7 +237,7 @@ const EMAILS = exports.EMAILS = [{
   unread: true,
   av: "M",
   avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-400)",
+  avC: "var(--plx-ref-color-blue-700)",
   proj: "Apex Co"
 }, {
   id: 2,
@@ -248,7 +248,7 @@ const EMAILS = exports.EMAILS = [{
   unread: true,
   av: "A",
   avBg: "var(--plx-ref-color-brown-100)",
-  avC: "var(--plx-ref-color-brown-500)",
+  avC: "var(--plx-ref-color-brown-800)",
   proj: "Kitchen Reno"
 }, {
   id: 3,
@@ -270,7 +270,7 @@ const EMAILS = exports.EMAILS = [{
   unread: false,
   av: "J",
   avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-400)",
+  avC: "var(--plx-ref-color-blue-700)",
   proj: "Apex Co"
 }, {
   id: 5,
@@ -397,7 +397,7 @@ const CONTACTS = exports.CONTACTS = [{
   co: "Apex Co",
   av: "M",
   avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-400)",
+  avC: "var(--plx-ref-color-blue-700)",
   last: "10:24 AM",
   msg: "Sounds great — I'll have concepts by Friday."
 }, {
@@ -407,7 +407,7 @@ const CONTACTS = exports.CONTACTS = [{
   co: "ABC Plumbing",
   av: "J",
   avBg: "var(--plx-ref-color-brown-100)",
-  avC: "var(--plx-ref-color-brown-500)",
+  avC: "var(--plx-ref-color-brown-800)",
   last: "9:41 AM",
   msg: "We can do Thursday the 12th at 2pm."
 }, {
@@ -427,7 +427,7 @@ const CONTACTS = exports.CONTACTS = [{
   co: "Apex Co",
   av: "J",
   avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-400)",
+  avC: "var(--plx-ref-color-blue-700)",
   last: "Yesterday",
   msg: "RE: SOW — looks good, one small change."
 }, {
@@ -446,7 +446,7 @@ const THREADS = exports.THREADS = [{
   name: "Maya Chen",
   av: "M",
   avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-400)",
+  avC: "var(--plx-ref-color-blue-700)",
   ch: "WhatsApp",
   preview: "Sounds great — I'll have concepts by Friday.",
   time: "10:24 AM",
@@ -456,7 +456,7 @@ const THREADS = exports.THREADS = [{
   name: "ABC Plumbing",
   av: "A",
   avBg: "var(--plx-ref-color-brown-100)",
-  avC: "var(--plx-ref-color-brown-500)",
+  avC: "var(--plx-ref-color-brown-800)",
   ch: "SMS",
   preview: "We can do Thursday the 12th at 2pm.",
   time: "9:41 AM",
@@ -466,7 +466,7 @@ const THREADS = exports.THREADS = [{
   name: "James Whitfield",
   av: "J",
   avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-400)",
+  avC: "var(--plx-ref-color-blue-700)",
   ch: "Email",
   preview: "RE: SOW — looks good, one small change.",
   time: "Yesterday",

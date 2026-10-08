@@ -85,10 +85,10 @@ export const PROJECTS=[
 ];
 export const PROJ_COLORS={1:"var(--plx-ref-color-brown-500)",2:"var(--plx-ref-color-blue-400)",3:"var(--plx-ref-color-purple-500)",4:"var(--plx-ref-color-green-500)",5:"var(--plx-ref-color-red-500)",6:"var(--plx-ref-color-gray-600)"};
 export const EMAILS=[
-  {id:1,from:"Maya Chen",      subj:"Round 3 concepts — confirm Thursday?",prev:"Hey! Just want to confirm we're presenting the logo directions this Thursday…",time:"10:24 AM",unread:true, av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-400)",proj:"Apex Co"},
-  {id:2,from:"ABC Plumbing",   subj:"Kitchen quote follow-up",             prev:"Hi, this is Jeff from ABC Plumbing. Following up on our estimate…",          time:"9:41 AM", unread:true, av:"A",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-500)",proj:"Kitchen Reno"},
+  {id:1,from:"Maya Chen",      subj:"Round 3 concepts — confirm Thursday?",prev:"Hey! Just want to confirm we're presenting the logo directions this Thursday…",time:"10:24 AM",unread:true, av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",proj:"Apex Co"},
+  {id:2,from:"ABC Plumbing",   subj:"Kitchen quote follow-up",             prev:"Hi, this is Jeff from ABC Plumbing. Following up on our estimate…",          time:"9:41 AM", unread:true, av:"A",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-800)",proj:"Kitchen Reno"},
   {id:3,from:"Luis Herrera",   subj:"Q1 tax docs ready for review",        prev:"Your estimated Q1 tax documents are attached. Please review section 3…",      time:"Yesterday",unread:false,av:"L",avBg:"var(--plx-ref-color-purple-100)",avC:"var(--plx-ref-color-purple-500)",proj:"Tax"},
-  {id:4,from:"James Whitfield",subj:"RE: SOW — one small change",          prev:"Looks mostly good. I'd like to adjust the payment milestone on page 3…",      time:"Yesterday",unread:false,av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-400)",proj:"Apex Co"},
+  {id:4,from:"James Whitfield",subj:"RE: SOW — one small change",          prev:"Looks mostly good. I'd like to adjust the payment milestone on page 3…",      time:"Yesterday",unread:false,av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",proj:"Apex Co"},
   {id:5,from:"Booking.com",    subj:"Your Madrid reservation is confirmed",prev:"Thank you for booking! Your reservation at Hotel Only YOU Atocha is confirmed.",time:"Mar 3",  unread:false,av:"B",avBg:"var(--plx-ref-color-green-100)",avC:"var(--plx-ref-color-green-500)",proj:"Spain"},
 ];
 export const EVENTS=[
@@ -114,16 +114,16 @@ export const CAL_EVENTS=[
   {id:7,date:28,title:"Spain trip — depart",   time:"All day", color:"var(--plx-ref-color-green-500)",bg:"var(--plx-ref-color-green-100)",cal:"travel"},
 ];
 export const CONTACTS=[
-  {id:1,name:"Maya Chen",       role:"Creative Director",co:"Apex Co",     av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-400)",last:"10:24 AM",msg:"Sounds great — I'll have concepts by Friday."},
-  {id:2,name:"Jeff Torres",     role:"Plumber",          co:"ABC Plumbing",av:"J",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-500)",last:"9:41 AM", msg:"We can do Thursday the 12th at 2pm."},
+  {id:1,name:"Maya Chen",       role:"Creative Director",co:"Apex Co",     av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",last:"10:24 AM",msg:"Sounds great — I'll have concepts by Friday."},
+  {id:2,name:"Jeff Torres",     role:"Plumber",          co:"ABC Plumbing",av:"J",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-800)",last:"9:41 AM", msg:"We can do Thursday the 12th at 2pm."},
   {id:3,name:"Luis Herrera",    role:"CPA",              co:"Herrera Tax", av:"L",avBg:"var(--plx-ref-color-purple-100)",avC:"var(--plx-ref-color-purple-500)",last:"Yesterday",msg:"Your Q1 tax docs are attached."},
-  {id:4,name:"James Whitfield", role:"CEO",              co:"Apex Co",     av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-400)",last:"Yesterday",msg:"RE: SOW — looks good, one small change."},
+  {id:4,name:"James Whitfield", role:"CEO",              co:"Apex Co",     av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",last:"Yesterday",msg:"RE: SOW — looks good, one small change."},
   {id:5,name:"Sarah Morgan",    role:"Friend",           co:"",            av:"S",avBg:"var(--plx-ref-color-green-100)",avC:"var(--plx-ref-color-green-500)",last:"Mar 3",    msg:"Did you decide on the cabinet color?"},
 ];
 export const THREADS=[
-  {id:1,name:"Maya Chen",       av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-400)",ch:"WhatsApp",preview:"Sounds great — I'll have concepts by Friday.",time:"10:24 AM",unread:2},
-  {id:2,name:"ABC Plumbing",    av:"A",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-500)",ch:"SMS",      preview:"We can do Thursday the 12th at 2pm.",    time:"9:41 AM", unread:1},
-  {id:3,name:"James Whitfield", av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-400)",ch:"Email",    preview:"RE: SOW — looks good, one small change.", time:"Yesterday",unread:0},
+  {id:1,name:"Maya Chen",       av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",ch:"WhatsApp",preview:"Sounds great — I'll have concepts by Friday.",time:"10:24 AM",unread:2},
+  {id:2,name:"ABC Plumbing",    av:"A",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-800)",ch:"SMS",      preview:"We can do Thursday the 12th at 2pm.",    time:"9:41 AM", unread:1},
+  {id:3,name:"James Whitfield", av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",ch:"Email",    preview:"RE: SOW — looks good, one small change.", time:"Yesterday",unread:0},
   {id:4,name:"Garret Builders", av:"G",avBg:"var(--plx-ref-color-gray-100)", avC:"var(--plx-ref-color-gray-600)",ch:"SMS",      preview:"Demo day confirmed. See you at 10am.",   time:"Yesterday",unread:0},
 ];
 export const MSGS={

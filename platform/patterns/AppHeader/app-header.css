@@ -24,7 +24,8 @@
 .plx-app-header__count{inset-block-start:calc(var(--plx-ref-space-4px) * -1);inset-inline-end:calc(var(--plx-ref-space-4px) * -1);pointer-events:none;position:absolute;}
 /* header name: Plenix over the application */
 .plx-app-header__name{display:inline-flex;flex-direction:column;line-height:var(--plx-ref-line-height-tight);}
-.plx-app-header__app{font-size:var(--plx-ref-font-size-10);font-weight:var(--plx-ref-font-weight-medium-500);letter-spacing:var(--plx-ref-letter-spacing-wide);opacity:var(--plx-ref-opacity-70);}
+/* the app name: full white on the accent, 11px (contrast 4.78; batch 212) */
+.plx-app-header__app{font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-ref-font-weight-medium-500);letter-spacing:var(--plx-ref-letter-spacing-wide);}
 /* the end: the application's action, then the utilities with no gaps (search, other, notifications, account) */
 .plx-app-header__end{align-items:center;column-gap:var(--plx-sys-space-inline-md);display:flex;flex-shrink:0;}
 .plx-app-header__utilities{align-items:center;column-gap:0;display:flex;}

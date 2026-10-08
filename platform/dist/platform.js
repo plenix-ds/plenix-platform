@@ -4386,6 +4386,7 @@ function Table({
     if (!window.ResizeObserver) return undefined;
     const ro = new ResizeObserver(check);
     ro.observe(el);
+    if (el.firstElementChild) ro.observe(el.firstElementChild); // the wrapper and the table: either can change
     return () => ro.disconnect();
   }, [rows.length, columns.length]);
   return /*#__PURE__*/_react.default.createElement("div", {
