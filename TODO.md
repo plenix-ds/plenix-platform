@@ -24,6 +24,17 @@ Fix what was found (owner's choice, before items 8, 9, 11; batches 211–215, re
 - [ ] Owner: the Asset Manager's Title Case labels ("Edit Status", "Import Date"…). Which are field names and which are actions?
 - [ ] Owner: the five layout modes on `data-plx-layout` are declared, but no CSS reads them. Implement them, or document them as a label only?
 
+Next, in order (agreed after the Authentik set-up, 2026-10-08)
+- [ ] 1. Release 0.4.0: the Asset Manager labels, the layout modes, the layout standard (settings follow it), accessibility 0.
+- [ ] 2. Save in the design system (item 8): Save opens a pull request; only Authentik Editors (and Admins) may save; a save service on the Plenix VM; the Authentik proxy provider and application (owner to approve Claude creating them through Authentik's admin shell).
+- [ ] 3. Starter template (item 12): plenix-ds/plenix-starter with a CDN (plain HTML) starter and a Vite + React + TypeScript starter, both on the shell, page kinds and tokens.
+- [ ] 4. Form controls on component tokens (item 9): Input, Select, Checkbox, Radio, Switch and Field get the Button treatment (tokens, variant pages, Edit dialog).
+- [ ] 5. Build the placeholders the next project needs (item 11): owner to name the project or the items.
+- [ ] Owner: check drive D: (chkdsk, SMART); create the DS_TOKEN secret so CI also tests the design system.
+- [ ] Claude (read-only): confirm Proxmox backups of container 104 (Authentik: accounts and groups).
+- [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
+- [ ] To discuss first (owner, 2026-10-08): renaming to Lighthouse Design System (lighthouse-ds); the design system as its own source of truth that every app takes its UI from; themes (the current look as the default theme, more themes later).
+
 Phase 3 · editable and governed
 - [ ] 8. The save server. Decided: Save opens a pull request on GitHub (a save service on the Plenix VM applies the change, rebuilds, runs the checks, opens the PR); sign-in through the owner's Authentik (auth.lighthouseway.org), a "Plenix editors" group. Owner step: a proxy provider and application in Authentik (steps to follow).
 - [ ] 9. Variant pages and the token Edit dialog for every component (the Button pattern).
