@@ -47,6 +47,495 @@
       "$value": "{plx-ref.control-size-52px}",
       "$type": "dimension"
     },
+    "button-size-md-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── BUTTON: every value of the Button (button.css uses only these). Sizes first: md is the default; sm, xs and 2xs are the",
+            "     toolbar, inline and smallest roles (muted text, quieter hover); lg is the prominent role ── */"
+          ]
+        }
+      }
+    },
+    "button-size-md-font-weight": {
+      "$value": "{plx-ref.font-weight-semibold-600}",
+      "$type": "fontWeight"
+    },
+    "button-size-md-gap": {
+      "$value": "{plx-comp.button-icon-label-gap}",
+      "$type": "dimension"
+    },
+    "button-size-md-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension"
+    },
+    "button-size-md-icon-size": {
+      "$value": "{plx-sys.control-icon-standard}",
+      "$type": "dimension"
+    },
+    "button-size-md-padding-inline": {
+      "$value": "{plx-comp.button-padding-inline}",
+      "$type": "dimension"
+    },
+    "button-size-md-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "button-size-md-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "button-size-md-hover-border": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color"
+    },
+    "button-size-md-selected-border": {
+      "$value": "{plx-sys.selected-border}",
+      "$type": "color"
+    },
+    "button-size-md-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color"
+    },
+    "button-size-md-primary-ring": {
+      "$value": "{plx-sys.shadow-ring-subtle}",
+      "$type": "shadow"
+    },
+    "button-size-sm-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "button-size-sm-font-weight": {
+      "$value": "{plx-ref.font-weight-medium-500}",
+      "$type": "fontWeight"
+    },
+    "button-size-sm-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "button-size-sm-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension"
+    },
+    "button-size-sm-icon-size": {
+      "$value": "{plx-sys.control-icon-toolbar}",
+      "$type": "dimension"
+    },
+    "button-size-sm-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "button-size-sm-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "button-size-sm-hover-background": {
+      "$value": "{plx-sys.fill-neutral-hover}",
+      "$type": "color"
+    },
+    "button-size-sm-hover-border": {
+      "$value": "{plx-sys.control-border}",
+      "$type": "color"
+    },
+    "button-size-sm-selected-border": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-size-sm-selected-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "button-size-sm-primary-ring": {
+      "$value": "none",
+      "$type": "shadow"
+    },
+    "button-size-xs-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "button-size-xs-font-weight": {
+      "$value": "{plx-ref.font-weight-medium-500}",
+      "$type": "fontWeight"
+    },
+    "button-size-xs-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "button-size-xs-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension"
+    },
+    "button-size-xs-icon-size": {
+      "$value": "{plx-sys.control-icon-inline}",
+      "$type": "dimension"
+    },
+    "button-size-xs-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "button-size-xs-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "button-size-xs-hover-background": {
+      "$value": "{plx-sys.fill-neutral-hover}",
+      "$type": "color"
+    },
+    "button-size-xs-hover-border": {
+      "$value": "{plx-sys.control-border}",
+      "$type": "color"
+    },
+    "button-size-xs-selected-border": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-size-xs-selected-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "button-size-xs-primary-ring": {
+      "$value": "none",
+      "$type": "shadow"
+    },
+    "button-size-2xs-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "button-size-2xs-font-weight": {
+      "$value": "{plx-ref.font-weight-medium-500}",
+      "$type": "fontWeight"
+    },
+    "button-size-2xs-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "button-size-2xs-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension"
+    },
+    "button-size-2xs-icon-size": {
+      "$value": "{plx-sys.control-icon-inline}",
+      "$type": "dimension"
+    },
+    "button-size-2xs-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "button-size-2xs-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "button-size-2xs-hover-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color"
+    },
+    "button-size-2xs-hover-border": {
+      "$value": "{plx-sys.selected-border}",
+      "$type": "color"
+    },
+    "button-size-2xs-selected-border": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-size-2xs-selected-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "button-size-2xs-primary-ring": {
+      "$value": "none",
+      "$type": "shadow"
+    },
+    "button-size-lg-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension"
+    },
+    "button-size-lg-font-weight": {
+      "$value": "{plx-ref.font-weight-semibold-600}",
+      "$type": "fontWeight"
+    },
+    "button-size-lg-gap": {
+      "$value": "{plx-comp.button-icon-label-gap}",
+      "$type": "dimension"
+    },
+    "button-size-lg-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension"
+    },
+    "button-size-lg-icon-size": {
+      "$value": "{plx-sys.control-icon-prominent}",
+      "$type": "dimension"
+    },
+    "button-size-lg-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "button-size-lg-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "button-size-lg-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "button-size-lg-hover-border": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color"
+    },
+    "button-size-lg-selected-border": {
+      "$value": "{plx-sys.selected-border}",
+      "$type": "color"
+    },
+    "button-size-lg-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color"
+    },
+    "button-size-lg-primary-ring": {
+      "$value": "{plx-sys.shadow-ring-subtle}",
+      "$type": "shadow"
+    },
+    "button-secondary-background": {
+      "$value": "{plx-sys.control-background}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* variants: rest and hover (secondary takes its text and hover from the size) */"
+          ]
+        }
+      }
+    },
+    "button-secondary-border": {
+      "$value": "{plx-sys.control-border}",
+      "$type": "color"
+    },
+    "button-secondary-hover-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "button-primary-background": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-primary-border": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-primary-text": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color"
+    },
+    "button-primary-hover-background": {
+      "$value": "{plx-sys.action-primary-background-hover}",
+      "$type": "color"
+    },
+    "button-primary-hover-border": {
+      "$value": "{plx-sys.action-primary-background-hover}",
+      "$type": "color"
+    },
+    "button-primary-hover-text": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color"
+    },
+    "button-tertiary-background": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-tertiary-border": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-tertiary-text": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-tertiary-hover-background": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-tertiary-hover-border": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "button-tertiary-hover-text": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color"
+    },
+    "button-ghost-background": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-ghost-border": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-ghost-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "button-ghost-hover-border": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-ghost-hover-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "button-danger-background": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "button-danger-border": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "button-danger-text": {
+      "$value": "{plx-sys.action-danger-content}",
+      "$type": "color"
+    },
+    "button-danger-hover-background": {
+      "$value": "{plx-sys.action-danger-background-hover}",
+      "$type": "color"
+    },
+    "button-danger-hover-border": {
+      "$value": "{plx-sys.action-danger-background-hover}",
+      "$type": "color"
+    },
+    "button-danger-hover-text": {
+      "$value": "{plx-sys.action-danger-content}",
+      "$type": "color"
+    },
+    "button-danger-secondary-border": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "button-danger-secondary-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color"
+    },
+    "button-danger-secondary-hover-background": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "button-danger-secondary-hover-border": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "button-danger-secondary-hover-text": {
+      "$value": "{plx-sys.action-danger-content}",
+      "$type": "color"
+    },
+    "button-link-background": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-link-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "button-link-hover-background": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-link-hover-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "button-link-underline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "button-link-hover-underline-thickness": {
+      "$value": "{plx-ref.border-width-2px}",
+      "$type": "dimension"
+    },
+    "button-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* states: selected (its border and text come from the size), disabled, focus */"
+          ]
+        }
+      }
+    },
+    "button-disabled-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color"
+    },
+    "button-disabled-border": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color"
+    },
+    "button-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color"
+    },
+    "button-disabled-quiet-background": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-disabled-quiet-border": {
+      "$value": "transparent",
+      "$type": "color"
+    },
+    "button-focus-ring-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "button-focus-ring-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "button-focus-ring-width": {
+      "$value": "{plx-ref.border-width-2px}",
+      "$type": "dimension"
+    },
+    "button-border-width": {
+      "$value": "{plx-ref.border-width-1px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* shape */"
+          ]
+        }
+      }
+    },
+    "button-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "button-caret-width": {
+      "$value": "{plx-ref.glyph-size-10px}",
+      "$type": "dimension"
+    },
+    "button-caret-height": {
+      "$value": "{plx-ref.glyph-size-6px}",
+      "$type": "dimension"
+    },
+    "button-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily"
+    },
+    "button-line-height": {
+      "$value": "{plx-ref.line-height-none}",
+      "$type": "number"
+    },
+    "button-caret-duration": {
+      "$value": "{plx-ref.motion-duration-fast}",
+      "$type": "duration"
+    },
+    "button-group-joined-radius": {
+      "$value": "{plx-ref.radius-0px}",
+      "$type": "dimension"
+    },
+    "button-group-focus-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number"
+    },
     "nav-pane-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color",

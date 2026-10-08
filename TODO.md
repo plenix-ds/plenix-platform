@@ -2,6 +2,30 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Roadmap: establishing the design system (owner: "do it systematically, all of it", 2026-10-08)
+
+Worked in this order; each step is verified (snapshot diff, checks, page check) and logged as a batch.
+
+Phase 1 · a trustworthy foundation
+- [x] 1. Button's look as component tokens (batch 207): 115 `--plx-comp-button-*` tokens; button.css uses only them; each Edit dialog field edits exactly one token and Save sends `{ file, changes: [{ token, from, to }] }`.
+- [ ] 2. Write the "Not written yet" sections of the 125 built components (usage, behavior, accessibility, content).
+- [ ] 3. The Plenix apps run on releases: the deployed apps load a released version (CDN), so a broken release shows in our own apps first.
+- [ ] 4. Owner: check drive D: (`chkdsk D: /scan`) and memory (Windows Memory Diagnostic): two corrupted writes on 2026-10-08.
+
+Phase 2 · safe to change
+- [ ] 5. Versioning rules and CHANGELOG.md (what is breaking for a component, token or class).
+- [ ] 6. CI on every change: build, check-system, check-spec, visual snapshot diff, accessibility scan.
+- [ ] 7. TypeScript definitions for @plenix-ds/react.
+
+Phase 3 · editable and governed
+- [ ] 8. The save server (below: design-system.lighthouseway.org) writes token changes, rebuilds, logs who changed what.
+- [ ] 9. Variant pages and the token Edit dialog for every component (the Button pattern).
+- [ ] 10. Contribution model: proposal → placeholder → built → released; approvals; review checklist.
+
+Phase 4 · grow
+- [ ] 11. Build the placeholders the next projects need.
+- [ ] 12. Starter template: a new project wired to Plenix in one command.
+
 ## Not urgent: own mirror of the Plenix packages and repos (added 2026-10-08)
 
 Keep a copy of the @plenix-ds packages (and the plenix-ds repos) on our own servers, so installs keep working if GitHub is down and projects use one registry address.
@@ -24,7 +48,7 @@ Proxmox VM 130 "Plenix" (Debian 12 cloud image, 6 cores, 16 GB RAM, 200 GB on St
 
 Needed before the Edit dialog's Save can write every field to the token JSON. Today Button's colors per variant and state live in its stylesheet rules (`platform/components/Button/button.css`), not in tokens: for example `.plx-button--primary` uses `--plx-sys-action-primary-background` directly. So the dialog's color and border fields can only produce a stylesheet change, not a JSON one.
 
-- [ ] Owner to choose:
+- [x] Owner chose (a) on 2026-10-08; done in batch 207.
   - (a, recommended) Give Button a full set of component tokens (`--plx-comp-button-primary-background`, `…-primary-hover-background`, `…-primary-text` and so on) in `platform/tokens/components.tokens.json`, and have button.css use only those. Every field in the dialog then edits exactly one token, and Save writes JSON.
   - (b) Save only the fields that are already tokens (sizes, padding, gap, font size and weight, a few colors) and leave the rest as copy-only.
 - Done when: the choice is made and, for (a), button.css uses only --plx-comp-button-* tokens and each dialog field maps to one token.
