@@ -1,0 +1,16 @@
+{
+  "$description": "semantic tokens written under :root[data-plx-interaction=\"pointer\"]",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/semantic.css",
+      "selector": ":root[data-plx-interaction=\"pointer\"]",
+      "opener": ":root[data-plx-interaction=\"pointer\"]{"
+    }
+  },
+  "plx-sys": {
+    "control-target-min": {
+      "$value": "{plx-ref.control-size-24px}",
+      "$type": "dimension"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+/* Plenix · EventChip (platform/components/EventChip). Anatomy and API: EventChip.jsx. */
+.plx-event-chip{appearance:none;background-color:var(--plx-sys-surface-sunken);border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-bottom-style:none;border-bottom-width:0;border-inline-end-style:none;border-inline-end-width:0;border-inline-start-color:var(--plx-comp-event-chip-color, var(--plx-sys-action-primary-background));border-inline-start-style:solid;border-inline-start-width:var(--plx-ref-border-width-3px);border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);border-top-style:none;border-top-width:0;box-sizing:border-box;color:var(--plx-sys-content-default);column-gap:var(--plx-sys-space-inline-xs);display:flex;font-family:inherit;font-size:var(--plx-ref-font-size-11);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);text-align:start;}
+.plx-event-chip--fill{align-items:flex-start;block-size:100%;flex-direction:column;inline-size:100%;}
+.plx-event-chip__time{color:var(--plx-sys-content-muted);flex-shrink:0;font-family:var(--plx-sys-font-data);font-variant-numeric:tabular-nums;}
+.plx-event-chip__title{font-weight:var(--plx-ref-font-weight-medium-500);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-event-chip--interactive{cursor:pointer;}
+.plx-event-chip--interactive:hover,
+.plx-event-chip--interactive.is-hover{background-color:var(--plx-sys-state-hover);}
+.plx-event-chip--interactive:focus-visible,
+.plx-event-chip--interactive.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}

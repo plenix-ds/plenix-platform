@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="016" name="macOS Quarantine Metadata" category="OS" category_label="Operating System / File System" used_for="Download/app safety (com.apple.quarantine xattr)" spec_source="Apple Gatekeeper documentation; LaunchServices Quarantine" completeness="comprehensive" record_count="15">
+  <description>Set on every file written by a quarantine-aware application. Triggers Gatekeeper on first launch of executable code.</description>
+  <attributes>
+    <attribute>
+      <name>Flags</name>
+      <data_type>UInt32 hex</data_type>
+      <description>Quarantine flags</description>
+      <values>
+        <value key="0x0001">kLSQuarantineEventSelf</value>
+        <value key="0x0040">Already approved by user</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Flag: kLSQuarantineTypeWebDownload</name>
+      <data_type>Bit</data_type>
+      <description>Source is web download</description>
+    </attribute>
+    <attribute>
+      <name>Flag: kLSQuarantineTypeOtherDownload</name>
+      <data_type>Bit</data_type>
+      <description>Source is other download</description>
+    </attribute>
+    <attribute>
+      <name>Flag: kLSQuarantineTypeEmailAttachment</name>
+      <data_type>Bit</data_type>
+      <description>Email attachment</description>
+    </attribute>
+    <attribute>
+      <name>Flag: kLSQuarantineTypeInstantMessageAttachment</name>
+      <data_type>Bit</data_type>
+      <description>iMessage/IM attachment</description>
+    </attribute>
+    <attribute>
+      <name>Flag: kLSQuarantineTypeCalendarEventAttachment</name>
+      <data_type>Bit</data_type>
+      <description>Calendar attachment</description>
+    </attribute>
+    <attribute>
+      <name>Flag: kLSQuarantineTypeOtherAttachment</name>
+      <data_type>Bit</data_type>
+      <description>Other attachment</description>
+    </attribute>
+    <attribute>
+      <name>Timestamp</name>
+      <data_type>UNIX double seconds (hex)</data_type>
+      <description>When quarantine was applied</description>
+    </attribute>
+    <attribute>
+      <name>Agent Name</name>
+      <data_type>String</data_type>
+      <description>App that wrote the file (Safari, Mail, Chrome, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Event UUID</name>
+      <data_type>UUID</data_type>
+      <description>Index into ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 SQLite DB</description>
+    </attribute>
+    <attribute>
+      <name>LSQuarantineAgentBundleIdentifier</name>
+      <data_type>String</data_type>
+      <description>Bundle ID of writing app</description>
+    </attribute>
+    <attribute>
+      <name>LSQuarantineDataURL</name>
+      <data_type>URL</data_type>
+      <description>Direct URL of downloaded file (in QuarantineEvents DB)</description>
+    </attribute>
+    <attribute>
+      <name>LSQuarantineOriginURL</name>
+      <data_type>URL</data_type>
+      <description>Referrer page (in QuarantineEvents DB)</description>
+    </attribute>
+    <attribute>
+      <name>LSQuarantineSenderName</name>
+      <data_type>String</data_type>
+      <description>Email sender name</description>
+    </attribute>
+    <attribute>
+      <name>LSQuarantineSenderAddress</name>
+      <data_type>String</data_type>
+      <description>Email sender address</description>
+    </attribute>
+  </attributes>
+</metadata_system>

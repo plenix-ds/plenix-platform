@@ -1,0 +1,100 @@
+/* Plenix · CodeBlock
+   Summary: Code or a file's source, in the code font (DM Mono) on the page surface, with a Copy button.
+   Usage:
+     <CodeBlock title="platform/components/Button/Button.jsx" maxHeight="tall">{text}</CodeBlock>
+   Props:
+     title: a file name or caption shown above the code (in the data font)
+     maxHeight: "none" (default) | "tall" (a box that scrolls, for whole files)
+     copy: false hides the Copy button (default true)
+     label: the accessible name of the code region (default the title, else "Code")
+     language: "auto" (default: from the title's extension, else read from the code) | "jsx" | "js" | "css" | "html" | "text"
+     children: the code, as a string
+     className: more classes on the block
+   Behavior:
+     The code keeps its own line breaks and scrolls sideways.
+     The code is one Tab stop (a focusable region) so a keyboard user can scroll it.
+     The code is colored in the usual editor manner: keywords, strings, comments, numbers, functions, tags, attributes and
+       properties, custom properties, selectors.
+     "text" is not colored.
+     Copy puts the code on the clipboard and reads "Copied" with a check for a moment.
+   Notes:
+     The colors come from the --plx-sys-code-* roles.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { Button } from '../Button/Button.jsx';
+
+const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
+// each rule: [kind, pattern]; the first that matches at a position wins
+const RULES = {
+  js: [
+    ['comment', /\/\*[\s\S]*?\*\/|\/\/[^\n]*/],
+    ['string', /'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`/],
+    ['tag', /<\/?[A-Za-z][\w.]*/],
+    ['attribute', /[A-Za-z_][\w-]*(?==(?!=)[{"'])/],
+    ['keyword', new RegExp('\\b(?:' + KEYWORDS + ')\\b')],
+    ['number', /\b\d+(?:\.\d+)?\b/],
+    ['function', /\b[A-Za-z_$][\w$]*(?=\()/],
+  ],
+  css: [
+    ['comment', /\/\*[\s\S]*?\*\//],
+    ['string', /'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"/],
+    ['brace', /[{}]/],
+    ['variable', /--[\w-]+/],
+    ['keyword', /@[\w-]+|!important/],
+    ['attribute', /[\w-]+(?=\s*:)/],
+    ['function', /\b[\w-]+(?=\()/],
+    ['number', /-?\b\d+(?:\.\d+)?(?:px|rem|em|%|ms|s|deg|fr|vh|vw|ch)?\b/],
+  ],
+};
+RULES.jsx = RULES.js; RULES.html = RULES.js;
+
+function detect(title, text) {
+  const ext = title ? (String(title).match(/\.(\w+)$/) || [])[1] : null;
+  if (ext) return ext === 'css' ? 'css' : /^(jsx?|mjs|tsx?)$/.test(ext) ? 'jsx' : ext === 'html' ? 'html' : 'text';
+  return /^\s*(?:[.#:@\w[\]*-][^{\n]*)\{[^}]*:[^}]*;/m.test(text) && !/=>|import |<[A-Z]/.test(text) ? 'css' : 'jsx';
+}
+
+// the code as a list of plain strings and colored spans
+function highlight(text, language) {
+  const rules = RULES[language];
+  if (!rules) return text;
+  const all = new RegExp(rules.map(([, re]) => '(' + re.source + ')').join('|'), 'g');
+  const out = [];
+  let at = 0, depth = 0, m, n = 0;
+  const plain = (s) => { if (!s) return; out.push(language === 'css' && depth === 0 ? <span key={n++} className="plx-code-block__tok--selector">{s}</span> : s); };
+  while ((m = all.exec(text))) {
+    if (m[0] === '') { all.lastIndex++; continue; }
+    plain(text.slice(at, m.index));
+    const kind = rules[m.slice(1).findIndex((g) => g !== undefined)][0];
+    if (kind === 'brace') { depth += m[0] === '{' ? 1 : -1; if (depth < 0) depth = 0; out.push(m[0]); }
+    else if (language === 'css' && depth === 0 && kind !== 'comment' && kind !== 'keyword' && kind !== 'string') plain(m[0]);
+    else if (kind === 'tag') { const slash = m[0][1] === '/' ? 2 : 1; out.push(m[0].slice(0, slash)); out.push(<span key={n++} className="plx-code-block__tok--tag">{m[0].slice(slash)}</span>); }
+    else out.push(<span key={n++} className={'plx-code-block__tok--' + kind}>{m[0]}</span>);
+    at = all.lastIndex;
+  }
+  plain(text.slice(at));
+  return out;
+}
+
+export function CodeBlock({ title, maxHeight = 'none', copy = true, label, language = 'auto', className, children }) {
+  const [copied, setCopied] = React.useState(false);
+  const text = typeof children === 'string' ? children : String(children == null ? '' : children);
+  const lang = language === 'auto' ? detect(title, text) : language;
+  const colored = React.useMemo(() => highlight(text, lang), [text, lang]);
+  const doCopy = () => {
+    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => {});
+  };
+  return (
+    <div className={cx('plx-code-block', 'plx-code-block--' + maxHeight, className)}>
+      {title || copy ? (
+        <div className="plx-code-block__head">
+          {title ? <span className="plx-code-block__title">{title}</span> : <span />}
+          {copy ? <Button size="xs" variant="ghost" icon={copied ? 'check' : undefined} onClick={doCopy}>{copied ? 'Copied' : 'Copy'}</Button> : null}
+        </div>
+      ) : null}
+      <pre className="plx-code-block__pre" tabIndex={0} aria-label={label || title || 'Code'}><code data-plx-language={lang}>{colored}</code></pre>
+    </div>
+  );
+}

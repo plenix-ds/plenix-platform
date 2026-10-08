@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="032" name="Office Custom Properties" category="DOC" category_label="Documents" used_for="User-defined Office fields (docProps/custom.xml)" spec_source="ECMA-376 Part 2 §11.3.10 Custom Properties; vt: namespace value types" completeness="comprehensive" record_count="33">
+  <description>User- or template-defined typed properties stored in the OPC custom.xml part. Used for document IDs, approval states, client codes, MIP labels (legacy form), DAM metadata.</description>
+  <attributes>
+    <attribute>
+      <name>Property Name</name>
+      <data_type>String (max 255)</data_type>
+      <description>User-chosen property name</description>
+    </attribute>
+    <attribute>
+      <name>Property ID (pid)</name>
+      <data_type>Int &gt;=2</data_type>
+      <description>Property ID (≥2; 0/1 reserved for dictionary)</description>
+    </attribute>
+    <attribute>
+      <name>FmtID</name>
+      <data_type>GUID</data_type>
+      <description>Property set format identifier (D5CDD505-2E9C-101B-9397-08002B2CF9AE for user-defined)</description>
+    </attribute>
+    <attribute>
+      <name>vt:lpstr</name>
+      <data_type>String (Latin)</data_type>
+      <description>LPSTR value</description>
+    </attribute>
+    <attribute>
+      <name>vt:lpwstr</name>
+      <data_type>String (Unicode)</data_type>
+      <description>LPWSTR value</description>
+    </attribute>
+    <attribute>
+      <name>vt:bstr</name>
+      <data_type>String (BSTR)</data_type>
+      <description>BSTR value</description>
+    </attribute>
+    <attribute>
+      <name>vt:i1 / vt:i2 / vt:i4 / vt:i8 / vt:int</name>
+      <data_type>Signed integer</data_type>
+      <description>Signed integer of various widths</description>
+    </attribute>
+    <attribute>
+      <name>vt:ui1 / vt:ui2 / vt:ui4 / vt:ui8 / vt:uint</name>
+      <data_type>Unsigned integer</data_type>
+      <description>Unsigned integer of various widths</description>
+    </attribute>
+    <attribute>
+      <name>vt:r4 / vt:r8</name>
+      <data_type>Float / Double</data_type>
+      <description>32-bit / 64-bit floating point</description>
+    </attribute>
+    <attribute>
+      <name>vt:decimal</name>
+      <data_type>Decimal</data_type>
+      <description>Currency/decimal</description>
+    </attribute>
+    <attribute>
+      <name>vt:bool</name>
+      <data_type>Boolean</data_type>
+      <description>True/False</description>
+    </attribute>
+    <attribute>
+      <name>vt:date</name>
+      <data_type>dateTime</data_type>
+      <description>Date/time value</description>
+    </attribute>
+    <attribute>
+      <name>vt:filetime</name>
+      <data_type>FILETIME</data_type>
+      <description>Windows FILETIME</description>
+    </attribute>
+    <attribute>
+      <name>vt:cy</name>
+      <data_type>Currency</data_type>
+      <description>Currency</description>
+    </attribute>
+    <attribute>
+      <name>vt:error</name>
+      <data_type>HRESULT</data_type>
+      <description>Error code</description>
+    </attribute>
+    <attribute>
+      <name>vt:clsid</name>
+      <data_type>GUID</data_type>
+      <description>CLSID</description>
+    </attribute>
+    <attribute>
+      <name>vt:blob / vt:cf</name>
+      <data_type>Binary</data_type>
+      <description>Binary blob / clipboard format</description>
+    </attribute>
+    <attribute>
+      <name>vt:stream / vt:storage / vt:ostream / vt:ostorage / vt:vstream</name>
+      <data_type>OLE</data_type>
+      <description>Embedded OLE stream/storage</description>
+    </attribute>
+    <attribute>
+      <name>vt:array / vt:vector</name>
+      <data_type>Container</data_type>
+      <description>Array or vector of typed values</description>
+    </attribute>
+    <attribute>
+      <name>vt:variant</name>
+      <data_type>Tagged union</data_type>
+      <description>Variant type</description>
+    </attribute>
+    <attribute>
+      <name>vt:empty / vt:null</name>
+      <data_type>Marker</data_type>
+      <description>No value / explicit null</description>
+    </attribute>
+    <attribute>
+      <name>ContentTypeId (SharePoint)</name>
+      <data_type>String</data_type>
+      <description>SharePoint content type ID</description>
+    </attribute>
+    <attribute>
+      <name>Source URL (SharePoint)</name>
+      <data_type>URL</data_type>
+      <description>Source library URL</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_Enabled</name>
+      <data_type>Boolean</data_type>
+      <description>Microsoft Information Protection legacy label enabled</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_SetDate</name>
+      <data_type>dateTime</data_type>
+      <description>MIP label apply time</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_Method</name>
+      <data_type>String</data_type>
+      <description>MIP application method (Privileged, Standard)</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_Name</name>
+      <data_type>String</data_type>
+      <description>MIP label name</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_SiteId</name>
+      <data_type>GUID</data_type>
+      <description>MIP tenant/site ID</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_ActionId</name>
+      <data_type>GUID</data_type>
+      <description>MIP action ID</description>
+    </attribute>
+    <attribute>
+      <name>MSIP_Label_&lt;GUID&gt;_ContentBits</name>
+      <data_type>Int</data_type>
+      <description>MIP content bits (visual marking flags)</description>
+    </attribute>
+    <attribute>
+      <name>ApprovalStatus</name>
+      <data_type>String</data_type>
+      <description>Common: 'Approved', 'Pending', 'Rejected'</description>
+    </attribute>
+    <attribute>
+      <name>ClientName / ClientId / Matter / MatterId</name>
+      <data_type>String</data_type>
+      <description>Common in legal industry</description>
+    </attribute>
+    <attribute>
+      <name>DocumentID / DocumentNumber / RevisionId</name>
+      <data_type>String</data_type>
+      <description>DMS identifiers</description>
+    </attribute>
+  </attributes>
+</metadata_system>

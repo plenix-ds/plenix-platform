@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="013" name="macOS Extended Attributes" category="OS" category_label="Operating System / File System" used_for="Hidden macOS file metadata (xattrs)" spec_source="Apple xattr(2); APFS Reference; getxattr/setxattr APIs" completeness="comprehensive" record_count="27">
+  <description>Key/value attributes attached to files via xattr namespace. Inspect with `xattr -l file`. Stored in APFS extended attribute records (or AppleDouble ._files on non-native filesystems).</description>
+  <attributes>
+    <attribute>
+      <name>com.apple.quarantine</name>
+      <data_type>String (CSV)</data_type>
+      <description>Quarantine: flags;timestamp;agent;UUID — triggers Gatekeeper</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.metadata:kMDItemWhereFroms</name>
+      <data_type>bplist array</data_type>
+      <description>Source URL chain (download referrer + final URL)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.metadata:kMDItemDownloadedDate</name>
+      <data_type>bplist date</data_type>
+      <description>When the file was downloaded</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.metadata:_kMDItemUserTags</name>
+      <data_type>bplist array</data_type>
+      <description>Finder tags with color codes</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.metadata:kMDItemFinderComment</name>
+      <data_type>bplist string</data_type>
+      <description>Spotlight/Finder comment</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.metadata:kMDLabel_*</name>
+      <data_type>Variable</data_type>
+      <description>Per-app metadata labels</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.FinderInfo</name>
+      <data_type>32-byte FinderInfo struct</data_type>
+      <description>Legacy file type/creator codes + flags (system 17)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.ResourceFork</name>
+      <data_type>Variable</data_type>
+      <description>Legacy Mac resource fork (system 15)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.TextEncoding</name>
+      <data_type>String</data_type>
+      <description>Encoding hint (e.g., UTF-8;134217984)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.diskimages.recentcksum</name>
+      <data_type>String</data_type>
+      <description>Disk image checksum cache</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.lastuseddate#PS</name>
+      <data_type>Binary timestamp</data_type>
+      <description>Last used date for property store</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.macl</name>
+      <data_type>Binary</data_type>
+      <description>App sandbox security scope (TCC; managed by Apple Mobile File Integrity)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.provenance</name>
+      <data_type>Binary</data_type>
+      <description>Provenance info — app that wrote file, used by TCC</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.cs.CodeDirectory</name>
+      <data_type>Binary</data_type>
+      <description>Code signing CodeDirectory (signed binaries)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.cs.CodeRequirements</name>
+      <data_type>Binary</data_type>
+      <description>Code signing requirements</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.cs.CodeSignature</name>
+      <data_type>Binary</data_type>
+      <description>Detached code signature</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.cs.CodeResources</name>
+      <data_type>XML plist</data_type>
+      <description>Bundle resource hash list</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.cs.CodeEntitlements</name>
+      <data_type>XML plist</data_type>
+      <description>Code entitlements</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.fs.symlink</name>
+      <data_type>UTF-8 string</data_type>
+      <description>Symbolic link target (xattr-stored on some filesystems)</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.NetworkOptions</name>
+      <data_type>Binary</data_type>
+      <description>iCloud / network-related options</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.assetsd.customLocation</name>
+      <data_type>bplist</data_type>
+      <description>Photos library location override</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.SafariSafeBrowsing</name>
+      <data_type>Binary</data_type>
+      <description>Safari safe-browse marker</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.Preview.UIstate.v2</name>
+      <data_type>bplist</data_type>
+      <description>Preview app's last view state</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.TextInput.AutoFill.metadata</name>
+      <data_type>Binary</data_type>
+      <description>Auto-fill provenance</description>
+    </attribute>
+    <attribute>
+      <name>com.apple.installhistory</name>
+      <data_type>bplist</data_type>
+      <description>Install history marker</description>
+    </attribute>
+    <attribute>
+      <name>user.* (custom)</name>
+      <data_type>Variable</data_type>
+      <description>User-defined namespace for arbitrary attributes</description>
+    </attribute>
+    <attribute>
+      <name>system.* (kernel)</name>
+      <data_type>Variable</data_type>
+      <description>Kernel-managed attributes</description>
+    </attribute>
+  </attributes>
+</metadata_system>

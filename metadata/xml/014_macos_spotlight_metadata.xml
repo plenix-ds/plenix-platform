@@ -1,0 +1,425 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="014" name="macOS Spotlight Metadata" category="OS" category_label="Operating System / File System" used_for="macOS search/index metadata (kMDItem* attributes)" spec_source="Apple Spotlight Metadata Attributes Reference (kMDItem*)" completeness="comprehensive" record_count="76">
+  <description>Spotlight (mds/mdworker) indexes file metadata into ~/Library/Metadata and /.Spotlight-V100. All attributes are keyed by kMDItem* names. Query with `mdls /path` and `mdfind`.</description>
+  <attributes>
+    <attribute>
+      <name>kMDItemDisplayName</name>
+      <data_type>String</data_type>
+      <description>Localized filename</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFSName</name>
+      <data_type>String</data_type>
+      <description>On-disk filename</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFSSize</name>
+      <data_type>UInt64</data_type>
+      <description>File size</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFSCreationDate</name>
+      <data_type>Date</data_type>
+      <description>Creation date</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFSContentChangeDate</name>
+      <data_type>Date</data_type>
+      <description>Last content change</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemContentCreationDate</name>
+      <data_type>Date</data_type>
+      <description>Document-internal creation date</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemContentModificationDate</name>
+      <data_type>Date</data_type>
+      <description>Document-internal modification date</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemLastUsedDate</name>
+      <data_type>Date</data_type>
+      <description>Most recent use</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemUseCount</name>
+      <data_type>Int</data_type>
+      <description>Open count</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemUsedDates</name>
+      <data_type>Date[]</data_type>
+      <description>History of use dates (truncated)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemContentType</name>
+      <data_type>String UTI</data_type>
+      <description>Uniform Type Identifier</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemContentTypeTree</name>
+      <data_type>String[]</data_type>
+      <description>UTI inheritance tree</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemKind</name>
+      <data_type>String</data_type>
+      <description>Localized kind ('Microsoft Word document')</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemTitle</name>
+      <data_type>String</data_type>
+      <description>Document title</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAuthors</name>
+      <data_type>String[]</data_type>
+      <description>Author(s)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemEditors</name>
+      <data_type>String[]</data_type>
+      <description>Editor(s)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemPublishers</name>
+      <data_type>String[]</data_type>
+      <description>Publisher(s)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemContributors</name>
+      <data_type>String[]</data_type>
+      <description>Contributor(s)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemSubject</name>
+      <data_type>String</data_type>
+      <description>Subject</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemDescription</name>
+      <data_type>String</data_type>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemKeywords</name>
+      <data_type>String[]</data_type>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemComment</name>
+      <data_type>String</data_type>
+      <description>Comment</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFinderComment</name>
+      <data_type>String</data_type>
+      <description>User-typed Finder comment</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemCopyright</name>
+      <data_type>String</data_type>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemRights</name>
+      <data_type>String</data_type>
+      <description>Rights statement</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemLanguages</name>
+      <data_type>String[]</data_type>
+      <description>Content languages</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemNumberOfPages</name>
+      <data_type>Int</data_type>
+      <description>Page count</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemPageHeight</name>
+      <data_type>Float (pt)</data_type>
+      <description>Page height</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemPageWidth</name>
+      <data_type>Float (pt)</data_type>
+      <description>Page width</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemTextContent</name>
+      <data_type>String</data_type>
+      <description>Indexed body text</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemPixelHeight</name>
+      <data_type>Int</data_type>
+      <group>Image</group>
+      <description>Image height</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemPixelWidth</name>
+      <data_type>Int</data_type>
+      <group>Image</group>
+      <description>Image width</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemBitsPerSample</name>
+      <data_type>Int</data_type>
+      <group>Image</group>
+      <description>Bit depth per sample</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemColorSpace</name>
+      <data_type>String</data_type>
+      <group>Image</group>
+      <description>RGB, CMYK, Lab, etc.</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemHasAlphaChannel</name>
+      <data_type>Bool</data_type>
+      <group>Image</group>
+      <description>Alpha present</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemResolutionWidthDPI</name>
+      <data_type>Float</data_type>
+      <group>Image</group>
+      <description>Horizontal DPI</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemResolutionHeightDPI</name>
+      <data_type>Float</data_type>
+      <group>Image</group>
+      <description>Vertical DPI</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemOrientation</name>
+      <data_type>Int 0-1</data_type>
+      <group>Image</group>
+      <description>0=horizontal, 1=vertical</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAcquisitionMake</name>
+      <data_type>String</data_type>
+      <group>Image</group>
+      <description>Camera maker (EXIF Make)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAcquisitionModel</name>
+      <data_type>String</data_type>
+      <group>Image</group>
+      <description>Camera model</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemISOSpeed</name>
+      <data_type>Int</data_type>
+      <group>Image</group>
+      <description>ISO</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFocalLength</name>
+      <data_type>Float</data_type>
+      <group>Image</group>
+      <description>Focal length mm</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemExposureTimeSeconds</name>
+      <data_type>Float</data_type>
+      <group>Image</group>
+      <description>Shutter speed</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFNumber</name>
+      <data_type>Float</data_type>
+      <group>Image</group>
+      <description>Aperture</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemFlashOnOff</name>
+      <data_type>Int 0/1</data_type>
+      <group>Image</group>
+      <description>Flash fired</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemWhiteBalance</name>
+      <data_type>Int</data_type>
+      <group>Image</group>
+      <description>White balance</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemEXIFVersion</name>
+      <data_type>String</data_type>
+      <group>Image</group>
+      <description>EXIF version</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemLatitude</name>
+      <data_type>Float</data_type>
+      <group>GPS</group>
+      <description>Latitude</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemLongitude</name>
+      <data_type>Float</data_type>
+      <group>GPS</group>
+      <description>Longitude</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAltitude</name>
+      <data_type>Float</data_type>
+      <group>GPS</group>
+      <description>Altitude meters</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemTimestamp</name>
+      <data_type>Date</data_type>
+      <group>GPS</group>
+      <description>GPS UTC timestamp</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemGPSTrack</name>
+      <data_type>Float</data_type>
+      <group>GPS</group>
+      <description>Heading</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemSpeed</name>
+      <data_type>Float</data_type>
+      <group>GPS</group>
+      <description>Speed</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemDurationSeconds</name>
+      <data_type>Float</data_type>
+      <group>Media</group>
+      <description>Media duration</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemCodecs</name>
+      <data_type>String[]</data_type>
+      <group>Media</group>
+      <description>Codecs used</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAudioBitRate</name>
+      <data_type>Int</data_type>
+      <group>Media</group>
+      <description>Audio bitrate (bps)</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAudioChannelCount</name>
+      <data_type>Int</data_type>
+      <group>Media</group>
+      <description>Channel count</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAudioSampleRate</name>
+      <data_type>Float</data_type>
+      <group>Media</group>
+      <description>Sample rate Hz</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemMediaTypes</name>
+      <data_type>String[]</data_type>
+      <group>Media</group>
+      <description>Sound, Video, Subtitle</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemTotalBitRate</name>
+      <data_type>Int</data_type>
+      <group>Media</group>
+      <description>Total bps</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemVideoBitRate</name>
+      <data_type>Int</data_type>
+      <group>Media</group>
+      <description>Video bitrate</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAlbum</name>
+      <data_type>String</data_type>
+      <group>Music</group>
+      <description>Album</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemAuthorEmailAddresses</name>
+      <data_type>String[]</data_type>
+      <group>Communication</group>
+      <description>Email of authors</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemMusicalGenre</name>
+      <data_type>String</data_type>
+      <group>Music</group>
+      <description>Genre</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemMusicalInstrument</name>
+      <data_type>String</data_type>
+      <group>Music</group>
+      <description>Instrument</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemComposer</name>
+      <data_type>String</data_type>
+      <group>Music</group>
+      <description>Composer</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemTempo</name>
+      <data_type>Float</data_type>
+      <group>Music</group>
+      <description>BPM</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemKeySignature</name>
+      <data_type>String</data_type>
+      <group>Music</group>
+      <description>Key signature</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemTimeSignature</name>
+      <data_type>String</data_type>
+      <group>Music</group>
+      <description>Time signature</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemWhereFroms</name>
+      <data_type>String[]</data_type>
+      <description>Source URLs</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemDownloadedDate</name>
+      <data_type>Date</data_type>
+      <description>Download date</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemUserTags</name>
+      <data_type>String[]</data_type>
+      <description>Finder tags</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemRecipients</name>
+      <data_type>String[]</data_type>
+      <description>Email/message recipients</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemRecipientEmailAddresses</name>
+      <data_type>String[]</data_type>
+      <description>Recipient emails</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemSenderEmailAddresses</name>
+      <data_type>String[]</data_type>
+      <description>Sender emails</description>
+    </attribute>
+    <attribute>
+      <name>kMDItemSenders</name>
+      <data_type>String[]</data_type>
+      <description>Senders</description>
+    </attribute>
+  </attributes>
+</metadata_system>

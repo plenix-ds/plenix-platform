@@ -1,0 +1,531 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="176" name="Scanner Metadata" category="IMG" category_label="Images" used_for="Document/photo scanner output (TWAIN/WIA/ISIS-driven)" spec_source="TWAIN 2.4 Specification + Microsoft WIA + Pixel Translations ISIS" completeness="comprehensive" record_count="66">
+  <description>Scanner metadata divides into three layers: (1) TWAIN/WIA/ISIS driver capabilities — what the scanner reports it can do (resolution, color modes, ADF status, paper sizes, duplex, batch settings, blank-page detection); (2) per-scan settings actually applied (chosen DPI, bit depth, region, brightness/contrast, output format); (3) embedded metadata in the output file (EXIF Make/Model/Software/DateTime, XMP CreatorTool, PDF Producer/Creator). TWAIN is the cross-platform standard used by most consumer scanners; WIA is Microsoft's Windows-native alternative; ISIS is the high-end production-scanner standard from EMC Captiva. This entry covers the comprehensive capability and image-info catalogs from all three.</description>
+  <attributes>
+    <attribute>
+      <name>CAP_XRESOLUTION</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN Capability</group>
+      <description>Horizontal scan resolution in DPI (e.g. 75/150/200/300/400/600/1200/2400)</description>
+    </attribute>
+    <attribute>
+      <name>CAP_YRESOLUTION</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_PIXELTYPE</name>
+      <data_type>TWAIN constant</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">TWPT_BW (1-bit black/white)</value>
+        <value key="1">TWPT_GRAY</value>
+        <value key="2">TWPT_RGB</value>
+        <value key="3">TWPT_PALETTE</value>
+        <value key="4">TWPT_CMY</value>
+        <value key="5">TWPT_CMYK</value>
+        <value key="6">TWPT_YUV</value>
+        <value key="7">TWPT_YUVK</value>
+        <value key="8">TWPT_CIEXYZ</value>
+        <value key="9">TWPT_LAB</value>
+        <value key="10">TWPT_SRGB</value>
+        <value key="11">TWPT_SCRGB</value>
+        <value key="12">TWPT_INFRARED</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_BITDEPTH</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <description>Bits per channel: 1, 8, 16</description>
+    </attribute>
+    <attribute>
+      <name>ICAP_BITORDER</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">LSB first</value>
+        <value key="1">MSB first</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_PIXELFLAVOR</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">Chocolate (0=white)</value>
+        <value key="1">Vanilla (0=black)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_COMPRESSION</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Packbits</value>
+        <value key="2">Group3-1D</value>
+        <value key="3">Group3-1D Eol</value>
+        <value key="4">Group3-2D</value>
+        <value key="5">Group4</value>
+        <value key="6">JPEG</value>
+        <value key="7">LZW</value>
+        <value key="8">JBIG</value>
+        <value key="9">PNG</value>
+        <value key="10">RLE4</value>
+        <value key="11">RLE8</value>
+        <value key="12">BitFields</value>
+        <value key="13">ZIP</value>
+        <value key="14">JPEG2000</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_IMAGEFILEFORMAT</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">TIFF</value>
+        <value key="1">Picture (BMP)</value>
+        <value key="2">XBM</value>
+        <value key="3">JFIF (JPEG)</value>
+        <value key="4">FPX (FlashPix)</value>
+        <value key="5">TIFFMULTI</value>
+        <value key="6">PNG</value>
+        <value key="7">SPIFF</value>
+        <value key="8">EXIF</value>
+        <value key="9">PDF</value>
+        <value key="10">JP2</value>
+        <value key="11">JPX</value>
+        <value key="12">DEJAVU</value>
+        <value key="13">PDFA</value>
+        <value key="14">PDFA2</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_XSCALING / YSCALING</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN Capability</group>
+      <description>Output scaling factor</description>
+    </attribute>
+    <attribute>
+      <name>ICAP_BRIGHTNESS / CONTRAST</name>
+      <data_type>TW_FIX32 (-1000..+1000)</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_GAMMA</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_HIGHLIGHT / SHADOW / THRESHOLD</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_HALFTONES</name>
+      <data_type>TW_STR32</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_ORIENTATION</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">Rot0 / Portrait</value>
+        <value key="1">Rot90</value>
+        <value key="2">Rot180</value>
+        <value key="3">Rot270 / Landscape</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_ROTATION</name>
+      <data_type>TW_FIX32 (degrees)</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_UNITS</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+      <values>
+        <value key="0">Inches</value>
+        <value key="1">Centimeters</value>
+        <value key="2">Picas</value>
+        <value key="3">Points</value>
+        <value key="4">Twips</value>
+        <value key="5">Pixels</value>
+        <value key="6">Millimeters</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_PHYSICALWIDTH / PHYSICALHEIGHT</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN Capability</group>
+      <description>Maximum physical scan area in current units</description>
+    </attribute>
+    <attribute>
+      <name>ICAP_FRAMES</name>
+      <data_type>TW_FRAME[]</data_type>
+      <group>TWAIN Capability</group>
+      <description>One or more rectangular scan regions</description>
+    </attribute>
+    <attribute>
+      <name>ICAP_AUTOMATICBORDERDETECTION</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN Capability</group>
+      <description>Automatically detect document edges</description>
+    </attribute>
+    <attribute>
+      <name>ICAP_AUTOMATICDESKEW</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_AUTOMATICROTATE</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_AUTODISCARDBLANKPAGES</name>
+      <data_type>TW_INT32</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_BARCODEDETECTIONENABLED</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_BARCODESEARCHMODE</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>ICAP_PATCHCODEDETECTIONENABLED</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN Capability</group>
+    </attribute>
+    <attribute>
+      <name>CAP_FEEDERENABLED</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN ADF</group>
+      <description>Use document feeder vs flatbed</description>
+    </attribute>
+    <attribute>
+      <name>CAP_FEEDERLOADED</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN ADF</group>
+      <description>Documents present in feeder</description>
+    </attribute>
+    <attribute>
+      <name>CAP_FEEDERORDER</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN ADF</group>
+      <values>
+        <value key="0">Feeder Front First</value>
+        <value key="1">Feeder Back First</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CAP_FEEDERPREP</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN ADF</group>
+      <description>Prepare feeder for scanning</description>
+    </attribute>
+    <attribute>
+      <name>CAP_AUTOFEED</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN ADF</group>
+      <description>Auto-feed next page</description>
+    </attribute>
+    <attribute>
+      <name>CAP_DUPLEXENABLED</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN ADF</group>
+    </attribute>
+    <attribute>
+      <name>CAP_DUPLEX</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN ADF</group>
+      <values>
+        <value key="0">None</value>
+        <value key="1">1-pass duplex</value>
+        <value key="2">2-pass duplex</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CAP_PAPERDETECTABLE</name>
+      <data_type>TW_BOOL</data_type>
+      <group>TWAIN ADF</group>
+    </attribute>
+    <attribute>
+      <name>CAP_DOUBLEFEEDDETECTION</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN ADF</group>
+      <description>Detect multi-page feed errors</description>
+    </attribute>
+    <attribute>
+      <name>CAP_DOUBLEFEEDDETECTIONLENGTH / SENSITIVITY / RESPONSE</name>
+      <data_type>Various</data_type>
+      <group>TWAIN ADF</group>
+    </attribute>
+    <attribute>
+      <name>CAP_PAPERHANDLING</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN ADF</group>
+      <values>
+        <value key="0">Normal</value>
+        <value key="1">Fragile</value>
+        <value key="2">Thick</value>
+        <value key="3">Trifold</value>
+        <value key="4">Photograph</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ICAP_SUPPORTEDSIZES</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Sheet</group>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Letter</value>
+        <value key="2">Legal</value>
+        <value key="3">Statement</value>
+        <value key="4">Tabloid</value>
+        <value key="5">A0</value>
+        <value key="6">A1</value>
+        <value key="7">A2</value>
+        <value key="8">A3</value>
+        <value key="9">A4</value>
+        <value key="10">A5</value>
+        <value key="11">A6</value>
+        <value key="12">A7</value>
+        <value key="13">A8</value>
+        <value key="14">A9</value>
+        <value key="15">A10</value>
+        <value key="16">B0</value>
+        <value key="17">B1</value>
+        <value key="18">B2</value>
+        <value key="19">B3</value>
+        <value key="20">B4</value>
+        <value key="21">B5</value>
+        <value key="22">B6</value>
+        <value key="23">B7</value>
+        <value key="24">B8</value>
+        <value key="25">B9</value>
+        <value key="26">B10</value>
+        <value key="27">C-size</value>
+        <value key="28">D-size</value>
+        <value key="29">E-size</value>
+        <value key="30">Executive</value>
+        <value key="31">US Folio</value>
+        <value key="32">Business Card</value>
+        <value key="33">Japanese Legal</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CAP_DEVICEEVENT</name>
+      <data_type>TW_UINT16</data_type>
+      <group>TWAIN Events</group>
+      <values>
+        <value key="0">CheckAutomaticCapture</value>
+        <value key="1">CheckBattery</value>
+        <value key="2">CheckDeviceOnline</value>
+        <value key="3">CheckFlash</value>
+        <value key="4">CheckPowerSupply</value>
+        <value key="5">CheckResolution</value>
+        <value key="6">DeviceAdded</value>
+        <value key="7">DeviceOffline</value>
+        <value key="8">DeviceReady</value>
+        <value key="9">DeviceRemoved</value>
+        <value key="10">ImageCaptured</value>
+        <value key="11">ImageDeleted</value>
+        <value key="12">PaperDoubleFeed</value>
+        <value key="13">PaperJam</value>
+        <value key="14">LampFailure</value>
+        <value key="15">PowerSave</value>
+        <value key="16">PowerSaveNotify</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TW_IMAGEINFO.XResolution / YResolution</name>
+      <data_type>TW_FIX32</data_type>
+      <group>TWAIN ImageInfo</group>
+    </attribute>
+    <attribute>
+      <name>TW_IMAGEINFO.ImageWidth / ImageLength</name>
+      <data_type>TW_INT32 (pixels)</data_type>
+      <group>TWAIN ImageInfo</group>
+    </attribute>
+    <attribute>
+      <name>TW_IMAGEINFO.SamplesPerPixel</name>
+      <data_type>TW_INT16</data_type>
+      <group>TWAIN ImageInfo</group>
+    </attribute>
+    <attribute>
+      <name>TW_IMAGEINFO.BitsPerSample[8]</name>
+      <data_type>TW_INT16[]</data_type>
+      <group>TWAIN ImageInfo</group>
+    </attribute>
+    <attribute>
+      <name>TW_IMAGEINFO.BitsPerPixel</name>
+      <data_type>TW_INT16</data_type>
+      <group>TWAIN ImageInfo</group>
+    </attribute>
+    <attribute>
+      <name>TW_IMAGEINFO.Planar / PixelType / Compression</name>
+      <data_type>Various</data_type>
+      <group>TWAIN ImageInfo</group>
+    </attribute>
+    <attribute>
+      <name>TW_IDENTITY.Manufacturer / ProductFamily / ProductName</name>
+      <data_type>TW_STR32</data_type>
+      <group>TWAIN Identity</group>
+    </attribute>
+    <attribute>
+      <name>TW_IDENTITY.Version (major.minor.country.language)</name>
+      <data_type>TW_VERSION</data_type>
+      <group>TWAIN Identity</group>
+    </attribute>
+    <attribute>
+      <name>WIA_DPS_DEVICE_ID</name>
+      <data_type>WIA Property ID 2</data_type>
+      <group>WIA Device Properties</group>
+    </attribute>
+    <attribute>
+      <name>WIA_DPS_DOCUMENT_HANDLING_STATUS</name>
+      <data_type>WIA Property ID 3819</data_type>
+      <group>WIA Device Properties</group>
+      <values>
+        <value key="1">Feed Ready</value>
+        <value key="2">Flat Ready</value>
+        <value key="4">Dup Ready</value>
+        <value key="8">Flat Cover Up</value>
+        <value key="16">Path Cover Open</value>
+        <value key="32">Paper Jam</value>
+        <value key="64">Paper Problem</value>
+        <value key="128">Lamp Warming</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WIA_DPS_DOCUMENT_HANDLING_SELECT</name>
+      <data_type>WIA Property ID 3088</data_type>
+      <group>WIA Device Properties</group>
+      <values>
+        <value key="1">Feeder</value>
+        <value key="2">Flatbed</value>
+        <value key="4">Duplex</value>
+        <value key="8">Auto Advance</value>
+        <value key="16">Front Only</value>
+        <value key="32">Back Only</value>
+        <value key="64">Front First</value>
+        <value key="128">Back First</value>
+        <value key="256">Next Page</value>
+        <value key="512">Prefeed</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WIA_DPS_PAGES</name>
+      <data_type>WIA Property ID 3096</data_type>
+      <group>WIA Device Properties</group>
+      <description>Number of pages to scan (0 = all)</description>
+    </attribute>
+    <attribute>
+      <name>WIA_IPS_XRES / YRES</name>
+      <data_type>WIA Property ID 6147/6148</data_type>
+      <group>WIA Item Properties</group>
+    </attribute>
+    <attribute>
+      <name>WIA_IPS_XPOS / YPOS / XEXTENT / YEXTENT</name>
+      <data_type>WIA Property</data_type>
+      <group>WIA Item Properties</group>
+    </attribute>
+    <attribute>
+      <name>WIA_IPS_CUR_INTENT</name>
+      <data_type>WIA Property ID 6146</data_type>
+      <group>WIA Item Properties</group>
+      <values>
+        <value key="1">Color</value>
+        <value key="2">Grayscale</value>
+        <value key="4">Text/B&amp;W</value>
+        <value key="8">Best Quality</value>
+        <value key="16">Min Size</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WIA_IPA_DATATYPE / DEPTH / CHANNELS_PER_PIXEL / BITS_PER_CHANNEL</name>
+      <data_type>WIA Property</data_type>
+      <group>WIA Item Properties</group>
+    </attribute>
+    <attribute>
+      <name>ISIS PIXTYPE</name>
+      <data_type>ISIS capability</data_type>
+      <group>ISIS</group>
+      <description>Pixel type — 0=B&amp;W, 1=halftone, 2=4-bit gray, 3=8-bit gray, 4=24-bit color</description>
+    </attribute>
+    <attribute>
+      <name>ISIS RESOLUTION_X / RESOLUTION_Y</name>
+      <data_type>ISIS capability</data_type>
+      <group>ISIS</group>
+    </attribute>
+    <attribute>
+      <name>ISIS DOCUMENT_LENGTH / WIDTH</name>
+      <data_type>ISIS capability</data_type>
+      <group>ISIS</group>
+    </attribute>
+    <attribute>
+      <name>EXIF Software</name>
+      <data_type>EXIF tag 0x0131</data_type>
+      <group>Output File Metadata</group>
+      <description>Scanner driver name/version (e.g. 'EPSON Scan')</description>
+    </attribute>
+    <attribute>
+      <name>EXIF Make / Model</name>
+      <data_type>EXIF tag</data_type>
+      <group>Output File Metadata</group>
+      <description>Scanner make/model</description>
+    </attribute>
+    <attribute>
+      <name>EXIF DateTime / DateTimeOriginal</name>
+      <data_type>EXIF tag</data_type>
+      <group>Output File Metadata</group>
+      <description>Scan timestamp</description>
+    </attribute>
+    <attribute>
+      <name>EXIF XResolution / YResolution</name>
+      <data_type>EXIF tag</data_type>
+      <group>Output File Metadata</group>
+    </attribute>
+    <attribute>
+      <name>EXIF ResolutionUnit</name>
+      <data_type>EXIF tag</data_type>
+      <group>Output File Metadata</group>
+      <values>
+        <value key="1">None</value>
+        <value key="2">Inch</value>
+        <value key="3">Centimeter</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>XMP xmp:CreatorTool</name>
+      <data_type>XMP tag</data_type>
+      <group>Output File Metadata</group>
+    </attribute>
+    <attribute>
+      <name>XMP photoshop:Source</name>
+      <data_type>XMP tag</data_type>
+      <group>Output File Metadata</group>
+      <description>Often 'Scanned' for scanner output</description>
+    </attribute>
+    <attribute>
+      <name>PDF Producer (for PDF output)</name>
+      <data_type>PDF tag</data_type>
+      <group>Output File Metadata</group>
+    </attribute>
+    <attribute>
+      <name>PDF Creator (for PDF output)</name>
+      <data_type>PDF tag</data_type>
+      <group>Output File Metadata</group>
+      <description>Scanner driver / PDF library</description>
+    </attribute>
+  </attributes>
+</metadata_system>

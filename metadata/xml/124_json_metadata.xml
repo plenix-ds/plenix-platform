@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="124" name="JSON Metadata" category="SPC" category_label="Specialized" used_for="JSON data files" spec_source="ExifTool 12.76 — groups: JSON, CBOR" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="16">
+  <description>Attribute set for JSON Metadata. Sourced from ExifTool's tag database (group prefix(es): JSON, CBOR). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>ON1_SettingsMetadataCreated</name>
+      <tag_id>ON1_SettingsMetadataCreated</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Created</description>
+    </attribute>
+    <attribute>
+      <name>ON1_SettingsMetadataModified</name>
+      <tag_id>ON1_SettingsMetadataModified</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Modified</description>
+    </attribute>
+    <attribute>
+      <name>ON1_SettingsMetadataName</name>
+      <tag_id>ON1_SettingsMetadataName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Name</description>
+    </attribute>
+    <attribute>
+      <name>ON1_SettingsMetadataPluginID</name>
+      <tag_id>ON1_SettingsMetadataPluginID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Plugin ID</description>
+    </attribute>
+    <attribute>
+      <name>ON1_SettingsMetadataTimestamp</name>
+      <tag_id>ON1_SettingsMetadataTimestamp</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Timestamp</description>
+    </attribute>
+    <attribute>
+      <name>ON1_SettingsMetadataUsage</name>
+      <tag_id>ON1_SettingsMetadataUsage</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Usage</description>
+    </attribute>
+    <attribute>
+      <name>ON1_SettingsMetadataVisibleToUser</name>
+      <tag_id>ON1_SettingsMetadataVisibleToUser</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>JSON::Main</subsystem>
+      <description>ON1 Settings Metadata Visible To User</description>
+    </attribute>
+    <attribute>
+      <name>AuthorIdentifier</name>
+      <tag_id>authorIdentifier</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Author Identifier</description>
+    </attribute>
+    <attribute>
+      <name>AuthorName</name>
+      <tag_id>authorName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Author Name</description>
+    </attribute>
+    <attribute>
+      <name>Format</name>
+      <tag_id>dc:format</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Format</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>dc:title</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>DocumentID</name>
+      <tag_id>documentID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Document ID</description>
+    </attribute>
+    <attribute>
+      <name>InstanceID</name>
+      <tag_id>instanceID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Instance ID</description>
+    </attribute>
+    <attribute>
+      <name>Relationship</name>
+      <tag_id>relationship</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Relationship</description>
+    </attribute>
+    <attribute>
+      <name>ThumbnailHash</name>
+      <tag_id>thumbnailHash</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Thumbnail Hash</description>
+    </attribute>
+    <attribute>
+      <name>ThumbnailURL</name>
+      <tag_id>thumbnailUrl</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>CBOR::Main</subsystem>
+      <description>Thumbnail URL</description>
+    </attribute>
+  </attributes>
+</metadata_system>

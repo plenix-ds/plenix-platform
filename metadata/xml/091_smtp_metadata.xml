@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="091" name="SMTP Metadata" category="WEB" category_label="Web / Email" used_for="Email transport (SMTP envelope + extensions)" spec_source="RFC 5321 (SMTP) + RFC 6531 (UTF-8) + RFC 8689 (REQUIRETLS) etc." completeness="comprehensive" record_count="43">
+  <description>SMTP (Simple Mail Transfer Protocol) envelope is distinct from message headers (system 089). The envelope is what mail relays see and is preserved in Received: headers and bounces.</description>
+  <attributes>
+    <attribute>
+      <name>MAIL FROM</name>
+      <data_type>SMTP command</data_type>
+      <description>Envelope sender (return-path)</description>
+    </attribute>
+    <attribute>
+      <name>RCPT TO</name>
+      <data_type>SMTP command</data_type>
+      <description>Envelope recipient(s)</description>
+    </attribute>
+    <attribute>
+      <name>EHLO/HELO</name>
+      <data_type>SMTP command</data_type>
+      <description>Client identifier (FQDN or address literal)</description>
+    </attribute>
+    <attribute>
+      <name>DATA / BDAT</name>
+      <data_type>SMTP command</data_type>
+      <description>Begin message body</description>
+    </attribute>
+    <attribute>
+      <name>STARTTLS</name>
+      <data_type>Extension</data_type>
+      <description>Upgrade to TLS</description>
+    </attribute>
+    <attribute>
+      <name>AUTH</name>
+      <data_type>Extension</data_type>
+      <description>Authentication mechanism</description>
+    </attribute>
+    <attribute>
+      <name>Message-ID assignment</name>
+      <data_type>Generated</data_type>
+      <description>Unique ID assigned by submitting MTA</description>
+    </attribute>
+    <attribute>
+      <name>Received: header (per hop)</name>
+      <data_type>Header</data_type>
+      <description>Trace of MTA-to-MTA transit</description>
+    </attribute>
+    <attribute>
+      <name>Received: from clause</name>
+      <data_type>Field</data_type>
+      <description>Sending host name and IP (claimed + reverse DNS)</description>
+    </attribute>
+    <attribute>
+      <name>Received: by clause</name>
+      <data_type>Field</data_type>
+      <description>Receiving host name</description>
+    </attribute>
+    <attribute>
+      <name>Received: via</name>
+      <data_type>Field</data_type>
+      <description>Physical link (rare)</description>
+    </attribute>
+    <attribute>
+      <name>Received: with</name>
+      <data_type>Field</data_type>
+      <description>Protocol used (ESMTP, ESMTPS, ESMTPA, ESMTPSA)</description>
+    </attribute>
+    <attribute>
+      <name>Received: id</name>
+      <data_type>Field</data_type>
+      <description>MTA-assigned local ID</description>
+    </attribute>
+    <attribute>
+      <name>Received: for</name>
+      <data_type>Field</data_type>
+      <description>Envelope recipient (where preserved)</description>
+    </attribute>
+    <attribute>
+      <name>Received: tls-cipher / tls-version</name>
+      <data_type>Field</data_type>
+      <description>TLS details for the hop</description>
+    </attribute>
+    <attribute>
+      <name>Return-Path</name>
+      <data_type>Header (added by final MTA)</data_type>
+      <description>Envelope MAIL FROM preserved as header</description>
+    </attribute>
+    <attribute>
+      <name>Delivered-To</name>
+      <data_type>Header</data_type>
+      <description>Envelope recipient at delivery</description>
+    </attribute>
+    <attribute>
+      <name>X-Originating-IP / X-Sender-IP</name>
+      <data_type>X-header</data_type>
+      <description>Originating client IP (varies by provider)</description>
+    </attribute>
+    <attribute>
+      <name>X-Mailer / User-Agent</name>
+      <data_type>X-header</data_type>
+      <description>Submission MUA</description>
+    </attribute>
+    <attribute>
+      <name>Authentication-Results</name>
+      <data_type>Header (RFC 8601)</data_type>
+      <description>DKIM/SPF/DMARC verdicts</description>
+    </attribute>
+    <attribute>
+      <name>ARC-Authentication-Results / ARC-Message-Signature / ARC-Seal</name>
+      <data_type>Headers (RFC 8617)</data_type>
+      <description>Authenticated Received Chain</description>
+    </attribute>
+    <attribute>
+      <name>List-Unsubscribe / List-ID / List-Post / List-Help</name>
+      <data_type>Headers (RFC 2369/4021)</data_type>
+      <description>Mailing list metadata</description>
+    </attribute>
+    <attribute>
+      <name>Auto-Submitted</name>
+      <data_type>Header (RFC 3834)</data_type>
+      <description>Auto-generated mail marker</description>
+    </attribute>
+    <attribute>
+      <name>DSN (Delivery Status Notification, RFC 3461-3464)</name>
+      <data_type>Multipart/report</data_type>
+      <description>Bounce report format</description>
+    </attribute>
+    <attribute>
+      <name>ENVID</name>
+      <data_type>Extension</data_type>
+      <description>Envelope ID for DSN tracking</description>
+    </attribute>
+    <attribute>
+      <name>RET</name>
+      <data_type>Extension</data_type>
+      <description>DSN return content (FULL/HDRS)</description>
+    </attribute>
+    <attribute>
+      <name>NOTIFY</name>
+      <data_type>Extension</data_type>
+      <description>DSN notification triggers (NEVER, SUCCESS, FAILURE, DELAY)</description>
+    </attribute>
+    <attribute>
+      <name>ORCPT</name>
+      <data_type>Extension</data_type>
+      <description>Original recipient when address rewritten</description>
+    </attribute>
+    <attribute>
+      <name>Content-Length</name>
+      <data_type>Extension</data_type>
+      <description>Body size declaration</description>
+    </attribute>
+    <attribute>
+      <name>8BITMIME</name>
+      <data_type>Extension</data_type>
+      <description>Allow 8-bit bytes in body</description>
+    </attribute>
+    <attribute>
+      <name>BINARYMIME</name>
+      <data_type>Extension</data_type>
+      <description>Allow binary message via BDAT</description>
+    </attribute>
+    <attribute>
+      <name>CHUNKING</name>
+      <data_type>Extension</data_type>
+      <description>BDAT command instead of DATA</description>
+    </attribute>
+    <attribute>
+      <name>DSN</name>
+      <data_type>Extension RFC 3461</data_type>
+      <description>Delivery status notification request</description>
+    </attribute>
+    <attribute>
+      <name>PIPELINING</name>
+      <data_type>Extension</data_type>
+      <description>Send multiple commands without waiting</description>
+    </attribute>
+    <attribute>
+      <name>SIZE</name>
+      <data_type>Extension</data_type>
+      <description>Maximum message size advertisement</description>
+    </attribute>
+    <attribute>
+      <name>SMTPUTF8</name>
+      <data_type>Extension RFC 6531</data_type>
+      <description>Internationalized email addresses (i18n)</description>
+    </attribute>
+    <attribute>
+      <name>REQUIRETLS</name>
+      <data_type>Extension RFC 8689</data_type>
+      <description>Require TLS for entire path</description>
+    </attribute>
+    <attribute>
+      <name>MT-PRIORITY</name>
+      <data_type>Extension RFC 6710</data_type>
+      <description>Message transfer priority</description>
+    </attribute>
+    <attribute>
+      <name>TLS-REPORTING (TLSRPT)</name>
+      <data_type>DNS TXT</data_type>
+      <description>TLS reporting policy</description>
+    </attribute>
+    <attribute>
+      <name>MTA-STS</name>
+      <data_type>DNS+HTTPS</data_type>
+      <description>MTA Strict Transport Security policy</description>
+    </attribute>
+    <attribute>
+      <name>DANE / TLSA</name>
+      <data_type>DNS record</data_type>
+      <description>DNSSEC-anchored TLS certificate binding</description>
+    </attribute>
+    <attribute>
+      <name>Status Codes</name>
+      <data_type>3-digit</data_type>
+      <description>2xx success, 3xx info, 4xx temp fail, 5xx perm fail; e.g., 250 OK, 354 start input, 421 service not available, 450 mailbox busy, 550 user unknown, 552 storage exceeded</description>
+    </attribute>
+    <attribute>
+      <name>Enhanced Status Codes (RFC 3463)</name>
+      <data_type>X.Y.Z</data_type>
+      <description>X=class, Y=subject, Z=detail; e.g., 5.1.1 user unknown, 5.7.1 access denied, 4.7.0 security fail, 5.4.0 routing fail</description>
+    </attribute>
+  </attributes>
+</metadata_system>

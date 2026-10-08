@@ -1,0 +1,115 @@
+{
+  "$description": "components tokens written under :root",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/components.css",
+      "selector": ":root",
+      "opener": ":root {"
+    }
+  },
+  "plx-comp": {
+    "button-height-xs": {
+      "$value": "{plx-ref.control-size-24px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── CONTROLS: the neutral component scale (for a size picked on purpose: data-size=\"xs\" … \"4xl\") ── */"
+          ]
+        }
+      }
+    },
+    "button-height-sm": {
+      "$value": "{plx-ref.control-size-28px}",
+      "$type": "dimension"
+    },
+    "button-height-md": {
+      "$value": "{plx-ref.control-size-32px}",
+      "$type": "dimension"
+    },
+    "button-height-lg": {
+      "$value": "{plx-ref.control-size-36px}",
+      "$type": "dimension"
+    },
+    "button-height-xl": {
+      "$value": "{plx-ref.control-size-40px}",
+      "$type": "dimension"
+    },
+    "button-height-2xl": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "button-height-3xl": {
+      "$value": "{plx-ref.control-size-48px}",
+      "$type": "dimension"
+    },
+    "button-height-4xl": {
+      "$value": "{plx-ref.control-size-52px}",
+      "$type": "dimension"
+    },
+    "nav-pane-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* the left navigation pane (NavPane): one surface and width for every page */"
+          ]
+        }
+      }
+    },
+    "nav-pane-width": {
+      "$value": "{plx-sys.shell-nav-width}",
+      "$type": "dimension"
+    },
+    "pane-footer-height": {
+      "$value": "calc({plx-sys.control-height-toolbar} + {plx-sys.space-inset-sm} * 2)",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* the footer row pinned to the bottom of the navigation pane and the inspector: a toolbar control (size=\"sm\") with 8px",
+            "     above and below, so the control and its icon sit on the 4px grid in every density (44px compact, 44 standard, 48 comfortable) */"
+          ]
+        }
+      }
+    },
+    "table-column-label-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TABLE COLUMNS: named column widths (columns[].size), so every data grid lines up: the label column and the visual column are one width everywhere; the other columns share the rest ── */"
+          ]
+        }
+      }
+    },
+    "table-column-visual-width": {
+      "$value": "{plx-ref.size-64px}",
+      "$type": "dimension"
+    },
+    "secondary-pane-width-sm": {
+      "$value": "{plx-ref.size-180px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── SECONDARY PANE: its widths, and the widest it can be dragged to (resizable) ── */"
+          ]
+        }
+      }
+    },
+    "secondary-pane-width-md": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension"
+    },
+    "secondary-pane-width-lg": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension"
+    },
+    "secondary-pane-width-max": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    }
+  }
+}

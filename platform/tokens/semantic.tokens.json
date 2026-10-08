@@ -1,0 +1,427 @@
+{
+  "$description": "semantic tokens written under :root",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/semantic.css",
+      "selector": ":root",
+      "opener": ":root {"
+    }
+  },
+  "plx-sys": {
+    "icon-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── ICONS: the default icon box. 16px while the icon files are drawn edge to edge; after the redraw (Iconography),",
+            "     20px for pointer and 24px for touch and mobile ── */"
+          ]
+        }
+      }
+    },
+    "icon-size-xs": {
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* the named icon sizes (Icon size=\"xs | sm | md | lg\"), all on the 4px grid; inside a control the icon takes the",
+            "     control's grid icon instead (--plx-sys-control-icon-<role>) */"
+          ]
+        }
+      }
+    },
+    "icon-size-sm": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "icon-size-md": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "icon-size-lg": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension"
+    },
+    "icon-size-xl": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension"
+    },
+    "shell-phone-below": {
+      "$value": "{plx-ref.breakpoint-600px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* a phone: below this width a page puts its main content first */"
+          ]
+        }
+      }
+    },
+    "font-body": {
+      "$value": "{plx-ref.font-sans}",
+      "$type": "fontFamily",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TYPOGRAPHY: font roles ── */"
+          ]
+        }
+      }
+    },
+    "font-heading": {
+      "$value": "{plx-ref.font-sans}",
+      "$type": "fontFamily"
+    },
+    "font-label": {
+      "$value": "{plx-ref.font-sans}",
+      "$type": "fontFamily"
+    },
+    "font-code": {
+      "$value": "{plx-ref.font-mono}",
+      "$type": "fontFamily"
+    },
+    "font-data": {
+      "$value": "{plx-ref.font-mono}",
+      "$type": "fontFamily"
+    },
+    "focus-ring-offset": {
+      "$value": "2px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── FOCUS: the gap between a control and its focus ring (outline-offset) ── */"
+          ]
+        }
+      }
+    },
+    "layer-behind": {
+      "$value": "-1",
+      "$type": "number",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── LAYERS: one level per stacking purpose, lowest to highest ── */"
+          ]
+        }
+      }
+    },
+    "layer-base": {
+      "$value": "0",
+      "$type": "dimension"
+    },
+    "layer-raised": {
+      "$value": "1",
+      "$type": "number"
+    },
+    "layer-sticky": {
+      "$value": "10",
+      "$type": "number"
+    },
+    "layer-menu": {
+      "$value": "100",
+      "$type": "number"
+    },
+    "layer-overlay": {
+      "$value": "1000",
+      "$type": "number"
+    },
+    "layer-modal": {
+      "$value": "1100",
+      "$type": "number"
+    },
+    "layer-popover": {
+      "$value": "1200",
+      "$type": "number"
+    },
+    "layer-toast": {
+      "$value": "1300",
+      "$type": "number"
+    },
+    "layer-critical": {
+      "$value": "9999",
+      "$type": "number"
+    },
+    "radius-detail-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── RADIUS: roles (role + value) ── */"
+          ]
+        }
+      }
+    },
+    "radius-compact-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "radius-control-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "radius-control-6px": {
+      "$value": "{plx-ref.radius-6px}",
+      "$type": "dimension"
+    },
+    "radius-control-8px": {
+      "$value": "{plx-ref.radius-8px}",
+      "$type": "dimension"
+    },
+    "radius-control-12px": {
+      "$value": "{plx-ref.radius-12px}",
+      "$type": "dimension"
+    },
+    "radius-media-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "radius-media-12px": {
+      "$value": "{plx-ref.radius-12px}",
+      "$type": "dimension"
+    },
+    "radius-surface-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "radius-surface-8px": {
+      "$value": "{plx-ref.radius-8px}",
+      "$type": "dimension"
+    },
+    "radius-card-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "radius-card-6px": {
+      "$value": "{plx-ref.radius-6px}",
+      "$type": "dimension"
+    },
+    "radius-card-12px": {
+      "$value": "{plx-ref.radius-12px}",
+      "$type": "dimension"
+    },
+    "radius-menu-8px": {
+      "$value": "{plx-ref.radius-8px}",
+      "$type": "dimension"
+    },
+    "radius-dialog-8px": {
+      "$value": "{plx-ref.radius-8px}",
+      "$type": "dimension"
+    },
+    "radius-avatar-4px": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "radius-avatar-6px": {
+      "$value": "{plx-ref.radius-6px}",
+      "$type": "dimension"
+    },
+    "radius-avatar-8px": {
+      "$value": "{plx-ref.radius-8px}",
+      "$type": "dimension"
+    },
+    "radius-avatar-12px": {
+      "$value": "{plx-ref.radius-12px}",
+      "$type": "dimension"
+    },
+    "space-inline-xs": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── SPACING ROLES: inline, stack, inset, cluster, region (fixed relationships) ── */"
+          ]
+        }
+      }
+    },
+    "space-inline-sm": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "space-inline-md": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "space-inline-lg": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "space-stack-xs": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "space-stack-sm": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "space-stack-md": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "space-stack-lg": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "space-stack-xl": {
+      "$value": "{plx-ref.space-24px}",
+      "$type": "dimension"
+    },
+    "space-stack-2xl": {
+      "$value": "{plx-ref.space-32px}",
+      "$type": "dimension"
+    },
+    "space-inset-xs": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "space-inset-sm": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "space-inset-md": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "space-inset-lg": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "space-inset-xl": {
+      "$value": "{plx-ref.space-24px}",
+      "$type": "dimension"
+    },
+    "space-cluster-xs": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "space-cluster-sm": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "space-cluster-md": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "space-cluster-lg": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "space-layout-sm": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "space-layout-md": {
+      "$value": "{plx-ref.space-24px}",
+      "$type": "dimension"
+    },
+    "space-layout-lg": {
+      "$value": "{plx-ref.space-32px}",
+      "$type": "dimension"
+    },
+    "space-layout-xl": {
+      "$value": "{plx-ref.space-48px}",
+      "$type": "dimension"
+    },
+    "label-height-16px": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── LABEL HEIGHTS: small non-interactive boxes ── */"
+          ]
+        }
+      }
+    },
+    "label-height-20px": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "shell-header-height": {
+      "$value": "{plx-ref.size-56px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── LAYOUT: shell (the global header; the shell's other regions take their widths from the density) ── */"
+          ]
+        }
+      }
+    },
+    "field-width-xs": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "a color well",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── SIZES OF THINGS INSIDE A LAYOUT (batch 150): fields narrower than their column, and lists that scroll ── */"
+          ],
+          "after": "    /* a color well */"
+        }
+      }
+    },
+    "field-width-sm": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension",
+      "$description": "a number, an order",
+      "$extensions": {
+        "com.plenix": {
+          "after": "    /* a number, an order */"
+        }
+      }
+    },
+    "field-width-md": {
+      "$value": "{plx-ref.size-100px}",
+      "$type": "dimension",
+      "$description": "a hex value, a short code",
+      "$extensions": {
+        "com.plenix": {
+          "after": "   /* a hex value, a short code */"
+        }
+      }
+    },
+    "field-width-lg": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension",
+      "$description": "a name, a filter, a picker",
+      "$extensions": {
+        "com.plenix": {
+          "after": "   /* a name, a filter, a picker */"
+        }
+      }
+    },
+    "scroll-max-sm": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "a short list in a dialog",
+      "$extensions": {
+        "com.plenix": {
+          "after": "    /* a short list in a dialog */"
+        }
+      }
+    },
+    "scroll-max-md": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension"
+    },
+    "scroll-max-lg": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    },
+    "label-width-sm": {
+      "$value": "{plx-ref.size-100px}",
+      "$type": "dimension",
+      "$description": "the label column of a narrow inline field (an inspector)",
+      "$extensions": {
+        "com.plenix": {
+          "after": "   /* the label column of a narrow inline field (an inspector) */"
+        }
+      }
+    }
+  }
+}

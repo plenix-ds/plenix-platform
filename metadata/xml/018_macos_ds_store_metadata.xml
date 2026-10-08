@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="018" name="macOS .DS_Store Metadata" category="OS" category_label="Operating System / File System" used_for="Folder view settings (.DS_Store binary plist)" spec_source="Apple .DS_Store format (Buddy Allocator B-tree); ds_store reverse-engineering" completeness="substantial" record_count="33">
+  <description>.DS_Store is a per-folder Buddy Allocator B-tree storing Finder display state. Each record is keyed by filename + 4-char attribute code.</description>
+  <attributes>
+    <attribute>
+      <name>Magic Header</name>
+      <data_type>ASCII 'Bud1'</data_type>
+      <description>Buddy allocator file signature</description>
+    </attribute>
+    <attribute>
+      <name>Block Allocation Map</name>
+      <data_type>Variable</data_type>
+      <description>Free/used block tracking</description>
+    </attribute>
+    <attribute>
+      <name>DSDB Master Block</name>
+      <data_type>Block</data_type>
+      <description>Pointer to root B-tree</description>
+    </attribute>
+    <attribute>
+      <name>Record Filename</name>
+      <data_type>UTF-16 string (length-prefixed)</data_type>
+      <description>Filename the record describes</description>
+    </attribute>
+    <attribute>
+      <name>Record Structure ID</name>
+      <data_type>OSType (4 chars)</data_type>
+      <description>Attribute code (see entries below)</description>
+    </attribute>
+    <attribute>
+      <name>Record Data Type</name>
+      <data_type>4-char code</data_type>
+      <description>bool, blob, comp, dutc, long, shor, type, ustr</description>
+    </attribute>
+    <attribute>
+      <name>BKGD</name>
+      <data_type>blob</data_type>
+      <description>Folder background color or image</description>
+    </attribute>
+    <attribute>
+      <name>ICVO</name>
+      <data_type>bool</data_type>
+      <description>Icon view options enabled</description>
+    </attribute>
+    <attribute>
+      <name>Iloc</name>
+      <data_type>blob (16 bytes)</data_type>
+      <description>Icon location (X, Y, view properties)</description>
+    </attribute>
+    <attribute>
+      <name>LSVO</name>
+      <data_type>bool</data_type>
+      <description>List view options</description>
+    </attribute>
+    <attribute>
+      <name>bwsp</name>
+      <data_type>blob</data_type>
+      <description>Browser window properties (size, position)</description>
+    </attribute>
+    <attribute>
+      <name>cmmt</name>
+      <data_type>ustr</data_type>
+      <description>Finder comment</description>
+    </attribute>
+    <attribute>
+      <name>dilc</name>
+      <data_type>blob (32 bytes)</data_type>
+      <description>Desktop icon location</description>
+    </attribute>
+    <attribute>
+      <name>dscl</name>
+      <data_type>bool</data_type>
+      <description>Disclosed in list view</description>
+    </attribute>
+    <attribute>
+      <name>extn</name>
+      <data_type>ustr</data_type>
+      <description>File extension</description>
+    </attribute>
+    <attribute>
+      <name>fwi0</name>
+      <data_type>blob</data_type>
+      <description>Finder window information (rect + view)</description>
+    </attribute>
+    <attribute>
+      <name>fwsw</name>
+      <data_type>long</data_type>
+      <description>Finder window sidebar width</description>
+    </attribute>
+    <attribute>
+      <name>fwvh</name>
+      <data_type>shor</data_type>
+      <description>Finder window view height</description>
+    </attribute>
+    <attribute>
+      <name>GRP0</name>
+      <data_type>ustr</data_type>
+      <description>Group identifier</description>
+    </attribute>
+    <attribute>
+      <name>icgo</name>
+      <data_type>blob</data_type>
+      <description>Icon view grid options</description>
+    </attribute>
+    <attribute>
+      <name>icsp</name>
+      <data_type>blob</data_type>
+      <description>Icon view scroll position</description>
+    </attribute>
+    <attribute>
+      <name>icvo</name>
+      <data_type>blob</data_type>
+      <description>Icon view options</description>
+    </attribute>
+    <attribute>
+      <name>icvp</name>
+      <data_type>blob (plist)</data_type>
+      <description>Icon view properties: arrange-by, icon size, label position, text size, background</description>
+    </attribute>
+    <attribute>
+      <name>icvt</name>
+      <data_type>shor</data_type>
+      <description>Icon view text size</description>
+    </attribute>
+    <attribute>
+      <name>info</name>
+      <data_type>blob</data_type>
+      <description>Get Info window state</description>
+    </attribute>
+    <attribute>
+      <name>logS / lg1S</name>
+      <data_type>comp</data_type>
+      <description>Logical size cache</description>
+    </attribute>
+    <attribute>
+      <name>lssp</name>
+      <data_type>blob</data_type>
+      <description>List view scroll position</description>
+    </attribute>
+    <attribute>
+      <name>lsvo / lsvt</name>
+      <data_type>blob / shor</data_type>
+      <description>List view options / text size</description>
+    </attribute>
+    <attribute>
+      <name>modD / moDD</name>
+      <data_type>dutc</data_type>
+      <description>Modification date cached</description>
+    </attribute>
+    <attribute>
+      <name>phyS / ph1S</name>
+      <data_type>comp</data_type>
+      <description>Physical size cache</description>
+    </attribute>
+    <attribute>
+      <name>pict</name>
+      <data_type>blob</data_type>
+      <description>Background picture alias</description>
+    </attribute>
+    <attribute>
+      <name>vSrn</name>
+      <data_type>long</data_type>
+      <description>View sort render mode</description>
+    </attribute>
+    <attribute>
+      <name>vstl</name>
+      <data_type>type</data_type>
+      <description>View style: icnv, clmv, Nlsv, Flwv (Cover Flow)</description>
+    </attribute>
+  </attributes>
+</metadata_system>

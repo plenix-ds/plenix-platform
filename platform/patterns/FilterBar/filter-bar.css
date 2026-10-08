@@ -1,0 +1,7 @@
+/* Plenix · FilterBar. One row; filters that do not fit move into "More filters". */
+.plx-filter-bar{align-items:center;column-gap:var(--plx-sys-space-cluster-sm);display:flex;min-inline-size:0;}
+.plx-filter-bar .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-toolbar);}
+.plx-filter-bar__filters{align-items:center;block-size:var(--plx-sys-control-height-toolbar);column-gap:var(--plx-sys-space-cluster-sm);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-ref-space-4px);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-ref-space-8px);}
+.plx-filter-bar__slot{display:inline-flex;}
+.plx-filter-bar__count{color:var(--plx-sys-content-muted);font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);margin-inline-start:var(--plx-sys-space-inline-sm);}
+.plx-filter-bar__actions{align-items:center;column-gap:var(--plx-sys-space-cluster-sm);display:flex;flex-shrink:0;margin-inline-start:auto;}

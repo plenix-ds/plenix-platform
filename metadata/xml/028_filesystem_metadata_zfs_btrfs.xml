@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="028" name="Filesystem Metadata ZFS Btrfs" category="OS" category_label="Operating System / File System" used_for="Advanced filesystems (CoW, snapshots, dedup)" spec_source="OpenZFS On-Disk Format; Btrfs Wiki / kernel Documentation" completeness="substantial" record_count="35">
+  <description>Combined entry covering ZFS dnode metadata and Btrfs metadata items. Both are copy-on-write with snapshots, but with very different on-disk structures.</description>
+  <attributes>
+    <attribute>
+      <name>Pool GUID</name>
+      <data_type>UInt64</data_type>
+      <group>ZFS</group>
+      <description>Globally unique pool identifier</description>
+    </attribute>
+    <attribute>
+      <name>Pool Name</name>
+      <data_type>String</data_type>
+      <group>ZFS</group>
+      <description>Pool name (e.g., 'tank')</description>
+    </attribute>
+    <attribute>
+      <name>vdev Tree</name>
+      <data_type>nvlist</data_type>
+      <group>ZFS</group>
+      <description>Virtual device tree (mirrors, raidz, stripes)</description>
+    </attribute>
+    <attribute>
+      <name>Dataset Name</name>
+      <data_type>String</data_type>
+      <group>ZFS</group>
+      <description>pool/path/name</description>
+    </attribute>
+    <attribute>
+      <name>Object ID (object number)</name>
+      <data_type>UInt64</data_type>
+      <group>ZFS</group>
+      <description>Unique dnode identifier in dataset</description>
+    </attribute>
+    <attribute>
+      <name>dnode_phys_t.dn_type</name>
+      <data_type>UInt8</data_type>
+      <group>ZFS dnode</group>
+      <description>DMU object type (plain file, ZAP, ACL, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>dn_indblkshift / datablkszsec</name>
+      <data_type>UInt8 + UInt16</data_type>
+      <group>ZFS dnode</group>
+      <description>Block size shift / data block size in sectors</description>
+    </attribute>
+    <attribute>
+      <name>dn_nlevels</name>
+      <data_type>UInt8</data_type>
+      <group>ZFS dnode</group>
+      <description>Levels of indirection</description>
+    </attribute>
+    <attribute>
+      <name>dn_nblkptr</name>
+      <data_type>UInt8</data_type>
+      <group>ZFS dnode</group>
+      <description>Number of block pointers</description>
+    </attribute>
+    <attribute>
+      <name>dn_bonustype / bonuslen</name>
+      <data_type>UInt8 × 2</data_type>
+      <group>ZFS dnode</group>
+      <description>Type + length of bonus buffer (e.g., znode_phys for files)</description>
+    </attribute>
+    <attribute>
+      <name>dn_secphys</name>
+      <data_type>UInt64</data_type>
+      <group>ZFS dnode</group>
+      <description>Sectors used</description>
+    </attribute>
+    <attribute>
+      <name>Block Pointer (blkptr_t)</name>
+      <data_type>128-byte struct</data_type>
+      <group>ZFS</group>
+      <description>DVA(s) + checksum + compression + birth txg</description>
+    </attribute>
+    <attribute>
+      <name>Checksum (per blkptr)</name>
+      <data_type>256-bit</data_type>
+      <group>ZFS</group>
+      <description>fletcher2/4, sha256, sha512, edonr, skein</description>
+    </attribute>
+    <attribute>
+      <name>Compression</name>
+      <data_type>Enum</data_type>
+      <group>ZFS</group>
+      <description>off, on, lzjb, lz4, zstd, gzip-1..9, zle</description>
+    </attribute>
+    <attribute>
+      <name>Birth TXG</name>
+      <data_type>UInt64</data_type>
+      <group>ZFS</group>
+      <description>Transaction group when block was written</description>
+    </attribute>
+    <attribute>
+      <name>ZAP (Zettabyte Attribute Processor) Entries</name>
+      <data_type>K/V pairs</data_type>
+      <group>ZFS</group>
+      <description>Microzap (small) and fatzap (hashed) — used for directories, properties, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Snapshot (zvol/dataset)</name>
+      <data_type>Object</data_type>
+      <group>ZFS Snapshots</group>
+      <description>@name suffix; lightweight CoW reference</description>
+    </attribute>
+    <attribute>
+      <name>Property: compression / dedup / atime / quota / refquota / reservation / encryption / recordsize / checksum / sync / readonly / nbmand</name>
+      <data_type>Per-dataset</data_type>
+      <group>ZFS Properties</group>
+      <description>Inheritable dataset properties</description>
+    </attribute>
+    <attribute>
+      <name>FS UUID</name>
+      <data_type>UUID</data_type>
+      <group>Btrfs</group>
+      <description>Filesystem identifier (also each device has one)</description>
+    </attribute>
+    <attribute>
+      <name>Device UUID</name>
+      <data_type>UUID</data_type>
+      <group>Btrfs</group>
+      <description>Per-device identifier in multi-device setups</description>
+    </attribute>
+    <attribute>
+      <name>Tree Root</name>
+      <data_type>UInt64</data_type>
+      <group>Btrfs</group>
+      <description>Logical address of root tree</description>
+    </attribute>
+    <attribute>
+      <name>Generation</name>
+      <data_type>UInt64</data_type>
+      <group>Btrfs</group>
+      <description>Transaction generation</description>
+    </attribute>
+    <attribute>
+      <name>ROOT_ITEM (key 0x84)</name>
+      <data_type>B-tree item</data_type>
+      <group>Btrfs</group>
+      <description>Subvolume / snapshot root info</description>
+    </attribute>
+    <attribute>
+      <name>INODE_ITEM (key 0x01)</name>
+      <data_type>B-tree item</data_type>
+      <group>Btrfs</group>
+      <description>Inode metadata: size, blocks, mode, uid, gid, atime/mtime/ctime/otime, generation, transid, sequence</description>
+    </attribute>
+    <attribute>
+      <name>INODE_REF (key 0x0C)</name>
+      <data_type>Item</data_type>
+      <group>Btrfs</group>
+      <description>Hard link reference: dir-index + name</description>
+    </attribute>
+    <attribute>
+      <name>DIR_ITEM (key 0x54)</name>
+      <data_type>Item</data_type>
+      <group>Btrfs</group>
+      <description>Directory entry: name, child key, type</description>
+    </attribute>
+    <attribute>
+      <name>DIR_INDEX (key 0x60)</name>
+      <data_type>Item</data_type>
+      <group>Btrfs</group>
+      <description>Index entry for readdir ordering</description>
+    </attribute>
+    <attribute>
+      <name>EXTENT_DATA (key 0x6C)</name>
+      <data_type>Item</data_type>
+      <group>Btrfs</group>
+      <description>File extent: regular/prealloc/inline; logical→physical</description>
+    </attribute>
+    <attribute>
+      <name>EXTENT_ITEM (key 0xA8)</name>
+      <data_type>Item</data_type>
+      <group>Btrfs</group>
+      <description>Extent allocation tracker with reference counts</description>
+    </attribute>
+    <attribute>
+      <name>XATTR_ITEM (key 0x18)</name>
+      <data_type>Item</data_type>
+      <group>Btrfs</group>
+      <description>Extended attribute storage</description>
+    </attribute>
+    <attribute>
+      <name>Subvolume / Snapshot</name>
+      <data_type>Tree root</data_type>
+      <group>Btrfs</group>
+      <description>Lightweight CoW writable tree clone</description>
+    </attribute>
+    <attribute>
+      <name>Compression</name>
+      <data_type>Enum</data_type>
+      <group>Btrfs</group>
+      <description>zlib, lzo, zstd, none</description>
+    </attribute>
+    <attribute>
+      <name>Checksum Algorithm</name>
+      <data_type>Enum</data_type>
+      <group>Btrfs</group>
+      <description>crc32c (default), xxhash, sha256, blake2</description>
+    </attribute>
+    <attribute>
+      <name>RAID Profile (data/metadata/system)</name>
+      <data_type>Enum</data_type>
+      <group>Btrfs</group>
+      <description>single, dup, raid0, raid1, raid10, raid5, raid6, raid1c3, raid1c4</description>
+    </attribute>
+    <attribute>
+      <name>Send / Receive Stream</name>
+      <data_type>Format</data_type>
+      <group>Btrfs</group>
+      <description>btrfs send produces a stream of ops to recreate snapshot delta</description>
+    </attribute>
+  </attributes>
+</metadata_system>

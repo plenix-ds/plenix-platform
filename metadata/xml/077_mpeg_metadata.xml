@@ -1,0 +1,861 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="077" name="MPEG Metadata" category="VID" category_label="Video" used_for="MPEG video/audio" spec_source="ExifTool 12.76 — groups: MPEG, H264" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="78">
+  <description>Attribute set for MPEG Metadata. Sourced from ExifTool's tag database (group prefix(es): MPEG, H264). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>MPEGAudioVersion</name>
+      <tag_id>Bit11-12</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>MPEG Audio Version</description>
+      <values>
+        <value key="0">2.5</value>
+        <value key="2">2</value>
+        <value key="3">1</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AudioLayer</name>
+      <tag_id>Bit13-14</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Audio Layer</description>
+      <values>
+        <value key="1">3</value>
+        <value key="2">2</value>
+        <value key="3">1</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AudioBitrate</name>
+      <tag_id>Bit16-19</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Audio Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>SampleRate</name>
+      <tag_id>Bit20-21</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Sample Rate</description>
+      <values>
+        <value key="0">44100</value>
+        <value key="1">48000</value>
+        <value key="2">32000</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ChannelMode</name>
+      <tag_id>Bit24-25</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Channel Mode</description>
+      <values>
+        <value key="0">Stereo</value>
+        <value key="1">Joint Stereo</value>
+        <value key="2">Dual Channel</value>
+        <value key="3">Single Channel</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>MSStereo</name>
+      <tag_id>Bit26</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>MS Stereo</description>
+      <values>
+        <value key="0">Off</value>
+        <value key="1">On</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ModeExtension</name>
+      <tag_id>Bit26-27</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Mode Extension</description>
+      <values>
+        <value key="0">Bands 4-31</value>
+        <value key="1">Bands 8-31</value>
+        <value key="2">Bands 12-31</value>
+        <value key="3">Bands 16-31</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>IntensityStereo</name>
+      <tag_id>Bit27</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Intensity Stereo</description>
+      <values>
+        <value key="0">Off</value>
+        <value key="1">On</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CopyrightFlag</name>
+      <tag_id>Bit28</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Copyright Flag</description>
+      <values>
+        <value key="0">False</value>
+        <value key="1">True</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>OriginalMedia</name>
+      <tag_id>Bit29</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Original Media</description>
+      <values>
+        <value key="0">False</value>
+        <value key="1">True</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Emphasis</name>
+      <tag_id>Bit30-31</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Audio</group>
+      <subsystem>MPEG::Audio</subsystem>
+      <description>Emphasis</description>
+      <values>
+        <value key="0">None</value>
+        <value key="1">50/15 ms</value>
+        <value key="2">reserved</value>
+        <value key="3">CCIT J.17</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LameMethod</name>
+      <tag_id>9</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Lame</group>
+      <subsystem>MPEG::Lame</subsystem>
+      <description>Lame Method</description>
+      <values>
+        <value key="1">CBR</value>
+        <value key="2">ABR</value>
+        <value key="3">VBR (old/rh)</value>
+        <value key="4">VBR (new/mtrh)</value>
+        <value key="5">VBR (old/rh)</value>
+        <value key="6">VBR</value>
+        <value key="8">CBR (2-pass)</value>
+        <value key="9">ABR (2-pass)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LameLowPassFilter</name>
+      <tag_id>10</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Lame</group>
+      <subsystem>MPEG::Lame</subsystem>
+      <description>Lame Low Pass Filter</description>
+    </attribute>
+    <attribute>
+      <name>LameBitrate</name>
+      <tag_id>20</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Lame</group>
+      <subsystem>MPEG::Lame</subsystem>
+      <description>Lame Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>LameStereoMode</name>
+      <tag_id>24</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Lame</group>
+      <subsystem>MPEG::Lame</subsystem>
+      <description>Lame Stereo Mode</description>
+      <values>
+        <value key="0">Mono</value>
+        <value key="1">Stereo</value>
+        <value key="2">Dual Channels</value>
+        <value key="3">Joint Stereo</value>
+        <value key="4">Forced Joint Stereo</value>
+        <value key="6">Auto</value>
+        <value key="7">Intensity Stereo</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>Bit00-11</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Video</group>
+      <subsystem>MPEG::Video</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>Bit12-23</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Video</group>
+      <subsystem>MPEG::Video</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>AspectRatio</name>
+      <tag_id>Bit24-27</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Video</group>
+      <subsystem>MPEG::Video</subsystem>
+      <description>Aspect Ratio</description>
+      <values>
+        <value key="0.6735">0.6735</value>
+        <value key="0.7031">16:9, 625 line, PAL</value>
+        <value key="0.7615">0.7615</value>
+        <value key="0.8055">0.8055</value>
+        <value key="0.8437">16:9, 525 line, NTSC</value>
+        <value key="0.8935">0.8935</value>
+        <value key="0.9157">4:3, 625 line, PAL, CCIR601</value>
+        <value key="0.9815">0.9815</value>
+        <value key="1">1:1</value>
+        <value key="1.095">4:3, 525 line, NTSC, CCIR601</value>
+        <value key="1.0255">1.0255</value>
+        <value key="1.0695">1.0695</value>
+        <value key="1.1575">1.1575</value>
+        <value key="1.2015">1.2015</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FrameRate</name>
+      <tag_id>Bit28-31</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Video</group>
+      <subsystem>MPEG::Video</subsystem>
+      <description>Frame Rate</description>
+    </attribute>
+    <attribute>
+      <name>VideoBitrate</name>
+      <tag_id>Bit32-49</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Video</group>
+      <subsystem>MPEG::Video</subsystem>
+      <description>Video Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>VBRFrames</name>
+      <tag_id>1</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Xing</group>
+      <subsystem>MPEG::Xing</subsystem>
+      <description>VBR Frames</description>
+    </attribute>
+    <attribute>
+      <name>VBRBytes</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Xing</group>
+      <subsystem>MPEG::Xing</subsystem>
+      <description>VBR Bytes</description>
+    </attribute>
+    <attribute>
+      <name>VBRScale</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Xing</group>
+      <subsystem>MPEG::Xing</subsystem>
+      <description>VBR Scale</description>
+    </attribute>
+    <attribute>
+      <name>Encoder</name>
+      <tag_id>4</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Xing</group>
+      <subsystem>MPEG::Xing</subsystem>
+      <description>Encoder</description>
+    </attribute>
+    <attribute>
+      <name>LameVBRQuality</name>
+      <tag_id>5</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Xing</group>
+      <subsystem>MPEG::Xing</subsystem>
+      <description>Lame VBR Quality</description>
+    </attribute>
+    <attribute>
+      <name>LameQuality</name>
+      <tag_id>6</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Xing</group>
+      <subsystem>MPEG::Xing</subsystem>
+      <description>Lame Quality</description>
+    </attribute>
+    <attribute>
+      <name>ApertureSetting</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Camera1</group>
+      <subsystem>H264::Camera1</subsystem>
+      <description>Aperture Setting</description>
+      <values>
+        <value key="254">Closed</value>
+        <value key="255">Auto</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Gain</name>
+      <tag_id>1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Camera1</group>
+      <subsystem>H264::Camera1</subsystem>
+      <description>Gain</description>
+    </attribute>
+    <attribute>
+      <name>ExposureProgram</name>
+      <tag_id>1.1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Camera1</group>
+      <subsystem>H264::Camera1</subsystem>
+      <description>Exposure Program</description>
+      <values>
+        <value key="0">Program AE</value>
+        <value key="1">Gain</value>
+        <value key="2">Shutter speed priority AE</value>
+        <value key="3">Aperture-priority AE</value>
+        <value key="4">Manual</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WhiteBalance</name>
+      <tag_id>2.1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Camera1</group>
+      <subsystem>H264::Camera1</subsystem>
+      <description>White Balance</description>
+      <values>
+        <value key="0">Auto</value>
+        <value key="1">Hold</value>
+        <value key="2">1-Push</value>
+        <value key="3">Daylight</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Focus</name>
+      <tag_id>3</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Camera1</group>
+      <subsystem>H264::Camera1</subsystem>
+      <description>Focus</description>
+    </attribute>
+    <attribute>
+      <name>ImageStabilization</name>
+      <tag_id>1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Camera2</group>
+      <subsystem>H264::Camera2</subsystem>
+      <description>Image Stabilization</description>
+      <values>
+        <value key="0">Off</value>
+        <value key="63">On (0x3f)</value>
+        <value key="191">Off (0xbf)</value>
+        <value key="255">n/a</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CaptureFrameRate</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>FrameInfo</group>
+      <subsystem>H264::FrameInfo</subsystem>
+      <description>Capture Frame Rate</description>
+    </attribute>
+    <attribute>
+      <name>VideoFrameRate</name>
+      <tag_id>1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>FrameInfo</group>
+      <subsystem>H264::FrameInfo</subsystem>
+      <description>Video Frame Rate</description>
+    </attribute>
+    <attribute>
+      <name>TimeCode</name>
+      <tag_id>19</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Time Code</description>
+    </attribute>
+    <attribute>
+      <name>DateTimeOriginal</name>
+      <tag_id>24</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Date/Time Original</description>
+    </attribute>
+    <attribute>
+      <name>ExposureTime</name>
+      <tag_id>160</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Exposure Time</description>
+    </attribute>
+    <attribute>
+      <name>FNumber</name>
+      <tag_id>161</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>F Number</description>
+    </attribute>
+    <attribute>
+      <name>ExposureProgram</name>
+      <tag_id>162</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Exposure Program</description>
+      <values>
+        <value key="0">Not Defined</value>
+        <value key="1">Manual</value>
+        <value key="2">Program AE</value>
+        <value key="3">Aperture-priority AE</value>
+        <value key="4">Shutter speed priority AE</value>
+        <value key="5">Creative (Slow speed)</value>
+        <value key="6">Action (High speed)</value>
+        <value key="7">Portrait</value>
+        <value key="8">Landscape</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BrightnessValue</name>
+      <tag_id>163</tag_id>
+      <data_type>rational32s</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Brightness Value</description>
+    </attribute>
+    <attribute>
+      <name>ExposureCompensation</name>
+      <tag_id>164</tag_id>
+      <data_type>rational32s</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Exposure Compensation</description>
+    </attribute>
+    <attribute>
+      <name>MaxApertureValue</name>
+      <tag_id>165</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Max Aperture Value</description>
+    </attribute>
+    <attribute>
+      <name>Flash</name>
+      <tag_id>166</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Flash</description>
+      <values>
+        <value key="0">No Flash</value>
+        <value key="1">Fired</value>
+        <value key="5">Fired, Return not detected</value>
+        <value key="7">Fired, Return detected</value>
+        <value key="8">On, Did not fire</value>
+        <value key="9">On, Fired</value>
+        <value key="13">On, Return not detected</value>
+        <value key="15">On, Return detected</value>
+        <value key="16">Off, Did not fire</value>
+        <value key="20">Off, Did not fire, Return not detected</value>
+        <value key="24">Auto, Did not fire</value>
+        <value key="25">Auto, Fired</value>
+        <value key="29">Auto, Fired, Return not detected</value>
+        <value key="31">Auto, Fired, Return detected</value>
+        <value key="32">No flash function</value>
+        <value key="48">Off, No flash function</value>
+        <value key="65">Fired, Red-eye reduction</value>
+        <value key="69">Fired, Red-eye reduction, Return not detected</value>
+        <value key="71">Fired, Red-eye reduction, Return detected</value>
+        <value key="73">On, Red-eye reduction</value>
+        <value key="77">On, Red-eye reduction, Return not detected</value>
+        <value key="79">On, Red-eye reduction, Return detected</value>
+        <value key="80">Off, Red-eye reduction</value>
+        <value key="88">Auto, Did not fire, Red-eye reduction</value>
+        <value key="89">Auto, Fired, Red-eye reduction</value>
+        <value key="93">Auto, Fired, Red-eye reduction, Return not detected</value>
+        <value key="95">Auto, Fired, Red-eye reduction, Return detected</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CustomRendered</name>
+      <tag_id>167</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Custom Rendered</description>
+      <values>
+        <value key="0">Normal</value>
+        <value key="1">Custom</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WhiteBalance</name>
+      <tag_id>168</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>White Balance</description>
+      <values>
+        <value key="0">Auto</value>
+        <value key="1">Manual</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FocalLengthIn35mmFormat</name>
+      <tag_id>169</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Focal Length In 35mm Format</description>
+    </attribute>
+    <attribute>
+      <name>SceneCaptureType</name>
+      <tag_id>170</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Scene Capture Type</description>
+      <values>
+        <value key="0">Standard</value>
+        <value key="1">Landscape</value>
+        <value key="2">Portrait</value>
+        <value key="3">Night</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSVersionID</name>
+      <tag_id>176</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Version ID</description>
+    </attribute>
+    <attribute>
+      <name>GPSLatitudeRef</name>
+      <tag_id>177</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Latitude Ref</description>
+      <values>
+        <value key="N">North</value>
+        <value key="S">South</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSLatitude</name>
+      <tag_id>178</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Latitude</description>
+    </attribute>
+    <attribute>
+      <name>GPSLongitudeRef</name>
+      <tag_id>181</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Longitude Ref</description>
+      <values>
+        <value key="E">East</value>
+        <value key="W">West</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSLongitude</name>
+      <tag_id>182</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Longitude</description>
+    </attribute>
+    <attribute>
+      <name>GPSAltitudeRef</name>
+      <tag_id>185</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Altitude Ref</description>
+      <values>
+        <value key="0">Above Sea Level</value>
+        <value key="1">Below Sea Level</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSAltitude</name>
+      <tag_id>186</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Altitude</description>
+    </attribute>
+    <attribute>
+      <name>GPSTimeStamp</name>
+      <tag_id>187</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Time Stamp</description>
+    </attribute>
+    <attribute>
+      <name>GPSStatus</name>
+      <tag_id>190</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Status</description>
+      <values>
+        <value key="A">Measurement Active</value>
+        <value key="V">Measurement Void</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSMeasureMode</name>
+      <tag_id>191</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Measure Mode</description>
+      <values>
+        <value key="2">2-Dimensional Measurement</value>
+        <value key="3">3-Dimensional Measurement</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSDOP</name>
+      <tag_id>192</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Dilution Of Precision</description>
+    </attribute>
+    <attribute>
+      <name>GPSSpeedRef</name>
+      <tag_id>193</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Speed Ref</description>
+      <values>
+        <value key="K">km/h</value>
+        <value key="M">mph</value>
+        <value key="N">knots</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSSpeed</name>
+      <tag_id>194</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Speed</description>
+    </attribute>
+    <attribute>
+      <name>GPSTrackRef</name>
+      <tag_id>195</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Track Ref</description>
+      <values>
+        <value key="M">Magnetic North</value>
+        <value key="T">True North</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSTrack</name>
+      <tag_id>196</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Track</description>
+    </attribute>
+    <attribute>
+      <name>GPSImgDirectionRef</name>
+      <tag_id>197</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Img Direction Ref</description>
+      <values>
+        <value key="M">Magnetic North</value>
+        <value key="T">True North</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GPSImgDirection</name>
+      <tag_id>198</tag_id>
+      <data_type>rational32u</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Img Direction</description>
+    </attribute>
+    <attribute>
+      <name>GPSMapDatum</name>
+      <tag_id>199</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Map Datum</description>
+    </attribute>
+    <attribute>
+      <name>GPSDateStamp</name>
+      <tag_id>202</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>GPS Date Stamp</description>
+    </attribute>
+    <attribute>
+      <name>Model</name>
+      <tag_id>228</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>MDPM</group>
+      <subsystem>H264::MDPM</subsystem>
+      <description>Camera Model Name</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>ImageHeight</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>H264::Main</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>ImageWidth</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>H264::Main</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>Make</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>MakeModel</group>
+      <subsystem>H264::MakeModel</subsystem>
+      <description>Make</description>
+      <values>
+        <value key="259">Panasonic</value>
+        <value key="264">Sony</value>
+        <value key="4113">Canon</value>
+        <value key="4356">JVC</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>RecordingMode</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>RecInfo</group>
+      <subsystem>H264::RecInfo</subsystem>
+      <description>Recording Mode</description>
+      <values>
+        <value key="2">XP+</value>
+        <value key="4">SP</value>
+        <value key="5">LP</value>
+        <value key="6">FXP</value>
+        <value key="7">MXP</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ExposureTime</name>
+      <tag_id>1.1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Shutter</group>
+      <subsystem>H264::Shutter</subsystem>
+      <description>Exposure Time</description>
+    </attribute>
+  </attributes>
+</metadata_system>

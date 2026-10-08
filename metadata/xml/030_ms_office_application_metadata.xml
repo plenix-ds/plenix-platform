@@ -1,0 +1,2520 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="030" name="MS Office Application Metadata" category="DOC" category_label="Documents" used_for="Word/Excel/PowerPoint-specific" spec_source="ExifTool 12.76 — groups: FlashPix, iWork" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="234">
+  <description>Attribute set for MS Office Application Metadata. Sourced from ExifTool's tag database (group prefix(es): FlashPix, iWork). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>CompObjUserTypeLen</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>CompObj</group>
+      <subsystem>FlashPix::CompObj</subsystem>
+      <description>Comp Obj User Type Len</description>
+    </attribute>
+    <attribute>
+      <name>CompObjUserType</name>
+      <tag_id>1</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>CompObj</group>
+      <subsystem>FlashPix::CompObj</subsystem>
+      <description>Comp Obj User Type</description>
+    </attribute>
+    <attribute>
+      <name>CreateDate</name>
+      <tag_id>20</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Create Date</description>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>24</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>LastPrinted</name>
+      <tag_id>28</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Last Printed</description>
+    </attribute>
+    <attribute>
+      <name>RevisionNumber</name>
+      <tag_id>32</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Revision Number</description>
+    </attribute>
+    <attribute>
+      <name>TotalEditTime</name>
+      <tag_id>34</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Total Edit Time</description>
+    </attribute>
+    <attribute>
+      <name>Words</name>
+      <tag_id>38</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Words</description>
+    </attribute>
+    <attribute>
+      <name>Characters</name>
+      <tag_id>42</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Characters</description>
+    </attribute>
+    <attribute>
+      <name>Pages</name>
+      <tag_id>46</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Pages</description>
+    </attribute>
+    <attribute>
+      <name>Paragraphs</name>
+      <tag_id>48</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Paragraphs</description>
+    </attribute>
+    <attribute>
+      <name>Lines</name>
+      <tag_id>56</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>DOP</group>
+      <subsystem>FlashPix::DOP</subsystem>
+      <description>Lines</description>
+    </attribute>
+    <attribute>
+      <name>DataObjectID</name>
+      <tag_id>65536</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Data Object ID</description>
+    </attribute>
+    <attribute>
+      <name>LockedPropertyList</name>
+      <tag_id>65538</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Locked Property List</description>
+    </attribute>
+    <attribute>
+      <name>DataObjectTitle</name>
+      <tag_id>65539</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Data Object Title</description>
+    </attribute>
+    <attribute>
+      <name>LastModifier</name>
+      <tag_id>65540</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Last Modifier</description>
+    </attribute>
+    <attribute>
+      <name>RevisionNumber</name>
+      <tag_id>65541</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Revision Number</description>
+    </attribute>
+    <attribute>
+      <name>DataCreateDate</name>
+      <tag_id>65542</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Data Create Date</description>
+    </attribute>
+    <attribute>
+      <name>DataModifyDate</name>
+      <tag_id>65543</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Data Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>CreatingApplication</name>
+      <tag_id>65544</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Creating Application</description>
+    </attribute>
+    <attribute>
+      <name>DataObjectStatus</name>
+      <tag_id>65792</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Data Object Status</description>
+    </attribute>
+    <attribute>
+      <name>CreatingTransform</name>
+      <tag_id>65793</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Creating Transform</description>
+    </attribute>
+    <attribute>
+      <name>UsingTransforms</name>
+      <tag_id>65794</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Using Transforms</description>
+    </attribute>
+    <attribute>
+      <name>CachedImageHeight</name>
+      <tag_id>268435456</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Cached Image Height</description>
+    </attribute>
+    <attribute>
+      <name>CachedImageWidth</name>
+      <tag_id>268435457</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DataObject</group>
+      <subsystem>FlashPix::DataObject</subsystem>
+      <description>Cached Image Width</description>
+    </attribute>
+    <attribute>
+      <name>CommentBy</name>
+      <tag_id>CommentBy</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocTable</group>
+      <subsystem>FlashPix::DocTable</subsystem>
+      <description>Comment By</description>
+    </attribute>
+    <attribute>
+      <name>LastSavedBy</name>
+      <tag_id>LastSavedBy</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocTable</group>
+      <subsystem>FlashPix::DocTable</subsystem>
+      <description>Last Saved By</description>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>ModifyDate</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>DocTable</group>
+      <subsystem>FlashPix::DocTable</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>TableOffsets</name>
+      <tag_id>TableOffsets</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocTable</group>
+      <subsystem>FlashPix::DocTable</subsystem>
+      <description>Table Offsets</description>
+    </attribute>
+    <attribute>
+      <name>Category</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Category</description>
+    </attribute>
+    <attribute>
+      <name>PresentationTarget</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Presentation Target</description>
+    </attribute>
+    <attribute>
+      <name>Bytes</name>
+      <tag_id>4</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Bytes</description>
+    </attribute>
+    <attribute>
+      <name>Lines</name>
+      <tag_id>5</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Lines</description>
+    </attribute>
+    <attribute>
+      <name>Paragraphs</name>
+      <tag_id>6</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Paragraphs</description>
+    </attribute>
+    <attribute>
+      <name>Slides</name>
+      <tag_id>7</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Slides</description>
+    </attribute>
+    <attribute>
+      <name>Notes</name>
+      <tag_id>8</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Notes</description>
+    </attribute>
+    <attribute>
+      <name>HiddenSlides</name>
+      <tag_id>9</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Hidden Slides</description>
+    </attribute>
+    <attribute>
+      <name>MMClips</name>
+      <tag_id>10</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>MM Clips</description>
+    </attribute>
+    <attribute>
+      <name>ScaleCrop</name>
+      <tag_id>11</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Scale Crop</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>HeadingPairs</name>
+      <tag_id>12</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Heading Pairs</description>
+    </attribute>
+    <attribute>
+      <name>TitleOfParts</name>
+      <tag_id>13</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Title Of Parts</description>
+    </attribute>
+    <attribute>
+      <name>Manager</name>
+      <tag_id>14</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Manager</description>
+    </attribute>
+    <attribute>
+      <name>Company</name>
+      <tag_id>15</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Company</description>
+    </attribute>
+    <attribute>
+      <name>LinksUpToDate</name>
+      <tag_id>16</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Links Up To Date</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CharCountWithSpaces</name>
+      <tag_id>17</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Char Count With Spaces</description>
+    </attribute>
+    <attribute>
+      <name>SharedDoc</name>
+      <tag_id>19</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Shared Doc</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>HyperlinksChanged</name>
+      <tag_id>22</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Hyperlinks Changed</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AppVersion</name>
+      <tag_id>23</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>App Version</description>
+    </attribute>
+    <attribute>
+      <name>ContentType</name>
+      <tag_id>26</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Content Type</description>
+    </attribute>
+    <attribute>
+      <name>ContentStatus</name>
+      <tag_id>27</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Content Status</description>
+    </attribute>
+    <attribute>
+      <name>Language</name>
+      <tag_id>28</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Language</description>
+    </attribute>
+    <attribute>
+      <name>DocVersion</name>
+      <tag_id>29</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Doc Version</description>
+    </attribute>
+    <attribute>
+      <name>Hyperlinks</name>
+      <tag_id>_PID_HLINKS</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Hyperlinks</description>
+    </attribute>
+    <attribute>
+      <name>HyperlinkBase</name>
+      <tag_id>_PID_LINKBASE</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>DocumentInfo</group>
+      <subsystem>FlashPix::DocumentInfo</subsystem>
+      <description>Hyperlink Base</description>
+    </attribute>
+    <attribute>
+      <name>ExtensionName</name>
+      <tag_id>1</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Extension Name</description>
+    </attribute>
+    <attribute>
+      <name>ExtensionClassID</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Extension Class ID</description>
+    </attribute>
+    <attribute>
+      <name>ExtensionPersistence</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Extension Persistence</description>
+      <values>
+        <value key="0">Always Valid</value>
+        <value key="1">Invalidated By Modification</value>
+        <value key="2">Potentially Invalidated By Modification</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ExtensionCreateDate</name>
+      <tag_id>4</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Extension Create Date</description>
+    </attribute>
+    <attribute>
+      <name>ExtensionModifyDate</name>
+      <tag_id>5</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Extension Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>CreatingApplication</name>
+      <tag_id>6</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Creating Application</description>
+    </attribute>
+    <attribute>
+      <name>ExtensionDescription</name>
+      <tag_id>7</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Extension Description</description>
+    </attribute>
+    <attribute>
+      <name>Storage-StreamPathname</name>
+      <tag_id>4096</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Storage-Stream Pathname</description>
+    </attribute>
+    <attribute>
+      <name>FlashPixStreamPathname</name>
+      <tag_id>8192</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Flash Pix Stream Pathname</description>
+    </attribute>
+    <attribute>
+      <name>FlashPixStreamFieldOffset</name>
+      <tag_id>8193</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Flash Pix Stream Field Offset</description>
+    </attribute>
+    <attribute>
+      <name>PropertySetPathname</name>
+      <tag_id>12288</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Property Set Pathname</description>
+    </attribute>
+    <attribute>
+      <name>PropertySetIDCodes</name>
+      <tag_id>12289</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Property Set ID Codes</description>
+    </attribute>
+    <attribute>
+      <name>PropertyVectorElements</name>
+      <tag_id>12290</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Property Vector Elements</description>
+    </attribute>
+    <attribute>
+      <name>SubimageResolutions</name>
+      <tag_id>16384</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Subimage Resolutions</description>
+    </attribute>
+    <attribute>
+      <name>UsedExtensionNumbers</name>
+      <tag_id>268435456</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>FlashPix::Extensions</subsystem>
+      <description>Used Extension Numbers</description>
+    </attribute>
+    <attribute>
+      <name>LockedPropertyList</name>
+      <tag_id>65538</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Locked Property List</description>
+    </attribute>
+    <attribute>
+      <name>TransformedImageTitle</name>
+      <tag_id>65539</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Transformed Image Title</description>
+    </attribute>
+    <attribute>
+      <name>LastModifier</name>
+      <tag_id>65540</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Last Modifier</description>
+    </attribute>
+    <attribute>
+      <name>VisibleOutputs</name>
+      <tag_id>65792</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Visible Outputs</description>
+    </attribute>
+    <attribute>
+      <name>MaximumImageIndex</name>
+      <tag_id>65793</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Maximum Image Index</description>
+    </attribute>
+    <attribute>
+      <name>MaximumTransformIndex</name>
+      <tag_id>65794</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Maximum Transform Index</description>
+    </attribute>
+    <attribute>
+      <name>MaximumOperationIndex</name>
+      <tag_id>65795</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>GlobalInfo</group>
+      <subsystem>FlashPix::GlobalInfo</subsystem>
+      <description>Maximum Operation Index</description>
+    </attribute>
+    <attribute>
+      <name>NumberOfResolutions</name>
+      <tag_id>16777216</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Number Of Resolutions</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>16777218</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>16777219</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>DefaultDisplayHeight</name>
+      <tag_id>16777220</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Default Display Height</description>
+    </attribute>
+    <attribute>
+      <name>DefaultDisplayWidth</name>
+      <tag_id>16777221</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Default Display Width</description>
+    </attribute>
+    <attribute>
+      <name>DisplayUnits</name>
+      <tag_id>16777222</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Display Units</description>
+      <values>
+        <value key="0">inches</value>
+        <value key="1">meters</value>
+        <value key="2">cm</value>
+        <value key="3">mm</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SubimageWidth</name>
+      <tag_id>33554432</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Subimage Width</description>
+    </attribute>
+    <attribute>
+      <name>SubimageHeight</name>
+      <tag_id>33554433</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Subimage Height</description>
+    </attribute>
+    <attribute>
+      <name>SubimageColor</name>
+      <tag_id>33554434</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Subimage Color</description>
+      <values>
+        <value key="01 0000">Opacity Only</value>
+        <value key="01 0001">Monochrome</value>
+        <value key="01 8000">Opacity Only (uncalibrated)</value>
+        <value key="01 8001">Monochrome (uncalibrated)</value>
+        <value key="03 0002">YCbCr</value>
+        <value key="03 0003">RGB</value>
+        <value key="03 8002">YCbCr (uncalibrated)</value>
+        <value key="03 8003">RGB (uncalibrated)</value>
+        <value key="04 0002">YCbCr with Opacity</value>
+        <value key="04 0003">RGB with Opacity</value>
+        <value key="04 8002">YCbCr with Opacity (uncalibrated)</value>
+        <value key="04 8003">RGB with Opacity (uncalibrated)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SubimageNumericalFormat</name>
+      <tag_id>33554435</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Subimage Numerical Format</description>
+      <values>
+        <value key="17">8-bit, Unsigned</value>
+        <value key="18">16-bit, Unsigned</value>
+        <value key="19">32-bit, Unsigned</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>DecimationMethod</name>
+      <tag_id>33554436</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Decimation Method</description>
+      <values>
+        <value key="0">None (Full-sized Image)</value>
+        <value key="8">8-point Prefilter</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>DecimationPrefilterWidth</name>
+      <tag_id>33554437</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Decimation Prefilter Width</description>
+    </attribute>
+    <attribute>
+      <name>SubimageICC_Profile</name>
+      <tag_id>33554439</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Subimage ICC Profile</description>
+    </attribute>
+    <attribute>
+      <name>JPEGTables</name>
+      <tag_id>50331649</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>JPEG Tables</description>
+    </attribute>
+    <attribute>
+      <name>MaxJPEGTableIndex</name>
+      <tag_id>50331650</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Image</group>
+      <subsystem>FlashPix::Image</subsystem>
+      <description>Max JPEG Table Index</description>
+    </attribute>
+    <attribute>
+      <name>FileSource</name>
+      <tag_id>553648128</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>File Source</description>
+      <values>
+        <value key="1">Film Scanner</value>
+        <value key="2">Reflection Print Scanner</value>
+        <value key="3">Digital Camera</value>
+        <value key="4">Video Capture</value>
+        <value key="5">Computer Graphics</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SceneType</name>
+      <tag_id>553648129</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scene Type</description>
+      <values>
+        <value key="1">Original Scene</value>
+        <value key="2">Second Generation Scene</value>
+        <value key="3">Digital Scene Generation</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CreationPathVector</name>
+      <tag_id>553648130</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Creation Path Vector</description>
+    </attribute>
+    <attribute>
+      <name>SoftwareRelease</name>
+      <tag_id>553648131</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Software Release</description>
+    </attribute>
+    <attribute>
+      <name>UserDefinedID</name>
+      <tag_id>553648132</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>User Defined ID</description>
+    </attribute>
+    <attribute>
+      <name>SharpnessApproximation</name>
+      <tag_id>553648133</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Sharpness Approximation</description>
+    </attribute>
+    <attribute>
+      <name>Copyright</name>
+      <tag_id>570425344</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>OriginalImageBroker</name>
+      <tag_id>570425345</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Original Image Broker</description>
+    </attribute>
+    <attribute>
+      <name>DigitalImageBroker</name>
+      <tag_id>570425346</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Digital Image Broker</description>
+    </attribute>
+    <attribute>
+      <name>Authorship</name>
+      <tag_id>570425347</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Authorship</description>
+    </attribute>
+    <attribute>
+      <name>IntellectualPropertyNotes</name>
+      <tag_id>570425348</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Intellectual Property Notes</description>
+    </attribute>
+    <attribute>
+      <name>TestTarget</name>
+      <tag_id>587202560</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Test Target</description>
+      <values>
+        <value key="1">Color Chart</value>
+        <value key="2">Gray Card</value>
+        <value key="3">Grayscale</value>
+        <value key="4">Resolution Chart</value>
+        <value key="5">Inch Scale</value>
+        <value key="6">Centimeter Scale</value>
+        <value key="7">Millimeter Scale</value>
+        <value key="8">Micrometer Scale</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>GroupCaption</name>
+      <tag_id>587202562</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Group Caption</description>
+    </attribute>
+    <attribute>
+      <name>CaptionText</name>
+      <tag_id>587202563</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Caption Text</description>
+    </attribute>
+    <attribute>
+      <name>People</name>
+      <tag_id>587202564</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>People</description>
+    </attribute>
+    <attribute>
+      <name>Things</name>
+      <tag_id>587202567</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Things</description>
+    </attribute>
+    <attribute>
+      <name>DateTimeOriginal</name>
+      <tag_id>587202570</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Date/Time Original</description>
+    </attribute>
+    <attribute>
+      <name>Events</name>
+      <tag_id>587202571</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Events</description>
+    </attribute>
+    <attribute>
+      <name>Places</name>
+      <tag_id>587202572</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Places</description>
+    </attribute>
+    <attribute>
+      <name>ContentDescriptionNotes</name>
+      <tag_id>587202575</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Content Description Notes</description>
+    </attribute>
+    <attribute>
+      <name>Make</name>
+      <tag_id>603979776</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Make</description>
+    </attribute>
+    <attribute>
+      <name>Model</name>
+      <tag_id>603979777</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Camera Model Name</description>
+    </attribute>
+    <attribute>
+      <name>SerialNumber</name>
+      <tag_id>603979778</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Serial Number</description>
+    </attribute>
+    <attribute>
+      <name>CreateDate</name>
+      <tag_id>620756992</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Create Date</description>
+    </attribute>
+    <attribute>
+      <name>ExposureTime</name>
+      <tag_id>620756993</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Exposure Time</description>
+    </attribute>
+    <attribute>
+      <name>FNumber</name>
+      <tag_id>620756994</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>F Number</description>
+    </attribute>
+    <attribute>
+      <name>ExposureProgram</name>
+      <tag_id>620756995</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Exposure Program</description>
+      <values>
+        <value key="0">Not Defined</value>
+        <value key="1">Manual</value>
+        <value key="2">Program AE</value>
+        <value key="3">Aperture-priority AE</value>
+        <value key="4">Shutter speed priority AE</value>
+        <value key="5">Creative (Slow speed)</value>
+        <value key="6">Action (High speed)</value>
+        <value key="7">Portrait</value>
+        <value key="8">Landscape</value>
+        <value key="9">Bulb</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BrightnessValue</name>
+      <tag_id>620756996</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Brightness Value</description>
+    </attribute>
+    <attribute>
+      <name>ExposureCompensation</name>
+      <tag_id>620756997</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Exposure Compensation</description>
+    </attribute>
+    <attribute>
+      <name>SubjectDistance</name>
+      <tag_id>620756998</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Subject Distance</description>
+    </attribute>
+    <attribute>
+      <name>MeteringMode</name>
+      <tag_id>620756999</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Metering Mode</description>
+      <values>
+        <value key="0">Unknown</value>
+        <value key="1">Average</value>
+        <value key="2">Center-weighted average</value>
+        <value key="3">Spot</value>
+        <value key="4">Multi-spot</value>
+        <value key="5">Multi-segment</value>
+        <value key="6">Partial</value>
+        <value key="255">Other</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LightSource</name>
+      <tag_id>620757000</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Light Source</description>
+      <values>
+        <value key="0">Unknown</value>
+        <value key="1">Daylight</value>
+        <value key="2">Fluorescent</value>
+        <value key="3">Tungsten (Incandescent)</value>
+        <value key="4">Flash</value>
+        <value key="9">Fine Weather</value>
+        <value key="10">Cloudy</value>
+        <value key="11">Shade</value>
+        <value key="12">Daylight Fluorescent</value>
+        <value key="13">Day White Fluorescent</value>
+        <value key="14">Cool White Fluorescent</value>
+        <value key="15">White Fluorescent</value>
+        <value key="16">Warm White Fluorescent</value>
+        <value key="17">Standard Light A</value>
+        <value key="18">Standard Light B</value>
+        <value key="19">Standard Light C</value>
+        <value key="20">D55</value>
+        <value key="21">D65</value>
+        <value key="22">D75</value>
+        <value key="23">D50</value>
+        <value key="24">ISO Studio Tungsten</value>
+        <value key="255">Other</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FocalLength</name>
+      <tag_id>620757001</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Focal Length</description>
+    </attribute>
+    <attribute>
+      <name>MaxApertureValue</name>
+      <tag_id>620757002</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Max Aperture Value</description>
+    </attribute>
+    <attribute>
+      <name>Flash</name>
+      <tag_id>620757003</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Flash</description>
+      <values>
+        <value key="1">No Flash</value>
+        <value key="2">Flash Fired</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FlashEnergy</name>
+      <tag_id>620757004</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Flash Energy</description>
+    </attribute>
+    <attribute>
+      <name>FlashReturn</name>
+      <tag_id>620757005</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Flash Return</description>
+      <values>
+        <value key="1">Subject Outside Flash Range</value>
+        <value key="2">Subject Inside Flash Range</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BackLight</name>
+      <tag_id>620757006</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Back Light</description>
+      <values>
+        <value key="1">Front Lit</value>
+        <value key="2">Back Lit 1</value>
+        <value key="3">Back Lit 2</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SubjectLocation</name>
+      <tag_id>620757007</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Subject Location</description>
+    </attribute>
+    <attribute>
+      <name>ExposureIndex</name>
+      <tag_id>620757008</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Exposure Index</description>
+    </attribute>
+    <attribute>
+      <name>SpecialEffectsOpticalFilter</name>
+      <tag_id>620757009</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Special Effects Optical Filter</description>
+      <values>
+        <value key="1">None</value>
+        <value key="2">Colored</value>
+        <value key="3">Diffusion</value>
+        <value key="4">Multi-image</value>
+        <value key="5">Polarizing</value>
+        <value key="6">Split-field</value>
+        <value key="7">Star</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>PerPictureNotes</name>
+      <tag_id>620757010</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Per Picture Notes</description>
+    </attribute>
+    <attribute>
+      <name>SensingMethod</name>
+      <tag_id>637534208</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Sensing Method</description>
+      <values>
+        <value key="1">Monochrome area</value>
+        <value key="2">One-chip color area</value>
+        <value key="3">Two-chip color area</value>
+        <value key="4">Three-chip color area</value>
+        <value key="5">Color sequential area</value>
+        <value key="6">Monochrome linear</value>
+        <value key="7">Trilinear</value>
+        <value key="8">Color sequential linear</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FocalPlaneXResolution</name>
+      <tag_id>637534209</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Focal Plane X Resolution</description>
+    </attribute>
+    <attribute>
+      <name>FocalPlaneYResolution</name>
+      <tag_id>637534210</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Focal Plane Y Resolution</description>
+    </attribute>
+    <attribute>
+      <name>FocalPlaneResolutionUnit</name>
+      <tag_id>637534211</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Focal Plane Resolution Unit</description>
+      <values>
+        <value key="1">None</value>
+        <value key="2">inches</value>
+        <value key="3">cm</value>
+        <value key="4">mm</value>
+        <value key="5">um</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SpatialFrequencyResponse</name>
+      <tag_id>637534212</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Spatial Frequency Response</description>
+    </attribute>
+    <attribute>
+      <name>CFAPattern</name>
+      <tag_id>637534213</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>CFA Pattern</description>
+    </attribute>
+    <attribute>
+      <name>ISO</name>
+      <tag_id>637534215</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>ISO</description>
+    </attribute>
+    <attribute>
+      <name>Opto-ElectricConvFactor</name>
+      <tag_id>637534216</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Opto-Electric Conv Factor</description>
+    </attribute>
+    <attribute>
+      <name>FilmBrand</name>
+      <tag_id>654311424</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Film Brand</description>
+    </attribute>
+    <attribute>
+      <name>FilmCategory</name>
+      <tag_id>654311425</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Film Category</description>
+    </attribute>
+    <attribute>
+      <name>FilmSize</name>
+      <tag_id>654311426</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Film Size</description>
+    </attribute>
+    <attribute>
+      <name>FilmRollNumber</name>
+      <tag_id>654311427</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Film Roll Number</description>
+    </attribute>
+    <attribute>
+      <name>FilmFrameNumber</name>
+      <tag_id>654311428</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Film Frame Number</description>
+    </attribute>
+    <attribute>
+      <name>ScannerMake</name>
+      <tag_id>671088640</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scanner Make</description>
+    </attribute>
+    <attribute>
+      <name>ScannerModel</name>
+      <tag_id>671088641</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scanner Model</description>
+    </attribute>
+    <attribute>
+      <name>ScannerSerialNumber</name>
+      <tag_id>671088642</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scanner Serial Number</description>
+    </attribute>
+    <attribute>
+      <name>ScanSoftware</name>
+      <tag_id>671088643</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scan Software</description>
+    </attribute>
+    <attribute>
+      <name>ScanSoftwareRevisionDate</name>
+      <tag_id>671088644</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scan Software Revision Date</description>
+    </attribute>
+    <attribute>
+      <name>ServiceOrganizationName</name>
+      <tag_id>671088645</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Service Organization Name</description>
+    </attribute>
+    <attribute>
+      <name>ScanOperatorID</name>
+      <tag_id>671088646</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scan Operator ID</description>
+    </attribute>
+    <attribute>
+      <name>ScanDate</name>
+      <tag_id>671088648</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scan Date</description>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>671088649</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>ScannerPixelSize</name>
+      <tag_id>671088650</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Scanner Pixel Size</description>
+    </attribute>
+    <attribute>
+      <name>OriginalScannedImageSize</name>
+      <tag_id>687865856</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Original Scanned Image Size</description>
+    </attribute>
+    <attribute>
+      <name>OriginalDocumentSize</name>
+      <tag_id>687865857</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Original Document Size</description>
+    </attribute>
+    <attribute>
+      <name>OriginalMedium</name>
+      <tag_id>687865858</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Original Medium</description>
+      <values>
+        <value key="1">Continuous Tone Image</value>
+        <value key="2">Halftone Image</value>
+        <value key="3">Line Art</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TypeOfOriginal</name>
+      <tag_id>687865859</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ImageInfo</group>
+      <subsystem>FlashPix::ImageInfo</subsystem>
+      <description>Type Of Original</description>
+      <values>
+        <value key="1">B&amp;W Print</value>
+        <value key="2">Color Print</value>
+        <value key="3">B&amp;W Document</value>
+        <value key="4">Color Document</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ScreenNail</name>
+      <tag_id>\x05Screen Nail</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Screen Nail</description>
+    </attribute>
+    <attribute>
+      <name>Table0</name>
+      <tag_id>0Table</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Table 0</description>
+    </attribute>
+    <attribute>
+      <name>Table1</name>
+      <tag_id>1Table</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Table 1</description>
+    </attribute>
+    <attribute>
+      <name>AudioStream</name>
+      <tag_id>Audio Stream</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Audio Stream</description>
+    </attribute>
+    <attribute>
+      <name>BasicFileInfo</name>
+      <tag_id>BasicFileInfo</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Basic File Info</description>
+    </attribute>
+    <attribute>
+      <name>CurrentUser</name>
+      <tag_id>Current User</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Current User</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImage</name>
+      <tag_id>IeImg</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Embedded Image</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImageClass</name>
+      <tag_id>IeImg_class</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Embedded Image Class</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImageRectangle</name>
+      <tag_id>IeImg_rect</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Embedded Image Rectangle</description>
+    </attribute>
+    <attribute>
+      <name>PreviewImage</name>
+      <tag_id>Preview</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Preview Image</description>
+    </attribute>
+    <attribute>
+      <name>LinkedFileName</name>
+      <tag_id>_eeLink</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Linked File Name</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedPNG</name>
+      <tag_id>_eePNG</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>FlashPix::Main</subsystem>
+      <description>Embedded PNG</description>
+    </attribute>
+    <attribute>
+      <name>OperationID</name>
+      <tag_id>65536</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Operation</group>
+      <subsystem>FlashPix::Operation</subsystem>
+      <description>Operation ID</description>
+    </attribute>
+    <attribute>
+      <name>PreviewImageWidth</name>
+      <tag_id>13</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>PreviewInfo</group>
+      <subsystem>FlashPix::PreviewInfo</subsystem>
+      <description>Preview Image Width</description>
+    </attribute>
+    <attribute>
+      <name>PreviewImageHeight</name>
+      <tag_id>23</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>PreviewInfo</group>
+      <subsystem>FlashPix::PreviewInfo</subsystem>
+      <description>Preview Image Height</description>
+    </attribute>
+    <attribute>
+      <name>SubimageWidth</name>
+      <tag_id>1</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SubimageHdr</group>
+      <subsystem>FlashPix::SubimageHdr</subsystem>
+      <description>Subimage Width</description>
+    </attribute>
+    <attribute>
+      <name>SubimageHeight</name>
+      <tag_id>2</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SubimageHdr</group>
+      <subsystem>FlashPix::SubimageHdr</subsystem>
+      <description>Subimage Height</description>
+    </attribute>
+    <attribute>
+      <name>SubimageTileCount</name>
+      <tag_id>3</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SubimageHdr</group>
+      <subsystem>FlashPix::SubimageHdr</subsystem>
+      <description>Subimage Tile Count</description>
+    </attribute>
+    <attribute>
+      <name>SubimageTileWidth</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SubimageHdr</group>
+      <subsystem>FlashPix::SubimageHdr</subsystem>
+      <description>Subimage Tile Width</description>
+    </attribute>
+    <attribute>
+      <name>SubimageTileHeight</name>
+      <tag_id>5</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SubimageHdr</group>
+      <subsystem>FlashPix::SubimageHdr</subsystem>
+      <description>Subimage Tile Height</description>
+    </attribute>
+    <attribute>
+      <name>NumChannels</name>
+      <tag_id>6</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SubimageHdr</group>
+      <subsystem>FlashPix::SubimageHdr</subsystem>
+      <description>Num Channels</description>
+    </attribute>
+    <attribute>
+      <name>Dictionary</name>
+      <tag_id>0</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Dictionary</description>
+    </attribute>
+    <attribute>
+      <name>CodePage</name>
+      <tag_id>1</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Code Page</description>
+      <values>
+        <value key="37">IBM EBCDIC US-Canada</value>
+        <value key="437">DOS United States</value>
+        <value key="500">IBM EBCDIC International</value>
+        <value key="708">Arabic (ASMO 708)</value>
+        <value key="709">Arabic (ASMO-449+, BCON V4)</value>
+        <value key="710">Arabic - Transparent Arabic</value>
+        <value key="720">DOS Arabic (Transparent ASMO)</value>
+        <value key="737">DOS Greek (formerly 437G)</value>
+        <value key="775">DOS Baltic</value>
+        <value key="850">DOS Latin 1 (Western European)</value>
+        <value key="852">DOS Latin 2 (Central European)</value>
+        <value key="855">DOS Cyrillic (primarily Russian)</value>
+        <value key="857">DOS Turkish</value>
+        <value key="858">DOS Multilingual Latin 1 with Euro</value>
+        <value key="860">DOS Portuguese</value>
+        <value key="861">DOS Icelandic</value>
+        <value key="862">DOS Hebrew</value>
+        <value key="863">DOS French Canadian</value>
+        <value key="864">DOS Arabic</value>
+        <value key="865">DOS Nordic</value>
+        <value key="866">DOS Russian (Cyrillic)</value>
+        <value key="869">DOS Modern Greek</value>
+        <value key="870">IBM EBCDIC Multilingual/ROECE (Latin 2)</value>
+        <value key="874">Windows Thai (same as 28605, ISO 8859-15)</value>
+        <value key="875">IBM EBCDIC Greek Modern</value>
+        <value key="932">Windows Japanese (Shift-JIS)</value>
+        <value key="936">Windows Simplified Chinese (PRC, Singapore)</value>
+        <value key="949">Windows Korean (Unified Hangul Code)</value>
+        <value key="950">Windows Traditional Chinese (Taiwan)</value>
+        <value key="1026">IBM EBCDIC Turkish (Latin 5)</value>
+        <value key="1047">IBM EBCDIC Latin 1/Open System</value>
+        <value key="1140">IBM EBCDIC US-Canada with Euro</value>
+        <value key="1141">IBM EBCDIC Germany with Euro</value>
+        <value key="1142">IBM EBCDIC Denmark-Norway with Euro</value>
+        <value key="1143">IBM EBCDIC Finland-Sweden with Euro</value>
+        <value key="1144">IBM EBCDIC Italy with Euro</value>
+        <value key="1145">IBM EBCDIC Latin America-Spain with Euro</value>
+        <value key="1146">IBM EBCDIC United Kingdom with Euro</value>
+        <value key="1147">IBM EBCDIC France with Euro</value>
+        <value key="1148">IBM EBCDIC International with Euro</value>
+        <value key="1149">IBM EBCDIC Icelandic with Euro</value>
+        <value key="1200">Unicode UTF-16, little endian</value>
+        <value key="1201">Unicode UTF-16, big endian</value>
+        <value key="1250">Windows Latin 2 (Central European)</value>
+        <value key="1251">Windows Cyrillic</value>
+        <value key="1252">Windows Latin 1 (Western European)</value>
+        <value key="1253">Windows Greek</value>
+        <value key="1254">Windows Turkish</value>
+        <value key="1255">Windows Hebrew</value>
+        <value key="1256">Windows Arabic</value>
+        <value key="1257">Windows Baltic</value>
+        <value key="1258">Windows Vietnamese</value>
+        <value key="1361">Korean (Johab)</value>
+        <value key="10000">Mac Roman (Western European)</value>
+        <value key="10001">Mac Japanese</value>
+        <value key="10002">Mac Traditional Chinese</value>
+        <value key="10003">Mac Korean</value>
+        <value key="10004">Mac Arabic</value>
+        <value key="10005">Mac Hebrew</value>
+        <value key="10006">Mac Greek</value>
+        <value key="10007">Mac Cyrillic</value>
+        <value key="10008">Mac Simplified Chinese</value>
+        <value key="10010">Mac Romanian</value>
+        <value key="10017">Mac Ukrainian</value>
+        <value key="10021">Mac Thai</value>
+        <value key="10029">Mac Latin 2 (Central European)</value>
+        <value key="10079">Mac Icelandic</value>
+        <value key="10081">Mac Turkish</value>
+        <value key="10082">Mac Croatian</value>
+        <value key="12000">Unicode UTF-32, little endian</value>
+        <value key="12001">Unicode UTF-32, big endian</value>
+        <value key="20000">CNS Taiwan</value>
+        <value key="20001">TCA Taiwan</value>
+        <value key="20002">Eten Taiwan</value>
+        <value key="20003">IBM5550 Taiwan</value>
+        <value key="20004">TeleText Taiwan</value>
+        <value key="20005">Wang Taiwan</value>
+        <value key="20105">IA5 (IRV International Alphabet No. 5, 7-bit)</value>
+        <value key="20106">IA5 German (7-bit)</value>
+        <value key="20107">IA5 Swedish (7-bit)</value>
+        <value key="20108">IA5 Norwegian (7-bit)</value>
+        <value key="20127">US-ASCII (7-bit)</value>
+        <value key="20261">T.61</value>
+        <value key="20269">ISO 6937 Non-Spacing Accent</value>
+        <value key="20273">IBM EBCDIC Germany</value>
+        <value key="20277">IBM EBCDIC Denmark-Norway</value>
+        <value key="20278">IBM EBCDIC Finland-Sweden</value>
+        <value key="20280">IBM EBCDIC Italy</value>
+        <value key="20284">IBM EBCDIC Latin America-Spain</value>
+        <value key="20285">IBM EBCDIC United Kingdom</value>
+        <value key="20290">IBM EBCDIC Japanese Katakana Extended</value>
+        <value key="20297">IBM EBCDIC France</value>
+        <value key="20420">IBM EBCDIC Arabic</value>
+        <value key="20423">IBM EBCDIC Greek</value>
+        <value key="20424">IBM EBCDIC Hebrew</value>
+        <value key="20833">IBM EBCDIC Korean Extended</value>
+        <value key="20838">IBM EBCDIC Thai</value>
+        <value key="20866">Russian/Cyrillic (KOI8-R)</value>
+        <value key="20871">IBM EBCDIC Icelandic</value>
+        <value key="20880">IBM EBCDIC Cyrillic Russian</value>
+        <value key="20905">IBM EBCDIC Turkish</value>
+        <value key="20924">IBM EBCDIC Latin 1/Open System with Euro</value>
+        <value key="20932">Japanese (JIS 0208-1990 and 0121-1990)</value>
+        <value key="20936">Simplified Chinese (GB2312)</value>
+        <value key="20949">Korean Wansung</value>
+        <value key="21025">IBM EBCDIC Cyrillic Serbian-Bulgarian</value>
+        <value key="21027">Extended Alpha Lowercase (deprecated)</value>
+        <value key="21866">Ukrainian/Cyrillic (KOI8-U)</value>
+        <value key="28591">ISO 8859-1 Latin 1 (Western European)</value>
+        <value key="28592">ISO 8859-2 (Central European)</value>
+        <value key="28593">ISO 8859-3 Latin 3</value>
+        <value key="28594">ISO 8859-4 Baltic</value>
+        <value key="28595">ISO 8859-5 Cyrillic</value>
+        <value key="28596">ISO 8859-6 Arabic</value>
+        <value key="28597">ISO 8859-7 Greek</value>
+        <value key="28598">ISO 8859-8 Hebrew (Visual)</value>
+        <value key="28599">ISO 8859-9 Turkish</value>
+        <value key="28603">ISO 8859-13 Estonian</value>
+        <value key="28605">ISO 8859-15 Latin 9</value>
+        <value key="29001">Europa 3</value>
+        <value key="38598">ISO 8859-8 Hebrew (Logical)</value>
+        <value key="50220">ISO 2022 Japanese with no halfwidth Katakana (JIS)</value>
+        <value key="50221">ISO 2022 Japanese with halfwidth Katakana (JIS-Allow 1 byte Kana)</value>
+        <value key="50222">ISO 2022 Japanese JIS X 0201-1989 (JIS-Allow 1 byte Kana - SO/SI)</value>
+        <value key="50225">ISO 2022 Korean</value>
+        <value key="50227">ISO 2022 Simplified Chinese</value>
+        <value key="50229">ISO 2022 Traditional Chinese</value>
+        <value key="50930">EBCDIC Japanese (Katakana) Extended</value>
+        <value key="50931">EBCDIC US-Canada and Japanese</value>
+        <value key="50933">EBCDIC Korean Extended and Korean</value>
+        <value key="50935">EBCDIC Simplified Chinese Extended and Simplified Chinese</value>
+        <value key="50936">EBCDIC Simplified Chinese</value>
+        <value key="50937">EBCDIC US-Canada and Traditional Chinese</value>
+        <value key="50939">EBCDIC Japanese (Latin) Extended and Japanese</value>
+        <value key="51932">EUC Japanese</value>
+        <value key="51936">EUC Simplified Chinese</value>
+        <value key="51949">EUC Korean</value>
+        <value key="51950">EUC Traditional Chinese</value>
+        <value key="52936">HZ-GB2312 Simplified Chinese</value>
+        <value key="54936">Windows XP and later: GB18030 Simplified Chinese (4 byte)</value>
+        <value key="57002">ISCII Devanagari</value>
+        <value key="57003">ISCII Bengali</value>
+        <value key="57004">ISCII Tamil</value>
+        <value key="57005">ISCII Telugu</value>
+        <value key="57006">ISCII Assamese</value>
+        <value key="57007">ISCII Oriya</value>
+        <value key="57008">ISCII Kannada</value>
+        <value key="57009">ISCII Malayalam</value>
+        <value key="57010">ISCII Gujarati</value>
+        <value key="57011">ISCII Punjabi</value>
+        <value key="65000">Unicode (UTF-7)</value>
+        <value key="65001">Unicode (UTF-8)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>Subject</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Subject</description>
+    </attribute>
+    <attribute>
+      <name>Author</name>
+      <tag_id>4</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Author</description>
+    </attribute>
+    <attribute>
+      <name>Keywords</name>
+      <tag_id>5</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>Comments</name>
+      <tag_id>6</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Comments</description>
+    </attribute>
+    <attribute>
+      <name>Template</name>
+      <tag_id>7</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Template</description>
+    </attribute>
+    <attribute>
+      <name>LastModifiedBy</name>
+      <tag_id>8</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Last Modified By</description>
+    </attribute>
+    <attribute>
+      <name>RevisionNumber</name>
+      <tag_id>9</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Revision Number</description>
+    </attribute>
+    <attribute>
+      <name>TotalEditTime</name>
+      <tag_id>10</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Total Edit Time</description>
+    </attribute>
+    <attribute>
+      <name>LastPrinted</name>
+      <tag_id>11</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Last Printed</description>
+    </attribute>
+    <attribute>
+      <name>CreateDate</name>
+      <tag_id>12</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Create Date</description>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>13</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>Pages</name>
+      <tag_id>14</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Pages</description>
+    </attribute>
+    <attribute>
+      <name>Words</name>
+      <tag_id>15</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Words</description>
+    </attribute>
+    <attribute>
+      <name>Characters</name>
+      <tag_id>16</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Characters</description>
+    </attribute>
+    <attribute>
+      <name>ThumbnailClip</name>
+      <tag_id>17</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Thumbnail Clip</description>
+    </attribute>
+    <attribute>
+      <name>Software</name>
+      <tag_id>18</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Software</description>
+    </attribute>
+    <attribute>
+      <name>Security</name>
+      <tag_id>19</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Security</description>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Password protected</value>
+        <value key="2">Read-only recommended</value>
+        <value key="4">Read-only enforced</value>
+        <value key="8">Locked for annotations</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CreatedBy</name>
+      <tag_id>34</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Created By</description>
+    </attribute>
+    <attribute>
+      <name>DocumentID</name>
+      <tag_id>35</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Document ID</description>
+    </attribute>
+    <attribute>
+      <name>LocaleIndicator</name>
+      <tag_id>2147483648</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>SummaryInfo</group>
+      <subsystem>FlashPix::SummaryInfo</subsystem>
+      <description>Locale Indicator</description>
+    </attribute>
+    <attribute>
+      <name>TransformNodeID</name>
+      <tag_id>65536</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Transform Node ID</description>
+    </attribute>
+    <attribute>
+      <name>OperationClassID</name>
+      <tag_id>65537</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Operation Class ID</description>
+    </attribute>
+    <attribute>
+      <name>LockedPropertyList</name>
+      <tag_id>65538</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Locked Property List</description>
+    </attribute>
+    <attribute>
+      <name>TransformTitle</name>
+      <tag_id>65539</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Transform Title</description>
+    </attribute>
+    <attribute>
+      <name>LastModifier</name>
+      <tag_id>65540</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Last Modifier</description>
+    </attribute>
+    <attribute>
+      <name>RevisionNumber</name>
+      <tag_id>65541</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Revision Number</description>
+    </attribute>
+    <attribute>
+      <name>TransformCreateDate</name>
+      <tag_id>65542</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Transform Create Date</description>
+    </attribute>
+    <attribute>
+      <name>TransformModifyDate</name>
+      <tag_id>65543</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Transform Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>CreatingApplication</name>
+      <tag_id>65544</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Creating Application</description>
+    </attribute>
+    <attribute>
+      <name>InputDataObjectList</name>
+      <tag_id>65792</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Input Data Object List</description>
+    </attribute>
+    <attribute>
+      <name>OutputDataObjectList</name>
+      <tag_id>65793</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Output Data Object List</description>
+    </attribute>
+    <attribute>
+      <name>OperationNumber</name>
+      <tag_id>65794</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Operation Number</description>
+    </attribute>
+    <attribute>
+      <name>ResultAspectRatio</name>
+      <tag_id>268435456</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Result Aspect Ratio</description>
+    </attribute>
+    <attribute>
+      <name>RectangleOfInterest</name>
+      <tag_id>268435457</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Rectangle Of Interest</description>
+    </attribute>
+    <attribute>
+      <name>Filtering</name>
+      <tag_id>268435458</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Filtering</description>
+    </attribute>
+    <attribute>
+      <name>SpatialOrientation</name>
+      <tag_id>268435459</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Spatial Orientation</description>
+    </attribute>
+    <attribute>
+      <name>ColorTwistMatrix</name>
+      <tag_id>268435460</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Color Twist Matrix</description>
+    </attribute>
+    <attribute>
+      <name>ContrastAdjustment</name>
+      <tag_id>268435461</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Transform</group>
+      <subsystem>FlashPix::Transform</subsystem>
+      <description>Contrast Adjustment</description>
+    </attribute>
+    <attribute>
+      <name>Identification</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>WordDocument</group>
+      <subsystem>FlashPix::WordDocument</subsystem>
+      <description>Identification</description>
+      <values>
+        <value key="25194">Word 98 Mac</value>
+        <value key="27234">MS Word 97</value>
+        <value key="42460">Word 6.0/7.0</value>
+        <value key="42476">Word 8.0</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LanguageCode</name>
+      <tag_id>3</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>WordDocument</group>
+      <subsystem>FlashPix::WordDocument</subsystem>
+      <description>Language Code</description>
+      <values>
+        <value key="1024">None</value>
+        <value key="1025">Arabic</value>
+        <value key="1026">Bulgarian</value>
+        <value key="1027">Catalan</value>
+        <value key="1028">Traditional Chinese</value>
+        <value key="1029">Czech</value>
+        <value key="1030">Danish</value>
+        <value key="1031">German</value>
+        <value key="1032">Greek</value>
+        <value key="1033">English (US)</value>
+        <value key="1034">Spanish (Castilian)</value>
+        <value key="1035">Finnish</value>
+        <value key="1036">French</value>
+        <value key="1037">Hebrew</value>
+        <value key="1038">Hungarian</value>
+        <value key="1039">Icelandic</value>
+        <value key="1040">Italian</value>
+        <value key="1041">Japanese</value>
+        <value key="1042">Korean</value>
+        <value key="1043">Dutch</value>
+        <value key="1044">Norwegian (Bokmal)</value>
+        <value key="1045">Polish</value>
+        <value key="1046">Portuguese (Brazilian)</value>
+        <value key="1047">Rhaeto-Romanic</value>
+        <value key="1048">Romanian</value>
+        <value key="1049">Russian</value>
+        <value key="1050">Croato-Serbian (Latin)</value>
+        <value key="1051">Slovak</value>
+        <value key="1052">Albanian</value>
+        <value key="1053">Swedish</value>
+        <value key="1054">Thai</value>
+        <value key="1055">Turkish</value>
+        <value key="1056">Urdu</value>
+        <value key="1057">Bahasa</value>
+        <value key="1058">Ukrainian</value>
+        <value key="1059">Byelorussian</value>
+        <value key="1060">Slovenian</value>
+        <value key="1061">Estonian</value>
+        <value key="1062">Latvian</value>
+        <value key="1063">Lithuanian</value>
+        <value key="1065">Farsi</value>
+        <value key="1069">Basque</value>
+        <value key="1071">Macedonian</value>
+        <value key="1078">Afrikaans</value>
+        <value key="1086">Malaysian</value>
+        <value key="2052">Simplified Chinese</value>
+        <value key="2055">German (Swiss)</value>
+        <value key="2057">English (British)</value>
+        <value key="2058">Spanish (Mexican)</value>
+        <value key="2060">French (Belgian)</value>
+        <value key="2064">Italian (Swiss)</value>
+        <value key="2067">Dutch (Belgian)</value>
+        <value key="2068">Norwegian (Nynorsk)</value>
+        <value key="2070">Portuguese</value>
+        <value key="2074">Serbo-Croatian (Cyrillic)</value>
+        <value key="3081">English (Australian)</value>
+        <value key="3084">French (Canadian)</value>
+        <value key="4108">French (Swiss)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>DocFlags</name>
+      <tag_id>5</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>WordDocument</group>
+      <subsystem>FlashPix::WordDocument</subsystem>
+      <description>Doc Flags</description>
+      <values>
+        <value key="1">Template</value>
+        <value key="2">AutoText only</value>
+        <value key="4">Complex</value>
+        <value key="8">Has picture</value>
+        <value key="256">Encrypted</value>
+        <value key="512">1Table</value>
+        <value key="1024">Read only</value>
+        <value key="2048">Passworded</value>
+        <value key="4096">ExtChar</value>
+        <value key="8192">Load override</value>
+        <value key="16384">Far east</value>
+        <value key="32768">Obfuscated</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>System</name>
+      <tag_id>9.1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>WordDocument</group>
+      <subsystem>FlashPix::WordDocument</subsystem>
+      <description>System</description>
+      <values>
+        <value key="0">Windows</value>
+        <value key="1">Macintosh</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Word97</name>
+      <tag_id>9.2</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>WordDocument</group>
+      <subsystem>FlashPix::WordDocument</subsystem>
+      <description>Word 97</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Author</name>
+      <tag_id>authors</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>iWork::Main</subsystem>
+      <description>Author</description>
+    </attribute>
+    <attribute>
+      <name>Comment</name>
+      <tag_id>comment</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>iWork::Main</subsystem>
+      <description>Comment</description>
+    </attribute>
+    <attribute>
+      <name>Copyright</name>
+      <tag_id>copyright</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>iWork::Main</subsystem>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>Keywords</name>
+      <tag_id>keywords</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>iWork::Main</subsystem>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>Projects</name>
+      <tag_id>projects</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>iWork::Main</subsystem>
+      <description>Projects</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>title</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>iWork::Main</subsystem>
+      <description>Title</description>
+    </attribute>
+  </attributes>
+</metadata_system>

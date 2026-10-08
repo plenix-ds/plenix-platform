@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="009" name="Windows Registry Metadata" category="FOR" category_label="Forensics / Activity" used_for="Windows system/app configuration (.dat hives)" spec_source="Microsoft Registry hive format; libregf; Eric Zimmerman RegistryExplorer" completeness="comprehensive" record_count="29">
+  <description>Hierarchical database of keys/values. Hives: SYSTEM, SOFTWARE, SAM, SECURITY, NTUSER.DAT (per-user), UsrClass.dat. Forensically rich for activity, persistence, and configuration.</description>
+  <attributes>
+    <attribute>
+      <name>Hive File Signature</name>
+      <data_type>ASCII 'regf'</data_type>
+      <description>Magic bytes at offset 0</description>
+    </attribute>
+    <attribute>
+      <name>Primary Sequence Number</name>
+      <data_type>UInt32</data_type>
+      <description>Incremented on writes</description>
+    </attribute>
+    <attribute>
+      <name>Secondary Sequence Number</name>
+      <data_type>UInt32</data_type>
+      <description>Mismatch indicates dirty hive</description>
+    </attribute>
+    <attribute>
+      <name>Last Written Time</name>
+      <data_type>FILETIME</data_type>
+      <description>When hive was last modified</description>
+    </attribute>
+    <attribute>
+      <name>Major/Minor Version</name>
+      <data_type>UInt32 × 2</data_type>
+      <description>Hive format version</description>
+    </attribute>
+    <attribute>
+      <name>Root Cell Offset</name>
+      <data_type>UInt32</data_type>
+      <description>Offset to root key</description>
+    </attribute>
+    <attribute>
+      <name>Hive Bins Data Size</name>
+      <data_type>UInt32</data_type>
+      <description>Total size of hbin pages</description>
+    </attribute>
+    <attribute>
+      <name>Hive File Type</name>
+      <data_type>UInt32</data_type>
+      <description>0=primary, 1=log, 2=external, 6=backup</description>
+    </attribute>
+    <attribute>
+      <name>Checksum</name>
+      <data_type>UInt32 XOR</data_type>
+      <description>Header checksum</description>
+    </attribute>
+    <attribute>
+      <name>Filename (embedded)</name>
+      <data_type>UTF-16 64 chars</data_type>
+      <description>Path to hive at creation</description>
+    </attribute>
+    <attribute>
+      <name>Boot Type / Recover</name>
+      <data_type>UInt32</data_type>
+      <description>Boot recovery state</description>
+    </attribute>
+    <attribute>
+      <name>Key Node (nk)</name>
+      <data_type>Cell</data_type>
+      <group>Cells</group>
+      <description>Key record: name, parent, subkey list, value list, security, class, last-write time</description>
+    </attribute>
+    <attribute>
+      <name>Key Last-Write Time</name>
+      <data_type>FILETIME</data_type>
+      <group>nk fields</group>
+      <description>When this key was last modified — primary forensic timestamp</description>
+    </attribute>
+    <attribute>
+      <name>Key Name</name>
+      <data_type>ASCII or UTF-16</data_type>
+      <group>nk fields</group>
+      <description>Subkey name (1-255 chars)</description>
+    </attribute>
+    <attribute>
+      <name>Number of Subkeys</name>
+      <data_type>UInt32</data_type>
+      <group>nk fields</group>
+      <description>Volatile + stable subkey count</description>
+    </attribute>
+    <attribute>
+      <name>Number of Values</name>
+      <data_type>UInt32</data_type>
+      <group>nk fields</group>
+      <description>Values directly under key</description>
+    </attribute>
+    <attribute>
+      <name>Class Name</name>
+      <data_type>String</data_type>
+      <group>nk fields</group>
+      <description>Optional class identifier</description>
+    </attribute>
+    <attribute>
+      <name>Security Key Offset</name>
+      <data_type>UInt32</data_type>
+      <group>nk fields</group>
+      <description>Pointer to sk cell with descriptor</description>
+    </attribute>
+    <attribute>
+      <name>Value List (vl)</name>
+      <data_type>Cell</data_type>
+      <group>Cells</group>
+      <description>Array of vk offsets</description>
+    </attribute>
+    <attribute>
+      <name>Value Key (vk)</name>
+      <data_type>Cell</data_type>
+      <group>Cells</group>
+      <description>Value record: name, type, data</description>
+    </attribute>
+    <attribute>
+      <name>Value Type</name>
+      <data_type>UInt32</data_type>
+      <group>vk fields</group>
+      <description>REG_NONE, REG_SZ, REG_EXPAND_SZ, REG_BINARY, REG_DWORD, REG_DWORD_BIG_ENDIAN, REG_LINK, REG_MULTI_SZ, REG_RESOURCE_LIST, REG_FULL_RESOURCE_DESCRIPTOR, REG_RESOURCE_REQUIREMENTS_LIST, REG_QWORD</description>
+      <values>
+        <value key="0">REG_NONE</value>
+        <value key="1">REG_SZ</value>
+        <value key="2">REG_EXPAND_SZ</value>
+        <value key="3">REG_BINARY</value>
+        <value key="4">REG_DWORD</value>
+        <value key="5">REG_DWORD_BIG_ENDIAN</value>
+        <value key="6">REG_LINK</value>
+        <value key="7">REG_MULTI_SZ</value>
+        <value key="11">REG_QWORD</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Value Name</name>
+      <data_type>String</data_type>
+      <group>vk fields</group>
+      <description>Value name (empty for default)</description>
+    </attribute>
+    <attribute>
+      <name>Value Data Size</name>
+      <data_type>UInt32</data_type>
+      <group>vk fields</group>
+      <description>Length of data; high bit set = data resident in vk</description>
+    </attribute>
+    <attribute>
+      <name>Value Data Offset</name>
+      <data_type>UInt32</data_type>
+      <group>vk fields</group>
+      <description>Pointer to data cell or inline data</description>
+    </attribute>
+    <attribute>
+      <name>Subkey List (lf/lh/li/ri)</name>
+      <data_type>Cell</data_type>
+      <group>Cells</group>
+      <description>Index of subkeys, hash-bucketed</description>
+    </attribute>
+    <attribute>
+      <name>Security Key (sk)</name>
+      <data_type>Cell</data_type>
+      <group>Cells</group>
+      <description>Reference-counted security descriptor</description>
+    </attribute>
+    <attribute>
+      <name>Big Data (db)</name>
+      <data_type>Cell</data_type>
+      <group>Cells</group>
+      <description>Multi-segment storage for values &gt;16KB</description>
+    </attribute>
+    <attribute>
+      <name>Transaction Log Sequence</name>
+      <data_type>UInt32</data_type>
+      <group>Logs</group>
+      <description>LOG1/LOG2 sequence for crash recovery</description>
+    </attribute>
+    <attribute>
+      <name>Slack Space</name>
+      <data_type>Variable</data_type>
+      <description>Deleted/unallocated cells with recoverable content</description>
+    </attribute>
+  </attributes>
+</metadata_system>

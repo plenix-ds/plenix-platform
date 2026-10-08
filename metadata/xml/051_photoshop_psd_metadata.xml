@@ -1,0 +1,1075 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="051" name="Photoshop PSD Metadata" category="IMG" category_label="Images" used_for="Photoshop files" spec_source="ExifTool 12.76 — groups: Photoshop" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="109">
+  <description>Attribute set for Photoshop PSD Metadata. Sourced from ExifTool's tag database (group prefix(es): Photoshop). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>NumChannels</name>
+      <tag_id>6</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>Photoshop::Header</subsystem>
+      <description>Num Channels</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>7</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>Photoshop::Header</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>9</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>Photoshop::Header</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>BitDepth</name>
+      <tag_id>11</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>Photoshop::Header</subsystem>
+      <description>Bit Depth</description>
+    </attribute>
+    <attribute>
+      <name>ColorMode</name>
+      <tag_id>12</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>Photoshop::Header</subsystem>
+      <description>Color Mode</description>
+      <values>
+        <value key="0">Bitmap</value>
+        <value key="1">Grayscale</value>
+        <value key="2">Indexed</value>
+        <value key="3">RGB</value>
+        <value key="4">CMYK</value>
+        <value key="7">Multichannel</value>
+        <value key="8">Duotone</value>
+        <value key="9">Lab</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Compression</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ImageData</group>
+      <subsystem>Photoshop::ImageData</subsystem>
+      <description>Compression</description>
+      <values>
+        <value key="0">Uncompressed</value>
+        <value key="1">RLE</value>
+        <value key="2">ZIP without prediction</value>
+        <value key="3">ZIP with prediction</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>PhotoshopQuality</name>
+      <tag_id>0</tag_id>
+      <data_type>int16s</data_type>
+      <writable>true</writable>
+      <group>JPEG_Quality</group>
+      <subsystem>Photoshop::JPEG_Quality</subsystem>
+      <description>Photoshop Quality</description>
+    </attribute>
+    <attribute>
+      <name>PhotoshopFormat</name>
+      <tag_id>1</tag_id>
+      <data_type>int16s</data_type>
+      <writable>false</writable>
+      <group>JPEG_Quality</group>
+      <subsystem>Photoshop::JPEG_Quality</subsystem>
+      <description>Photoshop Format</description>
+      <values>
+        <value key="0">Standard</value>
+        <value key="1">Optimized</value>
+        <value key="257">Progressive</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ProgressiveScans</name>
+      <tag_id>2</tag_id>
+      <data_type>int16s</data_type>
+      <writable>false</writable>
+      <group>JPEG_Quality</group>
+      <subsystem>Photoshop::JPEG_Quality</subsystem>
+      <description>Progressive Scans</description>
+      <values>
+        <value key="1">3 Scans</value>
+        <value key="2">4 Scans</value>
+        <value key="3">5 Scans</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LayerBlendModes</name>
+      <tag_id>_xbnd</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Blend Modes</description>
+      <values>
+        <value key="colr">Color</value>
+        <value key="dark">Darken</value>
+        <value key="diff">Difference</value>
+        <value key="diss">Dissolve</value>
+        <value key="div ">Color Dodge</value>
+        <value key="dkCl">Darker Color</value>
+        <value key="fdiv">Divide</value>
+        <value key="fsub">Subtract</value>
+        <value key="hLit">Hard Light</value>
+        <value key="hMix">Hard Mix</value>
+        <value key="hue ">Hue</value>
+        <value key="idiv">Color Burn</value>
+        <value key="lLit">Linear Light</value>
+        <value key="lbrn">Linear Burn</value>
+        <value key="lddg">Linear Dodge</value>
+        <value key="lgCl">Lighter Color</value>
+        <value key="lite">Lighten</value>
+        <value key="lum ">Luminosity</value>
+        <value key="mul ">Multiply</value>
+        <value key="norm">Normal</value>
+        <value key="over">Overlay</value>
+        <value key="pLit">Pin Light</value>
+        <value key="pass">Pass Through</value>
+        <value key="sLit">Soft Light</value>
+        <value key="sat ">Saturation</value>
+        <value key="scrn">Screen</value>
+        <value key="smud">Exclusion</value>
+        <value key="vLit">Vivid Light</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LayerCount</name>
+      <tag_id>_xcnt</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Count</description>
+    </attribute>
+    <attribute>
+      <name>LayerNames</name>
+      <tag_id>_xnam</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Names</description>
+    </attribute>
+    <attribute>
+      <name>LayerOpacities</name>
+      <tag_id>_xopc</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Opacities</description>
+    </attribute>
+    <attribute>
+      <name>LayerRectangles</name>
+      <tag_id>_xrct</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Rectangles</description>
+    </attribute>
+    <attribute>
+      <name>LayerVisible</name>
+      <tag_id>_xvis</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Visible</description>
+      <values>
+        <value key="0">Yes</value>
+        <value key="2">No</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LayerColors</name>
+      <tag_id>lclr</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Colors</description>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Red</value>
+        <value key="2">Orange</value>
+        <value key="3">Yellow</value>
+        <value key="4">Green</value>
+        <value key="5">Blue</value>
+        <value key="6">Violet</value>
+        <value key="7">Gray</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LayerSections</name>
+      <tag_id>lsct</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Sections</description>
+      <values>
+        <value key="0">Layer</value>
+        <value key="1">Folder (open)</value>
+        <value key="2">Folder (closed)</value>
+        <value key="3">Divider</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LayerUnicodeNames</name>
+      <tag_id>luni</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Unicode Names</description>
+    </attribute>
+    <attribute>
+      <name>LayerIDs</name>
+      <tag_id>lyid</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer IDs</description>
+    </attribute>
+    <attribute>
+      <name>LayerModifyDates</name>
+      <tag_id>shmd</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Layers</group>
+      <subsystem>Photoshop::Layers</subsystem>
+      <description>Layer Modify Dates</description>
+    </attribute>
+    <attribute>
+      <name>Photoshop2Info</name>
+      <tag_id>1000</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Photoshop 2 Info</description>
+    </attribute>
+    <attribute>
+      <name>MacintoshPrintInfo</name>
+      <tag_id>1001</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Macintosh Print Info</description>
+    </attribute>
+    <attribute>
+      <name>XMLData</name>
+      <tag_id>1002</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>XML Data</description>
+    </attribute>
+    <attribute>
+      <name>Photoshop2ColorTable</name>
+      <tag_id>1003</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Photoshop 2 Color Table</description>
+    </attribute>
+    <attribute>
+      <name>AlphaChannelsNames</name>
+      <tag_id>1006</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Alpha Channels Names</description>
+    </attribute>
+    <attribute>
+      <name>DisplayInfo</name>
+      <tag_id>1007</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Display Info</description>
+    </attribute>
+    <attribute>
+      <name>PStringCaption</name>
+      <tag_id>1008</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>P String Caption</description>
+    </attribute>
+    <attribute>
+      <name>BorderInformation</name>
+      <tag_id>1009</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Border Information</description>
+    </attribute>
+    <attribute>
+      <name>BackgroundColor</name>
+      <tag_id>1010</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Background Color</description>
+    </attribute>
+    <attribute>
+      <name>PrintFlags</name>
+      <tag_id>1011</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Print Flags</description>
+    </attribute>
+    <attribute>
+      <name>BW_HalftoningInfo</name>
+      <tag_id>1012</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>BW Halftoning Info</description>
+    </attribute>
+    <attribute>
+      <name>ColorHalftoningInfo</name>
+      <tag_id>1013</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Color Halftoning Info</description>
+    </attribute>
+    <attribute>
+      <name>DuotoneHalftoningInfo</name>
+      <tag_id>1014</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Duotone Halftoning Info</description>
+    </attribute>
+    <attribute>
+      <name>BW_TransferFunc</name>
+      <tag_id>1015</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>BW Transfer Func</description>
+    </attribute>
+    <attribute>
+      <name>ColorTransferFuncs</name>
+      <tag_id>1016</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Color Transfer Funcs</description>
+    </attribute>
+    <attribute>
+      <name>DuotoneTransferFuncs</name>
+      <tag_id>1017</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Duotone Transfer Funcs</description>
+    </attribute>
+    <attribute>
+      <name>DuotoneImageInfo</name>
+      <tag_id>1018</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Duotone Image Info</description>
+    </attribute>
+    <attribute>
+      <name>EffectiveBW</name>
+      <tag_id>1019</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Effective BW</description>
+    </attribute>
+    <attribute>
+      <name>ObsoletePhotoshopTag1</name>
+      <tag_id>1020</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Obsolete Photoshop Tag 1</description>
+    </attribute>
+    <attribute>
+      <name>EPSOptions</name>
+      <tag_id>1021</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>EPS Options</description>
+    </attribute>
+    <attribute>
+      <name>QuickMaskInfo</name>
+      <tag_id>1022</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Quick Mask Info</description>
+    </attribute>
+    <attribute>
+      <name>ObsoletePhotoshopTag2</name>
+      <tag_id>1023</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Obsolete Photoshop Tag 2</description>
+    </attribute>
+    <attribute>
+      <name>TargetLayerID</name>
+      <tag_id>1024</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Target Layer ID</description>
+    </attribute>
+    <attribute>
+      <name>WorkingPath</name>
+      <tag_id>1025</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Working Path</description>
+    </attribute>
+    <attribute>
+      <name>LayersGroupInfo</name>
+      <tag_id>1026</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Layers Group Info</description>
+    </attribute>
+    <attribute>
+      <name>ObsoletePhotoshopTag3</name>
+      <tag_id>1027</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Obsolete Photoshop Tag 3</description>
+    </attribute>
+    <attribute>
+      <name>RawImageMode</name>
+      <tag_id>1029</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Raw Image Mode</description>
+    </attribute>
+    <attribute>
+      <name>GridGuidesInfo</name>
+      <tag_id>1032</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Grid Guides Info</description>
+    </attribute>
+    <attribute>
+      <name>PhotoshopBGRThumbnail</name>
+      <tag_id>1033</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Photoshop BGR Thumbnail</description>
+    </attribute>
+    <attribute>
+      <name>CopyrightFlag</name>
+      <tag_id>1034</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Copyright Flag</description>
+      <values>
+        <value key="0">False</value>
+        <value key="1">True</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>URL</name>
+      <tag_id>1035</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>URL</description>
+    </attribute>
+    <attribute>
+      <name>PhotoshopThumbnail</name>
+      <tag_id>1036</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Photoshop Thumbnail</description>
+    </attribute>
+    <attribute>
+      <name>GlobalAngle</name>
+      <tag_id>1037</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Global Angle</description>
+    </attribute>
+    <attribute>
+      <name>ColorSamplersResource</name>
+      <tag_id>1038</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Color Samplers Resource</description>
+    </attribute>
+    <attribute>
+      <name>Watermark</name>
+      <tag_id>1040</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Watermark</description>
+    </attribute>
+    <attribute>
+      <name>ICC_Untagged</name>
+      <tag_id>1041</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>ICC Untagged</description>
+    </attribute>
+    <attribute>
+      <name>EffectsVisible</name>
+      <tag_id>1042</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Effects Visible</description>
+    </attribute>
+    <attribute>
+      <name>SpotHalftone</name>
+      <tag_id>1043</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Spot Halftone</description>
+    </attribute>
+    <attribute>
+      <name>IDsBaseValue</name>
+      <tag_id>1044</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>IDs Base Value</description>
+    </attribute>
+    <attribute>
+      <name>UnicodeAlphaNames</name>
+      <tag_id>1045</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Unicode Alpha Names</description>
+    </attribute>
+    <attribute>
+      <name>IndexedColorTableCount</name>
+      <tag_id>1046</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Indexed Color Table Count</description>
+    </attribute>
+    <attribute>
+      <name>TransparentIndex</name>
+      <tag_id>1047</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Transparent Index</description>
+    </attribute>
+    <attribute>
+      <name>GlobalAltitude</name>
+      <tag_id>1049</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Global Altitude</description>
+    </attribute>
+    <attribute>
+      <name>WorkflowURL</name>
+      <tag_id>1051</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Workflow URL</description>
+    </attribute>
+    <attribute>
+      <name>JumpToXPEP</name>
+      <tag_id>1052</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Jump To XPEP</description>
+    </attribute>
+    <attribute>
+      <name>AlphaIdentifiers</name>
+      <tag_id>1053</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Alpha Identifiers</description>
+    </attribute>
+    <attribute>
+      <name>URL_List</name>
+      <tag_id>1054</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>URL List</description>
+    </attribute>
+    <attribute>
+      <name>ExifInfo2</name>
+      <tag_id>1059</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Exif Info 2</description>
+    </attribute>
+    <attribute>
+      <name>IPTCDigest</name>
+      <tag_id>1061</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>IPTC Digest</description>
+    </attribute>
+    <attribute>
+      <name>LayerComps</name>
+      <tag_id>1065</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Layer Comps</description>
+    </attribute>
+    <attribute>
+      <name>AlternateDuotoneColors</name>
+      <tag_id>1066</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Alternate Duotone Colors</description>
+    </attribute>
+    <attribute>
+      <name>AlternateSpotColors</name>
+      <tag_id>1067</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Alternate Spot Colors</description>
+    </attribute>
+    <attribute>
+      <name>LayerSelectionIDs</name>
+      <tag_id>1069</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Layer Selection IDs</description>
+    </attribute>
+    <attribute>
+      <name>HDRToningInfo</name>
+      <tag_id>1070</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>HDR Toning Info</description>
+    </attribute>
+    <attribute>
+      <name>PrintInfo</name>
+      <tag_id>1071</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Print Info</description>
+    </attribute>
+    <attribute>
+      <name>LayerGroupsEnabledID</name>
+      <tag_id>1072</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Layer Groups Enabled ID</description>
+    </attribute>
+    <attribute>
+      <name>ColorSamplersResource2</name>
+      <tag_id>1073</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Color Samplers Resource 2</description>
+    </attribute>
+    <attribute>
+      <name>MeasurementScale</name>
+      <tag_id>1074</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Measurement Scale</description>
+    </attribute>
+    <attribute>
+      <name>TimelineInfo</name>
+      <tag_id>1075</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Timeline Info</description>
+    </attribute>
+    <attribute>
+      <name>SheetDisclosure</name>
+      <tag_id>1076</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Sheet Disclosure</description>
+    </attribute>
+    <attribute>
+      <name>OnionSkins</name>
+      <tag_id>1078</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Onion Skins</description>
+    </attribute>
+    <attribute>
+      <name>CountInfo</name>
+      <tag_id>1080</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Count Info</description>
+    </attribute>
+    <attribute>
+      <name>PrintInfo2</name>
+      <tag_id>1082</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Print Info 2</description>
+    </attribute>
+    <attribute>
+      <name>PrintStyle</name>
+      <tag_id>1083</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Print Style</description>
+    </attribute>
+    <attribute>
+      <name>MacintoshNSPrintInfo</name>
+      <tag_id>1084</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Macintosh NS Print Info</description>
+    </attribute>
+    <attribute>
+      <name>WindowsDEVMODE</name>
+      <tag_id>1085</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Windows DEVMODE</description>
+    </attribute>
+    <attribute>
+      <name>AutoSaveFilePath</name>
+      <tag_id>1086</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Auto Save File Path</description>
+    </attribute>
+    <attribute>
+      <name>AutoSaveFormat</name>
+      <tag_id>1087</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Auto Save Format</description>
+    </attribute>
+    <attribute>
+      <name>PathSelectionState</name>
+      <tag_id>1088</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Path Selection State</description>
+    </attribute>
+    <attribute>
+      <name>ClippingPathName</name>
+      <tag_id>2999</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Clipping Path Name</description>
+    </attribute>
+    <attribute>
+      <name>OriginPathInfo</name>
+      <tag_id>3000</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Origin Path Info</description>
+    </attribute>
+    <attribute>
+      <name>ImageReadyVariables</name>
+      <tag_id>7000</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Image Ready Variables</description>
+    </attribute>
+    <attribute>
+      <name>ImageReadyDataSets</name>
+      <tag_id>7001</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Image Ready Data Sets</description>
+    </attribute>
+    <attribute>
+      <name>LightroomWorkflow</name>
+      <tag_id>8000</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Lightroom Workflow</description>
+    </attribute>
+    <attribute>
+      <name>PrintFlagsInfo</name>
+      <tag_id>10000</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>Photoshop::Main</subsystem>
+      <description>Print Flags Info</description>
+    </attribute>
+    <attribute>
+      <name>PixelAspectRatio</name>
+      <tag_id>4</tag_id>
+      <data_type>double</data_type>
+      <writable>false</writable>
+      <group>PixelInfo</group>
+      <subsystem>Photoshop::PixelInfo</subsystem>
+      <description>Pixel Aspect Ratio</description>
+    </attribute>
+    <attribute>
+      <name>PrintStyle</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>PrintScaleInfo</group>
+      <subsystem>Photoshop::PrintScaleInfo</subsystem>
+      <description>Print Style</description>
+      <values>
+        <value key="0">Centered</value>
+        <value key="1">Size to Fit</value>
+        <value key="2">User Defined</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>PrintPosition</name>
+      <tag_id>2</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>PrintScaleInfo</group>
+      <subsystem>Photoshop::PrintScaleInfo</subsystem>
+      <description>Print Position</description>
+    </attribute>
+    <attribute>
+      <name>PrintScale</name>
+      <tag_id>10</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>PrintScaleInfo</group>
+      <subsystem>Photoshop::PrintScaleInfo</subsystem>
+      <description>Print Scale</description>
+    </attribute>
+    <attribute>
+      <name>XResolution</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>Resolution</group>
+      <subsystem>Photoshop::Resolution</subsystem>
+      <description>X Resolution</description>
+    </attribute>
+    <attribute>
+      <name>DisplayedUnitsX</name>
+      <tag_id>2</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>Resolution</group>
+      <subsystem>Photoshop::Resolution</subsystem>
+      <description>Displayed Units X</description>
+      <values>
+        <value key="1">inches</value>
+        <value key="2">cm</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>YResolution</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>Resolution</group>
+      <subsystem>Photoshop::Resolution</subsystem>
+      <description>Y Resolution</description>
+    </attribute>
+    <attribute>
+      <name>DisplayedUnitsY</name>
+      <tag_id>6</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>Resolution</group>
+      <subsystem>Photoshop::Resolution</subsystem>
+      <description>Displayed Units Y</description>
+      <values>
+        <value key="1">inches</value>
+        <value key="2">cm</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SlicesGroupName</name>
+      <tag_id>20</tag_id>
+      <data_type>var_ustr32</data_type>
+      <writable>false</writable>
+      <group>SliceInfo</group>
+      <subsystem>Photoshop::SliceInfo</subsystem>
+      <description>Slices Group Name</description>
+    </attribute>
+    <attribute>
+      <name>NumSlices</name>
+      <tag_id>24</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>SliceInfo</group>
+      <subsystem>Photoshop::SliceInfo</subsystem>
+      <description>Num Slices</description>
+    </attribute>
+    <attribute>
+      <name>HasRealMergedData</name>
+      <tag_id>4</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>VersionInfo</group>
+      <subsystem>Photoshop::VersionInfo</subsystem>
+      <description>Has Real Merged Data</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WriterName</name>
+      <tag_id>5</tag_id>
+      <data_type>var_ustr32</data_type>
+      <writable>false</writable>
+      <group>VersionInfo</group>
+      <subsystem>Photoshop::VersionInfo</subsystem>
+      <description>Writer Name</description>
+    </attribute>
+    <attribute>
+      <name>ReaderName</name>
+      <tag_id>9</tag_id>
+      <data_type>var_ustr32</data_type>
+      <writable>false</writable>
+      <group>VersionInfo</group>
+      <subsystem>Photoshop::VersionInfo</subsystem>
+      <description>Reader Name</description>
+    </attribute>
+  </attributes>
+</metadata_system>

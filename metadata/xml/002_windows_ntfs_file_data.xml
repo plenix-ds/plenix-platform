@@ -1,0 +1,324 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="002" name="Windows NTFS File Data" category="OS" category_label="Operating System / File System" used_for="Windows filesystem metadata (MFT-resident attributes)" spec_source="Microsoft NTFS specification; Brian Carrier 'File System Forensic Analysis' Ch. 12-13" completeness="comprehensive" record_count="47">
+  <description>NTFS stores all file metadata as numbered attributes within Master File Table (MFT) records. Each attribute has a type code (e.g. 0x10 = $STANDARD_INFORMATION) and may be resident (small, in MFT record) or non-resident (large, with extents pointing to clusters). This list covers all major attribute types defined in the NTFS specification.</description>
+  <attributes>
+    <attribute>
+      <name>Creation Time</name>
+      <tag_id>0x10:STANDARD_INFORMATION</tag_id>
+      <data_type>FILETIME (8 bytes)</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>When the file was created on this volume</description>
+    </attribute>
+    <attribute>
+      <name>File Last Modified Time</name>
+      <tag_id>0x10</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>When the file content was last modified</description>
+    </attribute>
+    <attribute>
+      <name>MFT Last Modified Time</name>
+      <tag_id>0x10</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>When the MFT record was last changed</description>
+    </attribute>
+    <attribute>
+      <name>Last Access Time</name>
+      <tag_id>0x10</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>When the file was last accessed</description>
+    </attribute>
+    <attribute>
+      <name>DOS File Permissions</name>
+      <data_type>UInt32 flags</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Read-only, hidden, system, archive, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Maximum Number of Versions</name>
+      <data_type>UInt32</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Versioning limit (rarely used)</description>
+    </attribute>
+    <attribute>
+      <name>Version Number</name>
+      <data_type>UInt32</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Current version number</description>
+    </attribute>
+    <attribute>
+      <name>Class ID</name>
+      <data_type>UInt32</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Class identifier</description>
+    </attribute>
+    <attribute>
+      <name>Owner ID</name>
+      <data_type>UInt32</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Quota owner ID</description>
+    </attribute>
+    <attribute>
+      <name>Security ID</name>
+      <data_type>UInt32</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Index into $Secure</description>
+    </attribute>
+    <attribute>
+      <name>Quota Charged</name>
+      <data_type>UInt64</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>Bytes charged to user quota</description>
+    </attribute>
+    <attribute>
+      <name>Update Sequence Number (USN)</name>
+      <data_type>UInt64</data_type>
+      <group>$STANDARD_INFORMATION</group>
+      <description>USN journal sequence number</description>
+    </attribute>
+    <attribute>
+      <name>Parent Directory File Reference</name>
+      <tag_id>0x30</tag_id>
+      <data_type>MFT reference (8 bytes)</data_type>
+      <group>$FILE_NAME</group>
+      <description>Pointer to parent directory MFT record</description>
+    </attribute>
+    <attribute>
+      <name>File Name Creation Time</name>
+      <tag_id>0x30</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$FILE_NAME</group>
+      <description>Creation time stamped on filename</description>
+    </attribute>
+    <attribute>
+      <name>File Name Modification Time</name>
+      <tag_id>0x30</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$FILE_NAME</group>
+      <description>Mod time stamped on filename</description>
+    </attribute>
+    <attribute>
+      <name>File Name MFT Modified Time</name>
+      <tag_id>0x30</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$FILE_NAME</group>
+      <description>MFT change time</description>
+    </attribute>
+    <attribute>
+      <name>File Name Access Time</name>
+      <tag_id>0x30</tag_id>
+      <data_type>FILETIME</data_type>
+      <group>$FILE_NAME</group>
+      <description>Access time stamped on filename</description>
+    </attribute>
+    <attribute>
+      <name>Allocated Size</name>
+      <tag_id>0x30</tag_id>
+      <data_type>UInt64</data_type>
+      <group>$FILE_NAME</group>
+      <description>Allocated size on disk</description>
+    </attribute>
+    <attribute>
+      <name>Real Size</name>
+      <tag_id>0x30</tag_id>
+      <data_type>UInt64</data_type>
+      <group>$FILE_NAME</group>
+      <description>Real (logical) size</description>
+    </attribute>
+    <attribute>
+      <name>Filename Flags</name>
+      <tag_id>0x30</tag_id>
+      <data_type>UInt32</data_type>
+      <group>$FILE_NAME</group>
+      <description>Read-only, hidden, system, archive, directory, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Filename Length (chars)</name>
+      <tag_id>0x30</tag_id>
+      <data_type>UInt8</data_type>
+      <group>$FILE_NAME</group>
+      <description>Length of filename in characters</description>
+    </attribute>
+    <attribute>
+      <name>Filename Namespace</name>
+      <tag_id>0x30</tag_id>
+      <data_type>UInt8</data_type>
+      <group>$FILE_NAME</group>
+      <description>0=POSIX, 1=Win32, 2=DOS, 3=Win32+DOS</description>
+      <values>
+        <value key="0">POSIX (case-sensitive)</value>
+        <value key="1">Win32 Unicode</value>
+        <value key="2">DOS 8.3</value>
+        <value key="3">Win32 + DOS combined</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Filename</name>
+      <tag_id>0x30</tag_id>
+      <data_type>Unicode string</data_type>
+      <group>$FILE_NAME</group>
+      <description>The actual filename</description>
+    </attribute>
+    <attribute>
+      <name>Object ID</name>
+      <tag_id>0x40</tag_id>
+      <data_type>GUID (16 bytes)</data_type>
+      <group>$OBJECT_ID</group>
+      <description>Unique object identifier (NTFS link tracking)</description>
+    </attribute>
+    <attribute>
+      <name>Birth Volume ID</name>
+      <tag_id>0x40</tag_id>
+      <data_type>GUID</data_type>
+      <group>$OBJECT_ID</group>
+      <description>Volume where file was created</description>
+    </attribute>
+    <attribute>
+      <name>Birth Object ID</name>
+      <tag_id>0x40</tag_id>
+      <data_type>GUID</data_type>
+      <group>$OBJECT_ID</group>
+      <description>Original object ID</description>
+    </attribute>
+    <attribute>
+      <name>Domain ID</name>
+      <tag_id>0x40</tag_id>
+      <data_type>GUID</data_type>
+      <group>$OBJECT_ID</group>
+      <description>Reserved domain ID</description>
+    </attribute>
+    <attribute>
+      <name>Security Descriptor</name>
+      <tag_id>0x50</tag_id>
+      <data_type>Variable</data_type>
+      <group>$SECURITY_DESCRIPTOR</group>
+      <description>Owner/group/DACL/SACL (resident in older NTFS, indexed via $Secure on modern volumes)</description>
+    </attribute>
+    <attribute>
+      <name>Reparse Tag</name>
+      <tag_id>0xC0</tag_id>
+      <data_type>UInt32</data_type>
+      <group>$REPARSE_POINT</group>
+      <description>Type of reparse (symlink, mount point, OneDrive placeholder, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Reparse Data Length</name>
+      <tag_id>0xC0</tag_id>
+      <data_type>UInt16</data_type>
+      <group>$REPARSE_POINT</group>
+      <description>Length of reparse data</description>
+    </attribute>
+    <attribute>
+      <name>Reparse Data</name>
+      <tag_id>0xC0</tag_id>
+      <data_type>Variable</data_type>
+      <group>$REPARSE_POINT</group>
+      <description>Tag-specific data (e.g. symlink target)</description>
+    </attribute>
+    <attribute>
+      <name>EFS Information</name>
+      <tag_id>0x100</tag_id>
+      <data_type>Variable</data_type>
+      <group>$LOGGED_UTILITY_STREAM</group>
+      <description>Encrypting File System data (DDF, DRF)</description>
+    </attribute>
+    <attribute>
+      <name>Index Root</name>
+      <tag_id>0x90</tag_id>
+      <data_type>Variable</data_type>
+      <group>$INDEX_ROOT</group>
+      <description>Root of B+ tree index (directories, $Secure, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Index Allocation</name>
+      <tag_id>0xA0</tag_id>
+      <data_type>Variable</data_type>
+      <group>$INDEX_ALLOCATION</group>
+      <description>Non-resident index node pointers</description>
+    </attribute>
+    <attribute>
+      <name>Bitmap</name>
+      <tag_id>0xB0</tag_id>
+      <data_type>Bitfield</data_type>
+      <group>$BITMAP</group>
+      <description>Allocation bitmap for the index</description>
+    </attribute>
+    <attribute>
+      <name>Data</name>
+      <tag_id>0x80</tag_id>
+      <data_type>Variable</data_type>
+      <group>$DATA</group>
+      <description>Default unnamed data stream — the file's content</description>
+    </attribute>
+    <attribute>
+      <name>Named Data Streams</name>
+      <tag_id>0x80</tag_id>
+      <data_type>Variable</data_type>
+      <group>$DATA</group>
+      <description>Alternate data streams (see system 003)</description>
+    </attribute>
+    <attribute>
+      <name>Attribute List</name>
+      <tag_id>0x20</tag_id>
+      <data_type>Variable</data_type>
+      <group>$ATTRIBUTE_LIST</group>
+      <description>Pointer list when attributes overflow MFT record</description>
+    </attribute>
+    <attribute>
+      <name>Volume Name</name>
+      <data_type>Unicode string</data_type>
+      <group>$Volume</group>
+      <description>Filesystem volume label</description>
+    </attribute>
+    <attribute>
+      <name>Volume Information</name>
+      <data_type>Variable</data_type>
+      <group>$Volume</group>
+      <description>Major/minor version, dirty flag</description>
+    </attribute>
+    <attribute>
+      <name>Volume Serial Number</name>
+      <data_type>UInt64</data_type>
+      <group>$Boot</group>
+      <description>Volume's serial number</description>
+    </attribute>
+    <attribute>
+      <name>Sequence Number</name>
+      <data_type>UInt16</data_type>
+      <group>MFT Record Header</group>
+      <description>Reuse counter for this record</description>
+    </attribute>
+    <attribute>
+      <name>Hard Link Count</name>
+      <data_type>UInt16</data_type>
+      <group>MFT Record Header</group>
+      <description>Number of hard links to file</description>
+    </attribute>
+    <attribute>
+      <name>MFT Record Number</name>
+      <data_type>UInt48</data_type>
+      <group>MFT Record Header</group>
+      <description>Index of this record</description>
+    </attribute>
+    <attribute>
+      <name>In-Use Flag</name>
+      <data_type>Bool</data_type>
+      <group>MFT Record Header</group>
+      <description>Whether record is allocated</description>
+    </attribute>
+    <attribute>
+      <name>Directory Flag</name>
+      <data_type>Bool</data_type>
+      <group>MFT Record Header</group>
+      <description>Whether record describes a directory</description>
+    </attribute>
+    <attribute>
+      <name>Logfile Sequence Number (LSN)</name>
+      <data_type>UInt64</data_type>
+      <group>MFT Record Header</group>
+      <description>Pointer to last log entry affecting record</description>
+    </attribute>
+  </attributes>
+</metadata_system>

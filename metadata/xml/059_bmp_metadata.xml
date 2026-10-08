@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="059" name="BMP Metadata" category="IMG" category_label="Images" used_for="Bitmap images" spec_source="ExifTool 12.76 — groups: BMP" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="33">
+  <description>Attribute set for BMP Metadata. Sourced from ExifTool's tag database (group prefix(es): BMP). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>EmbeddedJPG</name>
+      <tag_id>EmbeddedJPG</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extra</group>
+      <subsystem>BMP::Extra</subsystem>
+      <description>Embedded JPG</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedPNG</name>
+      <tag_id>EmbeddedPNG</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extra</group>
+      <subsystem>BMP::Extra</subsystem>
+      <description>Embedded PNG</description>
+    </attribute>
+    <attribute>
+      <name>LinkedProfileName</name>
+      <tag_id>LinkedProfileName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extra</group>
+      <subsystem>BMP::Extra</subsystem>
+      <description>Linked Profile Name</description>
+    </attribute>
+    <attribute>
+      <name>BMPVersion</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>BMP Version</description>
+      <values>
+        <value key="40">Windows V3</value>
+        <value key="68">AVI BMP structure?</value>
+        <value key="108">Windows V4</value>
+        <value key="124">Windows V5</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>8</tag_id>
+      <data_type>int32s</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>Planes</name>
+      <tag_id>12</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Planes</description>
+    </attribute>
+    <attribute>
+      <name>BitDepth</name>
+      <tag_id>14</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Bit Depth</description>
+    </attribute>
+    <attribute>
+      <name>Compression</name>
+      <tag_id>16</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Compression</description>
+      <values>
+        <value key="0">None</value>
+        <value key="1">8-Bit RLE</value>
+        <value key="2">4-Bit RLE</value>
+        <value key="3">Bitfields</value>
+        <value key="4">JPEG</value>
+        <value key="5">PNG</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageLength</name>
+      <tag_id>20</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Image Length</description>
+    </attribute>
+    <attribute>
+      <name>PixelsPerMeterX</name>
+      <tag_id>24</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Pixels Per Meter X</description>
+    </attribute>
+    <attribute>
+      <name>PixelsPerMeterY</name>
+      <tag_id>28</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Pixels Per Meter Y</description>
+    </attribute>
+    <attribute>
+      <name>NumColors</name>
+      <tag_id>32</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Num Colors</description>
+    </attribute>
+    <attribute>
+      <name>NumImportantColors</name>
+      <tag_id>36</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Num Important Colors</description>
+    </attribute>
+    <attribute>
+      <name>RedMask</name>
+      <tag_id>40</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Red Mask</description>
+    </attribute>
+    <attribute>
+      <name>GreenMask</name>
+      <tag_id>44</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Green Mask</description>
+    </attribute>
+    <attribute>
+      <name>BlueMask</name>
+      <tag_id>48</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Blue Mask</description>
+    </attribute>
+    <attribute>
+      <name>AlphaMask</name>
+      <tag_id>52</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Alpha Mask</description>
+    </attribute>
+    <attribute>
+      <name>ColorSpace</name>
+      <tag_id>56</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Color Space</description>
+      <values>
+        <value key="0">Calibrated RGB</value>
+        <value key="1">Device RGB</value>
+        <value key="2">Device CMYK</value>
+        <value key="LINK">Linked Color Profile</value>
+        <value key="MBED">Embedded Color Profile</value>
+        <value key="Win ">Windows Color Space</value>
+        <value key="sRGB">sRGB</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>RedEndpoint</name>
+      <tag_id>60</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Red Endpoint</description>
+    </attribute>
+    <attribute>
+      <name>GreenEndpoint</name>
+      <tag_id>72</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Green Endpoint</description>
+    </attribute>
+    <attribute>
+      <name>BlueEndpoint</name>
+      <tag_id>84</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Blue Endpoint</description>
+    </attribute>
+    <attribute>
+      <name>GammaRed</name>
+      <tag_id>96</tag_id>
+      <data_type>fixed32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Gamma Red</description>
+    </attribute>
+    <attribute>
+      <name>GammaGreen</name>
+      <tag_id>100</tag_id>
+      <data_type>fixed32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Gamma Green</description>
+    </attribute>
+    <attribute>
+      <name>GammaBlue</name>
+      <tag_id>104</tag_id>
+      <data_type>fixed32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Gamma Blue</description>
+    </attribute>
+    <attribute>
+      <name>RenderingIntent</name>
+      <tag_id>108</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Rendering Intent</description>
+      <values>
+        <value key="1">Graphic (LCS_GM_BUSINESS)</value>
+        <value key="2">Proof (LCS_GM_GRAPHICS)</value>
+        <value key="4">Picture (LCS_GM_IMAGES)</value>
+        <value key="8">Absolute Colorimetric (LCS_GM_ABS_COLORIMETRIC)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ProfileDataOffset</name>
+      <tag_id>112</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Profile Data Offset</description>
+    </attribute>
+    <attribute>
+      <name>ProfileSize</name>
+      <tag_id>116</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>BMP::Main</subsystem>
+      <description>Profile Size</description>
+    </attribute>
+    <attribute>
+      <name>BMPVersion</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>OS2</group>
+      <subsystem>BMP::OS2</subsystem>
+      <description>BMP Version</description>
+      <values>
+        <value key="12">OS/2 V1</value>
+        <value key="64">OS/2 V2</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>4</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>OS2</group>
+      <subsystem>BMP::OS2</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>6</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>OS2</group>
+      <subsystem>BMP::OS2</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>Planes</name>
+      <tag_id>8</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>OS2</group>
+      <subsystem>BMP::OS2</subsystem>
+      <description>Planes</description>
+    </attribute>
+    <attribute>
+      <name>BitDepth</name>
+      <tag_id>10</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>OS2</group>
+      <subsystem>BMP::OS2</subsystem>
+      <description>Bit Depth</description>
+    </attribute>
+  </attributes>
+</metadata_system>

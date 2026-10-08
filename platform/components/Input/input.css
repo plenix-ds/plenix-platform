@@ -1,0 +1,21 @@
+/* Plenix · Input, Textarea, Select (platform/components/Input). Focus: the border turns the focus color (no ring outside it); an invalid field keeps its danger border. */
+.plx-input{appearance:none;background-color:var(--plx-sys-control-background);border-bottom-color:var(--plx-sys-control-border);border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:solid;border-bottom-width:var(--plx-ref-border-width-1px);border-left-color:var(--plx-sys-control-border);border-left-style:solid;border-left-width:var(--plx-ref-border-width-1px);border-right-color:var(--plx-sys-control-border);border-right-style:solid;border-right-width:var(--plx-ref-border-width-1px);border-top-color:var(--plx-sys-control-border);border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:solid;border-top-width:var(--plx-ref-border-width-1px);box-sizing:border-box;color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-body);font-size:var(--plx-ref-font-size-12);inline-size:100%;line-height:var(--plx-ref-line-height-tight);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-inline-size:var(--plx-ref-size-600px);min-block-size:var(--plx-sys-control-height-standard);min-inline-size:0;outline-style:none;padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
+.plx-input::placeholder{color:var(--plx-sys-field-placeholder);}
+.plx-input:hover,
+.plx-input.is-hover{border-bottom-color:var(--plx-sys-border-strong);border-left-color:var(--plx-sys-border-strong);border-right-color:var(--plx-sys-border-strong);border-top-color:var(--plx-sys-border-strong);}
+.plx-input:focus-visible,.plx-input:focus,.plx-input.is-focused,.plx-select.is-focused .plx-select__control,
+.plx-input.is-focus-visible{border-bottom-color:var(--plx-sys-focus-ring-color);border-left-color:var(--plx-sys-focus-ring-color);border-right-color:var(--plx-sys-focus-ring-color);border-top-color:var(--plx-sys-focus-ring-color);}
+.plx-input[aria-invalid="true"]{border-bottom-color:var(--plx-sys-action-danger-background);border-left-color:var(--plx-sys-action-danger-background);border-right-color:var(--plx-sys-action-danger-background);border-top-color:var(--plx-sys-action-danger-background);}
+.plx-input:disabled{background-color:var(--plx-sys-fill-neutral);color:var(--plx-sys-content-disabled);cursor:not-allowed;}
+.plx-input[readonly]{background-color:var(--plx-sys-surface-sunken);}
+.plx-textarea{font-size:var(--plx-ref-font-size-12);line-height:var(--plx-ref-line-height-normal);min-block-size:var(--plx-ref-size-60px);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);resize:vertical;}
+.plx-select{display:inline-flex;inline-size:100%;max-inline-size:var(--plx-ref-size-600px);position:relative;}
+.plx-select::after{-webkit-mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:var(--plx-sys-content-muted);block-size:var(--plx-ref-size-12px);content:"";inline-size:var(--plx-ref-size-12px);inset-block-start:50%;inset-inline-end:var(--plx-sys-space-inset-md);mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;pointer-events:none;position:absolute;transform:translateY(-50%);}
+.plx-select__control{cursor:pointer;padding-inline-end:var(--plx-ref-space-32px);}
+.plx-input.plx-input--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-input.plx-input--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-input.plx-input--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-input.plx-input--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-input.plx-input--data{font-family:var(--plx-sys-font-data);}
+.plx-input.plx-input--emphasis{font-weight:var(--plx-ref-font-weight-semibold-600);}
+.plx-input[type="color"]{cursor:pointer;flex-shrink:0;}

@@ -1,0 +1,17 @@
+/* Plenix · ProgressBar (platform/components/ProgressBar). Anatomy and API: ProgressBar.jsx. */
+.plx-progress-bar{display:grid;min-inline-size:0;row-gap:var(--plx-sys-space-stack-xs);}
+.plx-progress-bar__head{align-items:baseline;column-gap:var(--plx-sys-space-inline-sm);display:flex;justify-content:space-between;min-inline-size:0;}
+.plx-progress-bar__label{color:var(--plx-sys-content-default);font-size:var(--plx-ref-font-size-12);min-inline-size:0;}
+.plx-progress-bar__value{color:var(--plx-sys-content-muted);font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);font-variant-numeric:tabular-nums;}
+.plx-progress-bar__track{background-color:var(--plx-sys-fill-neutral);block-size:var(--plx-ref-size-8px);border-bottom-left-radius:var(--plx-ref-radius-pill);border-bottom-right-radius:var(--plx-ref-radius-pill);border-top-left-radius:var(--plx-ref-radius-pill);border-top-right-radius:var(--plx-ref-radius-pill);overflow-x:hidden;overflow-y:hidden;position:relative;}
+.plx-progress-bar--sm .plx-progress-bar__track{block-size:var(--plx-ref-size-4px);}
+.plx-progress-bar__fill{background-color:var(--plx-comp-progress-bar-fill);block-size:100%;border-bottom-left-radius:var(--plx-ref-radius-pill);border-bottom-right-radius:var(--plx-ref-radius-pill);border-top-left-radius:var(--plx-ref-radius-pill);border-top-right-radius:var(--plx-ref-radius-pill);display:block;inline-size:var(--plx-comp-progress-bar-value, 0%);transition-duration:var(--plx-ref-motion-duration-base);transition-property:inline-size;transition-timing-function:var(--plx-ref-motion-ease-standard);}
+.plx-progress-bar--info{--plx-comp-progress-bar-fill:var(--plx-sys-feedback-info-solid);}
+.plx-progress-bar--success{--plx-comp-progress-bar-fill:var(--plx-sys-feedback-success-solid);}
+.plx-progress-bar--warning{--plx-comp-progress-bar-fill:var(--plx-sys-feedback-warning-solid);}
+.plx-progress-bar--danger{--plx-comp-progress-bar-fill:var(--plx-sys-feedback-danger-solid);}
+.plx-progress-bar--neutral{--plx-comp-progress-bar-fill:var(--plx-sys-feedback-neutral-solid);}
+.plx-progress-bar--color{--plx-comp-progress-bar-fill:var(--plx-comp-progress-bar-color);}
+/* indeterminate: a third of the track runs from start to end; still for people who ask for less motion (motion.css) */
+.plx-progress-bar.is-indeterminate .plx-progress-bar__fill{animation-duration:var(--plx-ref-motion-duration-loop-slow);animation-iteration-count:infinite;animation-name:plx-progress-bar-run;animation-timing-function:var(--plx-ref-motion-ease-standard);inline-size:33%;}
+@keyframes plx-progress-bar-run{from{transform:translateX(-100%);}to{transform:translateX(300%);}}

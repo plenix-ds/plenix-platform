@@ -1,0 +1,9 @@
+/* Plenix · ColorSwatch (platform/components/ColorSwatch). */
+.plx-color-swatch{background-color:var(--plx-comp-color-swatch-value);border-bottom-color:var(--plx-sys-border-default);border-bottom-left-radius:var(--plx-ref-radius-pill);border-bottom-right-radius:var(--plx-ref-radius-pill);border-bottom-style:solid;border-bottom-width:var(--plx-ref-border-width-1px);border-left-color:var(--plx-sys-border-default);border-left-style:solid;border-left-width:var(--plx-ref-border-width-1px);border-right-color:var(--plx-sys-border-default);border-right-style:solid;border-right-width:var(--plx-ref-border-width-1px);border-top-color:var(--plx-sys-border-default);border-top-left-radius:var(--plx-ref-radius-pill);border-top-right-radius:var(--plx-ref-radius-pill);border-top-style:solid;border-top-width:var(--plx-ref-border-width-1px);box-sizing:border-box;display:inline-block;flex-shrink:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-color-swatch--sm{block-size:var(--plx-ref-size-16px);inline-size:var(--plx-ref-size-16px);}
+.plx-color-swatch--md{block-size:var(--plx-ref-size-20px);inline-size:var(--plx-ref-size-20px);}
+button.plx-color-swatch{cursor:pointer;}
+.plx-color-swatch[aria-pressed="true"]{box-shadow:0 0 0 var(--plx-ref-border-width-2px) var(--plx-sys-content-default);}
+button.plx-color-swatch:focus-visible,
+button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-color-swatch--square{border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);border-top-style:none;}

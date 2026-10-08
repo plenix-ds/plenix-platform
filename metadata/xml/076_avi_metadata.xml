@@ -1,0 +1,2264 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="076" name="AVI Metadata" category="VID" category_label="Video" used_for="AVI video files" spec_source="ExifTool 12.76 — groups: ASF" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="219">
+  <description>Attribute set for AVI Metadata. Sourced from ExifTool's tag database (group prefix(es): ASF). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>AudioCodecDescription</name>
+      <tag_id>AudioCodecDescription</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>CodecList</group>
+      <subsystem>ASF::CodecList</subsystem>
+      <description>Audio Codec Description</description>
+    </attribute>
+    <attribute>
+      <name>AudioCodecName</name>
+      <tag_id>AudioCodecName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>CodecList</group>
+      <subsystem>ASF::CodecList</subsystem>
+      <description>Audio Codec Name</description>
+    </attribute>
+    <attribute>
+      <name>OtherCodecDescription</name>
+      <tag_id>OtherCodecDescription</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>CodecList</group>
+      <subsystem>ASF::CodecList</subsystem>
+      <description>Other Codec Description</description>
+    </attribute>
+    <attribute>
+      <name>OtherCodecName</name>
+      <tag_id>OtherCodecName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>CodecList</group>
+      <subsystem>ASF::CodecList</subsystem>
+      <description>Other Codec Name</description>
+    </attribute>
+    <attribute>
+      <name>VideoCodecDescription</name>
+      <tag_id>VideoCodecDescription</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>CodecList</group>
+      <subsystem>ASF::CodecList</subsystem>
+      <description>Video Codec Description</description>
+    </attribute>
+    <attribute>
+      <name>VideoCodecName</name>
+      <tag_id>VideoCodecName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>CodecList</group>
+      <subsystem>ASF::CodecList</subsystem>
+      <description>Video Codec Name</description>
+    </attribute>
+    <attribute>
+      <name>BannerImageType</name>
+      <tag_id>0</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentBranding</group>
+      <subsystem>ASF::ContentBranding</subsystem>
+      <description>Banner Image Type</description>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Bitmap</value>
+        <value key="2">JPEG</value>
+        <value key="3">GIF</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BannerImage</name>
+      <tag_id>1</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentBranding</group>
+      <subsystem>ASF::ContentBranding</subsystem>
+      <description>Banner Image</description>
+    </attribute>
+    <attribute>
+      <name>BannerImageURL</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentBranding</group>
+      <subsystem>ASF::ContentBranding</subsystem>
+      <description>Banner Image URL</description>
+    </attribute>
+    <attribute>
+      <name>CopyrightURL</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentBranding</group>
+      <subsystem>ASF::ContentBranding</subsystem>
+      <description>Copyright URL</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>0</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentDescr</group>
+      <subsystem>ASF::ContentDescr</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>Author</name>
+      <tag_id>1</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentDescr</group>
+      <subsystem>ASF::ContentDescr</subsystem>
+      <description>Author</description>
+    </attribute>
+    <attribute>
+      <name>Copyright</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentDescr</group>
+      <subsystem>ASF::ContentDescr</subsystem>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>Description</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentDescr</group>
+      <subsystem>ASF::ContentDescr</subsystem>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>Rating</name>
+      <tag_id>4</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ContentDescr</group>
+      <subsystem>ASF::ContentDescr</subsystem>
+      <description>Rating</description>
+    </attribute>
+    <attribute>
+      <name>ASFLeakyBucketPairs</name>
+      <tag_id>ASFLeakyBucketPairs</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>ASF Leaky Bucket Pairs</description>
+    </attribute>
+    <attribute>
+      <name>ASFPacketCount</name>
+      <tag_id>ASFPacketCount</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>ASF Packet Count</description>
+    </attribute>
+    <attribute>
+      <name>ASFSecurityObjectsSize</name>
+      <tag_id>ASFSecurityObjectsSize</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>ASF Security Objects Size</description>
+    </attribute>
+    <attribute>
+      <name>AlbumArtist</name>
+      <tag_id>AlbumArtist</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Album Artist</description>
+    </attribute>
+    <attribute>
+      <name>AlbumCoverURL</name>
+      <tag_id>AlbumCoverURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Album Cover URL</description>
+    </attribute>
+    <attribute>
+      <name>AlbumTitle</name>
+      <tag_id>AlbumTitle</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Album Title</description>
+    </attribute>
+    <attribute>
+      <name>AspectRatioX</name>
+      <tag_id>AspectRatioX</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Aspect Ratio X</description>
+    </attribute>
+    <attribute>
+      <name>AspectRatioY</name>
+      <tag_id>AspectRatioY</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Aspect Ratio Y</description>
+    </attribute>
+    <attribute>
+      <name>AudioFileURL</name>
+      <tag_id>AudioFileURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Audio File URL</description>
+    </attribute>
+    <attribute>
+      <name>AudioSourceURL</name>
+      <tag_id>AudioSourceURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Audio Source URL</description>
+    </attribute>
+    <attribute>
+      <name>Author</name>
+      <tag_id>Author</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Author</description>
+    </attribute>
+    <attribute>
+      <name>AuthorURL</name>
+      <tag_id>AuthorURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Author URL</description>
+    </attribute>
+    <attribute>
+      <name>AverageLevel</name>
+      <tag_id>AverageLevel</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Average Level</description>
+    </attribute>
+    <attribute>
+      <name>BannerImageData</name>
+      <tag_id>BannerImageData</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Banner Image Data</description>
+    </attribute>
+    <attribute>
+      <name>BannerImageType</name>
+      <tag_id>BannerImageType</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Banner Image Type</description>
+    </attribute>
+    <attribute>
+      <name>BannerImageURL</name>
+      <tag_id>BannerImageURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Banner Image URL</description>
+    </attribute>
+    <attribute>
+      <name>BeatsPerMinute</name>
+      <tag_id>BeatsPerMinute</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Beats Per Minute</description>
+    </attribute>
+    <attribute>
+      <name>Bitrate</name>
+      <tag_id>Bitrate</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>Broadcast</name>
+      <tag_id>Broadcast</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Broadcast</description>
+    </attribute>
+    <attribute>
+      <name>BufferAverage</name>
+      <tag_id>BufferAverage</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Buffer Average</description>
+    </attribute>
+    <attribute>
+      <name>Can_Skip_Backward</name>
+      <tag_id>Can_Skip_Backward</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Can Skip Backward</description>
+    </attribute>
+    <attribute>
+      <name>Can_Skip_Forward</name>
+      <tag_id>Can_Skip_Forward</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Can Skip Forward</description>
+    </attribute>
+    <attribute>
+      <name>Category</name>
+      <tag_id>Category</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Category</description>
+    </attribute>
+    <attribute>
+      <name>Codec</name>
+      <tag_id>Codec</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Codec</description>
+    </attribute>
+    <attribute>
+      <name>Composer</name>
+      <tag_id>Composer</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Composer</description>
+    </attribute>
+    <attribute>
+      <name>Conductor</name>
+      <tag_id>Conductor</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Conductor</description>
+    </attribute>
+    <attribute>
+      <name>ContainerFormat</name>
+      <tag_id>ContainerFormat</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Container Format</description>
+    </attribute>
+    <attribute>
+      <name>ContentDistributor</name>
+      <tag_id>ContentDistributor</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Content Distributor</description>
+    </attribute>
+    <attribute>
+      <name>ContentGroupDescription</name>
+      <tag_id>ContentGroupDescription</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Content Group Description</description>
+    </attribute>
+    <attribute>
+      <name>Copyright</name>
+      <tag_id>Copyright</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>CopyrightURL</name>
+      <tag_id>CopyrightURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Copyright URL</description>
+    </attribute>
+    <attribute>
+      <name>CurrentBitrate</name>
+      <tag_id>CurrentBitrate</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Current Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>DRM</name>
+      <tag_id>DRM</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM</description>
+    </attribute>
+    <attribute>
+      <name>DRM_ContentID</name>
+      <tag_id>DRM_ContentID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM Content ID</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader</name>
+      <tag_id>DRM_DRMHeader</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader_ContentDistributor</name>
+      <tag_id>DRM_DRMHeader_ContentDistributor</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header Content Distributor</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader_ContentID</name>
+      <tag_id>DRM_DRMHeader_ContentID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header Content ID</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader_IndividualizedVersion</name>
+      <tag_id>DRM_DRMHeader_IndividualizedVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header Individualized Version</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader_KeyID</name>
+      <tag_id>DRM_DRMHeader_KeyID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header Key ID</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader_LicenseAcqURL</name>
+      <tag_id>DRM_DRMHeader_LicenseAcqURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header License Acq URL</description>
+    </attribute>
+    <attribute>
+      <name>DRM_DRMHeader_SubscriptionContentID</name>
+      <tag_id>DRM_DRMHeader_SubscriptionContentID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM DRM Header Subscription Content ID</description>
+    </attribute>
+    <attribute>
+      <name>DRM_IndividualizedVersion</name>
+      <tag_id>DRM_IndividualizedVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM Individualized Version</description>
+    </attribute>
+    <attribute>
+      <name>DRM_KeyID</name>
+      <tag_id>DRM_KeyID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM Key ID</description>
+    </attribute>
+    <attribute>
+      <name>DRM_LASignatureCert</name>
+      <tag_id>DRM_LASignatureCert</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM LA Signature Cert</description>
+    </attribute>
+    <attribute>
+      <name>DRM_LASignatureLicSrvCert</name>
+      <tag_id>DRM_LASignatureLicSrvCert</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM LA Signature Lic Srv Cert</description>
+    </attribute>
+    <attribute>
+      <name>DRM_LASignaturePrivKey</name>
+      <tag_id>DRM_LASignaturePrivKey</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM LA Signature Priv Key</description>
+    </attribute>
+    <attribute>
+      <name>DRM_LASignatureRootCert</name>
+      <tag_id>DRM_LASignatureRootCert</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM LA Signature Root Cert</description>
+    </attribute>
+    <attribute>
+      <name>DRM_LicenseAcqURL</name>
+      <tag_id>DRM_LicenseAcqURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM License Acq URL</description>
+    </attribute>
+    <attribute>
+      <name>DRM_V1LicenseAcqURL</name>
+      <tag_id>DRM_V1LicenseAcqURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DRM V1 License Acq URL</description>
+    </attribute>
+    <attribute>
+      <name>DVDID</name>
+      <tag_id>DVDID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>DVDID</description>
+    </attribute>
+    <attribute>
+      <name>Description</name>
+      <tag_id>Description</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>Director</name>
+      <tag_id>Director</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Director</description>
+    </attribute>
+    <attribute>
+      <name>Duration</name>
+      <tag_id>Duration</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Duration</description>
+    </attribute>
+    <attribute>
+      <name>EncodedBy</name>
+      <tag_id>EncodedBy</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Encoded By</description>
+    </attribute>
+    <attribute>
+      <name>EncodingSettings</name>
+      <tag_id>EncodingSettings</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Encoding Settings</description>
+    </attribute>
+    <attribute>
+      <name>EncodingTime</name>
+      <tag_id>EncodingTime</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Encoding Time</description>
+    </attribute>
+    <attribute>
+      <name>FileSize</name>
+      <tag_id>FileSize</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>File Size</description>
+    </attribute>
+    <attribute>
+      <name>Genre</name>
+      <tag_id>Genre</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Genre</description>
+    </attribute>
+    <attribute>
+      <name>GenreID</name>
+      <tag_id>GenreID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Genre ID</description>
+    </attribute>
+    <attribute>
+      <name>HasArbitraryDataStream</name>
+      <tag_id>HasArbitraryDataStream</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has Arbitrary Data Stream</description>
+    </attribute>
+    <attribute>
+      <name>HasAttachedImages</name>
+      <tag_id>HasAttachedImages</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has Attached Images</description>
+    </attribute>
+    <attribute>
+      <name>HasAudio</name>
+      <tag_id>HasAudio</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has Audio</description>
+    </attribute>
+    <attribute>
+      <name>HasFileTransferStream</name>
+      <tag_id>HasFileTransferStream</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has File Transfer Stream</description>
+    </attribute>
+    <attribute>
+      <name>HasImage</name>
+      <tag_id>HasImage</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has Image</description>
+    </attribute>
+    <attribute>
+      <name>HasScript</name>
+      <tag_id>HasScript</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has Script</description>
+    </attribute>
+    <attribute>
+      <name>HasVideo</name>
+      <tag_id>HasVideo</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Has Video</description>
+    </attribute>
+    <attribute>
+      <name>ISRC</name>
+      <tag_id>ISRC</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>ISRC</description>
+    </attribute>
+    <attribute>
+      <name>InitialKey</name>
+      <tag_id>InitialKey</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Initial Key</description>
+    </attribute>
+    <attribute>
+      <name>IsVBR</name>
+      <tag_id>IsVBR</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Is VBR</description>
+    </attribute>
+    <attribute>
+      <name>Is_Protected</name>
+      <tag_id>Is_Protected</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Is Protected</description>
+    </attribute>
+    <attribute>
+      <name>Is_Trusted</name>
+      <tag_id>Is_Trusted</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Is Trusted</description>
+    </attribute>
+    <attribute>
+      <name>Language</name>
+      <tag_id>Language</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Language</description>
+    </attribute>
+    <attribute>
+      <name>Lyrics</name>
+      <tag_id>Lyrics</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Lyrics</description>
+    </attribute>
+    <attribute>
+      <name>Lyrics_Synchronised</name>
+      <tag_id>Lyrics_Synchronised</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Lyrics Synchronised</description>
+    </attribute>
+    <attribute>
+      <name>MCDI</name>
+      <tag_id>MCDI</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>MCDI</description>
+    </attribute>
+    <attribute>
+      <name>MediaClassPrimaryID</name>
+      <tag_id>MediaClassPrimaryID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Class Primary ID</description>
+    </attribute>
+    <attribute>
+      <name>MediaClassSecondaryID</name>
+      <tag_id>MediaClassSecondaryID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Class Secondary ID</description>
+    </attribute>
+    <attribute>
+      <name>MediaCredits</name>
+      <tag_id>MediaCredits</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Credits</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsDelay</name>
+      <tag_id>MediaIsDelay</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Delay</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsFinale</name>
+      <tag_id>MediaIsFinale</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Finale</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsLive</name>
+      <tag_id>MediaIsLive</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Live</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsPremiere</name>
+      <tag_id>MediaIsPremiere</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Premiere</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsRepeat</name>
+      <tag_id>MediaIsRepeat</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Repeat</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsSAP</name>
+      <tag_id>MediaIsSAP</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is SAP</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsStereo</name>
+      <tag_id>MediaIsStereo</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Stereo</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsSubtitled</name>
+      <tag_id>MediaIsSubtitled</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Subtitled</description>
+    </attribute>
+    <attribute>
+      <name>MediaIsTape</name>
+      <tag_id>MediaIsTape</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Is Tape</description>
+    </attribute>
+    <attribute>
+      <name>MediaNetworkAffiliation</name>
+      <tag_id>MediaNetworkAffiliation</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Network Affiliation</description>
+    </attribute>
+    <attribute>
+      <name>MediaOriginalBroadcastDateTime</name>
+      <tag_id>MediaOriginalBroadcastDateTime</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Original Broadcast Date Time</description>
+    </attribute>
+    <attribute>
+      <name>MediaOriginalChannel</name>
+      <tag_id>MediaOriginalChannel</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Original Channel</description>
+    </attribute>
+    <attribute>
+      <name>MediaStationCallSign</name>
+      <tag_id>MediaStationCallSign</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Station Call Sign</description>
+    </attribute>
+    <attribute>
+      <name>MediaStationName</name>
+      <tag_id>MediaStationName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Media Station Name</description>
+    </attribute>
+    <attribute>
+      <name>ModifiedBy</name>
+      <tag_id>ModifiedBy</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Modified By</description>
+    </attribute>
+    <attribute>
+      <name>Mood</name>
+      <tag_id>Mood</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Mood</description>
+    </attribute>
+    <attribute>
+      <name>NSC_Address</name>
+      <tag_id>NSC_Address</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>NSC Address</description>
+    </attribute>
+    <attribute>
+      <name>NSC_Description</name>
+      <tag_id>NSC_Description</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>NSC Description</description>
+    </attribute>
+    <attribute>
+      <name>NSC_Email</name>
+      <tag_id>NSC_Email</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>NSC Email</description>
+    </attribute>
+    <attribute>
+      <name>NSC_Name</name>
+      <tag_id>NSC_Name</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>NSC Name</description>
+    </attribute>
+    <attribute>
+      <name>NSC_Phone</name>
+      <tag_id>NSC_Phone</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>NSC Phone</description>
+    </attribute>
+    <attribute>
+      <name>NumberOfFrames</name>
+      <tag_id>NumberOfFrames</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Number Of Frames</description>
+    </attribute>
+    <attribute>
+      <name>OptimalBitrate</name>
+      <tag_id>OptimalBitrate</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Optimal Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>OriginalAlbumTitle</name>
+      <tag_id>OriginalAlbumTitle</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Original Album Title</description>
+    </attribute>
+    <attribute>
+      <name>OriginalArtist</name>
+      <tag_id>OriginalArtist</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Original Artist</description>
+    </attribute>
+    <attribute>
+      <name>OriginalFileName</name>
+      <tag_id>OriginalFilename</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Original File Name</description>
+    </attribute>
+    <attribute>
+      <name>OriginalLyricist</name>
+      <tag_id>OriginalLyricist</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Original Lyricist</description>
+    </attribute>
+    <attribute>
+      <name>OriginalReleaseTime</name>
+      <tag_id>OriginalReleaseTime</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Original Release Time</description>
+    </attribute>
+    <attribute>
+      <name>OriginalReleaseYear</name>
+      <tag_id>OriginalReleaseYear</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Original Release Year</description>
+    </attribute>
+    <attribute>
+      <name>ParentalRating</name>
+      <tag_id>ParentalRating</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Parental Rating</description>
+    </attribute>
+    <attribute>
+      <name>ParentalRatingReason</name>
+      <tag_id>ParentalRatingReason</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Parental Rating Reason</description>
+    </attribute>
+    <attribute>
+      <name>PartOfSet</name>
+      <tag_id>PartOfSet</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Part Of Set</description>
+    </attribute>
+    <attribute>
+      <name>PeakBitrate</name>
+      <tag_id>PeakBitrate</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Peak Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>PeakValue</name>
+      <tag_id>PeakValue</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Peak Value</description>
+    </attribute>
+    <attribute>
+      <name>Period</name>
+      <tag_id>Period</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Period</description>
+    </attribute>
+    <attribute>
+      <name>PlaylistDelay</name>
+      <tag_id>PlaylistDelay</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Playlist Delay</description>
+    </attribute>
+    <attribute>
+      <name>Producer</name>
+      <tag_id>Producer</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Producer</description>
+    </attribute>
+    <attribute>
+      <name>PromotionURL</name>
+      <tag_id>PromotionURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Promotion URL</description>
+    </attribute>
+    <attribute>
+      <name>ProtectionType</name>
+      <tag_id>ProtectionType</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Protection Type</description>
+    </attribute>
+    <attribute>
+      <name>Provider</name>
+      <tag_id>Provider</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Provider</description>
+    </attribute>
+    <attribute>
+      <name>ProviderCopyright</name>
+      <tag_id>ProviderCopyright</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Provider Copyright</description>
+    </attribute>
+    <attribute>
+      <name>ProviderRating</name>
+      <tag_id>ProviderRating</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Provider Rating</description>
+    </attribute>
+    <attribute>
+      <name>ProviderStyle</name>
+      <tag_id>ProviderStyle</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Provider Style</description>
+    </attribute>
+    <attribute>
+      <name>Publisher</name>
+      <tag_id>Publisher</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Publisher</description>
+    </attribute>
+    <attribute>
+      <name>RadioStationName</name>
+      <tag_id>RadioStationName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Radio Station Name</description>
+    </attribute>
+    <attribute>
+      <name>RadioStationOwner</name>
+      <tag_id>RadioStationOwner</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Radio Station Owner</description>
+    </attribute>
+    <attribute>
+      <name>Rating</name>
+      <tag_id>Rating</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Rating</description>
+    </attribute>
+    <attribute>
+      <name>Seekable</name>
+      <tag_id>Seekable</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Seekable</description>
+    </attribute>
+    <attribute>
+      <name>SharedUserRating</name>
+      <tag_id>SharedUserRating</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Shared User Rating</description>
+    </attribute>
+    <attribute>
+      <name>Signature_Name</name>
+      <tag_id>Signature_Name</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Signature Name</description>
+    </attribute>
+    <attribute>
+      <name>StreamTypeInfo</name>
+      <tag_id>StreamTypeInfo</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Stream Type Info</description>
+    </attribute>
+    <attribute>
+      <name>Stridable</name>
+      <tag_id>Stridable</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Stridable</description>
+    </attribute>
+    <attribute>
+      <name>Subtitle</name>
+      <tag_id>SubTitle</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Subtitle</description>
+    </attribute>
+    <attribute>
+      <name>SubtitleDescription</name>
+      <tag_id>SubTitleDescription</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Subtitle Description</description>
+    </attribute>
+    <attribute>
+      <name>SubscriptionContentID</name>
+      <tag_id>SubscriptionContentID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Subscription Content ID</description>
+    </attribute>
+    <attribute>
+      <name>Text</name>
+      <tag_id>Text</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Text</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>Title</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>ToolName</name>
+      <tag_id>ToolName</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Tool Name</description>
+    </attribute>
+    <attribute>
+      <name>ToolVersion</name>
+      <tag_id>ToolVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Tool Version</description>
+    </attribute>
+    <attribute>
+      <name>Track</name>
+      <tag_id>Track</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Track</description>
+    </attribute>
+    <attribute>
+      <name>TrackNumber</name>
+      <tag_id>TrackNumber</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Track Number</description>
+    </attribute>
+    <attribute>
+      <name>UniqueFileIdentifier</name>
+      <tag_id>UniqueFileIdentifier</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Unique File Identifier</description>
+    </attribute>
+    <attribute>
+      <name>UserWebURL</name>
+      <tag_id>UserWebURL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>User Web URL</description>
+    </attribute>
+    <attribute>
+      <name>VBRPeak</name>
+      <tag_id>VBRPeak</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>VBR Peak</description>
+    </attribute>
+    <attribute>
+      <name>VideoClosedCaptioning</name>
+      <tag_id>VideoClosedCaptioning</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Video Closed Captioning</description>
+    </attribute>
+    <attribute>
+      <name>VideoFrameRate</name>
+      <tag_id>VideoFrameRate</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Video Frame Rate</description>
+    </attribute>
+    <attribute>
+      <name>VideoHeight</name>
+      <tag_id>VideoHeight</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Video Height</description>
+    </attribute>
+    <attribute>
+      <name>VideoWidth</name>
+      <tag_id>VideoWidth</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Video Width</description>
+    </attribute>
+    <attribute>
+      <name>WMADRCAverageReference</name>
+      <tag_id>WMADRCAverageReference</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WMADRC Average Reference</description>
+    </attribute>
+    <attribute>
+      <name>WMADRCAverageTarget</name>
+      <tag_id>WMADRCAverageTarget</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WMADRC Average Target</description>
+    </attribute>
+    <attribute>
+      <name>WMADRCPeakReference</name>
+      <tag_id>WMADRCPeakReference</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WMADRC Peak Reference</description>
+    </attribute>
+    <attribute>
+      <name>WMADRCPeakTarget</name>
+      <tag_id>WMADRCPeakTarget</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WMADRC Peak Target</description>
+    </attribute>
+    <attribute>
+      <name>WMCollectionGroupID</name>
+      <tag_id>WMCollectionGroupID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WM Collection Group ID</description>
+    </attribute>
+    <attribute>
+      <name>WMCollectionID</name>
+      <tag_id>WMCollectionID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WM Collection ID</description>
+    </attribute>
+    <attribute>
+      <name>WMContentID</name>
+      <tag_id>WMContentID</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>WM Content ID</description>
+    </attribute>
+    <attribute>
+      <name>Writer</name>
+      <tag_id>Writer</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Writer</description>
+    </attribute>
+    <attribute>
+      <name>Year</name>
+      <tag_id>Year</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ExtendedDescr</group>
+      <subsystem>ASF::ExtendedDescr</subsystem>
+      <description>Year</description>
+    </attribute>
+    <attribute>
+      <name>FileID</name>
+      <tag_id>0</tag_id>
+      <data_type>binary</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>File ID</description>
+    </attribute>
+    <attribute>
+      <name>FileLength</name>
+      <tag_id>16</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>File Length</description>
+    </attribute>
+    <attribute>
+      <name>CreationDate</name>
+      <tag_id>24</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Creation Date</description>
+    </attribute>
+    <attribute>
+      <name>DataPackets</name>
+      <tag_id>32</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Data Packets</description>
+    </attribute>
+    <attribute>
+      <name>Duration</name>
+      <tag_id>40</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Duration</description>
+    </attribute>
+    <attribute>
+      <name>SendDuration</name>
+      <tag_id>48</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Send Duration</description>
+    </attribute>
+    <attribute>
+      <name>Preroll</name>
+      <tag_id>56</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Preroll</description>
+    </attribute>
+    <attribute>
+      <name>Flags</name>
+      <tag_id>64</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Flags</description>
+    </attribute>
+    <attribute>
+      <name>MinPacketSize</name>
+      <tag_id>68</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Min Packet Size</description>
+    </attribute>
+    <attribute>
+      <name>MaxPacketSize</name>
+      <tag_id>72</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Max Packet Size</description>
+    </attribute>
+    <attribute>
+      <name>MaxBitrate</name>
+      <tag_id>76</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>FileProperties</group>
+      <subsystem>ASF::FileProperties</subsystem>
+      <description>Max Bitrate</description>
+    </attribute>
+    <attribute>
+      <name>Padding</name>
+      <tag_id>1806D474-CADF-4509-A4BA-9AABCB96AAE8</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Padding</description>
+    </attribute>
+    <attribute>
+      <name>ScriptCommand</name>
+      <tag_id>1EFB1A30-0B62-11D0-A39B-00A0C90348F6</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Script Command</description>
+    </attribute>
+    <attribute>
+      <name>ContentEncryption</name>
+      <tag_id>2211B3FB-BD23-11D2-B4B7-00A0C955FC6E</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Content Encryption</description>
+    </attribute>
+    <attribute>
+      <name>DigitalSignature</name>
+      <tag_id>2211B3FC-BD23-11D2-B4B7-00A0C955FC6E</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Digital Signature</description>
+    </attribute>
+    <attribute>
+      <name>ExtendedContentEncryption</name>
+      <tag_id>298AE614-2622-4C17-B935-DAE07EE9289C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Extended Content Encryption</description>
+    </attribute>
+    <attribute>
+      <name>ErrorCorrection</name>
+      <tag_id>75B22635-668E-11CF-A6D9-00AA0062CE6C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Error Correction</description>
+    </attribute>
+    <attribute>
+      <name>StreamBitrateProps</name>
+      <tag_id>7BF875CE-468D-11D1-8D82-006097C9A2B2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Stream Bitrate Props</description>
+    </attribute>
+    <attribute>
+      <name>BitrateMutualExclusion</name>
+      <tag_id>D6E229DC-35DA-11D1-9034-00A0C90349BE</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Bitrate Mutual Exclusion</description>
+    </attribute>
+    <attribute>
+      <name>Marker</name>
+      <tag_id>F487CD01-A951-11CF-8EE6-00C00C205365</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Header</group>
+      <subsystem>ASF::Header</subsystem>
+      <description>Marker</description>
+    </attribute>
+    <attribute>
+      <name>ExtendedStreamProps</name>
+      <tag_id>14E6A5CB-C672-4332-8399-A96952065B5A</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Extended Stream Props</description>
+    </attribute>
+    <attribute>
+      <name>AdvancedContentEncryption</name>
+      <tag_id>43058533-6981-49E6-9B74-AD12CB86D58C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Advanced Content Encryption</description>
+    </attribute>
+    <attribute>
+      <name>TimecodeIndexParms</name>
+      <tag_id>6B203BAD-3F11-48E4-ACA8-D7613DE2CFA7</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Timecode Index Parms</description>
+    </attribute>
+    <attribute>
+      <name>Compatibility</name>
+      <tag_id>75B22630-668E-11CF-A6D9-00AA0062CE6C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Compatibility</description>
+    </attribute>
+    <attribute>
+      <name>LanguageList</name>
+      <tag_id>7C4346A9-EFE0-4BFC-B229-393EDE415C85</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Language List</description>
+    </attribute>
+    <attribute>
+      <name>AdvancedMutualExcl</name>
+      <tag_id>A08649CF-4775-4670-8A16-6E35357566CD</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Advanced Mutual Excl</description>
+    </attribute>
+    <attribute>
+      <name>BandwidthSharing</name>
+      <tag_id>A69609E6-517B-11D2-B6AF-00C04FD908E9</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Bandwidth Sharing</description>
+    </attribute>
+    <attribute>
+      <name>Reserved1</name>
+      <tag_id>ABD3D211-A9BA-11cf-8EE6-00C00C205365</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Reserved 1</description>
+    </attribute>
+    <attribute>
+      <name>GroupMutualExclusion</name>
+      <tag_id>D1465A40-5A79-4338-B71B-E36B8FD6C249</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Group Mutual Exclusion</description>
+    </attribute>
+    <attribute>
+      <name>StreamPrioritization</name>
+      <tag_id>D4FED15B-88D3-454F-81F0-ED5C45999E24</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Stream Prioritization</description>
+    </attribute>
+    <attribute>
+      <name>IndexParameters</name>
+      <tag_id>D6E229DF-35DA-11D1-9034-00A0C90349BE</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>HeaderExtension</group>
+      <subsystem>ASF::HeaderExtension</subsystem>
+      <description>Index Parameters</description>
+    </attribute>
+    <attribute>
+      <name>SimpleIndex</name>
+      <tag_id>33000890-E5B1-11CF-89F4-00A0C90349CB</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>ASF::Main</subsystem>
+      <description>Simple Index</description>
+    </attribute>
+    <attribute>
+      <name>TimecodeIndex</name>
+      <tag_id>3CB73FD0-0C4A-4803-953D-EDF7B6228F0C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>ASF::Main</subsystem>
+      <description>Timecode Index</description>
+    </attribute>
+    <attribute>
+      <name>Data</name>
+      <tag_id>75B22636-668E-11CF-A6D9-00AA0062CE6C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>ASF::Main</subsystem>
+      <description>Data</description>
+    </attribute>
+    <attribute>
+      <name>Index</name>
+      <tag_id>D6E229D3-35DA-11D1-9034-00A0C90349BE</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>ASF::Main</subsystem>
+      <description>Index</description>
+    </attribute>
+    <attribute>
+      <name>MediaIndex</name>
+      <tag_id>FEB103F8-12AD-4C64-840F-2A1D2F7AD48C</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>ASF::Main</subsystem>
+      <description>Media Index</description>
+    </attribute>
+    <attribute>
+      <name>PictureType</name>
+      <tag_id>0</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Picture</group>
+      <subsystem>ASF::Picture</subsystem>
+      <description>Picture Type</description>
+      <values>
+        <value key="0">Other</value>
+        <value key="1">32x32 PNG Icon</value>
+        <value key="2">Other Icon</value>
+        <value key="3">Front Cover</value>
+        <value key="4">Back Cover</value>
+        <value key="5">Leaflet</value>
+        <value key="6">Media</value>
+        <value key="7">Lead Artist</value>
+        <value key="8">Artist</value>
+        <value key="9">Conductor</value>
+        <value key="10">Band</value>
+        <value key="11">Composer</value>
+        <value key="12">Lyricist</value>
+        <value key="13">Recording Studio or Location</value>
+        <value key="14">Recording Session</value>
+        <value key="15">Performance</value>
+        <value key="16">Capture from Movie or Video</value>
+        <value key="17">Bright(ly) Colored Fish</value>
+        <value key="18">Illustration</value>
+        <value key="19">Band Logo</value>
+        <value key="20">Publisher Logo</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>PictureMIMEType</name>
+      <tag_id>1</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Picture</group>
+      <subsystem>ASF::Picture</subsystem>
+      <description>Picture MIME Type</description>
+    </attribute>
+    <attribute>
+      <name>PictureDescription</name>
+      <tag_id>2</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Picture</group>
+      <subsystem>ASF::Picture</subsystem>
+      <description>Picture Description</description>
+    </attribute>
+    <attribute>
+      <name>Picture</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Picture</group>
+      <subsystem>ASF::Picture</subsystem>
+      <description>Picture</description>
+    </attribute>
+    <attribute>
+      <name>StreamType</name>
+      <tag_id>0</tag_id>
+      <data_type>binary</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Stream Type</description>
+      <values>
+        <value key="35907DE0-E415-11CF-A917-00805F5C442B">Degradable JPEG</value>
+        <value key="3AFB65E2-47EF-40F2-AC2C-70A90D71D343">Binary</value>
+        <value key="59DACFC0-59E6-11D0-A3AC-00A0C90348F6">Command</value>
+        <value key="91BD222C-F21C-497A-8B6D-5AA86BFC0185">File Transfer</value>
+        <value key="B61BE100-5B4E-11CF-A8FD-00805F5C442B">JFIF</value>
+        <value key="BC19EFC0-5B4D-11CF-A8FD-00805F5C442B">Video</value>
+        <value key="F8699E40-5B4D-11CF-A8FD-00805F5C442B">Audio</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ErrorCorrectionType</name>
+      <tag_id>16</tag_id>
+      <data_type>binary</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Error Correction Type</description>
+      <values>
+        <value key="20FB5700-5B55-11CF-A8FD-00805F5C442B">No Error Correction</value>
+        <value key="BFC3CD50-618F-11CF-8BB2-00AA00B4E220">Audio Spread</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TimeOffset</name>
+      <tag_id>32</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Time Offset</description>
+    </attribute>
+    <attribute>
+      <name>StreamNumber</name>
+      <tag_id>48</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Stream Number</description>
+    </attribute>
+    <attribute>
+      <name>AudioCodecID</name>
+      <tag_id>54</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Audio Codec ID</description>
+      <values>
+        <value key="1">Microsoft PCM</value>
+        <value key="2">Microsoft ADPCM</value>
+        <value key="3">Microsoft IEEE float</value>
+        <value key="4">Compaq VSELP</value>
+        <value key="5">IBM CVSD</value>
+        <value key="6">Microsoft a-Law</value>
+        <value key="7">Microsoft u-Law</value>
+        <value key="8">Microsoft DTS</value>
+        <value key="9">DRM</value>
+        <value key="10">WMA 9 Speech</value>
+        <value key="11">Microsoft Windows Media RT Voice</value>
+        <value key="16">OKI-ADPCM</value>
+        <value key="17">Intel IMA/DVI-ADPCM</value>
+        <value key="18">Videologic Mediaspace ADPCM</value>
+        <value key="19">Sierra ADPCM</value>
+        <value key="20">Antex G.723 ADPCM</value>
+        <value key="21">DSP Solutions DIGISTD</value>
+        <value key="22">DSP Solutions DIGIFIX</value>
+        <value key="23">Dialoic OKI ADPCM</value>
+        <value key="24">Media Vision ADPCM</value>
+        <value key="25">HP CU</value>
+        <value key="26">HP Dynamic Voice</value>
+        <value key="32">Yamaha ADPCM</value>
+        <value key="33">SONARC Speech Compression</value>
+        <value key="34">DSP Group True Speech</value>
+        <value key="35">Echo Speech Corp.</value>
+        <value key="36">Virtual Music Audiofile AF36</value>
+        <value key="37">Audio Processing Tech.</value>
+        <value key="38">Virtual Music Audiofile AF10</value>
+        <value key="39">Aculab Prosody 1612</value>
+        <value key="40">Merging Tech. LRC</value>
+        <value key="48">Dolby AC2</value>
+        <value key="49">Microsoft GSM610</value>
+        <value key="50">MSN Audio</value>
+        <value key="51">Antex ADPCME</value>
+        <value key="52">Control Resources VQLPC</value>
+        <value key="53">DSP Solutions DIGIREAL</value>
+        <value key="54">DSP Solutions DIGIADPCM</value>
+        <value key="55">Control Resources CR10</value>
+        <value key="56">Natural MicroSystems VBX ADPCM</value>
+        <value key="57">Crystal Semiconductor IMA ADPCM</value>
+        <value key="58">Echo Speech ECHOSC3</value>
+        <value key="59">Rockwell ADPCM</value>
+        <value key="60">Rockwell DIGITALK</value>
+        <value key="61">Xebec Multimedia</value>
+        <value key="64">Antex G.721 ADPCM</value>
+        <value key="65">Antex G.728 CELP</value>
+        <value key="66">Microsoft MSG723</value>
+        <value key="67">IBM AVC ADPCM</value>
+        <value key="69">ITU-T G.726</value>
+        <value key="80">Microsoft MPEG</value>
+        <value key="81">RT23 or PAC</value>
+        <value key="82">InSoft RT24</value>
+        <value key="83">InSoft PAC</value>
+        <value key="85">MP3</value>
+        <value key="89">Cirrus</value>
+        <value key="96">Cirrus Logic</value>
+        <value key="97">ESS Tech. PCM</value>
+        <value key="98">Voxware Inc.</value>
+        <value key="99">Canopus ATRAC</value>
+        <value key="100">APICOM G.726 ADPCM</value>
+        <value key="101">APICOM G.722 ADPCM</value>
+        <value key="102">Microsoft DSAT</value>
+        <value key="103">Microsoft DSAT DISPLAY</value>
+        <value key="105">Voxware Byte Aligned</value>
+        <value key="112">Voxware AC8</value>
+        <value key="113">Voxware AC10</value>
+        <value key="114">Voxware AC16</value>
+        <value key="115">Voxware AC20</value>
+        <value key="116">Voxware MetaVoice</value>
+        <value key="117">Voxware MetaSound</value>
+        <value key="118">Voxware RT29HW</value>
+        <value key="119">Voxware VR12</value>
+        <value key="120">Voxware VR18</value>
+        <value key="121">Voxware TQ40</value>
+        <value key="122">Voxware SC3</value>
+        <value key="123">Voxware SC3</value>
+        <value key="128">Soundsoft</value>
+        <value key="129">Voxware TQ60</value>
+        <value key="130">Microsoft MSRT24</value>
+        <value key="131">AT&amp;T G.729A</value>
+        <value key="132">Motion Pixels MVI MV12</value>
+        <value key="133">DataFusion G.726</value>
+        <value key="134">DataFusion GSM610</value>
+        <value key="136">Iterated Systems Audio</value>
+        <value key="137">Onlive</value>
+        <value key="138">Multitude, Inc. FT SX20</value>
+        <value key="139">Infocom ITS A/S G.721 ADPCM</value>
+        <value key="140">Convedia G729</value>
+        <value key="141">Not specified congruency, Inc.</value>
+        <value key="145">Siemens SBC24</value>
+        <value key="146">Sonic Foundry Dolby AC3 APDIF</value>
+        <value key="147">MediaSonic G.723</value>
+        <value key="148">Aculab Prosody 8kbps</value>
+        <value key="151">ZyXEL ADPCM</value>
+        <value key="152">Philips LPCBB</value>
+        <value key="153">Studer Professional Audio Packed</value>
+        <value key="160">Malden PhonyTalk</value>
+        <value key="161">Racal Recorder GSM</value>
+        <value key="162">Racal Recorder G720.a</value>
+        <value key="163">Racal G723.1</value>
+        <value key="164">Racal Tetra ACELP</value>
+        <value key="176">NEC AAC NEC Corporation</value>
+        <value key="255">AAC</value>
+        <value key="256">Rhetorex ADPCM</value>
+        <value key="257">IBM u-Law</value>
+        <value key="258">IBM a-Law</value>
+        <value key="259">IBM ADPCM</value>
+        <value key="273">Vivo G.723</value>
+        <value key="274">Vivo Siren</value>
+        <value key="288">Philips Speech Processing CELP</value>
+        <value key="289">Philips Speech Processing GRUNDIG</value>
+        <value key="291">Digital G.723</value>
+        <value key="293">Sanyo LD ADPCM</value>
+        <value key="304">Sipro Lab ACEPLNET</value>
+        <value key="305">Sipro Lab ACELP4800</value>
+        <value key="306">Sipro Lab ACELP8V3</value>
+        <value key="307">Sipro Lab G.729</value>
+        <value key="308">Sipro Lab G.729A</value>
+        <value key="309">Sipro Lab Kelvin</value>
+        <value key="310">VoiceAge AMR</value>
+        <value key="320">Dictaphone G.726 ADPCM</value>
+        <value key="336">Qualcomm PureVoice</value>
+        <value key="337">Qualcomm HalfRate</value>
+        <value key="341">Ring Zero Systems TUBGSM</value>
+        <value key="352">Microsoft Audio1</value>
+        <value key="353">Windows Media Audio V2 V7 V8 V9 / DivX audio (WMA) / Alex AC3 Audio</value>
+        <value key="354">Windows Media Audio Professional V9</value>
+        <value key="355">Windows Media Audio Lossless V9</value>
+        <value key="356">WMA Pro over S/PDIF</value>
+        <value key="368">UNISYS NAP ADPCM</value>
+        <value key="369">UNISYS NAP ULAW</value>
+        <value key="370">UNISYS NAP ALAW</value>
+        <value key="371">UNISYS NAP 16K</value>
+        <value key="372">MM SYCOM ACM SYC008 SyCom Technologies</value>
+        <value key="373">MM SYCOM ACM SYC701 G726L SyCom Technologies</value>
+        <value key="374">MM SYCOM ACM SYC701 CELP54 SyCom Technologies</value>
+        <value key="375">MM SYCOM ACM SYC701 CELP68 SyCom Technologies</value>
+        <value key="376">Knowledge Adventure ADPCM</value>
+        <value key="384">Fraunhofer IIS MPEG2AAC</value>
+        <value key="400">Digital Theater Systems DTS DS</value>
+        <value key="512">Creative Labs ADPCM</value>
+        <value key="514">Creative Labs FASTSPEECH8</value>
+        <value key="515">Creative Labs FASTSPEECH10</value>
+        <value key="528">UHER ADPCM</value>
+        <value key="533">Ulead DV ACM</value>
+        <value key="534">Ulead DV ACM</value>
+        <value key="544">Quarterdeck Corp.</value>
+        <value key="560">I-Link VC</value>
+        <value key="576">Aureal Semiconductor Raw Sport</value>
+        <value key="577">ESST AC3</value>
+        <value key="592">Interactive Products HSX</value>
+        <value key="593">Interactive Products RPELP</value>
+        <value key="608">Consistent CS2</value>
+        <value key="624">Sony SCX</value>
+        <value key="625">Sony SCY</value>
+        <value key="626">Sony ATRAC3</value>
+        <value key="627">Sony SPC</value>
+        <value key="640">TELUM Telum Inc.</value>
+        <value key="641">TELUMIA Telum Inc.</value>
+        <value key="645">Norcom Voice Systems ADPCM</value>
+        <value key="768">Fujitsu FM TOWNS SND</value>
+        <value key="769">Fujitsu (not specified)</value>
+        <value key="770">Fujitsu (not specified)</value>
+        <value key="771">Fujitsu (not specified)</value>
+        <value key="772">Fujitsu (not specified)</value>
+        <value key="773">Fujitsu (not specified)</value>
+        <value key="774">Fujitsu (not specified)</value>
+        <value key="775">Fujitsu (not specified)</value>
+        <value key="776">Fujitsu (not specified)</value>
+        <value key="848">Micronas Semiconductors, Inc. Development</value>
+        <value key="849">Micronas Semiconductors, Inc. CELP833</value>
+        <value key="1024">Brooktree Digital</value>
+        <value key="1025">Intel Music Coder (IMC)</value>
+        <value key="1026">Ligos Indeo Audio</value>
+        <value key="1104">QDesign Music</value>
+        <value key="1280">On2 VP7 On2 Technologies</value>
+        <value key="1281">On2 VP6 On2 Technologies</value>
+        <value key="1664">AT&amp;T VME VMPCM</value>
+        <value key="1665">AT&amp;T TCP</value>
+        <value key="1792">YMPEG Alpha (dummy for MPEG-2 compressor)</value>
+        <value key="2222">ClearJump LiteWave (lossless)</value>
+        <value key="4096">Olivetti GSM</value>
+        <value key="4097">Olivetti ADPCM</value>
+        <value key="4098">Olivetti CELP</value>
+        <value key="4099">Olivetti SBC</value>
+        <value key="4100">Olivetti OPR</value>
+        <value key="4352">Lernout &amp; Hauspie</value>
+        <value key="4353">Lernout &amp; Hauspie CELP codec</value>
+        <value key="4354">Lernout &amp; Hauspie SBC codec</value>
+        <value key="4355">Lernout &amp; Hauspie SBC codec</value>
+        <value key="4356">Lernout &amp; Hauspie SBC codec</value>
+        <value key="5120">Norris Comm. Inc.</value>
+        <value key="5121">ISIAudio</value>
+        <value key="5376">AT&amp;T Soundspace Music Compression</value>
+        <value key="6172">VoxWare RT24 speech codec</value>
+        <value key="6174">Lucent elemedia AX24000P Music codec</value>
+        <value key="6513">Sonic Foundry LOSSLESS</value>
+        <value key="6521">Innings Telecom Inc. ADPCM</value>
+        <value key="7175">Lucent SX8300P speech codec</value>
+        <value key="7180">Lucent SX5363S G.723 compliant codec</value>
+        <value key="7939">CUseeMe DigiTalk (ex-Rocwell)</value>
+        <value key="8132">NCT Soft ALF2CD ACM</value>
+        <value key="8192">FAST Multimedia DVM</value>
+        <value key="8193">Dolby DTS (Digital Theater System)</value>
+        <value key="8194">RealAudio 1 / 2 14.4</value>
+        <value key="8195">RealAudio 1 / 2 28.8</value>
+        <value key="8196">RealAudio G2 / 8 Cook (low bitrate)</value>
+        <value key="8197">RealAudio 3 / 4 / 5 Music (DNET)</value>
+        <value key="8198">RealAudio 10 AAC (RAAC)</value>
+        <value key="8199">RealAudio 10 AAC+ (RACP)</value>
+        <value key="9472">Reserved range to 0x2600 Microsoft</value>
+        <value key="13075">makeAVIS (ffvfw fake AVI sound from AviSynth scripts)</value>
+        <value key="16707">Divio MPEG-4 AAC audio</value>
+        <value key="16897">Nokia adaptive multirate</value>
+        <value key="16963">Divio G726 Divio, Inc.</value>
+        <value key="17228">LEAD Speech</value>
+        <value key="22092">LEAD Vorbis</value>
+        <value key="22358">WavPack Audio</value>
+        <value key="26447">Ogg Vorbis (mode 1)</value>
+        <value key="26448">Ogg Vorbis (mode 2)</value>
+        <value key="26449">Ogg Vorbis (mode 3)</value>
+        <value key="26479">Ogg Vorbis (mode 1+)</value>
+        <value key="26480">Ogg Vorbis (mode 2+)</value>
+        <value key="26481">Ogg Vorbis (mode 3+)</value>
+        <value key="28672">3COM NBX 3Com Corporation</value>
+        <value key="28781">FAAD AAC</value>
+        <value key="31265">GSM-AMR (CBR, no SID)</value>
+        <value key="31266">GSM-AMR (VBR, including SID)</value>
+        <value key="41216">Comverse Infosys Ltd. G723 1</value>
+        <value key="41217">Comverse Infosys Ltd. AVQSBC</value>
+        <value key="41218">Comverse Infosys Ltd. OLDSBC</value>
+        <value key="41219">Symbol Technologies G729A</value>
+        <value key="41220">VoiceAge AMR WB VoiceAge Corporation</value>
+        <value key="41221">Ingenient Technologies Inc. G726</value>
+        <value key="41222">ISO/MPEG-4 advanced audio Coding</value>
+        <value key="41223">Encore Software Ltd G726</value>
+        <value key="41225">Speex ACM Codec xiph.org</value>
+        <value key="57260">DebugMode SonicFoundry Vegas FrameServer ACM Codec</value>
+        <value key="59144">Unknown -</value>
+        <value key="61868">Free Lossless Audio Codec FLAC</value>
+        <value key="65534">Extensible</value>
+        <value key="65535">Development</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>54</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>AudioChannels</name>
+      <tag_id>56</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Audio Channels</description>
+    </attribute>
+    <attribute>
+      <name>AudioSampleRate</name>
+      <tag_id>58</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Audio Sample Rate</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>58</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamProperties</group>
+      <subsystem>ASF::StreamProperties</subsystem>
+      <description>Image Height</description>
+    </attribute>
+  </attributes>
+</metadata_system>

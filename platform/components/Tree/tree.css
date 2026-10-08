@@ -1,0 +1,16 @@
+/* Plenix · Tree. */
+.plx-tree,.plx-tree__group{list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-tree{color:var(--plx-sys-content-default);font-size:var(--plx-ref-font-size-12);}
+.plx-tree__item{outline-style:none;}
+.plx-tree__row{align-items:center;border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);box-sizing:border-box;column-gap:var(--plx-sys-space-inline-xs);cursor:pointer;display:flex;min-block-size:var(--plx-sys-control-height-inline);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:calc(var(--plx-comp-tree-level) * var(--plx-ref-space-16px) + var(--plx-sys-space-inset-xs));}
+.plx-tree__row:hover,
+.plx-tree__row.is-hover{background-color:var(--plx-sys-state-hover);}
+.plx-tree__item.is-selected>.plx-tree__row{background-color:var(--plx-sys-state-selected);color:var(--plx-sys-selected-content);font-weight:var(--plx-ref-font-weight-medium-500);}
+.plx-tree__item:focus-visible>.plx-tree__row,
+.plx-tree__item.is-focus-visible>.plx-tree__row{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-ref-border-width-2px) * -1);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-tree__toggle{-webkit-mask-image:var(--plx-comp-icon-glyph-expand-more);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-ref-size-12px);background-color:var(--plx-sys-content-muted);block-size:var(--plx-ref-size-16px);flex-shrink:0;inline-size:var(--plx-ref-size-16px);mask-image:var(--plx-comp-icon-glyph-expand-more);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-ref-size-12px);transform:rotate(-90deg);transition-duration:var(--plx-ref-motion-duration-fast);transition-property:transform;}
+.plx-tree__toggle.is-open{transform:none;}
+.plx-tree__toggle.is-leaf{visibility:hidden;}
+.plx-tree__icon{display:inline-flex;flex-shrink:0;}
+.plx-tree__label{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-tree__meta{color:var(--plx-sys-content-muted);flex-shrink:0;font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);}

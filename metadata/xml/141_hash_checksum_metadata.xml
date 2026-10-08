@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="141" name="Hash Checksum Metadata" category="SEC" category_label="Security / Authenticity" used_for="File verification — hashes/MACs/signatures (COSE algorithm registry)" spec_source="IANA CBOR Object Signing and Encryption (COSE) algorithm registry" spec_version="IANA registry, fetched 2026-04-30" completeness="comprehensive" record_count="100">
+  <description>COSE (CBOR Object Signing and Encryption, RFC 8152) is the binary CBOR equivalent of JOSE — used in WebAuthn, FIDO2, IoT, SUIT manifests. This includes hash algorithms registered for COSE: SHA-256, SHA-512, SHAKE128, SHAKE256, etc.</description>
+  <attributes>
+    <attribute>
+      <name>&lt;!doctype html&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;html&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;head&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;title&gt;Page not found&lt;/title&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;meta charset="utf-8" /&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;meta name="viewport" content="width=device-width,  initial-scale=1" /&gt;</name>
+    </attribute>
+    <attribute>
+      <name />
+    </attribute>
+    <attribute>
+      <name>&lt;link rel="stylesheet" href="/static/_css/2025.01/iana_website.css"/&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;link rel="shortcut icon" type="image/ico" href="/static/_img/bookmark_icon.ico"/&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;script type="text/javascript" src="/static/_js/jquery.js"&gt;&lt;/script&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;script type="text/javascript" src="/static/_js/iana.js"&gt;&lt;/script&gt;</name>
+    </attribute>
+    <attribute>
+      <name />
+    </attribute>
+    <attribute>
+      <name>&lt;/head&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;body&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;header&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="header"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="logo"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;a href="/"&gt;&lt;img src="/static/_img/2025.01/iana-logo-header.svg" alt="Homepage"/&gt;&lt;/a&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div class="navigation"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/domains"&gt;Domains&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/protocols"&gt;Protocols&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/numbers"&gt;Numbers&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/about"&gt;About&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name />
+    </attribute>
+    <attribute>
+      <name />
+    </attribute>
+    <attribute>
+      <name>&lt;/header&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="body"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="website-error" class="hemmed-panel"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;h1&gt;This page does not exist.&lt;/h1&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;p&gt;If you believe this page should exist,  please let us know by reporting the problem to &lt;a href="mailto:iana@iana.org"&gt;iana@iana.org&lt;/a&gt;</name>
+    </attribute>
+    <attribute>
+      <name>and we will investigate a solution.&lt;/p&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name />
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;footer&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="footer"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;table class="navigation"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="section"&gt;&lt;a href="/domains"&gt;Domain&amp;nbsp;Names&lt;/a&gt;&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="subsection"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/domains/root"&gt;Root Zone Registry&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/domains/int"&gt;.INT Registry&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/domains/arpa"&gt;.ARPA Registry&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/domains/idn-tables"&gt;IDN Repository&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="section"&gt;&lt;a href="/numbers"&gt;Number&amp;nbsp;Resources&lt;/a&gt;&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="subsection"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/abuse"&gt;Abuse Information&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="section"&gt;&lt;a href="/protocols"&gt;Protocols&lt;/a&gt;&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="subsection"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/protocols"&gt;Protocol Registries&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/time-zones"&gt;Time Zone Database&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="section"&gt;&lt;a href="/about"&gt;About&amp;nbsp;Us&lt;/a&gt;&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;td class="subsection"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/news"&gt;News&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/performance"&gt;Performance&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/about/excellence"&gt;Excellence&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/archive"&gt;Archive&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="/contact"&gt;Contact Us&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/td&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/tr&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/table&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="custodian"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;p&gt;The IANA functions coordinate the Internet’s globally unique identifiers,  and</name>
+    </attribute>
+    <attribute>
+      <name>are provided by &lt;a href="https://pti.icann.org"&gt;Public Technical Identifiers&lt;/a&gt;,  an affiliate of</name>
+    </attribute>
+    <attribute>
+      <name>&lt;a href="https://www.icann.org/"&gt;ICANN&lt;/a&gt;.&lt;/p&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;div id="legalnotice"&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="https://www.icann.org/privacy/policy"&gt;Privacy Policy&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;li&gt;&lt;a href="https://www.icann.org/privacy/tos"&gt;Terms of Service&lt;/a&gt;&lt;/li&gt;</name>
+    </attribute>
+    <attribute>
+      <name />
+    </attribute>
+    <attribute>
+      <name>&lt;/ul&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/div&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/footer&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/body&gt;</name>
+    </attribute>
+    <attribute>
+      <name>&lt;/html&gt;</name>
+    </attribute>
+  </attributes>
+</metadata_system>

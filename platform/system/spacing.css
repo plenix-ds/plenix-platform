@@ -1,0 +1,28 @@
+/* Plenix · Component spacing (platform/system/spacing.css): how the parts inside a component and a local pattern relate.
+   It sits beside the other layers (grid.css): the grid places regions, controls.css sizes targets, this file spaces
+   what is inside and between closely related things, density.css packs information, interaction.css sets targets.
+   Rules:
+   - Primitives are the 4px scale in tokens.css (--plx-ref-space-4px … --plx-ref-space-64px). There is no 1px or 2px step and nothing is
+     nudged to fit; the structure produces the result:
+       · a small label (tag, chip, badge, count, key cap) takes a label height, padding-block 0, and centres its text;
+       · a small control takes a control role (controls.css), padding-block 0, and centres its content;
+       · a title and its meta line are a stack with --plx-sys-space-stack-xs between them (the parent's gap or the meta's margin);
+       · a label beside a value lines up by baseline (align-items: baseline on the row), not by padding;
+       · an icon or checkbox beside wrapping text centres on the first line: calc((1lh - box) / 2);
+       · an offset (a badge on an icon, a menu below its anchor) is on the scale; a knob in a track is (track - knob) / 2;
+       · a line under tabs is drawn inside the bar (inset box-shadow) so the active tab covers it without overlapping.
+   - Five relationships: INSET (boundary to content), INLINE (related items along a line), STACK (related items down
+     the page), CLUSTER (peers that work together), REGION (independent areas).
+   - Components own their inside (padding, icon-to-label, internal stacks); parents own the space between siblings
+     (gap on the group, stack or grid). A reusable component sets no outer margin.
+   - Related things sit closer than unrelated things: label→control < field→field < group→group < section→section;
+     an error sits closer to its control than the next field does.
+   - Density picks values from the scale (it does not multiply them). Touch and mobile keep targets apart.
+   - Use the same tokens, not identical gaps: pick the approved value that gives the right optical rhythm.
+   - Logical properties (padding-inline-start, inset-block-end …) in every rule, so right-to-left works.
+   Components use the component tokens below; the semantic tokens are what those are built from. */
+
+/* ── density: the same scopes as density.css (html or any region with data-plx-density) ── */
+
+/* touch and mobile keep direct-touch targets apart; containers keep a 16px inset; inner gaps stay modest (not 24px) */
+

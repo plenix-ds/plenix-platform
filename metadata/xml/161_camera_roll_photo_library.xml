@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="161" name="Camera Roll Photo Library" category="IMG" category_label="Images" used_for="Phone/camera DCIM folder (DCF spec)" spec_source="JEITA CP-3461 (DCF — Design rule for Camera File system) + iOS/Android conventions" completeness="comprehensive" record_count="34">
+  <description>Camera Roll structure follows DCF (Design rule for Camera File system, JEITA CP-3461) — the international standard for how digital cameras name and organize files on storage media. The /DCIM root directory holds subdirectories named NNNAAAAA (e.g. 100APPLE, 100ANDRO, 100CANON), and files inside follow AAAANNNN.EXT (4-char prefix + 4-digit sequence + 3-char extension). iOS and Android both follow DCF for camera captures but add their own conventions (E/O prefixes for edits, BURST/MP suffixes for special modes, AAE sidecars for iOS edits, MotionPhoto XMP for Pixel). This entry documents the directory layout, filename patterns, vendor prefix conventions, companion files (THM, XMP, LRV, AAE), DPOF print orders, vendor catalog folders, and the inherited EXIF/MakerNote metadata that lives inside every DCIM image.</description>
+  <attributes>
+    <attribute>
+      <name>/DCIM/</name>
+      <data_type>Directory</data_type>
+      <required>true</required>
+      <group>DCIM Root</group>
+      <description>Mandatory root directory for digital camera images per DCF (JEITA CP-3461)</description>
+    </attribute>
+    <attribute>
+      <name>/DCIM/100ANDRO/</name>
+      <data_type>Directory pattern</data_type>
+      <group>DCIM Subdirectory</group>
+      <description>DCF 8.3 directory: NNNAAAAA where NNN=100-999, AAAAA=5-char alphanumeric. Examples: 100APPLE, 101APPLE, 100MEDIA, DCIM/Camera (Android non-DCF)</description>
+    </attribute>
+    <attribute>
+      <name>Filename pattern: AAAANNNN.EXT</name>
+      <data_type>DCF Object</data_type>
+      <group>DCIM Filename</group>
+      <description>4 alphanumeric + 4-digit sequence + 3-char extension. e.g. IMG_1234.JPG, DSC00123.JPG, P1010001.JPG</description>
+    </attribute>
+    <attribute>
+      <name>Sequence number 0001-9999 per directory</name>
+      <data_type>Integer</data_type>
+      <group>DCIM Filename</group>
+    </attribute>
+    <attribute>
+      <name>Standard prefixes by manufacturer</name>
+      <data_type>Convention</data_type>
+      <group>DCIM Filename</group>
+      <values>
+        <value key="IMG_">Apple iPhone, generic</value>
+        <value key="DSC">Sony, Nikon, generic 'Digital Still Camera'</value>
+        <value key="DSCN">Nikon (newer)</value>
+        <value key="DSCF">Fujifilm</value>
+        <value key="PICT">Pentax/older Apple QuickTake</value>
+        <value key="CIMG">Casio</value>
+        <value key="MOV_">iPhone video</value>
+        <value key="VID_">Android video</value>
+        <value key="PXL_">Google Pixel</value>
+        <value key="P">Panasonic LUMIX</value>
+        <value key="L">Leica</value>
+        <value key="R">RED</value>
+        <value key="STG_">Olympus</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>/DCIM/MISC/</name>
+      <data_type>Directory</data_type>
+      <group>DCIM Auxiliary</group>
+      <description>Misc DPOF (Digital Print Order Format) files (AUTPRINT.MRK)</description>
+    </attribute>
+    <attribute>
+      <name>/PRIVATE/&lt;vendor&gt;/...</name>
+      <data_type>Directory</data_type>
+      <group>DCIM Auxiliary</group>
+      <description>Vendor-specific data (DCF 2.0 PRIVATE area)</description>
+    </attribute>
+    <attribute>
+      <name>AUTPRINT.MRK (DPOF)</name>
+      <data_type>File</data_type>
+      <group>DCIM Auxiliary</group>
+      <description>Print order — selected images, copies, sizes</description>
+    </attribute>
+    <attribute>
+      <name>Companion file: &lt;basename&gt;.THM</name>
+      <data_type>File</data_type>
+      <group>Camera Companions</group>
+      <description>JPEG thumbnail accompanying RAW or video</description>
+    </attribute>
+    <attribute>
+      <name>Companion file: &lt;basename&gt;.XMP</name>
+      <data_type>File</data_type>
+      <group>Camera Companions</group>
+      <description>XMP sidecar for non-XMP-aware formats (RAW, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Companion file: &lt;basename&gt;.LRV</name>
+      <data_type>File</data_type>
+      <group>Camera Companions</group>
+      <description>Low-resolution proxy video (GoPro, DJI)</description>
+    </attribute>
+    <attribute>
+      <name>Companion file: &lt;basename&gt;.AAE</name>
+      <data_type>Apple Plist</data_type>
+      <group>Camera Companions</group>
+      <description>iOS edit-history sidecar — adjustments, crop, filter</description>
+    </attribute>
+    <attribute>
+      <name>Volume label</name>
+      <data_type>FAT/exFAT</data_type>
+      <group>SD Card Volume</group>
+      <description>Often set by camera (e.g. 'CANON_DC', 'NIKON D850', 'EOS_DIGITAL')</description>
+    </attribute>
+    <attribute>
+      <name>/MISC/MISC.CTG</name>
+      <data_type>File</data_type>
+      <group>Card ID</group>
+      <description>Some cameras: catalog file</description>
+    </attribute>
+    <attribute>
+      <name>/DCIM/CANONMSC/</name>
+      <data_type>Directory</data_type>
+      <group>Vendor Catalogs</group>
+      <description>Canon thumbnail/index database</description>
+    </attribute>
+    <attribute>
+      <name>/DCIM/NIKON_DSC/</name>
+      <data_type>Directory</data_type>
+      <group>Vendor Catalogs</group>
+    </attribute>
+    <attribute>
+      <name>EXIF Make/Model/Software</name>
+      <data_type>EXIF tag</data_type>
+      <group>Inherited Metadata</group>
+      <description>See system 045 — every DCIM image carries full EXIF</description>
+    </attribute>
+    <attribute>
+      <name>EXIF DateTimeOriginal</name>
+      <data_type>EXIF tag</data_type>
+      <group>Inherited Metadata</group>
+      <description>Capture timestamp in camera's local time (no TZ until EXIF 2.31)</description>
+    </attribute>
+    <attribute>
+      <name>EXIF OffsetTimeOriginal (EXIF 2.31)</name>
+      <data_type>EXIF tag</data_type>
+      <group>Inherited Metadata</group>
+      <description>Time zone offset for capture</description>
+    </attribute>
+    <attribute>
+      <name>EXIF GPS sub-IFD</name>
+      <data_type>EXIF tag block</data_type>
+      <group>Inherited Metadata</group>
+      <description>See system 046 for full GPS tags</description>
+    </attribute>
+    <attribute>
+      <name>MakerNote</name>
+      <data_type>EXIF tag 0x927C</data_type>
+      <group>Inherited Metadata</group>
+      <description>Vendor proprietary — see system 047 for 11,781 tags across 50+ vendors</description>
+    </attribute>
+    <attribute>
+      <name>iOS: /DCIM/100APPLE/IMG_NNNN.HEIC</name>
+      <data_type>iOS-specific</data_type>
+      <group>iOS Camera Roll</group>
+      <description>Default iPhone capture path</description>
+    </attribute>
+    <attribute>
+      <name>iOS: /DCIM/100APPLE/IMG_NNNN.MOV</name>
+      <data_type>iOS-specific</data_type>
+      <group>iOS Camera Roll</group>
+      <description>Live Photo motion file (paired with HEIC by Asset Identifier)</description>
+    </attribute>
+    <attribute>
+      <name>iOS: /DCIM/100APPLE/IMG_E1234.HEIC</name>
+      <data_type>iOS-specific</data_type>
+      <group>iOS Camera Roll</group>
+      <description>'E' prefix = Edited version (saves edit alongside original)</description>
+    </attribute>
+    <attribute>
+      <name>iOS: /DCIM/100APPLE/IMG_O1234.HEIC</name>
+      <data_type>iOS-specific</data_type>
+      <group>iOS Camera Roll</group>
+      <description>'O' prefix = Original (less common)</description>
+    </attribute>
+    <attribute>
+      <name>Android: /DCIM/Camera/IMG_YYYYMMDD_HHMMSS.jpg</name>
+      <data_type>Android-specific</data_type>
+      <group>Android Camera Roll</group>
+      <description>Default Android camera filename pattern (timestamp)</description>
+    </attribute>
+    <attribute>
+      <name>Android: /DCIM/Camera/PXL_YYYYMMDD_HHMMSSnnn.jpg</name>
+      <data_type>Android-specific</data_type>
+      <group>Android Camera Roll</group>
+      <description>Google Pixel pattern (PXL prefix)</description>
+    </attribute>
+    <attribute>
+      <name>Android: /DCIM/Camera/IMG_YYYYMMDD_HHMMSS_BURSTnn.jpg</name>
+      <data_type>Android-specific</data_type>
+      <group>Android Camera Roll</group>
+      <description>Burst photos — sequential BURST suffix, _COVER for primary</description>
+    </attribute>
+    <attribute>
+      <name>Android: /DCIM/Camera/PXL_YYYYMMDD_HHMMSSnnn.MP.jpg</name>
+      <data_type>Android-specific</data_type>
+      <group>Android Camera Roll</group>
+      <description>Pixel Motion Photo — single file with embedded video</description>
+    </attribute>
+    <attribute>
+      <name>Android: Motion Photo XMP namespace 'GCamera'</name>
+      <data_type>XMP namespace</data_type>
+      <group>Android Camera Roll</group>
+      <description>GCamera:MotionPhoto, GCamera:MicroVideo, GCamera:MicroVideoOffset (in EXIF/XMP)</description>
+    </attribute>
+    <attribute>
+      <name>File access time on SD card (FAT/exFAT)</name>
+      <data_type>Filesystem</data_type>
+      <group>Forensic</group>
+      <description>Last-access date typically preserved when copied; can corroborate viewing history</description>
+    </attribute>
+    <attribute>
+      <name>Sequence gaps</name>
+      <data_type>Forensic indicator</data_type>
+      <group>Forensic</group>
+      <description>Missing IMG_NNNN suggests deleted images</description>
+    </attribute>
+    <attribute>
+      <name>Mismatch between EXIF DateTime and filename timestamp</name>
+      <data_type>Forensic indicator</data_type>
+      <group>Forensic</group>
+      <description>Possible clock manipulation or file manipulation</description>
+    </attribute>
+    <attribute>
+      <name>Volume serial number (FAT)</name>
+      <data_type>Filesystem</data_type>
+      <group>Forensic</group>
+      <description>Identifies specific SD card across re-formats</description>
+    </attribute>
+  </attributes>
+</metadata_system>

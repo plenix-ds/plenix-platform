@@ -1,0 +1,87 @@
+/* Plenix · Tree
+   Summary: A hierarchy to choose from (folders, categories).
+   Usage:
+     <Tree label="Folders" nodes={[{ id, label, icon, meta, children: [...] }]} selected={id} onSelect={setId}
+       expanded={ids} onExpandedChange={setIds} />
+   Props:
+     label: the accessible name of the tree
+     nodes: the top-level items: [{ id, label, icon, meta, children }]
+     nodes[].icon: an icon name or element before the label
+     nodes[].meta: extra content at the end of the row
+     nodes[].children: the item's child items, in the same shape
+     selected: the id of the selected item
+     onSelect(id): runs when an item is selected
+     expanded: the ids of the open items (controlled)
+     defaultExpanded: the ids of the open items at first (uncontrolled); default []
+     onExpandedChange(ids): runs when items open or close
+     className: more classes on the tree
+   Behavior:
+     The tree is one Tab stop.
+     Arrow Up and Down move through the visible items.
+     Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
+     Home and End go to the first and last visible item.
+     Enter or Space selects.
+     Clicking the chevron opens or closes; clicking the row selects.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { useUid } from '../../utils/layer.js';
+import { Icon } from '../Icon/Icon.jsx';
+
+const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+
+function visible(nodes, open, parent, out) {
+  nodes.forEach((n) => {
+    out.push({ node: n, parent });
+    if (n.children && n.children.length && open.has(n.id)) visible(n.children, open, n.id, out);
+  });
+  return out;
+}
+
+export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpanded = [], onExpandedChange, className }) {
+  const base = useUid('plx-tree');
+  const [ownOpen, setOwnOpen] = React.useState(defaultExpanded);
+  const open = new Set(expanded !== undefined ? expanded : ownOpen);
+  const setOpen = (next) => { const list = Array.from(next); if (expanded === undefined) setOwnOpen(list); if (onExpandedChange) onExpandedChange(list); };
+  const flat = visible(nodes, open, null, []);
+  const [focusId, setFocusId] = React.useState(null);
+  const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.some((v) => v.node.id === selected) ? selected : (flat[0] && flat[0].node.id));
+  const refs = React.useRef({});
+  const moveTo = (id) => { setFocusId(id); if (refs.current[id]) refs.current[id].focus(); };
+  const toggle = (id) => { const next = new Set(open); if (next.has(id)) next.delete(id); else next.add(id); setOpen(next); };
+  const onKeyDown = (e) => {
+    const at = flat.findIndex((v) => v.node.id === active);
+    const cur = flat[at];
+    if (!cur) return;
+    const kids = cur.node.children && cur.node.children.length;
+    if (e.key === 'ArrowDown') { if (flat[at + 1]) moveTo(flat[at + 1].node.id); }
+    else if (e.key === 'ArrowUp') { if (flat[at - 1]) moveTo(flat[at - 1].node.id); }
+    else if (e.key === 'Home') moveTo(flat[0].node.id);
+    else if (e.key === 'End') moveTo(flat[flat.length - 1].node.id);
+    else if (e.key === 'ArrowRight') { if (kids && !open.has(cur.node.id)) toggle(cur.node.id); else if (kids) moveTo(cur.node.children[0].id); }
+    else if (e.key === 'ArrowLeft') { if (kids && open.has(cur.node.id)) toggle(cur.node.id); else if (cur.parent !== null) moveTo(cur.parent); }
+    else if (e.key === 'Enter' || e.key === ' ') { if (onSelect) onSelect(cur.node.id); }
+    else return;
+    e.preventDefault();
+  };
+  const renderNodes = (list, level) => list.map((n) => {
+    const kids = n.children && n.children.length;
+    const isOpen = kids && open.has(n.id);
+    return (
+      <li key={n.id} ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
+        aria-expanded={kids ? !!isOpen : undefined} aria-selected={n.id === selected} tabIndex={n.id === active ? 0 : -1}
+        className={cx('plx-tree__item', n.id === selected && 'is-selected')}
+        onFocus={(e) => { if (e.target === e.currentTarget) setFocusId(n.id); }}>
+        <div className="plx-tree__row" style={{ '--plx-comp-tree-level': level - 1 }} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
+          <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
+            onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
+          {n.icon ? <span className="plx-tree__icon">{asIcon(n.icon)}</span> : null}
+          <span className="plx-tree__label">{n.label}</span>
+          {n.meta !== undefined ? <span className="plx-tree__meta">{n.meta}</span> : null}
+        </div>
+        {isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
+      </li>
+    );
+  });
+  return <ul role="tree" aria-label={label} className={cx('plx-tree', className)} onKeyDown={onKeyDown}>{renderNodes(nodes, 1)}</ul>;
+}

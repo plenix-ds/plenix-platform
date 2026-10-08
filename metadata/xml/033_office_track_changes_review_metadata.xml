@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="033" name="Office Track Changes / Review Metadata" category="DOC" category_label="Documents" used_for="Word reviewing markers" spec_source="ECMA-376 Part 1 §17.13 Revision Marks; w: namespace" completeness="comprehensive" record_count="29">
+  <description>Tracked-changes and comments inside word/document.xml plus people.xml. Each revision is attributed to an author with timestamp.</description>
+  <attributes>
+    <attribute>
+      <name>w:ins</name>
+      <data_type>Element</data_type>
+      <description>Inserted run / paragraph</description>
+    </attribute>
+    <attribute>
+      <name>w:del</name>
+      <data_type>Element</data_type>
+      <description>Deleted run / paragraph</description>
+    </attribute>
+    <attribute>
+      <name>w:delText</name>
+      <data_type>Element</data_type>
+      <description>The deleted text content</description>
+    </attribute>
+    <attribute>
+      <name>w:moveFrom / w:moveTo</name>
+      <data_type>Element</data_type>
+      <description>Move source / destination</description>
+    </attribute>
+    <attribute>
+      <name>w:rPrChange</name>
+      <data_type>Element</data_type>
+      <description>Run-property change (font, formatting)</description>
+    </attribute>
+    <attribute>
+      <name>w:pPrChange</name>
+      <data_type>Element</data_type>
+      <description>Paragraph-property change</description>
+    </attribute>
+    <attribute>
+      <name>w:tblPrChange / w:trPrChange / w:tcPrChange</name>
+      <data_type>Element</data_type>
+      <description>Table / row / cell property change</description>
+    </attribute>
+    <attribute>
+      <name>w:sectPrChange</name>
+      <data_type>Element</data_type>
+      <description>Section property change</description>
+    </attribute>
+    <attribute>
+      <name>w:numberingChange</name>
+      <data_type>Element</data_type>
+      <description>Numbering change</description>
+    </attribute>
+    <attribute>
+      <name>w:cellIns / w:cellDel / w:cellMerge</name>
+      <data_type>Element</data_type>
+      <description>Table cell insert/delete/merge</description>
+    </attribute>
+    <attribute>
+      <name>w:author</name>
+      <data_type>Attribute</data_type>
+      <description>Author display name</description>
+    </attribute>
+    <attribute>
+      <name>w:id</name>
+      <data_type>Integer</data_type>
+      <description>Revision ID — unique within document</description>
+    </attribute>
+    <attribute>
+      <name>w:date</name>
+      <data_type>dateTime</data_type>
+      <description>When revision was made</description>
+    </attribute>
+    <attribute>
+      <name>w15:person</name>
+      <data_type>Element (people.xml)</data_type>
+      <description>Author identity entry</description>
+    </attribute>
+    <attribute>
+      <name>w15:presenceInfo userId / providerId</name>
+      <data_type>Attribute</data_type>
+      <description>UPN / Lync presence binding</description>
+    </attribute>
+    <attribute>
+      <name>w:initials</name>
+      <data_type>Attribute</data_type>
+      <description>Author initials (used in comment labels)</description>
+    </attribute>
+    <attribute>
+      <name>w:comment</name>
+      <data_type>Element (comments.xml)</data_type>
+      <description>Comment entry referenced by w:commentRangeStart/End</description>
+    </attribute>
+    <attribute>
+      <name>w:commentRangeStart / w:commentRangeEnd</name>
+      <data_type>Element</data_type>
+      <description>Anchor markers in document body</description>
+    </attribute>
+    <attribute>
+      <name>w:commentReference</name>
+      <data_type>Element</data_type>
+      <description>Inline reference to comment</description>
+    </attribute>
+    <attribute>
+      <name>w15:commentEx (commentsExtended.xml)</name>
+      <data_type>Element</data_type>
+      <description>Threaded reply / resolved status</description>
+    </attribute>
+    <attribute>
+      <name>w15:done</name>
+      <data_type>Boolean</data_type>
+      <description>Comment marked resolved</description>
+    </attribute>
+    <attribute>
+      <name>w15:parentId</name>
+      <data_type>String</data_type>
+      <description>Parent comment for threaded replies</description>
+    </attribute>
+    <attribute>
+      <name>w16cid:commentsIds (commentsIds.xml)</name>
+      <data_type>Element</data_type>
+      <description>Durable comment IDs (Word 365)</description>
+    </attribute>
+    <attribute>
+      <name>Document Protection (w:documentProtection)</name>
+      <data_type>Element (settings.xml)</data_type>
+      <description>Editing-restriction lock; password hash</description>
+    </attribute>
+    <attribute>
+      <name>Track Revisions On (w:trackRevisions)</name>
+      <data_type>Element</data_type>
+      <description>Whether tracking is currently enabled</description>
+    </attribute>
+    <attribute>
+      <name>w:rsid (revision save ID)</name>
+      <data_type>Hex string</data_type>
+      <description>Per-author/save-session marker, used for diff/merge</description>
+    </attribute>
+    <attribute>
+      <name>w:rsids</name>
+      <data_type>Element</data_type>
+      <description>Table of all rsid values</description>
+    </attribute>
+    <attribute>
+      <name>Reviewer Color</name>
+      <data_type>Attribute (in styles)</data_type>
+      <description>UI color assigned to a reviewer</description>
+    </attribute>
+    <attribute>
+      <name>w:hideMark / showMarkupChangesInBalloons</name>
+      <data_type>Setting</data_type>
+      <description>Display preferences</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="058" name="GIF Metadata" category="IMG" category_label="Images" used_for="Animated/static GIFs" spec_source="ExifTool 12.76 — groups: GIF" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="23">
+  <description>Attribute set for GIF Metadata. Sourced from ExifTool's tag database (group prefix(es): GIF). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>AnimationIterations</name>
+      <tag_id>1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Animation</group>
+      <subsystem>GIF::Animation</subsystem>
+      <description>Animation Iterations</description>
+    </attribute>
+    <attribute>
+      <name>ICC_Profile</name>
+      <tag_id>ICCRGBG1/012</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>Extensions</group>
+      <subsystem>GIF::Extensions</subsystem>
+      <description>ICC Profile</description>
+    </attribute>
+    <attribute>
+      <name>MIDISong</name>
+      <tag_id>MIDISONG/Dm7</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Extensions</group>
+      <subsystem>GIF::Extensions</subsystem>
+      <description>MIDI Song</description>
+    </attribute>
+    <attribute>
+      <name>XMP</name>
+      <tag_id>XMP Data/XMP</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>Extensions</group>
+      <subsystem>GIF::Extensions</subsystem>
+      <description>XMP</description>
+    </attribute>
+    <attribute>
+      <name>MIDIControlVersion</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>MIDIControl</group>
+      <subsystem>GIF::MIDIControl</subsystem>
+      <description>MIDI Control Version</description>
+    </attribute>
+    <attribute>
+      <name>SequenceNumber</name>
+      <tag_id>1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>MIDIControl</group>
+      <subsystem>GIF::MIDIControl</subsystem>
+      <description>Sequence Number</description>
+    </attribute>
+    <attribute>
+      <name>MelodicPolyphony</name>
+      <tag_id>2</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>MIDIControl</group>
+      <subsystem>GIF::MIDIControl</subsystem>
+      <description>Melodic Polyphony</description>
+    </attribute>
+    <attribute>
+      <name>PercussivePolyphony</name>
+      <tag_id>3</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>MIDIControl</group>
+      <subsystem>GIF::MIDIControl</subsystem>
+      <description>Percussive Polyphony</description>
+    </attribute>
+    <attribute>
+      <name>ChannelUsage</name>
+      <tag_id>4</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>MIDIControl</group>
+      <subsystem>GIF::MIDIControl</subsystem>
+      <description>Channel Usage</description>
+    </attribute>
+    <attribute>
+      <name>DelayTime</name>
+      <tag_id>6</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>MIDIControl</group>
+      <subsystem>GIF::MIDIControl</subsystem>
+      <description>Delay Time</description>
+    </attribute>
+    <attribute>
+      <name>Comment</name>
+      <tag_id>Comment</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>GIF::Main</subsystem>
+      <description>Comment</description>
+    </attribute>
+    <attribute>
+      <name>Duration</name>
+      <tag_id>Duration</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>GIF::Main</subsystem>
+      <description>Duration</description>
+    </attribute>
+    <attribute>
+      <name>FrameCount</name>
+      <tag_id>FrameCount</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>GIF::Main</subsystem>
+      <description>Frame Count</description>
+    </attribute>
+    <attribute>
+      <name>GIFVersion</name>
+      <tag_id>GIFVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>GIF::Main</subsystem>
+      <description>GIF Version</description>
+    </attribute>
+    <attribute>
+      <name>Text</name>
+      <tag_id>Text</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>GIF::Main</subsystem>
+      <description>Text</description>
+    </attribute>
+    <attribute>
+      <name>TransparentColor</name>
+      <tag_id>TransparentColor</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>GIF::Main</subsystem>
+      <description>Transparent Color</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>2</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>HasColorMap</name>
+      <tag_id>4.1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Has Color Map</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ColorResolutionDepth</name>
+      <tag_id>4.2</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Color Resolution Depth</description>
+    </attribute>
+    <attribute>
+      <name>BitsPerPixel</name>
+      <tag_id>4.3</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Bits Per Pixel</description>
+    </attribute>
+    <attribute>
+      <name>BackgroundColor</name>
+      <tag_id>5</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Background Color</description>
+    </attribute>
+    <attribute>
+      <name>PixelAspectRatio</name>
+      <tag_id>6</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Screen</group>
+      <subsystem>GIF::Screen</subsystem>
+      <description>Pixel Aspect Ratio</description>
+    </attribute>
+  </attributes>
+</metadata_system>

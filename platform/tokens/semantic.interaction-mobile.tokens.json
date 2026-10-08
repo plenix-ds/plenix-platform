@@ -1,0 +1,68 @@
+{
+  "$description": "semantic tokens written under :root[data-plx-interaction=\"mobile\"],:root[data-plx-interaction=\"mobile\"] [data-plx-density]",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/semantic.css",
+      "selector": ":root[data-plx-interaction=\"mobile\"],:root[data-plx-interaction=\"mobile\"] [data-plx-density]",
+      "opener": ":root[data-plx-interaction=\"mobile\"],:root[data-plx-interaction=\"mobile\"] [data-plx-density]{"
+    }
+  },
+  "plx-sys": {
+    "control-target-min": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-height-inline": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-icon-inline": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "control-height-toolbar": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-icon-toolbar": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "control-height-standard": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-icon-standard": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "control-height-prominent": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-icon-prominent": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "control-height-dialog": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-icon-dialog": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "control-height-dialog-destructive": {
+      "$value": "{plx-ref.control-size-44px}",
+      "$type": "dimension"
+    },
+    "control-icon-dialog-destructive": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "table-row-height": {
+      "$value": "{plx-ref.size-44px}",
+      "$type": "dimension"
+    }
+  }
+}

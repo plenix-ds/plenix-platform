@@ -1,0 +1,16 @@
+{
+  "$description": "semantic tokens written under :root:not([data-plx-interaction])",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/semantic.css",
+      "selector": ":root:not([data-plx-interaction])",
+      "opener": ":root:not([data-plx-interaction]){"
+    }
+  },
+  "plx-sys": {
+    "control-target-min": {
+      "$value": "{plx-ref.control-size-24px}",
+      "$type": "dimension"
+    }
+  }
+}

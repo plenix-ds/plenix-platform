@@ -1,0 +1,4 @@
+/* Plenix · StatusBar. */
+.plx-status-bar{align-items:center;background-color:var(--plx-sys-status-bar-background);border-top-color:var(--plx-sys-status-bar-edge);border-top-style:solid;border-top-width:var(--plx-ref-border-width-1px);color:var(--plx-sys-status-bar-content);column-gap:var(--plx-sys-space-inline-lg);display:flex;flex-shrink:0;font-size:var(--plx-ref-font-size-11);min-block-size:var(--plx-ref-size-40px);padding-inline-end:var(--plx-sys-space-layout-md);padding-inline-start:var(--plx-sys-space-layout-md);}
+.plx-status-bar__start{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:flex;min-inline-size:0;}
+.plx-status-bar__end{margin-inline-start:auto;}

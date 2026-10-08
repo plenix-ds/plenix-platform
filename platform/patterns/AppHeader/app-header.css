@@ -1,0 +1,82 @@
+/* Plenix · AppHeader. A tone sets the header-scoped component values; the parts read only those. */
+.plx-app-header--accent{--plx-comp-app-header-brand:var(--plx-sys-accent-content);--plx-comp-app-header-content:var(--plx-sys-accent-content-muted);--plx-comp-app-header-divider:var(--plx-sys-accent-border);--plx-comp-app-header-edge:var(--plx-sys-accent-edge);--plx-comp-app-header-hover:var(--plx-sys-accent-state-hover);--plx-comp-app-header-selected:var(--plx-sys-accent-state-hover);--plx-comp-app-header-selected-content:var(--plx-sys-accent-content);--plx-comp-app-header-surface:var(--plx-sys-accent-surface);}
+.plx-app-header--frost{--plx-comp-app-header-brand:var(--plx-sys-action-primary-background);--plx-comp-app-header-content:var(--plx-sys-content-muted);--plx-comp-app-header-divider:var(--plx-sys-frost-border);--plx-comp-app-header-edge:var(--plx-sys-frost-border);--plx-comp-app-header-hover:var(--plx-sys-frost-state-selected);--plx-comp-app-header-selected:var(--plx-sys-frost-state-selected);--plx-comp-app-header-selected-content:var(--plx-sys-selected-content);--plx-comp-app-header-surface:var(--plx-sys-frost-surface);}
+.plx-app-header--plain{--plx-comp-app-header-brand:var(--plx-sys-action-primary-background);--plx-comp-app-header-content:var(--plx-sys-content-muted);--plx-comp-app-header-divider:var(--plx-sys-border-default);--plx-comp-app-header-edge:var(--plx-sys-border-default);--plx-comp-app-header-hover:var(--plx-sys-state-hover);--plx-comp-app-header-selected:var(--plx-sys-action-primary-background);--plx-comp-app-header-selected-content:var(--plx-sys-action-primary-content);--plx-comp-app-header-surface:var(--plx-sys-surface-default);}
+.plx-app-header{--plx-comp-app-header-action-width:var(--plx-ref-size-112px);--plx-comp-app-header-action-height:var(--plx-ref-control-size-32px);--plx-comp-app-header-action-icon-size:var(--plx-ref-size-16px);--plx-comp-app-header-chevron-size:var(--plx-ref-size-16px);--plx-comp-app-header-avatar-size:var(--plx-ref-size-32px);--plx-comp-app-header-edge-shadow:inset 0 calc(var(--plx-ref-border-width-1px) * -1) 0 var(--plx-comp-app-header-edge);--plx-comp-app-header-icon-size:var(--plx-ref-size-24px);--plx-comp-app-header-item-size:var(--plx-ref-size-40px);--plx-comp-app-header-name-width:var(--plx-ref-size-160px);align-items:center;background-color:var(--plx-comp-app-header-surface);block-size:var(--plx-sys-shell-header-height);box-shadow:var(--plx-comp-app-header-edge-shadow);box-sizing:border-box;column-gap:var(--plx-sys-space-inline-md);display:flex;flex-shrink:0;justify-content:space-between;padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);position:relative;z-index:var(--plx-sys-layer-sticky);}
+.plx-app-header--plain,.plx-app-header--frost{box-shadow:var(--plx-comp-app-header-edge-shadow),var(--plx-sys-shadow-md);}
+.plx-app-header__start{align-items:center;column-gap:var(--plx-sys-space-cluster-xs);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+.plx-app-header__brand{color:var(--plx-comp-app-header-brand);flex-shrink:0;font-size:var(--plx-ref-font-size-15);font-weight:var(--plx-ref-font-weight-bold-700);letter-spacing:var(--plx-ref-letter-spacing-tight);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-xs);text-decoration-line:none;user-select:none;}
+.plx-app-header__nav{align-items:center;column-gap:var(--plx-sys-space-cluster-xs);display:flex;}
+.plx-app-header__item{align-items:center;background-color:transparent;block-size:var(--plx-comp-app-header-item-size);border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:none;border-top-width:0;color:var(--plx-comp-app-header-content);cursor:pointer;display:inline-flex;font-family:inherit;inline-size:var(--plx-comp-app-header-item-size);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;}
+.plx-app-header__item:hover,
+.plx-app-header__item.is-hover{background-color:var(--plx-comp-app-header-hover);}
+.plx-app-header__item.is-current{background-color:var(--plx-comp-app-header-selected);color:var(--plx-comp-app-header-selected-content);}
+.plx-app-header__item:focus-visible,
+.plx-app-header__item.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-app-header--accent .plx-app-header__item:focus-visible,
+.plx-app-header--accent .plx-app-header__item.is-focus-visible{outline-color:var(--plx-sys-accent-content);}
+.plx-app-header__divider{background-image:linear-gradient(var(--plx-comp-app-header-divider),var(--plx-comp-app-header-divider));background-position:center;background-repeat:no-repeat;background-size:var(--plx-ref-border-width-1px) 100%;block-size:var(--plx-ref-size-20px);flex-shrink:0;inline-size:var(--plx-ref-size-4px);margin-inline-end:var(--plx-sys-space-inline-xs);margin-inline-start:var(--plx-sys-space-inline-xs);}
+.plx-app-header .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-toolbar);}
+.plx-app-header--accent .plx-button--secondary{background-color:var(--plx-sys-accent-field-background);border-bottom-color:var(--plx-sys-accent-border);border-left-color:var(--plx-sys-accent-border);border-right-color:var(--plx-sys-accent-border);border-top-color:var(--plx-sys-accent-border);color:var(--plx-sys-accent-content);}
+.plx-app-header--accent .plx-button--secondary:hover,
+.plx-app-header--accent .plx-button--secondary.is-hover{background-color:var(--plx-sys-accent-state-hover);}
+.plx-app-header--frost .plx-search__input{background-color:var(--plx-sys-frost-field-background);border-bottom-color:var(--plx-sys-frost-border);border-left-color:var(--plx-sys-frost-border);border-right-color:var(--plx-sys-frost-border);border-top-color:var(--plx-sys-frost-border);}
+.plx-app-header__count{inset-block-start:calc(var(--plx-ref-space-4px) * -1);inset-inline-end:calc(var(--plx-ref-space-4px) * -1);pointer-events:none;position:absolute;}
+/* header name: Plenix over the application */
+.plx-app-header__name{display:inline-flex;flex-direction:column;line-height:var(--plx-ref-line-height-tight);}
+.plx-app-header__app{font-size:var(--plx-ref-font-size-10);font-weight:var(--plx-ref-font-weight-medium-500);letter-spacing:var(--plx-ref-letter-spacing-wide);opacity:var(--plx-ref-opacity-70);}
+/* the end: the application's action, then the utilities with no gaps (search, other, notifications, account) */
+.plx-app-header__end{align-items:center;column-gap:var(--plx-sys-space-inline-md);display:flex;flex-shrink:0;}
+.plx-app-header__utilities{align-items:center;column-gap:0;display:flex;}
+/* search: furthest left; the field opens over the space to its left, so no other icon moves */
+.plx-app-header__search-slot{display:flex;position:relative;}
+.plx-app-header__search{align-items:center;background-color:var(--plx-comp-app-header-surface);column-gap:var(--plx-sys-space-cluster-xs);display:flex;inline-size:var(--plx-ref-size-400px);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-sys-layer-raised);}
+.plx-app-header__search>.plx-search{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+/* a phone: the pinned links leave the header (the switcher in the header name has them); search spans the bar */
+@media (max-width: 47.9375rem){
+.plx-app-header__nav,.plx-app-header__nav+.plx-app-header__divider,.plx-app-header__start>.plx-app-header__divider{display:none;}
+.plx-app-header__search-slot{position:static;}
+.plx-app-header__search{inline-size:auto;inset-inline-start:var(--plx-sys-space-inset-md);}
+}
+/* the switcher: every application, pinned first; a grid of icons and names */
+.plx-app-switcher{display:flex;position:relative;}
+.plx-app-switcher__panel{background-color:var(--plx-sys-surface-overlay);border-bottom-left-radius:var(--plx-sys-radius-menu-8px);border-bottom-right-radius:var(--plx-sys-radius-menu-8px);border-top-left-radius:var(--plx-sys-radius-menu-8px);border-top-right-radius:var(--plx-sys-radius-menu-8px);box-shadow:inset 0 0 0 var(--plx-ref-border-width-1px) var(--plx-sys-border-default),var(--plx-sys-elevation-menu);box-sizing:border-box;color:var(--plx-sys-content-default);display:flex;flex-direction:column;inline-size:var(--plx-ref-size-320px);inset-block-start:calc(100% + var(--plx-ref-space-8px));inset-inline-end:0;max-block-size:var(--plx-ref-size-560px);overflow-y:auto;padding-block-end:var(--plx-sys-space-inset-md);padding-block-start:var(--plx-sys-space-inset-md);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);position:absolute;row-gap:var(--plx-sys-space-stack-md);z-index:var(--plx-sys-layer-popover);}
+.plx-app-switcher__pinned{background-color:var(--plx-sys-surface-sunken);border-bottom-left-radius:var(--plx-sys-radius-surface-8px);border-bottom-right-radius:var(--plx-sys-radius-surface-8px);border-top-left-radius:var(--plx-sys-radius-surface-8px);border-top-right-radius:var(--plx-sys-radius-surface-8px);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:0;padding-inline-start:0;}
+.plx-app-switcher__heading{align-items:center;block-size:var(--plx-ref-size-20px);color:var(--plx-sys-content-muted);display:flex;font-size:var(--plx-ref-font-size-12);font-weight:var(--plx-ref-font-weight-semibold-600);margin-block-end:var(--plx-sys-space-stack-sm);margin-block-start:0;margin-inline-end:0;margin-inline-start:var(--plx-sys-space-inset-xs);}
+.plx-app-switcher__grid{display:grid;gap:var(--plx-sys-space-stack-xs);grid-template-columns:repeat(3,minmax(0,1fr));list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-app-switcher__tile{position:relative;}
+.plx-app-switcher__open{align-items:center;block-size:var(--plx-ref-size-80px);border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);box-sizing:border-box;color:var(--plx-sys-content-default);display:flex;flex-direction:column;font-size:var(--plx-ref-font-size-12);justify-content:flex-start;padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-xs);padding-inline-start:var(--plx-sys-space-inset-xs);row-gap:var(--plx-sys-space-stack-xs);text-align:center;text-decoration-line:none;}
+.plx-app-switcher__open:hover,
+.plx-app-switcher__open.is-hover{background-color:var(--plx-sys-state-hover);}
+.plx-app-switcher__tile.is-current>.plx-app-switcher__open{background-color:var(--plx-sys-state-selected);}
+.plx-app-switcher__open:focus-visible,.plx-app-switcher__pin:focus-visible,
+.plx-app-switcher__open.is-focus-visible,.plx-app-switcher__pin.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-ref-border-width-2px) * -1);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-app-switcher__icon{align-items:center;color:var(--plx-sys-content-link);display:inline-flex;justify-content:center;}
+.plx-app-switcher__label{line-height:var(--plx-ref-size-16px);max-inline-size:100%;overflow-wrap:anywhere;}
+.plx-app-switcher__pin{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-sys-control-height-inline);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);color:var(--plx-sys-content-subtle);cursor:pointer;display:inline-flex;inline-size:var(--plx-sys-control-height-inline);inset-block-start:0;inset-inline-end:0;justify-content:center;opacity:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:absolute;}
+.plx-app-switcher__tile:hover .plx-app-switcher__pin,.plx-app-switcher__tile:focus-within .plx-app-switcher__pin,.plx-app-switcher__tile.is-pinned .plx-app-switcher__pin,
+.plx-app-switcher__tile.is-hover .plx-app-switcher__pin{opacity:1;}
+.plx-app-switcher__tile.is-pinned .plx-app-switcher__pin{color:var(--plx-sys-content-link);}
+.plx-app-switcher__pin:hover,
+.plx-app-switcher__pin.is-hover{background-color:var(--plx-sys-state-hover);}
+/* the header name is the switcher: Plenix over the application, a chevron; the panel opens under it, from the start */
+.plx-app-header__switch{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-app-header-item-size);border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:none;border-top-width:0;column-gap:var(--plx-sys-space-inline-md);cursor:pointer;display:inline-flex;font-family:inherit;inline-size:var(--plx-comp-app-header-name-width);justify-content:space-between;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;text-align:start;}
+.plx-app-header__switch:hover,.plx-app-header__switch[aria-expanded="true"],
+.plx-app-header__switch.is-hover{background-color:var(--plx-comp-app-header-hover);}
+.plx-app-header__switch:focus-visible,
+.plx-app-header__switch.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-ref-border-width-2px) * -1);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-app-header__switch-chevron{--plx-comp-icon-size:var(--plx-comp-app-header-chevron-size);color:var(--plx-comp-app-header-content);flex-shrink:0;}
+.plx-app-switcher--brand .plx-app-switcher__panel{inset-inline-end:auto;inset-inline-start:0;}
+/* the 4px grid: (header height - item) / 2 and (item - icon) / 2 are multiples of 4: 56, 40, 24 (avatar 32) */
+.plx-app-header__item .plx-icon{--plx-comp-icon-size:var(--plx-comp-app-header-icon-size);}
+.plx-app-header__item .plx-avatar{block-size:var(--plx-comp-app-header-avatar-size);inline-size:var(--plx-comp-app-header-avatar-size);}
+/* the header name is a fixed width (a multiple of 4), so the pinned applications after it stay on the grid */
+.plx-app-header__switch .plx-app-header__name{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
+.plx-app-header__switch .plx-app-header__product,.plx-app-header__switch .plx-app-header__app{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-app-switcher__icon .plx-icon{--plx-comp-icon-size:var(--plx-comp-app-header-icon-size);}
+.plx-app-switcher__pin .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-inline);}
+/* the application's action: a fixed control in the header (density never changes the shell): 112 × 32px, a 16px icon; the fixed
+   width keeps the search icon before it on the 4px grid whatever the label */
+.plx-app-header__action .plx-button{--plx-comp-button-height:var(--plx-comp-app-header-action-height);--plx-comp-button-icon:var(--plx-comp-app-header-action-icon-size);inline-size:var(--plx-comp-app-header-action-width);justify-content:flex-start;overflow-x:hidden;}
+/* the account row in a pane footer: the avatar (20px) and the name side by side in a small ghost button */
+.plx-app-header__account-row .plx-button__label{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:inline-flex;}

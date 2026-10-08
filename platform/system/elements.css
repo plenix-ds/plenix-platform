@@ -1,0 +1,9 @@
+/* Element defaults: controls take the page font; code and headings use their
+   font roles; buttons and labels use the label font. */
+button,input,textarea,select{font-family:inherit;}
+code,pre,kbd,samp{font-family:var(--plx-sys-font-code);}
+h1,h2,h3,h4,h5,h6{font-family:var(--plx-sys-font-heading);}
+label{font-family:var(--plx-sys-font-label);}
+/* technical values (IDs, file names and paths, dates, sizes, counts) in DM Mono; code in DM Mono */
+.plx-font-data{font-family:var(--plx-sys-font-data);}
+.plx-font-code{font-family:var(--plx-sys-font-code);}

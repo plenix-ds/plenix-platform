@@ -1,0 +1,875 @@
+{
+  "$description": "reference tokens written under :root",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/reference.css",
+      "selector": ":root",
+      "opener": ":root {"
+    }
+  },
+  "plx-ref": {
+    "color-black": {
+      "$value": "#000000",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── COLOR: palette ── */"
+          ]
+        }
+      }
+    },
+    "color-gray-800": {
+      "$value": "#444444",
+      "$type": "color"
+    },
+    "color-gray-700": {
+      "$value": "#56585e",
+      "$type": "color"
+    },
+    "color-gray-600": {
+      "$value": "#6e6e6e",
+      "$type": "color"
+    },
+    "color-gray-500": {
+      "$value": "#8e9094",
+      "$type": "color"
+    },
+    "color-gray-300": {
+      "$value": "#d0d0d0",
+      "$type": "color"
+    },
+    "color-gray-200": {
+      "$value": "#e8e9ec",
+      "$type": "color"
+    },
+    "color-gray-100": {
+      "$value": "#f3f3f3",
+      "$type": "color"
+    },
+    "color-gray-75": {
+      "$value": "#f7f7f8",
+      "$type": "color"
+    },
+    "color-white": {
+      "$value": "#ffffff",
+      "$type": "color"
+    },
+    "color-blue-700": {
+      "$value": "#005a9e",
+      "$type": "color"
+    },
+    "color-blue-650": {
+      "$value": "#3d5a80",
+      "$type": "color"
+    },
+    "color-blue-600": {
+      "$value": "#1f5bb8",
+      "$type": "color"
+    },
+    "color-blue-400": {
+      "$value": "#2a6fdb",
+      "$type": "color"
+    },
+    "color-blue-350": {
+      "$value": "#8fb0d9",
+      "$type": "color"
+    },
+    "color-blue-250": {
+      "$value": "#c0ccda",
+      "$type": "color"
+    },
+    "color-blue-200": {
+      "$value": "#c8dff7",
+      "$type": "color"
+    },
+    "color-blue-100": {
+      "$value": "#ebf0f7",
+      "$type": "color"
+    },
+    "color-blue-50": {
+      "$value": "#f8fafd",
+      "$type": "color"
+    },
+    "color-red-700": {
+      "$value": "#9b3a5e",
+      "$type": "color"
+    },
+    "color-red-500": {
+      "$value": "#c42b1c",
+      "$type": "color"
+    },
+    "color-red-300": {
+      "$value": "#f07a70",
+      "$type": "color"
+    },
+    "color-red-200": {
+      "$value": "#efc6c2",
+      "$type": "color"
+    },
+    "color-red-100": {
+      "$value": "#fde7e7",
+      "$type": "color"
+    },
+    "color-brown-800": {
+      "$value": "#7d3c00",
+      "$type": "color"
+    },
+    "color-brown-500": {
+      "$value": "#c05a00",
+      "$type": "color"
+    },
+    "color-brown-200": {
+      "$value": "#eed2ba",
+      "$type": "color"
+    },
+    "color-brown-100": {
+      "$value": "#fef3e2",
+      "$type": "color"
+    },
+    "color-green-800": {
+      "$value": "#27500a",
+      "$type": "color"
+    },
+    "color-green-600": {
+      "$value": "#0e6b0e",
+      "$type": "color"
+    },
+    "color-green-500": {
+      "$value": "#107c10",
+      "$type": "color"
+    },
+    "color-green-200": {
+      "$value": "#bde8bd",
+      "$type": "color"
+    },
+    "color-green-100": {
+      "$value": "#dff6dd",
+      "$type": "color"
+    },
+    "color-purple-800": {
+      "$value": "#3c3489",
+      "$type": "color"
+    },
+    "color-purple-600": {
+      "$value": "#5e35b1",
+      "$type": "color"
+    },
+    "color-purple-500": {
+      "$value": "#744da9",
+      "$type": "color"
+    },
+    "color-purple-200": {
+      "$value": "#dacfe8",
+      "$type": "color"
+    },
+    "color-purple-100": {
+      "$value": "#f3eef8",
+      "$type": "color"
+    },
+    "font-size-09": {
+      "$value": "9px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TYPOGRAPHY: sizes ── */"
+          ]
+        }
+      }
+    },
+    "font-size-10": {
+      "$value": "10px",
+      "$type": "dimension"
+    },
+    "font-size-11": {
+      "$value": "11px",
+      "$type": "dimension"
+    },
+    "font-size-12": {
+      "$value": "12px",
+      "$type": "dimension"
+    },
+    "font-size-13": {
+      "$value": "13px",
+      "$type": "dimension"
+    },
+    "font-size-14": {
+      "$value": "14px",
+      "$type": "dimension"
+    },
+    "font-size-15": {
+      "$value": "15px",
+      "$type": "dimension"
+    },
+    "font-size-18": {
+      "$value": "18px",
+      "$type": "dimension"
+    },
+    "font-size-20": {
+      "$value": "20px",
+      "$type": "dimension"
+    },
+    "font-sans": {
+      "$value": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+      "$type": "fontFamily",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TYPOGRAPHY: families ── */"
+          ]
+        }
+      }
+    },
+    "font-mono": {
+      "$value": "\"DM Mono\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
+      "$type": "fontFamily"
+    },
+    "font-weight-regular-400": {
+      "$value": "400",
+      "$type": "fontWeight",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TYPOGRAPHY: weights ── */"
+          ]
+        }
+      }
+    },
+    "font-weight-medium-500": {
+      "$value": "500",
+      "$type": "fontWeight"
+    },
+    "font-weight-semibold-600": {
+      "$value": "600",
+      "$type": "fontWeight"
+    },
+    "font-weight-bold-700": {
+      "$value": "700",
+      "$type": "fontWeight"
+    },
+    "line-height-none": {
+      "$value": "1",
+      "$type": "number",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TYPOGRAPHY: line heights ── */"
+          ]
+        }
+      }
+    },
+    "line-height-tight": {
+      "$value": "1.3",
+      "$type": "number"
+    },
+    "line-height-snug": {
+      "$value": "1.4",
+      "$type": "number"
+    },
+    "line-height-normal": {
+      "$value": "1.5",
+      "$type": "number"
+    },
+    "line-height-relaxed": {
+      "$value": "1.7",
+      "$type": "number"
+    },
+    "letter-spacing-tight": {
+      "$value": "-0.02em",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── TYPOGRAPHY: letter spacing ── */"
+          ]
+        }
+      }
+    },
+    "letter-spacing-snug": {
+      "$value": "-0.01em",
+      "$type": "dimension"
+    },
+    "letter-spacing-wide": {
+      "$value": "0.04em",
+      "$type": "dimension"
+    },
+    "letter-spacing-wider": {
+      "$value": "0.05em",
+      "$type": "dimension"
+    },
+    "letter-spacing-caps": {
+      "$value": "0.06em",
+      "$type": "dimension"
+    },
+    "letter-spacing-widest": {
+      "$value": "0.08em",
+      "$type": "dimension"
+    },
+    "symbol-size": {
+      "$value": "32px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── SYMBOLS: one size for the characters used as pictures (close ×, star, drop-zone and empty-state marks) ── */"
+          ]
+        }
+      }
+    },
+    "space-4px": {
+      "$value": "0.25rem",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── SPACING: margin, padding, gap and offsets ── */"
+          ]
+        }
+      }
+    },
+    "space-8px": {
+      "$value": "0.5rem",
+      "$type": "dimension"
+    },
+    "space-12px": {
+      "$value": "0.75rem",
+      "$type": "dimension"
+    },
+    "space-16px": {
+      "$value": "1rem",
+      "$type": "dimension"
+    },
+    "space-20px": {
+      "$value": "1.25rem",
+      "$type": "dimension"
+    },
+    "space-24px": {
+      "$value": "1.5rem",
+      "$type": "dimension"
+    },
+    "space-28px": {
+      "$value": "1.75rem",
+      "$type": "dimension"
+    },
+    "space-32px": {
+      "$value": "2rem",
+      "$type": "dimension"
+    },
+    "space-40px": {
+      "$value": "2.5rem",
+      "$type": "dimension"
+    },
+    "space-48px": {
+      "$value": "3rem",
+      "$type": "dimension"
+    },
+    "space-64px": {
+      "$value": "4rem",
+      "$type": "dimension"
+    },
+    "size-4px": {
+      "$value": "4px",
+      "$type": "dimension"
+    },
+    "size-8px": {
+      "$value": "8px",
+      "$type": "dimension"
+    },
+    "size-12px": {
+      "$value": "12px",
+      "$type": "dimension"
+    },
+    "size-16px": {
+      "$value": "16px",
+      "$type": "dimension"
+    },
+    "size-20px": {
+      "$value": "20px",
+      "$type": "dimension"
+    },
+    "size-24px": {
+      "$value": "24px",
+      "$type": "dimension"
+    },
+    "size-28px": {
+      "$value": "28px",
+      "$type": "dimension"
+    },
+    "size-32px": {
+      "$value": "32px",
+      "$type": "dimension"
+    },
+    "size-36px": {
+      "$value": "36px",
+      "$type": "dimension"
+    },
+    "size-40px": {
+      "$value": "40px",
+      "$type": "dimension"
+    },
+    "size-44px": {
+      "$value": "44px",
+      "$type": "dimension"
+    },
+    "size-48px": {
+      "$value": "48px",
+      "$type": "dimension"
+    },
+    "size-52px": {
+      "$value": "52px",
+      "$type": "dimension"
+    },
+    "size-56px": {
+      "$value": "56px",
+      "$type": "dimension"
+    },
+    "size-60px": {
+      "$value": "60px",
+      "$type": "dimension"
+    },
+    "size-64px": {
+      "$value": "64px",
+      "$type": "dimension"
+    },
+    "size-68px": {
+      "$value": "68px",
+      "$type": "dimension"
+    },
+    "size-72px": {
+      "$value": "72px",
+      "$type": "dimension"
+    },
+    "size-80px": {
+      "$value": "80px",
+      "$type": "dimension"
+    },
+    "size-92px": {
+      "$value": "92px",
+      "$type": "dimension"
+    },
+    "size-96px": {
+      "$value": "96px",
+      "$type": "dimension"
+    },
+    "size-100px": {
+      "$value": "100px",
+      "$type": "dimension"
+    },
+    "size-112px": {
+      "$value": "112px",
+      "$type": "dimension"
+    },
+    "size-120px": {
+      "$value": "120px",
+      "$type": "dimension"
+    },
+    "size-132px": {
+      "$value": "132px",
+      "$type": "dimension"
+    },
+    "size-140px": {
+      "$value": "140px",
+      "$type": "dimension"
+    },
+    "size-152px": {
+      "$value": "152px",
+      "$type": "dimension"
+    },
+    "size-160px": {
+      "$value": "160px",
+      "$type": "dimension"
+    },
+    "size-180px": {
+      "$value": "180px",
+      "$type": "dimension"
+    },
+    "size-200px": {
+      "$value": "200px",
+      "$type": "dimension"
+    },
+    "size-220px": {
+      "$value": "220px",
+      "$type": "dimension"
+    },
+    "size-240px": {
+      "$value": "240px",
+      "$type": "dimension"
+    },
+    "size-280px": {
+      "$value": "280px",
+      "$type": "dimension"
+    },
+    "size-300px": {
+      "$value": "300px",
+      "$type": "dimension"
+    },
+    "size-320px": {
+      "$value": "320px",
+      "$type": "dimension"
+    },
+    "size-360px": {
+      "$value": "360px",
+      "$type": "dimension"
+    },
+    "size-400px": {
+      "$value": "400px",
+      "$type": "dimension"
+    },
+    "size-500px": {
+      "$value": "500px",
+      "$type": "dimension"
+    },
+    "size-560px": {
+      "$value": "560px",
+      "$type": "dimension"
+    },
+    "size-600px": {
+      "$value": "600px",
+      "$type": "dimension"
+    },
+    "size-720px": {
+      "$value": "720px",
+      "$type": "dimension"
+    },
+    "size-900px": {
+      "$value": "900px",
+      "$type": "dimension"
+    },
+    "glyph-size-6px": {
+      "$value": "6px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── GLYPHS: optical sizes of icons, dots, checkmarks, carets and separators ── */"
+          ]
+        }
+      }
+    },
+    "glyph-size-10px": {
+      "$value": "10px",
+      "$type": "dimension"
+    },
+    "glyph-size-14px": {
+      "$value": "14px",
+      "$type": "dimension"
+    },
+    "glyph-size-18px": {
+      "$value": "18px",
+      "$type": "dimension"
+    },
+    "border-width-1px": {
+      "$value": "1px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── BORDER: widths ── */"
+          ]
+        }
+      }
+    },
+    "border-width-2px": {
+      "$value": "2px",
+      "$type": "dimension"
+    },
+    "border-width-3px": {
+      "$value": "3px",
+      "$type": "dimension"
+    },
+    "border-width-4px": {
+      "$value": "4px",
+      "$type": "dimension"
+    },
+    "border-style-solid": {
+      "$value": "solid",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── BORDER: styles ── */"
+          ]
+        }
+      }
+    },
+    "border-style-dashed": {
+      "$value": "dashed"
+    },
+    "opacity-30": {
+      "$value": "0.3",
+      "$type": "number",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── OPACITY: the number is the percentage ── */"
+          ]
+        }
+      }
+    },
+    "opacity-50": {
+      "$value": "0.5",
+      "$type": "number"
+    },
+    "opacity-70": {
+      "$value": "0.7",
+      "$type": "number"
+    },
+    "motion-duration-fast": {
+      "$value": "0.15s",
+      "$type": "duration",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── MOTION: durations and easing ── */"
+          ]
+        }
+      }
+    },
+    "motion-duration-base": {
+      "$value": "0.2s",
+      "$type": "duration"
+    },
+    "motion-duration-slow": {
+      "$value": "0.25s",
+      "$type": "duration"
+    },
+    "motion-ease-standard": {
+      "$value": "ease"
+    },
+    "motion-duration-loop-fast": {
+      "$value": "0.7s",
+      "$type": "duration"
+    },
+    "motion-duration-loop-base": {
+      "$value": "1.1s",
+      "$type": "duration"
+    },
+    "motion-duration-loop-slow": {
+      "$value": "1.4s",
+      "$type": "duration"
+    },
+    "motion-delay-stagger": {
+      "$value": "0.18s",
+      "$type": "duration"
+    },
+    "radius-0px": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── RADIUS: values ── */"
+          ]
+        }
+      }
+    },
+    "radius-2px": {
+      "$value": "2px",
+      "$type": "dimension"
+    },
+    "radius-4px": {
+      "$value": "4px",
+      "$type": "dimension"
+    },
+    "radius-6px": {
+      "$value": "6px",
+      "$type": "dimension"
+    },
+    "radius-8px": {
+      "$value": "8px",
+      "$type": "dimension"
+    },
+    "radius-12px": {
+      "$value": "12px",
+      "$type": "dimension"
+    },
+    "radius-16px": {
+      "$value": "16px",
+      "$type": "dimension"
+    },
+    "radius-pill": {
+      "$value": "9999px",
+      "$type": "dimension"
+    },
+    "breakpoint-600px": {
+      "$value": "600px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── CONTROLS: sizes (value in the name; controls only) ── */",
+            "  /* breakpoints: read by the shell's JavaScript (CSS media queries cannot read custom properties; grid.css repeats them) */"
+          ]
+        }
+      }
+    },
+    "breakpoint-768px": {
+      "$value": "768px",
+      "$type": "dimension"
+    },
+    "breakpoint-1024px": {
+      "$value": "1024px",
+      "$type": "dimension"
+    },
+    "breakpoint-1440px": {
+      "$value": "1440px",
+      "$type": "dimension"
+    },
+    "breakpoint-1920px": {
+      "$value": "1920px",
+      "$type": "dimension"
+    },
+    "control-size-24px": {
+      "$value": "1.5rem",
+      "$type": "dimension"
+    },
+    "control-size-28px": {
+      "$value": "1.75rem",
+      "$type": "dimension"
+    },
+    "control-size-32px": {
+      "$value": "2rem",
+      "$type": "dimension"
+    },
+    "control-size-36px": {
+      "$value": "2.25rem",
+      "$type": "dimension"
+    },
+    "control-size-40px": {
+      "$value": "2.5rem",
+      "$type": "dimension"
+    },
+    "control-size-44px": {
+      "$value": "2.75rem",
+      "$type": "dimension"
+    },
+    "control-size-48px": {
+      "$value": "3rem",
+      "$type": "dimension"
+    },
+    "control-size-52px": {
+      "$value": "3.25rem",
+      "$type": "dimension"
+    },
+    "control-visual-size-16px": {
+      "$value": "16px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── CONTROLS: visual size inside a larger target, and target sizes ── */"
+          ]
+        }
+      }
+    },
+    "control-visual-size-20px": {
+      "$value": "20px",
+      "$type": "dimension"
+    },
+    "control-visual-size-24px": {
+      "$value": "24px",
+      "$type": "dimension"
+    },
+    "control-target-size-24px": {
+      "$value": "24px",
+      "$type": "dimension"
+    },
+    "control-target-size-28px": {
+      "$value": "28px",
+      "$type": "dimension"
+    },
+    "control-target-size-32px": {
+      "$value": "32px",
+      "$type": "dimension"
+    },
+    "control-target-size-44px": {
+      "$value": "44px",
+      "$type": "dimension"
+    },
+    "grid-columns-4": {
+      "$value": "4",
+      "$type": "number",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── LAYOUT: columns ── */"
+          ]
+        }
+      }
+    },
+    "grid-columns-8": {
+      "$value": "8",
+      "$type": "number"
+    },
+    "grid-columns-12": {
+      "$value": "12",
+      "$type": "number"
+    },
+    "grid-columns-16": {
+      "$value": "16",
+      "$type": "number"
+    },
+    "grid-gutter-12px": {
+      "$value": "12px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── LAYOUT: gutters and page margins (density picks one; see density ── */"
+          ]
+        }
+      }
+    },
+    "grid-gutter-16px": {
+      "$value": "16px",
+      "$type": "dimension"
+    },
+    "grid-gutter-24px": {
+      "$value": "24px",
+      "$type": "dimension"
+    },
+    "grid-margin-16px": {
+      "$value": "16px",
+      "$type": "dimension"
+    },
+    "grid-margin-24px": {
+      "$value": "24px",
+      "$type": "dimension"
+    },
+    "grid-margin-32px": {
+      "$value": "32px",
+      "$type": "dimension"
+    },
+    "grid-margin-48px": {
+      "$value": "48px",
+      "$type": "dimension"
+    },
+    "content-max-760px": {
+      "$value": "760px",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── LAYOUT: content max-widths (prose, forms, record detail, editors, very wide workspaces) ── */"
+          ]
+        }
+      }
+    },
+    "content-max-960px": {
+      "$value": "960px",
+      "$type": "dimension"
+    },
+    "content-max-1200px": {
+      "$value": "1200px",
+      "$type": "dimension"
+    },
+    "content-max-1600px": {
+      "$value": "1600px",
+      "$type": "dimension"
+    },
+    "content-max-2600px": {
+      "$value": "2600px",
+      "$type": "dimension"
+    }
+  }
+}

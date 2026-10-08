@@ -1,0 +1,468 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="131" name="Git Metadata" category="CLD" category_label="Cloud / Versioning" used_for="Code repositories (Git internals)" spec_source="https://git-scm.com/docs/gitformat-* (gitformat-pack, gitformat-index, gitformat-commit-graph)" completeness="comprehensive" record_count="77">
+  <description>Git is a content-addressed object store. Four object types (blob, tree, commit, tag) are hashed by their content (SHA-1 by default; SHA-256 in newer repos). Refs name commits; the index stages changes; pack files efficiently store many objects. Hooks, attributes, configs, and signatures provide the operational metadata.</description>
+  <attributes>
+    <attribute>
+      <name>Blob object</name>
+      <data_type>Object</data_type>
+      <group>Object Types</group>
+      <description>Stores file content (no name, no metadata)</description>
+    </attribute>
+    <attribute>
+      <name>Tree object</name>
+      <data_type>Object</data_type>
+      <group>Object Types</group>
+      <description>Directory listing: mode, type, hash, name entries</description>
+    </attribute>
+    <attribute>
+      <name>Commit object</name>
+      <data_type>Object</data_type>
+      <group>Object Types</group>
+      <description>Pointer to tree + parent commits + author + committer + message</description>
+    </attribute>
+    <attribute>
+      <name>Tag object (annotated)</name>
+      <data_type>Object</data_type>
+      <group>Object Types</group>
+      <description>Pointer to object + tagger + message + signature</description>
+    </attribute>
+    <attribute>
+      <name>Object SHA-1 / SHA-256</name>
+      <data_type>Hash</data_type>
+      <group>Object Header</group>
+      <description>Cryptographic content-addressed identifier</description>
+    </attribute>
+    <attribute>
+      <name>tree</name>
+      <data_type>Hash ref</data_type>
+      <group>Commit</group>
+      <description>Root tree object SHA</description>
+    </attribute>
+    <attribute>
+      <name>parent</name>
+      <data_type>Hash ref (multiple)</data_type>
+      <group>Commit</group>
+      <description>Parent commit SHA(s) — zero for root, two+ for merges</description>
+    </attribute>
+    <attribute>
+      <name>author</name>
+      <data_type>Identity + timestamp</data_type>
+      <group>Commit</group>
+      <description>Original author 'Name &lt;email&gt; timestamp tz'</description>
+    </attribute>
+    <attribute>
+      <name>committer</name>
+      <data_type>Identity + timestamp</data_type>
+      <group>Commit</group>
+      <description>Committer (may differ from author after rebases)</description>
+    </attribute>
+    <attribute>
+      <name>encoding</name>
+      <data_type>String</data_type>
+      <group>Commit</group>
+      <description>Commit message encoding (default UTF-8)</description>
+    </attribute>
+    <attribute>
+      <name>gpgsig</name>
+      <data_type>PGP signature</data_type>
+      <group>Commit</group>
+      <description>Inline OpenPGP signature of the commit</description>
+    </attribute>
+    <attribute>
+      <name>mergetag</name>
+      <data_type>Embedded tag</data_type>
+      <group>Commit</group>
+      <description>Merged signed tag preserved in merge commit</description>
+    </attribute>
+    <attribute>
+      <name>commit message</name>
+      <data_type>Text body</data_type>
+      <group>Commit</group>
+      <description>Free-form message after blank-line separator</description>
+    </attribute>
+    <attribute>
+      <name>Tree entry: mode</name>
+      <data_type>Octal</data_type>
+      <group>Tree</group>
+      <description>100644 (file), 100755 (executable), 120000 (symlink), 040000 (subdirectory), 160000 (gitlink/submodule), 100664 (group writable, rare)</description>
+    </attribute>
+    <attribute>
+      <name>Tree entry: type</name>
+      <data_type>Implied</data_type>
+      <group>Tree</group>
+      <description>blob or tree (or commit for submodules)</description>
+    </attribute>
+    <attribute>
+      <name>Tree entry: hash</name>
+      <data_type>SHA</data_type>
+      <group>Tree</group>
+      <description>Object hash</description>
+    </attribute>
+    <attribute>
+      <name>Tree entry: name</name>
+      <data_type>Bytes</data_type>
+      <group>Tree</group>
+      <description>Entry filename (no path separators)</description>
+    </attribute>
+    <attribute>
+      <name>object</name>
+      <data_type>Hash ref</data_type>
+      <group>Tag</group>
+      <description>Tagged object hash</description>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <data_type>Object type</data_type>
+      <group>Tag</group>
+      <description>blob/tree/commit/tag</description>
+    </attribute>
+    <attribute>
+      <name>tag</name>
+      <data_type>Tag name</data_type>
+      <group>Tag</group>
+      <description>Tag display name</description>
+    </attribute>
+    <attribute>
+      <name>tagger</name>
+      <data_type>Identity + timestamp</data_type>
+      <group>Tag</group>
+      <description>Tagger info</description>
+    </attribute>
+    <attribute>
+      <name>tag message + signature</name>
+      <data_type>Text + PGP</data_type>
+      <group>Tag</group>
+      <description>Tag annotation and optional signature</description>
+    </attribute>
+    <attribute>
+      <name>HEAD</name>
+      <data_type>Symbolic ref</data_type>
+      <group>Refs</group>
+      <description>Currently checked-out branch reference</description>
+    </attribute>
+    <attribute>
+      <name>refs/heads/&lt;branch&gt;</name>
+      <data_type>Hash</data_type>
+      <group>Refs</group>
+      <description>Local branch tip</description>
+    </attribute>
+    <attribute>
+      <name>refs/tags/&lt;tag&gt;</name>
+      <data_type>Hash</data_type>
+      <group>Refs</group>
+      <description>Tag pointer</description>
+    </attribute>
+    <attribute>
+      <name>refs/remotes/&lt;remote&gt;/&lt;branch&gt;</name>
+      <data_type>Hash</data_type>
+      <group>Refs</group>
+      <description>Remote-tracking branch</description>
+    </attribute>
+    <attribute>
+      <name>packed-refs</name>
+      <data_type>File</data_type>
+      <group>Refs</group>
+      <description>Combined ref storage — tip + optional peeled annotated tag</description>
+    </attribute>
+    <attribute>
+      <name>Pack file header</name>
+      <data_type>PACK signature + version + count</data_type>
+      <group>Pack Format</group>
+      <description>Magic 'PACK', version 2 or 3, object count</description>
+    </attribute>
+    <attribute>
+      <name>Pack object: type</name>
+      <data_type>3-bit field</data_type>
+      <group>Pack Format</group>
+      <description>OBJ_COMMIT(1), OBJ_TREE(2), OBJ_BLOB(3), OBJ_TAG(4), OBJ_OFS_DELTA(6), OBJ_REF_DELTA(7)</description>
+    </attribute>
+    <attribute>
+      <name>Pack object: size</name>
+      <data_type>Variable-length</data_type>
+      <group>Pack Format</group>
+      <description>Inflated size</description>
+    </attribute>
+    <attribute>
+      <name>Pack delta: base ref</name>
+      <data_type>20 bytes (SHA-1) or offset</data_type>
+      <group>Pack Format</group>
+      <description>Reference or offset to base object</description>
+    </attribute>
+    <attribute>
+      <name>Pack delta: instructions</name>
+      <data_type>Copy/insert ops</data_type>
+      <group>Pack Format</group>
+      <description>Reconstruct full object from base + ops</description>
+    </attribute>
+    <attribute>
+      <name>Pack index (.idx)</name>
+      <data_type>File</data_type>
+      <group>Pack Format</group>
+      <description>Sorted SHA list with offsets, optional CRC32</description>
+    </attribute>
+    <attribute>
+      <name>Multi-pack-index (midx)</name>
+      <data_type>File</data_type>
+      <group>Pack Format</group>
+      <description>Index across multiple pack files</description>
+    </attribute>
+    <attribute>
+      <name>Index header signature</name>
+      <data_type>ASCII 'DIRC'</data_type>
+      <group>Index</group>
+      <description>Index file magic</description>
+    </attribute>
+    <attribute>
+      <name>Index version</name>
+      <data_type>UInt32</data_type>
+      <group>Index</group>
+      <description>2, 3, or 4</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: ctime / mtime</name>
+      <data_type>UInt32 × 4 (sec + nsec)</data_type>
+      <group>Index Entry</group>
+      <description>Create / modify times</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: dev / ino</name>
+      <data_type>UInt32 × 2</data_type>
+      <group>Index Entry</group>
+      <description>Device and inode</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: mode</name>
+      <data_type>UInt32</data_type>
+      <group>Index Entry</group>
+      <description>File mode (matches tree mode)</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: uid / gid</name>
+      <data_type>UInt32 × 2</data_type>
+      <group>Index Entry</group>
+      <description>Owner UID/GID</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: file size</name>
+      <data_type>UInt32</data_type>
+      <group>Index Entry</group>
+      <description>On-disk size</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: SHA</name>
+      <data_type>20 bytes</data_type>
+      <group>Index Entry</group>
+      <description>Object SHA</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: flags</name>
+      <data_type>UInt16</data_type>
+      <group>Index Entry</group>
+      <description>Stage 0-3 (merge), assume-valid, extended, name length</description>
+    </attribute>
+    <attribute>
+      <name>Index entry: name</name>
+      <data_type>Bytes</data_type>
+      <group>Index Entry</group>
+      <description>Path</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: TREE</name>
+      <data_type>Cache</data_type>
+      <group>Index Extensions</group>
+      <description>Cached tree to speed status/diff</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: REUC</name>
+      <data_type>Cache</data_type>
+      <group>Index Extensions</group>
+      <description>Resolve undo info</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: link</name>
+      <data_type>Split index</data_type>
+      <group>Index Extensions</group>
+      <description>Link to base index</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: UNTR</name>
+      <data_type>Untracked cache</data_type>
+      <group>Index Extensions</group>
+      <description>Untracked file cache</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: FSMN</name>
+      <data_type>fsmonitor cache</data_type>
+      <group>Index Extensions</group>
+      <description>Filesystem monitor state</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: EOIE</name>
+      <data_type>End of index</data_type>
+      <group>Index Extensions</group>
+      <description>End-of-index marker</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: IEOT</name>
+      <data_type>Index entry offset table</data_type>
+      <group>Index Extensions</group>
+      <description>Parallel reading</description>
+    </attribute>
+    <attribute>
+      <name>Index extension: sdir</name>
+      <data_type>Sparse directories</data_type>
+      <group>Index Extensions</group>
+      <description>Sparse checkout markers</description>
+    </attribute>
+    <attribute>
+      <name>config: [user] name / email / signingkey</name>
+      <data_type>INI</data_type>
+      <group>Config</group>
+      <description>User identity</description>
+    </attribute>
+    <attribute>
+      <name>config: [core] repositoryformatversion / filemode / bare / logallrefupdates / ignorecase / precomposeunicode / hideDotFiles / packedGitLimit / autocrlf / safecrlf / fileMode / sharedRepository / trustctime / untrackedCache / fsmonitor / longpaths</name>
+      <data_type>INI</data_type>
+      <group>Config</group>
+      <description>Core repository options</description>
+    </attribute>
+    <attribute>
+      <name>config: [remote "origin"] url / fetch / pushurl</name>
+      <data_type>INI</data_type>
+      <group>Config</group>
+      <description>Remote definition</description>
+    </attribute>
+    <attribute>
+      <name>config: [branch "main"] remote / merge / rebase</name>
+      <data_type>INI</data_type>
+      <group>Config</group>
+      <description>Branch tracking</description>
+    </attribute>
+    <attribute>
+      <name>config: [submodule "&lt;name&gt;"] active / url / branch / fetchRecurseSubmodules / ignore / update</name>
+      <data_type>INI</data_type>
+      <group>Config</group>
+      <description>Submodule config</description>
+    </attribute>
+    <attribute>
+      <name>config: [diff] / [merge] / [push] / [pull] / [fetch] / [credential]</name>
+      <data_type>INI</data_type>
+      <group>Config</group>
+      <description>Behavior knobs</description>
+    </attribute>
+    <attribute>
+      <name>.gitmodules: [submodule "name"] path / url / branch / shallow / fetchRecurseSubmodules / ignore / update</name>
+      <data_type>INI</data_type>
+      <group>Submodules</group>
+      <description>.gitmodules in working tree</description>
+    </attribute>
+    <attribute>
+      <name>.gitignore patterns</name>
+      <data_type>Glob lines</data_type>
+      <group>Ignore</group>
+      <description>Pattern, ! negation, **/ recursive, / leading anchor, trailing /</description>
+    </attribute>
+    <attribute>
+      <name>.gitattributes patterns</name>
+      <data_type>Pattern + attrs</data_type>
+      <group>Attributes</group>
+      <description>text, eol, binary, filter, diff, merge, ident, export-subst, export-ignore, encoding, working-tree-encoding, linguist-*</description>
+    </attribute>
+    <attribute>
+      <name>Hook: pre-commit / prepare-commit-msg / commit-msg / post-commit / pre-rebase / post-checkout / post-merge / pre-push / pre-receive / update / post-receive / post-update / push-to-checkout / pre-auto-gc / post-rewrite / sendemail-validate / fsmonitor-watchman / p4-changelist / p4-pre-submit / p4-prepare-changelist / p4-post-changelist / proc-receive / reference-transaction</name>
+      <data_type>Script</data_type>
+      <group>Hooks</group>
+      <description>Per-event executable hooks in .git/hooks/</description>
+    </attribute>
+    <attribute>
+      <name>Reflog entry: oldsha newsha committer-ident timestamp message</name>
+      <data_type>Line</data_type>
+      <group>Reflog</group>
+      <description>Per-ref change history (.git/logs/...)</description>
+    </attribute>
+    <attribute>
+      <name>refs/notes/commits</name>
+      <data_type>Notes ref</data_type>
+      <group>Notes</group>
+      <description>Commit notes mechanism (git notes)</description>
+    </attribute>
+    <attribute>
+      <name>Signed commit (gpgsig)</name>
+      <data_type>OpenPGP detached</data_type>
+      <group>Signatures</group>
+      <description>GPG signature of commit content</description>
+    </attribute>
+    <attribute>
+      <name>Signed commit (SSH)</name>
+      <data_type>SSHSIG armor</data_type>
+      <group>Signatures</group>
+      <description>SSH signature (gpg.format=ssh)</description>
+    </attribute>
+    <attribute>
+      <name>Signed commit (X.509)</name>
+      <data_type>S/MIME</data_type>
+      <group>Signatures</group>
+      <description>X.509 commit signature (gpg.format=x509)</description>
+    </attribute>
+    <attribute>
+      <name>Signed tag</name>
+      <data_type>Like commit</data_type>
+      <group>Signatures</group>
+      <description>Annotated tag signature</description>
+    </attribute>
+    <attribute>
+      <name>.git/worktrees/&lt;name&gt;/</name>
+      <data_type>Directory</data_type>
+      <group>Worktrees</group>
+      <description>Linked worktree state</description>
+    </attribute>
+    <attribute>
+      <name>HEAD / commondir / gitdir / locked / sparse / config.worktree</name>
+      <data_type>Files</data_type>
+      <group>Worktrees</group>
+      <description>Per-worktree files</description>
+    </attribute>
+    <attribute>
+      <name>.git/HEAD / ORIG_HEAD / FETCH_HEAD / MERGE_HEAD / CHERRY_PICK_HEAD / REVERT_HEAD / BISECT_HEAD / AUTO_MERGE</name>
+      <data_type>Refs</data_type>
+      <group>Special Refs</group>
+      <description>Operation state pointers</description>
+    </attribute>
+    <attribute>
+      <name>.git/MERGE_MSG / SQUASH_MSG / COMMIT_EDITMSG / TAG_EDITMSG / MERGE_MODE / MERGE_RR</name>
+      <data_type>Files</data_type>
+      <group>State Files</group>
+      <description>In-progress operation state</description>
+    </attribute>
+    <attribute>
+      <name>.git/info/exclude / info/sparse-checkout</name>
+      <data_type>Files</data_type>
+      <group>State Files</group>
+      <description>Per-repo ignore + sparse rules</description>
+    </attribute>
+    <attribute>
+      <name>.git/shallow</name>
+      <data_type>File</data_type>
+      <group>State Files</group>
+      <description>Shallow boundary commits</description>
+    </attribute>
+    <attribute>
+      <name>.git/index.lock</name>
+      <data_type>File</data_type>
+      <group>State Files</group>
+      <description>Lock file during index updates</description>
+    </attribute>
+    <attribute>
+      <name>.git/objects/info/alternates</name>
+      <data_type>File</data_type>
+      <group>State Files</group>
+      <description>Alternate object directories</description>
+    </attribute>
+    <attribute>
+      <name>Commit trailers</name>
+      <data_type>Key: value lines</data_type>
+      <group>Conventions</group>
+      <description>Signed-off-by, Co-authored-by, Reviewed-by, Tested-by, Reported-by, Acked-by, Cc, Fixes, Closes</description>
+    </attribute>
+  </attributes>
+</metadata_system>

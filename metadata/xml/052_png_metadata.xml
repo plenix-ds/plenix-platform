@@ -1,0 +1,714 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="052" name="PNG Metadata" category="IMG" category_label="Images" used_for="PNG images" spec_source="ExifTool 12.76 — groups: PNG" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="69">
+  <description>Attribute set for PNG Metadata. Sourced from ExifTool's tag database (group prefix(es): PNG). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>AnimationFrames</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AnimationControl</group>
+      <subsystem>PNG::AnimationControl</subsystem>
+      <description>Animation Frames</description>
+    </attribute>
+    <attribute>
+      <name>AnimationPlays</name>
+      <tag_id>1</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AnimationControl</group>
+      <subsystem>PNG::AnimationControl</subsystem>
+      <description>Animation Plays</description>
+    </attribute>
+    <attribute>
+      <name>ColorPrimaries</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>CICodePoints</group>
+      <subsystem>PNG::CICodePoints</subsystem>
+      <description>Color Primaries</description>
+      <values>
+        <value key="1">BT.709</value>
+        <value key="2">Unspecified</value>
+        <value key="4">BT.470 System M (historical)</value>
+        <value key="5">BT.470 System B, G (historical)</value>
+        <value key="6">BT.601</value>
+        <value key="7">SMPTE 240</value>
+        <value key="8">Generic film (color filters using illuminant C)</value>
+        <value key="9">BT.2020, BT.2100</value>
+        <value key="10">SMPTE 428 (CIE 1921 XYZ)</value>
+        <value key="11">SMPTE RP 431-2</value>
+        <value key="12">SMPTE EG 432-1</value>
+        <value key="22">EBU Tech. 3213-E</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TransferCharacteristics</name>
+      <tag_id>1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>CICodePoints</group>
+      <subsystem>PNG::CICodePoints</subsystem>
+      <description>Transfer Characteristics</description>
+      <values>
+        <value key="0">For future use (0)</value>
+        <value key="1">BT.709</value>
+        <value key="2">Unspecified</value>
+        <value key="3">For future use (3)</value>
+        <value key="4">BT.470 System M (historical)</value>
+        <value key="5">BT.470 System B, G (historical)</value>
+        <value key="6">BT.601</value>
+        <value key="7">SMPTE 240 M</value>
+        <value key="8">Linear</value>
+        <value key="9">Logarithmic (100 : 1 range)</value>
+        <value key="10">Logarithmic (100 * Sqrt(10) : 1 range)</value>
+        <value key="11">IEC 61966-2-4</value>
+        <value key="12">BT.1361</value>
+        <value key="13">sRGB or sYCC</value>
+        <value key="14">BT.2020 10-bit systems</value>
+        <value key="15">BT.2020 12-bit systems</value>
+        <value key="16">SMPTE ST 2084, ITU BT.2100 PQ</value>
+        <value key="17">SMPTE ST 428</value>
+        <value key="18">BT.2100 HLG, ARIB STD-B67</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>MatrixCoefficients</name>
+      <tag_id>2</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>CICodePoints</group>
+      <subsystem>PNG::CICodePoints</subsystem>
+      <description>Matrix Coefficients</description>
+      <values>
+        <value key="0">Identity matrix</value>
+        <value key="1">BT.709</value>
+        <value key="2">Unspecified</value>
+        <value key="3">For future use (3)</value>
+        <value key="4">US FCC 73.628</value>
+        <value key="5">BT.470 System B, G (historical)</value>
+        <value key="6">BT.601</value>
+        <value key="7">SMPTE 240 M</value>
+        <value key="8">YCgCo</value>
+        <value key="9">BT.2020 non-constant luminance, BT.2100 YCbCr</value>
+        <value key="10">BT.2020 constant luminance</value>
+        <value key="11">SMPTE ST 2085 YDzDx</value>
+        <value key="12">Chromaticity-derived non-constant luminance</value>
+        <value key="13">Chromaticity-derived constant luminance</value>
+        <value key="14">BT.2100 ICtCp</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>VideoFullRangeFlag</name>
+      <tag_id>3</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>CICodePoints</group>
+      <subsystem>PNG::CICodePoints</subsystem>
+      <description>Video Full Range Flag</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>BitDepth</name>
+      <tag_id>8</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Bit Depth</description>
+    </attribute>
+    <attribute>
+      <name>ColorType</name>
+      <tag_id>9</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Color Type</description>
+      <values>
+        <value key="0">Grayscale</value>
+        <value key="2">RGB</value>
+        <value key="3">Palette</value>
+        <value key="4">Grayscale with Alpha</value>
+        <value key="6">RGB with Alpha</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Compression</name>
+      <tag_id>10</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Compression</description>
+      <values>
+        <value key="0">Deflate/Inflate</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Filter</name>
+      <tag_id>11</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Filter</description>
+      <values>
+        <value key="0">Adaptive</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Interlace</name>
+      <tag_id>12</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ImageHeader</group>
+      <subsystem>PNG::ImageHeader</subsystem>
+      <description>Interlace</description>
+      <values>
+        <value key="0">Noninterlaced</value>
+        <value key="1">Adam7 Interlace</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Palette</name>
+      <tag_id>PLTE</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Palette</description>
+    </attribute>
+    <attribute>
+      <name>BackgroundColor</name>
+      <tag_id>bKGD</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Background Color</description>
+    </attribute>
+    <attribute>
+      <name>DigitalSignature</name>
+      <tag_id>dSIG</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Digital Signature</description>
+    </attribute>
+    <attribute>
+      <name>FractalParameters</name>
+      <tag_id>fRAc</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Fractal Parameters</description>
+    </attribute>
+    <attribute>
+      <name>Gamma</name>
+      <tag_id>gAMA</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Gamma</description>
+    </attribute>
+    <attribute>
+      <name>GIFGraphicControlExtension</name>
+      <tag_id>gIFg</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>GIF Graphic Control Extension</description>
+    </attribute>
+    <attribute>
+      <name>GIFPlainTextExtension</name>
+      <tag_id>gIFt</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>GIF Plain Text Extension</description>
+    </attribute>
+    <attribute>
+      <name>GIFApplicationExtension</name>
+      <tag_id>gIFx</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>GIF Application Extension</description>
+    </attribute>
+    <attribute>
+      <name>PaletteHistogram</name>
+      <tag_id>hIST</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Palette Histogram</description>
+    </attribute>
+    <attribute>
+      <name>ProfileName</name>
+      <tag_id>iCCP-name</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Profile Name</description>
+    </attribute>
+    <attribute>
+      <name>AppleDataOffsets</name>
+      <tag_id>iDOT</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Apple Data Offsets</description>
+    </attribute>
+    <attribute>
+      <name>ImageOffset</name>
+      <tag_id>oFFs</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Image Offset</description>
+    </attribute>
+    <attribute>
+      <name>PixelCalibration</name>
+      <tag_id>pCAL</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Pixel Calibration</description>
+    </attribute>
+    <attribute>
+      <name>SignificantBits</name>
+      <tag_id>sBIT</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Significant Bits</description>
+    </attribute>
+    <attribute>
+      <name>SuggestedPalette</name>
+      <tag_id>sPLT</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Suggested Palette</description>
+    </attribute>
+    <attribute>
+      <name>SRGBRendering</name>
+      <tag_id>sRGB</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>SRGB Rendering</description>
+      <values>
+        <value key="0">Perceptual</value>
+        <value key="1">Relative Colorimetric</value>
+        <value key="2">Saturation</value>
+        <value key="3">Absolute Colorimetric</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>tIME</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>Transparency</name>
+      <tag_id>tRNS</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PNG::Main</subsystem>
+      <description>Transparency</description>
+    </attribute>
+    <attribute>
+      <name>PixelsPerUnitX</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>PhysicalPixel</group>
+      <subsystem>PNG::PhysicalPixel</subsystem>
+      <description>Pixels Per Unit X</description>
+    </attribute>
+    <attribute>
+      <name>PixelsPerUnitY</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>PhysicalPixel</group>
+      <subsystem>PNG::PhysicalPixel</subsystem>
+      <description>Pixels Per Unit Y</description>
+    </attribute>
+    <attribute>
+      <name>PixelUnits</name>
+      <tag_id>8</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>PhysicalPixel</group>
+      <subsystem>PNG::PhysicalPixel</subsystem>
+      <description>Pixel Units</description>
+      <values>
+        <value key="0">Unknown</value>
+        <value key="1">meters</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>WhitePointX</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>White Point X</description>
+    </attribute>
+    <attribute>
+      <name>WhitePointY</name>
+      <tag_id>1</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>White Point Y</description>
+    </attribute>
+    <attribute>
+      <name>RedX</name>
+      <tag_id>2</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>Red X</description>
+    </attribute>
+    <attribute>
+      <name>RedY</name>
+      <tag_id>3</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>Red Y</description>
+    </attribute>
+    <attribute>
+      <name>GreenX</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>Green X</description>
+    </attribute>
+    <attribute>
+      <name>GreenY</name>
+      <tag_id>5</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>Green Y</description>
+    </attribute>
+    <attribute>
+      <name>BlueX</name>
+      <tag_id>6</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>Blue X</description>
+    </attribute>
+    <attribute>
+      <name>BlueY</name>
+      <tag_id>7</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryChromaticities</group>
+      <subsystem>PNG::PrimaryChromaticities</subsystem>
+      <description>Blue Y</description>
+    </attribute>
+    <attribute>
+      <name>StereoMode</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>StereoImage</group>
+      <subsystem>PNG::StereoImage</subsystem>
+      <description>Stereo Mode</description>
+      <values>
+        <value key="0">Cross-fuse Layout</value>
+        <value key="1">Diverging-fuse Layout</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SubjectUnits</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>SubjectScale</group>
+      <subsystem>PNG::SubjectScale</subsystem>
+      <description>Subject Units</description>
+      <values>
+        <value key="1">meters</value>
+        <value key="2">radians</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SubjectPixelWidth</name>
+      <tag_id>1</tag_id>
+      <data_type>var_string</data_type>
+      <writable>false</writable>
+      <group>SubjectScale</group>
+      <subsystem>PNG::SubjectScale</subsystem>
+      <description>Subject Pixel Width</description>
+    </attribute>
+    <attribute>
+      <name>SubjectPixelHeight</name>
+      <tag_id>2</tag_id>
+      <data_type>var_string</data_type>
+      <writable>false</writable>
+      <group>SubjectScale</group>
+      <subsystem>PNG::SubjectScale</subsystem>
+      <description>Subject Pixel Height</description>
+    </attribute>
+    <attribute>
+      <name>Artist</name>
+      <tag_id>Artist</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Artist</description>
+    </attribute>
+    <attribute>
+      <name>Author</name>
+      <tag_id>Author</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Author</description>
+    </attribute>
+    <attribute>
+      <name>Collection</name>
+      <tag_id>Collection</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Collection</description>
+    </attribute>
+    <attribute>
+      <name>Comment</name>
+      <tag_id>Comment</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Comment</description>
+    </attribute>
+    <attribute>
+      <name>Copyright</name>
+      <tag_id>Copyright</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>CreationTime</name>
+      <tag_id>Creation Time</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Creation Time</description>
+    </attribute>
+    <attribute>
+      <name>Description</name>
+      <tag_id>Description</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>Disclaimer</name>
+      <tag_id>Disclaimer</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Disclaimer</description>
+    </attribute>
+    <attribute>
+      <name>Document</name>
+      <tag_id>Document</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Document</description>
+    </attribute>
+    <attribute>
+      <name>Label</name>
+      <tag_id>Label</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Label</description>
+    </attribute>
+    <attribute>
+      <name>Make</name>
+      <tag_id>Make</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Make</description>
+    </attribute>
+    <attribute>
+      <name>Model</name>
+      <tag_id>Model</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Model</description>
+    </attribute>
+    <attribute>
+      <name>Software</name>
+      <tag_id>Software</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Software</description>
+    </attribute>
+    <attribute>
+      <name>Source</name>
+      <tag_id>Source</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Source</description>
+    </attribute>
+    <attribute>
+      <name>TimeStamp</name>
+      <tag_id>TimeStamp</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Time Stamp</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>Title</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>URL</name>
+      <tag_id>URL</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>URL</description>
+    </attribute>
+    <attribute>
+      <name>PNGWarning</name>
+      <tag_id>Warning</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>PNG Warning</description>
+    </attribute>
+    <attribute>
+      <name>CreateDate</name>
+      <tag_id>create-date</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Create Date</description>
+    </attribute>
+    <attribute>
+      <name>ModDate</name>
+      <tag_id>modify-date</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>TextualData</group>
+      <subsystem>PNG::TextualData</subsystem>
+      <description>Mod Date</description>
+    </attribute>
+    <attribute>
+      <name>VirtualImageWidth</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>VirtualPage</group>
+      <subsystem>PNG::VirtualPage</subsystem>
+      <description>Virtual Image Width</description>
+    </attribute>
+    <attribute>
+      <name>VirtualImageHeight</name>
+      <tag_id>1</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>VirtualPage</group>
+      <subsystem>PNG::VirtualPage</subsystem>
+      <description>Virtual Image Height</description>
+    </attribute>
+    <attribute>
+      <name>VirtualPageUnits</name>
+      <tag_id>2</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>VirtualPage</group>
+      <subsystem>PNG::VirtualPage</subsystem>
+      <description>Virtual Page Units</description>
+    </attribute>
+  </attributes>
+</metadata_system>

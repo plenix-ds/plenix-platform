@@ -1,0 +1,665 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="223" name="ELF Binary Metadata" category="SPC" category_label="Specialized" used_for="Linux executables, shared libraries, object files" spec_source="System V ABI / ELF specification (https://refspecs.linuxfoundation.org/elf/)" spec_version="ELF gABI 1.5+ with GNU/Linux extensions" completeness="comprehensive" record_count="94">
+  <description>Executable and Linkable Format — Unix/Linux native binary format. Header → Program Headers (segments for loading) → Section Headers (link-time view) → optional symbol tables, strings, relocations, dynamic linker info, debug info, and notes.</description>
+  <attributes>
+    <attribute>
+      <name>e_ident[EI_MAG0..3]</name>
+      <data_type>4 bytes</data_type>
+      <group>ELF Header</group>
+      <description>Magic: 0x7F 'E' 'L' 'F'</description>
+    </attribute>
+    <attribute>
+      <name>e_ident[EI_CLASS]</name>
+      <data_type>UInt8</data_type>
+      <group>ELF Header</group>
+      <description>File class</description>
+      <values>
+        <value key="0">ELFCLASSNONE</value>
+        <value key="1">ELFCLASS32</value>
+        <value key="2">ELFCLASS64</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>e_ident[EI_DATA]</name>
+      <data_type>UInt8</data_type>
+      <group>ELF Header</group>
+      <description>Data encoding</description>
+      <values>
+        <value key="0">ELFDATANONE</value>
+        <value key="1">ELFDATA2LSB (little-endian)</value>
+        <value key="2">ELFDATA2MSB (big-endian)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>e_ident[EI_VERSION]</name>
+      <data_type>UInt8</data_type>
+      <group>ELF Header</group>
+      <description>ELF version (1)</description>
+    </attribute>
+    <attribute>
+      <name>e_ident[EI_OSABI]</name>
+      <data_type>UInt8</data_type>
+      <group>ELF Header</group>
+      <description>OS ABI</description>
+      <values>
+        <value key="0">System V</value>
+        <value key="1">HP-UX</value>
+        <value key="2">NetBSD</value>
+        <value key="3">Linux</value>
+        <value key="6">Solaris</value>
+        <value key="7">AIX</value>
+        <value key="8">IRIX</value>
+        <value key="9">FreeBSD</value>
+        <value key="10">Tru64</value>
+        <value key="11">Modesto</value>
+        <value key="12">OpenBSD</value>
+        <value key="64">ARM EABI</value>
+        <value key="97">ARM</value>
+        <value key="255">Standalone</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>e_ident[EI_ABIVERSION]</name>
+      <data_type>UInt8</data_type>
+      <group>ELF Header</group>
+      <description>ABI version</description>
+    </attribute>
+    <attribute>
+      <name>e_ident[EI_PAD]</name>
+      <data_type>7 bytes</data_type>
+      <group>ELF Header</group>
+      <description>Padding</description>
+    </attribute>
+    <attribute>
+      <name>e_type</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Object file type</description>
+      <values>
+        <value key="0">ET_NONE</value>
+        <value key="1">ET_REL (relocatable)</value>
+        <value key="2">ET_EXEC (executable)</value>
+        <value key="3">ET_DYN (shared object / PIE)</value>
+        <value key="4">ET_CORE (core dump)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>e_machine</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Architecture</description>
+      <values>
+        <value key="3">EM_386</value>
+        <value key="8">EM_MIPS</value>
+        <value key="20">EM_PPC</value>
+        <value key="21">EM_PPC64</value>
+        <value key="40">EM_ARM</value>
+        <value key="50">EM_IA_64</value>
+        <value key="62">EM_X86_64</value>
+        <value key="183">EM_AARCH64</value>
+        <value key="243">EM_RISCV</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>e_version</name>
+      <data_type>UInt32</data_type>
+      <group>ELF Header</group>
+      <description>Object file version</description>
+    </attribute>
+    <attribute>
+      <name>e_entry</name>
+      <data_type>Addr</data_type>
+      <group>ELF Header</group>
+      <description>Entry point virtual address</description>
+    </attribute>
+    <attribute>
+      <name>e_phoff</name>
+      <data_type>Off</data_type>
+      <group>ELF Header</group>
+      <description>Program header table offset</description>
+    </attribute>
+    <attribute>
+      <name>e_shoff</name>
+      <data_type>Off</data_type>
+      <group>ELF Header</group>
+      <description>Section header table offset</description>
+    </attribute>
+    <attribute>
+      <name>e_flags</name>
+      <data_type>UInt32</data_type>
+      <group>ELF Header</group>
+      <description>Processor-specific flags</description>
+    </attribute>
+    <attribute>
+      <name>e_ehsize</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>ELF header size</description>
+    </attribute>
+    <attribute>
+      <name>e_phentsize</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Program header entry size</description>
+    </attribute>
+    <attribute>
+      <name>e_phnum</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Number of program headers</description>
+    </attribute>
+    <attribute>
+      <name>e_shentsize</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Section header entry size</description>
+    </attribute>
+    <attribute>
+      <name>e_shnum</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Number of section headers</description>
+    </attribute>
+    <attribute>
+      <name>e_shstrndx</name>
+      <data_type>UInt16</data_type>
+      <group>ELF Header</group>
+      <description>Section name string table index</description>
+    </attribute>
+    <attribute>
+      <name>p_type</name>
+      <data_type>UInt32</data_type>
+      <group>Program Header</group>
+      <description>Segment type</description>
+      <values>
+        <value key="0">PT_NULL</value>
+        <value key="1">PT_LOAD</value>
+        <value key="2">PT_DYNAMIC</value>
+        <value key="3">PT_INTERP</value>
+        <value key="4">PT_NOTE</value>
+        <value key="5">PT_SHLIB</value>
+        <value key="6">PT_PHDR</value>
+        <value key="7">PT_TLS</value>
+        <value key="0x6474e550">PT_GNU_EH_FRAME</value>
+        <value key="0x6474e551">PT_GNU_STACK</value>
+        <value key="0x6474e552">PT_GNU_RELRO</value>
+        <value key="0x6474e553">PT_GNU_PROPERTY</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>p_flags</name>
+      <data_type>UInt32</data_type>
+      <group>Program Header</group>
+      <description>Segment flags (PF_X|PF_W|PF_R)</description>
+    </attribute>
+    <attribute>
+      <name>p_offset</name>
+      <data_type>Off</data_type>
+      <group>Program Header</group>
+      <description>Segment file offset</description>
+    </attribute>
+    <attribute>
+      <name>p_vaddr</name>
+      <data_type>Addr</data_type>
+      <group>Program Header</group>
+      <description>Segment virtual address</description>
+    </attribute>
+    <attribute>
+      <name>p_paddr</name>
+      <data_type>Addr</data_type>
+      <group>Program Header</group>
+      <description>Segment physical address</description>
+    </attribute>
+    <attribute>
+      <name>p_filesz</name>
+      <data_type>UInt</data_type>
+      <group>Program Header</group>
+      <description>Segment size in file</description>
+    </attribute>
+    <attribute>
+      <name>p_memsz</name>
+      <data_type>UInt</data_type>
+      <group>Program Header</group>
+      <description>Segment size in memory</description>
+    </attribute>
+    <attribute>
+      <name>p_align</name>
+      <data_type>UInt</data_type>
+      <group>Program Header</group>
+      <description>Segment alignment</description>
+    </attribute>
+    <attribute>
+      <name>sh_name</name>
+      <data_type>UInt32</data_type>
+      <group>Section Header</group>
+      <description>Section name (offset into .shstrtab)</description>
+    </attribute>
+    <attribute>
+      <name>sh_type</name>
+      <data_type>UInt32</data_type>
+      <group>Section Header</group>
+      <description>Section type</description>
+      <values>
+        <value key="0">SHT_NULL</value>
+        <value key="1">SHT_PROGBITS</value>
+        <value key="2">SHT_SYMTAB</value>
+        <value key="3">SHT_STRTAB</value>
+        <value key="4">SHT_RELA</value>
+        <value key="5">SHT_HASH</value>
+        <value key="6">SHT_DYNAMIC</value>
+        <value key="7">SHT_NOTE</value>
+        <value key="8">SHT_NOBITS</value>
+        <value key="9">SHT_REL</value>
+        <value key="10">SHT_SHLIB</value>
+        <value key="11">SHT_DYNSYM</value>
+        <value key="14">SHT_INIT_ARRAY</value>
+        <value key="15">SHT_FINI_ARRAY</value>
+        <value key="16">SHT_PREINIT_ARRAY</value>
+        <value key="17">SHT_GROUP</value>
+        <value key="18">SHT_SYMTAB_SHNDX</value>
+        <value key="0x6ffffff5">SHT_GNU_ATTRIBUTES</value>
+        <value key="0x6ffffff6">SHT_GNU_HASH</value>
+        <value key="0x6ffffffd">SHT_GNU_verdef</value>
+        <value key="0x6ffffffe">SHT_GNU_verneed</value>
+        <value key="0x6fffffff">SHT_GNU_versym</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>sh_flags</name>
+      <data_type>UInt</data_type>
+      <group>Section Header</group>
+      <description>Section flags</description>
+      <values>
+        <value key="0x1">SHF_WRITE</value>
+        <value key="0x2">SHF_ALLOC</value>
+        <value key="0x4">SHF_EXECINSTR</value>
+        <value key="0x10">SHF_MERGE</value>
+        <value key="0x20">SHF_STRINGS</value>
+        <value key="0x40">SHF_INFO_LINK</value>
+        <value key="0x80">SHF_LINK_ORDER</value>
+        <value key="0x100">SHF_OS_NONCONFORMING</value>
+        <value key="0x200">SHF_GROUP</value>
+        <value key="0x400">SHF_TLS</value>
+        <value key="0x800">SHF_COMPRESSED</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>sh_addr</name>
+      <data_type>Addr</data_type>
+      <group>Section Header</group>
+      <description>Section virtual address</description>
+    </attribute>
+    <attribute>
+      <name>sh_offset</name>
+      <data_type>Off</data_type>
+      <group>Section Header</group>
+      <description>Section file offset</description>
+    </attribute>
+    <attribute>
+      <name>sh_size</name>
+      <data_type>UInt</data_type>
+      <group>Section Header</group>
+      <description>Section size in bytes</description>
+    </attribute>
+    <attribute>
+      <name>sh_link</name>
+      <data_type>UInt32</data_type>
+      <group>Section Header</group>
+      <description>Link to another section</description>
+    </attribute>
+    <attribute>
+      <name>sh_info</name>
+      <data_type>UInt32</data_type>
+      <group>Section Header</group>
+      <description>Additional section info</description>
+    </attribute>
+    <attribute>
+      <name>sh_addralign</name>
+      <data_type>UInt</data_type>
+      <group>Section Header</group>
+      <description>Section alignment</description>
+    </attribute>
+    <attribute>
+      <name>sh_entsize</name>
+      <data_type>UInt</data_type>
+      <group>Section Header</group>
+      <description>Entry size for fixed-size entries</description>
+    </attribute>
+    <attribute>
+      <name>.text</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Executable code</description>
+    </attribute>
+    <attribute>
+      <name>.data</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Initialized read-write data</description>
+    </attribute>
+    <attribute>
+      <name>.rodata</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Read-only data</description>
+    </attribute>
+    <attribute>
+      <name>.bss</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Uninitialized data</description>
+    </attribute>
+    <attribute>
+      <name>.rel/.rela</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Relocations</description>
+    </attribute>
+    <attribute>
+      <name>.symtab</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Symbol table</description>
+    </attribute>
+    <attribute>
+      <name>.strtab</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>String table</description>
+    </attribute>
+    <attribute>
+      <name>.dynsym</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Dynamic symbol table</description>
+    </attribute>
+    <attribute>
+      <name>.dynstr</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Dynamic string table</description>
+    </attribute>
+    <attribute>
+      <name>.dynamic</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Dynamic linking info</description>
+    </attribute>
+    <attribute>
+      <name>.init</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Init function</description>
+    </attribute>
+    <attribute>
+      <name>.fini</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Finalization function</description>
+    </attribute>
+    <attribute>
+      <name>.init_array</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Constructor pointers</description>
+    </attribute>
+    <attribute>
+      <name>.fini_array</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Destructor pointers</description>
+    </attribute>
+    <attribute>
+      <name>.plt / .got</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Procedure linkage / Global offset tables</description>
+    </attribute>
+    <attribute>
+      <name>.got.plt</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>PLT-specific GOT</description>
+    </attribute>
+    <attribute>
+      <name>.eh_frame / .eh_frame_hdr</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Exception handling frame info</description>
+    </attribute>
+    <attribute>
+      <name>.note.*</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Note sections (GNU build ID, ABI tag, properties)</description>
+    </attribute>
+    <attribute>
+      <name>.note.gnu.build-id</name>
+      <data_type>Section</data_type>
+      <group>Notes</group>
+      <description>GNU build ID hash (used by debug symbol tools)</description>
+    </attribute>
+    <attribute>
+      <name>.note.ABI-tag</name>
+      <data_type>Section</data_type>
+      <group>Notes</group>
+      <description>GNU ABI version tag</description>
+    </attribute>
+    <attribute>
+      <name>.note.gnu.property</name>
+      <data_type>Section</data_type>
+      <group>Notes</group>
+      <description>GNU properties (CET / BTI / PAC features)</description>
+    </attribute>
+    <attribute>
+      <name>.gnu.version / .gnu.version_r / .gnu.version_d</name>
+      <data_type>Section</data_type>
+      <group>Versioning</group>
+      <description>Symbol versioning information</description>
+    </attribute>
+    <attribute>
+      <name>.gnu_debuglink</name>
+      <data_type>Section</data_type>
+      <group>Debug</group>
+      <description>Pointer to separate debuginfo file</description>
+    </attribute>
+    <attribute>
+      <name>.comment</name>
+      <data_type>Section</data_type>
+      <group>Standard Sections</group>
+      <description>Compiler version (e.g., 'GCC: (Ubuntu 11.4.0)')</description>
+    </attribute>
+    <attribute>
+      <name>.debug_*</name>
+      <data_type>Section</data_type>
+      <group>DWARF Debug</group>
+      <description>DWARF debug info sections (debug_info, debug_abbrev, debug_line, debug_str, debug_loc, debug_ranges)</description>
+    </attribute>
+    <attribute>
+      <name>.gdb_index</name>
+      <data_type>Section</data_type>
+      <group>DWARF Debug</group>
+      <description>GDB symbol index</description>
+    </attribute>
+    <attribute>
+      <name>st_name</name>
+      <data_type>UInt32</data_type>
+      <group>Symbol Entry</group>
+      <description>Symbol name (offset into strtab)</description>
+    </attribute>
+    <attribute>
+      <name>st_info</name>
+      <data_type>UInt8</data_type>
+      <group>Symbol Entry</group>
+      <description>Type + binding (STB_LOCAL=0, STB_GLOBAL=1, STB_WEAK=2; STT_NOTYPE=0, STT_OBJECT=1, STT_FUNC=2, STT_SECTION=3, STT_FILE=4, STT_COMMON=5, STT_TLS=6)</description>
+    </attribute>
+    <attribute>
+      <name>st_other</name>
+      <data_type>UInt8</data_type>
+      <group>Symbol Entry</group>
+      <description>Visibility (STV_DEFAULT, STV_INTERNAL, STV_HIDDEN, STV_PROTECTED)</description>
+    </attribute>
+    <attribute>
+      <name>st_shndx</name>
+      <data_type>UInt16</data_type>
+      <group>Symbol Entry</group>
+      <description>Section index (or SHN_UNDEF=0, SHN_ABS=0xfff1, SHN_COMMON=0xfff2)</description>
+    </attribute>
+    <attribute>
+      <name>st_value</name>
+      <data_type>Addr</data_type>
+      <group>Symbol Entry</group>
+      <description>Symbol value (address or offset)</description>
+    </attribute>
+    <attribute>
+      <name>st_size</name>
+      <data_type>UInt</data_type>
+      <group>Symbol Entry</group>
+      <description>Symbol size</description>
+    </attribute>
+    <attribute>
+      <name>DT_NULL</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Marks end of _DYNAMIC array</description>
+    </attribute>
+    <attribute>
+      <name>DT_NEEDED</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>String table offset of needed library name (e.g., libc.so.6)</description>
+    </attribute>
+    <attribute>
+      <name>DT_PLTRELSZ</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>PLT relocation entries total size</description>
+    </attribute>
+    <attribute>
+      <name>DT_PLTGOT</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Address associated with PLT or GOT</description>
+    </attribute>
+    <attribute>
+      <name>DT_HASH</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Address of symbol hash table</description>
+    </attribute>
+    <attribute>
+      <name>DT_STRTAB</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Address of string table</description>
+    </attribute>
+    <attribute>
+      <name>DT_SYMTAB</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Address of symbol table</description>
+    </attribute>
+    <attribute>
+      <name>DT_RELA / DT_RELASZ / DT_RELAENT</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Relocation table address/size/entry size</description>
+    </attribute>
+    <attribute>
+      <name>DT_STRSZ</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>String table size</description>
+    </attribute>
+    <attribute>
+      <name>DT_SYMENT</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Symbol table entry size</description>
+    </attribute>
+    <attribute>
+      <name>DT_INIT / DT_FINI</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Address of init/fini function</description>
+    </attribute>
+    <attribute>
+      <name>DT_SONAME</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Shared object name (for shlibs)</description>
+    </attribute>
+    <attribute>
+      <name>DT_RPATH / DT_RUNPATH</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Library search path</description>
+    </attribute>
+    <attribute>
+      <name>DT_SYMBOLIC</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Use symbolic resolution</description>
+    </attribute>
+    <attribute>
+      <name>DT_TEXTREL</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Relocations may modify non-writable segment</description>
+    </attribute>
+    <attribute>
+      <name>DT_BIND_NOW</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Bind all symbols at load time</description>
+    </attribute>
+    <attribute>
+      <name>DT_INIT_ARRAY / DT_FINI_ARRAY / DT_INIT_ARRAYSZ / DT_FINI_ARRAYSZ</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Array of init/fini function pointers</description>
+    </attribute>
+    <attribute>
+      <name>DT_FLAGS</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>DF_ORIGIN, DF_SYMBOLIC, DF_TEXTREL, DF_BIND_NOW, DF_STATIC_TLS</description>
+    </attribute>
+    <attribute>
+      <name>DT_FLAGS_1</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>DF_1_NOW, DF_1_GLOBAL, DF_1_GROUP, DF_1_NODELETE, DF_1_INITFIRST, DF_1_NOOPEN, DF_1_LOADFLTR, DF_1_NODEFLIB, DF_1_NODUMP, DF_1_CONFALT, DF_1_NORELOC, DF_1_PIE</description>
+    </attribute>
+    <attribute>
+      <name>DT_GNU_HASH</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>GNU hash table</description>
+    </attribute>
+    <attribute>
+      <name>DT_VERSYM / DT_VERDEF / DT_VERNEED</name>
+      <data_type>UInt</data_type>
+      <group>Dynamic</group>
+      <description>Symbol versioning</description>
+    </attribute>
+    <attribute>
+      <name>NT_GNU_PROPERTY_TYPE_0</name>
+      <data_type>Note</data_type>
+      <group>Notes</group>
+      <description>Generic property note</description>
+    </attribute>
+    <attribute>
+      <name>GNU_PROPERTY_X86_FEATURE_1_AND</name>
+      <data_type>Property</data_type>
+      <group>Notes</group>
+      <description>x86 features: IBT, SHSTK</description>
+    </attribute>
+    <attribute>
+      <name>GNU_PROPERTY_AARCH64_FEATURE_1_AND</name>
+      <data_type>Property</data_type>
+      <group>Notes</group>
+      <description>AArch64 BTI/PAC features</description>
+    </attribute>
+  </attributes>
+</metadata_system>

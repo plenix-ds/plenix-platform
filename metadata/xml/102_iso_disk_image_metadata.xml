@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="102" name="ISO Disk Image Metadata" category="ARC" category_label="Archives" used_for="CD/DVD images" spec_source="ExifTool 12.76 — groups: ISO" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="22">
+  <description>Attribute set for ISO Disk Image Metadata. Sourced from ExifTool's tag database (group prefix(es): ISO). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>BootSystem</name>
+      <tag_id>7</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BootRecord</group>
+      <subsystem>ISO::BootRecord</subsystem>
+      <description>Boot System</description>
+    </attribute>
+    <attribute>
+      <name>BootIdentifier</name>
+      <tag_id>39</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BootRecord</group>
+      <subsystem>ISO::BootRecord</subsystem>
+      <description>Boot Identifier</description>
+    </attribute>
+    <attribute>
+      <name>System</name>
+      <tag_id>8</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>System</description>
+    </attribute>
+    <attribute>
+      <name>VolumeName</name>
+      <tag_id>40</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Name</description>
+    </attribute>
+    <attribute>
+      <name>VolumeBlockCount</name>
+      <tag_id>80</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Block Count</description>
+    </attribute>
+    <attribute>
+      <name>VolumeSetDiskCount</name>
+      <tag_id>120</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Set Disk Count</description>
+    </attribute>
+    <attribute>
+      <name>VolumeSetDiskNumber</name>
+      <tag_id>124</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Set Disk Number</description>
+    </attribute>
+    <attribute>
+      <name>VolumeBlockSize</name>
+      <tag_id>128</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Block Size</description>
+    </attribute>
+    <attribute>
+      <name>PathTableSize</name>
+      <tag_id>132</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Path Table Size</description>
+    </attribute>
+    <attribute>
+      <name>PathTableLocation</name>
+      <tag_id>140</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Path Table Location</description>
+    </attribute>
+    <attribute>
+      <name>RootDirectoryCreateDate</name>
+      <tag_id>174</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Root Directory Create Date</description>
+    </attribute>
+    <attribute>
+      <name>VolumeSetName</name>
+      <tag_id>190</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Set Name</description>
+    </attribute>
+    <attribute>
+      <name>Publisher</name>
+      <tag_id>318</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Publisher</description>
+    </attribute>
+    <attribute>
+      <name>DataPreparer</name>
+      <tag_id>446</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Data Preparer</description>
+    </attribute>
+    <attribute>
+      <name>Software</name>
+      <tag_id>574</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Software</description>
+    </attribute>
+    <attribute>
+      <name>CopyrightFileName</name>
+      <tag_id>702</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Copyright File Name</description>
+    </attribute>
+    <attribute>
+      <name>AbstractFileName</name>
+      <tag_id>740</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Abstract File Name</description>
+    </attribute>
+    <attribute>
+      <name>BibligraphicFileName</name>
+      <tag_id>776</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Bibligraphic File Name</description>
+    </attribute>
+    <attribute>
+      <name>VolumeCreateDate</name>
+      <tag_id>813</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Create Date</description>
+    </attribute>
+    <attribute>
+      <name>VolumeModifyDate</name>
+      <tag_id>830</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>VolumeExpirationDate</name>
+      <tag_id>847</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Expiration Date</description>
+    </attribute>
+    <attribute>
+      <name>VolumeEffectiveDate</name>
+      <tag_id>864</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>PrimaryVolume</group>
+      <subsystem>ISO::PrimaryVolume</subsystem>
+      <description>Volume Effective Date</description>
+    </attribute>
+  </attributes>
+</metadata_system>

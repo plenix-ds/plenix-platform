@@ -1,0 +1,16 @@
+/* Plenix · Metric (platform/components/Metric). Anatomy and API: Metric.jsx. */
+.plx-metric{display:grid;min-inline-size:0;row-gap:var(--plx-sys-space-stack-xs);}
+.plx-metric__figure{align-items:baseline;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-wrap:wrap;}
+.plx-metric__value{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-heading);font-size:var(--plx-ref-font-size-18);font-variant-numeric:tabular-nums;font-weight:var(--plx-ref-font-weight-semibold-600);line-height:var(--plx-ref-line-height-tight);}
+.plx-metric--lg .plx-metric__value{font-size:var(--plx-ref-font-size-20);}
+.plx-metric__unit{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-12);}
+.plx-metric__change{font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);font-variant-numeric:tabular-nums;}
+.plx-metric__change--neutral{color:var(--plx-sys-content-muted);}
+.plx-metric__change--success{color:var(--plx-sys-feedback-success-content);}
+.plx-metric__change--danger{color:var(--plx-sys-feedback-danger-content);}
+.plx-metric__label{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-12);}
+.plx-metric__description{color:var(--plx-sys-content-subtle);font-size:var(--plx-ref-font-size-11);}
+.plx-metric-group{display:flex;flex-wrap:wrap;row-gap:var(--plx-sys-space-stack-md);}
+.plx-metric-group__item{min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-lg);padding-inline-start:var(--plx-sys-space-inset-lg);}
+.plx-metric-group__item:first-child{padding-inline-start:0;}
+.plx-metric-group__item+.plx-metric-group__item{border-inline-start-color:var(--plx-sys-border-divider);border-inline-start-style:solid;border-inline-start-width:var(--plx-ref-border-width-1px);}

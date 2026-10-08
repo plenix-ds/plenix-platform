@@ -1,0 +1,43 @@
+/* Plenix · Stack and Inline (platform/components/Stack): columns and rows spaced by the spacing tokens. */
+.plx-stack{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-inline{display:flex;flex-direction:row;margin-block-end:0;margin-block-start:0;padding-inline-start:0;}
+.plx-stack--gap-none,.plx-inline--gap-none{column-gap:0;row-gap:0;}
+.plx-stack--gap-xs{row-gap:var(--plx-sys-space-stack-xs);}
+.plx-stack--gap-sm{row-gap:var(--plx-sys-space-stack-sm);}
+.plx-stack--gap-md{row-gap:var(--plx-sys-space-stack-md);}
+.plx-stack--gap-lg{row-gap:var(--plx-sys-space-stack-lg);}
+.plx-stack--gap-xl{row-gap:var(--plx-sys-space-stack-xl);}
+.plx-inline--gap-xs{column-gap:var(--plx-sys-space-inline-xs);}
+.plx-inline--gap-sm{column-gap:var(--plx-sys-space-inline-sm);}
+.plx-inline--gap-md{column-gap:var(--plx-sys-space-inline-md);}
+.plx-inline--gap-lg{column-gap:var(--plx-sys-space-inline-lg);}
+.plx-inline--gap-xl{column-gap:var(--plx-sys-space-layout-sm);}
+.plx-inline--wrap{flex-wrap:wrap;row-gap:var(--plx-sys-space-stack-xs);}
+.plx-layout--align-start{align-items:flex-start;}
+.plx-layout--align-center{align-items:center;}
+.plx-layout--align-end{align-items:flex-end;}
+.plx-layout--align-stretch{align-items:stretch;}
+.plx-layout--align-baseline{align-items:baseline;}
+.plx-layout--justify-start{justify-content:flex-start;}
+.plx-layout--justify-center{justify-content:center;}
+.plx-layout--justify-end{justify-content:flex-end;}
+.plx-layout--justify-between{justify-content:space-between;}
+.plx-layout--inset-xs{padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-xs);padding-inline-start:var(--plx-sys-space-inset-xs);}
+.plx-layout--inset-sm{padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
+.plx-layout--inset-md{padding-block-end:var(--plx-sys-space-inset-md);padding-block-start:var(--plx-sys-space-inset-md);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
+.plx-layout--inset-lg{padding-block-end:var(--plx-sys-space-inset-lg);padding-block-start:var(--plx-sys-space-inset-lg);padding-inline-end:var(--plx-sys-space-inset-lg);padding-inline-start:var(--plx-sys-space-inset-lg);}
+.plx-layout--inset-xl{padding-block-end:var(--plx-sys-space-inset-xl);padding-block-start:var(--plx-sys-space-inset-xl);padding-inline-end:var(--plx-sys-space-inset-xl);padding-inline-start:var(--plx-sys-space-inset-xl);}
+.plx-layout--scroll{min-block-size:0;overflow-y:auto;}
+/* any element that fills the rest of its parent row or column (and may shrink below its content) */
+.plx-grow{flex-basis:0%;flex-grow:1;flex-shrink:1;min-block-size:0;min-inline-size:0;}
+.plx-layout--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
+.plx-layout--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
+.plx-layout--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
+.plx-layout--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-layout--max-sm{max-block-size:var(--plx-sys-scroll-max-sm);overflow-y:auto;}
+.plx-layout--max-md{max-block-size:var(--plx-sys-scroll-max-md);overflow-y:auto;}
+.plx-layout--max-lg{max-block-size:var(--plx-sys-scroll-max-lg);overflow-y:auto;}
+.plx-layout--indent{padding-inline-start:var(--plx-sys-space-inline-lg);}
+.plx-layout--push{margin-inline-start:auto;}
+/* a Stack or an Inline drawn as a list (as="ul" | "ol") has no markers */
+ol.plx-inline,ol.plx-stack,ul.plx-inline,ul.plx-stack{list-style-type:none;}

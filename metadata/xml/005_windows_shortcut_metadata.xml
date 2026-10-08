@@ -1,0 +1,522 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="005" name="Windows Shortcut Metadata" category="OS" category_label="Operating System / File System" used_for=".lnk shortcut files" spec_source="ExifTool 12.76 — groups: LNK" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="44">
+  <description>Attribute set for Windows Shortcut Metadata. Sourced from ExifTool's tag database (group prefix(es): LNK). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>FillAttributes</name>
+      <tag_id>8</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Fill Attributes</description>
+    </attribute>
+    <attribute>
+      <name>PopupFillAttributes</name>
+      <tag_id>10</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Popup Fill Attributes</description>
+    </attribute>
+    <attribute>
+      <name>ScreenBufferSize</name>
+      <tag_id>12</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Screen Buffer Size</description>
+    </attribute>
+    <attribute>
+      <name>WindowSize</name>
+      <tag_id>16</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Window Size</description>
+    </attribute>
+    <attribute>
+      <name>WindowOrigin</name>
+      <tag_id>20</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Window Origin</description>
+    </attribute>
+    <attribute>
+      <name>FontSize</name>
+      <tag_id>32</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Font Size</description>
+    </attribute>
+    <attribute>
+      <name>FontFamily</name>
+      <tag_id>36</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Font Family</description>
+      <values>
+        <value key="0">Don't Care</value>
+        <value key="16">Roman</value>
+        <value key="32">Swiss</value>
+        <value key="48">Modern</value>
+        <value key="64">Script</value>
+        <value key="80">Decorative</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FontWeight</name>
+      <tag_id>40</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Font Weight</description>
+    </attribute>
+    <attribute>
+      <name>FontName</name>
+      <tag_id>44</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Font Name</description>
+    </attribute>
+    <attribute>
+      <name>CursorSize</name>
+      <tag_id>108</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Cursor Size</description>
+    </attribute>
+    <attribute>
+      <name>FullScreen</name>
+      <tag_id>112</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Full Screen</description>
+    </attribute>
+    <attribute>
+      <name>QuickEdit</name>
+      <tag_id>116</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Quick Edit</description>
+    </attribute>
+    <attribute>
+      <name>InsertMode</name>
+      <tag_id>120</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Insert Mode</description>
+    </attribute>
+    <attribute>
+      <name>WindowOriginAuto</name>
+      <tag_id>124</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Window Origin Auto</description>
+    </attribute>
+    <attribute>
+      <name>HistoryBufferSize</name>
+      <tag_id>128</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>History Buffer Size</description>
+    </attribute>
+    <attribute>
+      <name>NumHistoryBuffers</name>
+      <tag_id>132</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Num History Buffers</description>
+    </attribute>
+    <attribute>
+      <name>RemoveHistoryDuplicates</name>
+      <tag_id>136</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleData</group>
+      <subsystem>LNK::ConsoleData</subsystem>
+      <description>Remove History Duplicates</description>
+    </attribute>
+    <attribute>
+      <name>CodePage</name>
+      <tag_id>8</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ConsoleFEData</group>
+      <subsystem>LNK::ConsoleFEData</subsystem>
+      <description>Code Page</description>
+    </attribute>
+    <attribute>
+      <name>TargetFileDOSName</name>
+      <tag_id>14</tag_id>
+      <data_type>var_string</data_type>
+      <writable>false</writable>
+      <group>Item0032</group>
+      <subsystem>LNK::Item0032</subsystem>
+      <description>Target File DOS Name</description>
+    </attribute>
+    <attribute>
+      <name>CommonNetworkRelLink</name>
+      <tag_id>CommonNetworkRelLink</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Common Network Rel Link</description>
+    </attribute>
+    <attribute>
+      <name>CommonPathSuffix</name>
+      <tag_id>CommonPathSuffix</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Common Path Suffix</description>
+    </attribute>
+    <attribute>
+      <name>DeviceName</name>
+      <tag_id>DeviceName</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Device Name</description>
+    </attribute>
+    <attribute>
+      <name>DriveSerialNumber</name>
+      <tag_id>DriveSerialNumber</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Drive Serial Number</description>
+    </attribute>
+    <attribute>
+      <name>DriveType</name>
+      <tag_id>DriveType</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Drive Type</description>
+      <values>
+        <value key="0">Unknown</value>
+        <value key="1">Invalid Root Path</value>
+        <value key="2">Removable Media</value>
+        <value key="3">Fixed Disk</value>
+        <value key="4">Remote Drive</value>
+        <value key="5">CD-ROM</value>
+        <value key="6">Ram Disk</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LocalBasePath</name>
+      <tag_id>LocalBasePath</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Local Base Path</description>
+    </attribute>
+    <attribute>
+      <name>NetName</name>
+      <tag_id>NetName</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Net Name</description>
+    </attribute>
+    <attribute>
+      <name>NetProviderType</name>
+      <tag_id>NetProviderType</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Net Provider Type</description>
+      <values>
+        <value key="1703936">AVID</value>
+        <value key="1769472">DOCUSPACE</value>
+        <value key="1835008">MANGOSOFT</value>
+        <value key="1900544">SERNET</value>
+        <value key="1966080">RIVERFRONT1</value>
+        <value key="2031616">RIVERFRONT2</value>
+        <value key="2097152">DECORB</value>
+        <value key="2162688">PROTSTOR</value>
+        <value key="2228224">FJ_REDIR</value>
+        <value key="2293760">DISTINCT</value>
+        <value key="2359296">TWINS</value>
+        <value key="2424832">RDR2SAMPLE</value>
+        <value key="2490368">CSC</value>
+        <value key="2555904">3IN1</value>
+        <value key="2686976">EXTENDNET</value>
+        <value key="2752512">STAC</value>
+        <value key="2818048">FOXBAT</value>
+        <value key="2883584">YAHOO</value>
+        <value key="2949120">EXIFS</value>
+        <value key="3014656">DAV</value>
+        <value key="3080192">KNOWARE</value>
+        <value key="3145728">OBJECT_DIRE</value>
+        <value key="3211264">MASFAX</value>
+        <value key="3276800">HOB_NFS</value>
+        <value key="3342336">SHIVA</value>
+        <value key="3407872">IBMAL</value>
+        <value key="3473408">LOCK</value>
+        <value key="3538944">TERMSRV</value>
+        <value key="3604480">SRT</value>
+        <value key="3670016">QUINCY</value>
+        <value key="3735552">OPENAFS</value>
+        <value key="3801088">AVID1</value>
+        <value key="3866624">DFS</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>VolumeID</name>
+      <tag_id>VolumeID</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Volume ID</description>
+    </attribute>
+    <attribute>
+      <name>VolumeLabel</name>
+      <tag_id>VolumeLabel</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>LinkInfo</group>
+      <subsystem>LNK::LinkInfo</subsystem>
+      <description>Volume Label</description>
+    </attribute>
+    <attribute>
+      <name>Flags</name>
+      <tag_id>20</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Flags</description>
+      <values>
+        <value key="1">IDList</value>
+        <value key="2">LinkInfo</value>
+        <value key="4">Description</value>
+        <value key="8">RelativePath</value>
+        <value key="16">WorkingDir</value>
+        <value key="32">CommandArgs</value>
+        <value key="64">IconFile</value>
+        <value key="128">Unicode</value>
+        <value key="256">NoLinkInfo</value>
+        <value key="512">ExpString</value>
+        <value key="1024">SeparateProc</value>
+        <value key="4096">DarwinID</value>
+        <value key="8192">RunAsUser</value>
+        <value key="16384">ExpIcon</value>
+        <value key="32768">NoPidAlias</value>
+        <value key="131072">RunWithShim</value>
+        <value key="262144">NoLinkTrack</value>
+        <value key="524288">TargetMetadata</value>
+        <value key="1048576">NoLinkPathTracking</value>
+        <value key="2097152">NoKnownFolderTracking</value>
+        <value key="4194304">NoKnownFolderAlias</value>
+        <value key="8388608">LinkToLink</value>
+        <value key="16777216">UnaliasOnSave</value>
+        <value key="33554432">PreferEnvPath</value>
+        <value key="67108864">KeepLocalIDList</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FileAttributes</name>
+      <tag_id>24</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>File Attributes</description>
+      <values>
+        <value key="1">Read-only</value>
+        <value key="2">Hidden</value>
+        <value key="4">System</value>
+        <value key="8">Volume</value>
+        <value key="16">Directory</value>
+        <value key="32">Archive</value>
+        <value key="64">Encrypted?</value>
+        <value key="128">Normal</value>
+        <value key="256">Temporary</value>
+        <value key="512">Sparse</value>
+        <value key="1024">Reparse point</value>
+        <value key="2048">Compressed</value>
+        <value key="4096">Offline</value>
+        <value key="8192">Not indexed</value>
+        <value key="16384">Encrypted</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CreateDate</name>
+      <tag_id>28</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Create Date</description>
+    </attribute>
+    <attribute>
+      <name>AccessDate</name>
+      <tag_id>36</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Access Date</description>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>44</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>TargetFileSize</name>
+      <tag_id>52</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Target File Size</description>
+    </attribute>
+    <attribute>
+      <name>IconIndex</name>
+      <tag_id>56</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Icon Index</description>
+    </attribute>
+    <attribute>
+      <name>RunWindow</name>
+      <tag_id>60</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Run Window</description>
+      <values>
+        <value key="0">Hide</value>
+        <value key="1">Normal</value>
+        <value key="2">Show Minimized</value>
+        <value key="3">Show Maximized</value>
+        <value key="4">Show No Activate</value>
+        <value key="5">Show</value>
+        <value key="6">Minimized</value>
+        <value key="7">Show Minimized No Activate</value>
+        <value key="8">Show NA</value>
+        <value key="9">Restore</value>
+        <value key="10">Show Default</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>HotKey</name>
+      <tag_id>64</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Hot Key</description>
+      <values>
+        <value key="0">(none)</value>
+        <value key="144">Num Lock</value>
+        <value key="145">Scroll Lock</value>
+        <value key="256">Shift</value>
+        <value key="512">Control</value>
+        <value key="1024">Alt</value>
+        <value key="0x30'-'0x39">0-9</value>
+        <value key="0x41'-'0x5a">A-Z</value>
+        <value key="0x70'-'0x87">F1-F24</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Description</name>
+      <tag_id>196612</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>RelativePath</name>
+      <tag_id>196616</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Relative Path</description>
+    </attribute>
+    <attribute>
+      <name>WorkingDirectory</name>
+      <tag_id>196624</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Working Directory</description>
+    </attribute>
+    <attribute>
+      <name>CommandLineArguments</name>
+      <tag_id>196640</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Command Line Arguments</description>
+    </attribute>
+    <attribute>
+      <name>IconFileName</name>
+      <tag_id>196672</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>LNK::Main</subsystem>
+      <description>Icon File Name</description>
+    </attribute>
+    <attribute>
+      <name>MachineID</name>
+      <tag_id>16</tag_id>
+      <data_type>var_string</data_type>
+      <writable>false</writable>
+      <group>TrackerData</group>
+      <subsystem>LNK::TrackerData</subsystem>
+      <description>Machine ID</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,241 @@
+ID	Name	Category	Status	Attributes	EnumValues	Source
+001	Windows Property System	Operating System / File System	substantial	128	0	Microsoft Windows Properties reference (learn.microsoft.com/windows/win32/proper
+002	Windows NTFS File Data	Operating System / File System	comprehensive	47	4	Microsoft NTFS specification; Brian Carrier 'File System Forensic Analysis' Ch. 
+003	NTFS Alternate Data Streams	Operating System / File System	substantial	15	5	Microsoft NTFS specification; MS-FSCC §2.4.7; MITRE T1564.004
+004	Windows Security Descriptors	Operating System / File System	comprehensive	24	0	Microsoft MS-DTYP §2.4 SECURITY_DESCRIPTOR
+005	Windows Shortcut Metadata	Operating System / File System	comprehensive	44	106	ExifTool 12.76 — groups: LNK
+006	Windows Zone Identifier Metadata	Operating System / File System	comprehensive	7	5	Microsoft 'About URL Security Zones'; ZoneId reference
+007	Windows Recycle Bin Metadata	Forensics / Activity	comprehensive	10	0	Microsoft Recycle Bin format; libfwsi documentation
+008	Windows Prefetch Metadata	Forensics / Activity	comprehensive	19	0	libscca; Eric Zimmerman PECmd; SANS Prefetch reference
+009	Windows Registry Metadata	Forensics / Activity	comprehensive	29	9	Microsoft Registry hive format; libregf; Eric Zimmerman RegistryExplorer
+010	Windows Event Log Metadata	Forensics / Activity	comprehensive	29	5	Microsoft EVTX file format (MS-EVEN6); libevtx
+011	Windows Search Index Metadata	Operating System / File System	substantial	19	0	Microsoft Windows Search; ESE Database (Windows.edb)
+012	macOS File Data / Finder Metadata	Operating System / File System	comprehensive	28	0	Apple File System Programming Guide; HFS+/APFS catalog
+013	macOS Extended Attributes	Operating System / File System	comprehensive	27	0	Apple xattr(2); APFS Reference; getxattr/setxattr APIs
+014	macOS Spotlight Metadata	Operating System / File System	comprehensive	76	0	Apple Spotlight Metadata Attributes Reference (kMDItem*)
+015	macOS Resource Forks	Operating System / File System	substantial	30	0	Apple Inside Macintosh: More Macintosh Toolbox Ch. 1; HFS Plus Volume Format
+016	macOS Quarantine Metadata	Operating System / File System	comprehensive	15	2	Apple Gatekeeper documentation; LaunchServices Quarantine
+017	macOS Finder Info	Operating System / File System	comprehensive	11	8	Apple Inside Macintosh: Files Ch. 2; FileInfo/FolderInfo structures
+018	macOS .DS_Store Metadata	Operating System / File System	substantial	33	0	Apple .DS_Store format (Buddy Allocator B-tree); ds_store reverse-engineering
+019	Unix / Linux File Data	Operating System / File System	comprehensive	21	0	POSIX.1-2017 / IEEE Std 1003.1; Linux stat(2)
+020	Unix / Linux Extended Attributes	Operating System / File System	comprehensive	27	0	Linux attr(5); xattr(7); getxattr(2)
+021	POSIX ACL Metadata	Operating System / File System	comprehensive	12	6	POSIX 1003.1e draft 17; Linux acl(5); FreeBSD acl(3)
+022	Linux File Capabilities	Operating System / File System	comprehensive	45	3	Linux capabilities(7); vfs_cap_data structure
+023	SELinux Metadata	Operating System / File System	comprehensive	10	0	Red Hat SELinux Project; selinux(8); fcontext
+024	AppArmor Metadata	Operating System / File System	comprehensive	20	4	Canonical AppArmor; apparmor(7)
+025	Filesystem Metadata FAT exFAT	Operating System / File System	comprehensive	28	0	Microsoft FAT specification; exFAT specification (2019)
+026	Filesystem Metadata APFS	Operating System / File System	comprehensive	34	0	Apple File System Reference (apple.com/support); WWDC 2017 sessions
+027	Filesystem Metadata ext4	Operating System / File System	comprehensive	30	0	Linux kernel ext4 documentation (Documentation/filesystems/ext4/)
+028	Filesystem Metadata ZFS Btrfs	Operating System / File System	substantial	35	0	OpenZFS On-Disk Format; Btrfs Wiki / kernel Documentation
+029	MS Office Common Metadata	Documents	comprehensive	61	13	ExifTool 12.76 — groups: OOXML
+030	MS Office Application Metadata	Documents	comprehensive	233	357	ExifTool 12.76 — groups: FlashPix, iWork
+031	Office Open XML Package Metadata	Documents	comprehensive	71	0	ECMA-376 / ISO/IEC 29500 Office Open XML; OPC (Open Packaging Conventions)
+032	Office Custom Properties	Documents	comprehensive	33	0	ECMA-376 Part 2 §11.3.10 Custom Properties; vt: namespace value types
+033	Office Track Changes / Review	Documents	comprehensive	29	0	ECMA-376 Part 1 §17.13 Revision Marks; w: namespace
+034	Office Macro Metadata	Documents	comprehensive	34	0	MS-OVBA: Office VBA File Format Structure
+035	PDF Metadata	Documents	comprehensive	45	22	ExifTool 12.76 — groups: PDF
+036	PDF XMP Metadata	Documents	comprehensive	52	0	ISO 16684-1 (XMP); ISO 32000-2 §14.3.2; Adobe XMP Specification
+037	PDF/A Metadata	Documents	comprehensive	31	9	ISO 19005-1, -2, -3, -4 (PDF/A-1, -2, -3, -4)
+038	PDF Document Info Dictionary	Documents	comprehensive	12	0	ISO 32000-2 §14.3.3; ISO 32000-1 §14.3.3
+039	PDF Embedded File Metadata	Documents	comprehensive	25	0	ISO 32000-2 §7.11.4 Embedded File Streams; PDF/A-3 §6.8
+040	PDF Digital Signature Metadata	Security / Authenticity	comprehensive	39	0	ISO 32000-2 §12.8 Digital Signatures; ETSI EN 319 142 (PAdES)
+041	XMP Metadata	Documents	comprehensive	3707	501	ExifTool 12.76 — groups: XMP
+042	Dublin Core Metadata	Documents	comprehensive	62	0	Dublin Core Metadata Initiative — DCMI Metadata Terms (current)
+043	IPTC Metadata	Images	comprehensive	155	188	ExifTool 12.76 — groups: IPTC, PhotoMechanic, FotoStation
+044	IPTC Extension Metadata	Images	comprehensive	1479	2230	ExifTool 12.76 — groups: PLUS
+045	EXIF Metadata	Images	comprehensive	641	612	ExifTool 12.76 — groups: Exif
+046	EXIF GPS Metadata	Images	comprehensive	32	28	ExifTool 12.76 — groups: GPS
+047	MakerNotes	Images	comprehensive	11781	57799	ExifTool 12.76 — groups: Canon, Nikon, Sony, Olympus, Pentax, Panasonic, Casio, 
+048	Camera RAW Metadata	Images	comprehensive	154	21	ExifTool 12.76 — groups: DNG, OpenEXR, Rawzor
+049	DNG Metadata	Images	comprehensive	108	4	ExifTool 12.76 — groups: DNG
+050	ICC Color Profile Metadata	Images	comprehensive	190	897	ExifTool 12.76 — groups: ICC_Profile
+051	Photoshop PSD Metadata	Images	comprehensive	108	71	ExifTool 12.76 — groups: Photoshop
+052	PNG Metadata	Images	comprehensive	69	65	ExifTool 12.76 — groups: PNG
+053	JPEG Metadata	Images	comprehensive	174	185	ExifTool 12.76 — groups: JPEG, JFIF, Jpeg2000, MPF
+054	TIFF Metadata	Images	comprehensive	64	2089	ExifTool 12.76 — groups: GeoTiff
+055	HEIF / HEIC Metadata	Images	comprehensive	423	73	ISO/IEC 23008-12 (HEIF) + ISO/IEC 14496-12 (ISOBMFF) + GPAC source (388 box type
+056	SVG Metadata	Images	comprehensive	4219	0	W3C SVG 2 + SVG 1.1 specs (via wooorm/svg-element-attributes — fetched 2026-04-3
+057	WebP Metadata	Images	comprehensive	39	22	Google WebP Container Specification + libwebp source (mux_types.h fetched 2026-0
+058	GIF Metadata	Images	comprehensive	23	2	ExifTool 12.76 — groups: GIF
+059	BMP Metadata	Images	comprehensive	33	23	ExifTool 12.76 — groups: BMP
+060	ID3 Metadata	Audio	comprehensive	256	277	ExifTool 12.76 — groups: ID3
+061	ID3v1 Metadata	Audio	PENDING	0	0	
+062	ID3v2 Metadata	Audio	comprehensive	83	0	https://id3.org/id3v2.4.0-frames + id3v2.4.0-structure
+063	Vorbis Comments	Audio	comprehensive	74	28	ExifTool 12.76 — groups: Vorbis, FLAC, Opus, Theora
+064	APE Tags	Audio	comprehensive	22	0	ExifTool 12.76 — groups: APE
+065	RIFF INFO Tags	Audio	comprehensive	189	301	ExifTool 12.76 — groups: RIFF
+066	BWF Broadcast WAV Metadata	Audio	PENDING	0	0	
+067	iXML Metadata	Audio	PENDING	0	0	
+068	Cart Chunk Metadata	Audio	PENDING	0	0	
+069	ACID Chunk Metadata	Audio	PENDING	0	0	
+070	MIDI Metadata	Audio	comprehensive	90	131	MIDI 1.0 Specification (MMA) + Standard MIDI File 1.0
+071	ReplayGain Metadata	Audio	comprehensive	21	0	ReplayGain 2.0 specification (replaygain.org); EBU R128
+072	QuickTime Metadata	Video	comprehensive	782	3870	ExifTool 12.76 — groups: QuickTime
+073	MPEG-4 Metadata	Video	comprehensive	33	182	ExifTool 12.76 — groups: MPEG, M2TS
+074	Matroska Metadata	Video	comprehensive	268	66	ExifTool 12.76 — groups: Matroska
+075	MXF Metadata	Video	comprehensive	1297	21	ExifTool 12.76 — groups: MXF
+076	AVI Metadata	Video	comprehensive	219	277	ExifTool 12.76 — groups: ASF
+077	MPEG Metadata	Video	comprehensive	72	143	ExifTool 12.76 — groups: MPEG, H264
+078	MKV Chapter Metadata	Video	PENDING	0	0	
+079	Subtitles Metadata	Video	PENDING	0	0	
+080	HTML Meta Tags	Web / Email	comprehensive	111	0	ExifTool 12.76 — groups: HTML
+081	Open Graph Metadata	Web / Email	comprehensive	57	19	Open Graph Protocol — ogp.me
+082	Twitter Card Metadata	Web / Email	comprehensive	25	5	X (Twitter) Cards markup tags reference (developer.x.com)
+083	Schema.org / JSON-LD	Web / Email	comprehensive	3219	0	schema.org current vocabulary — https://schema.org/version/latest/schemaorg-curr
+084	Microdata Metadata	Web / Email	PENDING	0	0	
+085	RDFa Metadata	Web / Email	PENDING	0	0	
+086	HTTP Header Metadata	Web / Email	comprehensive	100	0	IANA HTTP Field Name Registry (https://www.iana.org/assignments/http-fields/)
+087	Cookie Metadata	Web / Email	comprehensive	20	6	RFC 6265 + RFC 6265bis (cookies)
+088	Web Server Log Metadata	Forensics / Activity	comprehensive	90	9	Apache HTTPD mod_log_config; Nginx log_format; W3C Extended Log Format
+089	Email Headers	Web / Email	comprehensive	169	0	IANA Permanent Message Header Field Names registry (https://www.iana.org/assignm
+090	MIME Metadata	Web / Email	comprehensive	1742	0	IANA media-types registry — https://www.iana.org/assignments/media-types/
+091	SMTP Metadata	Web / Email	comprehensive	43	0	RFC 5321 (SMTP) + RFC 6531 (UTF-8) + RFC 8689 (REQUIRETLS) etc.
+092	DKIM Metadata	Web / Email	PENDING	0	0	
+093	SPF Metadata	Web / Email	comprehensive	36	0	RFC 7208 — Sender Policy Framework
+094	DMARC Metadata	Web / Email	comprehensive	30	15	RFC 7489 — Domain-based Message Authentication, Reporting & Conformance
+095	Outlook .msg Metadata	Web / Email	PENDING	0	0	
+096	MBOX Metadata	Web / Email	PENDING	0	0	
+097	ZIP Metadata	Archives	comprehensive	30	54	ExifTool 12.76 — groups: ZIP
+098	RAR Metadata	Archives	PENDING	0	0	
+099	7z Metadata	Archives	PENDING	0	0	
+100	TAR Metadata	Archives	PENDING	0	0	
+101	GZIP Metadata	Archives	PENDING	0	0	
+102	ISO Disk Image Metadata	Archives	comprehensive	22	0	ExifTool 12.76 — groups: ISO
+103	EPUB Metadata	Documents	PENDING	0	0	
+104	MOBI / AZW Metadata	Documents	comprehensive	78	57	ExifTool 12.76 — groups: Palm, Audible
+105	DICOM Metadata	Specialized	comprehensive	5091	0	NEMA DICOM Standard PS3.6 — Data Dictionary
+106	HL7 Metadata	Specialized	PENDING	0	0	
+107	GeoTIFF Metadata	Specialized	comprehensive	64	2089	ExifTool 12.76 — groups: GeoTiff
+108	GPX Metadata	Specialized	PENDING	0	0	
+109	KML / KMZ Metadata	Specialized	PENDING	0	0	
+110	Shapefile Metadata	Specialized	PENDING	0	0	
+111	GeoJSON Metadata	Specialized	PENDING	0	0	
+112	CAD Metadata DWG/DXF	Specialized	PENDING	0	0	
+113	BIM Metadata RVT/IFC	Specialized	PENDING	0	0	
+114	IFC Metadata	Specialized	PENDING	0	0	
+115	3D Model Metadata STL	Specialized	PENDING	0	0	
+116	3D Model Metadata OBJ/MTL	Specialized	PENDING	0	0	
+117	3D Model Metadata FBX	Specialized	PENDING	0	0	
+118	3D Model Metadata glTF/GLB	Specialized	comprehensive	178	0	Khronos glTF 2.0 — github.com/KhronosGroup/glTF
+119	Font Metadata TTF/OTF	Specialized	comprehensive	79	0	ExifTool 12.76 — groups: Font
+120	WOFF / WOFF2 Metadata	Specialized	PENDING	0	0	
+121	Database Metadata	Specialized	PENDING	0	0	
+122	SQL System Catalog Metadata	Specialized	PENDING	0	0	
+123	SQLite Metadata	Specialized	PENDING	0	0	
+124	JSON Metadata	Specialized	comprehensive	16	0	ExifTool 12.76 — groups: JSON, CBOR
+125	XML Metadata	Specialized	PENDING	0	0	
+126	YAML Metadata	Specialized	PENDING	0	0	
+127	CSV Metadata	Specialized	PENDING	0	0	
+128	Parquet Metadata	Specialized	PENDING	0	0	
+129	Avro Metadata	Specialized	PENDING	0	0	
+130	ORC Metadata	Specialized	PENDING	0	0	
+131	Git Metadata	Cloud / Versioning	comprehensive	77	0	https://git-scm.com/docs/gitformat-* (gitformat-pack, gitformat-index, gitformat
+132	GitHub / GitLab Metadata	Cloud / Versioning	PENDING	0	0	
+133	Docker / OCI Image Metadata	Specialized	comprehensive	59	2	Open Container Initiative Image Format Spec v1.1.0 (github.com/opencontainers/im
+134	Kubernetes Metadata	Specialized	PENDING	0	0	
+135	Package Metadata npm	Specialized	PENDING	0	0	
+136	Package Metadata Python PyPI	Specialized	PENDING	0	0	
+137	Package Metadata NuGet	Specialized	PENDING	0	0	
+138	Package Metadata Maven	Specialized	PENDING	0	0	
+139	Software Binary Metadata	Specialized	comprehensive	54	560	ExifTool 12.76 — groups: EXE
+140	Digital Signature Metadata	Security / Authenticity	comprehensive	44	0	IANA JSON Web Signature/Encryption Header Parameters — iana.org/assignments/jose
+141	Hash / Checksum Metadata	Security / Authenticity	comprehensive	100	0	IANA CBOR Object Signing and Encryption (COSE) algorithm registry
+142	Certificate Metadata	Security / Authenticity	comprehensive	53	0	IANA JSON Web Signature/Encryption Algorithms — iana.org/assignments/jose/
+143	Cloud Storage Metadata	Cloud / Versioning	PENDING	0	0	
+144	Google Drive Metadata	Cloud / Versioning	PENDING	0	0	
+145	OneDrive / SharePoint Metadata	Cloud / Versioning	PENDING	0	0	
+146	Dropbox Metadata	Cloud / Versioning	PENDING	0	0	
+147	Amazon S3 Object Metadata	Cloud / Versioning	PENDING	0	0	
+148	Azure Blob Metadata	Cloud / Versioning	PENDING	0	0	
+149	Google Cloud Storage Metadata	Cloud / Versioning	PENDING	0	0	
+150	Blockchain Metadata	AI / Provenance	PENDING	0	0	
+151	NFT Metadata	AI / Provenance	PENDING	0	0	
+152	C2PA / Content Credentials	AI / Provenance	PENDING	0	0	
+153	AI-Generated Content Metadata	AI / Provenance	PENDING	0	0	
+154	Steganographic Metadata	Security / Authenticity	PENDING	0	0	
+155	Forensic Metadata	Forensics / Activity	PENDING	0	0	
+156	Log Metadata	Forensics / Activity	PENDING	0	0	
+157	Application Metadata	Specialized	PENDING	0	0	
+158	Mobile App Metadata	Specialized	PENDING	0	0	
+159	iOS Photo Library Metadata	Images	comprehensive	48	80	Apple PhotoKit framework (developer.apple.com/documentation/photos) + Photos.sql
+160	Android MediaStore Metadata	Images	comprehensive	92	20	Android Open Source Project — android.provider.MediaStore + MediaColumns
+161	Camera Roll Photo Library	Images	comprehensive	34	13	JEITA CP-3461 (DCF — Design rule for Camera File system) + iOS/Android conventio
+162	Chat Messaging Metadata	Forensics / Activity	PENDING	0	0	
+163	SMS / MMS Metadata	Forensics / Activity	PENDING	0	0	
+164	Call Log Metadata	Forensics / Activity	PENDING	0	0	
+165	Browser History Metadata	Forensics / Activity	comprehensive	411	0	IANA URI Schemes registry — iana.org/assignments/uri-schemes
+166	Browser Cache Metadata	Forensics / Activity	PENDING	0	0	
+167	Browser Download Metadata	Forensics / Activity	PENDING	0	0	
+168	Torrent Metadata	Web / Email	comprehensive	24	0	ExifTool 12.76 — groups: Torrent
+169	P2P Metadata	Web / Email	PENDING	0	0	
+170	Virtual Machine Metadata	Specialized	PENDING	0	0	
+171	Disk Image Metadata	Specialized	PENDING	0	0	
+172	Backup Metadata	Specialized	PENDING	0	0	
+173	Time Machine Metadata	Operating System / File System	comprehensive	21	0	Apple Time Machine Programming Guide; APFS-based TM (macOS 11+)
+174	System Restore Metadata	Operating System / File System	comprehensive	22	0	Microsoft System Restore documentation; Volume Shadow Copy Service
+175	Print Spool Metadata	Forensics / Activity	PENDING	0	0	
+176	Scanner Metadata	Images	comprehensive	66	145	TWAIN 2.4 Specification + Microsoft WIA + Pixel Translations ISIS
+177	OCR Metadata	Documents	PENDING	0	0	
+178	QR Code / Barcode Metadata	Specialized	PENDING	0	0	
+179	Calendar Metadata	Business / Legal	PENDING	0	0	
+180	iCalendar / ICS Metadata	Business / Legal	comprehensive	86	0	https://www.rfc-editor.org/rfc/rfc5545.txt (RFC 5545 — iCalendar)
+181	Contact Metadata vCard	Business / Legal	comprehensive	100	7	ExifTool 12.76 — groups: VCard
+182	Task Metadata	Business / Legal	PENDING	0	0	
+183	Project Management Metadata	Business / Legal	PENDING	0	0	
+184	Version Control Metadata	Cloud / Versioning	PENDING	0	0	
+185	CMS Metadata	Web / Email	PENDING	0	0	
+186	DAM Metadata	Business / Legal	PENDING	0	0	
+187	Library / Catalog Metadata	Documents	PENDING	0	0	
+188	MARC Metadata	Documents	comprehensive	2662	608	Library of Congress MARC 21 Format for Bibliographic Data, Avram schema (gbv/MAR
+189	DOI Metadata	Documents	PENDING	0	0	
+190	Research Dataset Metadata	Specialized	PENDING	0	0	
+191	EDRM / eDiscovery Metadata	Business / Legal	PENDING	0	0	
+192	Legal Document Metadata	Business / Legal	PENDING	0	0	
+193	Bates Metadata	Business / Legal	PENDING	0	0	
+194	Financial Document Metadata	Business / Legal	PENDING	0	0	
+195	Accounting System Metadata	Business / Legal	PENDING	0	0	
+196	ERP Metadata	Business / Legal	PENDING	0	0	
+197	CRM Metadata	Business / Legal	PENDING	0	0	
+198	Security Camera Metadata	Video	PENDING	0	0	
+199	Bodycam / Dashcam Metadata	Video	PENDING	0	0	
+200	Drone Metadata	Images	comprehensive	64	40	DJI XMP namespace (drone-dji:) + Skydio + Autel + Parrot ANAFI + FLIR thermal + 
+201	IoT Device Metadata	Specialized	PENDING	0	0	
+202	Printer Document Metadata	Forensics / Activity	PENDING	0	0	
+203	Yellow Dot Printer Tracking	Forensics / Activity	PENDING	0	0	
+204	Watermark Metadata	Security / Authenticity	PENDING	0	0	
+205	DRM Metadata	Security / Authenticity	PENDING	0	0	
+206	License Metadata	Security / Authenticity	PENDING	0	0	
+207	Package Archive Metadata	Specialized	PENDING	0	0	
+208	Installer Metadata	Specialized	PENDING	0	0	
+209	Firmware Metadata	Specialized	PENDING	0	0	
+210	BIOS/UEFI Metadata	Specialized	PENDING	0	0	
+211	Hardware Metadata	Specialized	PENDING	0	0	
+212	Network Packet Metadata	Forensics / Activity	PENDING	0	0	
+213	Wi-Fi Metadata	Forensics / Activity	PENDING	0	0	
+214	Bluetooth Metadata	Forensics / Activity	PENDING	0	0	
+215	GPS Device Metadata	Specialized	PENDING	0	0	
+216	Fitness / Health Metadata	Specialized	PENDING	0	0	
+217	FHIR Metadata	Specialized	comprehensive	9555	0	HL7 FHIR R5 (5.0.0) — http://hl7.org/fhir/R5/definitions.json.zip
+218	Scientific Instrument Metadata	Specialized	PENDING	0	0	
+219	Microscopy Metadata	Specialized	PENDING	0	0	
+220	Astronomy FITS Metadata	Specialized	comprehensive	14	0	ExifTool 12.76 — groups: FITS
+221	NetCDF Metadata	Specialized	PENDING	0	0	
+222	HDF5 Metadata	Specialized	PENDING	0	0	
+223	ELF Binary Metadata	Specialized	comprehensive	94	79	System V ABI / ELF specification (https://refspecs.linuxfoundation.org/elf/)
+224	Mach-O Binary Metadata	Specialized	comprehensive	70	23	Apple loader.h / mach-o/* headers; Apple OS X ABI Mach-O File Format Reference
+225	PE Metadata	Specialized	comprehensive	120	63	Microsoft PE/COFF specification (learn.microsoft.com/windows/win32/debug/pe-form
+226	Java Class JAR Metadata	Specialized	PENDING	0	0	
+227	Android APK Metadata	Specialized	PENDING	0	0	
+228	iOS IPA Metadata	Specialized	PENDING	0	0	
+229	Manifest Metadata	Specialized	PENDING	0	0	
+230	Configuration Metadata	Specialized	PENDING	0	0	
+231	Secrets Metadata	Security / Authenticity	PENDING	0	0	
+232	API Metadata	Specialized	comprehensive	159	0	IANA JSON Web Token Claims registry — https://www.iana.org/assignments/jwt/
+233	OpenAPI / Swagger Metadata	Specialized	comprehensive	116	13	OpenAPI Specification 3.1.0 schema (spec.openapis.org/oas/3.1/schema/2022-10-07)
+234	GraphQL Metadata	Specialized	PENDING	0	0	
+235	Data Lineage Metadata	Specialized	PENDING	0	0	
+236	ETL Metadata	Specialized	PENDING	0	0	
+237	Machine Learning Model Metadata	AI / Provenance	PENDING	0	0	
+238	ONNX Metadata	AI / Provenance	PENDING	0	0	
+239	AI Prompt Metadata	AI / Provenance	PENDING	0	0	
+240	Application Cache Metadata	Specialized	PENDING	0	0	

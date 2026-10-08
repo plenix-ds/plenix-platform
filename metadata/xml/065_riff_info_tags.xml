@@ -1,0 +1,2030 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="065" name="RIFF INFO Tags" category="AUD" category_label="Audio" used_for="WAV, AVI" spec_source="ExifTool 12.76 — groups: RIFF" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="197">
+  <description>Attribute set for RIFF INFO Tags. Sourced from ExifTool's tag database (group prefix(es): RIFF). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>AlphaPreprocessing</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ALPH</group>
+      <subsystem>RIFF::ALPH</subsystem>
+      <description>Alpha Preprocessing</description>
+      <values>
+        <value key="0">none</value>
+        <value key="1">Level Reduction</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AlphaFiltering</name>
+      <tag_id>0.1</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ALPH</group>
+      <subsystem>RIFF::ALPH</subsystem>
+      <description>Alpha Filtering</description>
+      <values>
+        <value key="0">none</value>
+        <value key="1">Horizontal</value>
+        <value key="2">Vertical</value>
+        <value key="3">Gradient</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AlphaCompression</name>
+      <tag_id>0.2</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ALPH</group>
+      <subsystem>RIFF::ALPH</subsystem>
+      <description>Alpha Compression</description>
+      <values>
+        <value key="0">none</value>
+        <value key="1">Lossless</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BackgroundColor</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ANIM</group>
+      <subsystem>RIFF::ANIM</subsystem>
+      <description>Background Color</description>
+    </attribute>
+    <attribute>
+      <name>AnimationLoopCount</name>
+      <tag_id>4</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>ANIM</group>
+      <subsystem>RIFF::ANIM</subsystem>
+      <description>Animation Loop Count</description>
+    </attribute>
+    <attribute>
+      <name>Duration</name>
+      <tag_id>12</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ANMF</group>
+      <subsystem>RIFF::ANMF</subsystem>
+      <description>Duration</description>
+    </attribute>
+    <attribute>
+      <name>FrameRate</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AVIHeader</group>
+      <subsystem>RIFF::AVIHeader</subsystem>
+      <description>Frame Rate</description>
+    </attribute>
+    <attribute>
+      <name>MaxDataRate</name>
+      <tag_id>1</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AVIHeader</group>
+      <subsystem>RIFF::AVIHeader</subsystem>
+      <description>Max Data Rate</description>
+    </attribute>
+    <attribute>
+      <name>FrameCount</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AVIHeader</group>
+      <subsystem>RIFF::AVIHeader</subsystem>
+      <description>Frame Count</description>
+    </attribute>
+    <attribute>
+      <name>StreamCount</name>
+      <tag_id>6</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AVIHeader</group>
+      <subsystem>RIFF::AVIHeader</subsystem>
+      <description>Stream Count</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>8</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AVIHeader</group>
+      <subsystem>RIFF::AVIHeader</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>9</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AVIHeader</group>
+      <subsystem>RIFF::AVIHeader</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>AcidizerFlags</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Acidizer</group>
+      <subsystem>RIFF::Acidizer</subsystem>
+      <description>Acidizer Flags</description>
+      <values>
+        <value key="1">One shot</value>
+        <value key="2">Root note set</value>
+        <value key="4">Stretch</value>
+        <value key="8">Disk-based</value>
+        <value key="16">High octave</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>RootNote</name>
+      <tag_id>4</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Acidizer</group>
+      <subsystem>RIFF::Acidizer</subsystem>
+      <description>Root Note</description>
+      <values>
+        <value key="48">C</value>
+        <value key="49">C#</value>
+        <value key="50">D</value>
+        <value key="51">D#</value>
+        <value key="52">E</value>
+        <value key="53">F</value>
+        <value key="54">F#</value>
+        <value key="55">G</value>
+        <value key="56">G#</value>
+        <value key="57">A</value>
+        <value key="58">A#</value>
+        <value key="59">B</value>
+        <value key="60">High C</value>
+        <value key="61">High C#</value>
+        <value key="62">High D</value>
+        <value key="63">High D#</value>
+        <value key="64">High E</value>
+        <value key="65">High F</value>
+        <value key="66">High F#</value>
+        <value key="67">High G</value>
+        <value key="68">High G#</value>
+        <value key="69">High A</value>
+        <value key="70">High A#</value>
+        <value key="71">High B</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Beats</name>
+      <tag_id>12</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Acidizer</group>
+      <subsystem>RIFF::Acidizer</subsystem>
+      <description>Beats</description>
+    </attribute>
+    <attribute>
+      <name>Meter</name>
+      <tag_id>16</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>Acidizer</group>
+      <subsystem>RIFF::Acidizer</subsystem>
+      <description>Meter</description>
+    </attribute>
+    <attribute>
+      <name>Tempo</name>
+      <tag_id>20</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>Acidizer</group>
+      <subsystem>RIFF::Acidizer</subsystem>
+      <description>Tempo</description>
+    </attribute>
+    <attribute>
+      <name>Encoding</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>AudioFormat</group>
+      <subsystem>RIFF::AudioFormat</subsystem>
+      <description>Encoding</description>
+      <values>
+        <value key="1">Microsoft PCM</value>
+        <value key="2">Microsoft ADPCM</value>
+        <value key="3">Microsoft IEEE float</value>
+        <value key="4">Compaq VSELP</value>
+        <value key="5">IBM CVSD</value>
+        <value key="6">Microsoft a-Law</value>
+        <value key="7">Microsoft u-Law</value>
+        <value key="8">Microsoft DTS</value>
+        <value key="9">DRM</value>
+        <value key="10">WMA 9 Speech</value>
+        <value key="11">Microsoft Windows Media RT Voice</value>
+        <value key="16">OKI-ADPCM</value>
+        <value key="17">Intel IMA/DVI-ADPCM</value>
+        <value key="18">Videologic Mediaspace ADPCM</value>
+        <value key="19">Sierra ADPCM</value>
+        <value key="20">Antex G.723 ADPCM</value>
+        <value key="21">DSP Solutions DIGISTD</value>
+        <value key="22">DSP Solutions DIGIFIX</value>
+        <value key="23">Dialoic OKI ADPCM</value>
+        <value key="24">Media Vision ADPCM</value>
+        <value key="25">HP CU</value>
+        <value key="26">HP Dynamic Voice</value>
+        <value key="32">Yamaha ADPCM</value>
+        <value key="33">SONARC Speech Compression</value>
+        <value key="34">DSP Group True Speech</value>
+        <value key="35">Echo Speech Corp.</value>
+        <value key="36">Virtual Music Audiofile AF36</value>
+        <value key="37">Audio Processing Tech.</value>
+        <value key="38">Virtual Music Audiofile AF10</value>
+        <value key="39">Aculab Prosody 1612</value>
+        <value key="40">Merging Tech. LRC</value>
+        <value key="48">Dolby AC2</value>
+        <value key="49">Microsoft GSM610</value>
+        <value key="50">MSN Audio</value>
+        <value key="51">Antex ADPCME</value>
+        <value key="52">Control Resources VQLPC</value>
+        <value key="53">DSP Solutions DIGIREAL</value>
+        <value key="54">DSP Solutions DIGIADPCM</value>
+        <value key="55">Control Resources CR10</value>
+        <value key="56">Natural MicroSystems VBX ADPCM</value>
+        <value key="57">Crystal Semiconductor IMA ADPCM</value>
+        <value key="58">Echo Speech ECHOSC3</value>
+        <value key="59">Rockwell ADPCM</value>
+        <value key="60">Rockwell DIGITALK</value>
+        <value key="61">Xebec Multimedia</value>
+        <value key="64">Antex G.721 ADPCM</value>
+        <value key="65">Antex G.728 CELP</value>
+        <value key="66">Microsoft MSG723</value>
+        <value key="67">IBM AVC ADPCM</value>
+        <value key="69">ITU-T G.726</value>
+        <value key="80">Microsoft MPEG</value>
+        <value key="81">RT23 or PAC</value>
+        <value key="82">InSoft RT24</value>
+        <value key="83">InSoft PAC</value>
+        <value key="85">MP3</value>
+        <value key="89">Cirrus</value>
+        <value key="96">Cirrus Logic</value>
+        <value key="97">ESS Tech. PCM</value>
+        <value key="98">Voxware Inc.</value>
+        <value key="99">Canopus ATRAC</value>
+        <value key="100">APICOM G.726 ADPCM</value>
+        <value key="101">APICOM G.722 ADPCM</value>
+        <value key="102">Microsoft DSAT</value>
+        <value key="103">Microsoft DSAT DISPLAY</value>
+        <value key="105">Voxware Byte Aligned</value>
+        <value key="112">Voxware AC8</value>
+        <value key="113">Voxware AC10</value>
+        <value key="114">Voxware AC16</value>
+        <value key="115">Voxware AC20</value>
+        <value key="116">Voxware MetaVoice</value>
+        <value key="117">Voxware MetaSound</value>
+        <value key="118">Voxware RT29HW</value>
+        <value key="119">Voxware VR12</value>
+        <value key="120">Voxware VR18</value>
+        <value key="121">Voxware TQ40</value>
+        <value key="122">Voxware SC3</value>
+        <value key="123">Voxware SC3</value>
+        <value key="128">Soundsoft</value>
+        <value key="129">Voxware TQ60</value>
+        <value key="130">Microsoft MSRT24</value>
+        <value key="131">AT&amp;T G.729A</value>
+        <value key="132">Motion Pixels MVI MV12</value>
+        <value key="133">DataFusion G.726</value>
+        <value key="134">DataFusion GSM610</value>
+        <value key="136">Iterated Systems Audio</value>
+        <value key="137">Onlive</value>
+        <value key="138">Multitude, Inc. FT SX20</value>
+        <value key="139">Infocom ITS A/S G.721 ADPCM</value>
+        <value key="140">Convedia G729</value>
+        <value key="141">Not specified congruency, Inc.</value>
+        <value key="145">Siemens SBC24</value>
+        <value key="146">Sonic Foundry Dolby AC3 APDIF</value>
+        <value key="147">MediaSonic G.723</value>
+        <value key="148">Aculab Prosody 8kbps</value>
+        <value key="151">ZyXEL ADPCM</value>
+        <value key="152">Philips LPCBB</value>
+        <value key="153">Studer Professional Audio Packed</value>
+        <value key="160">Malden PhonyTalk</value>
+        <value key="161">Racal Recorder GSM</value>
+        <value key="162">Racal Recorder G720.a</value>
+        <value key="163">Racal G723.1</value>
+        <value key="164">Racal Tetra ACELP</value>
+        <value key="176">NEC AAC NEC Corporation</value>
+        <value key="255">AAC</value>
+        <value key="256">Rhetorex ADPCM</value>
+        <value key="257">IBM u-Law</value>
+        <value key="258">IBM a-Law</value>
+        <value key="259">IBM ADPCM</value>
+        <value key="273">Vivo G.723</value>
+        <value key="274">Vivo Siren</value>
+        <value key="288">Philips Speech Processing CELP</value>
+        <value key="289">Philips Speech Processing GRUNDIG</value>
+        <value key="291">Digital G.723</value>
+        <value key="293">Sanyo LD ADPCM</value>
+        <value key="304">Sipro Lab ACEPLNET</value>
+        <value key="305">Sipro Lab ACELP4800</value>
+        <value key="306">Sipro Lab ACELP8V3</value>
+        <value key="307">Sipro Lab G.729</value>
+        <value key="308">Sipro Lab G.729A</value>
+        <value key="309">Sipro Lab Kelvin</value>
+        <value key="310">VoiceAge AMR</value>
+        <value key="320">Dictaphone G.726 ADPCM</value>
+        <value key="336">Qualcomm PureVoice</value>
+        <value key="337">Qualcomm HalfRate</value>
+        <value key="341">Ring Zero Systems TUBGSM</value>
+        <value key="352">Microsoft Audio1</value>
+        <value key="353">Windows Media Audio V2 V7 V8 V9 / DivX audio (WMA) / Alex AC3 Audio</value>
+        <value key="354">Windows Media Audio Professional V9</value>
+        <value key="355">Windows Media Audio Lossless V9</value>
+        <value key="356">WMA Pro over S/PDIF</value>
+        <value key="368">UNISYS NAP ADPCM</value>
+        <value key="369">UNISYS NAP ULAW</value>
+        <value key="370">UNISYS NAP ALAW</value>
+        <value key="371">UNISYS NAP 16K</value>
+        <value key="372">MM SYCOM ACM SYC008 SyCom Technologies</value>
+        <value key="373">MM SYCOM ACM SYC701 G726L SyCom Technologies</value>
+        <value key="374">MM SYCOM ACM SYC701 CELP54 SyCom Technologies</value>
+        <value key="375">MM SYCOM ACM SYC701 CELP68 SyCom Technologies</value>
+        <value key="376">Knowledge Adventure ADPCM</value>
+        <value key="384">Fraunhofer IIS MPEG2AAC</value>
+        <value key="400">Digital Theater Systems DTS DS</value>
+        <value key="512">Creative Labs ADPCM</value>
+        <value key="514">Creative Labs FASTSPEECH8</value>
+        <value key="515">Creative Labs FASTSPEECH10</value>
+        <value key="528">UHER ADPCM</value>
+        <value key="533">Ulead DV ACM</value>
+        <value key="534">Ulead DV ACM</value>
+        <value key="544">Quarterdeck Corp.</value>
+        <value key="560">I-Link VC</value>
+        <value key="576">Aureal Semiconductor Raw Sport</value>
+        <value key="577">ESST AC3</value>
+        <value key="592">Interactive Products HSX</value>
+        <value key="593">Interactive Products RPELP</value>
+        <value key="608">Consistent CS2</value>
+        <value key="624">Sony SCX</value>
+        <value key="625">Sony SCY</value>
+        <value key="626">Sony ATRAC3</value>
+        <value key="627">Sony SPC</value>
+        <value key="640">TELUM Telum Inc.</value>
+        <value key="641">TELUMIA Telum Inc.</value>
+        <value key="645">Norcom Voice Systems ADPCM</value>
+        <value key="768">Fujitsu FM TOWNS SND</value>
+        <value key="769">Fujitsu (not specified)</value>
+        <value key="770">Fujitsu (not specified)</value>
+        <value key="771">Fujitsu (not specified)</value>
+        <value key="772">Fujitsu (not specified)</value>
+        <value key="773">Fujitsu (not specified)</value>
+        <value key="774">Fujitsu (not specified)</value>
+        <value key="775">Fujitsu (not specified)</value>
+        <value key="776">Fujitsu (not specified)</value>
+        <value key="848">Micronas Semiconductors, Inc. Development</value>
+        <value key="849">Micronas Semiconductors, Inc. CELP833</value>
+        <value key="1024">Brooktree Digital</value>
+        <value key="1025">Intel Music Coder (IMC)</value>
+        <value key="1026">Ligos Indeo Audio</value>
+        <value key="1104">QDesign Music</value>
+        <value key="1280">On2 VP7 On2 Technologies</value>
+        <value key="1281">On2 VP6 On2 Technologies</value>
+        <value key="1664">AT&amp;T VME VMPCM</value>
+        <value key="1665">AT&amp;T TCP</value>
+        <value key="1792">YMPEG Alpha (dummy for MPEG-2 compressor)</value>
+        <value key="2222">ClearJump LiteWave (lossless)</value>
+        <value key="4096">Olivetti GSM</value>
+        <value key="4097">Olivetti ADPCM</value>
+        <value key="4098">Olivetti CELP</value>
+        <value key="4099">Olivetti SBC</value>
+        <value key="4100">Olivetti OPR</value>
+        <value key="4352">Lernout &amp; Hauspie</value>
+        <value key="4353">Lernout &amp; Hauspie CELP codec</value>
+        <value key="4354">Lernout &amp; Hauspie SBC codec</value>
+        <value key="4355">Lernout &amp; Hauspie SBC codec</value>
+        <value key="4356">Lernout &amp; Hauspie SBC codec</value>
+        <value key="5120">Norris Comm. Inc.</value>
+        <value key="5121">ISIAudio</value>
+        <value key="5376">AT&amp;T Soundspace Music Compression</value>
+        <value key="6172">VoxWare RT24 speech codec</value>
+        <value key="6174">Lucent elemedia AX24000P Music codec</value>
+        <value key="6513">Sonic Foundry LOSSLESS</value>
+        <value key="6521">Innings Telecom Inc. ADPCM</value>
+        <value key="7175">Lucent SX8300P speech codec</value>
+        <value key="7180">Lucent SX5363S G.723 compliant codec</value>
+        <value key="7939">CUseeMe DigiTalk (ex-Rocwell)</value>
+        <value key="8132">NCT Soft ALF2CD ACM</value>
+        <value key="8192">FAST Multimedia DVM</value>
+        <value key="8193">Dolby DTS (Digital Theater System)</value>
+        <value key="8194">RealAudio 1 / 2 14.4</value>
+        <value key="8195">RealAudio 1 / 2 28.8</value>
+        <value key="8196">RealAudio G2 / 8 Cook (low bitrate)</value>
+        <value key="8197">RealAudio 3 / 4 / 5 Music (DNET)</value>
+        <value key="8198">RealAudio 10 AAC (RAAC)</value>
+        <value key="8199">RealAudio 10 AAC+ (RACP)</value>
+        <value key="9472">Reserved range to 0x2600 Microsoft</value>
+        <value key="13075">makeAVIS (ffvfw fake AVI sound from AviSynth scripts)</value>
+        <value key="16707">Divio MPEG-4 AAC audio</value>
+        <value key="16897">Nokia adaptive multirate</value>
+        <value key="16963">Divio G726 Divio, Inc.</value>
+        <value key="17228">LEAD Speech</value>
+        <value key="22092">LEAD Vorbis</value>
+        <value key="22358">WavPack Audio</value>
+        <value key="26447">Ogg Vorbis (mode 1)</value>
+        <value key="26448">Ogg Vorbis (mode 2)</value>
+        <value key="26449">Ogg Vorbis (mode 3)</value>
+        <value key="26479">Ogg Vorbis (mode 1+)</value>
+        <value key="26480">Ogg Vorbis (mode 2+)</value>
+        <value key="26481">Ogg Vorbis (mode 3+)</value>
+        <value key="28672">3COM NBX 3Com Corporation</value>
+        <value key="28781">FAAD AAC</value>
+        <value key="31265">GSM-AMR (CBR, no SID)</value>
+        <value key="31266">GSM-AMR (VBR, including SID)</value>
+        <value key="41216">Comverse Infosys Ltd. G723 1</value>
+        <value key="41217">Comverse Infosys Ltd. AVQSBC</value>
+        <value key="41218">Comverse Infosys Ltd. OLDSBC</value>
+        <value key="41219">Symbol Technologies G729A</value>
+        <value key="41220">VoiceAge AMR WB VoiceAge Corporation</value>
+        <value key="41221">Ingenient Technologies Inc. G726</value>
+        <value key="41222">ISO/MPEG-4 advanced audio Coding</value>
+        <value key="41223">Encore Software Ltd G726</value>
+        <value key="41225">Speex ACM Codec xiph.org</value>
+        <value key="57260">DebugMode SonicFoundry Vegas FrameServer ACM Codec</value>
+        <value key="59144">Unknown -</value>
+        <value key="61868">Free Lossless Audio Codec FLAC</value>
+        <value key="65534">Extensible</value>
+        <value key="65535">Development</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>NumChannels</name>
+      <tag_id>1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>AudioFormat</group>
+      <subsystem>RIFF::AudioFormat</subsystem>
+      <description>Num Channels</description>
+    </attribute>
+    <attribute>
+      <name>SampleRate</name>
+      <tag_id>2</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AudioFormat</group>
+      <subsystem>RIFF::AudioFormat</subsystem>
+      <description>Sample Rate</description>
+    </attribute>
+    <attribute>
+      <name>AvgBytesPerSec</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>AudioFormat</group>
+      <subsystem>RIFF::AudioFormat</subsystem>
+      <description>Avg Bytes Per Sec</description>
+    </attribute>
+    <attribute>
+      <name>BitsPerSample</name>
+      <tag_id>7</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>AudioFormat</group>
+      <subsystem>RIFF::AudioFormat</subsystem>
+      <description>Bits Per Sample</description>
+    </attribute>
+    <attribute>
+      <name>Description</name>
+      <tag_id>0</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>Originator</name>
+      <tag_id>256</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>Originator</description>
+    </attribute>
+    <attribute>
+      <name>OriginatorReference</name>
+      <tag_id>288</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>Originator Reference</description>
+    </attribute>
+    <attribute>
+      <name>DateTimeOriginal</name>
+      <tag_id>320</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>Date/Time Original</description>
+    </attribute>
+    <attribute>
+      <name>TimeReference</name>
+      <tag_id>338</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>Time Reference</description>
+    </attribute>
+    <attribute>
+      <name>BWFVersion</name>
+      <tag_id>346</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>BWF Version</description>
+    </attribute>
+    <attribute>
+      <name>BWF_UMID</name>
+      <tag_id>348</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>BWF UMID</description>
+    </attribute>
+    <attribute>
+      <name>CodingHistory</name>
+      <tag_id>602</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>BroadcastExt</group>
+      <subsystem>RIFF::BroadcastExt</subsystem>
+      <description>Coding History</description>
+    </attribute>
+    <attribute>
+      <name>CodePage</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>CSET</group>
+      <subsystem>RIFF::CSET</subsystem>
+      <description>Code Page</description>
+    </attribute>
+    <attribute>
+      <name>CountryCode</name>
+      <tag_id>1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>CSET</group>
+      <subsystem>RIFF::CSET</subsystem>
+      <description>Country Code</description>
+    </attribute>
+    <attribute>
+      <name>LanguageCode</name>
+      <tag_id>2</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>CSET</group>
+      <subsystem>RIFF::CSET</subsystem>
+      <description>Language Code</description>
+    </attribute>
+    <attribute>
+      <name>Dialect</name>
+      <tag_id>3</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>CSET</group>
+      <subsystem>RIFF::CSET</subsystem>
+      <description>Dialect</description>
+    </attribute>
+    <attribute>
+      <name>RIFFSize64</name>
+      <tag_id>0</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>DS64</group>
+      <subsystem>RIFF::DS64</subsystem>
+      <description>RIFF Size 64</description>
+    </attribute>
+    <attribute>
+      <name>DataSize64</name>
+      <tag_id>1</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>DS64</group>
+      <subsystem>RIFF::DS64</subsystem>
+      <description>Data Size 64</description>
+    </attribute>
+    <attribute>
+      <name>NumberOfSamples64</name>
+      <tag_id>2</tag_id>
+      <data_type>int64u</data_type>
+      <writable>false</writable>
+      <group>DS64</group>
+      <subsystem>RIFF::DS64</subsystem>
+      <description>Number Of Samples 64</description>
+    </attribute>
+    <attribute>
+      <name>Make</name>
+      <tag_id>ecor</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>Make</description>
+    </attribute>
+    <attribute>
+      <name>Model</name>
+      <tag_id>emdl</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>Camera Model Name</description>
+    </attribute>
+    <attribute>
+      <name>MakerNotes</name>
+      <tag_id>emnt</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>Maker Notes</description>
+    </attribute>
+    <attribute>
+      <name>RelatedImageFile</name>
+      <tag_id>erel</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>Related Image File</description>
+    </attribute>
+    <attribute>
+      <name>TimeCreated</name>
+      <tag_id>etim</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>Time Created</description>
+    </attribute>
+    <attribute>
+      <name>UserComment</name>
+      <tag_id>eucm</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>User Comment</description>
+    </attribute>
+    <attribute>
+      <name>ExifVersion</name>
+      <tag_id>ever</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Exif</group>
+      <subsystem>RIFF::Exif</subsystem>
+      <description>Exif Version</description>
+    </attribute>
+    <attribute>
+      <name>TotalFrameCount</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>ExtAVIHdr</group>
+      <subsystem>RIFF::ExtAVIHdr</subsystem>
+      <description>Total Frame Count</description>
+    </attribute>
+    <attribute>
+      <name>DateTimeOriginal</name>
+      <tag_id>IDIT</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Hdrl</group>
+      <subsystem>RIFF::Hdrl</subsystem>
+      <description>Date/Time Original</description>
+    </attribute>
+    <attribute>
+      <name>TimeCode</name>
+      <tag_id>ISMP</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Hdrl</group>
+      <subsystem>RIFF::Hdrl</subsystem>
+      <description>Time Code</description>
+    </attribute>
+    <attribute>
+      <name>Rated</name>
+      <tag_id>AGES</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Rated</description>
+    </attribute>
+    <attribute>
+      <name>Comment</name>
+      <tag_id>CMNT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Comment</description>
+    </attribute>
+    <attribute>
+      <name>EncodedBy</name>
+      <tag_id>CODE</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Encoded By</description>
+    </attribute>
+    <attribute>
+      <name>Comments</name>
+      <tag_id>COMM</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Comments</description>
+    </attribute>
+    <attribute>
+      <name>Directory</name>
+      <tag_id>DIRC</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Directory</description>
+    </attribute>
+    <attribute>
+      <name>SoundSchemeTitle</name>
+      <tag_id>DISP</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Sound Scheme Title</description>
+    </attribute>
+    <attribute>
+      <name>DateTimeOriginal</name>
+      <tag_id>DTIM</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Date/Time Original</description>
+    </attribute>
+    <attribute>
+      <name>Genre</name>
+      <tag_id>GENR</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Genre</description>
+    </attribute>
+    <attribute>
+      <name>ArchivalLocation</name>
+      <tag_id>IARL</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Archival Location</description>
+    </attribute>
+    <attribute>
+      <name>Artist</name>
+      <tag_id>IART</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Artist</description>
+    </attribute>
+    <attribute>
+      <name>FirstLanguage</name>
+      <tag_id>IAS1</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>First Language</description>
+    </attribute>
+    <attribute>
+      <name>SecondLanguage</name>
+      <tag_id>IAS2</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Second Language</description>
+    </attribute>
+    <attribute>
+      <name>ThirdLanguage</name>
+      <tag_id>IAS3</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Third Language</description>
+    </attribute>
+    <attribute>
+      <name>FourthLanguage</name>
+      <tag_id>IAS4</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Fourth Language</description>
+    </attribute>
+    <attribute>
+      <name>FifthLanguage</name>
+      <tag_id>IAS5</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Fifth Language</description>
+    </attribute>
+    <attribute>
+      <name>SixthLanguage</name>
+      <tag_id>IAS6</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Sixth Language</description>
+    </attribute>
+    <attribute>
+      <name>SeventhLanguage</name>
+      <tag_id>IAS7</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Seventh Language</description>
+    </attribute>
+    <attribute>
+      <name>EighthLanguage</name>
+      <tag_id>IAS8</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Eighth Language</description>
+    </attribute>
+    <attribute>
+      <name>NinthLanguage</name>
+      <tag_id>IAS9</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Ninth Language</description>
+    </attribute>
+    <attribute>
+      <name>BaseURL</name>
+      <tag_id>IBSU</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Base URL</description>
+    </attribute>
+    <attribute>
+      <name>DefaultAudioStream</name>
+      <tag_id>ICAS</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Default Audio Stream</description>
+    </attribute>
+    <attribute>
+      <name>CostumeDesigner</name>
+      <tag_id>ICDS</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Costume Designer</description>
+    </attribute>
+    <attribute>
+      <name>Commissioned</name>
+      <tag_id>ICMS</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Commissioned</description>
+    </attribute>
+    <attribute>
+      <name>Cinematographer</name>
+      <tag_id>ICNM</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Cinematographer</description>
+    </attribute>
+    <attribute>
+      <name>Country</name>
+      <tag_id>ICNT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Country</description>
+    </attribute>
+    <attribute>
+      <name>Copyright</name>
+      <tag_id>ICOP</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Copyright</description>
+    </attribute>
+    <attribute>
+      <name>DateCreated</name>
+      <tag_id>ICRD</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Date Created</description>
+    </attribute>
+    <attribute>
+      <name>Cropped</name>
+      <tag_id>ICRP</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Cropped</description>
+    </attribute>
+    <attribute>
+      <name>Dimensions</name>
+      <tag_id>IDIM</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Dimensions</description>
+    </attribute>
+    <attribute>
+      <name>DotsPerInch</name>
+      <tag_id>IDPI</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Dots Per Inch</description>
+    </attribute>
+    <attribute>
+      <name>DistributedBy</name>
+      <tag_id>IDST</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Distributed By</description>
+    </attribute>
+    <attribute>
+      <name>EditedBy</name>
+      <tag_id>IEDT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Edited By</description>
+    </attribute>
+    <attribute>
+      <name>Engineer</name>
+      <tag_id>IENG</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Engineer</description>
+    </attribute>
+    <attribute>
+      <name>Keywords</name>
+      <tag_id>IKEY</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>Lightness</name>
+      <tag_id>ILGT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Lightness</description>
+    </attribute>
+    <attribute>
+      <name>LogoURL</name>
+      <tag_id>ILGU</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Logo URL</description>
+    </attribute>
+    <attribute>
+      <name>LogoIconURL</name>
+      <tag_id>ILIU</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Logo Icon URL</description>
+    </attribute>
+    <attribute>
+      <name>Language</name>
+      <tag_id>ILNG</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Language</description>
+    </attribute>
+    <attribute>
+      <name>MoreInfoBannerImage</name>
+      <tag_id>IMBI</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>More Info Banner Image</description>
+    </attribute>
+    <attribute>
+      <name>MoreInfoBannerURL</name>
+      <tag_id>IMBU</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>More Info Banner URL</description>
+    </attribute>
+    <attribute>
+      <name>Medium</name>
+      <tag_id>IMED</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Medium</description>
+    </attribute>
+    <attribute>
+      <name>MoreInfoText</name>
+      <tag_id>IMIT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>More Info Text</description>
+    </attribute>
+    <attribute>
+      <name>MoreInfoURL</name>
+      <tag_id>IMIU</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>More Info URL</description>
+    </attribute>
+    <attribute>
+      <name>MusicBy</name>
+      <tag_id>IMUS</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Music By</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>INAM</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>ProductionDesigner</name>
+      <tag_id>IPDS</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Production Designer</description>
+    </attribute>
+    <attribute>
+      <name>NumColors</name>
+      <tag_id>IPLT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Num Colors</description>
+    </attribute>
+    <attribute>
+      <name>Product</name>
+      <tag_id>IPRD</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Product</description>
+    </attribute>
+    <attribute>
+      <name>ProducedBy</name>
+      <tag_id>IPRO</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Produced By</description>
+    </attribute>
+    <attribute>
+      <name>RippedBy</name>
+      <tag_id>IRIP</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Ripped By</description>
+    </attribute>
+    <attribute>
+      <name>Rating</name>
+      <tag_id>IRTD</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Rating</description>
+    </attribute>
+    <attribute>
+      <name>Subject</name>
+      <tag_id>ISBJ</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Subject</description>
+    </attribute>
+    <attribute>
+      <name>Software</name>
+      <tag_id>ISFT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Software</description>
+    </attribute>
+    <attribute>
+      <name>SecondaryGenre</name>
+      <tag_id>ISGN</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Secondary Genre</description>
+    </attribute>
+    <attribute>
+      <name>Sharpness</name>
+      <tag_id>ISHP</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Sharpness</description>
+    </attribute>
+    <attribute>
+      <name>TimeCode</name>
+      <tag_id>ISMP</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Time Code</description>
+    </attribute>
+    <attribute>
+      <name>Source</name>
+      <tag_id>ISRC</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Source</description>
+    </attribute>
+    <attribute>
+      <name>SourceForm</name>
+      <tag_id>ISRF</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Source Form</description>
+    </attribute>
+    <attribute>
+      <name>ProductionStudio</name>
+      <tag_id>ISTD</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Production Studio</description>
+    </attribute>
+    <attribute>
+      <name>Starring</name>
+      <tag_id>ISTR</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Starring</description>
+    </attribute>
+    <attribute>
+      <name>Technician</name>
+      <tag_id>ITCH</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Technician</description>
+    </attribute>
+    <attribute>
+      <name>TrackNumber</name>
+      <tag_id>ITRK</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Track Number</description>
+    </attribute>
+    <attribute>
+      <name>WatermarkURL</name>
+      <tag_id>IWMU</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Watermark URL</description>
+    </attribute>
+    <attribute>
+      <name>WrittenBy</name>
+      <tag_id>IWRI</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Written By</description>
+    </attribute>
+    <attribute>
+      <name>Location</name>
+      <tag_id>LOCA</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Location</description>
+    </attribute>
+    <attribute>
+      <name>Part</name>
+      <tag_id>PRT1</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Part</description>
+    </attribute>
+    <attribute>
+      <name>NumberOfParts</name>
+      <tag_id>PRT2</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Number Of Parts</description>
+    </attribute>
+    <attribute>
+      <name>Rate</name>
+      <tag_id>RATE</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Rate</description>
+    </attribute>
+    <attribute>
+      <name>Statistics</name>
+      <tag_id>STAT</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Statistics</description>
+      <values>
+        <value key="0">Bad</value>
+        <value key="1">OK</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TapeName</name>
+      <tag_id>TAPE</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Tape Name</description>
+    </attribute>
+    <attribute>
+      <name>EndTimecode</name>
+      <tag_id>TCDO</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>End Timecode</description>
+    </attribute>
+    <attribute>
+      <name>StartTimecode</name>
+      <tag_id>TCOD</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Start Timecode</description>
+    </attribute>
+    <attribute>
+      <name>Length</name>
+      <tag_id>TLEN</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Length</description>
+    </attribute>
+    <attribute>
+      <name>Organization</name>
+      <tag_id>TORG</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Organization</description>
+    </attribute>
+    <attribute>
+      <name>URL</name>
+      <tag_id>TURL</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>URL</description>
+    </attribute>
+    <attribute>
+      <name>Version</name>
+      <tag_id>TVER</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Version</description>
+    </attribute>
+    <attribute>
+      <name>VegasVersionMajor</name>
+      <tag_id>VMAJ</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Vegas Version Major</description>
+    </attribute>
+    <attribute>
+      <name>VegasVersionMinor</name>
+      <tag_id>VMIN</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Vegas Version Minor</description>
+    </attribute>
+    <attribute>
+      <name>Year</name>
+      <tag_id>YEAR</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>Info</group>
+      <subsystem>RIFF::Info</subsystem>
+      <description>Year</description>
+    </attribute>
+    <attribute>
+      <name>UnshiftedNote</name>
+      <tag_id>0</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>Unshifted Note</description>
+    </attribute>
+    <attribute>
+      <name>FineTune</name>
+      <tag_id>1</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>Fine Tune</description>
+    </attribute>
+    <attribute>
+      <name>Gain</name>
+      <tag_id>2</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>Gain</description>
+    </attribute>
+    <attribute>
+      <name>LowNote</name>
+      <tag_id>3</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>Low Note</description>
+    </attribute>
+    <attribute>
+      <name>HighNote</name>
+      <tag_id>4</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>High Note</description>
+    </attribute>
+    <attribute>
+      <name>LowVelocity</name>
+      <tag_id>5</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>Low Velocity</description>
+    </attribute>
+    <attribute>
+      <name>HighVelocity</name>
+      <tag_id>6</tag_id>
+      <data_type>int8s</data_type>
+      <writable>false</writable>
+      <group>Instrument</group>
+      <subsystem>RIFF::Instrument</subsystem>
+      <description>High Velocity</description>
+    </attribute>
+    <attribute>
+      <name>UnknownEXIF</name>
+      <tag_id>EXIF</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Unknown EXIF</description>
+    </attribute>
+    <attribute>
+      <name>DateTimeOriginal</name>
+      <tag_id>IDIT</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Date/Time Original</description>
+    </attribute>
+    <attribute>
+      <name>TextJunk</name>
+      <tag_id>JUNK</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Text Junk</description>
+    </attribute>
+    <attribute>
+      <name>OldXMP</name>
+      <tag_id>JUNQ</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Old XMP</description>
+    </attribute>
+    <attribute>
+      <name>Afsp</name>
+      <tag_id>afsp</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Afsp</description>
+    </attribute>
+    <attribute>
+      <name>CuePoints</name>
+      <tag_id>cue </tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Cue Points</description>
+    </attribute>
+    <attribute>
+      <name>NumberOfSamples</name>
+      <tag_id>fact</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Number Of Samples</description>
+    </attribute>
+    <attribute>
+      <name>Guano</name>
+      <tag_id>guan</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Guano</description>
+    </attribute>
+    <attribute>
+      <name>CuePointLabel</name>
+      <tag_id>labl</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Cue Point Label</description>
+    </attribute>
+    <attribute>
+      <name>ListType</name>
+      <tag_id>list</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>List Type</description>
+    </attribute>
+    <attribute>
+      <name>LabeledText</name>
+      <tag_id>ltxt</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Labeled Text</description>
+    </attribute>
+    <attribute>
+      <name>CuePointNote</name>
+      <tag_id>note</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Cue Point Note</description>
+    </attribute>
+    <attribute>
+      <name>Playlist</name>
+      <tag_id>plst</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Playlist</description>
+    </attribute>
+    <attribute>
+      <name>Text</name>
+      <tag_id>tx_Unknown</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>RIFF::Main</subsystem>
+      <description>Text</description>
+    </attribute>
+    <attribute>
+      <name>Manufacturer</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>Manufacturer</description>
+    </attribute>
+    <attribute>
+      <name>Product</name>
+      <tag_id>1</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>Product</description>
+    </attribute>
+    <attribute>
+      <name>SamplePeriod</name>
+      <tag_id>2</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>Sample Period</description>
+    </attribute>
+    <attribute>
+      <name>MIDIUnityNote</name>
+      <tag_id>3</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>MIDI Unity Note</description>
+    </attribute>
+    <attribute>
+      <name>MIDIPitchFraction</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>MIDI Pitch Fraction</description>
+    </attribute>
+    <attribute>
+      <name>SMPTEFormat</name>
+      <tag_id>5</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>SMPTE Format</description>
+      <values>
+        <value key="0">none</value>
+        <value key="24">24 fps</value>
+        <value key="25">25 fps</value>
+        <value key="29">29 fps</value>
+        <value key="30">30 fps</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SMPTEOffset</name>
+      <tag_id>6</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>SMPTE Offset</description>
+    </attribute>
+    <attribute>
+      <name>NumSampleLoops</name>
+      <tag_id>7</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>Num Sample Loops</description>
+    </attribute>
+    <attribute>
+      <name>SamplerDataLen</name>
+      <tag_id>8</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>Sampler Data Len</description>
+    </attribute>
+    <attribute>
+      <name>SamplerData</name>
+      <tag_id>9</tag_id>
+      <data_type>undef</data_type>
+      <writable>false</writable>
+      <group>Sampler</group>
+      <subsystem>RIFF::Sampler</subsystem>
+      <description>Sampler Data</description>
+    </attribute>
+    <attribute>
+      <name>TextFormat</name>
+      <tag_id>strf</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Stream</group>
+      <subsystem>RIFF::Stream</subsystem>
+      <description>Text Format</description>
+    </attribute>
+    <attribute>
+      <name>StreamName</name>
+      <tag_id>strn</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Stream</group>
+      <subsystem>RIFF::Stream</subsystem>
+      <description>Stream Name</description>
+    </attribute>
+    <attribute>
+      <name>VendorName</name>
+      <tag_id>Zora</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>StreamData</group>
+      <subsystem>RIFF::StreamData</subsystem>
+      <description>Vendor Name</description>
+    </attribute>
+    <attribute>
+      <name>UnknownData</name>
+      <tag_id>unknown</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>StreamData</group>
+      <subsystem>RIFF::StreamData</subsystem>
+      <description>Unknown Data</description>
+    </attribute>
+    <attribute>
+      <name>StreamType</name>
+      <tag_id>0</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Stream Type</description>
+      <values>
+        <value key="auds">Audio</value>
+        <value key="iavs">Interleaved Audio+Video</value>
+        <value key="mids">MIDI</value>
+        <value key="txts">Text</value>
+        <value key="vids">Video</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AudioCodec</name>
+      <tag_id>1</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Audio Codec</description>
+    </attribute>
+    <attribute>
+      <name>VideoCodec</name>
+      <tag_id>1</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Video Codec</description>
+    </attribute>
+    <attribute>
+      <name>Codec</name>
+      <tag_id>1</tag_id>
+      <data_type>string</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Codec</description>
+    </attribute>
+    <attribute>
+      <name>AudioSampleRate</name>
+      <tag_id>5</tag_id>
+      <data_type>rational64u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Audio Sample Rate</description>
+    </attribute>
+    <attribute>
+      <name>VideoFrameRate</name>
+      <tag_id>5</tag_id>
+      <data_type>rational64u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Video Frame Rate</description>
+    </attribute>
+    <attribute>
+      <name>StreamSampleRate</name>
+      <tag_id>5</tag_id>
+      <data_type>rational64u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Stream Sample Rate</description>
+    </attribute>
+    <attribute>
+      <name>AudioSampleCount</name>
+      <tag_id>8</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Audio Sample Count</description>
+    </attribute>
+    <attribute>
+      <name>VideoFrameCount</name>
+      <tag_id>8</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Video Frame Count</description>
+    </attribute>
+    <attribute>
+      <name>StreamSampleCount</name>
+      <tag_id>8</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Stream Sample Count</description>
+    </attribute>
+    <attribute>
+      <name>Quality</name>
+      <tag_id>10</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Quality</description>
+    </attribute>
+    <attribute>
+      <name>SampleSize</name>
+      <tag_id>11</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>StreamHeader</group>
+      <subsystem>RIFF::StreamHeader</subsystem>
+      <description>Sample Size</description>
+    </attribute>
+    <attribute>
+      <name>GPSAltitude</name>
+      <tag_id>28</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>UserText</group>
+      <subsystem>RIFF::UserText</subsystem>
+      <description>GPS Altitude</description>
+    </attribute>
+    <attribute>
+      <name>Accelerometer</name>
+      <tag_id>40</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>UserText</group>
+      <subsystem>RIFF::UserText</subsystem>
+      <description>Accelerometer</description>
+    </attribute>
+    <attribute>
+      <name>GPSSpeed</name>
+      <tag_id>56</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>UserText</group>
+      <subsystem>RIFF::UserText</subsystem>
+      <description>GPS Speed</description>
+    </attribute>
+    <attribute>
+      <name>GPSLatitude</name>
+      <tag_id>60</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>UserText</group>
+      <subsystem>RIFF::UserText</subsystem>
+      <description>GPS Latitude</description>
+    </attribute>
+    <attribute>
+      <name>GPSLongitude</name>
+      <tag_id>64</tag_id>
+      <data_type>float</data_type>
+      <writable>false</writable>
+      <group>UserText</group>
+      <subsystem>RIFF::UserText</subsystem>
+      <description>GPS Longitude</description>
+    </attribute>
+    <attribute>
+      <name>GPSDateTime</name>
+      <tag_id>68</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>UserText</group>
+      <subsystem>RIFF::UserText</subsystem>
+      <description>GPS Date/Time</description>
+    </attribute>
+    <attribute>
+      <name>VP8Version</name>
+      <tag_id>0</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>VP8</group>
+      <subsystem>RIFF::VP8</subsystem>
+      <description>VP8 Version</description>
+      <values>
+        <value key="0">0 (bicubic reconstruction, normal loop)</value>
+        <value key="1">1 (bilinear reconstruction, simple loop)</value>
+        <value key="2">2 (bilinear reconstruction, no loop)</value>
+        <value key="3">3 (no reconstruction, no loop)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>6</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>VP8</group>
+      <subsystem>RIFF::VP8</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>HorizontalScale</name>
+      <tag_id>6.1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>VP8</group>
+      <subsystem>RIFF::VP8</subsystem>
+      <description>Horizontal Scale</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>8</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>VP8</group>
+      <subsystem>RIFF::VP8</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>VerticalScale</name>
+      <tag_id>8.1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>VP8</group>
+      <subsystem>RIFF::VP8</subsystem>
+      <description>Vertical Scale</description>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>1</tag_id>
+      <data_type>int16u</data_type>
+      <writable>false</writable>
+      <group>VP8L</group>
+      <subsystem>RIFF::VP8L</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>2</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>VP8L</group>
+      <subsystem>RIFF::VP8L</subsystem>
+      <description>Image Height</description>
+    </attribute>
+    <attribute>
+      <name>WebP_Flags</name>
+      <tag_id>0</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>VP8X</group>
+      <subsystem>RIFF::VP8X</subsystem>
+      <description>WebP Flags</description>
+      <values>
+        <value key="2">Animation</value>
+        <value key="4">XMP</value>
+        <value key="8">EXIF</value>
+        <value key="16">Alpha</value>
+        <value key="32">ICC Profile</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ImageWidth</name>
+      <tag_id>4</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>VP8X</group>
+      <subsystem>RIFF::VP8X</subsystem>
+      <description>Image Width</description>
+    </attribute>
+    <attribute>
+      <name>ImageHeight</name>
+      <tag_id>6</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>VP8X</group>
+      <subsystem>RIFF::VP8X</subsystem>
+      <description>Image Height</description>
+    </attribute>
+  </attributes>
+</metadata_system>

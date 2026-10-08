@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="094" name="DMARC Metadata" category="WEB" category_label="Web / Email" used_for="Email policy/authentication (DNS TXT)" spec_source="RFC 7489 — Domain-based Message Authentication, Reporting &amp; Conformance" completeness="comprehensive" record_count="30">
+  <description>DMARC builds on SPF + DKIM, adds policy and reporting. Published as DNS TXT at _dmarc.&lt;domain&gt;.</description>
+  <attributes>
+    <attribute>
+      <name>v=DMARC1</name>
+      <data_type>Version tag</data_type>
+      <required>true</required>
+      <description>Always 'DMARC1'</description>
+    </attribute>
+    <attribute>
+      <name>p</name>
+      <data_type>Enum</data_type>
+      <required>true</required>
+      <description>Policy for organizational domain</description>
+      <values>
+        <value key="none">Monitor only — no action</value>
+        <value key="quarantine">Quarantine failures to spam</value>
+        <value key="reject">Reject failures outright</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>sp</name>
+      <data_type>Enum</data_type>
+      <description>Subdomain policy (defaults to p value)</description>
+      <values>
+        <value key="none">none</value>
+        <value key="quarantine">quarantine</value>
+        <value key="reject">reject</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>pct</name>
+      <data_type>Integer 0-100</data_type>
+      <description>Percentage of mail to which policy applies (gradual rollout)</description>
+    </attribute>
+    <attribute>
+      <name>rua</name>
+      <data_type>URI list</data_type>
+      <description>Aggregate report URI(s) — usually mailto:</description>
+    </attribute>
+    <attribute>
+      <name>ruf</name>
+      <data_type>URI list</data_type>
+      <description>Forensic/failure report URI(s) — increasingly unused</description>
+    </attribute>
+    <attribute>
+      <name>rf</name>
+      <data_type>Enum</data_type>
+      <description>Forensic report format (default 'afrf' = Authentication Failure Reporting Format)</description>
+      <values>
+        <value key="afrf">ARF (RFC 5965)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ri</name>
+      <data_type>Integer (s)</data_type>
+      <description>Aggregate reporting interval in seconds (default 86400)</description>
+    </attribute>
+    <attribute>
+      <name>aspf</name>
+      <data_type>Enum</data_type>
+      <description>SPF alignment mode</description>
+      <values>
+        <value key="r">Relaxed (subdomains allowed)</value>
+        <value key="s">Strict (exact match)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>adkim</name>
+      <data_type>Enum</data_type>
+      <description>DKIM alignment mode</description>
+      <values>
+        <value key="r">Relaxed</value>
+        <value key="s">Strict</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>fo</name>
+      <data_type>Enum (combinable with ':')</data_type>
+      <description>Failure reporting trigger</description>
+      <values>
+        <value key="0">All underlying authentications must fail (default)</value>
+        <value key="1">Any underlying authentication failed</value>
+        <value key="d">DKIM failed</value>
+        <value key="s">SPF failed</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report (XML format, RFC 7489 Appendix C)</name>
+      <data_type>ZIP/XML</data_type>
+      <description>Daily summary sent to rua addresses</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: org_name</name>
+      <data_type>Element</data_type>
+      <description>Reporter org</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: email</name>
+      <data_type>Element</data_type>
+      <description>Reporter contact</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: report_id</name>
+      <data_type>Element</data_type>
+      <description>Unique report identifier</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: date_range/begin/end</name>
+      <data_type>Element</data_type>
+      <description>Reporting period</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: policy_published</name>
+      <data_type>Element</data_type>
+      <description>DMARC policy as observed</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/row/source_ip</name>
+      <data_type>Element</data_type>
+      <description>Sender IP</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/row/count</name>
+      <data_type>Element</data_type>
+      <description>Messages from this IP</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/row/policy_evaluated/disposition</name>
+      <data_type>Element</data_type>
+      <description>Action taken</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/row/policy_evaluated/dkim/spf</name>
+      <data_type>Element</data_type>
+      <description>DMARC alignment results</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/identifiers/header_from</name>
+      <data_type>Element</data_type>
+      <description>From: header domain</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/auth_results/dkim</name>
+      <data_type>Element</data_type>
+      <description>DKIM verification per signature</description>
+    </attribute>
+    <attribute>
+      <name>Aggregate Report: record/auth_results/spf</name>
+      <data_type>Element</data_type>
+      <description>SPF verification result</description>
+    </attribute>
+    <attribute>
+      <name>Forensic Report (ARF, RFC 5965)</name>
+      <data_type>Multipart/report</data_type>
+      <description>Per-message failure report (largely deprecated due to PII concerns)</description>
+    </attribute>
+    <attribute>
+      <name>BIMI Coupling</name>
+      <data_type>DNS TXT</data_type>
+      <description>DMARC at p=quarantine or p=reject required for BIMI logo display</description>
+    </attribute>
+    <attribute>
+      <name>DMARC Result: pass</name>
+      <data_type>Verdict</data_type>
+      <description>From-domain alignment + at least one of SPF/DKIM passes</description>
+    </attribute>
+    <attribute>
+      <name>DMARC Result: fail</name>
+      <data_type>Verdict</data_type>
+      <description>Neither aligned</description>
+    </attribute>
+    <attribute>
+      <name>MTA-STS / TLS-RPT linkage</name>
+      <data_type>Adjacent</data_type>
+      <description>Often deployed alongside DMARC for transport security reporting</description>
+    </attribute>
+    <attribute>
+      <name>Authentication-Results: dmarc=</name>
+      <data_type>Header field</data_type>
+      <description>Record of DMARC verdict in mail headers</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,36 @@
+{
+  "$description": "components tokens written under :root[data-plx-interaction=\"mobile\"],:root[data-plx-interaction=\"mobile\"] [data-plx-density]",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/components.css",
+      "selector": ":root[data-plx-interaction=\"mobile\"],:root[data-plx-interaction=\"mobile\"] [data-plx-density]",
+      "opener": ":root[data-plx-interaction=\"mobile\"],:root[data-plx-interaction=\"mobile\"] [data-plx-density]{"
+    }
+  },
+  "plx-comp": {
+    "toolbar-control-gap": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "button-cluster-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "dialog-action-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "card-padding": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "panel-padding": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "dialog-padding": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    }
+  }
+}

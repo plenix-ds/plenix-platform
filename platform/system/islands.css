@@ -1,0 +1,5 @@
+/* Plenix · Islands (platform/system/islands.css): migration infrastructure. While an application page still has
+   legacy HTML, a region rendered by Platform React components is a mount point, <… data-plx-mount="name">, and React
+   renders inside it. The mount point draws no box of its own, so the rendered component sits in the layout exactly
+   where the legacy markup was. Removed when the last island becomes part of a React root. */
+[data-plx-mount]{display:contents;}

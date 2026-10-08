@@ -1,0 +1,341 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="081" name="Open Graph Metadata" category="WEB" category_label="Web / Email" used_for="Social media link previews" spec_source="Open Graph Protocol — ogp.me" completeness="comprehensive" record_count="57">
+  <description>Open Graph (originally by Facebook) is the predominant standard for embedding rich link preview metadata in HTML. Specified at ogp.me. Embedded as &lt;meta property='og:...' content='...'&gt; tags in &lt;head&gt;.</description>
+  <attributes>
+    <attribute>
+      <name>og:title</name>
+      <data_type>String</data_type>
+      <required>true</required>
+      <description>Title of the object as it should appear within the graph</description>
+    </attribute>
+    <attribute>
+      <name>og:type</name>
+      <data_type>Enum</data_type>
+      <required>true</required>
+      <description>Type of object (article, book, profile, music, video, website)</description>
+      <values>
+        <value key="website">Website</value>
+        <value key="article">Article</value>
+        <value key="book">Book</value>
+        <value key="profile">Profile</value>
+        <value key="music.song">Music: song</value>
+        <value key="music.album">Music: album</value>
+        <value key="music.playlist">Music: playlist</value>
+        <value key="music.radio_station">Music: radio station</value>
+        <value key="video.movie">Video: movie</value>
+        <value key="video.episode">Video: episode</value>
+        <value key="video.tv_show">Video: TV show</value>
+        <value key="video.other">Video: other</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>og:image</name>
+      <data_type>URL</data_type>
+      <required>true</required>
+      <description>Image URL representing the object</description>
+    </attribute>
+    <attribute>
+      <name>og:url</name>
+      <data_type>URL</data_type>
+      <required>true</required>
+      <description>Canonical URL of the object</description>
+    </attribute>
+    <attribute>
+      <name>og:audio</name>
+      <data_type>URL</data_type>
+      <description>Audio file accompanying the object</description>
+    </attribute>
+    <attribute>
+      <name>og:description</name>
+      <data_type>String</data_type>
+      <description>One to two sentence description</description>
+    </attribute>
+    <attribute>
+      <name>og:determiner</name>
+      <data_type>Enum</data_type>
+      <description>Word that appears before object's title (a/an/the/auto/blank)</description>
+      <values>
+        <value key="a">a</value>
+        <value key="an">an</value>
+        <value key="the">the</value>
+        <value key="auto">auto</value>
+        <value key="">blank</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>og:locale</name>
+      <data_type>String</data_type>
+      <description>Locale (e.g., en_US)</description>
+    </attribute>
+    <attribute>
+      <name>og:locale:alternate</name>
+      <data_type>String[]</data_type>
+      <description>Alternative locales</description>
+    </attribute>
+    <attribute>
+      <name>og:site_name</name>
+      <data_type>String</data_type>
+      <description>Site name (e.g., 'IMDb')</description>
+    </attribute>
+    <attribute>
+      <name>og:video</name>
+      <data_type>URL</data_type>
+      <description>Video file URL</description>
+    </attribute>
+    <attribute>
+      <name>og:image:url</name>
+      <data_type>URL</data_type>
+      <group>image</group>
+      <description>Same as og:image</description>
+    </attribute>
+    <attribute>
+      <name>og:image:secure_url</name>
+      <data_type>URL</data_type>
+      <group>image</group>
+      <description>HTTPS URL</description>
+    </attribute>
+    <attribute>
+      <name>og:image:type</name>
+      <data_type>MIME</data_type>
+      <group>image</group>
+      <description>MIME type</description>
+    </attribute>
+    <attribute>
+      <name>og:image:width</name>
+      <data_type>Integer</data_type>
+      <group>image</group>
+      <description>Width in pixels</description>
+    </attribute>
+    <attribute>
+      <name>og:image:height</name>
+      <data_type>Integer</data_type>
+      <group>image</group>
+      <description>Height in pixels</description>
+    </attribute>
+    <attribute>
+      <name>og:image:alt</name>
+      <data_type>String</data_type>
+      <group>image</group>
+      <description>Alt text</description>
+    </attribute>
+    <attribute>
+      <name>og:video:url / og:video:secure_url / og:video:type / og:video:width / og:video:height</name>
+      <data_type>Various</data_type>
+      <group>video</group>
+      <description>Video properties</description>
+    </attribute>
+    <attribute>
+      <name>og:audio:url / og:audio:secure_url / og:audio:type</name>
+      <data_type>Various</data_type>
+      <group>audio</group>
+      <description>Audio properties</description>
+    </attribute>
+    <attribute>
+      <name>article:published_time</name>
+      <data_type>DateTime ISO 8601</data_type>
+      <group>article</group>
+      <description>Publication time</description>
+    </attribute>
+    <attribute>
+      <name>article:modified_time</name>
+      <data_type>DateTime</data_type>
+      <group>article</group>
+      <description>Last modified</description>
+    </attribute>
+    <attribute>
+      <name>article:expiration_time</name>
+      <data_type>DateTime</data_type>
+      <group>article</group>
+      <description>Expiration</description>
+    </attribute>
+    <attribute>
+      <name>article:author</name>
+      <data_type>URL[]</data_type>
+      <group>article</group>
+      <description>Author profiles</description>
+    </attribute>
+    <attribute>
+      <name>article:section</name>
+      <data_type>String</data_type>
+      <group>article</group>
+      <description>High-level section</description>
+    </attribute>
+    <attribute>
+      <name>article:tag</name>
+      <data_type>String[]</data_type>
+      <group>article</group>
+      <description>Tags</description>
+    </attribute>
+    <attribute>
+      <name>book:author</name>
+      <data_type>URL</data_type>
+      <group>book</group>
+      <description>Author profile URL</description>
+    </attribute>
+    <attribute>
+      <name>book:isbn</name>
+      <data_type>String</data_type>
+      <group>book</group>
+      <description>ISBN</description>
+    </attribute>
+    <attribute>
+      <name>book:release_date</name>
+      <data_type>Date</data_type>
+      <group>book</group>
+      <description>Publication date</description>
+    </attribute>
+    <attribute>
+      <name>book:tag</name>
+      <data_type>String[]</data_type>
+      <group>book</group>
+      <description>Tags</description>
+    </attribute>
+    <attribute>
+      <name>profile:first_name</name>
+      <data_type>String</data_type>
+      <group>profile</group>
+    </attribute>
+    <attribute>
+      <name>profile:last_name</name>
+      <data_type>String</data_type>
+      <group>profile</group>
+    </attribute>
+    <attribute>
+      <name>profile:username</name>
+      <data_type>String</data_type>
+      <group>profile</group>
+    </attribute>
+    <attribute>
+      <name>profile:gender</name>
+      <data_type>Enum</data_type>
+      <group>profile</group>
+      <values>
+        <value key="male">male</value>
+        <value key="female">female</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>music:duration</name>
+      <data_type>Integer (s)</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:album</name>
+      <data_type>URL</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:album:disc</name>
+      <data_type>Integer</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:album:track</name>
+      <data_type>Integer</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:musician</name>
+      <data_type>URL[]</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:song</name>
+      <data_type>URL</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:song:disc</name>
+      <data_type>Integer</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:song:track</name>
+      <data_type>Integer</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:release_date</name>
+      <data_type>Date</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>music:creator</name>
+      <data_type>URL[]</data_type>
+      <group>music</group>
+    </attribute>
+    <attribute>
+      <name>video:actor</name>
+      <data_type>URL[]</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:actor:role</name>
+      <data_type>String</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:director</name>
+      <data_type>URL[]</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:writer</name>
+      <data_type>URL[]</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:duration</name>
+      <data_type>Integer</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:release_date</name>
+      <data_type>Date</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:tag</name>
+      <data_type>String[]</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>video:series</name>
+      <data_type>URL</data_type>
+      <group>video</group>
+    </attribute>
+    <attribute>
+      <name>fb:app_id</name>
+      <data_type>String</data_type>
+      <group>Facebook</group>
+      <description>Facebook App ID</description>
+    </attribute>
+    <attribute>
+      <name>fb:admins</name>
+      <data_type>String[]</data_type>
+      <group>Facebook</group>
+      <description>Page admins</description>
+    </attribute>
+    <attribute>
+      <name>fb:pages</name>
+      <data_type>String[]</data_type>
+      <group>Facebook</group>
+      <description>FB page IDs</description>
+    </attribute>
+    <attribute>
+      <name>og:rich_attachment</name>
+      <data_type>Boolean</data_type>
+      <group>Facebook</group>
+    </attribute>
+    <attribute>
+      <name>og:see_also</name>
+      <data_type>URL[]</data_type>
+      <description>Related URLs</description>
+    </attribute>
+    <attribute>
+      <name>og:updated_time</name>
+      <data_type>DateTime</data_type>
+      <description>Last updated</description>
+    </attribute>
+  </attributes>
+</metadata_system>

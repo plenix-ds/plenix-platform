@@ -1,0 +1,6 @@
+/* Plenix · NotificationList: the list, then a footer row with Mark all read (and View all), its divider drawn inside. */
+.plx-notification-list{display:flex;flex-direction:column;min-block-size:0;}
+/* a notification is a sentence: it wraps (two lines at most) instead of being cut */
+.plx-notification-list .plx-activity-list__title{-webkit-box-orient:vertical;-webkit-line-clamp:2;display:-webkit-box;flex-shrink:1;font-weight:var(--plx-ref-font-weight-regular-400);max-inline-size:none;white-space:normal;}
+.plx-notification-list .plx-activity-list__item.is-unread .plx-activity-list__title{font-weight:var(--plx-ref-font-weight-semibold-600);}
+.plx-notification-list__footer{align-items:center;box-shadow:inset 0 var(--plx-ref-border-width-1px) 0 var(--plx-sys-border-divider);column-gap:var(--plx-sys-space-inline-xs);display:flex;justify-content:space-between;padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}

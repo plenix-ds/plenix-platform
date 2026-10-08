@@ -1,0 +1,26 @@
+/* Plenix · Display density (platform/system/density.css). Layer 3 of 5 (see grid.css).
+   Display density controls the amount of information and interaction affordance visible within a stable workspace. It is
+   a user- and workflow-oriented presentation preference, not a breakpoint, a device class or a page-layout mode.
+     compact      show more rows and controls for dense desktop work (pointer and keyboard)
+     standard     balance information density and readability
+     comfortable  add space for easier scanning and interaction
+   A mode is a bundle of resolved values, not one number and not a multiplier: control roles (controls.css), row heights,
+   cell padding, component inset, local and toolbar gaps (spacing.css), card-grid gap, grid gutter, page margins and
+   preferred panel widths. It may lower the prominence of optional secondary information, but it never hides required
+   information (status, warnings, ownership, actions, labels), and it never changes the 4px foundation, the app shell,
+   the page hierarchy, the column count or a table's column model.
+   Scope (platform/providers/theme-boot.js resolves it; the first that applies wins):
+     1. interaction environment   touch and mobile raise every target to 44px whatever the density (interaction.css)
+     2. the user's explicit choice     PlenixWorkspace.setDensity()
+     3. a saved workspace or view      PlenixWorkspace.setViewDensity(view, density); the page names its view with
+                                       <html data-plx-density-view="…">
+     4. page or region policy          data-plx-density-policy="compact | standard | comfortable" on <html> or on a region
+     5. system default                 standard
+   The same tokens apply on <html> and on any region that carries data-plx-density, so a region can be denser than its
+   page. These tokens name a purpose, so they carry no value in their name: their value depends on the mode. */
+
+/* compact: ordinary high-frequency controls get smaller; dialog and destructive-confirmation actions carry more
+   consequence and stay at 36px */
+
+/* while the density changes: no transitions, so a large table does not animate every row (workspace.js sets it for one frame) */
+:root[data-plx-density-changing] *,:root[data-plx-density-changing] *::before,:root[data-plx-density-changing] *::after{transition-duration:0s !important;}

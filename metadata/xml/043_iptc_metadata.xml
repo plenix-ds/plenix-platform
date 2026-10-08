@@ -1,0 +1,1635 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="043" name="IPTC Metadata" category="IMG" category_label="Images" used_for="Professional photography/news images" spec_source="ExifTool 12.76 — groups: IPTC, PhotoMechanic, FotoStation" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="155">
+  <description>Attribute set for IPTC Metadata. Sourced from ExifTool's tag database (group prefix(es): IPTC, PhotoMechanic, FotoStation). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>ApplicationRecordVersion</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Application Record Version</description>
+    </attribute>
+    <attribute>
+      <name>ObjectTypeReference</name>
+      <tag_id>3</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Type Reference</description>
+    </attribute>
+    <attribute>
+      <name>ObjectAttributeReference</name>
+      <tag_id>4</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Attribute Reference</description>
+    </attribute>
+    <attribute>
+      <name>ObjectName</name>
+      <tag_id>5</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Name</description>
+    </attribute>
+    <attribute>
+      <name>EditStatus</name>
+      <tag_id>7</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Edit Status</description>
+    </attribute>
+    <attribute>
+      <name>EditorialUpdate</name>
+      <tag_id>8</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Editorial Update</description>
+      <values>
+        <value key="01">Additional language</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Urgency</name>
+      <tag_id>10</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Urgency</description>
+      <values>
+        <value key="0">0 (reserved)</value>
+        <value key="1">1 (most urgent)</value>
+        <value key="2">2</value>
+        <value key="3">3</value>
+        <value key="4">4</value>
+        <value key="5">5 (normal urgency)</value>
+        <value key="6">6</value>
+        <value key="7">7</value>
+        <value key="8">8 (least urgent)</value>
+        <value key="9">9 (user-defined priority)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SubjectReference</name>
+      <tag_id>12</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Subject Reference</description>
+    </attribute>
+    <attribute>
+      <name>Category</name>
+      <tag_id>15</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Category</description>
+    </attribute>
+    <attribute>
+      <name>SupplementalCategories</name>
+      <tag_id>20</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Supplemental Categories</description>
+    </attribute>
+    <attribute>
+      <name>FixtureIdentifier</name>
+      <tag_id>22</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Fixture Identifier</description>
+    </attribute>
+    <attribute>
+      <name>Keywords</name>
+      <tag_id>25</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>ContentLocationCode</name>
+      <tag_id>26</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Content Location Code</description>
+    </attribute>
+    <attribute>
+      <name>ContentLocationName</name>
+      <tag_id>27</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Content Location Name</description>
+    </attribute>
+    <attribute>
+      <name>ReleaseDate</name>
+      <tag_id>30</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Release Date</description>
+    </attribute>
+    <attribute>
+      <name>ReleaseTime</name>
+      <tag_id>35</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Release Time</description>
+    </attribute>
+    <attribute>
+      <name>ExpirationDate</name>
+      <tag_id>37</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Expiration Date</description>
+    </attribute>
+    <attribute>
+      <name>ExpirationTime</name>
+      <tag_id>38</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Expiration Time</description>
+    </attribute>
+    <attribute>
+      <name>SpecialInstructions</name>
+      <tag_id>40</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Special Instructions</description>
+    </attribute>
+    <attribute>
+      <name>ActionAdvised</name>
+      <tag_id>42</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Action Advised</description>
+      <values>
+        <value key="01">Object Kill</value>
+        <value key="02">Object Replace</value>
+        <value key="03">Object Append</value>
+        <value key="04">Object Reference</value>
+        <value key="" />
+      </values>
+    </attribute>
+    <attribute>
+      <name>ReferenceService</name>
+      <tag_id>45</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Reference Service</description>
+    </attribute>
+    <attribute>
+      <name>ReferenceDate</name>
+      <tag_id>47</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Reference Date</description>
+    </attribute>
+    <attribute>
+      <name>ReferenceNumber</name>
+      <tag_id>50</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Reference Number</description>
+    </attribute>
+    <attribute>
+      <name>DateCreated</name>
+      <tag_id>55</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Date Created</description>
+    </attribute>
+    <attribute>
+      <name>TimeCreated</name>
+      <tag_id>60</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Time Created</description>
+    </attribute>
+    <attribute>
+      <name>DigitalCreationDate</name>
+      <tag_id>62</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Digital Creation Date</description>
+    </attribute>
+    <attribute>
+      <name>DigitalCreationTime</name>
+      <tag_id>63</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Digital Creation Time</description>
+    </attribute>
+    <attribute>
+      <name>OriginatingProgram</name>
+      <tag_id>65</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Originating Program</description>
+    </attribute>
+    <attribute>
+      <name>ProgramVersion</name>
+      <tag_id>70</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Program Version</description>
+    </attribute>
+    <attribute>
+      <name>ObjectCycle</name>
+      <tag_id>75</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Cycle</description>
+      <values>
+        <value key="a">Morning</value>
+        <value key="b">Both Morning and Evening</value>
+        <value key="p">Evening</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>By-line</name>
+      <tag_id>80</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>By-line</description>
+    </attribute>
+    <attribute>
+      <name>By-lineTitle</name>
+      <tag_id>85</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>By-line Title</description>
+    </attribute>
+    <attribute>
+      <name>City</name>
+      <tag_id>90</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>City</description>
+    </attribute>
+    <attribute>
+      <name>Sub-location</name>
+      <tag_id>92</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Sub-location</description>
+    </attribute>
+    <attribute>
+      <name>Province-State</name>
+      <tag_id>95</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Province-State</description>
+    </attribute>
+    <attribute>
+      <name>Country-PrimaryLocationCode</name>
+      <tag_id>100</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Country-Primary Location Code</description>
+    </attribute>
+    <attribute>
+      <name>Country-PrimaryLocationName</name>
+      <tag_id>101</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Country-Primary Location Name</description>
+    </attribute>
+    <attribute>
+      <name>OriginalTransmissionReference</name>
+      <tag_id>103</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Original Transmission Reference</description>
+    </attribute>
+    <attribute>
+      <name>Headline</name>
+      <tag_id>105</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Headline</description>
+    </attribute>
+    <attribute>
+      <name>Credit</name>
+      <tag_id>110</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Credit</description>
+    </attribute>
+    <attribute>
+      <name>Source</name>
+      <tag_id>115</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Source</description>
+    </attribute>
+    <attribute>
+      <name>CopyrightNotice</name>
+      <tag_id>116</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Copyright Notice</description>
+    </attribute>
+    <attribute>
+      <name>Contact</name>
+      <tag_id>118</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Contact</description>
+    </attribute>
+    <attribute>
+      <name>Caption-Abstract</name>
+      <tag_id>120</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Caption-Abstract</description>
+    </attribute>
+    <attribute>
+      <name>LocalCaption</name>
+      <tag_id>121</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Local Caption</description>
+    </attribute>
+    <attribute>
+      <name>Writer-Editor</name>
+      <tag_id>122</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Writer-Editor</description>
+    </attribute>
+    <attribute>
+      <name>RasterizedCaption</name>
+      <tag_id>125</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Rasterized Caption</description>
+    </attribute>
+    <attribute>
+      <name>ImageType</name>
+      <tag_id>130</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Image Type</description>
+    </attribute>
+    <attribute>
+      <name>ImageOrientation</name>
+      <tag_id>131</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Image Orientation</description>
+      <values>
+        <value key="L">Landscape</value>
+        <value key="P">Portrait</value>
+        <value key="S">Square</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>LanguageIdentifier</name>
+      <tag_id>135</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Language Identifier</description>
+    </attribute>
+    <attribute>
+      <name>AudioType</name>
+      <tag_id>150</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Audio Type</description>
+      <values>
+        <value key="0T">Text Only</value>
+        <value key="1A">Mono Actuality</value>
+        <value key="1C">Mono Question and Answer Session</value>
+        <value key="1M">Mono Music</value>
+        <value key="1Q">Mono Response to a Question</value>
+        <value key="1R">Mono Raw Sound</value>
+        <value key="1S">Mono Scener</value>
+        <value key="1V">Mono Voicer</value>
+        <value key="1W">Mono Wrap</value>
+        <value key="2A">Stereo Actuality</value>
+        <value key="2C">Stereo Question and Answer Session</value>
+        <value key="2M">Stereo Music</value>
+        <value key="2Q">Stereo Response to a Question</value>
+        <value key="2R">Stereo Raw Sound</value>
+        <value key="2S">Stereo Scener</value>
+        <value key="2V">Stereo Voicer</value>
+        <value key="2W">Stereo Wrap</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AudioSamplingRate</name>
+      <tag_id>151</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Audio Sampling Rate</description>
+    </attribute>
+    <attribute>
+      <name>AudioSamplingResolution</name>
+      <tag_id>152</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Audio Sampling Resolution</description>
+    </attribute>
+    <attribute>
+      <name>AudioDuration</name>
+      <tag_id>153</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Audio Duration</description>
+    </attribute>
+    <attribute>
+      <name>AudioOutcue</name>
+      <tag_id>154</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Audio Outcue</description>
+    </attribute>
+    <attribute>
+      <name>JobID</name>
+      <tag_id>184</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Job ID</description>
+    </attribute>
+    <attribute>
+      <name>MasterDocumentID</name>
+      <tag_id>185</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Master Document ID</description>
+    </attribute>
+    <attribute>
+      <name>ShortDocumentID</name>
+      <tag_id>186</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Short Document ID</description>
+    </attribute>
+    <attribute>
+      <name>UniqueDocumentID</name>
+      <tag_id>187</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Unique Document ID</description>
+    </attribute>
+    <attribute>
+      <name>OwnerID</name>
+      <tag_id>188</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Owner ID</description>
+    </attribute>
+    <attribute>
+      <name>ObjectPreviewFileFormat</name>
+      <tag_id>200</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Preview File Format</description>
+      <values>
+        <value key="0">No ObjectData</value>
+        <value key="1">IPTC-NAA Digital Newsphoto Parameter Record</value>
+        <value key="2">IPTC7901 Recommended Message Format</value>
+        <value key="3">Tagged Image File Format (Adobe/Aldus Image data)</value>
+        <value key="4">Illustrator (Adobe Graphics data)</value>
+        <value key="5">AppleSingle (Apple Computer Inc)</value>
+        <value key="6">NAA 89-3 (ANPA 1312)</value>
+        <value key="7">MacBinary II</value>
+        <value key="8">IPTC Unstructured Character Oriented File Format (UCOFF)</value>
+        <value key="9">United Press International ANPA 1312 variant</value>
+        <value key="10">United Press International Down-Load Message</value>
+        <value key="11">JPEG File Interchange (JFIF)</value>
+        <value key="12">Photo-CD Image-Pac (Eastman Kodak)</value>
+        <value key="13">Bit Mapped Graphics File [.BMP] (Microsoft)</value>
+        <value key="14">Digital Audio File [.WAV] (Microsoft &amp; Creative Labs)</value>
+        <value key="15">Audio plus Moving Video [.AVI] (Microsoft)</value>
+        <value key="16">PC DOS/Windows Executable Files [.COM][.EXE]</value>
+        <value key="17">Compressed Binary File [.ZIP] (PKWare Inc)</value>
+        <value key="18">Audio Interchange File Format AIFF (Apple Computer Inc)</value>
+        <value key="19">RIFF Wave (Microsoft Corporation)</value>
+        <value key="20">Freehand (Macromedia/Aldus)</value>
+        <value key="21">Hypertext Markup Language [.HTML] (The Internet Society)</value>
+        <value key="22">MPEG 2 Audio Layer 2 (Musicom), ISO/IEC</value>
+        <value key="23">MPEG 2 Audio Layer 3, ISO/IEC</value>
+        <value key="24">Portable Document File [.PDF] Adobe</value>
+        <value key="25">News Industry Text Format (NITF)</value>
+        <value key="26">Tape Archive [.TAR]</value>
+        <value key="27">Tidningarnas Telegrambyra NITF version (TTNITF DTD)</value>
+        <value key="28">Ritzaus Bureau NITF version (RBNITF DTD)</value>
+        <value key="29">Corel Draw [.CDR]</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ObjectPreviewFileVersion</name>
+      <tag_id>201</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Preview File Version</description>
+    </attribute>
+    <attribute>
+      <name>ObjectPreviewData</name>
+      <tag_id>202</tag_id>
+      <data_type>undef</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Object Preview Data</description>
+    </attribute>
+    <attribute>
+      <name>Prefs</name>
+      <tag_id>221</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Prefs</description>
+    </attribute>
+    <attribute>
+      <name>ClassifyState</name>
+      <tag_id>225</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Classify State</description>
+    </attribute>
+    <attribute>
+      <name>SimilarityIndex</name>
+      <tag_id>228</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Similarity Index</description>
+    </attribute>
+    <attribute>
+      <name>DocumentNotes</name>
+      <tag_id>230</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Document Notes</description>
+    </attribute>
+    <attribute>
+      <name>DocumentHistory</name>
+      <tag_id>231</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Document History</description>
+    </attribute>
+    <attribute>
+      <name>ExifCameraInfo</name>
+      <tag_id>232</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Exif Camera Info</description>
+    </attribute>
+    <attribute>
+      <name>CatalogSets</name>
+      <tag_id>255</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>ApplicationRecord</group>
+      <subsystem>IPTC::ApplicationRecord</subsystem>
+      <description>Catalog Sets</description>
+    </attribute>
+    <attribute>
+      <name>EnvelopeRecordVersion</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Envelope Record Version</description>
+    </attribute>
+    <attribute>
+      <name>Destination</name>
+      <tag_id>5</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Destination</description>
+    </attribute>
+    <attribute>
+      <name>FileFormat</name>
+      <tag_id>20</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>File Format</description>
+      <values>
+        <value key="0">No ObjectData</value>
+        <value key="1">IPTC-NAA Digital Newsphoto Parameter Record</value>
+        <value key="2">IPTC7901 Recommended Message Format</value>
+        <value key="3">Tagged Image File Format (Adobe/Aldus Image data)</value>
+        <value key="4">Illustrator (Adobe Graphics data)</value>
+        <value key="5">AppleSingle (Apple Computer Inc)</value>
+        <value key="6">NAA 89-3 (ANPA 1312)</value>
+        <value key="7">MacBinary II</value>
+        <value key="8">IPTC Unstructured Character Oriented File Format (UCOFF)</value>
+        <value key="9">United Press International ANPA 1312 variant</value>
+        <value key="10">United Press International Down-Load Message</value>
+        <value key="11">JPEG File Interchange (JFIF)</value>
+        <value key="12">Photo-CD Image-Pac (Eastman Kodak)</value>
+        <value key="13">Bit Mapped Graphics File [.BMP] (Microsoft)</value>
+        <value key="14">Digital Audio File [.WAV] (Microsoft &amp; Creative Labs)</value>
+        <value key="15">Audio plus Moving Video [.AVI] (Microsoft)</value>
+        <value key="16">PC DOS/Windows Executable Files [.COM][.EXE]</value>
+        <value key="17">Compressed Binary File [.ZIP] (PKWare Inc)</value>
+        <value key="18">Audio Interchange File Format AIFF (Apple Computer Inc)</value>
+        <value key="19">RIFF Wave (Microsoft Corporation)</value>
+        <value key="20">Freehand (Macromedia/Aldus)</value>
+        <value key="21">Hypertext Markup Language [.HTML] (The Internet Society)</value>
+        <value key="22">MPEG 2 Audio Layer 2 (Musicom), ISO/IEC</value>
+        <value key="23">MPEG 2 Audio Layer 3, ISO/IEC</value>
+        <value key="24">Portable Document File [.PDF] Adobe</value>
+        <value key="25">News Industry Text Format (NITF)</value>
+        <value key="26">Tape Archive [.TAR]</value>
+        <value key="27">Tidningarnas Telegrambyra NITF version (TTNITF DTD)</value>
+        <value key="28">Ritzaus Bureau NITF version (RBNITF DTD)</value>
+        <value key="29">Corel Draw [.CDR]</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>FileVersion</name>
+      <tag_id>22</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>File Version</description>
+    </attribute>
+    <attribute>
+      <name>ServiceIdentifier</name>
+      <tag_id>30</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Service Identifier</description>
+    </attribute>
+    <attribute>
+      <name>EnvelopeNumber</name>
+      <tag_id>40</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Envelope Number</description>
+    </attribute>
+    <attribute>
+      <name>ProductID</name>
+      <tag_id>50</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Product ID</description>
+    </attribute>
+    <attribute>
+      <name>EnvelopePriority</name>
+      <tag_id>60</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Envelope Priority</description>
+      <values>
+        <value key="0">0 (reserved)</value>
+        <value key="1">1 (most urgent)</value>
+        <value key="2">2</value>
+        <value key="3">3</value>
+        <value key="4">4</value>
+        <value key="5">5 (normal urgency)</value>
+        <value key="6">6</value>
+        <value key="7">7</value>
+        <value key="8">8 (least urgent)</value>
+        <value key="9">9 (user-defined priority)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>DateSent</name>
+      <tag_id>70</tag_id>
+      <data_type>digits</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Date Sent</description>
+    </attribute>
+    <attribute>
+      <name>TimeSent</name>
+      <tag_id>80</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Time Sent</description>
+    </attribute>
+    <attribute>
+      <name>CodedCharacterSet</name>
+      <tag_id>90</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Coded Character Set</description>
+    </attribute>
+    <attribute>
+      <name>UniqueObjectName</name>
+      <tag_id>100</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>Unique Object Name</description>
+    </attribute>
+    <attribute>
+      <name>ARMIdentifier</name>
+      <tag_id>120</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>ARM Identifier</description>
+    </attribute>
+    <attribute>
+      <name>ARMVersion</name>
+      <tag_id>122</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>EnvelopeRecord</group>
+      <subsystem>IPTC::EnvelopeRecord</subsystem>
+      <description>ARM Version</description>
+    </attribute>
+    <attribute>
+      <name>NewsPhotoVersion</name>
+      <tag_id>0</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>News Photo Version</description>
+    </attribute>
+    <attribute>
+      <name>IPTCPictureNumber</name>
+      <tag_id>10</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Picture Number</description>
+    </attribute>
+    <attribute>
+      <name>IPTCImageWidth</name>
+      <tag_id>20</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Image Width</description>
+    </attribute>
+    <attribute>
+      <name>IPTCImageHeight</name>
+      <tag_id>30</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Image Height</description>
+    </attribute>
+    <attribute>
+      <name>IPTCPixelWidth</name>
+      <tag_id>40</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Pixel Width</description>
+    </attribute>
+    <attribute>
+      <name>IPTCPixelHeight</name>
+      <tag_id>50</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Pixel Height</description>
+    </attribute>
+    <attribute>
+      <name>SupplementalType</name>
+      <tag_id>55</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Supplemental Type</description>
+      <values>
+        <value key="0">Main Image</value>
+        <value key="1">Reduced Resolution Image</value>
+        <value key="2">Logo</value>
+        <value key="3">Rasterized Caption</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ColorRepresentation</name>
+      <tag_id>60</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Color Representation</description>
+      <values>
+        <value key="0">No Image, Single Frame</value>
+        <value key="256">Monochrome, Single Frame</value>
+        <value key="768">3 Components, Single Frame</value>
+        <value key="769">3 Components, Frame Sequential in Multiple Objects</value>
+        <value key="770">3 Components, Frame Sequential in One Object</value>
+        <value key="771">3 Components, Line Sequential</value>
+        <value key="772">3 Components, Pixel Sequential</value>
+        <value key="773">3 Components, Special Interleaving</value>
+        <value key="1024">4 Components, Single Frame</value>
+        <value key="1025">4 Components, Frame Sequential in Multiple Objects</value>
+        <value key="1026">4 Components, Frame Sequential in One Object</value>
+        <value key="1027">4 Components, Line Sequential</value>
+        <value key="1028">4 Components, Pixel Sequential</value>
+        <value key="1029">4 Components, Special Interleaving</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>InterchangeColorSpace</name>
+      <tag_id>64</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Interchange Color Space</description>
+      <values>
+        <value key="1">X,Y,Z CIE</value>
+        <value key="2">RGB SMPTE</value>
+        <value key="3">Y,U,V (K) (D65)</value>
+        <value key="4">RGB Device Dependent</value>
+        <value key="5">CMY (K) Device Dependent</value>
+        <value key="6">Lab (K) CIE</value>
+        <value key="7">YCbCr</value>
+        <value key="8">sRGB</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ColorSequence</name>
+      <tag_id>65</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Color Sequence</description>
+    </attribute>
+    <attribute>
+      <name>ICC_Profile</name>
+      <tag_id>66</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>ICC Profile</description>
+    </attribute>
+    <attribute>
+      <name>ColorCalibrationMatrix</name>
+      <tag_id>70</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Color Calibration Matrix</description>
+    </attribute>
+    <attribute>
+      <name>LookupTable</name>
+      <tag_id>80</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Lookup Table</description>
+    </attribute>
+    <attribute>
+      <name>NumIndexEntries</name>
+      <tag_id>84</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Num Index Entries</description>
+    </attribute>
+    <attribute>
+      <name>ColorPalette</name>
+      <tag_id>85</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Color Palette</description>
+    </attribute>
+    <attribute>
+      <name>IPTCBitsPerSample</name>
+      <tag_id>86</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Bits Per Sample</description>
+    </attribute>
+    <attribute>
+      <name>SampleStructure</name>
+      <tag_id>90</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Sample Structure</description>
+      <values>
+        <value key="0">OrthogonalConstangSampling</value>
+        <value key="1">Orthogonal4-2-2Sampling</value>
+        <value key="2">CompressionDependent</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ScanningDirection</name>
+      <tag_id>100</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Scanning Direction</description>
+      <values>
+        <value key="0">L-R, Top-Bottom</value>
+        <value key="1">R-L, Top-Bottom</value>
+        <value key="2">L-R, Bottom-Top</value>
+        <value key="3">R-L, Bottom-Top</value>
+        <value key="4">Top-Bottom, L-R</value>
+        <value key="5">Bottom-Top, L-R</value>
+        <value key="6">Top-Bottom, R-L</value>
+        <value key="7">Bottom-Top, R-L</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>IPTCImageRotation</name>
+      <tag_id>102</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>IPTC Image Rotation</description>
+      <values>
+        <value key="0">0</value>
+        <value key="1">90</value>
+        <value key="2">180</value>
+        <value key="3">270</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>DataCompressionMethod</name>
+      <tag_id>110</tag_id>
+      <data_type>int32u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Data Compression Method</description>
+    </attribute>
+    <attribute>
+      <name>QuantizationMethod</name>
+      <tag_id>120</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Quantization Method</description>
+      <values>
+        <value key="0">Linear Reflectance/Transmittance</value>
+        <value key="1">Linear Density</value>
+        <value key="2">IPTC Ref B</value>
+        <value key="3">Linear Dot Percent</value>
+        <value key="4">AP Domestic Analogue</value>
+        <value key="5">Compression Method Specific</value>
+        <value key="6">Color Space Specific</value>
+        <value key="7">Gamma Compensated</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>EndPoints</name>
+      <tag_id>125</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>End Points</description>
+    </attribute>
+    <attribute>
+      <name>ExcursionTolerance</name>
+      <tag_id>130</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Excursion Tolerance</description>
+      <values>
+        <value key="0">Not Allowed</value>
+        <value key="1">Allowed</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BitsPerComponent</name>
+      <tag_id>135</tag_id>
+      <data_type>int8u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Bits Per Component</description>
+    </attribute>
+    <attribute>
+      <name>MaximumDensityRange</name>
+      <tag_id>140</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Maximum Density Range</description>
+    </attribute>
+    <attribute>
+      <name>GammaCompensatedValue</name>
+      <tag_id>145</tag_id>
+      <data_type>int16u</data_type>
+      <writable>true</writable>
+      <group>NewsPhoto</group>
+      <subsystem>IPTC::NewsPhoto</subsystem>
+      <description>Gamma Compensated Value</description>
+    </attribute>
+    <attribute>
+      <name>SubFile</name>
+      <tag_id>10</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>ObjectData</group>
+      <subsystem>IPTC::ObjectData</subsystem>
+      <description>Sub File</description>
+    </attribute>
+    <attribute>
+      <name>ConfirmedObjectSize</name>
+      <tag_id>10</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PostObjectData</group>
+      <subsystem>IPTC::PostObjectData</subsystem>
+      <description>Confirmed Object Size</description>
+    </attribute>
+    <attribute>
+      <name>SizeMode</name>
+      <tag_id>10</tag_id>
+      <data_type>int8u</data_type>
+      <writable>false</writable>
+      <group>PreObjectData</group>
+      <subsystem>IPTC::PreObjectData</subsystem>
+      <description>Size Mode</description>
+      <values>
+        <value key="0">Size Not Known</value>
+        <value key="1">Size Known</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>MaxSubfileSize</name>
+      <tag_id>20</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PreObjectData</group>
+      <subsystem>IPTC::PreObjectData</subsystem>
+      <description>Max Subfile Size</description>
+    </attribute>
+    <attribute>
+      <name>ObjectSizeAnnounced</name>
+      <tag_id>90</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PreObjectData</group>
+      <subsystem>IPTC::PreObjectData</subsystem>
+      <description>Object Size Announced</description>
+    </attribute>
+    <attribute>
+      <name>MaximumObjectSize</name>
+      <tag_id>95</tag_id>
+      <data_type>int32u</data_type>
+      <writable>false</writable>
+      <group>PreObjectData</group>
+      <subsystem>IPTC::PreObjectData</subsystem>
+      <description>Maximum Object Size</description>
+    </attribute>
+    <attribute>
+      <name>RawCropLeft</name>
+      <tag_id>209</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Raw Crop Left</description>
+    </attribute>
+    <attribute>
+      <name>RawCropTop</name>
+      <tag_id>210</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Raw Crop Top</description>
+    </attribute>
+    <attribute>
+      <name>RawCropRight</name>
+      <tag_id>211</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Raw Crop Right</description>
+    </attribute>
+    <attribute>
+      <name>RawCropBottom</name>
+      <tag_id>212</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Raw Crop Bottom</description>
+    </attribute>
+    <attribute>
+      <name>ConstrainedCropWidth</name>
+      <tag_id>213</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Constrained Crop Width</description>
+    </attribute>
+    <attribute>
+      <name>ConstrainedCropHeight</name>
+      <tag_id>214</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Constrained Crop Height</description>
+    </attribute>
+    <attribute>
+      <name>FrameNum</name>
+      <tag_id>215</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Frame Num</description>
+    </attribute>
+    <attribute>
+      <name>Rotation</name>
+      <tag_id>216</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Rotation</description>
+      <values>
+        <value key="0">0</value>
+        <value key="1">90</value>
+        <value key="2">180</value>
+        <value key="3">270</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CropLeft</name>
+      <tag_id>217</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Crop Left</description>
+    </attribute>
+    <attribute>
+      <name>CropTop</name>
+      <tag_id>218</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Crop Top</description>
+    </attribute>
+    <attribute>
+      <name>CropRight</name>
+      <tag_id>219</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Crop Right</description>
+    </attribute>
+    <attribute>
+      <name>CropBottom</name>
+      <tag_id>220</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Crop Bottom</description>
+    </attribute>
+    <attribute>
+      <name>Tagged</name>
+      <tag_id>221</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Tagged</description>
+      <values>
+        <value key="0">No</value>
+        <value key="1">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ColorClass</name>
+      <tag_id>222</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Color Class</description>
+      <values>
+        <value key="0">0 (None)</value>
+        <value key="1">1 (Winner)</value>
+        <value key="2">2 (Winner alt)</value>
+        <value key="3">3 (Superior)</value>
+        <value key="4">4 (Superior alt)</value>
+        <value key="5">5 (Typical)</value>
+        <value key="6">6 (Typical alt)</value>
+        <value key="7">7 (Extras)</value>
+        <value key="8">8 (Trash)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Rating</name>
+      <tag_id>223</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Rating</description>
+    </attribute>
+    <attribute>
+      <name>PreviewCropLeft</name>
+      <tag_id>236</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Preview Crop Left</description>
+    </attribute>
+    <attribute>
+      <name>PreviewCropTop</name>
+      <tag_id>237</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Preview Crop Top</description>
+    </attribute>
+    <attribute>
+      <name>PreviewCropRight</name>
+      <tag_id>238</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Preview Crop Right</description>
+    </attribute>
+    <attribute>
+      <name>PreviewCropBottom</name>
+      <tag_id>239</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>PhotoMechanic::SoftEdit</subsystem>
+      <description>Preview Crop Bottom</description>
+    </attribute>
+    <attribute>
+      <name>ColorClass</name>
+      <tag_id>ColorClass</tag_id>
+      <data_type>integer</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Color Class</description>
+      <values>
+        <value key="0">0 (None)</value>
+        <value key="1">1 (Winner)</value>
+        <value key="2">2 (Winner alt)</value>
+        <value key="3">3 (Superior)</value>
+        <value key="4">4 (Superior alt)</value>
+        <value key="5">5 (Typical)</value>
+        <value key="6">6 (Typical alt)</value>
+        <value key="7">7 (Extras)</value>
+        <value key="8">8 (Trash)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>CountryCode</name>
+      <tag_id>CountryCode</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Country Code</description>
+    </attribute>
+    <attribute>
+      <name>CreatorIdentity</name>
+      <tag_id>CreatorIdentity</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Creator Identity</description>
+    </attribute>
+    <attribute>
+      <name>EditStatus</name>
+      <tag_id>EditStatus</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Edit Status</description>
+    </attribute>
+    <attribute>
+      <name>PMVersion</name>
+      <tag_id>PMVersion</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>PM Version</description>
+    </attribute>
+    <attribute>
+      <name>Prefs</name>
+      <tag_id>Prefs</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Prefs</description>
+    </attribute>
+    <attribute>
+      <name>Tagged</name>
+      <tag_id>Tagged</tag_id>
+      <data_type>boolean</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Tagged</description>
+      <values>
+        <value key="False">No</value>
+        <value key="True">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TimeCreated</name>
+      <tag_id>TimeCreated</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>XMP</group>
+      <subsystem>PhotoMechanic::XMP</subsystem>
+      <description>Time Created</description>
+    </attribute>
+    <attribute>
+      <name>ThumbnailImage</name>
+      <tag_id>3</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>FotoStation::Main</subsystem>
+      <description>Thumbnail Image</description>
+    </attribute>
+    <attribute>
+      <name>PreviewImage</name>
+      <tag_id>4</tag_id>
+      <data_type>?</data_type>
+      <writable>true</writable>
+      <group>Main</group>
+      <subsystem>FotoStation::Main</subsystem>
+      <description>Preview Image</description>
+    </attribute>
+    <attribute>
+      <name>OriginalImageWidth</name>
+      <tag_id>0</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Original Image Width</description>
+    </attribute>
+    <attribute>
+      <name>OriginalImageHeight</name>
+      <tag_id>1</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Original Image Height</description>
+    </attribute>
+    <attribute>
+      <name>ColorPlanes</name>
+      <tag_id>2</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Color Planes</description>
+    </attribute>
+    <attribute>
+      <name>XYResolution</name>
+      <tag_id>3</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>XY Resolution</description>
+    </attribute>
+    <attribute>
+      <name>Rotation</name>
+      <tag_id>4</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Rotation</description>
+    </attribute>
+    <attribute>
+      <name>CropLeft</name>
+      <tag_id>6</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Crop Left</description>
+    </attribute>
+    <attribute>
+      <name>CropTop</name>
+      <tag_id>7</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Crop Top</description>
+    </attribute>
+    <attribute>
+      <name>CropRight</name>
+      <tag_id>8</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Crop Right</description>
+    </attribute>
+    <attribute>
+      <name>CropBottom</name>
+      <tag_id>9</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Crop Bottom</description>
+    </attribute>
+    <attribute>
+      <name>CropRotation</name>
+      <tag_id>11</tag_id>
+      <data_type>int32s</data_type>
+      <writable>true</writable>
+      <group>SoftEdit</group>
+      <subsystem>FotoStation::SoftEdit</subsystem>
+      <description>Crop Rotation</description>
+    </attribute>
+  </attributes>
+</metadata_system>

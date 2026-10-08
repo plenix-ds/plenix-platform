@@ -1,0 +1,10 @@
+/* Plenix · Preview (platform/components/Preview). */
+.plx-preview{align-items:center;background-color:var(--plx-sys-surface-sunken);border-bottom-left-radius:var(--plx-sys-radius-surface-8px);border-bottom-right-radius:var(--plx-sys-radius-surface-8px);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-sys-radius-surface-8px);border-top-right-radius:var(--plx-sys-radius-surface-8px);border-top-style:none;box-sizing:border-box;color:var(--plx-sys-content-subtle);display:flex;flex-direction:column;font:inherit;inline-size:100%;justify-content:center;min-block-size:var(--plx-ref-size-140px);padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;row-gap:var(--plx-sys-space-stack-xs);}
+.plx-preview--button{cursor:zoom-in;}
+.plx-preview--button:focus-visible,
+.plx-preview--button.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-preview__corner{display:inline-flex;position:absolute;}
+.plx-preview__corner--top-start{inset-block-start:var(--plx-sys-space-inset-sm);inset-inline-start:var(--plx-sys-space-inset-sm);}
+.plx-preview__corner--bottom-end{inset-block-end:var(--plx-sys-space-inset-sm);inset-inline-end:var(--plx-sys-space-inset-sm);}
+/* a picture inside the preview (the asset’s thumbnail) */
+.plx-preview__media{block-size:var(--plx-ref-size-48px);inline-size:var(--plx-ref-size-48px);object-fit:contain;}

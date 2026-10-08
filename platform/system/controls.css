@@ -1,0 +1,34 @@
+/* Plenix · Control sizing (platform/system/controls.css): the size system of every interactive control (buttons, inputs, selects,
+   comboboxes, date pickers, segmented controls, table actions, toolbars, dialogs). It sits beneath the five layers
+   (grid.css) and never changes the shell, the column count or the page grid.
+   Rules:
+   - Every shared control box is one of 24 / 28 / 32 / 36 / 40 / 44 / 48 / 52px (the 4px scale). No 27px, 30px, 33px.
+   - A control's ROLE picks its height, not its emphasis: a primary button is not taller than a secondary one in the
+     same place. Roles (density.css sets them per mode, interaction.css overrides them for touch and mobile):
+       --plx-sys-control-height-inline       dense local actions: table rows, asset cards, pane close/minimize (24px compact)
+       --plx-sys-control-height-toolbar             every control of a toolbar row: icon and labeled buttons, search, selects,
+                                            date pickers, split buttons, dropdown triggers, overflow (24px compact)
+       --plx-sys-control-height-standard            form fields and standard buttons (24px compact)
+       --plx-sys-control-height-prominent         page-level actions (create, upload) (32px compact)
+       --plx-sys-control-height-dialog              dialog and confirmation actions (36px compact and standard, 40px comfortable)
+       --plx-sys-control-height-dialog-destructive  destructive confirmations (as dialog)
+   - All controls of one standard row (a toolbar or a form row) use the same role, so they line up. An icon-only button
+     may show a 16px glyph, but its box is the row's height. 24px inline actions are never members of such a row.
+   - Text buttons use a minimum height (labels may wrap or scale); icon-only buttons are square.
+   - 24px is for dense, repetitive, pointer-and-keyboard work only: never the touch or mobile default, never the only
+     way to confirm something destructive, never overlapping a neighbor, always with a visible focus and a name.
+   - Visual size and target size may differ, as long as targets do not overlap.
+   - Icons inside controls (batch 144): the icon's square sits 4px inside a control up to 32px (8px in 36-40px, 12px at
+     44px), on the 4px grid. The square includes the icon set's own padding (Material Symbols: 1/12 of the square per
+     side), so the system adds no padding to make up for it. An icon-only button is its icon's square plus 4px on each
+     side: Compact 16px icon in 24px, Standard 20 in 28, Comfortable 24 in 32 (touch and mobile: 20 in 44). The gap from
+     an icon's square to its label is 4px (--plx-comp-button-icon-label-gap).
+   A component picks its role from its context (a dialog footer, a table row, a toolbar), never from the application it
+   is in. A pattern that no role describes gets a new generic role (e.g. --control-height-list-row-action), not an
+   application exception. */
+
+/* role classes for any control (inputs, selects, custom triggers): the height follows the density and the environment */
+.plx-control-inline-action{min-block-size:var(--plx-sys-control-height-inline);}
+.plx-control-toolbar{min-block-size:var(--plx-sys-control-height-toolbar);}
+.plx-control-standard{min-block-size:var(--plx-sys-control-height-standard);}
+.plx-control-dialog{min-block-size:var(--plx-sys-control-height-dialog);}

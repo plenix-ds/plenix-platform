@@ -1,0 +1,405 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="200" name="Drone Metadata" category="IMG" category_label="Images" used_for="Drone-captured stills/video — DJI, Skydio, Autel, Parrot, Yuneec" spec_source="DJI XMP namespace (drone-dji:) + Skydio + Autel + Parrot ANAFI + FLIR thermal + ASTM F3411-22a Remote ID" completeness="comprehensive" record_count="64">
+  <description>Drones embed extensive metadata far beyond standard EXIF/XMP. The dominant schema is DJI's drone-dji: XMP namespace, which records aircraft position (GPS + RTK), altitudes (MSL, AGL), gimbal and aircraft attitudes, body-frame velocities, lens calibration, color profile (D-Log etc.), serial numbers (camera, gimbal, flight controller), and crop/dewarp parameters. Thermal-capable models (XT, H20T, M2EA/M3T) add full FLIR radiometric calibration. Skydio, Autel, Parrot ANAFI, and Yuneec each have their own XMP namespaces with similar fields. Drones also write rich MP4 metadata (©xyz GPS, .SRT per-frame telemetry sidecar). Since September 2023, FAA-mandated ASTM F3411-22a Remote ID broadcasts are also part of the drone metadata story (live wireless beacon, not embedded in files, but operationally critical).</description>
+  <attributes>
+    <attribute>
+      <name>drone-dji:GpsLatitude / GpsLongitude / GpsAltitude</name>
+      <data_type>XMP</data_type>
+      <group>DJI Position</group>
+      <description>GPS location at moment of capture</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:AbsoluteAltitude</name>
+      <data_type>XMP (m, MSL)</data_type>
+      <group>DJI Position</group>
+      <description>Mean sea level altitude</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:RelativeAltitude</name>
+      <data_type>XMP (m, AGL)</data_type>
+      <group>DJI Position</group>
+      <description>Above ground / above home point</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:GimbalRollDegree / GimbalPitchDegree / GimbalYawDegree</name>
+      <data_type>XMP</data_type>
+      <group>DJI Gimbal</group>
+      <description>Camera gimbal orientation in degrees</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:FlightRollDegree / FlightPitchDegree / FlightYawDegree</name>
+      <data_type>XMP</data_type>
+      <group>DJI Aircraft</group>
+      <description>Aircraft body orientation</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:FlightXSpeed / FlightYSpeed / FlightZSpeed</name>
+      <data_type>XMP (m/s)</data_type>
+      <group>DJI Aircraft</group>
+      <description>Body-frame velocity</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:CamReverse</name>
+      <data_type>XMP (0/1)</data_type>
+      <group>DJI Camera</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:GimbalReverse</name>
+      <data_type>XMP (0/1)</data_type>
+      <group>DJI Gimbal</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:SelfData</name>
+      <data_type>XMP</data_type>
+      <group>DJI</group>
+      <description>Vendor blob — usually serial/firmware-internal</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:CalibratedFocalLength</name>
+      <data_type>XMP</data_type>
+      <group>DJI Camera</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:CalibratedOpticalCenterX / CalibratedOpticalCenterY</name>
+      <data_type>XMP</data_type>
+      <group>DJI Camera</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:CalibratedShutterSpeed</name>
+      <data_type>XMP</data_type>
+      <group>DJI Camera</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:RtkFlag</name>
+      <data_type>XMP</data_type>
+      <group>DJI RTK</group>
+      <description>RTK fix status</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:RtkStdLon / RtkStdLat / RtkStdHgt</name>
+      <data_type>XMP</data_type>
+      <group>DJI RTK</group>
+      <description>RTK standard deviation horizontal / vertical (mm)</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:DewarpData</name>
+      <data_type>XMP</data_type>
+      <group>DJI Camera</group>
+      <description>Lens distortion correction parameters</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:DewarpFlag</name>
+      <data_type>XMP (0/1)</data_type>
+      <group>DJI Camera</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:Latitude / Longitude / Altitude (deprecated forms)</name>
+      <data_type>XMP</data_type>
+      <group>DJI Position</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:CameraSerialNumber / FlightControllerSerialNumber</name>
+      <data_type>XMP</data_type>
+      <group>DJI Identity</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:LensSerialNumber</name>
+      <data_type>XMP</data_type>
+      <group>DJI Identity</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:Make / Model</name>
+      <data_type>XMP</data_type>
+      <group>DJI Identity</group>
+      <description>Often 'DJI' / 'FC7203' (Mini 2) / 'FC8482' (Mavic 3) / etc.</description>
+    </attribute>
+    <attribute>
+      <name>drone-dji:HasCrop / CropLeft / CropRight / CropTop / CropBottom</name>
+      <data_type>XMP</data_type>
+      <group>DJI Crop</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:HasSettings</name>
+      <data_type>XMP</data_type>
+      <group>DJI</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:Latitude / Longitude DMS form</name>
+      <data_type>XMP</data_type>
+      <group>DJI Position</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:ColorMode</name>
+      <data_type>XMP</data_type>
+      <group>DJI Camera</group>
+      <values>
+        <value key="Normal">Standard</value>
+        <value key="Vivid">Saturated</value>
+        <value key="Beach">Beach preset</value>
+        <value key="Dream">Soft preset</value>
+        <value key="Classic">Film-emulation</value>
+        <value key="Nostalgic">Nostalgic film</value>
+        <value key="Mono">Monochrome</value>
+        <value key="True Color">True color</value>
+        <value key="D-Log">D-Log flat profile</value>
+        <value key="D-Log M">D-Log medium</value>
+        <value key="HLG">Hybrid Log Gamma HDR</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>drone-dji:CenterX / CenterY</name>
+      <data_type>XMP</data_type>
+      <group>DJI Camera</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:IsThermal</name>
+      <data_type>XMP</data_type>
+      <group>DJI Thermal</group>
+    </attribute>
+    <attribute>
+      <name>drone-dji:ThermalK1 .. K4</name>
+      <data_type>XMP</data_type>
+      <group>DJI Thermal</group>
+      <description>Calibration constants</description>
+    </attribute>
+    <attribute>
+      <name>FLIR:RawThermalImage</name>
+      <data_type>XMP/EXIF</data_type>
+      <group>DJI Thermal (FLIR)</group>
+      <description>Raw thermal sensor data (16-bit per pixel)</description>
+    </attribute>
+    <attribute>
+      <name>FLIR:Emissivity / ObjectDistance / ReflectedApparentTemperature / AtmosphericTemperature / RelativeHumidity / IRWindowTemperature / IRWindowTransmission</name>
+      <data_type>XMP/EXIF</data_type>
+      <group>DJI Thermal (FLIR)</group>
+      <description>Thermal calibration parameters</description>
+    </attribute>
+    <attribute>
+      <name>FLIR:PlanckR1 / PlanckR2 / PlanckB / PlanckF / PlanckO</name>
+      <data_type>XMP/EXIF</data_type>
+      <group>DJI Thermal (FLIR)</group>
+      <description>Planck radiation constants for radiometric conversion</description>
+    </attribute>
+    <attribute>
+      <name>skydio:Make</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+      <description>'Skydio'</description>
+    </attribute>
+    <attribute>
+      <name>skydio:Model</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+      <description>'Skydio 2', 'Skydio 2+', 'Skydio X10', etc.</description>
+    </attribute>
+    <attribute>
+      <name>skydio:LatitudeRef / LongitudeRef</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+    </attribute>
+    <attribute>
+      <name>skydio:Latitude / Longitude / Altitude</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+    </attribute>
+    <attribute>
+      <name>skydio:UserBatteryId / FlightBatteryCycles</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+    </attribute>
+    <attribute>
+      <name>skydio:HomeLatitude / HomeLongitude / HomeAltitude</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+    </attribute>
+    <attribute>
+      <name>skydio:VehicleAttitude (quat)</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+    </attribute>
+    <attribute>
+      <name>skydio:GimbalAttitude (quat)</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+    </attribute>
+    <attribute>
+      <name>skydio:FlightId</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+      <description>UUID linking photo to flight log</description>
+    </attribute>
+    <attribute>
+      <name>skydio:CaptureMode</name>
+      <data_type>XMP</data_type>
+      <group>Skydio</group>
+      <values>
+        <value key="MANUAL">Pilot framing</value>
+        <value key="AUTONOMOUS">Skill or follow</value>
+        <value key="BURST">Burst mode</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AUTEL:GpsAltitude / RelativeAltitude / RelativePosition</name>
+      <data_type>XMP</data_type>
+      <group>Autel</group>
+    </attribute>
+    <attribute>
+      <name>AUTEL:GimbalDegree / FlightDegree</name>
+      <data_type>XMP</data_type>
+      <group>Autel</group>
+    </attribute>
+    <attribute>
+      <name>AUTEL:DroneModel</name>
+      <data_type>XMP</data_type>
+      <group>Autel</group>
+      <description>EVO Lite, EVO II Pro, EVO II Dual 640T, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Parrot:CameraPitch / CameraYaw / CameraRoll</name>
+      <data_type>XMP</data_type>
+      <group>Parrot</group>
+    </attribute>
+    <attribute>
+      <name>Parrot:DroneSerialNumber</name>
+      <data_type>XMP</data_type>
+      <group>Parrot</group>
+    </attribute>
+    <attribute>
+      <name>Parrot:Latitude / Longitude / Altitude</name>
+      <data_type>XMP</data_type>
+      <group>Parrot</group>
+    </attribute>
+    <attribute>
+      <name>yuneec:CameraPitch / CameraRoll / CameraYaw</name>
+      <data_type>XMP</data_type>
+      <group>Yuneec</group>
+    </attribute>
+    <attribute>
+      <name>EXIF Make / Model / Software</name>
+      <data_type>EXIF</data_type>
+      <group>Inherited EXIF</group>
+      <description>Captured at moment of exposure — see system 045</description>
+    </attribute>
+    <attribute>
+      <name>EXIF GPS sub-IFD</name>
+      <data_type>EXIF block</data_type>
+      <group>Inherited EXIF</group>
+      <description>See system 046 — drones write full GPS lat/lon/alt/hdg/speed/timestamp</description>
+    </attribute>
+    <attribute>
+      <name>EXIF GPS DateStamp / TimeStamp</name>
+      <data_type>EXIF tag</data_type>
+      <group>Inherited EXIF</group>
+    </attribute>
+    <attribute>
+      <name>EXIF GPSImgDirection / GPSImgDirectionRef</name>
+      <data_type>EXIF tag</data_type>
+      <group>Inherited EXIF</group>
+      <description>Camera bearing (true north or magnetic)</description>
+    </attribute>
+    <attribute>
+      <name>EXIF GPSDestLatitude/Longitude</name>
+      <data_type>EXIF tag</data_type>
+      <group>Inherited EXIF</group>
+      <description>Subject GPS (where camera is pointing)</description>
+    </attribute>
+    <attribute>
+      <name>XMP xmp:CreateDate / ModifyDate / MetadataDate</name>
+      <data_type>XMP</data_type>
+      <group>Inherited XMP</group>
+    </attribute>
+    <attribute>
+      <name>MP4 udta\@xyz atom</name>
+      <data_type>MP4 atom</data_type>
+      <group>Video Metadata</group>
+      <description>ISO 6709 GPS coordinates (lat,lon,alt) — written to QuickTime/MP4 udta</description>
+    </attribute>
+    <attribute>
+      <name>MP4 com.apple.quicktime.location.ISO6709</name>
+      <data_type>MP4 atom</data_type>
+      <group>Video Metadata</group>
+    </attribute>
+    <attribute>
+      <name>MP4 udta©day / ©dir / ©cmt / ©too / ©cpy / ©nam</name>
+      <data_type>MP4 atom</data_type>
+      <group>Video Metadata</group>
+    </attribute>
+    <attribute>
+      <name>DJI .SRT subtitle file (companion to .MP4)</name>
+      <data_type>Sidecar</data_type>
+      <group>Video Metadata</group>
+      <description>Per-frame OSD telemetry: time, GPS, altitude, ISO, shutter, exposure, gimbal angles, etc.</description>
+    </attribute>
+    <attribute>
+      <name>DJI .LRF / .LRV (low-res preview)</name>
+      <data_type>Sidecar</data_type>
+      <group>Video Metadata</group>
+      <description>Proxy video for fast preview/transfer</description>
+    </attribute>
+    <attribute>
+      <name>Flight log linkage: FlightControllerSerialNumber + DateTime</name>
+      <data_type>Cross-ref</data_type>
+      <group>Flight Logs</group>
+      <description>Pairs photo with flight session log (.DAT, .txt, or DJI Cloud entry)</description>
+    </attribute>
+    <attribute>
+      <name>DJI Care record / DJI account ID</name>
+      <data_type>Cloud-side</data_type>
+      <group>Flight Logs</group>
+      <description>If uploaded to DJI Cloud (Fly app) — operator account, registration, geofencing decisions</description>
+    </attribute>
+    <attribute>
+      <name>ASTM F3411-22a Remote ID broadcast</name>
+      <data_type>Wireless beacon</data_type>
+      <group>Regulatory</group>
+      <description>FAA-required UAS Remote ID since Sept 2023 — UAS ID, location, altitude, velocity, time, control station location</description>
+    </attribute>
+    <attribute>
+      <name>Remote ID: UAS Type</name>
+      <data_type>Beacon field</data_type>
+      <group>Regulatory</group>
+      <values>
+        <value key="0">None / Not declared</value>
+        <value key="1">Aeroplane</value>
+        <value key="2">Helicopter / Multirotor</value>
+        <value key="3">Gyroplane</value>
+        <value key="4">Hybrid Lift</value>
+        <value key="5">Ornithopter</value>
+        <value key="6">Glider</value>
+        <value key="7">Kite</value>
+        <value key="8">Free Balloon</value>
+        <value key="9">Captive Balloon</value>
+        <value key="10">Airship</value>
+        <value key="11">Free Fall / Parachute</value>
+        <value key="12">Rocket</value>
+        <value key="13">Tethered Powered Aircraft</value>
+        <value key="14">Ground Obstacle</value>
+        <value key="15">Other</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Remote ID: ID Type</name>
+      <data_type>Beacon field</data_type>
+      <group>Regulatory</group>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Serial Number (ANSI/CTA-2063-A)</value>
+        <value key="2">CAA-Assigned ID</value>
+        <value key="3">UTM-Assigned UUID</value>
+        <value key="4">Specific Session ID</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Remote ID: Operational Status</name>
+      <data_type>Beacon field</data_type>
+      <group>Regulatory</group>
+      <values>
+        <value key="0">Undeclared</value>
+        <value key="1">Ground</value>
+        <value key="2">Airborne</value>
+        <value key="3">Emergency</value>
+        <value key="4">Remote ID System Failure</value>
+      </values>
+    </attribute>
+  </attributes>
+</metadata_system>

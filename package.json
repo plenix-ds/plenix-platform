@@ -1,0 +1,14 @@
+{
+  "name": "plenix",
+  "private": true,
+  "description": "Plenix Platform prototype and docs",
+  "scripts": {
+    "build:app": "node build-app.js",
+    "lint:system": "node check-system.js",
+    "lint:spec": "node check-spec.js",
+    "build:docs": "node build-docs.js"
+  },
+  "devDependencies": {
+    "@babel/standalone": "^7.29.9"
+  }
+}

@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="010" name="Windows Event Log Metadata" category="FOR" category_label="Forensics / Activity" used_for="System/application/security event logs (.evtx)" spec_source="Microsoft EVTX file format (MS-EVEN6); libevtx" completeness="comprehensive" record_count="29">
+  <description>EVTX is binary XML event format used Vista onwards (.evtx files in %SystemRoot%\System32\winevt\Logs).</description>
+  <attributes>
+    <attribute>
+      <name>File Signature</name>
+      <data_type>ASCII 'ElfFile\0'</data_type>
+      <description>EVTX magic</description>
+    </attribute>
+    <attribute>
+      <name>First Chunk Number</name>
+      <data_type>UInt64</data_type>
+      <description>Oldest chunk index</description>
+    </attribute>
+    <attribute>
+      <name>Last Chunk Number</name>
+      <data_type>UInt64</data_type>
+      <description>Newest chunk index</description>
+    </attribute>
+    <attribute>
+      <name>Next Record Identifier</name>
+      <data_type>UInt64</data_type>
+      <description>Next event record ID to be written</description>
+    </attribute>
+    <attribute>
+      <name>Header Block Size</name>
+      <data_type>UInt32</data_type>
+      <description>Always 4096</description>
+    </attribute>
+    <attribute>
+      <name>Minor/Major Version</name>
+      <data_type>UInt16 × 2</data_type>
+      <description>EVTX format version</description>
+    </attribute>
+    <attribute>
+      <name>File Flags</name>
+      <data_type>UInt32</data_type>
+      <description>0x1=dirty, 0x2=full</description>
+    </attribute>
+    <attribute>
+      <name>Checksum (header)</name>
+      <data_type>UInt32 CRC32</data_type>
+      <description>Header CRC</description>
+    </attribute>
+    <attribute>
+      <name>Chunk Header Signature</name>
+      <data_type>ASCII 'ElfChnk\0'</data_type>
+      <group>Chunk</group>
+      <description>Each 64KB chunk's magic</description>
+    </attribute>
+    <attribute>
+      <name>Event Record ID</name>
+      <data_type>UInt64</data_type>
+      <group>Event</group>
+      <description>Globally unique sequence within log</description>
+    </attribute>
+    <attribute>
+      <name>Event ID</name>
+      <data_type>UInt16</data_type>
+      <group>Event</group>
+      <description>Numeric ID identifying the event type</description>
+    </attribute>
+    <attribute>
+      <name>Event Version</name>
+      <data_type>UInt8</data_type>
+      <group>Event</group>
+      <description>Event schema version</description>
+    </attribute>
+    <attribute>
+      <name>Event Level</name>
+      <data_type>UInt8</data_type>
+      <group>Event</group>
+      <description>0=LogAlways, 1=Critical, 2=Error, 3=Warning, 4=Information, 5=Verbose</description>
+      <values>
+        <value key="1">Critical</value>
+        <value key="2">Error</value>
+        <value key="3">Warning</value>
+        <value key="4">Information</value>
+        <value key="5">Verbose</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Event Task</name>
+      <data_type>UInt16</data_type>
+      <group>Event</group>
+      <description>Task category</description>
+    </attribute>
+    <attribute>
+      <name>Event Opcode</name>
+      <data_type>UInt8</data_type>
+      <group>Event</group>
+      <description>Sub-action: Start, Stop, Send, Receive, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Event Keywords</name>
+      <data_type>UInt64 bitmask</data_type>
+      <group>Event</group>
+      <description>Audit Success/Failure flags, Classic, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Time Created (SystemTime)</name>
+      <data_type>FILETIME</data_type>
+      <group>Event</group>
+      <description>UTC time event was raised</description>
+    </attribute>
+    <attribute>
+      <name>Channel</name>
+      <data_type>String</data_type>
+      <group>Event</group>
+      <description>Security, System, Application, Setup, Microsoft-Windows-*...</description>
+    </attribute>
+    <attribute>
+      <name>Computer</name>
+      <data_type>String</data_type>
+      <group>Event</group>
+      <description>Computer name where event raised</description>
+    </attribute>
+    <attribute>
+      <name>Provider Name</name>
+      <data_type>String</data_type>
+      <group>Event</group>
+      <description>Source/provider that emitted the event</description>
+    </attribute>
+    <attribute>
+      <name>Provider GUID</name>
+      <data_type>GUID</data_type>
+      <group>Event</group>
+      <description>ETW provider identifier</description>
+    </attribute>
+    <attribute>
+      <name>Process ID</name>
+      <data_type>UInt32</data_type>
+      <group>Execution</group>
+      <description>PID of emitting process</description>
+    </attribute>
+    <attribute>
+      <name>Thread ID</name>
+      <data_type>UInt32</data_type>
+      <group>Execution</group>
+      <description>Thread ID</description>
+    </attribute>
+    <attribute>
+      <name>Activity ID</name>
+      <data_type>GUID</data_type>
+      <group>Correlation</group>
+      <description>Activity correlation</description>
+    </attribute>
+    <attribute>
+      <name>Related Activity ID</name>
+      <data_type>GUID</data_type>
+      <group>Correlation</group>
+      <description>Parent activity</description>
+    </attribute>
+    <attribute>
+      <name>User SID</name>
+      <data_type>SID</data_type>
+      <group>Security</group>
+      <description>Account context (Security log)</description>
+    </attribute>
+    <attribute>
+      <name>EventData</name>
+      <data_type>Structured XML</data_type>
+      <group>Payload</group>
+      <description>Event-specific named/positional data fields</description>
+    </attribute>
+    <attribute>
+      <name>UserData</name>
+      <data_type>Structured XML</data_type>
+      <group>Payload</group>
+      <description>Schema-defined user data section</description>
+    </attribute>
+    <attribute>
+      <name>Binary Data</name>
+      <data_type>Hex</data_type>
+      <group>Payload</group>
+      <description>Raw binary payload</description>
+    </attribute>
+  </attributes>
+</metadata_system>

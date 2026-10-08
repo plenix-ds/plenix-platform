@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="012" name="macOS File Data / Finder Metadata" category="OS" category_label="Operating System / File System" used_for="macOS-visible file properties" spec_source="Apple File System Programming Guide; HFS+/APFS catalog" completeness="comprehensive" record_count="28">
+  <description>Properties shown in Finder Get Info; underlying APFS/HFS+ catalog records plus extended attributes (system 13). Modern macOS exposes most via NSFileManager / FSResource.</description>
+  <attributes>
+    <attribute>
+      <name>Name</name>
+      <data_type>UTF-8 string</data_type>
+      <description>Filename (NFD normalized on HFS+, NFC on APFS)</description>
+    </attribute>
+    <attribute>
+      <name>Kind</name>
+      <data_type>String</data_type>
+      <description>Localized file kind (e.g., 'JPEG image', 'PDF Document')</description>
+    </attribute>
+    <attribute>
+      <name>Size</name>
+      <data_type>UInt64</data_type>
+      <description>Logical file size in bytes</description>
+    </attribute>
+    <attribute>
+      <name>Size on Disk</name>
+      <data_type>UInt64</data_type>
+      <description>Allocated bytes including all forks</description>
+    </attribute>
+    <attribute>
+      <name>Created</name>
+      <data_type>UTCDateTime</data_type>
+      <description>File creation date</description>
+    </attribute>
+    <attribute>
+      <name>Modified</name>
+      <data_type>UTCDateTime</data_type>
+      <description>Last content modification</description>
+    </attribute>
+    <attribute>
+      <name>Last Opened</name>
+      <data_type>UTCDateTime</data_type>
+      <description>Most recent open date</description>
+    </attribute>
+    <attribute>
+      <name>Date Added</name>
+      <data_type>UTCDateTime</data_type>
+      <description>When file was added to current folder (Finder-tracked)</description>
+    </attribute>
+    <attribute>
+      <name>Where</name>
+      <data_type>POSIX path</data_type>
+      <description>Parent directory</description>
+    </attribute>
+    <attribute>
+      <name>Tags</name>
+      <data_type>Array of strings</data_type>
+      <description>Finder tags (color + label)</description>
+    </attribute>
+    <attribute>
+      <name>Comments</name>
+      <data_type>String</data_type>
+      <description>Spotlight comment (kMDItemFinderComment)</description>
+    </attribute>
+    <attribute>
+      <name>Content Created</name>
+      <data_type>UTCDateTime</data_type>
+      <description>kMDItemContentCreationDate</description>
+    </attribute>
+    <attribute>
+      <name>Content Modified</name>
+      <data_type>UTCDateTime</data_type>
+      <description>kMDItemContentModificationDate</description>
+    </attribute>
+    <attribute>
+      <name>Locked</name>
+      <data_type>Boolean</data_type>
+      <description>User immutable flag</description>
+    </attribute>
+    <attribute>
+      <name>Stationery Pad</name>
+      <data_type>Boolean</data_type>
+      <description>Template flag (kFinderStationeryFlag)</description>
+    </attribute>
+    <attribute>
+      <name>Hidden</name>
+      <data_type>Boolean</data_type>
+      <description>Hidden in Finder (UF_HIDDEN flag or leading dot)</description>
+    </attribute>
+    <attribute>
+      <name>Has Custom Icon</name>
+      <data_type>Boolean</data_type>
+      <description>kIsAlias / custom icon resource</description>
+    </attribute>
+    <attribute>
+      <name>UTI</name>
+      <data_type>String</data_type>
+      <description>Uniform Type Identifier (com.adobe.pdf, public.jpeg, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Owner</name>
+      <data_type>UID + name</data_type>
+      <description>POSIX owner</description>
+    </attribute>
+    <attribute>
+      <name>Group</name>
+      <data_type>GID + name</data_type>
+      <description>POSIX group</description>
+    </attribute>
+    <attribute>
+      <name>POSIX Permissions</name>
+      <data_type>Octal</data_type>
+      <description>rwx triplets for owner/group/other</description>
+    </attribute>
+    <attribute>
+      <name>Sharing &amp; Permissions</name>
+      <data_type>ACL + POSIX</data_type>
+      <description>Combined visible permission table</description>
+    </attribute>
+    <attribute>
+      <name>Bundle Identifier (apps)</name>
+      <data_type>String</data_type>
+      <description>CFBundleIdentifier from Info.plist</description>
+    </attribute>
+    <attribute>
+      <name>Version (apps)</name>
+      <data_type>String</data_type>
+      <description>CFBundleShortVersionString</description>
+    </attribute>
+    <attribute>
+      <name>File Inode</name>
+      <data_type>UInt64</data_type>
+      <description>Catalog node ID / inode</description>
+    </attribute>
+    <attribute>
+      <name>Open With</name>
+      <data_type>String</data_type>
+      <description>Default application UTI</description>
+    </attribute>
+    <attribute>
+      <name>Quick Look Generator</name>
+      <data_type>String</data_type>
+      <description>Registered QL generator</description>
+    </attribute>
+    <attribute>
+      <name>Spotlight Indexed</name>
+      <data_type>Boolean</data_type>
+      <description>Whether mds has indexed file</description>
+    </attribute>
+  </attributes>
+</metadata_system>

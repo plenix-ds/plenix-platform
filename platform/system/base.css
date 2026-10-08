@@ -1,0 +1,7 @@
+/* Plenix · page base (platform/system/base.css): sizes include borders and padding, and elements start with no margin
+   or padding of their own (components and layouts space themselves). The body takes the canvas, the body font and the
+   default text color; it sets no layout, so a full-height application frame is opted into with AppShell. */
+*,*::before,*::after{box-sizing:border-box;}
+*{margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+body{background-color:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-body);font-size:var(--plx-ref-font-size-13);line-height:var(--plx-ref-line-height-normal);}
+img{max-inline-size:100%;}

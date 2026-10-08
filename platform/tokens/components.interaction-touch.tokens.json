@@ -1,0 +1,32 @@
+{
+  "$description": "components tokens written under :root[data-plx-interaction=\"touch\"],:root[data-plx-interaction=\"touch\"] [data-plx-density]",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/tokens/components.css",
+      "selector": ":root[data-plx-interaction=\"touch\"],:root[data-plx-interaction=\"touch\"] [data-plx-density]",
+      "opener": ":root[data-plx-interaction=\"touch\"],:root[data-plx-interaction=\"touch\"] [data-plx-density]{"
+    }
+  },
+  "plx-comp": {
+    "toolbar-control-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "button-cluster-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "dialog-action-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "card-padding": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    },
+    "panel-padding": {
+      "$value": "{plx-ref.space-16px}",
+      "$type": "dimension"
+    }
+  }
+}

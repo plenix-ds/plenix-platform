@@ -1,0 +1,61 @@
+/* Plenix · Layout system (platform/system/grid.css): the application shell and the responsive content grid.
+   One of five independent layers (see the master spec, "Layout"):
+     1 Spatial      platform/system/tokens.css (--space-*, a 4px base)          padding, gaps, alignment, sizing rhythm
+     2 Layout       this file                                            shell regions, columns, spans, max-widths
+     3 Density      platform/system/density.css                                   row and control heights, gaps, gutters, panel widths
+     4 Interaction  platform/system/interaction.css                               pointer / touch / mobile, targets, hover, focus
+     5 Data tables  platform/system/table.css                                     table columns, pinning, scroll, table density, mobile strategy
+   Rules of this layer:
+   - The shell owns navigation, filter and inspector panels, the header and overlays. The content grid lives only inside
+     the main region (.plx-shell-main), and responds to the main region's width (a container query), not the viewport's.
+   - Columns by main-region width: under 600px 4, 600–1023px 8, 1024–1439px 12, 1440px and wider 16. Never more than 16:
+     at 1920px and wider, extra width goes to the work surface, extra regions or comparison, not to more columns.
+   - Density changes gutters and margins (12/16/24px), never the column count or the shell's structure.
+   - Every page declares a layout mode: data-plx-layout="fluid | contained | hybrid | multi-pane | focus" on .plx-shell-main.
+   Loaded after density.css. */
+
+/* ── the application shell: header across, then navigation | main | inspector ── */
+.plx-shell{display:grid;grid-template-areas:"header header header" "nav main inspector";grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);min-block-size:100dvh;}
+.plx-shell-header{grid-area:header;}
+.plx-shell-nav{grid-area:nav;inline-size:var(--plx-sys-shell-nav-width);min-inline-size:0;}
+.plx-shell-filters{inline-size:var(--plx-sys-panel-filter-width);min-inline-size:0;}
+.plx-shell-inspector{grid-area:inspector;inline-size:var(--plx-sys-panel-inspector-width);min-inline-size:0;}
+/* the main region: the container every content-grid decision is measured against */
+.plx-shell-main{container-name:main-region;container-type:inline-size;min-block-size:0;min-inline-size:0;}
+
+/* ── the content grid: 4 / 8 / 12 / 16 columns by main-region width ── */
+.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-4);--plx-comp-page-grid-gutter:var(--plx-ref-grid-gutter-12px);--plx-comp-page-grid-page-margin:var(--plx-ref-grid-margin-16px);box-sizing:border-box;column-gap:var(--plx-comp-page-grid-gutter);display:grid;grid-auto-rows:min-content;grid-template-columns:repeat(var(--plx-comp-page-grid-columns),minmax(0,1fr));inline-size:100%;min-inline-size:0;padding-inline-end:var(--plx-comp-page-grid-page-margin);padding-inline-start:var(--plx-comp-page-grid-page-margin);row-gap:0;}
+/* a child spans every column unless it says otherwise (.span-*): page parts stack as before */
+.plx-page-grid>*{grid-column:1 / -1;min-inline-size:0;}
+@container main-region (min-width: 600px){.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-8);--plx-comp-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-comp-page-grid-page-margin:var(--plx-ref-grid-margin-24px);}}
+@container main-region (min-width: 1024px){.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-12);--plx-comp-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-comp-page-grid-page-margin:var(--plx-sys-page-margin-desktop);}}
+@container main-region (min-width: 1440px){.plx-page-grid{--plx-comp-page-grid-columns:var(--plx-ref-grid-columns-16);--plx-comp-page-grid-gutter:var(--plx-sys-grid-gutter);--plx-comp-page-grid-page-margin:var(--plx-sys-page-margin-wide);}}
+@container main-region (min-width: 1920px){.plx-page-grid[data-plx-ultra-wide="comfortable"]{--plx-comp-page-grid-gutter:var(--plx-ref-grid-gutter-24px);}}
+
+/* ── spans ── */
+.plx-span-full{grid-column:1 / -1;}
+.plx-span-1{grid-column:span 1;}.plx-span-2{grid-column:span 2;}.plx-span-3{grid-column:span 3;}.plx-span-4{grid-column:span 4;}
+.plx-span-5{grid-column:span 5;}.plx-span-6{grid-column:span 6;}.plx-span-7{grid-column:span 7;}.plx-span-8{grid-column:span 8;}
+.plx-span-9{grid-column:span 9;}.plx-span-10{grid-column:span 10;}.plx-span-11{grid-column:span 11;}.plx-span-12{grid-column:span 12;}
+.plx-span-13{grid-column:span 13;}.plx-span-14{grid-column:span 14;}.plx-span-15{grid-column:span 15;}.plx-span-16{grid-column:span 16;}
+/* a span never asks for more columns than the grid has */
+@container main-region (max-width: 1439px){.plx-span-13,.plx-span-14,.plx-span-15,.plx-span-16{grid-column:1 / -1;}}
+@container main-region (max-width: 1023px){.plx-span-tablet-full,.plx-span-9,.plx-span-10,.plx-span-11,.plx-span-12{grid-column:1 / -1;}}
+@container main-region (max-width: 599px){.plx-span-mobile-full,.plx-span-5,.plx-span-6,.plx-span-7,.plx-span-8{grid-column:1 / -1;}}
+
+/* ── bounded content: readable widths that do not stretch with the screen ── */
+.plx-content-prose{grid-column:1 / -1;inline-size:min(100%,var(--plx-ref-content-max-760px));}
+.plx-content-form{grid-column:1 / -1;inline-size:min(100%,var(--plx-ref-content-max-960px));}
+.plx-content-detail{grid-column:1 / -1;inline-size:min(100%,var(--plx-ref-content-max-1200px));}
+.plx-content-editor{grid-column:1 / -1;inline-size:min(100%,var(--plx-ref-content-max-1600px));}
+.plx-content-workspace{grid-column:1 / -1;inline-size:100%;min-inline-size:0;}
+
+/* ── compositions: 4+8+4 (tree/filter, work surface, context), 4+12, 12+4, 8+8 ── */
+.plx-workspace-4-8-4,.plx-workspace-4-12,.plx-workspace-12-4,.plx-workspace-8-8{column-gap:var(--plx-comp-page-grid-gutter);display:grid;grid-column:1 / -1;min-inline-size:0;}
+.plx-workspace-4-8-4{grid-template-columns:minmax(0,4fr) minmax(0,8fr) minmax(0,4fr);}
+.plx-workspace-4-12{grid-template-columns:minmax(0,4fr) minmax(0,12fr);}
+.plx-workspace-12-4{grid-template-columns:minmax(0,12fr) minmax(0,4fr);}
+.plx-workspace-8-8{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+/* below their usable width the side regions leave the composition; they must stay reachable (drawer, overlay or a button) */
+@container main-region (max-width: 1439px){.plx-workspace-4-8-4{grid-template-columns:minmax(0,1fr) minmax(0,2fr);}.plx-workspace-4-8-4>:last-child{display:none;}}
+@container main-region (max-width: 1023px){.plx-workspace-4-8-4,.plx-workspace-4-12,.plx-workspace-12-4,.plx-workspace-8-8{grid-template-columns:minmax(0,1fr);}.plx-workspace-4-8-4>:first-child,.plx-workspace-4-8-4>:last-child,.plx-workspace-4-12>:first-child,.plx-workspace-12-4>:last-child{display:none;}}

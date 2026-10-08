@@ -1,0 +1,64 @@
+/* Plenix · ToolRail
+   Summary: A vertical bar of tools beside a canvas (the image editor).
+   Usage:
+     <ToolRail label="Tools">
+       <ToolRail.Item icon="ed-crop" label="Crop" pressed={tool === 'crop'} onClick={() => …} />
+       <ToolRail.Divider />
+     </ToolRail>
+   Props:
+     label: the toolbar's accessible name
+     showLabels: each tool shows its name under the icon (no tooltip); default false
+     className: more classes
+     children: the tools (ToolRail.Item) and dividers (ToolRail.Divider)
+     ToolRail.Item.icon: an icon name or element
+     ToolRail.Item.label: the tool's name: its accessible name and tooltip
+     ToolRail.Item.pressed: the toggle state; leave it out for a plain button
+     ToolRail.Item.disabled: default false; the arrow keys skip it
+     ToolRail.Item.onClick: runs on click
+     ToolRail.Item.className: more classes
+   Behavior:
+     It is a toolbar with vertical orientation: Arrow Up / Down, Home and End move between tools; Tab leaves.
+     Each tool is an icon-only toggle button with a tooltip at its end side.
+   Notes:
+     The editor page sets the dark mode on its container.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { Icon } from '../../components/Icon/Icon.jsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+
+const LabelsContext = React.createContext(false);
+
+export function ToolRail({ label, showLabels = false, className, children }) {
+  const ref = React.useRef(null);
+  const onKeyDown = (e) => {
+    if (['ArrowUp', 'ArrowDown', 'Home', 'End'].indexOf(e.key) < 0) return;
+    const items = Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])'));
+    const i = items.indexOf(document.activeElement);
+    if (i < 0) return;
+    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowDown' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
+    e.preventDefault();
+    items[n].focus();
+  };
+  return (
+    <LabelsContext.Provider value={showLabels}>
+      <div ref={ref} role="toolbar" aria-orientation="vertical" aria-label={label} className={cx('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className)} onKeyDown={onKeyDown}>{children}</div>
+    </LabelsContext.Provider>
+  );
+}
+
+ToolRail.Item = function ToolRailItem({ icon, label, pressed, disabled = false, onClick, className }) {
+  const labels = React.useContext(LabelsContext);
+  const button = (
+    <button type="button" className={cx('plx-tool-rail__item', pressed && 'is-pressed', className)} aria-label={labels ? undefined : label}
+      aria-pressed={pressed === undefined ? undefined : !!pressed} disabled={disabled || undefined} onClick={onClick}>
+      {typeof icon === 'string' ? <Icon name={icon} /> : icon}
+      {labels ? <span className="plx-tool-rail__label">{label}</span> : null}
+    </button>
+  );
+  return labels ? button : <Tooltip content={label} placement="end">{button}</Tooltip>;
+};
+
+ToolRail.Divider = function ToolRailDivider() {
+  return <span role="separator" className="plx-tool-rail__divider" />;
+};

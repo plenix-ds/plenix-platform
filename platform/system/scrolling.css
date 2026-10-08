@@ -1,0 +1,10 @@
+/* Plenix · Scrolling (platform/system/scrolling.css): part of the Layout layer (see the master spec, "Scrolling").
+   Rules: every scroll area keeps its scrollbar out of sight until it is needed. The thumb shows while the pointer is over
+   the area, or while focus is inside it (keyboard users scroll with keys and still see where they are); it fades again
+   when the pointer leaves. The track never changes the layout: the space it takes stays reserved, so nothing shifts when
+   the bar appears. Thin bars everywhere; the color comes from the theme (--plx-sys-scrollbar-thumb). Touch devices show
+   their own overlay bars while scrolling. Loaded after the layout files. */
+*{scrollbar-color:transparent transparent;scrollbar-width:thin;}
+*:hover,*:focus-within{scrollbar-color:var(--plx-sys-scrollbar-thumb) transparent;}
+/* an open modal layer stops the page behind it scrolling (utils/layer.js sets the state on the root) */
+:root.is-scroll-locked{overflow-x:hidden;overflow-y:hidden;}

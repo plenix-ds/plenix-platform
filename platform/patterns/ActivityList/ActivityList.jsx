@@ -1,0 +1,50 @@
+/* Plenix · ActivityList
+   Summary: A list of things that happened or arrived (messages, versions, notifications, notes).
+   Usage:
+     <ActivityList label="Recent emails">
+       <ActivityList.Item leading={<Avatar…/>} title="Maya Chen" meta="Round 3 concepts"
+         time="10:24 AM" dateTime="2026-10-05T10:24" unread onOpen={() => …} actions={<…/>} />
+     </ActivityList>
+   Props:
+     label: the list's accessible name
+     className: more classes on the list
+     children: the ActivityList.Item rows
+     ActivityList.Item.leading: content before the text (an avatar, an icon)
+     ActivityList.Item.title: the row's title; it opens the item when onOpen or href is given
+     ActivityList.Item.meta: a line under the title
+     ActivityList.Item.time: the time shown at the row's end
+     ActivityList.Item.dateTime: the machine-readable time of the time element
+     ActivityList.Item.unread: a dot and a bold title (and "Unread" for screen readers); default false
+     ActivityList.Item.selected: the row whose details are shown (aria-current); default false
+     ActivityList.Item.onOpen(): runs when the title is activated (the title is a button)
+     ActivityList.Item.href: the title is a link that opens the item (instead of onOpen)
+     ActivityList.Item.actions: controls at the row's end
+     ActivityList.Item.className: more classes on the row
+   Behavior:
+     With onOpen or href the title opens the item and covers the row: one Tab stop, and the actions stay reachable.
+     Row padding follows the density.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+
+export function ActivityList({ label, className, children }) {
+  return <ul aria-label={label} className={cx('plx-activity-list', className)}>{children}</ul>;
+}
+
+ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
+  const opener = href ? <a href={href} className="plx-activity-list__opener">{title}</a>
+    : onOpen ? <button type="button" className="plx-activity-list__opener" onClick={onOpen}>{title}</button>
+      : <span className="plx-activity-list__opener">{title}</span>;
+  return (
+    <li className={cx('plx-activity-list__item', (href || onOpen) && 'is-interactive', unread && 'is-unread', selected && 'is-selected', className)} aria-current={selected ? 'true' : undefined}>
+      {unread ? <span className="plx-activity-list__unread"><span className="plx-visually-hidden">Unread</span></span> : null}
+      {leading ? <span className="plx-activity-list__leading">{leading}</span> : null}
+      <span className="plx-activity-list__text">
+        <span className="plx-activity-list__title">{opener}</span>
+        {meta ? <span className="plx-activity-list__meta">{meta}</span> : null}
+      </span>
+      {time ? <time className="plx-activity-list__time" dateTime={dateTime}>{time}</time> : null}
+      {actions ? <span className="plx-activity-list__actions">{actions}</span> : null}
+    </li>
+  );
+};

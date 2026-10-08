@@ -1,0 +1,27 @@
+/* Plenix · Radius (platform/system/radius.css): the corner system.
+   Three layers. VALUES name their size (--plx-ref-radius-4px). ROLES name the use and the size (--plx-sys-radius-control-4px): components use
+   a role. DERIVED radius is worked out, not picked: a surface inset inside another rounded surface follows it.
+   Rules (checked by platform/dev/radius-audit.js):
+   - Controls own their radius: buttons, inputs, selects, navigation items, menu items and toolbar actions use
+     --plx-sys-radius-control wherever they sit, and never take a radius from their container. --plx-sys-radius-control follows density:
+     6px (standard, comfortable), 4px in compact (a compact control takes the smaller corner). Checks, swatches, tabs and
+     list rows keep their own roles.
+   - Menus and dropdowns are containment surfaces: --plx-sys-radius-menu-8px. A menu item is a control, not a nested surface;
+     only an item whose outer corners meet the menu's rounded edge is checked corner by corner (it must follow the menu,
+     or the menu clips it).
+   - Focus rings: an outline (or ring shadow) offset by --plx-sys-focus-ring-offset follows the element's corner, so the ring's
+     radius is the element's radius + 2px without a separate token.
+   - Avatars are rounded squares, never circles. The corner grows with the avatar (24px: 4px, up to 40px: 6px, up to 64px:
+     8px, larger: 12px), always well under half the width.
+   - Pills (dots, toggles, counters, reactions) use --plx-ref-radius-pill. Avatars are the documented exception to "full":
+     Plenix avatars are rounded squares (above).
+   - A tile radius (a calculated 25%) is reserved for a tile component; there is none yet, so there is no token.
+   - A surface inset inside another rounded surface (a well, a preview, an inner panel) derives its corner:
+     inner = max(0, outer - gap), where gap is the real distance between the two curves (border + padding). Use
+     .plx-radius-concentric with --plx-sys-radius-outer and --plx-sys-radius-inset. A derived value is not snapped to the scale.
+   Loaded right after tokens.css. */
+
+/* ── RADIUS: density role (no value in the name: it depends on the density). Standard controls use it. ── */
+
+/* derived radius: a surface inset inside another rounded surface; set --plx-sys-radius-outer and --plx-sys-radius-inset on it (or a parent) */
+.plx-radius-concentric{border-bottom-left-radius:max(0px, calc(var(--plx-sys-radius-outer) - var(--plx-sys-radius-inset)));border-bottom-right-radius:max(0px, calc(var(--plx-sys-radius-outer) - var(--plx-sys-radius-inset)));border-top-left-radius:max(0px, calc(var(--plx-sys-radius-outer) - var(--plx-sys-radius-inset)));border-top-right-radius:max(0px, calc(var(--plx-sys-radius-outer) - var(--plx-sys-radius-inset)));}

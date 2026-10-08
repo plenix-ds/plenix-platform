@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="027" name="Filesystem Metadata ext4" category="OS" category_label="Operating System / File System" used_for="Linux storage (default ext family)" spec_source="Linux kernel ext4 documentation (Documentation/filesystems/ext4/)" completeness="comprehensive" record_count="30">
+  <description>Fourth Extended Filesystem: extent-based, journaled, with full POSIX semantics. Inodes are typically 256 bytes (vs ext3's 128).</description>
+  <attributes>
+    <attribute>
+      <name>i_mode</name>
+      <data_type>UInt16</data_type>
+      <description>File type + permissions</description>
+    </attribute>
+    <attribute>
+      <name>i_uid (low + high)</name>
+      <data_type>UInt16 + UInt16</data_type>
+      <description>Owner UID (32-bit total)</description>
+    </attribute>
+    <attribute>
+      <name>i_size_lo / i_size_high</name>
+      <data_type>UInt32 × 2</data_type>
+      <description>File size (64-bit)</description>
+    </attribute>
+    <attribute>
+      <name>i_atime / i_atime_extra</name>
+      <data_type>UInt32 + UInt32</data_type>
+      <description>Access time (with sub-second + 2038 extension bits)</description>
+    </attribute>
+    <attribute>
+      <name>i_ctime / i_ctime_extra</name>
+      <data_type>UInt32 + UInt32</data_type>
+      <description>Inode change time</description>
+    </attribute>
+    <attribute>
+      <name>i_mtime / i_mtime_extra</name>
+      <data_type>UInt32 + UInt32</data_type>
+      <description>Content modification time</description>
+    </attribute>
+    <attribute>
+      <name>i_dtime</name>
+      <data_type>UInt32</data_type>
+      <description>Deletion time (0 if alive)</description>
+    </attribute>
+    <attribute>
+      <name>i_crtime / i_crtime_extra</name>
+      <data_type>UInt32 + UInt32</data_type>
+      <description>Creation/birth time (ext4-specific)</description>
+    </attribute>
+    <attribute>
+      <name>i_gid (low + high)</name>
+      <data_type>UInt16 × 2</data_type>
+      <description>Owner GID (32-bit)</description>
+    </attribute>
+    <attribute>
+      <name>i_links_count</name>
+      <data_type>UInt16</data_type>
+      <description>Hard link count</description>
+    </attribute>
+    <attribute>
+      <name>i_blocks_lo / l_i_blocks_high</name>
+      <data_type>UInt32 + UInt16</data_type>
+      <description>512-byte sector count</description>
+    </attribute>
+    <attribute>
+      <name>i_flags</name>
+      <data_type>UInt32 bitmask</data_type>
+      <description>EXT4_SECRM_FL, UNRM_FL, COMPR_FL, SYNC_FL, IMMUTABLE_FL, APPEND_FL, NODUMP_FL, NOATIME_FL, INDEX_FL, JOURNAL_DATA_FL, NOTAIL_FL, DIRSYNC_FL, TOPDIR_FL, HUGE_FILE_FL, EXTENTS_FL, EA_INODE_FL, INLINE_DATA_FL, ENCRYPT_FL, CASEFOLD_FL, VERITY_FL</description>
+    </attribute>
+    <attribute>
+      <name>i_generation</name>
+      <data_type>UInt32</data_type>
+      <description>NFS generation number</description>
+    </attribute>
+    <attribute>
+      <name>i_file_acl_lo / l_i_file_acl_high</name>
+      <data_type>UInt32 + UInt16</data_type>
+      <description>Pointer to xattr block</description>
+    </attribute>
+    <attribute>
+      <name>i_block[15]</name>
+      <data_type>UInt32 × 15 (60 bytes)</data_type>
+      <description>Block map or extent header + 4 extents</description>
+    </attribute>
+    <attribute>
+      <name>Extent Header (eh_magic 0xF30A)</name>
+      <data_type>Struct</data_type>
+      <description>extent tree node header</description>
+    </attribute>
+    <attribute>
+      <name>Extent Index</name>
+      <data_type>Struct</data_type>
+      <description>Internal extent tree node pointing to children</description>
+    </attribute>
+    <attribute>
+      <name>Extent Leaf</name>
+      <data_type>Struct</data_type>
+      <description>ee_block, ee_len, ee_start_hi/lo — logical→physical mapping</description>
+    </attribute>
+    <attribute>
+      <name>i_checksum_lo / hi</name>
+      <data_type>UInt16 × 2</data_type>
+      <description>Inode metadata checksum (metadata_csum feature)</description>
+    </attribute>
+    <attribute>
+      <name>i_projid</name>
+      <data_type>UInt32</data_type>
+      <description>Project quota ID</description>
+    </attribute>
+    <attribute>
+      <name>Inline Data</name>
+      <data_type>≤60 bytes in i_block</data_type>
+      <description>Tiny files stored directly in inode</description>
+    </attribute>
+    <attribute>
+      <name>Inline Xattrs</name>
+      <data_type>In inode tail</data_type>
+      <description>Xattrs that fit in inode body</description>
+    </attribute>
+    <attribute>
+      <name>Block Group Number</name>
+      <data_type>Computed</data_type>
+      <description>Inode_num / inodes_per_group</description>
+    </attribute>
+    <attribute>
+      <name>Superblock Magic</name>
+      <data_type>0xEF53</data_type>
+      <description>ext family magic</description>
+    </attribute>
+    <attribute>
+      <name>Volume Label (s_volume_name)</name>
+      <data_type>Char[16]</data_type>
+      <description>Filesystem label</description>
+    </attribute>
+    <attribute>
+      <name>Volume UUID (s_uuid)</name>
+      <data_type>UUID</data_type>
+      <description>Filesystem UUID</description>
+    </attribute>
+    <attribute>
+      <name>Last Mounted Path (s_last_mounted)</name>
+      <data_type>Char[64]</data_type>
+      <description>Last mount point</description>
+    </attribute>
+    <attribute>
+      <name>Mount Count / Max Mount Count</name>
+      <data_type>UInt16 × 2</data_type>
+      <description>Triggers fsck after N mounts</description>
+    </attribute>
+    <attribute>
+      <name>Feature Flags</name>
+      <data_type>3× UInt32</data_type>
+      <description>compat, incompat, ro_compat — 64bit, dir_index, dir_nlink, extra_isize, extents, flex_bg, huge_file, inline_data, journal, meta_bg, mmp, sparse_super, dir_index, filetype, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Last Write Time / Mount Time / Check Time</name>
+      <data_type>UInt32 × 3</data_type>
+      <description>Various filesystem-level timestamps</description>
+    </attribute>
+  </attributes>
+</metadata_system>

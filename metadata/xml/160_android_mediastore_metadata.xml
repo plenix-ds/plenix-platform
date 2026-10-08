@@ -1,0 +1,534 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="160" name="Android MediaStore Metadata" category="IMG" category_label="Images" used_for="Android phone/tablet media library — MediaStore content provider" spec_source="Android Open Source Project — android.provider.MediaStore + MediaColumns" completeness="comprehensive" record_count="92">
+  <description>Android's MediaStore is a content provider that indexes all media files (images, videos, audio, documents, downloads) on a device's storage. Apps query MediaStore via content URIs to access the media library without dealing with raw filesystem paths (especially after scoped storage in Android 10+). MediaStore wraps a SQLite database (external.db) that stores per-file metadata: dimensions, duration, capture date, mime type, owner package, edit history, favorite/trash state, EXIF-derived date/orientation, etc. This entry covers the full column catalog across BaseColumns, MediaColumns, Images.Media, Video.Media, Audio.Media, Files.FileColumns, Downloads, and provider-level URIs and permissions.</description>
+  <attributes>
+    <attribute>
+      <name>_ID</name>
+      <data_type>INTEGER PRIMARY KEY</data_type>
+      <group>BaseColumns</group>
+      <description>Row ID assigned by MediaProvider</description>
+    </attribute>
+    <attribute>
+      <name>_DATA</name>
+      <data_type>TEXT (file path)</data_type>
+      <group>MediaColumns (legacy)</group>
+      <description>Absolute filesystem path — deprecated since API 29 (Android 10)</description>
+    </attribute>
+    <attribute>
+      <name>_SIZE</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+      <description>File size in bytes</description>
+    </attribute>
+    <attribute>
+      <name>_DISPLAY_NAME</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>Filename including extension</description>
+    </attribute>
+    <attribute>
+      <name>MIME_TYPE</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>MIME type (e.g. image/jpeg)</description>
+    </attribute>
+    <attribute>
+      <name>TITLE</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>Title (without extension)</description>
+    </attribute>
+    <attribute>
+      <name>DATE_ADDED</name>
+      <data_type>INTEGER (Unix s)</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>DATE_MODIFIED</name>
+      <data_type>INTEGER (Unix s)</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>DATE_TAKEN</name>
+      <data_type>INTEGER (Unix ms)</data_type>
+      <group>MediaColumns</group>
+      <description>Capture timestamp (from EXIF DateTimeOriginal for images, mvhd for video)</description>
+    </attribute>
+    <attribute>
+      <name>DATE_EXPIRES</name>
+      <data_type>INTEGER (Unix s)</data_type>
+      <group>MediaColumns</group>
+      <description>When pending or trashed item will be auto-deleted</description>
+    </attribute>
+    <attribute>
+      <name>WIDTH</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>HEIGHT</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>ORIENTATION</name>
+      <data_type>INTEGER (0/90/180/270)</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>DURATION</name>
+      <data_type>INTEGER (ms)</data_type>
+      <group>MediaColumns</group>
+      <description>Length for video/audio; 0 for stills</description>
+    </attribute>
+    <attribute>
+      <name>ARTIST</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>Artist (audio) / Author (image+video)</description>
+    </attribute>
+    <attribute>
+      <name>ALBUM</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>AUTHOR</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>COMPOSER</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>WRITER</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>GENRE</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>RESOLUTION</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>WIDTHxHEIGHT</description>
+    </attribute>
+    <attribute>
+      <name>YEAR</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>NUM_TRACKS</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>CD_TRACK_NUMBER</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>DISC_NUMBER</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>COMPILATION</name>
+      <data_type>INTEGER (1/0)</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>BITRATE</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>CAPTURE_FRAMERATE</name>
+      <data_type>REAL</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>RELATIVE_PATH</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>Path within the storage volume (e.g. 'Pictures/Camera/'). API 29+.</description>
+    </attribute>
+    <attribute>
+      <name>VOLUME_NAME</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>Storage volume — 'external_primary', 'internal', or removable volume name</description>
+    </attribute>
+    <attribute>
+      <name>BUCKET_ID</name>
+      <data_type>INTEGER (hash of bucket path)</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>BUCKET_DISPLAY_NAME</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>Containing folder name (e.g. 'DCIM', 'Camera', 'Screenshots')</description>
+    </attribute>
+    <attribute>
+      <name>DOCUMENT_ID / INSTANCE_ID / ORIGINAL_DOCUMENT_ID</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns (XMP-derived)</group>
+      <description>From XMP MM: namespace; preserved across edits/copies</description>
+    </attribute>
+    <attribute>
+      <name>OWNER_PACKAGE_NAME</name>
+      <data_type>TEXT</data_type>
+      <group>MediaColumns</group>
+      <description>App that created the file (system-set, immutable)</description>
+    </attribute>
+    <attribute>
+      <name>IS_PENDING</name>
+      <data_type>INTEGER (1/0)</data_type>
+      <group>MediaColumns</group>
+      <description>File reserved by app but not yet finalized</description>
+    </attribute>
+    <attribute>
+      <name>IS_TRASHED</name>
+      <data_type>INTEGER (1/0)</data_type>
+      <group>MediaColumns</group>
+      <description>In trash — will auto-delete after 30 days</description>
+    </attribute>
+    <attribute>
+      <name>IS_FAVORITE</name>
+      <data_type>INTEGER (1/0)</data_type>
+      <group>MediaColumns</group>
+    </attribute>
+    <attribute>
+      <name>GENERATION_ADDED / GENERATION_MODIFIED</name>
+      <data_type>INTEGER</data_type>
+      <group>MediaColumns</group>
+      <description>Monotonic counters for change detection (sync APIs)</description>
+    </attribute>
+    <attribute>
+      <name>XMP</name>
+      <data_type>BLOB</data_type>
+      <group>MediaColumns</group>
+      <description>Raw XMP packet</description>
+    </attribute>
+    <attribute>
+      <name>IS_DRM</name>
+      <data_type>INTEGER</data_type>
+      <group>Images.Media</group>
+      <description>DRM-protected media</description>
+    </attribute>
+    <attribute>
+      <name>BUCKET_DISPLAY_NAME (Images)</name>
+      <data_type>TEXT</data_type>
+      <group>Images.Media</group>
+      <description>Same as base</description>
+    </attribute>
+    <attribute>
+      <name>DESCRIPTION</name>
+      <data_type>TEXT</data_type>
+      <group>Images.Media</group>
+    </attribute>
+    <attribute>
+      <name>PICASA_ID</name>
+      <data_type>TEXT (deprecated)</data_type>
+      <group>Images.Media</group>
+    </attribute>
+    <attribute>
+      <name>ISPRIVATE</name>
+      <data_type>INTEGER (deprecated)</data_type>
+      <group>Images.Media</group>
+    </attribute>
+    <attribute>
+      <name>MINI_THUMB_MAGIC (deprecated)</name>
+      <data_type>INTEGER</data_type>
+      <group>Images.Media</group>
+    </attribute>
+    <attribute>
+      <name>LATITUDE / LONGITUDE (deprecated API 29+)</name>
+      <data_type>REAL</data_type>
+      <group>Images.Media</group>
+      <description>Removed for privacy — read EXIF directly via ExifInterface</description>
+    </attribute>
+    <attribute>
+      <name>THUMBNAILS table — _DATA, IMAGE_ID, KIND, WIDTH, HEIGHT</name>
+      <data_type>Table (deprecated)</data_type>
+      <group>Images.Thumbnails</group>
+      <values>
+        <value key="1">MICRO_KIND 96×96</value>
+        <value key="2">FULL_SCREEN_KIND 1024×768</value>
+        <value key="3">MINI_KIND 320×240</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>BOOKMARK</name>
+      <data_type>INTEGER (ms)</data_type>
+      <group>Video.Media</group>
+      <description>Last playback position</description>
+    </attribute>
+    <attribute>
+      <name>CATEGORY</name>
+      <data_type>TEXT</data_type>
+      <group>Video.Media</group>
+    </attribute>
+    <attribute>
+      <name>LANGUAGE</name>
+      <data_type>TEXT</data_type>
+      <group>Video.Media</group>
+    </attribute>
+    <attribute>
+      <name>LATITUDE / LONGITUDE (deprecated)</name>
+      <data_type>REAL</data_type>
+      <group>Video.Media</group>
+    </attribute>
+    <attribute>
+      <name>MINI_THUMB_MAGIC (deprecated)</name>
+      <data_type>INTEGER</data_type>
+      <group>Video.Media</group>
+    </attribute>
+    <attribute>
+      <name>TAGS</name>
+      <data_type>TEXT</data_type>
+      <group>Video.Media</group>
+    </attribute>
+    <attribute>
+      <name>COLOR_RANGE</name>
+      <data_type>INTEGER</data_type>
+      <group>Video.Media</group>
+      <values>
+        <value key="1">limited</value>
+        <value key="2">full</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>COLOR_STANDARD</name>
+      <data_type>INTEGER</data_type>
+      <group>Video.Media</group>
+      <values>
+        <value key="1">BT.709</value>
+        <value key="2">BT.601 PAL</value>
+        <value key="4">BT.601 NTSC</value>
+        <value key="6">BT.2020</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>COLOR_TRANSFER</name>
+      <data_type>INTEGER</data_type>
+      <group>Video.Media</group>
+      <values>
+        <value key="1">Linear</value>
+        <value key="3">SDR Video</value>
+        <value key="6">SMPTE ST 2084 (HDR10 PQ)</value>
+        <value key="7">HLG</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ALBUM_ARTIST</name>
+      <data_type>TEXT</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>ALBUM_KEY / ARTIST_KEY / TITLE_KEY</name>
+      <data_type>TEXT</data_type>
+      <group>Audio.Media</group>
+      <description>Locale-aware sort key</description>
+    </attribute>
+    <attribute>
+      <name>BOOKMARK (Audio)</name>
+      <data_type>INTEGER (ms)</data_type>
+      <group>Audio.Media</group>
+      <description>Audiobook position</description>
+    </attribute>
+    <attribute>
+      <name>IS_ALARM</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_AUDIOBOOK</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_DRM</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_MUSIC</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_NOTIFICATION</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_PODCAST</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_RECORDING</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>IS_RINGTONE</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>TRACK</name>
+      <data_type>INTEGER</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>ALBUM_ID / ARTIST_ID / GENRE_ID</name>
+      <data_type>INTEGER (FK)</data_type>
+      <group>Audio.Media</group>
+    </attribute>
+    <attribute>
+      <name>MEDIA_TYPE</name>
+      <data_type>INTEGER</data_type>
+      <group>Files.FileColumns</group>
+      <values>
+        <value key="0">none</value>
+        <value key="1">image</value>
+        <value key="2">audio</value>
+        <value key="3">video</value>
+        <value key="4">playlist</value>
+        <value key="5">subtitle</value>
+        <value key="6">document</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>PARENT</name>
+      <data_type>INTEGER (FK to _ID)</data_type>
+      <group>Files.FileColumns</group>
+      <description>Parent directory _ID</description>
+    </attribute>
+    <attribute>
+      <name>FORMAT</name>
+      <data_type>INTEGER</data_type>
+      <group>Files.FileColumns</group>
+      <description>MTP/PTP format code (0x3801 JPEG, 0x380D PNG, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>STORAGE_ID</name>
+      <data_type>INTEGER</data_type>
+      <group>Files.FileColumns</group>
+    </attribute>
+    <attribute>
+      <name>REFERER_URI</name>
+      <data_type>TEXT</data_type>
+      <group>Downloads</group>
+      <description>HTTP Referer URL the file was downloaded from</description>
+    </attribute>
+    <attribute>
+      <name>DOWNLOAD_URI</name>
+      <data_type>TEXT</data_type>
+      <group>Downloads</group>
+      <description>Source URL</description>
+    </attribute>
+    <attribute>
+      <name>Files.getContentUri('external')</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+      <description>content://media/external/file</description>
+    </attribute>
+    <attribute>
+      <name>Images.Media.EXTERNAL_CONTENT_URI</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+      <description>content://media/external/images/media</description>
+    </attribute>
+    <attribute>
+      <name>Video.Media.EXTERNAL_CONTENT_URI</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+    </attribute>
+    <attribute>
+      <name>Audio.Media.EXTERNAL_CONTENT_URI</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+    </attribute>
+    <attribute>
+      <name>Audio.Albums / Artists / Genres / Playlists EXTERNAL_CONTENT_URI</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+    </attribute>
+    <attribute>
+      <name>Downloads.EXTERNAL_CONTENT_URI</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+      <description>content://media/external/downloads</description>
+    </attribute>
+    <attribute>
+      <name>Images.Thumbnails / Video.Thumbnails EXTERNAL_CONTENT_URI</name>
+      <data_type>Uri</data_type>
+      <group>Provider URIs</group>
+    </attribute>
+    <attribute>
+      <name>READ_MEDIA_IMAGES (API 33+)</name>
+      <data_type>Permission</data_type>
+      <group>Permissions</group>
+      <description>Replaces READ_EXTERNAL_STORAGE for images on Android 13+</description>
+    </attribute>
+    <attribute>
+      <name>READ_MEDIA_VIDEO (API 33+)</name>
+      <data_type>Permission</data_type>
+      <group>Permissions</group>
+    </attribute>
+    <attribute>
+      <name>READ_MEDIA_AUDIO (API 33+)</name>
+      <data_type>Permission</data_type>
+      <group>Permissions</group>
+    </attribute>
+    <attribute>
+      <name>READ_MEDIA_VISUAL_USER_SELECTED (API 34+)</name>
+      <data_type>Permission</data_type>
+      <group>Permissions</group>
+      <description>Partial access via Photo Picker (Android 14+)</description>
+    </attribute>
+    <attribute>
+      <name>MANAGE_EXTERNAL_STORAGE</name>
+      <data_type>Permission (special)</data_type>
+      <group>Permissions</group>
+      <description>All Files Access — restricted, requires Play Console approval</description>
+    </attribute>
+    <attribute>
+      <name>/storage/emulated/0/DCIM/Camera/</name>
+      <data_type>Directory</data_type>
+      <group>Storage Layout</group>
+      <description>Default camera capture directory</description>
+    </attribute>
+    <attribute>
+      <name>/storage/emulated/0/Pictures/Screenshots/</name>
+      <data_type>Directory</data_type>
+      <group>Storage Layout</group>
+    </attribute>
+    <attribute>
+      <name>/storage/emulated/0/Movies/</name>
+      <data_type>Directory</data_type>
+      <group>Storage Layout</group>
+    </attribute>
+    <attribute>
+      <name>/storage/emulated/0/Music/</name>
+      <data_type>Directory</data_type>
+      <group>Storage Layout</group>
+    </attribute>
+    <attribute>
+      <name>/data/data/com.android.providers.media/databases/external.db</name>
+      <data_type>SQLite</data_type>
+      <group>Storage Layout</group>
+      <description>MediaProvider's index of all media (forensically significant)</description>
+    </attribute>
+  </attributes>
+</metadata_system>

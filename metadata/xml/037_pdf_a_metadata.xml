@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="037" name="PDF/A Metadata" category="DOC" category_label="Documents" used_for="Archival PDFs (ISO 19005)" spec_source="ISO 19005-1, -2, -3, -4 (PDF/A-1, -2, -3, -4)" completeness="comprehensive" record_count="31">
+  <description>PDF/A is a constrained form of PDF designed for long-term archival. Adds mandatory metadata, embedded fonts, color profile requirements, and prohibits transparency, encryption, JavaScript.</description>
+  <attributes>
+    <attribute>
+      <name>pdfaid:part</name>
+      <data_type>Integer 1-4</data_type>
+      <description>Standard part</description>
+      <values>
+        <value key="1">PDF/A-1 (PDF 1.4)</value>
+        <value key="2">PDF/A-2 (PDF 1.7)</value>
+        <value key="3">PDF/A-3 (allows arbitrary embedded files)</value>
+        <value key="4">PDF/A-4 (PDF 2.0)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>pdfaid:conformance</name>
+      <data_type>String</data_type>
+      <description>Conformance level</description>
+      <values>
+        <value key="A">Accessible — full tagging + Unicode</value>
+        <value key="B">Basic — visual reproduction</value>
+        <value key="U">Unicode mapping (PDF/A-2/3)</value>
+        <value key="E">Engineering (PDF/A-4e)</value>
+        <value key="F">Embedded files (PDF/A-4f)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>pdfaid:rev</name>
+      <data_type>Integer (year)</data_type>
+      <description>Revision year (only PDF/A-4)</description>
+    </attribute>
+    <attribute>
+      <name>pdfaid:amd</name>
+      <data_type>String</data_type>
+      <description>Amendment identifier</description>
+    </attribute>
+    <attribute>
+      <name>pdfaid:corr</name>
+      <data_type>String</data_type>
+      <description>Corrigendum identifier</description>
+    </attribute>
+    <attribute>
+      <name>Required xmp:CreateDate</name>
+      <data_type>Date</data_type>
+      <description>Creation date — mandatory</description>
+    </attribute>
+    <attribute>
+      <name>Required xmp:ModifyDate</name>
+      <data_type>Date</data_type>
+      <description>Modification date — mandatory</description>
+    </attribute>
+    <attribute>
+      <name>Required dc:title</name>
+      <data_type>Lang Alt</data_type>
+      <description>Title — must be present (PDF/A-2+ accessible)</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent</name>
+      <data_type>Dictionary</data_type>
+      <description>ICC profile defining target color space (sRGB, FOGRA, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent: Subtype</name>
+      <data_type>Name</data_type>
+      <description>GTS_PDFA1, GTS_PDFA2</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent: OutputCondition</name>
+      <data_type>String</data_type>
+      <description>Human-readable condition</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent: OutputConditionIdentifier</name>
+      <data_type>String</data_type>
+      <description>Registry identifier (e.g., FOGRA39)</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent: RegistryName</name>
+      <data_type>String</data_type>
+      <description>ICC registry URL</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent: Info</name>
+      <data_type>String</data_type>
+      <description>Additional info</description>
+    </attribute>
+    <attribute>
+      <name>Output Intent: DestOutputProfile</name>
+      <data_type>ICC stream</data_type>
+      <description>Embedded ICC profile</description>
+    </attribute>
+    <attribute>
+      <name>Embedded Fonts</name>
+      <data_type>Required</data_type>
+      <description>All fonts must be embedded as full subsets</description>
+    </attribute>
+    <attribute>
+      <name>Font Encoding</name>
+      <data_type>Required</data_type>
+      <description>Each glyph must map to Unicode (A and U levels)</description>
+    </attribute>
+    <attribute>
+      <name>Tagged PDF Structure</name>
+      <data_type>Required (level A)</data_type>
+      <description>StructTreeRoot with proper tagging</description>
+    </attribute>
+    <attribute>
+      <name>Marked</name>
+      <data_type>Catalog flag</data_type>
+      <description>Set to true for tagged PDF</description>
+    </attribute>
+    <attribute>
+      <name>Document Language</name>
+      <data_type>String</data_type>
+      <description>dc:language — required for PDF/A-2A+</description>
+    </attribute>
+    <attribute>
+      <name>ID array</name>
+      <data_type>Required</data_type>
+      <description>Two byte strings in trailer /ID</description>
+    </attribute>
+    <attribute>
+      <name>Prohibited: Encryption</name>
+      <data_type>None allowed</data_type>
+      <description>No /Encrypt dictionary</description>
+    </attribute>
+    <attribute>
+      <name>Prohibited: JavaScript</name>
+      <data_type>None allowed</data_type>
+      <description>No actions invoking JavaScript</description>
+    </attribute>
+    <attribute>
+      <name>Prohibited: External References</name>
+      <data_type>Restricted</data_type>
+      <description>No external streams except in PDF/A-3 attachments</description>
+    </attribute>
+    <attribute>
+      <name>Prohibited: Audio/Video/3D</name>
+      <data_type>None in PDF/A-1; restricted PDF/A-2</data_type>
+      <description>Multimedia restricted</description>
+    </attribute>
+    <attribute>
+      <name>Prohibited: Transparency</name>
+      <data_type>None in PDF/A-1</data_type>
+      <description>No alpha; allowed in PDF/A-2+</description>
+    </attribute>
+    <attribute>
+      <name>Prohibited: LZW Compression</name>
+      <data_type>None allowed</data_type>
+      <description>ZIP/Flate only</description>
+    </attribute>
+    <attribute>
+      <name>Allowed Embedded Files (PDF/A-3 / PDF/A-4f)</name>
+      <data_type>Constrained</data_type>
+      <description>Any file type permitted as attachment in PDF/A-3 and -4f</description>
+    </attribute>
+    <attribute>
+      <name>AFRelationship</name>
+      <data_type>Name</data_type>
+      <description>Source / Data / Alternative / Supplement / Unspecified — required for PDF/A-3 attachments</description>
+    </attribute>
+    <attribute>
+      <name>XMP Required Properties</name>
+      <data_type>Required set</data_type>
+      <description>At minimum xmp:CreateDate, xmp:ModifyDate, xmp:CreatorTool, dc:title (level A), dc:creator, pdf:Producer, pdf:Keywords</description>
+    </attribute>
+    <attribute>
+      <name>Color Spaces</name>
+      <data_type>Allowed set</data_type>
+      <description>DeviceRGB/CMYK/Gray require Output Intent or ICC; CalRGB, CalGray, Lab, ICCBased, Indexed, Pattern, Separation, DeviceN allowed</description>
+    </attribute>
+  </attributes>
+</metadata_system>

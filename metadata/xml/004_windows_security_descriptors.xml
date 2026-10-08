@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="004" name="Windows Security Descriptors" category="OS" category_label="Operating System / File System" used_for="File/folder permissions, registry, services" spec_source="Microsoft MS-DTYP §2.4 SECURITY_DESCRIPTOR" completeness="comprehensive" record_count="24">
+  <description>Self-relative or absolute structure containing owner, primary group, DACL, and SACL. Defines who can access an object and what is audited.</description>
+  <attributes>
+    <attribute>
+      <name>Revision</name>
+      <data_type>UInt8</data_type>
+      <description>SD revision (always 1)</description>
+    </attribute>
+    <attribute>
+      <name>Sbz1</name>
+      <data_type>UInt8</data_type>
+      <description>Reserved zero byte</description>
+    </attribute>
+    <attribute>
+      <name>Control</name>
+      <data_type>UInt16 flags</data_type>
+      <description>SE_OWNER_DEFAULTED, SE_GROUP_DEFAULTED, SE_DACL_PRESENT, SE_DACL_DEFAULTED, SE_SACL_PRESENT, SE_SACL_DEFAULTED, SE_DACL_AUTO_INHERIT_REQ, SE_SACL_AUTO_INHERIT_REQ, SE_DACL_AUTO_INHERITED, SE_SACL_AUTO_INHERITED, SE_DACL_PROTECTED, SE_SACL_PROTECTED, SE_RM_CONTROL_VALID, SE_SELF_RELATIVE</description>
+    </attribute>
+    <attribute>
+      <name>OffsetOwner</name>
+      <data_type>UInt32</data_type>
+      <description>Offset to owner SID</description>
+    </attribute>
+    <attribute>
+      <name>OffsetGroup</name>
+      <data_type>UInt32</data_type>
+      <description>Offset to primary group SID</description>
+    </attribute>
+    <attribute>
+      <name>OffsetSacl</name>
+      <data_type>UInt32</data_type>
+      <description>Offset to SACL</description>
+    </attribute>
+    <attribute>
+      <name>OffsetDacl</name>
+      <data_type>UInt32</data_type>
+      <description>Offset to DACL</description>
+    </attribute>
+    <attribute>
+      <name>Owner SID</name>
+      <data_type>SID</data_type>
+      <group>Principals</group>
+      <description>Object owner — full control regardless of DACL</description>
+    </attribute>
+    <attribute>
+      <name>Group SID</name>
+      <data_type>SID</data_type>
+      <group>Principals</group>
+      <description>Primary group (POSIX compatibility)</description>
+    </attribute>
+    <attribute>
+      <name>DACL</name>
+      <data_type>ACL structure</data_type>
+      <group>DACL</group>
+      <description>Discretionary ACL — list of ACEs granting/denying access</description>
+    </attribute>
+    <attribute>
+      <name>SACL</name>
+      <data_type>ACL structure</data_type>
+      <group>SACL</group>
+      <description>System ACL — audit and mandatory integrity ACEs</description>
+    </attribute>
+    <attribute>
+      <name>ACE Type</name>
+      <data_type>UInt8</data_type>
+      <group>ACE</group>
+      <description>ACCESS_ALLOWED, ACCESS_DENIED, SYSTEM_AUDIT, SYSTEM_MANDATORY_LABEL, SYSTEM_RESOURCE_ATTRIBUTE, SYSTEM_SCOPED_POLICY_ID, etc.</description>
+    </attribute>
+    <attribute>
+      <name>ACE Flags</name>
+      <data_type>UInt8</data_type>
+      <group>ACE</group>
+      <description>OBJECT_INHERIT_ACE, CONTAINER_INHERIT_ACE, NO_PROPAGATE_INHERIT_ACE, INHERIT_ONLY_ACE, INHERITED_ACE, SUCCESSFUL_ACCESS_ACE_FLAG, FAILED_ACCESS_ACE_FLAG</description>
+    </attribute>
+    <attribute>
+      <name>ACE Size</name>
+      <data_type>UInt16</data_type>
+      <group>ACE</group>
+      <description>Total ACE size in bytes</description>
+    </attribute>
+    <attribute>
+      <name>Access Mask</name>
+      <data_type>UInt32 flags</data_type>
+      <group>ACE</group>
+      <description>Generic + standard + object-specific rights (READ, WRITE, EXECUTE, DELETE, READ_CONTROL, WRITE_DAC, WRITE_OWNER, SYNCHRONIZE)</description>
+    </attribute>
+    <attribute>
+      <name>Trustee SID</name>
+      <data_type>SID</data_type>
+      <group>ACE</group>
+      <description>User/group the ACE applies to</description>
+    </attribute>
+    <attribute>
+      <name>Object Type GUID</name>
+      <data_type>GUID</data_type>
+      <group>Object ACE</group>
+      <description>For object-specific ACEs (AD properties)</description>
+    </attribute>
+    <attribute>
+      <name>Inherited Object Type GUID</name>
+      <data_type>GUID</data_type>
+      <group>Object ACE</group>
+      <description>Inheritance scope</description>
+    </attribute>
+    <attribute>
+      <name>Mandatory Label Level</name>
+      <data_type>UInt32</data_type>
+      <group>MIC</group>
+      <description>Untrusted (0x0), Low (0x1000), Medium (0x2000), High (0x3000), System (0x4000)</description>
+    </attribute>
+    <attribute>
+      <name>Mandatory Label Policy</name>
+      <data_type>UInt32</data_type>
+      <group>MIC</group>
+      <description>NO_WRITE_UP, NO_READ_UP, NO_EXECUTE_UP</description>
+    </attribute>
+    <attribute>
+      <name>Resource Attribute</name>
+      <data_type>CLAIM_SECURITY_ATTRIBUTE</data_type>
+      <group>Resource ACE</group>
+      <description>Dynamic Access Control claim (file classification)</description>
+    </attribute>
+    <attribute>
+      <name>SID Authority</name>
+      <data_type>6 bytes</data_type>
+      <group>SID Components</group>
+      <description>Identifier authority (NT=5, World=1, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>SID Sub-authorities</name>
+      <data_type>UInt32 array</data_type>
+      <group>SID Components</group>
+      <description>Domain + RID components</description>
+    </attribute>
+    <attribute>
+      <name>SID Revision</name>
+      <data_type>UInt8</data_type>
+      <group>SID Components</group>
+      <description>SID format version (always 1)</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="042" name="Dublin Core Metadata" category="DOC" category_label="Documents" used_for="General document/library metadata (DCMI)" spec_source="Dublin Core Metadata Initiative — DCMI Metadata Terms (current)" completeness="comprehensive" record_count="62">
+  <description>DCMI defines two layers: 15-element 'Simple Dublin Core' (DCMES) plus the larger 'Qualified Dublin Core' / DCMI Terms vocabulary. Used everywhere from libraries to RDF Linked Data to OOXML core properties.</description>
+  <attributes>
+    <attribute>
+      <name>contributor</name>
+      <data_type>String/agent</data_type>
+      <group>DCMES</group>
+      <description>Entity responsible for making contributions to the resource</description>
+    </attribute>
+    <attribute>
+      <name>coverage</name>
+      <data_type>String/Place/Period</data_type>
+      <group>DCMES</group>
+      <description>Spatial or temporal topic, jurisdiction</description>
+    </attribute>
+    <attribute>
+      <name>creator</name>
+      <data_type>String/agent</data_type>
+      <group>DCMES</group>
+      <description>Entity primarily responsible for making the resource</description>
+    </attribute>
+    <attribute>
+      <name>date</name>
+      <data_type>W3CDTF date</data_type>
+      <group>DCMES</group>
+      <description>Point or period associated with an event in lifecycle</description>
+    </attribute>
+    <attribute>
+      <name>description</name>
+      <data_type>String</data_type>
+      <group>DCMES</group>
+      <description>Account of the resource</description>
+    </attribute>
+    <attribute>
+      <name>format</name>
+      <data_type>String/MIME</data_type>
+      <group>DCMES</group>
+      <description>File format, physical medium, dimensions</description>
+    </attribute>
+    <attribute>
+      <name>identifier</name>
+      <data_type>String/URI</data_type>
+      <group>DCMES</group>
+      <description>Unambiguous reference within a context</description>
+    </attribute>
+    <attribute>
+      <name>language</name>
+      <data_type>RFC 4646 / ISO 639</data_type>
+      <group>DCMES</group>
+      <description>Language of the resource</description>
+    </attribute>
+    <attribute>
+      <name>publisher</name>
+      <data_type>String/agent</data_type>
+      <group>DCMES</group>
+      <description>Entity responsible for making available</description>
+    </attribute>
+    <attribute>
+      <name>relation</name>
+      <data_type>String/URI</data_type>
+      <group>DCMES</group>
+      <description>Related resource</description>
+    </attribute>
+    <attribute>
+      <name>rights</name>
+      <data_type>String/URI/RightsStatement</data_type>
+      <group>DCMES</group>
+      <description>Rights held</description>
+    </attribute>
+    <attribute>
+      <name>source</name>
+      <data_type>String/URI</data_type>
+      <group>DCMES</group>
+      <description>Related resource from which described resource is derived</description>
+    </attribute>
+    <attribute>
+      <name>subject</name>
+      <data_type>String/concept</data_type>
+      <group>DCMES</group>
+      <description>Topic — typically keywords or classification</description>
+    </attribute>
+    <attribute>
+      <name>title</name>
+      <data_type>String</data_type>
+      <group>DCMES</group>
+      <description>Name given to the resource</description>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <data_type>String/DCMIType</data_type>
+      <group>DCMES</group>
+      <description>Nature or genre</description>
+    </attribute>
+    <attribute>
+      <name>abstract</name>
+      <data_type>String</data_type>
+      <group>Terms</group>
+      <description>Summary of the resource</description>
+    </attribute>
+    <attribute>
+      <name>accessRights</name>
+      <data_type>String/RightsStatement</data_type>
+      <group>Terms</group>
+      <description>Information about who can access</description>
+    </attribute>
+    <attribute>
+      <name>accrualMethod</name>
+      <data_type>MethodOfAccrual</data_type>
+      <group>Terms</group>
+      <description>How additions to a collection are made</description>
+    </attribute>
+    <attribute>
+      <name>accrualPeriodicity</name>
+      <data_type>Frequency</data_type>
+      <group>Terms</group>
+      <description>Frequency of additions</description>
+    </attribute>
+    <attribute>
+      <name>accrualPolicy</name>
+      <data_type>Policy</data_type>
+      <group>Terms</group>
+      <description>Policy governing additions</description>
+    </attribute>
+    <attribute>
+      <name>alternative</name>
+      <data_type>String</data_type>
+      <group>Terms</group>
+      <description>Alternative title</description>
+    </attribute>
+    <attribute>
+      <name>audience</name>
+      <data_type>AgentClass</data_type>
+      <group>Terms</group>
+      <description>Intended audience</description>
+    </attribute>
+    <attribute>
+      <name>available</name>
+      <data_type>W3CDTF date/period</data_type>
+      <group>Terms</group>
+      <description>When made available</description>
+    </attribute>
+    <attribute>
+      <name>bibliographicCitation</name>
+      <data_type>BibliographicResource</data_type>
+      <group>Terms</group>
+      <description>Bibliographic reference</description>
+    </attribute>
+    <attribute>
+      <name>conformsTo</name>
+      <data_type>Standard URI</data_type>
+      <group>Terms</group>
+      <description>Standard the resource conforms to</description>
+    </attribute>
+    <attribute>
+      <name>created</name>
+      <data_type>W3CDTF date</data_type>
+      <group>Terms</group>
+      <description>Date of creation</description>
+    </attribute>
+    <attribute>
+      <name>dateAccepted</name>
+      <data_type>W3CDTF date</data_type>
+      <group>Terms</group>
+      <description>Acceptance date</description>
+    </attribute>
+    <attribute>
+      <name>dateCopyrighted</name>
+      <data_type>W3CDTF date</data_type>
+      <group>Terms</group>
+      <description>Copyright date</description>
+    </attribute>
+    <attribute>
+      <name>dateSubmitted</name>
+      <data_type>W3CDTF date</data_type>
+      <group>Terms</group>
+      <description>Submission date</description>
+    </attribute>
+    <attribute>
+      <name>educationLevel</name>
+      <data_type>AgentClass</data_type>
+      <group>Terms</group>
+      <description>Education level of audience</description>
+    </attribute>
+    <attribute>
+      <name>extent</name>
+      <data_type>SizeOrDuration</data_type>
+      <group>Terms</group>
+      <description>Size or duration</description>
+    </attribute>
+    <attribute>
+      <name>hasFormat</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Resource is the same intellectual content but different format</description>
+    </attribute>
+    <attribute>
+      <name>hasPart</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Has component</description>
+    </attribute>
+    <attribute>
+      <name>hasVersion</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Has version</description>
+    </attribute>
+    <attribute>
+      <name>instructionalMethod</name>
+      <data_type>MethodOfInstruction</data_type>
+      <group>Terms</group>
+      <description>Process used by resource</description>
+    </attribute>
+    <attribute>
+      <name>isFormatOf / isPartOf / isReferencedBy / isReplacedBy / isRequiredBy / isVersionOf</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Inverse relations</description>
+    </attribute>
+    <attribute>
+      <name>issued</name>
+      <data_type>W3CDTF date</data_type>
+      <group>Terms</group>
+      <description>Formal issuance date</description>
+    </attribute>
+    <attribute>
+      <name>license</name>
+      <data_type>LicenseDocument URI</data_type>
+      <group>Terms</group>
+      <description>Legal license</description>
+    </attribute>
+    <attribute>
+      <name>mediator</name>
+      <data_type>AgentClass</data_type>
+      <group>Terms</group>
+      <description>Mediator between content and audience</description>
+    </attribute>
+    <attribute>
+      <name>medium</name>
+      <data_type>PhysicalMedium</data_type>
+      <group>Terms</group>
+      <description>Material/physical carrier</description>
+    </attribute>
+    <attribute>
+      <name>modified</name>
+      <data_type>W3CDTF date</data_type>
+      <group>Terms</group>
+      <description>Date last modified</description>
+    </attribute>
+    <attribute>
+      <name>provenance</name>
+      <data_type>ProvenanceStatement</data_type>
+      <group>Terms</group>
+      <description>Statement of changes in ownership/custody</description>
+    </attribute>
+    <attribute>
+      <name>references</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Related material referenced</description>
+    </attribute>
+    <attribute>
+      <name>replaces</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Resource superseded</description>
+    </attribute>
+    <attribute>
+      <name>requires</name>
+      <data_type>Resource URI</data_type>
+      <group>Terms</group>
+      <description>Required related resource</description>
+    </attribute>
+    <attribute>
+      <name>rightsHolder</name>
+      <data_type>Agent</data_type>
+      <group>Terms</group>
+      <description>Owns rights</description>
+    </attribute>
+    <attribute>
+      <name>spatial</name>
+      <data_type>Location</data_type>
+      <group>Terms</group>
+      <description>Spatial topic</description>
+    </attribute>
+    <attribute>
+      <name>tableOfContents</name>
+      <data_type>String</data_type>
+      <group>Terms</group>
+      <description>List of subunits</description>
+    </attribute>
+    <attribute>
+      <name>temporal</name>
+      <data_type>PeriodOfTime</data_type>
+      <group>Terms</group>
+      <description>Temporal topic</description>
+    </attribute>
+    <attribute>
+      <name>valid</name>
+      <data_type>W3CDTF period</data_type>
+      <group>Terms</group>
+      <description>Date range of validity</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Collection</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Aggregation of resources</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Dataset</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Data encoded in defined structure</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Event</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Time-bound occurrence</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Image</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Visual rendering</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: InteractiveResource</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Requires user interaction</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: MovingImage</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Series of images conveying movement</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: PhysicalObject</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>3D physical object</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Service</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>System providing functions</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Software</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Computer program</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Sound</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Auditory rendering</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: StillImage</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Static visual rendering</description>
+    </attribute>
+    <attribute>
+      <name>DCMIType: Text</name>
+      <data_type>Type value</data_type>
+      <group>DCMIType</group>
+      <description>Resource consisting primarily of words</description>
+    </attribute>
+  </attributes>
+</metadata_system>

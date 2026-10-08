@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="036" name="PDF XMP Metadata" category="DOC" category_label="Documents" used_for="Modern PDF embedded metadata (XMP packet)" spec_source="ISO 16684-1 (XMP); ISO 32000-2 §14.3.2; Adobe XMP Specification" completeness="comprehensive" record_count="52">
+  <description>Modern PDFs embed an XMP RDF/XML packet in a metadata stream. This entry covers PDF-specific XMP namespaces; system 041 lists ExifTool's full XMP tag set.</description>
+  <attributes>
+    <attribute>
+      <name>Metadata Stream</name>
+      <data_type>Stream object</data_type>
+      <description>Top-level XMP packet attached to /Catalog/Metadata</description>
+    </attribute>
+    <attribute>
+      <name>xpacket Begin Marker</name>
+      <data_type>Processing instruction</data_type>
+      <description>&lt;?xpacket begin='\uFEFF' id='W5M0MpCehiHzreSzNTczkc9d'?&gt;</description>
+    </attribute>
+    <attribute>
+      <name>xpacket End Marker</name>
+      <data_type>Processing instruction</data_type>
+      <description>&lt;?xpacket end='r'|'w'?&gt;</description>
+    </attribute>
+    <attribute>
+      <name>RDF Root Element</name>
+      <data_type>rdf:RDF</data_type>
+      <description>Outer RDF container with namespace declarations</description>
+    </attribute>
+    <attribute>
+      <name>dc:title (Dublin Core)</name>
+      <data_type>Lang Alt</data_type>
+      <group>dc</group>
+      <description>Title with language alternates</description>
+    </attribute>
+    <attribute>
+      <name>dc:creator</name>
+      <data_type>Ordered Array</data_type>
+      <group>dc</group>
+      <description>Author list (ordered)</description>
+    </attribute>
+    <attribute>
+      <name>dc:subject</name>
+      <data_type>Bag</data_type>
+      <group>dc</group>
+      <description>Keywords (unordered)</description>
+    </attribute>
+    <attribute>
+      <name>dc:description</name>
+      <data_type>Lang Alt</data_type>
+      <group>dc</group>
+      <description>Description</description>
+    </attribute>
+    <attribute>
+      <name>dc:rights</name>
+      <data_type>Lang Alt</data_type>
+      <group>dc</group>
+      <description>Rights statement</description>
+    </attribute>
+    <attribute>
+      <name>dc:format</name>
+      <data_type>String</data_type>
+      <group>dc</group>
+      <description>MIME type — typically application/pdf</description>
+    </attribute>
+    <attribute>
+      <name>dc:identifier</name>
+      <data_type>String</data_type>
+      <group>dc</group>
+      <description>Document identifier</description>
+    </attribute>
+    <attribute>
+      <name>dc:language</name>
+      <data_type>Bag</data_type>
+      <group>dc</group>
+      <description>Languages used</description>
+    </attribute>
+    <attribute>
+      <name>dc:publisher</name>
+      <data_type>Bag</data_type>
+      <group>dc</group>
+      <description>Publisher</description>
+    </attribute>
+    <attribute>
+      <name>dc:contributor</name>
+      <data_type>Bag</data_type>
+      <group>dc</group>
+      <description>Contributor</description>
+    </attribute>
+    <attribute>
+      <name>dc:date</name>
+      <data_type>Seq date</data_type>
+      <group>dc</group>
+      <description>Date list</description>
+    </attribute>
+    <attribute>
+      <name>xmp:CreatorTool</name>
+      <data_type>String</data_type>
+      <group>xmp</group>
+      <description>Application that created the document (e.g., 'Microsoft® Word for Microsoft 365')</description>
+    </attribute>
+    <attribute>
+      <name>xmp:CreateDate</name>
+      <data_type>Date</data_type>
+      <group>xmp</group>
+      <description>Creation date</description>
+    </attribute>
+    <attribute>
+      <name>xmp:ModifyDate</name>
+      <data_type>Date</data_type>
+      <group>xmp</group>
+      <description>Last modification date</description>
+    </attribute>
+    <attribute>
+      <name>xmp:MetadataDate</name>
+      <data_type>Date</data_type>
+      <group>xmp</group>
+      <description>Date metadata last updated</description>
+    </attribute>
+    <attribute>
+      <name>xmp:Label</name>
+      <data_type>String</data_type>
+      <group>xmp</group>
+      <description>User-assigned label</description>
+    </attribute>
+    <attribute>
+      <name>xmp:Rating</name>
+      <data_type>Integer -1 to 5</data_type>
+      <group>xmp</group>
+      <description>Rating</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:DocumentID</name>
+      <data_type>URI</data_type>
+      <group>xmpMM</group>
+      <description>Stable document ID — preserved across edits</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:InstanceID</name>
+      <data_type>URI</data_type>
+      <group>xmpMM</group>
+      <description>Per-save instance ID — changes on every modification</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:OriginalDocumentID</name>
+      <data_type>URI</data_type>
+      <group>xmpMM</group>
+      <description>ID of original from which this derives</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:RenditionClass</name>
+      <data_type>String</data_type>
+      <group>xmpMM</group>
+      <description>Class of rendition</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:RenditionParams</name>
+      <data_type>String</data_type>
+      <group>xmpMM</group>
+      <description>Rendering parameters</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:VersionID</name>
+      <data_type>String</data_type>
+      <group>xmpMM</group>
+      <description>Version identifier</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:Versions</name>
+      <data_type>Seq Version</data_type>
+      <group>xmpMM</group>
+      <description>Version history</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:History</name>
+      <data_type>Seq ResourceEvent</data_type>
+      <group>xmpMM</group>
+      <description>Edit history (action, agent, timestamp, instanceID, parameters, softwareAgent)</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:DerivedFrom</name>
+      <data_type>ResourceRef</data_type>
+      <group>xmpMM</group>
+      <description>Source document reference</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:ManagedFrom</name>
+      <data_type>ResourceRef</data_type>
+      <group>xmpMM</group>
+      <description>DAM-managed source</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:Manager / ManagerVariant / ManageTo / ManageUI</name>
+      <data_type>String</data_type>
+      <group>xmpMM</group>
+      <description>Asset management properties</description>
+    </attribute>
+    <attribute>
+      <name>xmpMM:Ingredients / Pantry</name>
+      <data_type>Bag ResourceRef</data_type>
+      <group>xmpMM</group>
+      <description>Composed assets</description>
+    </attribute>
+    <attribute>
+      <name>xmpRights:Marked</name>
+      <data_type>Boolean</data_type>
+      <group>xmpRights</group>
+      <description>Whether rights statement applies</description>
+    </attribute>
+    <attribute>
+      <name>xmpRights:Owner</name>
+      <data_type>Bag</data_type>
+      <group>xmpRights</group>
+      <description>Rights owner(s)</description>
+    </attribute>
+    <attribute>
+      <name>xmpRights:UsageTerms</name>
+      <data_type>Lang Alt</data_type>
+      <group>xmpRights</group>
+      <description>Usage terms</description>
+    </attribute>
+    <attribute>
+      <name>xmpRights:WebStatement</name>
+      <data_type>URL</data_type>
+      <group>xmpRights</group>
+      <description>URL of full rights statement</description>
+    </attribute>
+    <attribute>
+      <name>xmpRights:Certificate</name>
+      <data_type>URL</data_type>
+      <group>xmpRights</group>
+      <description>Rights certificate URL</description>
+    </attribute>
+    <attribute>
+      <name>pdf:Producer</name>
+      <data_type>String</data_type>
+      <group>pdf</group>
+      <description>Library that produced PDF (Acrobat, ghostscript, libharu...)</description>
+    </attribute>
+    <attribute>
+      <name>pdf:Keywords</name>
+      <data_type>String</data_type>
+      <group>pdf</group>
+      <description>Keywords (legacy field; modern uses dc:subject)</description>
+    </attribute>
+    <attribute>
+      <name>pdf:PDFVersion</name>
+      <data_type>String</data_type>
+      <group>pdf</group>
+      <description>PDF version (1.4, 1.7, 2.0)</description>
+    </attribute>
+    <attribute>
+      <name>pdf:Trapped</name>
+      <data_type>Boolean/Unknown</data_type>
+      <group>pdf</group>
+      <description>Whether trapping has been applied</description>
+    </attribute>
+    <attribute>
+      <name>pdfaid:part / pdfaid:conformance</name>
+      <data_type>Integer/String</data_type>
+      <group>PDF/A</group>
+      <description>PDF/A part (1-4) and conformance (A/B/U/E/F)</description>
+    </attribute>
+    <attribute>
+      <name>pdfxid:GTS_PDFXVersion / Conformance</name>
+      <data_type>String</data_type>
+      <group>PDF/X</group>
+      <description>PDF/X version and conformance</description>
+    </attribute>
+    <attribute>
+      <name>pdfuaid:part</name>
+      <data_type>Integer</data_type>
+      <group>PDF/UA</group>
+      <description>PDF/UA accessibility part</description>
+    </attribute>
+    <attribute>
+      <name>pdfvtid:GTS_PDFVTVersion / Conformance</name>
+      <data_type>String</data_type>
+      <group>PDF/VT</group>
+      <description>Variable transactional printing</description>
+    </attribute>
+    <attribute>
+      <name>pdfe:ISO_PDFEVersion</name>
+      <data_type>String</data_type>
+      <group>PDF/E</group>
+      <description>Engineering PDF</description>
+    </attribute>
+    <attribute>
+      <name>photoshop:* / illustrator:* / xmpDM:*</name>
+      <data_type>Various</data_type>
+      <group>Adobe</group>
+      <description>Adobe app-specific namespaces</description>
+    </attribute>
+    <attribute>
+      <name>crs:* (Camera Raw Settings)</name>
+      <data_type>Various</data_type>
+      <group>Adobe</group>
+      <description>Lightroom/Camera Raw develop settings</description>
+    </attribute>
+    <attribute>
+      <name>xmpDM:* (Dynamic Media)</name>
+      <data_type>Various</data_type>
+      <group>Adobe</group>
+      <description>Audio/video timeline metadata</description>
+    </attribute>
+    <attribute>
+      <name>xapTPg:* (Paged-text)</name>
+      <data_type>Various</data_type>
+      <group>Adobe</group>
+      <description>Page-level info (NPages, MaxPageSize, PlateNames, Fonts)</description>
+    </attribute>
+    <attribute>
+      <name>Custom namespaces</name>
+      <data_type>Variable</data_type>
+      <group>Custom</group>
+      <description>prism:, exif:, exifEX:, tiff:, plus:, iptcCore:, iptcExt:, etc.</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,10 @@
+node_modules/
+# local tool data and logs
+proxmox-jobs.sqlite3
+build.log
+*.log
+.claude/settings.local.json
+# backups and stale copies (legacy stays separate)
+Archived/
+shared - Copy/
+*.bak

@@ -1,0 +1,19 @@
+/* Plenix · System stylesheet (platform/plenix-system.css): the foundations only. Token tiers (reference → semantic →
+   component), the plenix theme, then the foundation rules. No components. It loads by
+   itself for the design spec's foundation previews; platform.css imports it first. The order is the cascade order. */
+@import url("system/tokens/reference.css");
+@import url("system/tokens/semantic.css");
+@import url("system/tokens/components.css");
+@import url("system/themes/plenix.css");
+@import url("system/radius.css");
+@import url("system/controls.css");
+@import url("system/density.css");
+@import url("system/spacing.css");
+@import url("system/grid.css");
+@import url("system/interaction.css");
+@import url("system/table.css");
+@import url("system/scrolling.css");
+@import url("system/elements.css");
+@import url("system/shadows.css");
+@import url("system/motion.css");
+@import url("system/islands.css");

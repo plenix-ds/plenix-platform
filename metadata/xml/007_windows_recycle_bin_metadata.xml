@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="007" name="Windows Recycle Bin Metadata" category="FOR" category_label="Forensics / Activity" used_for="Deleted files (Vista+ $I metadata files)" spec_source="Microsoft Recycle Bin format; libfwsi documentation" completeness="comprehensive" record_count="10">
+  <description>$RecycleBin\&lt;SID&gt;\$I&lt;random&gt;.&lt;ext&gt; file pairs with corresponding $R&lt;random&gt;.&lt;ext&gt; data file. Replaces XP-era INFO2 single-file format.</description>
+  <attributes>
+    <attribute>
+      <name>Header Version</name>
+      <data_type>UInt64</data_type>
+      <description>2 (Win10+), 1 (Vista-Win8.1)</description>
+    </attribute>
+    <attribute>
+      <name>Original File Size</name>
+      <data_type>UInt64</data_type>
+      <description>Size in bytes before deletion</description>
+    </attribute>
+    <attribute>
+      <name>Deleted Time</name>
+      <data_type>FILETIME (UInt64)</data_type>
+      <description>When the file was sent to Recycle Bin</description>
+    </attribute>
+    <attribute>
+      <name>Original Path Length</name>
+      <data_type>UInt32 (v2 only)</data_type>
+      <description>Length of original path in characters</description>
+    </attribute>
+    <attribute>
+      <name>Original Path</name>
+      <data_type>UTF-16 LE</data_type>
+      <description>Full path file occupied before deletion</description>
+    </attribute>
+    <attribute>
+      <name>$R File Reference</name>
+      <data_type>Filename pair</data_type>
+      <description>Corresponding $R file holding actual data</description>
+    </attribute>
+    <attribute>
+      <name>Recycle Bin Owner SID</name>
+      <data_type>SID (folder name)</data_type>
+      <description>User who deleted the file (parent folder is named after their SID)</description>
+    </attribute>
+    <attribute>
+      <name>Drive Letter (legacy)</name>
+      <data_type>Char</data_type>
+      <description>Drive of original location (XP INFO2)</description>
+    </attribute>
+    <attribute>
+      <name>Index Number (legacy)</name>
+      <data_type>UInt32</data_type>
+      <description>INFO2 record index (XP)</description>
+    </attribute>
+    <attribute>
+      <name>Sequence Number (legacy)</name>
+      <data_type>UInt32</data_type>
+      <description>Record number (XP)</description>
+    </attribute>
+  </attributes>
+</metadata_system>

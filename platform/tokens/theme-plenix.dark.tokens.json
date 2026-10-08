@@ -1,0 +1,541 @@
+{
+  "$description": "theme-plenix tokens written under :root[data-plx-mode=\"dark\"],[data-plx-theme=\"plenix\"][data-plx-mode=\"dark\"]",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/themes/plenix.css",
+      "selector": ":root[data-plx-mode=\"dark\"],[data-plx-theme=\"plenix\"][data-plx-mode=\"dark\"]",
+      "opener": ":root[data-plx-mode=\"dark\"],[data-plx-theme=\"plenix\"][data-plx-mode=\"dark\"]{"
+    }
+  },
+  "plx-sys": {
+    "surface-canvas": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  color-scheme: dark;",
+            "  /* surfaces, states, content, borders, actions, feedback, focus */"
+          ]
+        }
+      }
+    },
+    "surface-default": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "surface-raised": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "surface-overlay": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "surface-sunken": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "surface-inverse": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color"
+    },
+    "surface-dialog-chrome": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color",
+      "$description": "provisional: the dark value is deferred (D3); the light value stands in",
+      "$extensions": {
+        "com.plenix": {
+          "after": "   /* provisional: the dark value is deferred (D3); the light value stands in */"
+        }
+      }
+    },
+    "state-hover": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "scrollbar-thumb": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
+    "state-selected": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "content-default": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color"
+    },
+    "content-muted": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "content-subtle": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color"
+    },
+    "content-disabled": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "content-inverse": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "content-link": {
+      "$value": "{plx-ref.color-blue-200}",
+      "$type": "color"
+    },
+    "border-default": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "border-subtle": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "border-strong": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color"
+    },
+    "action-primary-background": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color"
+    },
+    "action-primary-background-hover": {
+      "$value": "{plx-ref.color-blue-600}",
+      "$type": "color"
+    },
+    "action-primary-content": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "action-danger-background": {
+      "$value": "{plx-ref.color-red-500}",
+      "$type": "color"
+    },
+    "action-danger-content": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "focus-ring-color": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color"
+    },
+    "feedback-neutral-solid": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
+    "feedback-neutral-on-solid": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-neutral-soft": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-neutral-content": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "feedback-info-solid": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color"
+    },
+    "feedback-info-on-solid": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-info-soft": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-info-content": {
+      "$value": "{plx-ref.color-blue-200}",
+      "$type": "color"
+    },
+    "feedback-success-solid": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color"
+    },
+    "feedback-success-on-solid": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-success-soft": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-success-content": {
+      "$value": "{plx-ref.color-green-200}",
+      "$type": "color"
+    },
+    "feedback-warning-solid": {
+      "$value": "{plx-ref.color-brown-500}",
+      "$type": "color"
+    },
+    "feedback-warning-on-solid": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-warning-soft": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-warning-content": {
+      "$value": "{plx-ref.color-brown-200}",
+      "$type": "color"
+    },
+    "feedback-danger-solid": {
+      "$value": "{plx-ref.color-red-500}",
+      "$type": "color"
+    },
+    "feedback-danger-on-solid": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-danger-soft": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-danger-content": {
+      "$value": "{plx-ref.color-red-200}",
+      "$type": "color"
+    },
+    "shadow-sm": {
+      "$value": "0 0 2px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
+      "$type": "shadow",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* elevation recipes (the shadow-* classes) and roles */"
+          ]
+        }
+      }
+    },
+    "shadow-md": {
+      "$value": "0 0 8px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
+      "$type": "shadow"
+    },
+    "shadow-lg": {
+      "$value": "0 0 32px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
+      "$type": "shadow"
+    },
+    "shadow-card": {
+      "$value": "0 0 4px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
+      "$type": "shadow"
+    },
+    "shadow-raised": {
+      "$value": "0 0 16px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
+      "$type": "shadow"
+    },
+    "shadow-menu": {
+      "$value": "0 0 40px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
+      "$type": "shadow"
+    },
+    "shadow-modal": {
+      "$value": "0 0 40px {plx-ref.color-gray-800}, 0 0 0 1px {plx-ref.color-gray-800}",
+      "$type": "shadow"
+    },
+    "shadow-ring": {
+      "$value": "0 0 0 2px {plx-ref.color-blue-400}",
+      "$type": "shadow"
+    },
+    "shadow-ring-subtle": {
+      "$value": "0 0 0 2px {plx-ref.color-black}",
+      "$type": "shadow"
+    },
+    "shadow-underline-focus": {
+      "$value": "0 1px 0 {plx-ref.color-blue-400}",
+      "$type": "shadow"
+    },
+    "elevation-raised-shadow": {
+      "$value": "{plx-sys.shadow-card}",
+      "$type": "shadow"
+    },
+    "elevation-overlay-shadow": {
+      "$value": "{plx-sys.shadow-modal}",
+      "$type": "shadow"
+    },
+    "elevation-menu": {
+      "$value": "none",
+      "$description": "D9: menus are border-only",
+      "$extensions": {
+        "com.plenix": {
+          "after": "   /* D9: menus are border-only */"
+        }
+      }
+    },
+    "fill-neutral": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "",
+            "  /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */"
+          ]
+        }
+      }
+    },
+    "fill-neutral-hover": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "fill-neutral-content": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color"
+    },
+    "border-divider": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "control-background": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "control-border": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "avatar-background": {
+      "$value": "{plx-ref.color-blue-350}",
+      "$type": "color"
+    },
+    "avatar-content": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "accent-surface": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "accent-surface-raised": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "accent-border": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color"
+    },
+    "accent-content": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color"
+    },
+    "accent-content-muted": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "skeleton-base": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "skeleton-highlight": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "rating-active": {
+      "$value": "{plx-ref.color-brown-500}",
+      "$type": "color"
+    },
+    "rating-inactive": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "selected-border": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color"
+    },
+    "selected-content": {
+      "$value": "{plx-ref.color-blue-200}",
+      "$type": "color"
+    },
+    "action-danger-background-hover": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color"
+    },
+    "accent-field-background": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "accent-field-border": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color"
+    },
+    "accent-field-placeholder": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "field-placeholder": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "tooltip-background": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color"
+    },
+    "tooltip-content": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "border-dialog-chrome": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* overlays and structure (batch 107); the dialog chrome values are provisional with the chrome fill (D3) */"
+          ]
+        }
+      }
+    },
+    "content-dialog-chrome": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "scrim": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "toast-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "toast-content": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "code-keyword": {
+      "$value": "{plx-ref.color-blue-350}",
+      "$type": "color"
+    },
+    "code-string": {
+      "$value": "{plx-ref.color-red-300}",
+      "$type": "color"
+    },
+    "code-comment": {
+      "$value": "{plx-ref.color-green-200}",
+      "$type": "color"
+    },
+    "code-number": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color"
+    },
+    "code-function": {
+      "$value": "{plx-ref.color-brown-200}",
+      "$type": "color"
+    },
+    "code-tag": {
+      "$value": "{plx-ref.color-red-200}",
+      "$type": "color"
+    },
+    "code-attribute": {
+      "$value": "{plx-ref.color-purple-200}",
+      "$type": "color"
+    },
+    "code-variable": {
+      "$value": "{plx-ref.color-blue-200}",
+      "$type": "color"
+    },
+    "code-selector": {
+      "$value": "{plx-ref.color-brown-200}",
+      "$type": "color"
+    },
+    "table-header-background": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "table-row-hover": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "table-line": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
+    "table-header-line": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
+    "header-card-tint": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "the warm end of the header card gradient: the hue opposite the brand blue"
+    },
+    "header-card-media-content": {
+      "$value": "{plx-ref.color-blue-350}",
+      "$type": "color",
+      "$description": "the header card icon"
+    },
+    "surface-media": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "surface-media-raised": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "border-media": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "content-on-media": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "content-on-media-muted": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color"
+    },
+    "accent-edge": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* app header tones (batch 108) */"
+          ]
+        }
+      }
+    },
+    "accent-state-hover": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "frost-surface": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "frost-border": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "frost-field-background": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color"
+    },
+    "frost-state-selected": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "status-bar-background": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* status bar (batch 111) */"
+          ]
+        }
+      }
+    },
+    "status-bar-content": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color"
+    },
+    "status-bar-edge": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    }
+  }
+}

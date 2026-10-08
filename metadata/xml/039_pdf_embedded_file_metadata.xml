@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="039" name="PDF Embedded File Metadata" category="DOC" category_label="Documents" used_for="Attachments inside PDFs (/EmbeddedFiles)" spec_source="ISO 32000-2 §7.11.4 Embedded File Streams; PDF/A-3 §6.8" completeness="comprehensive" record_count="25">
+  <description>Files attached to a PDF via the EmbeddedFiles name tree. Used for source documents, structured data (PDF/A-3), digital signatures, and Forms Data Format.</description>
+  <attributes>
+    <attribute>
+      <name>/EmbeddedFiles name tree</name>
+      <data_type>Catalog /Names entry</data_type>
+      <description>Root mapping names to file specs</description>
+    </attribute>
+    <attribute>
+      <name>/Type /Filespec</name>
+      <data_type>Required</data_type>
+      <group>Filespec</group>
+      <description>Mandatory type marker</description>
+    </attribute>
+    <attribute>
+      <name>/F (file name)</name>
+      <data_type>Text string</data_type>
+      <group>Filespec</group>
+      <description>Plain ASCII file name</description>
+    </attribute>
+    <attribute>
+      <name>/UF (Unicode file name)</name>
+      <data_type>Text string</data_type>
+      <group>Filespec</group>
+      <description>Unicode file name (preferred)</description>
+    </attribute>
+    <attribute>
+      <name>/DOS / /Mac / /Unix</name>
+      <data_type>byte strings</data_type>
+      <group>Filespec</group>
+      <description>Legacy platform-specific names</description>
+    </attribute>
+    <attribute>
+      <name>/EF (embedded file dictionary)</name>
+      <data_type>Dictionary</data_type>
+      <group>Filespec</group>
+      <description>Maps platforms to file streams</description>
+    </attribute>
+    <attribute>
+      <name>/EF /F</name>
+      <data_type>Stream</data_type>
+      <group>Filespec</group>
+      <description>Embedded file stream (preferred — platform-independent)</description>
+    </attribute>
+    <attribute>
+      <name>/EF /UF</name>
+      <data_type>Stream</data_type>
+      <group>Filespec</group>
+      <description>Unicode-named embedded stream</description>
+    </attribute>
+    <attribute>
+      <name>/Desc</name>
+      <data_type>Text string</data_type>
+      <group>Filespec</group>
+      <description>Description shown in attachment list</description>
+    </attribute>
+    <attribute>
+      <name>/CI (collection item dictionary)</name>
+      <data_type>Dictionary</data_type>
+      <group>Filespec</group>
+      <description>PDF Portfolio metadata for this entry</description>
+    </attribute>
+    <attribute>
+      <name>/AFRelationship</name>
+      <data_type>Name</data_type>
+      <group>Filespec</group>
+      <description>Source, Data, Alternative, Supplement, EncryptedPayload, FormData, Schema, Unspecified — required PDF/A-3</description>
+    </attribute>
+    <attribute>
+      <name>/Thumb</name>
+      <data_type>Stream</data_type>
+      <group>Filespec</group>
+      <description>Thumbnail</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Type /EmbeddedFile</name>
+      <data_type>Required</data_type>
+      <group>Stream</group>
+      <description>Stream type marker</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Subtype</name>
+      <data_type>Name (MIME)</data_type>
+      <group>Stream</group>
+      <description>MIME type encoded as name (e.g., /text#2Fxml)</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Params /Size</name>
+      <data_type>Integer</data_type>
+      <group>Stream Params</group>
+      <description>File size in bytes</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Params /CreationDate</name>
+      <data_type>Date</data_type>
+      <group>Stream Params</group>
+      <description>File creation date</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Params /ModDate</name>
+      <data_type>Date</data_type>
+      <group>Stream Params</group>
+      <description>File modification date</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Params /CheckSum</name>
+      <data_type>MD5 byte string</data_type>
+      <group>Stream Params</group>
+      <description>MD5 checksum of file contents</description>
+    </attribute>
+    <attribute>
+      <name>Stream /Params /Mac (legacy)</name>
+      <data_type>Dictionary</data_type>
+      <group>Stream Params</group>
+      <description>Mac type/creator/resfork legacy info</description>
+    </attribute>
+    <attribute>
+      <name>Annotation /Subtype /FileAttachment</name>
+      <data_type>Annotation</data_type>
+      <group>Inline</group>
+      <description>Pin/paperclip annotation pointing to embedded file</description>
+    </attribute>
+    <attribute>
+      <name>Collection (/Catalog /Collection)</name>
+      <data_type>Dictionary</data_type>
+      <group>Portfolio</group>
+      <description>PDF Portfolio - View, Sort, Schema, Folders</description>
+    </attribute>
+    <attribute>
+      <name>Collection Schema (/Schema)</name>
+      <data_type>Dictionary</data_type>
+      <group>Portfolio</group>
+      <description>Defines columns for portfolio view</description>
+    </attribute>
+    <attribute>
+      <name>Collection Folder (/Folders)</name>
+      <data_type>Dictionary</data_type>
+      <group>Portfolio</group>
+      <description>Hierarchical folder structure</description>
+    </attribute>
+    <attribute>
+      <name>FDF / XFDF Embedded</name>
+      <data_type>Form Data</data_type>
+      <group>Forms</group>
+      <description>Form data exchange — fields, signatures, annotations</description>
+    </attribute>
+    <attribute>
+      <name>Encrypted Payload (PDF 2.0)</name>
+      <data_type>Stream</data_type>
+      <group>Encryption</group>
+      <description>Encrypted attachment — wrapped via PKCS#7 / X.509</description>
+    </attribute>
+  </attributes>
+</metadata_system>

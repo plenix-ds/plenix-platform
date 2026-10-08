@@ -1,0 +1,23 @@
+/* Plenix · Interaction and responsive system (platform/system/interaction.css). Layer 4 of 5 (see grid.css).
+   Three environments, independent of density, set on <html data-plx-interaction="pointer | touch | mobile"> by
+   platform/providers/theme-boot.js (a coarse pointer is touch; a coarse pointer on a viewport under 768px is mobile):
+     pointer  mouse or trackpad with keyboard. Any density. Hover only enhances; nothing is found or operated by hover
+              alone. Visible focus and keyboard shortcuts. 24px controls only for dense, repetitive, low-consequence
+              actions, at least 24 × 24px and never overlapping.
+     touch    touch is a primary or expected input (tablet, touch laptop, kiosk). 44px targets by default, more space
+              between adjacent actions, no hover-only actions, larger handles; drawers and sheets instead of side
+              regions that are hard to operate.
+     mobile   a responsive composition, not a density: 4 columns, collapsed navigation, filters in a drawer or screen,
+              full-screen record detail, prioritized data, re-ordered actions, single-task flows. 44px targets;
+              a prominent call to action may pick 48 or 52px on purpose (--plx-comp-button-height-3xl / -4xl).
+   The minimum pointer target of the system is 24 × 24px (WCAG 2.2, 2.5.8); touch and mobile use 44 × 44px.
+   The environment wins over density everywhere, including regions that set their own data-plx-density: compact is a
+   pointer-and-keyboard mode, and a phone is never offered it (workspace.js shows it as standard there). */
+
+/* touch and mobile: anything that only appears on hover is shown */
+:root[data-plx-interaction="touch"] [data-plx-hover-reveal],:root[data-plx-interaction="mobile"] [data-plx-hover-reveal]{opacity:1;visibility:visible;}
+/* the viewport is phone-sized: the shell collapses; side regions become drawers or their own screens. Target size comes
+   from the environment, so a narrow desktop window keeps its pointer-sized controls. */
+@media (max-width: 767px){
+  .plx-shell{grid-template-areas:"header" "main";grid-template-columns:minmax(0,1fr);}
+}

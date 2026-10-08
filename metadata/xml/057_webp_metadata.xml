@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="057" name="WebP Metadata" category="IMG" category_label="Images" used_for="Modern web image format (WebP — Google, RFC 6386 base + container spec)" spec_source="Google WebP Container Specification + libwebp source (mux_types.h fetched 2026-04-30)" completeness="comprehensive" record_count="39">
+  <description>WebP is Google's web image format combining VP8 (lossy) or VP8L (lossless) bitstreams in a RIFF container. Simple files are pure VP8 or VP8L; extended files use a VP8X header to declare additional capabilities (animation, alpha, ICC profile, EXIF, XMP). This entry covers all RIFF chunk types defined in Google's WebP Container Specification, plus the VP8 and VP8L bitstream headers that carry image dimensions, the ANIM/ANMF animation chunks, the ALPH alpha-encoding parameters, and the embedded metadata chunks that mirror what the JPEG/HEIF/PNG ecosystems carry.</description>
+  <attributes>
+    <attribute>
+      <name>RIFF magic</name>
+      <data_type>ASCII 4 bytes 'RIFF'</data_type>
+      <required>true</required>
+      <group>RIFF Header</group>
+    </attribute>
+    <attribute>
+      <name>File size</name>
+      <data_type>UInt32 LE</data_type>
+      <group>RIFF Header</group>
+      <description>Total file size minus 8</description>
+    </attribute>
+    <attribute>
+      <name>WebP magic</name>
+      <data_type>ASCII 4 bytes 'WEBP'</data_type>
+      <required>true</required>
+      <group>RIFF Header</group>
+    </attribute>
+    <attribute>
+      <name>VP8 chunk (FourCC 'VP8 ')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Image Bitstream</group>
+      <description>Simple lossy WebP — entire image as one VP8 keyframe</description>
+    </attribute>
+    <attribute>
+      <name>VP8 frame_tag</name>
+      <data_type>UInt24 LE</data_type>
+      <group>VP8 Bitstream</group>
+      <description>key_frame, version, show_frame, first_part_size</description>
+    </attribute>
+    <attribute>
+      <name>VP8 start_code</name>
+      <data_type>UInt24 (0x9d012a)</data_type>
+      <group>VP8 Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8 width</name>
+      <data_type>UInt14</data_type>
+      <group>VP8 Bitstream</group>
+      <description>Image width (max 16383)</description>
+    </attribute>
+    <attribute>
+      <name>VP8 height</name>
+      <data_type>UInt14</data_type>
+      <group>VP8 Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8 horizontal_scale / vertical_scale</name>
+      <data_type>UInt2</data_type>
+      <group>VP8 Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8L chunk (FourCC 'VP8L')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Image Bitstream</group>
+      <description>Lossless WebP — VP8L bitstream</description>
+    </attribute>
+    <attribute>
+      <name>VP8L signature</name>
+      <data_type>UInt8 (0x2f)</data_type>
+      <group>VP8L Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8L width-1 / height-1</name>
+      <data_type>UInt14 each</data_type>
+      <group>VP8L Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8L alpha_is_used</name>
+      <data_type>Bit</data_type>
+      <group>VP8L Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8L version_number</name>
+      <data_type>UInt3</data_type>
+      <group>VP8L Bitstream</group>
+    </attribute>
+    <attribute>
+      <name>VP8X chunk (FourCC 'VP8X')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Extended File</group>
+      <description>Extended file format header — present when ICC, EXIF, XMP, animation, or alpha chunks exist</description>
+    </attribute>
+    <attribute>
+      <name>VP8X feature flags</name>
+      <data_type>UInt8</data_type>
+      <group>VP8X</group>
+      <values>
+        <value key="0x20">ICC profile present (I)</value>
+        <value key="0x10">Alpha present (L)</value>
+        <value key="0x08">EXIF metadata present (E)</value>
+        <value key="0x04">XMP metadata present (X)</value>
+        <value key="0x02">Animation (A)</value>
+        <value key="0x40">Reserved</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>VP8X canvas_width-1</name>
+      <data_type>UInt24 LE</data_type>
+      <group>VP8X</group>
+    </attribute>
+    <attribute>
+      <name>VP8X canvas_height-1</name>
+      <data_type>UInt24 LE</data_type>
+      <group>VP8X</group>
+    </attribute>
+    <attribute>
+      <name>ICCP chunk (FourCC 'ICCP')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Color</group>
+      <description>Embedded ICC color profile — see system 050</description>
+    </attribute>
+    <attribute>
+      <name>ALPH chunk (FourCC 'ALPH')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Alpha</group>
+      <description>Alpha channel for VP8 (lossy WebP with transparency)</description>
+    </attribute>
+    <attribute>
+      <name>ALPH preprocessing</name>
+      <data_type>UInt2</data_type>
+      <group>ALPH</group>
+      <values>
+        <value key="0">No preprocessing</value>
+        <value key="1">Level reduction</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ALPH filtering_method</name>
+      <data_type>UInt2</data_type>
+      <group>ALPH</group>
+      <values>
+        <value key="0">None</value>
+        <value key="1">Horizontal</value>
+        <value key="2">Vertical</value>
+        <value key="3">Gradient</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ALPH compression_method</name>
+      <data_type>UInt2</data_type>
+      <group>ALPH</group>
+      <values>
+        <value key="0">No compression</value>
+        <value key="1">Lossless (VP8L)</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ANIM chunk (FourCC 'ANIM')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Animation</group>
+      <description>Global animation parameters</description>
+    </attribute>
+    <attribute>
+      <name>ANIM background_color</name>
+      <data_type>UInt32 BGRA</data_type>
+      <group>ANIM</group>
+    </attribute>
+    <attribute>
+      <name>ANIM loop_count</name>
+      <data_type>UInt16 LE</data_type>
+      <group>ANIM</group>
+      <description>0 = infinite</description>
+    </attribute>
+    <attribute>
+      <name>ANMF chunk (FourCC 'ANMF')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Animation</group>
+      <description>Per-frame data — one per animation frame</description>
+    </attribute>
+    <attribute>
+      <name>ANMF frame_x / frame_y</name>
+      <data_type>UInt24 LE each</data_type>
+      <group>ANMF</group>
+      <description>Frame offset in canvas (×2 to get even-aligned pixel)</description>
+    </attribute>
+    <attribute>
+      <name>ANMF frame_width-1 / frame_height-1</name>
+      <data_type>UInt24 LE each</data_type>
+      <group>ANMF</group>
+    </attribute>
+    <attribute>
+      <name>ANMF frame_duration</name>
+      <data_type>UInt24 LE</data_type>
+      <group>ANMF</group>
+      <description>Display duration (ms)</description>
+    </attribute>
+    <attribute>
+      <name>ANMF reserved</name>
+      <data_type>UInt6</data_type>
+      <group>ANMF</group>
+    </attribute>
+    <attribute>
+      <name>ANMF blending_method</name>
+      <data_type>Bit</data_type>
+      <group>ANMF</group>
+      <values>
+        <value key="0">Alpha blending</value>
+        <value key="1">Replace pixel</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>ANMF disposal_method</name>
+      <data_type>Bit</data_type>
+      <group>ANMF</group>
+      <values>
+        <value key="0">Do not dispose (keep)</value>
+        <value key="1">Dispose to background</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>EXIF chunk (FourCC 'EXIF')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Embedded Metadata</group>
+      <description>Embedded EXIF blob — see system 045</description>
+    </attribute>
+    <attribute>
+      <name>XMP chunk (FourCC 'XMP ')</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Embedded Metadata</group>
+      <description>Embedded XMP blob — see system 042</description>
+    </attribute>
+    <attribute>
+      <name>FRGM chunk (deprecated)</name>
+      <data_type>RIFF chunk</data_type>
+      <group>Deprecated</group>
+      <description>Fragment chunk — removed from spec</description>
+    </attribute>
+    <attribute>
+      <name>Lossless transforms</name>
+      <data_type>VP8L feature</data_type>
+      <group>VP8L Internal</group>
+      <values>
+        <value key="0">Predictor</value>
+        <value key="1">Color (cross-channel)</value>
+        <value key="2">Subtract green</value>
+        <value key="3">Color indexing</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Color cache</name>
+      <data_type>VP8L feature</data_type>
+      <group>VP8L Internal</group>
+      <description>Hash table of previous pixel values</description>
+    </attribute>
+    <attribute>
+      <name>LZ77 / Huffman</name>
+      <data_type>VP8L feature</data_type>
+      <group>VP8L Internal</group>
+      <description>Entropy coding</description>
+    </attribute>
+  </attributes>
+</metadata_system>

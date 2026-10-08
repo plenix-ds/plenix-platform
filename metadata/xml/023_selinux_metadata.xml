@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="023" name="SELinux Metadata" category="OS" category_label="Operating System / File System" used_for="Linux security labels (security.selinux xattr)" spec_source="Red Hat SELinux Project; selinux(8); fcontext" completeness="comprehensive" record_count="10">
+  <description>Mandatory access control labels in 4-component format: user:role:type:level. Stored in security.selinux extended attribute on every file.</description>
+  <attributes>
+    <attribute>
+      <name>SELinux User</name>
+      <data_type>String</data_type>
+      <description>SELinux user (system_u, user_u, unconfined_u, root, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>SELinux Role</name>
+      <data_type>String</data_type>
+      <description>Role (object_r for files, system_r/staff_r/sysadm_r for processes, unconfined_r)</description>
+    </attribute>
+    <attribute>
+      <name>SELinux Type / Domain</name>
+      <data_type>String</data_type>
+      <description>Type for files, domain for processes (httpd_t, ssh_exec_t, var_log_t, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>MLS/MCS Level</name>
+      <data_type>String</data_type>
+      <description>Sensitivity:Categories — s0, s0:c0.c1023, etc. (only with MLS/MCS policy)</description>
+    </attribute>
+    <attribute>
+      <name>Sensitivity</name>
+      <data_type>String</data_type>
+      <description>Hierarchical level (s0, s1, s2...)</description>
+    </attribute>
+    <attribute>
+      <name>Categories</name>
+      <data_type>String set</data_type>
+      <description>Non-hierarchical compartments (c0, c1, c0.c1023 ranges)</description>
+    </attribute>
+    <attribute>
+      <name>Object Class</name>
+      <data_type>String</data_type>
+      <description>file, dir, lnk_file, chr_file, blk_file, fifo_file, sock_file, fd, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Allowed Access Vector</name>
+      <data_type>Bitmask</data_type>
+      <description>read, write, execute, getattr, setattr, lock, append, unlink, link, rename, etc.</description>
+    </attribute>
+    <attribute>
+      <name>Default Context (file_contexts)</name>
+      <data_type>Regex+context</data_type>
+      <description>Pattern from policy specifying default labels</description>
+    </attribute>
+    <attribute>
+      <name>Constraints</name>
+      <data_type>Policy rule</data_type>
+      <description>Cross-attribute constraints (mlsfileread, mlsconstrain)</description>
+    </attribute>
+  </attributes>
+</metadata_system>

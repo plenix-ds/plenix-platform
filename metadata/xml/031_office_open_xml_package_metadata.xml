@@ -1,0 +1,432 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="031" name="Office Open XML Package Metadata" category="DOC" category_label="Documents" used_for="DOCX/XLSX/PPTX internal package data" spec_source="ECMA-376 / ISO/IEC 29500 Office Open XML; OPC (Open Packaging Conventions)" completeness="comprehensive" record_count="71">
+  <description>OOXML files are ZIP packages following Open Packaging Conventions. Each part has a content type, relationships, and identity.</description>
+  <attributes>
+    <attribute>
+      <name>[Content_Types].xml</name>
+      <data_type>XML</data_type>
+      <group>Package Root</group>
+      <description>Maps file extensions and explicit overrides to MIME content types</description>
+    </attribute>
+    <attribute>
+      <name>Default Content Type</name>
+      <data_type>Element</data_type>
+      <group>[Content_Types]</group>
+      <description>Extension → ContentType (e.g., 'rels' → relationship XML)</description>
+    </attribute>
+    <attribute>
+      <name>Override Content Type</name>
+      <data_type>Element</data_type>
+      <group>[Content_Types]</group>
+      <description>Specific PartName → ContentType</description>
+    </attribute>
+    <attribute>
+      <name>_rels/.rels</name>
+      <data_type>XML</data_type>
+      <group>Package Relationships</group>
+      <description>Top-level package relationships</description>
+    </attribute>
+    <attribute>
+      <name>Relationship Id (rId)</name>
+      <data_type>String</data_type>
+      <group>Relationships</group>
+      <description>Within-document unique identifier</description>
+    </attribute>
+    <attribute>
+      <name>Relationship Type (Type)</name>
+      <data_type>URI</data_type>
+      <group>Relationships</group>
+      <description>Schema URI defining role (officeDocument, coreProperties, extendedProperties, customProperties, image, hyperlink, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Target</name>
+      <data_type>URI</data_type>
+      <group>Relationships</group>
+      <description>Path to related part (relative or absolute)</description>
+    </attribute>
+    <attribute>
+      <name>TargetMode</name>
+      <data_type>Internal/External</data_type>
+      <group>Relationships</group>
+      <description>Internal package part or external resource</description>
+    </attribute>
+    <attribute>
+      <name>docProps/core.xml</name>
+      <data_type>XML</data_type>
+      <group>Core Properties</group>
+      <description>Dublin Core based core properties (system 029 ExifTool covers values)</description>
+    </attribute>
+    <attribute>
+      <name>dc:title</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Document title</description>
+    </attribute>
+    <attribute>
+      <name>dc:subject</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Subject</description>
+    </attribute>
+    <attribute>
+      <name>dc:creator</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Author(s)</description>
+    </attribute>
+    <attribute>
+      <name>dc:description</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Description / comments</description>
+    </attribute>
+    <attribute>
+      <name>dc:identifier</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Unique identifier</description>
+    </attribute>
+    <attribute>
+      <name>dc:language</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Language code (RFC 3066)</description>
+    </attribute>
+    <attribute>
+      <name>cp:keywords</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>cp:category</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Category</description>
+    </attribute>
+    <attribute>
+      <name>cp:contentStatus</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Draft, Reviewed, Final</description>
+    </attribute>
+    <attribute>
+      <name>cp:contentType</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Content type</description>
+    </attribute>
+    <attribute>
+      <name>cp:lastModifiedBy</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Last user who modified</description>
+    </attribute>
+    <attribute>
+      <name>cp:lastPrinted</name>
+      <data_type>dateTime</data_type>
+      <group>Core Properties</group>
+      <description>Last print date</description>
+    </attribute>
+    <attribute>
+      <name>cp:revision</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Revision number</description>
+    </attribute>
+    <attribute>
+      <name>cp:version</name>
+      <data_type>String</data_type>
+      <group>Core Properties</group>
+      <description>Version</description>
+    </attribute>
+    <attribute>
+      <name>dcterms:created</name>
+      <data_type>dateTime W3CDTF</data_type>
+      <group>Core Properties</group>
+      <description>Creation date</description>
+    </attribute>
+    <attribute>
+      <name>dcterms:modified</name>
+      <data_type>dateTime W3CDTF</data_type>
+      <group>Core Properties</group>
+      <description>Last modification date</description>
+    </attribute>
+    <attribute>
+      <name>docProps/app.xml</name>
+      <data_type>XML</data_type>
+      <group>Extended Properties</group>
+      <description>App-specific extended properties</description>
+    </attribute>
+    <attribute>
+      <name>Application</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>App that produced file (Microsoft Word, LibreOffice/4.2, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>AppVersion</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>Version of producing application</description>
+    </attribute>
+    <attribute>
+      <name>Company</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>Company name</description>
+    </attribute>
+    <attribute>
+      <name>Manager</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>Manager name</description>
+    </attribute>
+    <attribute>
+      <name>DocSecurity</name>
+      <data_type>Int</data_type>
+      <group>Extended Properties</group>
+      <description>0=None, 1=Password, 2=Read-only, 4=Locked annotations, 8=Read-only enforced</description>
+    </attribute>
+    <attribute>
+      <name>ScaleCrop</name>
+      <data_type>Boolean</data_type>
+      <group>Extended Properties</group>
+      <description>Whether thumbnail is scale-cropped</description>
+    </attribute>
+    <attribute>
+      <name>LinksUpToDate</name>
+      <data_type>Boolean</data_type>
+      <group>Extended Properties</group>
+      <description>Hyperlinks current</description>
+    </attribute>
+    <attribute>
+      <name>SharedDoc</name>
+      <data_type>Boolean</data_type>
+      <group>Extended Properties</group>
+      <description>Shared document</description>
+    </attribute>
+    <attribute>
+      <name>HyperlinksChanged</name>
+      <data_type>Boolean</data_type>
+      <group>Extended Properties</group>
+      <description>Hyperlink state has changed since save</description>
+    </attribute>
+    <attribute>
+      <name>AppPlatform</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>Platform (Win32, Mac)</description>
+    </attribute>
+    <attribute>
+      <name>Template</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>Template name (Normal.dotm)</description>
+    </attribute>
+    <attribute>
+      <name>TotalTime</name>
+      <data_type>Int (minutes)</data_type>
+      <group>Extended Properties</group>
+      <description>Cumulative editing time</description>
+    </attribute>
+    <attribute>
+      <name>Pages / Words / Characters / CharactersWithSpaces / Lines / Paragraphs</name>
+      <data_type>Int</data_type>
+      <group>Extended Properties</group>
+      <description>Word document statistics</description>
+    </attribute>
+    <attribute>
+      <name>Sheets / TitlesOfParts / HeadingPairs</name>
+      <data_type>Variable</data_type>
+      <group>Extended Properties</group>
+      <description>Workbook/document structure (Excel/PPT)</description>
+    </attribute>
+    <attribute>
+      <name>Slides / Notes / HiddenSlides / MMClips</name>
+      <data_type>Int</data_type>
+      <group>Extended Properties</group>
+      <description>PowerPoint statistics</description>
+    </attribute>
+    <attribute>
+      <name>PresentationFormat</name>
+      <data_type>String</data_type>
+      <group>Extended Properties</group>
+      <description>PPT format (35mm, On-screen Show)</description>
+    </attribute>
+    <attribute>
+      <name>docProps/custom.xml</name>
+      <data_type>XML</data_type>
+      <group>Custom Properties</group>
+      <description>User-defined / business properties (system 032)</description>
+    </attribute>
+    <attribute>
+      <name>docProps/thumbnail.*</name>
+      <data_type>Image</data_type>
+      <group>Thumbnail</group>
+      <description>Saved preview thumbnail (JPEG or EMF)</description>
+    </attribute>
+    <attribute>
+      <name>word/document.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Main Word document body</description>
+    </attribute>
+    <attribute>
+      <name>word/styles.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Style definitions</description>
+    </attribute>
+    <attribute>
+      <name>word/numbering.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>List/numbering definitions</description>
+    </attribute>
+    <attribute>
+      <name>word/settings.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Document-level settings (zoom, view, attached template)</description>
+    </attribute>
+    <attribute>
+      <name>word/fontTable.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Font information</description>
+    </attribute>
+    <attribute>
+      <name>word/footnotes.xml / endnotes.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Footnote/endnote content</description>
+    </attribute>
+    <attribute>
+      <name>word/comments.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Comments (system 033)</description>
+    </attribute>
+    <attribute>
+      <name>word/people.xml</name>
+      <data_type>XML</data_type>
+      <group>Document Parts</group>
+      <description>Author identity for comments/revisions</description>
+    </attribute>
+    <attribute>
+      <name>xl/workbook.xml</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>Workbook structure</description>
+    </attribute>
+    <attribute>
+      <name>xl/worksheets/sheet1.xml...</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>Per-worksheet data</description>
+    </attribute>
+    <attribute>
+      <name>xl/sharedStrings.xml</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>String table (deduplicated)</description>
+    </attribute>
+    <attribute>
+      <name>xl/styles.xml</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>Cell formatting / number formats</description>
+    </attribute>
+    <attribute>
+      <name>xl/calcChain.xml</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>Formula calculation order cache</description>
+    </attribute>
+    <attribute>
+      <name>xl/tables/</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>Excel Table definitions</description>
+    </attribute>
+    <attribute>
+      <name>xl/pivotTables/ pivotCacheDefinition.xml / pivotCacheRecords.xml</name>
+      <data_type>XML</data_type>
+      <group>Workbook Parts</group>
+      <description>PivotTable definitions and cache</description>
+    </attribute>
+    <attribute>
+      <name>ppt/presentation.xml</name>
+      <data_type>XML</data_type>
+      <group>Presentation Parts</group>
+      <description>Presentation structure</description>
+    </attribute>
+    <attribute>
+      <name>ppt/slides/slide1.xml...</name>
+      <data_type>XML</data_type>
+      <group>Presentation Parts</group>
+      <description>Per-slide content</description>
+    </attribute>
+    <attribute>
+      <name>ppt/slideLayouts/</name>
+      <data_type>XML</data_type>
+      <group>Presentation Parts</group>
+      <description>Layout definitions</description>
+    </attribute>
+    <attribute>
+      <name>ppt/slideMasters/</name>
+      <data_type>XML</data_type>
+      <group>Presentation Parts</group>
+      <description>Master slides</description>
+    </attribute>
+    <attribute>
+      <name>ppt/notesSlides/</name>
+      <data_type>XML</data_type>
+      <group>Presentation Parts</group>
+      <description>Speaker notes</description>
+    </attribute>
+    <attribute>
+      <name>ppt/theme/theme1.xml</name>
+      <data_type>XML</data_type>
+      <group>Theme</group>
+      <description>Color/font/effect theme</description>
+    </attribute>
+    <attribute>
+      <name>media/image*</name>
+      <data_type>Binary</data_type>
+      <group>Media</group>
+      <description>Embedded images (PNG, JPEG, GIF, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>embeddings/*</name>
+      <data_type>Binary</data_type>
+      <group>Embedded</group>
+      <description>Embedded OLE objects (xls, doc, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>customXml/</name>
+      <data_type>XML</data_type>
+      <group>Custom XML</group>
+      <description>User-attached custom XML data parts</description>
+    </attribute>
+    <attribute>
+      <name>docMetadata/LabelInfo.xml</name>
+      <data_type>XML</data_type>
+      <group>Sensitivity</group>
+      <description>Sensitivity labels (Microsoft Information Protection)</description>
+    </attribute>
+    <attribute>
+      <name>Markup Compatibility (mc:Ignorable / AlternateContent)</name>
+      <data_type>Attribute/Element</data_type>
+      <group>Compatibility</group>
+      <description>Forward-compat extension mechanism</description>
+    </attribute>
+    <attribute>
+      <name>Digital Signatures (_xmlsignatures/)</name>
+      <data_type>XML</data_type>
+      <group>Signatures</group>
+      <description>Embedded XAdES signatures</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,445 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="035" name="PDF Metadata" category="DOC" category_label="Documents" used_for="PDF documents" spec_source="ExifTool 12.76 — groups: PDF" spec_version="ExifTool 12.76" completeness="comprehensive" record_count="45">
+  <description>Attribute set for PDF Metadata. Sourced from ExifTool's tag database (group prefix(es): PDF). ExifTool is the de facto cross-format metadata reference, maintained by Phil Harvey.</description>
+  <attributes>
+    <attribute>
+      <name>ContainerVersion</name>
+      <tag_id>ContainerVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>AIPrivate</group>
+      <subsystem>PDF::AIPrivate</subsystem>
+      <description>Container Version</description>
+    </attribute>
+    <attribute>
+      <name>CreatorVersion</name>
+      <tag_id>CreatorVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>AIPrivate</group>
+      <subsystem>PDF::AIPrivate</subsystem>
+      <description>Creator Version</description>
+    </attribute>
+    <attribute>
+      <name>RoundTripVersion</name>
+      <tag_id>RoundTripVersion</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>AIPrivate</group>
+      <subsystem>PDF::AIPrivate</subsystem>
+      <description>Round Trip Version</description>
+    </attribute>
+    <attribute>
+      <name>HasXFA</name>
+      <tag_id>_has_xfa</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>AcroForm</group>
+      <subsystem>PDF::AcroForm</subsystem>
+      <description>Has XFA</description>
+      <values>
+        <value key="false">No</value>
+        <value key="true">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>Encryption</name>
+      <tag_id>Filter</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Encrypt</group>
+      <subsystem>PDF::Encrypt</subsystem>
+      <description>Encryption</description>
+    </attribute>
+    <attribute>
+      <name>UserAccess</name>
+      <tag_id>P</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Encrypt</group>
+      <subsystem>PDF::Encrypt</subsystem>
+      <description>User Access</description>
+      <values>
+        <value key="4">Print</value>
+        <value key="8">Modify</value>
+        <value key="16">Copy</value>
+        <value key="32">Annotate</value>
+        <value key="256">Fill forms</value>
+        <value key="512">Extract</value>
+        <value key="1024">Assemble</value>
+        <value key="2048">Print high-res</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImageColorSpace</name>
+      <tag_id>ColorSpace</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Im</group>
+      <subsystem>PDF::Im</subsystem>
+      <description>Embedded Image Color Space</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImageFilter</name>
+      <tag_id>Filter</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Im</group>
+      <subsystem>PDF::Im</subsystem>
+      <description>Embedded Image Filter</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImageHeight</name>
+      <tag_id>Height</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Im</group>
+      <subsystem>PDF::Im</subsystem>
+      <description>Embedded Image Height</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImage</name>
+      <tag_id>Image_stream</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Im</group>
+      <subsystem>PDF::Im</subsystem>
+      <description>Embedded Image</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedImageWidth</name>
+      <tag_id>Width</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Im</group>
+      <subsystem>PDF::Im</subsystem>
+      <description>Embedded Image Width</description>
+    </attribute>
+    <attribute>
+      <name>AppleKeywords</name>
+      <tag_id>AAPL:Keywords</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Apple Keywords</description>
+    </attribute>
+    <attribute>
+      <name>Author</name>
+      <tag_id>Author</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Author</description>
+    </attribute>
+    <attribute>
+      <name>CreateDate</name>
+      <tag_id>CreationDate</tag_id>
+      <data_type>date</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Create Date</description>
+    </attribute>
+    <attribute>
+      <name>Creator</name>
+      <tag_id>Creator</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Creator</description>
+    </attribute>
+    <attribute>
+      <name>Keywords</name>
+      <tag_id>Keywords</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Keywords</description>
+    </attribute>
+    <attribute>
+      <name>ModifyDate</name>
+      <tag_id>ModDate</tag_id>
+      <data_type>date</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Modify Date</description>
+    </attribute>
+    <attribute>
+      <name>Producer</name>
+      <tag_id>Producer</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Producer</description>
+    </attribute>
+    <attribute>
+      <name>Subject</name>
+      <tag_id>Subject</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Subject</description>
+    </attribute>
+    <attribute>
+      <name>Title</name>
+      <tag_id>Title</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Title</description>
+    </attribute>
+    <attribute>
+      <name>Trapped</name>
+      <tag_id>Trapped</tag_id>
+      <data_type>string</data_type>
+      <writable>true</writable>
+      <group>Info</group>
+      <subsystem>PDF::Info</subsystem>
+      <description>Trapped</description>
+    </attribute>
+    <attribute>
+      <name>Linearized</name>
+      <tag_id>_linearized</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Main</group>
+      <subsystem>PDF::Main</subsystem>
+      <description>Linearized</description>
+      <values>
+        <value key="false">No</value>
+        <value key="true">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>TaggedPDF</name>
+      <tag_id>Marked</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>MarkInfo</group>
+      <subsystem>PDF::MarkInfo</subsystem>
+      <description>Tagged PDF</description>
+      <values>
+        <value key="false">No</value>
+        <value key="true">Yes</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>PageCount</name>
+      <tag_id>Count</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Pages</group>
+      <subsystem>PDF::Pages</subsystem>
+      <description>Page Count</description>
+    </attribute>
+    <attribute>
+      <name>Language</name>
+      <tag_id>Lang</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Root</group>
+      <subsystem>PDF::Root</subsystem>
+      <description>Language</description>
+    </attribute>
+    <attribute>
+      <name>PageLayout</name>
+      <tag_id>PageLayout</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Root</group>
+      <subsystem>PDF::Root</subsystem>
+      <description>Page Layout</description>
+    </attribute>
+    <attribute>
+      <name>PageMode</name>
+      <tag_id>PageMode</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Root</group>
+      <subsystem>PDF::Root</subsystem>
+      <description>Page Mode</description>
+    </attribute>
+    <attribute>
+      <name>PDFVersion</name>
+      <tag_id>Version</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Root</group>
+      <subsystem>PDF::Root</subsystem>
+      <description>PDF Version</description>
+    </attribute>
+    <attribute>
+      <name>SignerContactInfo</name>
+      <tag_id>ContactInfo</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Signer Contact Info</description>
+    </attribute>
+    <attribute>
+      <name>SigningLocation</name>
+      <tag_id>Location</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Signing Location</description>
+    </attribute>
+    <attribute>
+      <name>SigningDate</name>
+      <tag_id>M</tag_id>
+      <data_type>date</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Signing Date</description>
+    </attribute>
+    <attribute>
+      <name>SigningAuthority</name>
+      <tag_id>Name</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Signing Authority</description>
+    </attribute>
+    <attribute>
+      <name>AuthenticationTime</name>
+      <tag_id>Prop_AuthTime</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Authentication Time</description>
+    </attribute>
+    <attribute>
+      <name>AuthenticationType</name>
+      <tag_id>Prop_AuthType</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Authentication Type</description>
+    </attribute>
+    <attribute>
+      <name>SigningReason</name>
+      <tag_id>Reason</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>Signature</group>
+      <subsystem>PDF::Signature</subsystem>
+      <description>Signing Reason</description>
+    </attribute>
+    <attribute>
+      <name>FieldPermissions</name>
+      <tag_id>Action</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Field Permissions</description>
+      <values>
+        <value key="All">Disallow changes to all form fields</value>
+        <value key="Exclude">Allow changes to specified form fields</value>
+        <value key="Include">Disallow changes to specified form fields</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>AnnotationUsageRights</name>
+      <tag_id>Annots</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Annotation Usage Rights</description>
+    </attribute>
+    <attribute>
+      <name>DocumentUsageRights</name>
+      <tag_id>Document</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Document Usage Rights</description>
+    </attribute>
+    <attribute>
+      <name>EmbeddedFileUsageRights</name>
+      <tag_id>EF</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Embedded File Usage Rights</description>
+    </attribute>
+    <attribute>
+      <name>FormFields</name>
+      <tag_id>Fields</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Form Fields</description>
+    </attribute>
+    <attribute>
+      <name>FormUsageRights</name>
+      <tag_id>Form</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Form Usage Rights</description>
+    </attribute>
+    <attribute>
+      <name>FormExtraUsageRights</name>
+      <tag_id>FormEX</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Form Extra Usage Rights</description>
+    </attribute>
+    <attribute>
+      <name>UsageRightsMessage</name>
+      <tag_id>Msg</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Usage Rights Message</description>
+    </attribute>
+    <attribute>
+      <name>ModificationPermissions</name>
+      <tag_id>P</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Modification Permissions</description>
+      <values>
+        <value key="1">No changes permitted</value>
+        <value key="2">Fill forms, Create page templates, Sign</value>
+        <value key="3">Fill forms, Create page templates, Sign, Create/Delete/Edit annotations</value>
+        <value key="false">Do not restrict applications to reader permissions</value>
+        <value key="true">Restrict all applications to reader permissions</value>
+      </values>
+    </attribute>
+    <attribute>
+      <name>SignatureUsageRights</name>
+      <tag_id>Signature</tag_id>
+      <data_type>?</data_type>
+      <writable>false</writable>
+      <group>TransformParams</group>
+      <subsystem>PDF::TransformParams</subsystem>
+      <description>Signature Usage Rights</description>
+    </attribute>
+  </attributes>
+</metadata_system>

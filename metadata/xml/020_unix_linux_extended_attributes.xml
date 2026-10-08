@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="020" name="Unix / Linux Extended Attributes" category="OS" category_label="Operating System / File System" used_for="Extra file metadata (xattrs)" spec_source="Linux attr(5); xattr(7); getxattr(2)" completeness="comprehensive" record_count="27">
+  <description>Key/value pairs in namespaces. Inspect with `getfattr -d -m '.*' file`. Stored as filesystem-specific extended attributes (ext4 ea blocks, XFS attr fork, Btrfs xattrs, etc.).</description>
+  <attributes>
+    <attribute>
+      <name>user.* (user namespace)</name>
+      <data_type>Variable bytes</data_type>
+      <description>User-defined attributes (any name); requires read/write permission</description>
+    </attribute>
+    <attribute>
+      <name>trusted.* (trusted namespace)</name>
+      <data_type>Variable bytes</data_type>
+      <description>Privileged attributes; CAP_SYS_ADMIN required</description>
+    </attribute>
+    <attribute>
+      <name>security.* (security namespace)</name>
+      <data_type>Variable bytes</data_type>
+      <description>Used by LSMs (SELinux, Smack, AppArmor)</description>
+    </attribute>
+    <attribute>
+      <name>system.* (system namespace)</name>
+      <data_type>Variable bytes</data_type>
+      <description>Kernel-managed (POSIX ACLs, file capabilities)</description>
+    </attribute>
+    <attribute>
+      <name>system.posix_acl_access</name>
+      <data_type>Binary ACL</data_type>
+      <description>POSIX access ACL (system 21)</description>
+    </attribute>
+    <attribute>
+      <name>system.posix_acl_default</name>
+      <data_type>Binary ACL</data_type>
+      <description>Default ACL inherited by directory contents</description>
+    </attribute>
+    <attribute>
+      <name>security.capability</name>
+      <data_type>Binary vfs_cap_data</data_type>
+      <description>Linux file capabilities (system 22)</description>
+    </attribute>
+    <attribute>
+      <name>security.selinux</name>
+      <data_type>String</data_type>
+      <description>SELinux context (system 23)</description>
+    </attribute>
+    <attribute>
+      <name>security.SMACK64</name>
+      <data_type>String</data_type>
+      <description>Smack label</description>
+    </attribute>
+    <attribute>
+      <name>security.SMACK64IPIN / IPOUT / EXEC / MMAP / TRANSMUTE</name>
+      <data_type>String</data_type>
+      <description>Smack rule labels</description>
+    </attribute>
+    <attribute>
+      <name>security.apparmor</name>
+      <data_type>String</data_type>
+      <description>AppArmor profile context (system 24)</description>
+    </attribute>
+    <attribute>
+      <name>security.ima</name>
+      <data_type>Binary</data_type>
+      <description>IMA file integrity hash</description>
+    </attribute>
+    <attribute>
+      <name>security.evm</name>
+      <data_type>Binary</data_type>
+      <description>EVM HMAC of metadata</description>
+    </attribute>
+    <attribute>
+      <name>user.mime_type</name>
+      <data_type>String</data_type>
+      <description>Common: MIME type hint</description>
+    </attribute>
+    <attribute>
+      <name>user.charset</name>
+      <data_type>String</data_type>
+      <description>Common: character set</description>
+    </attribute>
+    <attribute>
+      <name>user.creator</name>
+      <data_type>String</data_type>
+      <description>Common: creator app</description>
+    </attribute>
+    <attribute>
+      <name>user.xdg.tags</name>
+      <data_type>UTF-8 CSV</data_type>
+      <description>XDG/freedesktop tags</description>
+    </attribute>
+    <attribute>
+      <name>user.xdg.origin.url</name>
+      <data_type>URL</data_type>
+      <description>XDG download source URL</description>
+    </attribute>
+    <attribute>
+      <name>user.xdg.referrer.url</name>
+      <data_type>URL</data_type>
+      <description>XDG download referrer</description>
+    </attribute>
+    <attribute>
+      <name>user.xdg.publisher</name>
+      <data_type>String</data_type>
+      <description>XDG publisher metadata</description>
+    </attribute>
+    <attribute>
+      <name>user.xdg.comment</name>
+      <data_type>String</data_type>
+      <description>XDG comment</description>
+    </attribute>
+    <attribute>
+      <name>user.dublincore.* (Dublin Core)</name>
+      <data_type>String</data_type>
+      <description>Dublin Core elements via xattr</description>
+    </attribute>
+    <attribute>
+      <name>trusted.overlay.* (overlayfs)</name>
+      <data_type>Variable</data_type>
+      <description>Overlayfs upper-layer markers</description>
+    </attribute>
+    <attribute>
+      <name>trusted.SGI_ACL_FILE / DEFAULT</name>
+      <data_type>Binary</data_type>
+      <description>IRIX-style ACLs</description>
+    </attribute>
+    <attribute>
+      <name>btrfs.compression</name>
+      <data_type>String</data_type>
+      <description>Btrfs per-file compression algorithm hint</description>
+    </attribute>
+    <attribute>
+      <name>ceph.* (CephFS)</name>
+      <data_type>Variable</data_type>
+      <description>Cephfs per-file metadata</description>
+    </attribute>
+    <attribute>
+      <name>Maximum size (ext4)</name>
+      <data_type>Limit</data_type>
+      <description>~4KB total xattr space per inode (or ext4 ea_inode for larger)</description>
+    </attribute>
+  </attributes>
+</metadata_system>

@@ -1,0 +1,5 @@
+/* Plenix · Rating (platform/components/Rating). Each star is an inline-action target. */
+.plx-rating{align-items:center;column-gap:var(--plx-sys-space-cluster-xs);display:inline-flex;}
+.plx-rating__star{align-items:center;appearance:none;background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:var(--plx-sys-rating-inactive);display:inline-flex;font-family:inherit;font-size:var(--plx-ref-font-size-15);justify-content:center;line-height:var(--plx-ref-line-height-none);padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+button.plx-rating__star{cursor:pointer;min-block-size:var(--plx-sys-control-height-inline);min-inline-size:var(--plx-sys-control-height-inline);}
+.plx-rating__star--on{color:var(--plx-sys-rating-active);}

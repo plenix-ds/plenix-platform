@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='utf-8'?>
+<metadata_system id="015" name="macOS Resource Forks" category="OS" category_label="Operating System / File System" used_for="Legacy Mac metadata/data (resource manager)" spec_source="Apple Inside Macintosh: More Macintosh Toolbox Ch. 1; HFS Plus Volume Format" completeness="substantial" record_count="30">
+  <description>Pre-OS X mechanism for storing structured resources (icons, dialogs, code) alongside data fork. Persisted on HFS+ as separate fork; on APFS via com.apple.ResourceFork xattr; on non-Apple FS via AppleDouble (._filename).</description>
+  <attributes>
+    <attribute>
+      <name>Resource Header</name>
+      <data_type>16 bytes</data_type>
+      <description>Offset to data, offset to map, data length, map length</description>
+    </attribute>
+    <attribute>
+      <name>Resource Data</name>
+      <data_type>Variable</data_type>
+      <description>Concatenated resource entries (4-byte length prefix each)</description>
+    </attribute>
+    <attribute>
+      <name>Resource Map</name>
+      <data_type>Variable</data_type>
+      <description>Map of types and IDs to data offsets</description>
+    </attribute>
+    <attribute>
+      <name>Resource Type Code</name>
+      <data_type>OSType (4 chars)</data_type>
+      <description>Type identifier (ICON, MENU, DLOG, snd , vers, ALRT, etc.)</description>
+    </attribute>
+    <attribute>
+      <name>Resource ID</name>
+      <data_type>Int16</data_type>
+      <description>Per-type ID number</description>
+    </attribute>
+    <attribute>
+      <name>Resource Name</name>
+      <data_type>Pascal string (≤255)</data_type>
+      <description>Optional named resource</description>
+    </attribute>
+    <attribute>
+      <name>Resource Attributes</name>
+      <data_type>UInt8 flags</data_type>
+      <description>resSysHeap, resPurgeable, resLocked, resProtected, resPreload, resChanged</description>
+    </attribute>
+    <attribute>
+      <name>ICN# (icon list)</name>
+      <data_type>Resource</data_type>
+      <description>32×32 1-bit icon + mask</description>
+    </attribute>
+    <attribute>
+      <name>ICON</name>
+      <data_type>Resource</data_type>
+      <description>1-bit 32×32 icon</description>
+    </attribute>
+    <attribute>
+      <name>icns</name>
+      <data_type>Resource</data_type>
+      <description>Multi-resolution icon family (modern)</description>
+    </attribute>
+    <attribute>
+      <name>MENU</name>
+      <data_type>Resource</data_type>
+      <description>Menu definition</description>
+    </attribute>
+    <attribute>
+      <name>MBAR</name>
+      <data_type>Resource</data_type>
+      <description>Menu bar list</description>
+    </attribute>
+    <attribute>
+      <name>DLOG/DITL</name>
+      <data_type>Resource</data_type>
+      <description>Dialog template + items</description>
+    </attribute>
+    <attribute>
+      <name>ALRT</name>
+      <data_type>Resource</data_type>
+      <description>Alert template</description>
+    </attribute>
+    <attribute>
+      <name>WIND</name>
+      <data_type>Resource</data_type>
+      <description>Window template</description>
+    </attribute>
+    <attribute>
+      <name>STR </name>
+      <data_type>Resource</data_type>
+      <description>Single Pascal string</description>
+    </attribute>
+    <attribute>
+      <name>STR#</name>
+      <data_type>Resource</data_type>
+      <description>String list</description>
+    </attribute>
+    <attribute>
+      <name>TEXT</name>
+      <data_type>Resource</data_type>
+      <description>TextEdit text</description>
+    </attribute>
+    <attribute>
+      <name>snd </name>
+      <data_type>Resource</data_type>
+      <description>Sound resource</description>
+    </attribute>
+    <attribute>
+      <name>vers</name>
+      <data_type>Resource</data_type>
+      <description>Version (short + long version strings)</description>
+    </attribute>
+    <attribute>
+      <name>BNDL</name>
+      <data_type>Resource</data_type>
+      <description>Bundle (linking creator code to icons)</description>
+    </attribute>
+    <attribute>
+      <name>FREF</name>
+      <data_type>Resource</data_type>
+      <description>File reference (file type to icon)</description>
+    </attribute>
+    <attribute>
+      <name>CODE</name>
+      <data_type>Resource</data_type>
+      <description>Executable 68k code segment</description>
+    </attribute>
+    <attribute>
+      <name>CNTL</name>
+      <data_type>Resource</data_type>
+      <description>Control template</description>
+    </attribute>
+    <attribute>
+      <name>CURS/crsr</name>
+      <data_type>Resource</data_type>
+      <description>Cursor / color cursor</description>
+    </attribute>
+    <attribute>
+      <name>PICT</name>
+      <data_type>Resource</data_type>
+      <description>QuickDraw picture</description>
+    </attribute>
+    <attribute>
+      <name>clut/pltt</name>
+      <data_type>Resource</data_type>
+      <description>Color lookup / palette</description>
+    </attribute>
+    <attribute>
+      <name>FOND/NFNT</name>
+      <data_type>Resource</data_type>
+      <description>Font family / bitmap font</description>
+    </attribute>
+    <attribute>
+      <name>KCHR</name>
+      <data_type>Resource</data_type>
+      <description>Keyboard layout</description>
+    </attribute>
+    <attribute>
+      <name>AppleDouble Header</name>
+      <data_type>Magic 0x00051607</data_type>
+      <description>When resource fork stored as ._filename on non-Apple FS</description>
+    </attribute>
+  </attributes>
+</metadata_system>
