@@ -1,0 +1,408 @@
+{
+ "dashboard/index.html": {
+  "aria-required-children": 1
+ },
+ "messages/index.html": {
+  "color-contrast": 6
+ },
+ "calendar/index.html": {
+  "aria-required-children": 1,
+  "aria-required-parent": 7
+ },
+ "dam/index.html": {
+  "color-contrast": 1
+ },
+ "design-system home": {
+  "color-contrast": 1
+ },
+ "design-system #/foundations/design-tokens": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/color": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/typography": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/spacing": {
+  "scrollable-region-focusable": 1
+ },
+ "design-system #/foundations/control-heights": {
+  "color-contrast": 3,
+  "scrollable-region-focusable": 1
+ },
+ "design-system #/foundations/density": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/border": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/radius": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/shadows": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/opacity": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/icon": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/motion": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/layers": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/breakpoints": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/device-behavior": {
+  "color-contrast": 3
+ },
+ "design-system #/foundations/themes": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/grid": {
+  "color-contrast": 3,
+  "scrollable-region-focusable": 1
+ },
+ "design-system #/layout/stack": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/divider": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/scroll-area": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/dashboard-grid": {
+  "aria-required-children": 8,
+  "color-contrast": 3
+ },
+ "design-system #/layout/panel": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/responsive-grid": {
+  "color-contrast": 3
+ },
+ "design-system #/content/text": {
+  "color-contrast": 3
+ },
+ "design-system #/content/heading": {
+  "color-contrast": 3
+ },
+ "design-system #/content/list": {
+  "color-contrast": 3
+ },
+ "design-system #/content/code-block": {
+  "color-contrast": 3
+ },
+ "design-system #/content/keyboard-hint": {
+  "color-contrast": 3
+ },
+ "design-system #/content/avatar": {
+  "color-contrast": 3
+ },
+ "design-system #/content/property-list": {
+  "color-contrast": 3
+ },
+ "design-system #/actions/button": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/actions/button-group": {
+  "color-contrast": 3
+ },
+ "design-system #/actions/toolbar": {
+  "color-contrast": 3
+ },
+ "design-system #/actions/action-bar": {
+  "color-contrast": 3
+ },
+ "design-system #/actions/bulk-action-bar": {
+  "color-contrast": 4
+ },
+ "design-system #/actions/action-menu": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/fieldset": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/field": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/text-field": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/text-area": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/native-select": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/checkbox": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/radio-group": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/switch": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/color-swatch": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/drop-zone": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/choice-card": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/forms/segmented-control": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/forms/rating": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/combobox": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/forms/creatable-select": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/search-input": {
+  "color-contrast": 3
+ },
+ "design-system #/forms/slider": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/application-header": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/product-switcher": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/account-menu": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/side-navigation": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/breadcrumbs": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/navigation-menu": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/navigation-rail": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/tree-view": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/tabs": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/pagination": {
+  "color-contrast": 3
+ },
+ "design-system #/navigation/filter-bar": {
+  "color-contrast": 4
+ },
+ "design-system #/navigation/search-workspace": {
+  "color-contrast": 4
+ },
+ "design-system #/data-display/badge": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/tag": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/chip": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/counter": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/metric": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/interactive-list": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/data-display/activity-stream": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/data-display/card": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/data-display/radio-tiles": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/content/thumbnail": {
+  "color-contrast": 3
+ },
+ "design-system #/specialized/preview": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/calendar-view": {
+  "color-contrast": 3
+ },
+ "design-system #/data-display/media-card": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/data-display/data-table": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/notice": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/toast": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/notification-center": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/status-dot": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/spinner": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/progress-bar": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/skeleton": {
+  "color-contrast": 3
+ },
+ "design-system #/feedback/empty-state": {
+  "color-contrast": 3
+ },
+ "design-system #/overlays/dialog": {
+  "color-contrast": 3
+ },
+ "design-system #/overlays/confirmation-dialog": {
+  "color-contrast": 3
+ },
+ "design-system #/overlays/side-drawer": {
+  "color-contrast": 3
+ },
+ "design-system #/overlays/tooltip": {
+  "color-contrast": 3,
+  "target-size": 3
+ },
+ "design-system #/overlays/expandable-section": {
+  "aria-allowed-attr": 1,
+  "color-contrast": 3
+ },
+ "design-system #/overlays/media-lightbox": {
+  "color-contrast": 3
+ },
+ "design-system #/patterns/bulk-selection": {
+  "color-contrast": 4
+ },
+ "design-system #/patterns/filter-and-sort-workflow": {
+  "color-contrast": 3
+ },
+ "design-system #/patterns/search-workflow": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/columns": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/application-shell": {
+  "color-contrast": 3
+ },
+ "design-system #/layout/secondary-pane": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/inspector-region": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/status-region": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/record-page": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/settings-page": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/listing-page": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/content-template": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/master-detail-workspace": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/single-pane-workspace": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/full-screen-workspace": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/detail-page": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/home-page": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/search-results-page": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/dam-template": {
+  "color-contrast": 3
+ },
+ "design-system #/page-structures/dashboard-template": {
+  "color-contrast": 3
+ },
+ "design-system #/specialized/typing-indicator": {
+  "color-contrast": 3,
+  "scrollable-region-focusable": 1
+ },
+ "design-system #/interaction/focus-ring": {
+  "color-contrast": 3
+ },
+ "design-system #/interaction/visually-hidden": {
+  "color-contrast": 3
+ },
+ "design-system #/interaction/overlay-manager": {
+  "color-contrast": 3
+ },
+ "design-system #/interaction/breakpoint-utility": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/react": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/css-architecture": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/state-management": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/testing": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/component-lifecycle": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/contribution-model": {
+  "color-contrast": 3
+ },
+ "design-system #/implementation/changelog": {
+  "color-contrast": 3
+ }
+}

@@ -66,6 +66,14 @@ https://design-system.lighthouseway.org/api/v1/ lists the endpoints:
 
 Tools, AI agents and other systems read the rules from here.
 
+### Versions and changes
+
+`VERSIONING.md` says what counts as a breaking change for a component, class, token or API field; `CHANGELOG.md` lists every release.
+
+### Checks
+
+`npm test` runs the visual snapshot (Button), every page, and the accessibility scan (axe-core; known issues in `tests/baselines/a11y.json` may only go down). GitHub runs them, with the build and the system and spec checks, on every push (`.github/workflows/ci.yml`).
+
 ### Releasing a version
 
 1. Raise `version` in `package.json` (semantic versioning; 0.x while the API settles).

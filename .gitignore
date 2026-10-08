@@ -10,3 +10,4 @@ shared - Copy/
 *.bak
 packages/
 release/
+tests/.visual-button.html

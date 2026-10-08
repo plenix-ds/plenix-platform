@@ -1,0 +1,63 @@
+# Plenix checks: on every push and pull request. Build, the system and spec checks, the release build, the visual
+# snapshot, every page and the accessibility scan (axe-core; known issues may only go down).
+# The design system (platform/design-system) is a private submodule: with the DS_TOKEN secret (a token that can read
+# plenix-ds/plenix-design-system) it is checked out and tested too; without it, the apps and the Platform are tested.
+name: Checks
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    env:
+      CHROME_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Design system (submodule)
+        env:
+          DS_TOKEN: ${{ secrets.DS_TOKEN }}
+        run: |
+          if [ -n "$DS_TOKEN" ]; then
+            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
+            git submodule update --init --depth 1
+            echo "Design system checked out"
+          else
+            echo "::notice::DS_TOKEN is not set: the design system's pages and spec check are skipped"
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Build
+        run: |
+          node build-app.js
+          node build-usage.js
+
+      - name: System check
+        run: node check-system.js
+
+      - name: Spec check
+        run: |
+          if [ -f platform/design-system/inventory.js ]; then node check-spec.js; else echo "skipped: no design system"; fi
+
+      - name: Release build
+        run: node build-packages.js
+
+      - name: Visual snapshot (Button)
+        run: node tests/visual.test.js
+
+      - name: Every page
+        run: node tests/pages.test.js
+
+      - name: Accessibility (axe-core)
+        run: node tests/a11y.test.js

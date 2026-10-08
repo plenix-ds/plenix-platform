@@ -175,10 +175,12 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
   const stub = new Proxy(function () { return null; }, { get: (t, k) => (k === Symbol.toPrimitive ? () => '' : stub), apply: () => null });
   const win = { Plenix: stub };
   const ctx = vm.createContext({ window: win, React: stub, ReactDOM: stub, document: stub, console });
-  for (const f of ['inventory-taxonomy.js', 'inventory.js', 'inventory-guidance.js']) vm.runInContext(fs.readFileSync(path.join(DS, f), 'utf8'), ctx, { filename: f });
+  for (const f of ['inventory-taxonomy.js', 'inventory.js', 'inventory-guidance.js', 'inventory-docs.js'].filter((x) => fs.existsSync(path.join(DS, x)))) vm.runInContext(fs.readFileSync(path.join(DS, f), 'utf8'), ctx, { filename: f });
   const recs = Array.isArray(win.DSInventory) ? win.DSInventory : Object.values(win.DSInventory || {});
   const pick = (o, ks) => Object.fromEntries(ks.filter((k) => o[k] !== undefined && o[k] !== '').map((k) => [k, o[k]]));
-  const components = recs.map((r) => pick(r, ['id', 'title', 'section', 'sub', 'leaf', 'level', 'status', 'icon', 'text', 'purpose', 'use', 'avoid', 'related', 'aliases', 'covers', 'map']));
+  // each record with its written sections (inventory-docs.js, batch 208); a record's own fields win
+  const docs = win.DSDocs || {};
+  const components = recs.map((r) => Object.assign(pick(docs[r.id] || {}, ['purpose', 'anatomy', 'behavior', 'a11y', 'content']), pick(r, ['id', 'title', 'sec', 'sub', 'leaf', 'level', 'status', 'icon', 'text', 'purpose', 'use', 'avoid', 'related', 'aliases', 'covers', 'map', 'plenix', 'src'])));
   const sections = (win.DSTaxonomy || []).map((s) => pick(s, ['id', 'n', 'title', 'question', 'icon', 'subs', 'leaves', 'groups']));
   const meta = { version: VERSION, generated: new Date().toISOString().slice(0, 10), docs: SITE + '/' };
   json(path.join(API, 'index.json'), Object.assign({}, meta, {
