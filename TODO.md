@@ -37,7 +37,7 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 
 Themes and components (owner, 2026-10-08: "do the foundations and then the components")
 - [x] Themes defined in the design system (platform/standards/themes.json), the current look as the "default" theme, switching (batch 219).
-- [ ] Foundations into themes: typography (families, weights, letter spacing), shape (radius, border widths and styles), motion (durations, easing), opacity and the focus ring become theme roles; components use only those roles. Shared, never per theme: spacing, control heights, density, grid, breakpoints, layers. The same palette color can serve many themes.
+- [x] (batch 220) Foundations into themes: typography (families, weights, letter spacing), shape (radius, border widths and styles), motion (durations, easing), opacity and the focus ring become theme roles; components use only those roles. Shared, never per theme: spacing, control heights, density, grid, breakpoints, layers. The same palette color can serve many themes.
 - [ ] Every component gets the Button treatment (its own tokens for every variant, size and state; variant pages; the token Edit dialog; zero-visual-change and mapping proofs), in groups: form controls, actions, navigation, data display, feedback, overlays, layout.
 
 Phase 3 · editable and governed
