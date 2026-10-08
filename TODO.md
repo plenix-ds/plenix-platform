@@ -8,8 +8,8 @@ Worked in this order; each step is verified (snapshot diff, checks, page check) 
 
 Phase 1 · a trustworthy foundation
 - [x] 1. Button's look as component tokens (batch 207): 115 `--plx-comp-button-*` tokens; button.css uses only them; each Edit dialog field edits exactly one token and Save sends `{ file, changes: [{ token, from, to }] }`.
-- [ ] 2. Write the "Not written yet" sections of the 125 built components (usage, behavior, accessibility, content).
-- [ ] 3. The Plenix apps run on releases: the deployed apps load a released version (CDN), so a broken release shows in our own apps first.
+- [x] 2. The 125 built items' written sections (batch 208): purpose, anatomy, behavior, accessibility, content guidance, related items, template references (from the apps' imports), Figma (none: code-first). "Not written yet" on built pages: 2,018 → 0. The code gaps found are in Plenix - DAM/audit/findings-2026-10-08.md (to fix).
+- [x] 3. The deployed apps run on the release (batch 208): deploy.sh points their pages at /cdn/<version>/ and reports unreleased Platform changes. All 11 apps pixel-identical on source and release.
 - [ ] 4. Owner: check drive D: (`chkdsk D: /scan`) and memory (Windows Memory Diagnostic): two corrupted writes on 2026-10-08.
 
 Phase 2 · safe to change

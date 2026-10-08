@@ -4,6 +4,8 @@
 #   design-system.lighthouseway.org  -> /Plenix/platform/design-system/
 #     /cdn/<version>/  the release's CDN files (kept for good: a published version never changes)
 #     /api/v1/         the read-only JSON API (replaced on every deploy)
+# The deployed apps run on the release, not on the source: their pages load the Platform from /cdn/<version>/ (the version
+# in package.json), so a broken release shows in our own apps first. Platform changes reach them only through a new version.
 # Both names serve /srv/plenix/www on the VM (Nginx, site file /etc/nginx/sites-available/plenix); Nginx Proxy Manager
 # (CT 102) gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
 # Run from Git Bash:  bash deploy.sh   (needs this PC's SSH key on plenix@10.0.0.30)
@@ -11,7 +13,7 @@ set -euo pipefail
 HOST=plenix@10.0.0.30
 cd "$(dirname "$0")/.."
 
-(cd Plenix && node build-app.js >/dev/null 2>&1) || { echo "BUILD FAILED: run node Plenix/build-app.js"; exit 1; }
+(cd Plenix && node build-app.js >/dev/null 2>&1 && node build-usage.js >/dev/null) || { echo "BUILD FAILED: run node Plenix/build-app.js"; exit 1; }
 (cd Plenix && node check-system.js >/dev/null 2>&1) || { echo "check-system failed: fix it before publishing"; exit 1; }
 (cd Plenix && node build-packages.js >/dev/null) || { echo "build-packages failed: run node Plenix/build-packages.js"; exit 1; }
 VERSION=$(cd Plenix && node -p "require('./package.json').version")
@@ -41,8 +43,20 @@ ssh "$HOST" "set -e
   sudo rm -rf /srv/plenix/api && sudo mv /srv/plenix/api.new /srv/plenix/api
   sudo mkdir -p /srv/plenix/cdn
   if [ -d /srv/plenix/cdn/$VERSION ]; then echo 'CDN $VERSION is already published: kept as it was (raise the version to publish changes)'
+    # unreleased Platform changes: this build's release files differ from the published ones
+    for x in plenix.js plenix.css; do cmp -s /srv/plenix/www.new/Plenix/release/cdn/$VERSION/\$x /srv/plenix/cdn/$VERSION/\$x || echo \"NOTE: \$x has changes that are not released; the apps keep using release $VERSION. Raise the version in package.json to release them.\"; done
   else sudo mv /srv/plenix/www.new/Plenix/release/cdn/$VERSION /srv/plenix/cdn/$VERSION; echo 'CDN $VERSION published'; fi
   sudo rm -rf /srv/plenix/www.new/Plenix/release
+  # the apps load the released Platform (the same four files other projects use) instead of the source
+  CDN=https://design-system.lighthouseway.org/cdn/$VERSION
+  for f in /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html; do
+    sudo sed -i -e \"s|<link rel=\\\"stylesheet\\\" href=\\\"../platform/platform.css\\\">|<link rel=\\\"stylesheet\\\" href=\\\"\$CDN/plenix.css\\\">|\" \
+      -e \"s|<script src=\\\"../platform/providers/theme-boot.js\\\"></script>|<script src=\\\"\$CDN/theme-boot.js\\\"></script>|\" \
+      -e \"s|<script src=\\\"../platform/vendor/react-loader.js\\\"></script>|<script src=\\\"\$CDN/vendor/react.production.min.js\\\"></script><script src=\\\"\$CDN/vendor/react-dom.production.min.js\\\"></script>|\" \
+      -e \"s|<script src=\\\"../platform/dist/platform.js\\\"></script>|<script src=\\\"\$CDN/plenix.js\\\"></script>|\" \"\$f\"
+  done
+  pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | wc -l)
+  echo \"Apps on release $VERSION: \$pinned pages\"
   ls /srv/plenix/cdn | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null
   sudo mv /srv/plenix/www /srv/plenix/www.old
   sudo mv /srv/plenix/www.new /srv/plenix/www"
