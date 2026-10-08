@@ -7,13 +7,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Added
-- The five layout modes, built: `<AppShell layout="fluid | contained | hybrid | multi-pane | focus">` sets
-  `data-plx-layout` on the shell and the main region, and app-shell.css draws each mode: contained centers the content
+- The layout standard, defined in the design system (platform/standards/layout.json): the five layout modes (widths,
+  alignment, what they hide) and which kind of page gets which mode. build-standards.js generates the code the apps run
+  (providers/pageLayouts.js, system/layout-modes.css); check-system rejects a hand edit (rule generated) and an app that
+  sets a layout itself (rule page-layout). Apps say what a page is: `<AppShell page="settings">`, `mountSuite(app,
+  render, { page })`; SettingsLayout is a settings page by itself. (batch 218)
+- The five layout modes, built (batch 217; since batch 218 a page gets its mode only through the layout standard): contained centers the content
   at the 960px form width; hybrid caps paragraphs at 760px and forms at 960px; multi-pane makes each pane scroll on its
   own; focus hides the navigation and the inspector. The suite apps are fluid, the image editor is focus (no visual
   change). tests/layout.test.js (12 checks) runs in `npm test` and CI. (batch 217)
 
 ### Changed (visual)
+- Settings pages follow the standard (settings → contained): the Settings app and the Asset Manager's settings are one
+  centered column at the 960px form width. SettingsLayout's own 900px limit is removed. (batch 218)
+- Design system: lists of token and class links stand 12px apart (a 26px pitch), so each is a 24px touch target;
+  accessibility issues 3 → 0. (batch 218)
 - Asset Manager: interface labels in sentence case (299 labels, e.g. "Save changes", "GPS latitude", "Move assets"); content keeps its capitals (asset titles, people, category, collection, group and preset names). "New category" uses the add icon instead of a typed "+". (batch 216)
 
 ## [0.3.0] - 2026-10-08
