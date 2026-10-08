@@ -6,4 +6,4 @@
 .plx-columns--gap-md{column-gap:var(--plx-sys-space-layout-sm);}
 .plx-columns--gap-lg{column-gap:var(--plx-sys-space-layout-md);}
 .plx-columns--divided>*{min-inline-size:0;padding-block-end:var(--plx-sys-space-inset-lg);padding-block-start:var(--plx-sys-space-inset-lg);padding-inline-end:var(--plx-sys-space-inset-lg);padding-inline-start:var(--plx-sys-space-inset-lg);}
-.plx-columns--divided>*+*{border-inline-start-color:var(--plx-sys-border-divider);border-inline-start-style:solid;border-inline-start-width:var(--plx-ref-border-width-1px);}
+.plx-columns--divided>*+*{border-inline-start-color:var(--plx-sys-border-divider);border-inline-start-style:solid;border-inline-start-width:var(--plx-sys-border-width-thin);}

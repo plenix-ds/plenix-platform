@@ -3,7 +3,7 @@
 .plx-empty-state--inline{font-size:var(--plx-ref-font-size-11);padding-block-end:var(--plx-sys-space-inset-md);padding-block-start:var(--plx-sys-space-inset-md);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
 .plx-empty-state--page{font-size:var(--plx-ref-font-size-12);padding-block-end:var(--plx-sys-space-layout-xl);padding-block-start:var(--plx-sys-space-layout-xl);padding-inline-end:var(--plx-sys-space-layout-md);padding-inline-start:var(--plx-sys-space-layout-md);}
 .plx-empty-state__icon{color:var(--plx-sys-content-disabled);font-size:var(--plx-ref-symbol-size);line-height:var(--plx-ref-line-height-none);}
-.plx-empty-state__title{color:var(--plx-sys-content-default);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-ref-font-weight-semibold-600);}
+.plx-empty-state__title{color:var(--plx-sys-content-default);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-sys-font-weight-semibold);}
 .plx-empty-state__text{max-inline-size:var(--plx-ref-size-400px);}
 .plx-empty-state__action{margin-block-start:var(--plx-sys-space-stack-xs);}
 /* the icon: 24px (the empty state's illustration size) */

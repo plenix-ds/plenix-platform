@@ -1,18 +1,18 @@
 /* Plenix · NavPane: the one left navigation pane (surface, divider, width, full height, inset, scrolling). */
-.plx-nav-pane{align-self:stretch;background-color:var(--plx-comp-nav-pane-background);box-shadow:inset calc(var(--plx-ref-border-width-1px) * -1) 0 0 var(--plx-sys-border-default);box-sizing:border-box;display:flex;flex-direction:column;flex-shrink:0;inline-size:var(--plx-comp-nav-pane-width);min-block-size:0;min-inline-size:0;}
+.plx-nav-pane{align-self:stretch;background-color:var(--plx-comp-nav-pane-background);box-shadow:inset calc(var(--plx-sys-border-width-thin) * -1) 0 0 var(--plx-sys-border-default);box-sizing:border-box;display:flex;flex-direction:column;flex-shrink:0;inline-size:var(--plx-comp-nav-pane-width);min-block-size:0;min-inline-size:0;}
 .plx-nav-pane__header{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;padding-block-end:0;padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
 .plx-nav-pane__body{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-block-size:0;overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-sys-space-inset-md);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);row-gap:var(--plx-sys-space-stack-md);}
 /* inline beside the main area: the splitter sits on its edge */
 .plx-nav-pane--inline{position:relative;}
 /* the overlay (below 768px, opened from the rail): over the main region, between header and footer */
 .plx-nav-pane--overlay{box-shadow:var(--plx-sys-elevation-overlay-shadow);inset-block-end:0;inset-block-start:0;inset-inline-start:0;max-inline-size:calc(100% - var(--plx-sys-space-layout-xl));position:absolute;z-index:var(--plx-sys-layer-popover);}
-.plx-nav-pane__footer{align-items:center;box-shadow:inset 0 var(--plx-ref-border-width-1px) 0 var(--plx-sys-border-divider);box-sizing:border-box;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-pane-footer-height);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
+.plx-nav-pane__footer{align-items:center;box-shadow:inset 0 var(--plx-sys-border-width-thin) 0 var(--plx-sys-border-divider);box-sizing:border-box;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-pane-footer-height);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
 /* the pane's own Collapse button: at the end of its header row (or the start) */
 .plx-nav-pane__collapse{display:inline-flex;flex-shrink:0;}
 .plx-nav-pane__collapse--end{margin-inline-start:auto;}
 /* collapsed: the rail on the pane's surface */
 .plx-nav-pane-rail{align-self:stretch;background-color:var(--plx-comp-nav-pane-background);flex-shrink:0;}
 /* the title row: Collapse, the pane’s title (filling the row, cut with an ellipsis), its actions; then the optional second row */
-.plx-nav-pane__title{color:var(--plx-sys-content-default);flex-basis:0%;flex-grow:1;font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-ref-font-weight-bold-700);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-nav-pane__title{color:var(--plx-sys-content-default);flex-basis:0%;flex-grow:1;font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-sys-font-weight-bold);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-nav-pane__actions{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:inline-flex;flex-shrink:0;}
 .plx-nav-pane__subheader{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}

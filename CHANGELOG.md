@@ -7,6 +7,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Added
+- Foundations belong to the theme: each theme has a foundations file (theme-<name>.tokens.json) with its typefaces,
+  font weights, letter spacing, shape (radius scale), border widths and styles, motion (durations, easing, stagger),
+  opacity levels and focus ring, as `--plx-sys-typeface-*`, `-font-weight-*`, `-letter-spacing-*`, `-shape-*`,
+  `-border-width-*`, `-border-style-*`, `-motion-*`, `-opacity-*`, `-focus-ring-*`. The radius and font roles point to
+  them; every component and pattern uses them (816 uses converted). Spacing, control heights, density, grid,
+  breakpoints and layers stay shared by every theme. check-system rule `themeable` rejects a reference scale in a
+  stylesheet; build-tokens rejects a theme that leaves out a foundation. The default theme keeps today's exact values
+  (no visual change: the Button snapshot and every app page are identical). (batch 220)
 - Themes, defined in the design system (platform/standards/themes.json): a theme is a full set of semantic roles,
   light and dark, pointing to the shared palette. The current look is the "default" theme (was "plenix"; files
   theme-default.*.tokens.json, system/themes/default.css). build-tokens.js makes one stylesheet per theme and rejects a

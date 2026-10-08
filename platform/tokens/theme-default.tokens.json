@@ -1,0 +1,210 @@
+{
+  "$description": "The default theme's foundations: the scales a theme decides (typefaces, weights, letter spacing, shape, lines, motion, opacity, the focus ring), the same in light and dark. Components and roles use only these, never the reference scales directly; the spacing, control heights, density, grid, breakpoints and layers are shared by every theme. Edit here; build-tokens.js writes them into system/themes/default.css.",
+  "$extensions": {
+    "com.plenix": {
+      "output": "platform/system/themes/default.css",
+      "selector": ":root,[data-plx-theme=\"default\"]",
+      "opener": ":root,[data-plx-theme=\"default\"]{"
+    }
+  },
+  "plx-sys": {
+    "typeface-sans": {
+      "$value": "{plx-ref.font-sans}",
+      "$type": "fontFamily",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* typography: the typefaces, weights and letter spacing of this theme */"
+          ]
+        }
+      }
+    },
+    "typeface-mono": {
+      "$value": "{plx-ref.font-mono}",
+      "$type": "fontFamily"
+    },
+    "font-weight-regular": {
+      "$value": "{plx-ref.font-weight-regular-400}",
+      "$type": "fontWeight"
+    },
+    "font-weight-medium": {
+      "$value": "{plx-ref.font-weight-medium-500}",
+      "$type": "fontWeight"
+    },
+    "font-weight-semibold": {
+      "$value": "{plx-ref.font-weight-semibold-600}",
+      "$type": "fontWeight"
+    },
+    "font-weight-bold": {
+      "$value": "{plx-ref.font-weight-bold-700}",
+      "$type": "fontWeight"
+    },
+    "letter-spacing-tight": {
+      "$value": "{plx-ref.letter-spacing-tight}",
+      "$type": "dimension"
+    },
+    "letter-spacing-snug": {
+      "$value": "{plx-ref.letter-spacing-snug}",
+      "$type": "dimension"
+    },
+    "letter-spacing-wide": {
+      "$value": "{plx-ref.letter-spacing-wide}",
+      "$type": "dimension"
+    },
+    "letter-spacing-wider": {
+      "$value": "{plx-ref.letter-spacing-wider}",
+      "$type": "dimension"
+    },
+    "letter-spacing-caps": {
+      "$value": "{plx-ref.letter-spacing-caps}",
+      "$type": "dimension"
+    },
+    "letter-spacing-widest": {
+      "$value": "{plx-ref.letter-spacing-widest}",
+      "$type": "dimension"
+    },
+    "shape-none": {
+      "$value": "{plx-ref.radius-0px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* shape: the corner radius scale (the radius roles, by density, point here) */"
+          ]
+        }
+      }
+    },
+    "shape-2xs": {
+      "$value": "{plx-ref.radius-2px}",
+      "$type": "dimension"
+    },
+    "shape-xs": {
+      "$value": "{plx-ref.radius-4px}",
+      "$type": "dimension"
+    },
+    "shape-sm": {
+      "$value": "{plx-ref.radius-6px}",
+      "$type": "dimension"
+    },
+    "shape-md": {
+      "$value": "{plx-ref.radius-8px}",
+      "$type": "dimension"
+    },
+    "shape-lg": {
+      "$value": "{plx-ref.radius-12px}",
+      "$type": "dimension"
+    },
+    "shape-xl": {
+      "$value": "{plx-ref.radius-16px}",
+      "$type": "dimension"
+    },
+    "shape-pill": {
+      "$value": "{plx-ref.radius-pill}",
+      "$type": "dimension"
+    },
+    "border-width-thin": {
+      "$value": "{plx-ref.border-width-1px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* lines: border widths and styles */"
+          ]
+        }
+      }
+    },
+    "border-width-medium": {
+      "$value": "{plx-ref.border-width-2px}",
+      "$type": "dimension"
+    },
+    "border-width-thick": {
+      "$value": "{plx-ref.border-width-3px}",
+      "$type": "dimension"
+    },
+    "border-width-heavy": {
+      "$value": "{plx-ref.border-width-4px}",
+      "$type": "dimension"
+    },
+    "border-style-solid": {
+      "$value": "{plx-ref.border-style-solid}",
+      "$type": "strokeStyle"
+    },
+    "border-style-dashed": {
+      "$value": "{plx-ref.border-style-dashed}",
+      "$type": "strokeStyle"
+    },
+    "motion-duration-fast": {
+      "$value": "{plx-ref.motion-duration-fast}",
+      "$type": "duration",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* motion: durations and easing (reduced motion still sets 0s) */"
+          ]
+        }
+      }
+    },
+    "motion-duration-base": {
+      "$value": "{plx-ref.motion-duration-base}",
+      "$type": "duration"
+    },
+    "motion-duration-slow": {
+      "$value": "{plx-ref.motion-duration-slow}",
+      "$type": "duration"
+    },
+    "motion-duration-loop-fast": {
+      "$value": "{plx-ref.motion-duration-loop-fast}",
+      "$type": "duration"
+    },
+    "motion-duration-loop-base": {
+      "$value": "{plx-ref.motion-duration-loop-base}",
+      "$type": "duration"
+    },
+    "motion-duration-loop-slow": {
+      "$value": "{plx-ref.motion-duration-loop-slow}",
+      "$type": "duration"
+    },
+    "motion-ease-standard": {
+      "$value": "{plx-ref.motion-ease-standard}",
+      "$type": "cubicBezier"
+    },
+    "motion-delay-stagger": {
+      "$value": "{plx-ref.motion-delay-stagger}",
+      "$type": "duration"
+    },
+    "opacity-low": {
+      "$value": "{plx-ref.opacity-30}",
+      "$type": "number",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* opacity levels */"
+          ]
+        }
+      }
+    },
+    "opacity-mid": {
+      "$value": "{plx-ref.opacity-50}",
+      "$type": "number"
+    },
+    "opacity-high": {
+      "$value": "{plx-ref.opacity-70}",
+      "$type": "number"
+    },
+    "focus-ring-width": {
+      "$value": "{plx-ref.border-width-2px}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* the focus ring */"
+          ]
+        }
+      }
+    },
+    "focus-ring-offset": {
+      "$value": "2px",
+      "$type": "dimension"
+    }
+  }
+}

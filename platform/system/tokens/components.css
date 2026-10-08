@@ -16,7 +16,7 @@
   /* ── BUTTON: every value of the Button (button.css uses only these). Sizes first: md is the default; sm, xs and 2xs are the
      toolbar, inline and smallest roles (muted text, quieter hover); lg is the prominent role ── */
   --plx-comp-button-size-md-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-button-size-md-font-weight: var(--plx-ref-font-weight-semibold-600);
+  --plx-comp-button-size-md-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-button-size-md-gap: var(--plx-comp-button-icon-label-gap);
   --plx-comp-button-size-md-height: var(--plx-sys-control-height-standard);
   --plx-comp-button-size-md-icon-size: var(--plx-sys-control-icon-standard);
@@ -28,7 +28,7 @@
   --plx-comp-button-size-md-selected-text: var(--plx-sys-selected-content);
   --plx-comp-button-size-md-primary-ring: var(--plx-sys-shadow-ring-subtle);
   --plx-comp-button-size-sm-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-button-size-sm-font-weight: var(--plx-ref-font-weight-medium-500);
+  --plx-comp-button-size-sm-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-button-size-sm-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-button-size-sm-height: var(--plx-sys-control-height-toolbar);
   --plx-comp-button-size-sm-icon-size: var(--plx-sys-control-icon-toolbar);
@@ -40,7 +40,7 @@
   --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-link);
   --plx-comp-button-size-sm-primary-ring: none;
   --plx-comp-button-size-xs-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-button-size-xs-font-weight: var(--plx-ref-font-weight-medium-500);
+  --plx-comp-button-size-xs-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-button-size-xs-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-button-size-xs-height: var(--plx-sys-control-height-inline);
   --plx-comp-button-size-xs-icon-size: var(--plx-sys-control-icon-inline);
@@ -52,7 +52,7 @@
   --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-link);
   --plx-comp-button-size-xs-primary-ring: none;
   --plx-comp-button-size-2xs-font-size: var(--plx-ref-font-size-11);
-  --plx-comp-button-size-2xs-font-weight: var(--plx-ref-font-weight-medium-500);
+  --plx-comp-button-size-2xs-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-button-size-2xs-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-button-size-2xs-height: var(--plx-sys-control-height-inline);
   --plx-comp-button-size-2xs-icon-size: var(--plx-sys-control-icon-inline);
@@ -64,7 +64,7 @@
   --plx-comp-button-size-2xs-selected-text: var(--plx-sys-content-link);
   --plx-comp-button-size-2xs-primary-ring: none;
   --plx-comp-button-size-lg-font-size: var(--plx-ref-font-size-14);
-  --plx-comp-button-size-lg-font-weight: var(--plx-ref-font-weight-semibold-600);
+  --plx-comp-button-size-lg-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-button-size-lg-gap: var(--plx-comp-button-icon-label-gap);
   --plx-comp-button-size-lg-height: var(--plx-sys-control-height-prominent);
   --plx-comp-button-size-lg-icon-size: var(--plx-sys-control-icon-prominent);
@@ -112,7 +112,7 @@
   --plx-comp-button-link-hover-background: transparent;
   --plx-comp-button-link-hover-text: var(--plx-sys-content-link);
   --plx-comp-button-link-underline-offset: var(--plx-sys-focus-ring-offset);
-  --plx-comp-button-link-hover-underline-thickness: var(--plx-ref-border-width-2px);
+  --plx-comp-button-link-hover-underline-thickness: var(--plx-sys-border-width-medium);
   /* states: selected (its border and text come from the size), disabled, focus */
   --plx-comp-button-selected-background: var(--plx-sys-state-selected);
   --plx-comp-button-disabled-background: var(--plx-sys-fill-neutral);
@@ -122,16 +122,16 @@
   --plx-comp-button-disabled-quiet-border: transparent;
   --plx-comp-button-focus-ring-color: var(--plx-sys-focus-ring-color);
   --plx-comp-button-focus-ring-offset: var(--plx-sys-focus-ring-offset);
-  --plx-comp-button-focus-ring-width: var(--plx-ref-border-width-2px);
+  --plx-comp-button-focus-ring-width: var(--plx-sys-border-width-medium);
   /* shape */
-  --plx-comp-button-border-width: var(--plx-ref-border-width-1px);
+  --plx-comp-button-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-button-radius: var(--plx-sys-radius-control);
   --plx-comp-button-caret-width: var(--plx-ref-glyph-size-10px);
   --plx-comp-button-caret-height: var(--plx-ref-glyph-size-6px);
   --plx-comp-button-font-family: var(--plx-sys-font-label);
   --plx-comp-button-line-height: var(--plx-ref-line-height-none);
-  --plx-comp-button-caret-duration: var(--plx-ref-motion-duration-fast);
-  --plx-comp-button-group-joined-radius: var(--plx-ref-radius-0px);
+  --plx-comp-button-caret-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-button-group-joined-radius: var(--plx-sys-shape-none);
   --plx-comp-button-group-focus-layer: var(--plx-sys-layer-raised);
   /* the left navigation pane (NavPane): one surface and width for every page */
   --plx-comp-nav-pane-background: var(--plx-sys-surface-default);

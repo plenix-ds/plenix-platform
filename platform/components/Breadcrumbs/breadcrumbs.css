@@ -7,6 +7,6 @@
 .plx-breadcrumbs__link:hover,
 .plx-breadcrumbs__link.is-hover{text-decoration-line:underline;}
 .plx-breadcrumbs__link:focus-visible,
-.plx-breadcrumbs__link.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-breadcrumbs__link.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
 .plx-breadcrumbs__text{color:var(--plx-sys-content-muted);}
 .plx-breadcrumbs__current{color:var(--plx-sys-content-default);}

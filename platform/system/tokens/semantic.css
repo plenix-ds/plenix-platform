@@ -17,13 +17,11 @@
   /* a phone: below this width a page puts its main content first */
   --plx-sys-shell-phone-below: var(--plx-ref-breakpoint-600px);
   /* ── TYPOGRAPHY: font roles ── */
-  --plx-sys-font-body: var(--plx-ref-font-sans);
-  --plx-sys-font-heading: var(--plx-ref-font-sans);
-  --plx-sys-font-label: var(--plx-ref-font-sans);
-  --plx-sys-font-code: var(--plx-ref-font-mono);
-  --plx-sys-font-data: var(--plx-ref-font-mono);
-  /* ── FOCUS: the gap between a control and its focus ring (outline-offset) ── */
-  --plx-sys-focus-ring-offset: 2px;
+  --plx-sys-font-body: var(--plx-sys-typeface-sans);
+  --plx-sys-font-heading: var(--plx-sys-typeface-sans);
+  --plx-sys-font-label: var(--plx-sys-typeface-sans);
+  --plx-sys-font-code: var(--plx-sys-typeface-mono);
+  --plx-sys-font-data: var(--plx-sys-typeface-mono);
   /* ── LAYERS: one level per stacking purpose, lowest to highest ── */
   --plx-sys-layer-behind: -1;
   --plx-sys-layer-base: 0;
@@ -36,25 +34,25 @@
   --plx-sys-layer-toast: 1300;
   --plx-sys-layer-critical: 9999;
   /* ── RADIUS: roles (role + value) ── */
-  --plx-sys-radius-detail-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-compact-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-control-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-control-6px: var(--plx-ref-radius-6px);
-  --plx-sys-radius-control-8px: var(--plx-ref-radius-8px);
-  --plx-sys-radius-control-12px: var(--plx-ref-radius-12px);
-  --plx-sys-radius-media-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-media-12px: var(--plx-ref-radius-12px);
-  --plx-sys-radius-surface-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-surface-8px: var(--plx-ref-radius-8px);
-  --plx-sys-radius-card-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-card-6px: var(--plx-ref-radius-6px);
-  --plx-sys-radius-card-12px: var(--plx-ref-radius-12px);
-  --plx-sys-radius-menu-8px: var(--plx-ref-radius-8px);
-  --plx-sys-radius-dialog-8px: var(--plx-ref-radius-8px);
-  --plx-sys-radius-avatar-4px: var(--plx-ref-radius-4px);
-  --plx-sys-radius-avatar-6px: var(--plx-ref-radius-6px);
-  --plx-sys-radius-avatar-8px: var(--plx-ref-radius-8px);
-  --plx-sys-radius-avatar-12px: var(--plx-ref-radius-12px);
+  --plx-sys-radius-detail-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-compact-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-control-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-control-6px: var(--plx-sys-shape-sm);
+  --plx-sys-radius-control-8px: var(--plx-sys-shape-md);
+  --plx-sys-radius-control-12px: var(--plx-sys-shape-lg);
+  --plx-sys-radius-media-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-media-12px: var(--plx-sys-shape-lg);
+  --plx-sys-radius-surface-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-surface-8px: var(--plx-sys-shape-md);
+  --plx-sys-radius-card-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-card-6px: var(--plx-sys-shape-sm);
+  --plx-sys-radius-card-12px: var(--plx-sys-shape-lg);
+  --plx-sys-radius-menu-8px: var(--plx-sys-shape-md);
+  --plx-sys-radius-dialog-8px: var(--plx-sys-shape-md);
+  --plx-sys-radius-avatar-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-avatar-6px: var(--plx-sys-shape-sm);
+  --plx-sys-radius-avatar-8px: var(--plx-sys-shape-md);
+  --plx-sys-radius-avatar-12px: var(--plx-sys-shape-lg);
   /* ── SPACING ROLES: inline, stack, inset, cluster, region (fixed relationships) ── */
   --plx-sys-space-inline-xs: var(--plx-ref-space-4px);
   --plx-sys-space-inline-sm: var(--plx-ref-space-8px);

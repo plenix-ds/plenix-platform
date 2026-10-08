@@ -60,7 +60,7 @@
       }
     },
     "button-size-md-font-weight": {
-      "$value": "{plx-ref.font-weight-semibold-600}",
+      "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
     "button-size-md-gap": {
@@ -108,7 +108,7 @@
       "$type": "dimension"
     },
     "button-size-sm-font-weight": {
-      "$value": "{plx-ref.font-weight-medium-500}",
+      "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
     "button-size-sm-gap": {
@@ -156,7 +156,7 @@
       "$type": "dimension"
     },
     "button-size-xs-font-weight": {
-      "$value": "{plx-ref.font-weight-medium-500}",
+      "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
     "button-size-xs-gap": {
@@ -204,7 +204,7 @@
       "$type": "dimension"
     },
     "button-size-2xs-font-weight": {
-      "$value": "{plx-ref.font-weight-medium-500}",
+      "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
     "button-size-2xs-gap": {
@@ -252,7 +252,7 @@
       "$type": "dimension"
     },
     "button-size-lg-font-weight": {
-      "$value": "{plx-ref.font-weight-semibold-600}",
+      "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
     "button-size-lg-gap": {
@@ -447,7 +447,7 @@
       "$type": "dimension"
     },
     "button-link-hover-underline-thickness": {
-      "$value": "{plx-ref.border-width-2px}",
+      "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
     "button-selected-background": {
@@ -490,11 +490,11 @@
       "$type": "dimension"
     },
     "button-focus-ring-width": {
-      "$value": "{plx-ref.border-width-2px}",
+      "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
     "button-border-width": {
-      "$value": "{plx-ref.border-width-1px}",
+      "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension",
       "$extensions": {
         "com.plenix": {
@@ -525,11 +525,11 @@
       "$type": "number"
     },
     "button-caret-duration": {
-      "$value": "{plx-ref.motion-duration-fast}",
+      "$value": "{plx-sys.motion-duration-fast}",
       "$type": "duration"
     },
     "button-group-joined-radius": {
-      "$value": "{plx-ref.radius-0px}",
+      "$value": "{plx-sys.shape-none}",
       "$type": "dimension"
     },
     "button-group-focus-layer": {

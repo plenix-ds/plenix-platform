@@ -1,5 +1,5 @@
 /* Plenix · StatusDot (platform/components/StatusDot). */
-.plx-status-dot{block-size:var(--plx-ref-glyph-size-6px);border-bottom-left-radius:var(--plx-ref-radius-pill);border-bottom-right-radius:var(--plx-ref-radius-pill);border-top-left-radius:var(--plx-ref-radius-pill);border-top-right-radius:var(--plx-ref-radius-pill);display:inline-block;flex-shrink:0;inline-size:var(--plx-ref-glyph-size-6px);position:relative;}
+.plx-status-dot{block-size:var(--plx-ref-glyph-size-6px);border-bottom-left-radius:var(--plx-sys-shape-pill);border-bottom-right-radius:var(--plx-sys-shape-pill);border-top-left-radius:var(--plx-sys-shape-pill);border-top-right-radius:var(--plx-sys-shape-pill);display:inline-block;flex-shrink:0;inline-size:var(--plx-ref-glyph-size-6px);position:relative;}
 .plx-status-dot--neutral{background-color:var(--plx-sys-feedback-neutral-solid);}
 .plx-status-dot--info{background-color:var(--plx-sys-feedback-info-solid);}
 .plx-status-dot--success{background-color:var(--plx-sys-feedback-success-solid);}

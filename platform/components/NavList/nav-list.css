@@ -1,13 +1,13 @@
 /* Plenix · NavList. */
 .plx-nav-list{display:flex;flex-direction:column;row-gap:var(--plx-sys-space-stack-md);}
-.plx-nav-list__heading{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-ref-font-weight-bold-700);letter-spacing:var(--plx-ref-letter-spacing-widest);padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);text-transform:uppercase;}
+.plx-nav-list__heading{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-sys-font-weight-bold);letter-spacing:var(--plx-sys-letter-spacing-widest);padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);text-transform:uppercase;}
 .plx-nav-list__items{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-ref-space-4px);}
 .plx-nav-list__item{align-items:center;background-color:transparent;border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:none;border-top-width:0;box-sizing:border-box;color:var(--plx-sys-content-default);column-gap:var(--plx-sys-space-inline-sm);cursor:pointer;display:flex;font-family:inherit;font-size:var(--plx-ref-font-size-13);inline-size:100%;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-sys-control-height-standard);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);text-align:start;text-decoration-line:none;}
 .plx-nav-list__item:hover,
 .plx-nav-list__item.is-hover{background-color:var(--plx-sys-state-hover);}
 .plx-nav-list__item:focus-visible,
-.plx-nav-list__item.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-ref-border-width-2px) * -1);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
-.plx-nav-list__item.is-current{background-color:var(--plx-sys-state-selected);color:var(--plx-sys-selected-content);font-weight:var(--plx-ref-font-weight-medium-500);}
+.plx-nav-list__item.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-border-width-medium) * -1);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+.plx-nav-list__item.is-current{background-color:var(--plx-sys-state-selected);color:var(--plx-sys-selected-content);font-weight:var(--plx-sys-font-weight-medium);}
 .plx-nav-list__item:disabled{color:var(--plx-sys-content-disabled);cursor:default;}
 .plx-nav-list__label{align-items:baseline;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__entry--actions{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;}
@@ -17,7 +17,7 @@
 .plx-nav-list__group>.plx-collapsible-section__heading{padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
 /* the name truncates before the count does; the count sits right after it: small, italic, in parentheses, subtle */
 .plx-nav-list__name{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-nav-list__count{color:var(--plx-sys-content-subtle);flex-shrink:0;font-size:var(--plx-ref-font-size-11);font-style:italic;font-weight:var(--plx-ref-font-weight-regular-400);white-space:nowrap;}
+.plx-nav-list__count{color:var(--plx-sys-content-subtle);flex-shrink:0;font-size:var(--plx-ref-font-size-11);font-style:italic;font-weight:var(--plx-sys-font-weight-regular);white-space:nowrap;}
 /* pinning: the pin shows on hover or focus; a pinned row keeps it, filled */
 .plx-nav-list__pin{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-sys-control-height-standard);border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:none;border-top-width:0;color:var(--plx-sys-content-subtle);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-sys-control-height-standard);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;opacity:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-nav-list__entry:hover .plx-nav-list__pin,.plx-nav-list__entry:focus-within .plx-nav-list__pin,.plx-nav-list__entry.is-pinned .plx-nav-list__pin,
@@ -26,7 +26,7 @@
 .plx-nav-list__pin.is-hover{background-color:var(--plx-sys-state-hover);color:var(--plx-sys-content-default);}
 .plx-nav-list__entry.is-pinned .plx-nav-list__pin{color:var(--plx-sys-content-link);}
 .plx-nav-list__pin:focus-visible,
-.plx-nav-list__pin.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-ref-border-width-2px) * -1);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-nav-list__pin.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-border-width-medium) * -1);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
 /* the row's icons and the pin: the grid icon of the row's control height (the pin is as high as the row) */
 .plx-nav-list__icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);display:inline-flex;flex-shrink:0;}
 .plx-nav-list__pin .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
@@ -36,7 +36,7 @@
 .plx-nav-list__item--muted:not(.is-current){color:var(--plx-sys-content-subtle);}
 .plx-nav-list__item--muted:not(.is-current) .plx-nav-list__icon{color:var(--plx-sys-content-subtle);}
 /* a subgroup: a row with a chevron (in the icon slot) that folds its rows; its rows start under its name */
-.plx-nav-list__item--group{font-weight:var(--plx-ref-font-weight-medium-500);}
+.plx-nav-list__item--group{font-weight:var(--plx-sys-font-weight-medium);}
 .plx-nav-list__item--group .plx-nav-list__icon{color:var(--plx-sys-content-muted);}
 .plx-nav-list__item--group.is-current-parent{color:var(--plx-sys-selected-content);}
 .plx-nav-list__items--nested{padding-inline-start:calc(var(--plx-sys-control-icon-standard) + var(--plx-sys-space-inline-sm));}

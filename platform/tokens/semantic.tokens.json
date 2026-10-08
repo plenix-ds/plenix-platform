@@ -60,7 +60,7 @@
       }
     },
     "font-body": {
-      "$value": "{plx-ref.font-sans}",
+      "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily",
       "$extensions": {
         "com.plenix": {
@@ -71,31 +71,20 @@
       }
     },
     "font-heading": {
-      "$value": "{plx-ref.font-sans}",
+      "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
     "font-label": {
-      "$value": "{plx-ref.font-sans}",
+      "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
     "font-code": {
-      "$value": "{plx-ref.font-mono}",
+      "$value": "{plx-sys.typeface-mono}",
       "$type": "fontFamily"
     },
     "font-data": {
-      "$value": "{plx-ref.font-mono}",
+      "$value": "{plx-sys.typeface-mono}",
       "$type": "fontFamily"
-    },
-    "focus-ring-offset": {
-      "$value": "2px",
-      "$type": "dimension",
-      "$extensions": {
-        "com.plenix": {
-          "before": [
-            "  /* ── FOCUS: the gap between a control and its focus ring (outline-offset) ── */"
-          ]
-        }
-      }
     },
     "layer-behind": {
       "$value": "-1",
@@ -145,7 +134,7 @@
       "$type": "number"
     },
     "radius-detail-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension",
       "$extensions": {
         "com.plenix": {
@@ -156,75 +145,75 @@
       }
     },
     "radius-compact-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "radius-control-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "radius-control-6px": {
-      "$value": "{plx-ref.radius-6px}",
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
     "radius-control-8px": {
-      "$value": "{plx-ref.radius-8px}",
+      "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
     "radius-control-12px": {
-      "$value": "{plx-ref.radius-12px}",
+      "$value": "{plx-sys.shape-lg}",
       "$type": "dimension"
     },
     "radius-media-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "radius-media-12px": {
-      "$value": "{plx-ref.radius-12px}",
+      "$value": "{plx-sys.shape-lg}",
       "$type": "dimension"
     },
     "radius-surface-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "radius-surface-8px": {
-      "$value": "{plx-ref.radius-8px}",
+      "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
     "radius-card-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "radius-card-6px": {
-      "$value": "{plx-ref.radius-6px}",
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
     "radius-card-12px": {
-      "$value": "{plx-ref.radius-12px}",
+      "$value": "{plx-sys.shape-lg}",
       "$type": "dimension"
     },
     "radius-menu-8px": {
-      "$value": "{plx-ref.radius-8px}",
+      "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
     "radius-dialog-8px": {
-      "$value": "{plx-ref.radius-8px}",
+      "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
     "radius-avatar-4px": {
-      "$value": "{plx-ref.radius-4px}",
+      "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
     "radius-avatar-6px": {
-      "$value": "{plx-ref.radius-6px}",
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
     "radius-avatar-8px": {
-      "$value": "{plx-ref.radius-8px}",
+      "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
     "radius-avatar-12px": {
-      "$value": "{plx-ref.radius-12px}",
+      "$value": "{plx-sys.shape-lg}",
       "$type": "dimension"
     },
     "space-inline-xs": {

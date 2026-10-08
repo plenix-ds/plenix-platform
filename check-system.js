@@ -23,6 +23,8 @@
 //               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
 //               tokens are edited in the JSON, never in the CSS (batch 158)
 //   palette     a stylesheet takes colors from roles (--plx-sys-, --plx-comp-), never from the palette (--plx-ref-color-)
+//   themeable   a stylesheet takes typefaces, weights, letter spacing, radius, border widths and styles, motion and opacity
+//               from the theme's scales (--plx-sys-typeface-, -shape-, -border-width-…), never the reference scales (batch 220)
 //   raw-value   no length, time or color written as a number in a stylesheet declaration (tokens only; 0 excepted)
 //   palette-class an application never colors with a palette utility class (plx-u-text-gray-700…): components only
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
@@ -183,6 +185,9 @@ for (const { file } of files) {
     if (isCss && !TOKEN_SOURCE.test(file)) {
       const code = cssLines[i];
       for (const m of code.matchAll(/var\(\s*(--plx-ref-color-[\w-]+)/g)) add('palette', file, n, m[1] + ' in: ' + line);
+      // themeable: the foundations a theme decides come from the theme's scales (--plx-sys-typeface-, -font-weight-,
+      // -letter-spacing-, -shape-, -border-width-, -border-style-, -motion-, -opacity-), never the reference scales (batch 220)
+      for (const m of code.matchAll(/var\(\s*(--plx-ref-(?:font-sans|font-mono|font-weight|letter-spacing|radius|border-width|border-style|motion|opacity)[\w-]*)/g)) add('themeable', file, n, m[1] + ' in: ' + line + ' (use the theme scale, e.g. --plx-sys-shape-xs)');
       // raw-value: no length, time or color written as a number in a declaration (0 and unitless numbers excepted);
       // media and container queries cannot read custom properties, so their conditions are excepted
       if (!/^\s*@(media|container|supports)/.test(code)) {

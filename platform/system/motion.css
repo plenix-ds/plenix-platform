@@ -20,4 +20,4 @@
 *,*::before,*::after{animation-duration:0s !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0s !important;}
 }
 /* content that has just appeared rises into place (the dashboard's .fu, batch 113) */
-.plx-motion-enter{animation-duration:var(--plx-ref-motion-duration-fast);animation-fill-mode:both;animation-name:motion-fade-up;animation-timing-function:var(--plx-ref-motion-ease-standard);}
+.plx-motion-enter{animation-duration:var(--plx-sys-motion-duration-fast);animation-fill-mode:both;animation-name:motion-fade-up;animation-timing-function:var(--plx-sys-motion-ease-standard);}

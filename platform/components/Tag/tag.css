@@ -1,6 +1,6 @@
 /* Plenix · Tag, Chip, TagList, TagInput (platform/components/Tag). Anatomy and API: Tag.jsx.
    The × is drawn in a 16px box; a ::before 4px larger on every side is its 24px target, so the tag keeps its 20px label height. */
-.plx-tag{align-items:center;background-color:var(--plx-sys-fill-neutral);border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);box-sizing:border-box;color:var(--plx-sys-fill-neutral-content);column-gap:var(--plx-sys-space-inline-xs);display:inline-flex;font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-10);font-weight:var(--plx-ref-font-weight-medium-500);line-height:var(--plx-ref-line-height-tight);min-block-size:var(--plx-sys-label-height-20px);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);white-space:nowrap;}
+.plx-tag{align-items:center;background-color:var(--plx-sys-fill-neutral);border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);box-sizing:border-box;color:var(--plx-sys-fill-neutral-content);column-gap:var(--plx-sys-space-inline-xs);display:inline-flex;font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-10);font-weight:var(--plx-sys-font-weight-medium);line-height:var(--plx-ref-line-height-tight);min-block-size:var(--plx-sys-label-height-20px);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);white-space:nowrap;}
 .plx-chip__toggle{background-color:transparent;color:inherit;font-family:inherit;font-size:inherit;font-weight:inherit;line-height:inherit;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 button.plx-chip,.plx-chip__toggle{appearance:none;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;cursor:pointer;}
 .plx-chip:hover,.plx-chip:has(.plx-chip__toggle:hover),
@@ -10,7 +10,7 @@ button.plx-chip,.plx-chip__toggle{appearance:none;border-bottom-style:none;borde
 .plx-tag__remove::before{content:"";inset-block-end:calc(var(--plx-sys-space-inset-xs) * -1);inset-block-start:calc(var(--plx-sys-space-inset-xs) * -1);inset-inline-end:calc(var(--plx-sys-space-inset-xs) * -1);inset-inline-start:calc(var(--plx-sys-space-inset-xs) * -1);position:absolute;}
 .plx-tag__remove:hover,
 .plx-tag__remove.is-hover{color:var(--plx-sys-feedback-danger-content);}
-.plx-chip--selected .plx-tag__remove{color:inherit;opacity:var(--plx-ref-opacity-70);}
+.plx-chip--selected .plx-tag__remove{color:inherit;opacity:var(--plx-sys-opacity-high);}
 .plx-chip--selected .plx-tag__remove:hover,
 .plx-chip--selected .plx-tag__remove.is-hover{color:inherit;opacity:1;}
 .plx-tag-list{align-items:center;column-gap:var(--plx-sys-space-cluster-xs);display:flex;flex-wrap:wrap;row-gap:var(--plx-sys-space-cluster-xs);}
@@ -23,7 +23,7 @@ button.plx-chip,.plx-chip__toggle{appearance:none;border-bottom-style:none;borde
 .plx-tag__rename:hover,
 .plx-tag__rename.is-hover{text-decoration-line:underline;}
 .plx-tag__rename:focus-visible,
-.plx-tag__rename.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
+.plx-tag__rename.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
 .plx-tag__input{background-color:var(--plx-sys-surface-default);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;box-shadow:var(--plx-sys-shadow-underline-focus);color:inherit;font-family:inherit;font-size:inherit;line-height:inherit;min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-tag__input:focus-visible,
 .plx-tag__input.is-focus-visible{outline-style:none;}

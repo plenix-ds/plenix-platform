@@ -23,9 +23,9 @@
 /* priority columns: secondary fields leave narrow main regions (their values stay in the row's detail) */
 @container main-region (max-width: 599px){[data-plx-table-strategy="priority-columns"] [data-plx-priority="low"]{display:none;}}
 /* the inner lines, as the Platform Table: soft row lines; column lines that stop short of them */
-.plx-data-table tbody tr:not(:last-child) td,.plx-data-table thead th{border-bottom-color:var(--plx-sys-table-line);border-bottom-style:solid;border-bottom-width:var(--plx-ref-border-width-1px);}
+.plx-data-table tbody tr:not(:last-child) td,.plx-data-table thead th{border-bottom-color:var(--plx-sys-table-line);border-bottom-style:solid;border-bottom-width:var(--plx-sys-border-width-thin);}
 .plx-data-table thead th{background-color:var(--plx-sys-table-header-background);}
 /* its column lines */
 :where(.plx-data-table th:not(:first-child),.plx-data-table td:not(:first-child)){position:relative;}
 /* column lines: regular full borders (batch 172) */
-.plx-data-table th:not(:first-child),.plx-data-table td:not(:first-child){border-inline-start-color:var(--plx-sys-table-line);border-inline-start-style:solid;border-inline-start-width:var(--plx-ref-border-width-1px);}
+.plx-data-table th:not(:first-child),.plx-data-table td:not(:first-child){border-inline-start-color:var(--plx-sys-table-line);border-inline-start-style:solid;border-inline-start-width:var(--plx-sys-border-width-thin);}

@@ -4,14 +4,14 @@
 .plx-text--secondary{color:var(--plx-sys-content-muted);font-family:var(--plx-sys-font-body);font-size:var(--plx-ref-font-size-12);}
 .plx-text--caption{color:var(--plx-sys-content-subtle);font-family:var(--plx-sys-font-body);font-size:var(--plx-ref-font-size-11);}
 .plx-text--data{font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);}
-.plx-text--label{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-12);font-weight:var(--plx-ref-font-weight-semibold-600);}
-.plx-text--strong{font-weight:var(--plx-ref-font-weight-semibold-600);}
-.plx-text--title{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-heading);font-size:var(--plx-ref-font-size-20);font-weight:var(--plx-ref-font-weight-bold-700);}
+.plx-text--label{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-12);font-weight:var(--plx-sys-font-weight-semibold);}
+.plx-text--strong{font-weight:var(--plx-sys-font-weight-semibold);}
+.plx-text--title{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-heading);font-size:var(--plx-ref-font-size-20);font-weight:var(--plx-sys-font-weight-bold);}
 .plx-text--truncate{display:block;min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-text--heading{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-ref-font-weight-semibold-600);}
-.plx-text--eyebrow{color:var(--plx-sys-content-muted);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-ref-font-weight-bold-700);letter-spacing:var(--plx-ref-letter-spacing-widest);text-transform:uppercase;}
+.plx-text--heading{color:var(--plx-sys-content-default);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-sys-font-weight-semibold);}
+.plx-text--eyebrow{color:var(--plx-sys-content-muted);font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-sys-font-weight-bold);letter-spacing:var(--plx-sys-letter-spacing-widest);text-transform:uppercase;}
 .plx-text--danger{color:var(--plx-sys-feedback-danger-content);}
 .plx-text--success{color:var(--plx-sys-feedback-success-content);}
 /* accent: a highlighted term, step number or key figure (batch 197) */
-.plx-text--accent{color:var(--plx-sys-content-link);font-weight:var(--plx-ref-font-weight-medium-500);}
-.plx-text--link{color:var(--plx-sys-content-link);font-weight:var(--plx-ref-font-weight-regular-400);}
+.plx-text--accent{color:var(--plx-sys-content-link);font-weight:var(--plx-sys-font-weight-medium);}
+.plx-text--link{color:var(--plx-sys-content-link);font-weight:var(--plx-sys-font-weight-regular);}
