@@ -4375,8 +4375,25 @@ function Table({
     });
   };
   const span = columns.length + (selectable ? 1 : 0);
+  // a wrapper that scrolls is a named region in the Tab order, so keyboard users can scroll it (WCAG 2.1.1; batch 211)
+  const wrapRef = _react.default.useRef(null);
+  const [scrolls, setScrolls] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return undefined;
+    const check = () => setScrolls(el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight);
+    check();
+    if (!window.ResizeObserver) return undefined;
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [rows.length, columns.length]);
   return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-table-wrap', stickyHeader && 'plx-table-wrap--sticky', className)
+    ref: wrapRef,
+    className: (0, _cx.cx)('plx-table-wrap', stickyHeader && 'plx-table-wrap--sticky', className),
+    tabIndex: scrolls ? 0 : undefined,
+    role: scrolls ? 'region' : undefined,
+    "aria-label": scrolls ? typeof caption === 'string' ? caption : 'Table' : undefined
   }, /*#__PURE__*/_react.default.createElement("table", {
     className: (0, _cx.cx)('plx-table', pinFirst && 'plx-table--pin-first')
   }, caption ? /*#__PURE__*/_react.default.createElement("caption", {
@@ -7649,7 +7666,7 @@ function WidgetGrid({
     const it = items[from];
     setSaid((it.title || 'Widget') + ', position ' + (to + 1) + ' of ' + ids.length);
   };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-widget-grid', 'plx-widget-grid--' + columns, className),
     role: "list",
     "aria-label": label
@@ -7698,7 +7715,7 @@ function WidgetGrid({
       size: "sm"
     })) : null;
     return renderItem && renderItem.length > 1 ? renderItem(it, handle) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, handle, renderItem ? renderItem(it) : null);
-  })())), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+  })()))), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
     role: "status"
   }, said));
 }

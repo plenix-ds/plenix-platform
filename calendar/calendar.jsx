@@ -55,10 +55,12 @@ export function CalendarScreen() {
 
       {view === 'month' ? (
         <Stack inset="md" gap="md" grow scroll>
-          <div className="plx-u-grid plx-u-cols-repeat-7-1fr plx-u-gap-x-cluster-xs plx-u-gap-y-cluster-xs" role="grid" aria-label="March 2026">
-            {DAYS_SHORT.map((d) => <Text key={d} variant="eyebrow" role="columnheader">{d}</Text>)}
+          <div className="plx-u-grid plx-u-cols-repeat-7-1fr plx-u-gap-x-cluster-xs plx-u-gap-y-cluster-xs" role="group" aria-label="March 2026">
+            {/* the weekday names are for the eye: each day button says its full date */}
+            {DAYS_SHORT.map((d) => <Text key={d} variant="eyebrow" aria-hidden="true">{d}</Text>)}
             {cells.map((d, i) => d === null ? <span key={i} aria-hidden="true" /> : (
-              <RowButton key={i} selected={d === selDay} current={d === TODAY ? 'date' : undefined} onClick={() => setSelDay(d)}>
+              <RowButton key={i} selected={d === selDay} current={d === TODAY ? 'date' : undefined} onClick={() => setSelDay(d)}
+                aria-label={'March ' + d + (evFor(d).length ? ', ' + evFor(d).length + (evFor(d).length === 1 ? ' event' : ' events') : '')}>
                 <Stack gap="xs" inset="xs" className="plx-u-min-h-80px">
                   <Inline justify="end"><DateBadge day={d} today={d === TODAY} /></Inline>
                   {evFor(d).slice(0, 2).map((e) => <EventChip key={e.id} title={e.title} color={e.color} />)}

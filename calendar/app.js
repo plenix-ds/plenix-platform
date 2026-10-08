@@ -2437,12 +2437,12 @@ function CalendarScreen() {
     scroll: true
   }, /*#__PURE__*/React.createElement("div", {
     className: "plx-u-grid plx-u-cols-repeat-7-1fr plx-u-gap-x-cluster-xs plx-u-gap-y-cluster-xs",
-    role: "grid",
+    role: "group",
     "aria-label": "March 2026"
   }, DAYS_SHORT.map(d => /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     key: d,
     variant: "eyebrow",
-    role: "columnheader"
+    "aria-hidden": "true"
   }, d)), cells.map((d, i) => d === null ? /*#__PURE__*/React.createElement("span", {
     key: i,
     "aria-hidden": "true"
@@ -2450,7 +2450,8 @@ function CalendarScreen() {
     key: i,
     selected: d === selDay,
     current: d === TODAY ? 'date' : undefined,
-    onClick: () => setSelDay(d)
+    onClick: () => setSelDay(d),
+    "aria-label": 'March ' + d + (evFor(d).length ? ', ' + evFor(d).length + (evFor(d).length === 1 ? ' event' : ' events') : '')
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "xs",
     inset: "xs",

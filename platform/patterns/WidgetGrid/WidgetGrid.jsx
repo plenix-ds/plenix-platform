@@ -38,6 +38,7 @@ export function WidgetGrid({ items = [], renderItem, onReorder, label, columns =
     const it = items[from]; setSaid((it.title || 'Widget') + ', position ' + (to + 1) + ' of ' + ids.length);
   };
   return (
+    <>
     <div className={cx('plx-widget-grid', 'plx-widget-grid--' + columns, className)} role="list" aria-label={label} {...rest}>
       {items.map((it, i) => (
         <div key={it.id} role="listitem" className={cx('plx-widget-grid__item', it.span === '2' && 'plx-widget-grid__item--wide', dragging === it.id && 'is-dragging', over === it.id && dragging !== it.id && 'is-drop-target')}
@@ -58,7 +59,9 @@ export function WidgetGrid({ items = [], renderItem, onReorder, label, columns =
           return renderItem && renderItem.length > 1 ? renderItem(it, handle) : <>{handle}{renderItem ? renderItem(it) : null}</>; })()}
         </div>
       ))}
-      <VisuallyHidden role="status">{said}</VisuallyHidden>
     </div>
+    {/* the reorder announcement: beside the list, since a list holds only its items */}
+    <VisuallyHidden role="status">{said}</VisuallyHidden>
+    </>
   );
 }

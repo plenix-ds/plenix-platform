@@ -1,13 +1,6 @@
 {
- "dashboard/index.html": {
-  "aria-required-children": 1
- },
  "messages/index.html": {
   "color-contrast": 6
- },
- "calendar/index.html": {
-  "aria-required-children": 1,
-  "aria-required-parent": 7
  },
  "dam/index.html": {
   "color-contrast": 1
@@ -65,8 +58,7 @@
   "color-contrast": 3
  },
  "design-system #/layout/grid": {
-  "color-contrast": 3,
-  "scrollable-region-focusable": 1
+  "color-contrast": 3
  },
  "design-system #/layout/stack": {
   "color-contrast": 3
@@ -78,7 +70,6 @@
   "color-contrast": 3
  },
  "design-system #/layout/dashboard-grid": {
-  "aria-required-children": 8,
   "color-contrast": 3
  },
  "design-system #/layout/panel": {
@@ -109,7 +100,6 @@
   "color-contrast": 3
  },
  "design-system #/actions/button": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/actions/button-group": {
@@ -158,18 +148,15 @@
   "color-contrast": 3
  },
  "design-system #/forms/choice-card": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/forms/segmented-control": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/forms/rating": {
   "color-contrast": 3
  },
  "design-system #/forms/combobox": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/forms/creatable-select": {
@@ -233,19 +220,15 @@
   "color-contrast": 3
  },
  "design-system #/data-display/interactive-list": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/data-display/activity-stream": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/data-display/card": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/data-display/radio-tiles": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/content/thumbnail": {
@@ -258,7 +241,6 @@
   "color-contrast": 3
  },
  "design-system #/data-display/media-card": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/data-display/data-table": {
@@ -302,7 +284,6 @@
   "target-size": 3
  },
  "design-system #/overlays/expandable-section": {
-  "aria-allowed-attr": 1,
   "color-contrast": 3
  },
  "design-system #/overlays/media-lightbox": {
@@ -369,8 +350,7 @@
   "color-contrast": 3
  },
  "design-system #/specialized/typing-indicator": {
-  "color-contrast": 3,
-  "scrollable-region-focusable": 1
+  "color-contrast": 3
  },
  "design-system #/interaction/focus-ring": {
   "color-contrast": 3

@@ -68,8 +68,20 @@ export function Table({ columns, rows, rowKey = 'id', caption, captionHidden = t
     onSortChange({ key: c.key, direction: dir });
   };
   const span = columns.length + (selectable ? 1 : 0);
+  // a wrapper that scrolls is a named region in the Tab order, so keyboard users can scroll it (WCAG 2.1.1; batch 211)
+  const wrapRef = React.useRef(null);
+  const [scrolls, setScrolls] = React.useState(false);
+  React.useEffect(() => {
+    const el = wrapRef.current; if (!el) return undefined;
+    const check = () => setScrolls(el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight);
+    check();
+    if (!window.ResizeObserver) return undefined;
+    const ro = new ResizeObserver(check); ro.observe(el);
+    return () => ro.disconnect();
+  }, [rows.length, columns.length]);
   return (
-    <div className={cx('plx-table-wrap', stickyHeader && 'plx-table-wrap--sticky', className)}>
+    <div ref={wrapRef} className={cx('plx-table-wrap', stickyHeader && 'plx-table-wrap--sticky', className)}
+      tabIndex={scrolls ? 0 : undefined} role={scrolls ? 'region' : undefined} aria-label={scrolls ? (typeof caption === 'string' ? caption : 'Table') : undefined}>
       <table className={cx('plx-table', pinFirst && 'plx-table--pin-first')}>
         {caption ? <caption className={cx('plx-table__caption', captionHidden && 'plx-visually-hidden')}>{caption}</caption> : null}
         <thead>
