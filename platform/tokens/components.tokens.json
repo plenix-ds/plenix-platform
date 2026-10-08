@@ -1,10 +1,10 @@
 {
-  "$description": "components tokens written under :root",
+  "$description": "components tokens written under :root Written on :root and on every density and interaction context, so a component token that points to a density role is computed where the region sets its density (a custom property is computed where it is declared; batch 221).",
   "$extensions": {
     "com.plenix": {
       "output": "platform/system/tokens/components.css",
-      "selector": ":root",
-      "opener": ":root {"
+      "selector": ":root,[data-plx-density],[data-plx-interaction]",
+      "opener": ":root,[data-plx-density],[data-plx-interaction] {"
     }
   },
   "plx-comp": {

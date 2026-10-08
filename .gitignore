@@ -14,3 +14,4 @@ tests/.visual-button.html
 tests/.layout-test.html
 tests/.theme-sample.css
 tests/.theme-test.html
+tests/.density-test.html

@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Regional density for component tokens: a Button inside a compact or comfortable region (data-plx-density on part of a
+  page) kept the page's size since 0.2.0, because component tokens were declared only on :root (a custom property is
+  computed where it is declared). Component tokens are now written on :root and on every density and interaction
+  context. No app page used a density region, so nothing changed on screen; tests/density.test.js guards it. (batch 221)
+
 ### Added
 - Foundations belong to the theme: each theme has a foundations file (theme-<name>.tokens.json) with its typefaces,
   font weights, letter spacing, shape (radius scale), border widths and styles, motion (durations, easing, stagger),

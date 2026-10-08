@@ -3,7 +3,7 @@
    used only inside the owning component's stylesheet. No component selectors, states or media queries here. Tokens whose
    value depends on density are declared per density context ([data-plx-density]), because a custom property is resolved
    where it is declared: a :root-only alias would ignore a denser region. */
-:root {
+:root,[data-plx-density],[data-plx-interaction] {
   /* ── CONTROLS: the neutral component scale (for a size picked on purpose: data-size="xs" … "4xl") ── */
   --plx-comp-button-height-xs: var(--plx-ref-control-size-24px);
   --plx-comp-button-height-sm: var(--plx-ref-control-size-28px);

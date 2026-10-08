@@ -13,6 +13,8 @@
   --ok:#0e6b0e; --ok-bg:#dff6dd; --warn:#7d3c00; --warn-bg:#fef3e2; --neutral:#56585e; --neutral-bg:#f3f3f3;
   --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"DM Mono",ui-monospace,Consolas,monospace;
   --row-h:32px; --fs:13px;
+  /* the compact columns (checkbox, icon): the 16px mark plus the default 8px cell padding each side */
+  --mark:16px; --cell-pad:8px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --canvas:#000000; --surface:#1e1f22; --head:#2a2b2f; --line:#34363b; --head-line:#56585e; --border:#3e4046;
@@ -89,11 +91,28 @@ h1{font-size:22px;margin:0;font-weight:700}
 .tabulator .tabulator-row .tabulator-cell.tabulator-validation-fail{outline:2px solid #c42b1c;outline-offset:-2px}
 .tabulator-row .tabulator-cell.tabulator-row-header{border-right:0;text-align:center}
 .tabulator .tabulator-row .tabulator-cell.cell-center{display:inline-flex;align-items:center;line-height:normal}
-.tabulator .tabulator-row .tabulator-cell.tabulator-row-header{display:inline-flex;align-items:center;justify-content:center;line-height:normal}
+.tabulator .tabulator-row .tabulator-cell.tabulator-row-header{display:inline-flex;align-items:center;justify-content:center;line-height:normal;padding:0 var(--cell-pad)}
+.tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content,.tabulator .tabulator-header .tabulator-col.col-icon .tabulator-col-content{padding:0 var(--cell-pad)}
 .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content{justify-content:center}
+/* the checkbox column: frozen, but drawn like any other column (the row line under it, no heavy edge) */
+.tabulator .tabulator-header .tabulator-col.tabulator-frozen.tabulator-frozen-left,.tabulator .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left{border-right:0}
+.tabulator .tabulator-row .tabulator-cell.tabulator-row-header{border-bottom:0;background:inherit}
+.tabulator .tabulator-row.tabulator-selected .tabulator-cell.tabulator-frozen{background:var(--selected)}
+.tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.tabulator-frozen{background:var(--hover)}
+.tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.tabulator-frozen{background:var(--selected)}
+/* the icon column: an attachment mark, like a mail list */
+.tabulator .tabulator-row .tabulator-cell.cell-icon,.tabulator .tabulator-header .tabulator-col.col-icon .tabulator-col-content{display:inline-flex;align-items:center;justify-content:center;line-height:normal;padding:0 var(--cell-pad);color:var(--muted)}
+.cell-icon .ico,.col-icon .ico{width:var(--mark);height:var(--mark)}
+.tabulator .tabulator-header .tabulator-col.col-icon .tabulator-col-title{padding-right:0!important;display:flex}
+.tabulator .tabulator-header .tabulator-col.col-icon .tabulator-col-sorter{display:none}
+.tabulator .tabulator-header .tabulator-col.col-icon:hover{background:var(--line)}
+/* menu icons */
+.tabulator-menu .tabulator-menu-item .mi{display:inline-flex;color:var(--muted)}
+.tabulator-menu .tabulator-menu-item .mi .ico{width:16px;height:16px}
+.tabulator-menu .tabulator-menu-item .danger{color:#c42b1c}
 .mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .name{font-weight:500}
-input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertical-align:middle;margin:0;cursor:pointer}
+input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(--mark);vertical-align:middle;margin:0;cursor:pointer}
 /* tree rows */
 .tabulator-row .tabulator-cell .tabulator-data-tree-control{border:1px solid var(--border);border-radius:4px;background:transparent;width:14px;height:14px;margin-right:6px}
 .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand,.tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand::after,
@@ -116,7 +135,7 @@ input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertica
 .act button:hover{background:var(--line);color:var(--fg)}
 /* menus and popups: 8px menus, soft shadow */
 .tabulator-menu,.tabulator-popup-container{background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--menu-shadow);font-family:var(--sans);font-size:13px;color:var(--fg);padding:4px;overflow:hidden}
-.tabulator-menu .tabulator-menu-item{padding:6px 10px;border-radius:4px;display:flex;gap:8px;align-items:center}
+.tabulator-menu .tabulator-menu-item{padding:6px 12px 6px 8px;border-radius:4px;display:flex;gap:10px;align-items:center;white-space:nowrap}
 .tabulator-menu .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover{background:var(--hover)}
 .tabulator-menu .tabulator-menu-separator{border-top:1px solid var(--line);margin:4px 0}
 .tabulator-menu .tabulator-menu-item.tabulator-menu-item-disabled{opacity:.45}
@@ -160,6 +179,7 @@ input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertica
     <div><b>Hover a header</b> to see its sort arrow and filter button. A filtered column keeps its button, in blue.</div>
     <div><b>Right-click a header</b> for sort, filter, group by, hide and fit. Drag a header to move it; drag its edge to resize.</div>
     <div><b>Right-click a row</b> for row actions; hover a row for its action buttons. Double-click Name or Status to edit.</div>
+    <div><b>The paperclip column</b> marks rows with attachments (hover for the count); click its header to sort them first.</div>
     <div><b>Collections</b> (Crosses, Feast banners) expand into their files. Checkboxes select; the header box selects all.</div>
   </div>
 </main>
@@ -170,6 +190,19 @@ input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertica
   var svg = {
     filter:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5L4 5z"/></svg>',
     edit:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>',
+    clip:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5l-7.8 7.8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></svg>',
+    asc:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18V6M3.5 9.5 7 6l3.5 3.5M13 7h7M13 12h5M13 17h3"/></svg>',
+    desc:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 6v12M3.5 14.5 7 18l3.5-3.5M13 7h3M13 12h5M13 17h7"/></svg>',
+    clear:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+    nofilter:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5L4 5zM3 3l18 18"/></svg>',
+    group:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16M4 10h16M8 15h12M8 19h12M4 15v4"/></svg>',
+    fit:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>',
+    hide:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18M10.6 6.2A9.8 9.8 0 0 1 12 6c5 0 9 6 9 6a16 16 0 0 1-3 3.4M6.6 7.7C4.4 9.2 3 12 3 12s4 6 9 6a8.6 8.6 0 0 0 4-1"/></svg>',
+    show:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12s4-6 9-6 9 6 9 6-4 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.5"/></svg>',
+    open:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5"/></svg>',
+    copy:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg>',
+    check:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 12.5l2.7 2.7L16 9.8"/></svg>',
+    trash:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/></svg>',
     more:'<svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5.5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18.5" r="1.6"/></svg>'
   };
   var id = 0;
@@ -193,6 +226,8 @@ input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertica
     f('Map parish hall.png', 'PNG', 760, 'Draft', 'A. Hanna', '2026-10-05'),
     f('Volunteer list.xlsx', 'XLSX', 88, 'Review', 'A. Hanna', '2026-10-06')
   ];
+  var ATT = { 'Letterhead.pdf': 1, 'Bulletin October.pdf': 3, 'Volunteer list.xlsx': 2, 'Nativity banner.jpg': 1, 'Choir rehearsal.mp4': 1, 'Logo primary.svg': 2 };
+  (function walk(rows){ rows.forEach(function (r) { r.attach = ATT[r.name] || 0; if (r._children) walk(r._children); }); })(data);
   var STATUS = { Active: 'b-ok', Review: 'b-warn', Draft: 'b-neutral', Archived: 'b-neutral' };
   function kb(v){ if (!v) return '—'; return v >= 1024 ? (v / 1024).toFixed(1) + ' MB' : v + ' KB'; }
 
@@ -224,25 +259,25 @@ input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertica
   // the right-click header menu
   function headerMenu(){
     return [
-      { label: 'Sort A to Z', action: function (e, c) { table.setSort(c.getField(), 'asc'); } },
-      { label: 'Sort Z to A', action: function (e, c) { table.setSort(c.getField(), 'desc'); } },
-      { label: 'Clear sort', action: function () { table.clearSort(); } },
+      { label: '<span class="mi">' + svg.asc + '</span>Sort A to Z', action: function (e, c) { table.setSort(c.getField(), 'asc'); } },
+      { label: '<span class="mi">' + svg.desc + '</span>Sort Z to A', action: function (e, c) { table.setSort(c.getField(), 'desc'); } },
+      { label: '<span class="mi">' + svg.clear + '</span>Clear sort', action: function () { table.clearSort(); } },
       { separator: true },
-      { label: 'Clear filter', action: function (e, c) { setFilter(c, ''); } },
-      { label: 'Group by this column', action: function (e, c) { group(c.getField()); } },
+      { label: '<span class="mi">' + svg.nofilter + '</span>Clear filter', action: function (e, c) { setFilter(c, ''); } },
+      { label: '<span class="mi">' + svg.group + '</span>Group by this column', action: function (e, c) { group(c.getField()); } },
       { separator: true },
-      { label: 'Fit to content', action: function (e, c) { c.setWidth(true); } },
-      { label: 'Hide column', action: function (e, c) { c.hide(); } },
-      { label: 'Show all columns', action: function () { table.getColumns().forEach(function (c) { c.show(); }); } }
+      { label: '<span class="mi">' + svg.fit + '</span>Fit to content', action: function (e, c) { c.setWidth(true); } },
+      { label: '<span class="mi">' + svg.hide + '</span>Hide column', action: function (e, c) { c.hide(); } },
+      { label: '<span class="mi">' + svg.show + '</span>Show all columns', action: function () { table.getColumns().forEach(function (c) { c.show(); }); } }
     ];
   }
   var rowMenu = [
-    { label: 'Open', action: function () {} },
-    { label: 'Rename', action: function (e, row) { row.getCell('name').edit(); } },
-    { label: 'Duplicate', action: function (e, row) { var d = Object.assign({}, row.getData(), { id: ++id, name: row.getData().name + ' copy' }); delete d._children; row.getTable().addRow(d, false, row); } },
+    { label: '<span class="mi">' + svg.open + '</span>Open', action: function () {} },
+    { label: '<span class="mi">' + svg.edit + '</span>Rename', action: function (e, row) { row.getCell('name').edit(); } },
+    { label: '<span class="mi">' + svg.copy + '</span>Duplicate', action: function (e, row) { var d = Object.assign({}, row.getData(), { id: ++id, name: row.getData().name + ' copy' }); delete d._children; row.getTable().addRow(d, false, row); } },
     { separator: true },
-    { label: 'Select', action: function (e, row) { row.toggleSelect(); } },
-    { label: 'Delete', action: function (e, row) { row.delete(); } }
+    { label: '<span class="mi">' + svg.check + '</span>Select', action: function (e, row) { row.toggleSelect(); } },
+    { label: '<span class="mi danger">' + svg.trash + '</span><span class="danger">Delete</span>', action: function (e, row) { row.delete(); } }
   ];
   function textCol(def){ return Object.assign({ headerPopup: filterPopup, headerPopupIcon: svg.filter, headerContextMenu: headerMenu }, def); }
 
@@ -251,9 +286,12 @@ input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;vertica
     dataTree: true, dataTreeElementColumn: 'name', dataTreeStartExpanded: [true, false], dataTreeChildIndent: 18,
     movableColumns: true, rowContextMenu: rowMenu, columnDefaults: { resizable: true, minWidth: 80 },
     selectableRows: true, selectableRowsRangeMode: 'click',
-    rowHeader: { formatter: 'rowSelection', titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true, width: 44, hozAlign: 'center', headerHozAlign: 'center', cellClick: function (e, cell) { cell.getRow().toggleSelect(); } },
+    rowHeader: { formatter: 'rowSelection', titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true, width: 32, minWidth: 32, maxWidth: 32, hozAlign: 'center', headerHozAlign: 'center', cellClick: function (e, cell) { cell.getRow().toggleSelect(); } },
     placeholder: 'No assets match these filters',
     columns: [
+      { title: 'Attachments', field: 'attach', width: 32, minWidth: 32, maxWidth: 32, resizable: false, sorter: 'number', headerSortStartingDir: 'desc', headerContextMenu: headerMenu,
+        titleFormatter: function () { return '<span title="Attachments">' + svg.clip + '</span>'; }, cssClass: 'cell-icon col-icon',
+        formatter: function (c) { var n = c.getValue(); return n ? '<span title="' + n + (n === 1 ? ' attachment' : ' attachments') + '" aria-label="' + n + (n === 1 ? ' attachment' : ' attachments') + '">' + svg.clip + '</span>' : ''; } },
       textCol({ title: 'Name', field: 'name', minWidth: 220, widthGrow: 3, editor: 'input', validator: 'required', editTriggerEvent: 'dblclick', formatter: function (c) { return '<span class="name">' + c.getValue() + '</span>'; } }),
       textCol({ title: 'Type', field: 'type', width: 110, formatter: function (c) { return '<span class="mono">' + c.getValue() + '</span>'; } }),
       textCol({ title: 'Status', field: 'status', width: 120, cssClass: 'cell-center', editor: 'list', editorParams: { values: ['Active', 'Review', 'Draft', 'Archived'] }, editTriggerEvent: 'dblclick', formatter: function (c) { var v = c.getValue(); return '<span class="badge ' + STATUS[v] + '">' + v + '</span>'; } }),

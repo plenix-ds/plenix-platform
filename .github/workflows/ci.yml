@@ -56,6 +56,9 @@ jobs:
       - name: Visual snapshot (Button)
         run: node tests/visual.test.js
 
+      - name: Regional density
+        run: node tests/density.test.js
+
       - name: Layout modes
         run: node tests/layout.test.js
 
