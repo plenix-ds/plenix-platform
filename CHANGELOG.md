@@ -6,7 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-08
+
 ### Added
+- TypeScript definitions for `@plenix-ds/react` (`index.d.ts`), generated from each component's header comment: prop
+  unions (`variant`, `size`, `tone`…), booleans, handlers and React nodes, with the header text and defaults as docs.
+- API: `/api/v1/components` items carry their written sections (`purpose`, `anatomy`, `behavior`, `a11y`, `content`)
+  and `sec`, `plenix`, `src`. The tokens endpoint lists the new Button tokens (630 tokens).
+- `VERSIONING.md` (what is public, what each version part means) and this changelog; release notes come from it.
+- Checks on every push: build, system and spec checks, release build, the Button visual snapshot, every page, and an
+  accessibility scan (axe-core) whose known issues may only go down.
 - 115 Button component tokens (`--plx-comp-button-*`): per size, per variant and state, focus ring, shape and type. Every
   Button value is now a token; the design system's Edit dialog edits one token per field. (batch 207)
 - Design system: purpose, anatomy, behavior, accessibility and content guidance for all 125 built items; template

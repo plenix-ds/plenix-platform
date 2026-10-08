@@ -57,7 +57,7 @@ ssh "$HOST" "set -e
   done
   pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | wc -l)
   echo \"Apps on release $VERSION: \$pinned pages\"
-  ls /srv/plenix/cdn | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null
+  ls /srv/plenix/cdn | grep -E '^[0-9]+[.][0-9]+[.][0-9]+' | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null
   sudo mv /srv/plenix/www /srv/plenix/www.old
   sudo mv /srv/plenix/www.new /srv/plenix/www"
 echo "Published: https://plenix.lighthouseway.org/  https://design-system.lighthouseway.org/  (CDN /cdn/$VERSION/, API /api/v1/)"

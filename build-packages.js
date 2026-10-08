@@ -132,13 +132,15 @@ const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(R, 'dist', 'index.js') }));
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));
+// the TypeScript definitions, from the components' header comments (build-types.js)
+require('./build-types.js')(path.join(R, 'index.d.ts'), VERSION);
 const exportsList = [];
 for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/export \{([^}]+)\} from '([^']+)'/g)) {
   for (const n of m[1].split(',').map((x) => x.trim()).filter(Boolean)) exportsList.push({ name: n, file: 'platform/' + m[2].replace(/^\.\//, '') });
 }
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
-  main: 'dist/index.cjs', module: 'dist/index.js',
-  exports: { '.': { import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './package.json': './package.json' },
+  main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
+  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './package.json': './package.json' },
   peerDependencies: { react: '>=18.2.0 <19', 'react-dom': '>=18.2.0 <19' },
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
 }));

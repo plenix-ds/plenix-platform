@@ -1,0 +1,106 @@
+// Builds the TypeScript definitions of @plenix-ds/react (packages/react/index.d.ts) from the source files' structured header
+// comments (Summary / Usage / Props) and the defaults in their code: the same reading the design system's API tables use.
+//   Prop types: quoted choices ("md" | "sm") become a union, true/false a boolean, a number default a number, on… a
+//   handler, children/label/title/icon/… a React node; anything the header does not pin down stays `any`.
+//   A component with "...rest" also takes the attributes of its element.
+// Called by build-packages.js; can run alone: node build-types.js
+const fs = require('fs');
+const path = require('path');
+const ROOT = __dirname;
+const P = path.join(ROOT, 'platform');
+
+// the structured header comment: { summary, props: [[name, text]] } (spec-catalog.js structured(), batch 162)
+function structured(c) {
+  const out = { summary: '', props: [] }; let cur = null, seen = false;
+  const add = (t, indent) => {
+    if (!t.trim()) return;
+    if (cur === 'summary') out.summary += (out.summary ? ' ' : '') + t.trim();
+    else if (cur === 'props') {
+      const m = indent <= 5 && /^(\S+?(?:\([^)]*\))?):\s(.*)$/.exec(t.trim());
+      if (m) out.props.push([m[1], m[2]]); else if (out.props.length) out.props[out.props.length - 1][1] += ' ' + t.trim();
+    }
+  };
+  c.split('\n').forEach((l) => {
+    const s = /^\s{3}(Summary|Usage|Props|Behavior|Notes):\s?(.*)$/.exec(l);
+    if (s) { cur = s[1].toLowerCase(); seen = true; if (s[2]) add(s[2], 5); return; }
+    if (cur) add(l.replace(/^\s{5}/, ''), (/^\s*/.exec(l) || [''])[0].length);
+  });
+  return seen ? out : null;
+}
+// the defaults a component's function gives its props: { name: 'value as written' } (spec-catalog.js defaultsOf())
+function defaultsOf(jsx, name) {
+  const re = new RegExp('export\\s+(?:const\\s+' + name + '\\s*=\\s*(?:React\\.forwardRef\\()?function\\s*\\w*|function\\s+' + name + ')\\s*\\(\\{([\\s\\S]*?)\\}\\s*[,)]');
+  const m = re.exec(jsx || ''); if (!m) return {};
+  const out = {}; let depth = 0, cur = '', q = null;
+  for (const ch of m[1] + ',') {
+    if (q) { cur += ch; if (ch === q) q = null; continue; }
+    if (ch === "'" || ch === '"' || ch === '`') { q = ch; cur += ch; continue; }
+    if ('([{'.includes(ch)) depth++; if (')]}'.includes(ch)) depth--;
+    if (ch === ',' && depth === 0) { const d = /^\s*(\w+)\s*=\s*([\s\S]+?)\s*$/.exec(cur); if (d) out[d[1]] = d[2]; cur = ''; continue; }
+    cur += ch;
+  }
+  return out;
+}
+const NODE = /^(children|label|title|description|icon|iconEnd|media|actions|footer|header|meta|prefix|suffix|start|end|empty|aside|topStart|bottomEnd|caption|eyebrow|help|error|hint|badge|avatar|trailing|leading)$/;
+function typeOf(name, text, def) {
+  if (/^on[A-Z]/.test(name)) return '(...args: any[]) => void';
+  const head = text.split(/[;(:]/)[0];
+  const choices = [...head.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  const listed = [...text.matchAll(/(?:^|\|\s*)"([^"]+)"/g)].map((m) => m[1]);
+  const opts = [...new Set(listed.length > 1 ? listed : choices)];
+  if (opts.length > 1 && /\|/.test(text)) return opts.map((o) => JSON.stringify(o)).join(' | ') + (NODE.test(name) ? ' | React.ReactNode' : '');
+  if (def === 'true' || def === 'false' || /^(true|false)\b/.test(text) || /\btrue\b.*\bfalse\b|\bfalse\b.*\btrue\b/.test(head)) return 'boolean';
+  if (def && /^-?\d+(\.\d+)?$/.test(def)) return 'number';
+  if (NODE.test(name)) return 'React.ReactNode';
+  if (def && /^['"`]/.test(def)) return 'string';
+  if (def && /^\[/.test(def)) return 'any[]';
+  return 'any';
+}
+const doc = (t) => '  /** ' + t.replace(/\*\//g, '* /').replace(/\s+/g, ' ').trim() + ' */\n';
+
+module.exports = function buildTypes(outFile, version) {
+  const index = fs.readFileSync(path.join(P, 'index.js'), 'utf8');
+  const blocks = [], names = [];
+  for (const m of index.matchAll(/export \{([^}]+)\} from '([^']+)'/g)) {
+    const file = path.join(P, m[2]);
+    const src = fs.readFileSync(file, 'utf8');
+    const hc = (/^\s*\/\*([\s\S]*?)\*\//.exec(src) || [])[1] || '';
+    const head = structured(hc);
+    for (const raw of m[1].split(',').map((x) => x.trim()).filter(Boolean)) {
+      const name = raw; names.push(name);
+      const isComponent = /^[A-Z]/.test(name) && /^[A-Z][a-z]/.test(name) && !/^[A-Z_]+$/.test(name) && new RegExp('export\\s+(const|function)\\s+' + name + '\\b').test(src) && /return\s*\(?\s*</.test(src);
+      if (!isComponent) {
+        // hooks, helpers and data: typed loosely (their headers describe behavior, not a signature)
+        blocks.push(/^use[A-Z]|^[a-z]/.test(name) ? 'export declare function ' + name + '(...args: any[]): any;' : 'export declare const ' + name + ': any;');
+        continue;
+      }
+      const defs = defaultsOf(src, name);
+      const firstOfFile = new RegExp('export\\s+(?:const|function)\\s+(\\w+)').exec(src);
+      const props = head && firstOfFile && firstOfFile[1] === name ? head.props : [];
+      let rest = false; const lines = [];
+      props.forEach(([p, text]) => {
+        if (/^\.\.\./.test(p)) { rest = true; return; }
+        const n = p.replace(/\(.*$/, '').replace(/[^\w$]/g, '');
+        if (!n) return;
+        const d = defs[n];
+        lines.push(doc(text + (d ? ' Default: ' + d + '.' : '')) + '  ' + n + '?: ' + typeOf(n, text, d) + ';');
+      });
+      if (!props.length) rest = true;   // a part or an undocumented component: its element's attributes and anything else
+      const summary = head && firstOfFile && firstOfFile[1] === name ? head.summary : '';
+      blocks.push((summary ? '/** ' + summary.replace(/\*\//g, '* /') + ' */\n' : '') + 'export interface ' + name + 'Props' + (rest ? ' extends React.HTMLAttributes<HTMLElement>' : '') + ' {\n'
+        + (lines.length ? lines.join('\n') + '\n' : '') + '  [prop: string]: any;\n}\n'
+        + 'export declare const ' + name + ': React.ComponentType<' + name + 'Props & React.RefAttributes<any>> & { [part: string]: any };');
+    }
+  }
+  const text = '/* @plenix-ds/react ' + version + ' · TypeScript definitions, generated by build-types.js from the components\' header comments (do not edit). */\n'
+    + 'import * as React from \'react\';\n\n' + blocks.join('\n\n') + '\n';
+  fs.writeFileSync(outFile, text);
+  return { exports: names.length, file: outFile };
+};
+
+if (require.main === module) {
+  const out = path.join(ROOT, 'packages', 'react', 'index.d.ts');
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  const r = module.exports(out, require('./package.json').version);
+  console.log('Built ' + path.relative(ROOT, r.file) + ' (' + r.exports + ' exports)');
+}
