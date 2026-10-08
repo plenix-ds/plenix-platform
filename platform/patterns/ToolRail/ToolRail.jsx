@@ -17,12 +17,14 @@
      ToolRail.Item.onClick: runs on click
      ToolRail.Item.className: more classes
    Behavior:
-     It is a toolbar with vertical orientation: Arrow Up / Down, Home and End move between tools; Tab leaves.
+     It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
+     enters and leaves the rail.
      Each tool is an icon-only toggle button with a tooltip at its end side.
    Notes:
      The editor page sets the dark mode on its container.
 */
 import React from 'react';
+import { useRovingFocus, roveTo } from '../../utils/roving.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
@@ -31,9 +33,12 @@ const LabelsContext = React.createContext(false);
 
 export function ToolRail({ label, showLabels = false, className, children }) {
   const ref = React.useRef(null);
+  const itemsOf = () => (ref.current ? Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])')) : []);
+  // one Tab stop: Tab enters and leaves the rail; the arrows move between tools (batch 213)
+  useRovingFocus(ref, itemsOf);
   const onKeyDown = (e) => {
     if (['ArrowUp', 'ArrowDown', 'Home', 'End'].indexOf(e.key) < 0) return;
-    const items = Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])'));
+    const items = itemsOf();
     const i = items.indexOf(document.activeElement);
     if (i < 0) return;
     const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowDown' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
@@ -42,7 +47,7 @@ export function ToolRail({ label, showLabels = false, className, children }) {
   };
   return (
     <LabelsContext.Provider value={showLabels}>
-      <div ref={ref} role="toolbar" aria-orientation="vertical" aria-label={label} className={cx('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className)} onKeyDown={onKeyDown}>{children}</div>
+      <div ref={ref} role="toolbar" aria-orientation="vertical" aria-label={label} className={cx('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className)} onKeyDown={onKeyDown} onFocus={(e) => roveTo(ref, itemsOf(), e.target)}>{children}</div>
     </LabelsContext.Provider>
   );
 }

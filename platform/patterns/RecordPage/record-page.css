@@ -17,3 +17,5 @@
 .plx-record-page__columns{align-items:flex-start;column-gap:var(--plx-sys-space-layout-md);display:flex;min-inline-size:0;}
 .plx-record-page__body{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-sys-space-stack-lg);}
 .plx-record-page__aside{display:flex;flex-direction:column;flex-shrink:0;inline-size:var(--plx-sys-panel-inspector-width);row-gap:var(--plx-sys-space-stack-lg);}
+/* below the tablet width (the grid's 1024px step) the aside stacks under the body at full width (batch 215) */
+@container main-region (max-width: 1023px){.plx-record-page__columns{align-items:stretch;flex-direction:column;row-gap:var(--plx-sys-space-layout-md);}.plx-record-page__aside{inline-size:auto;}}

@@ -2335,7 +2335,7 @@ function TasksScreen() {
     icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
       name: "plus"
     })
-  }, "Add Task")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+  }, "Add task")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
     title: "All tasks",
     flush: true
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList, {

@@ -24,6 +24,9 @@
      items[].children: makes the item a subgroup: a row with a chevron that folds the rows inside it (same item shape)
      items[].defaultExpanded: whether a subgroup starts open; default false (it also opens while it holds the current item)
      className: more classes on the navigation
+     locale: the language the counts are formatted in (default: the page's language, document.documentElement.lang)
+     strings: the words it shows and announces, for other languages: { pin: "Pin", unpin: "Unpin", pinItem: "Pin {label}",
+       unpinItem: "Unpin {label}" } (pin and unpin are the pin button's tooltip; pinItem and unpinItem its name)
    Behavior:
      The current item carries aria-current="page".
      An item with href is a link; otherwise it is a button and onSelect(id) runs.
@@ -41,11 +44,13 @@ import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 
+const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem: 'Unpin {label}' };
+
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
 const holds = (item, current) => !!item.children && item.children.some((c) => c.id === current || holds(c, current));
 
-function SubGroup({ item, current, onSelect }) {
+function SubGroup({ item, current, onSelect, t, loc }) {
   const inside = holds(item, current);
   const [open, setOpen] = React.useState(!!item.defaultExpanded || inside);
   React.useEffect(() => { if (inside) setOpen(true); }, [inside, current]);
@@ -59,21 +64,21 @@ function SubGroup({ item, current, onSelect }) {
           {item.count !== undefined ? <span className="plx-nav-list__count">({item.count})</span> : null}</span>
       </button>
       <ul id={id} aria-label={item.label} hidden={!open} className="plx-nav-list__items plx-nav-list__items--nested">
-        {open ? item.children.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} />) : null}
+        {open ? item.children.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} t={t} loc={loc} />) : null}
       </ul>
     </li>
   );
 }
 
-function Item({ item, current, onSelect }) {
-  if (item.children) return <SubGroup item={item} current={current} onSelect={onSelect} />;
+function Item({ item, current, onSelect, t, loc }) {
+  if (item.children) return <SubGroup item={item} current={current} onSelect={onSelect} t={t} loc={loc} />;
   const on = item.id === current;
   const props = { className: cx('plx-nav-list__item', item.muted && 'plx-nav-list__item--muted', on && 'is-current'), 'aria-current': on ? 'page' : undefined };
   const content = (
     <>
       {item.icon ? <span className="plx-nav-list__icon">{asIcon(item.icon)}</span> : null}
       <span className="plx-nav-list__label"><span className="plx-nav-list__name">{item.label}</span>
-        {item.count !== undefined ? <span className="plx-nav-list__count">({typeof item.count === 'number' ? item.count.toLocaleString('en-US') : item.count})</span> : null}</span>
+        {item.count !== undefined ? <span className="plx-nav-list__count">({typeof item.count === 'number' ? item.count.toLocaleString(loc) : item.count})</span> : null}</span>
     </>
   );
   return (
@@ -81,21 +86,21 @@ function Item({ item, current, onSelect }) {
       {item.href ? <a href={item.href} {...props} onClick={onSelect ? () => onSelect(item.id) : undefined}>{content}</a>
         : <button type="button" {...props} disabled={item.disabled || undefined} onClick={() => onSelect && onSelect(item.id)}>{content}</button>}
       {item.actions || item.onPin ? <span className="plx-nav-list__actions">
-        {item.onPin ? <button type="button" className="plx-nav-list__pin" aria-pressed={!!item.pinned} aria-label={(item.pinned ? 'Unpin ' : 'Pin ') + item.label}
-          title={item.pinned ? 'Unpin' : 'Pin'} onClick={() => item.onPin(item.id)}><Icon name={item.pinned ? 'pin-filled' : 'pin'} /></button> : null}
+        {item.onPin ? <button type="button" className="plx-nav-list__pin" aria-pressed={!!item.pinned} aria-label={(item.pinned ? t.unpinItem : t.pinItem).split('{label}').join(item.label)}
+          title={item.pinned ? t.unpin : t.pin} onClick={() => item.onPin(item.id)}><Icon name={item.pinned ? 'pin-filled' : 'pin'} /></button> : null}
         {item.actions}
       </span> : null}
     </li>
   );
 }
 
-function Group({ heading, items, current, onSelect, collapsible = true, icon, defaultExpanded = true }) {
+function Group({ heading, items, current, onSelect, collapsible = true, icon, defaultExpanded = true, t, loc }) {
   const id = useUid('plx-nav');
   if (heading && collapsible) {
     return (
       <CollapsibleSection className="plx-nav-list__group" title={heading} icon={icon} defaultExpanded={defaultExpanded} headingLevel={null}>
         <ul aria-label={heading} className="plx-nav-list__items">
-          {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} />)}
+          {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} t={t} loc={loc} />)}
         </ul>
       </CollapsibleSection>
     );
@@ -104,17 +109,19 @@ function Group({ heading, items, current, onSelect, collapsible = true, icon, de
     <div className="plx-nav-list__group">
       {heading ? <div id={id} className="plx-nav-list__heading">{heading}</div> : null}
       <ul aria-labelledby={heading ? id : undefined} className="plx-nav-list__items">
-        {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} />)}
+        {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} t={t} loc={loc} />)}
       </ul>
     </div>
   );
 }
 
-export function NavList({ label, items, groups, value, onSelect, className }) {
+export function NavList({ label, items, groups, value, onSelect, locale, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
   const all = groups || [{ heading: null, items: items || [] }];
   return (
     <nav aria-label={label} className={cx('plx-nav-list', className)}>
-      {all.map((g, i) => <Group key={g.heading || i} heading={g.heading} items={g.items} collapsible={g.collapsible} icon={g.icon} defaultExpanded={g.defaultExpanded} current={value} onSelect={onSelect} />)}
+      {all.map((g, i) => <Group key={g.heading || i} heading={g.heading} items={g.items} collapsible={g.collapsible} icon={g.icon} defaultExpanded={g.defaultExpanded} current={value} onSelect={onSelect} t={t} loc={loc} />)}
     </nav>
   );
 }

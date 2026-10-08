@@ -44,7 +44,7 @@ export function CalendarScreen() {
           </Inline>
           <Inline gap="sm">
             <SegmentedControl size="sm" label="Calendar view" value={view} onChange={setView} options={[{ value: 'month', label: 'Month' }, { value: 'week', label: 'Week' }, { value: 'day', label: 'Day' }]} />
-            <Button variant="primary" size="sm" icon={<Icon name="plus" />}>Add Event</Button>
+            <Button variant="primary" size="sm" icon={<Icon name="plus" />}>Add event</Button>
           </Inline>
         </Inline>
         <TagList label="Filter events">

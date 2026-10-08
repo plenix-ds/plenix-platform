@@ -10,11 +10,12 @@
      max: the whole (default 100)
      label: what is progressing; always the accessible name, shown above the bar unless labelHidden
      labelHidden: the label is for assistive technology only (default false)
-     showValue: shows the percent at the end of the label row (default false)
+     showValue: shows the percent at the end of the label row, a whole percent in the locale's format ("42%") (default false)
      tone: "info" (default) | "success" | "warning" | "danger" | "neutral"
      color: a color the data brings (a project's color); it fills the bar instead of the tone
      size: "sm" (a 4px track) | "md" (default, an 8px track)
      className: more classes on the wrapper
+     locale: the language the percent is formatted in (default: the page's language, document.documentElement.lang)
    Behavior:
      The track is a progressbar (role="progressbar") with aria-valuenow, aria-valuemin and aria-valuemax; without a value it
      has none and its fill runs from start to end again and again.
@@ -27,7 +28,8 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
-export function ProgressBar({ value, max = 100, label, labelHidden = false, showValue = false, tone = 'info', color, size = 'md', className, ...rest }) {
+export function ProgressBar({ value, max = 100, label, labelHidden = false, showValue = false, tone = 'info', color, size = 'md', locale, className, ...rest }) {
+  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, (value / (max || 100)) * 100)) : null;
   const id = 'plx-pb' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -38,7 +40,7 @@ export function ProgressBar({ value, max = 100, label, labelHidden = false, show
       {showLabel || (showValue && known) ? (
         <div className="plx-progress-bar__head">
           {showLabel ? <span className="plx-progress-bar__label" id={id}>{label}</span> : null}
-          {showValue && known ? <span className="plx-progress-bar__value">{Math.round(pct)}%</span> : null}
+          {showValue && known ? <span className="plx-progress-bar__value">{new Intl.NumberFormat(loc, { style: 'percent', maximumFractionDigits: 0 }).format(pct / 100)}</span> : null}
         </div>
       ) : null}
       <div className="plx-progress-bar__track" role="progressbar" aria-labelledby={showLabel ? id : undefined} aria-label={showLabel ? undefined : label}

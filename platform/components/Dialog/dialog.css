@@ -12,7 +12,7 @@
 .plx-dialog--xl{max-inline-size:var(--plx-ref-size-900px);}
 /* full: the whole modal layer, which keeps the layout inset (inset-lg) on every side */
 .plx-dialog--full{block-size:100%;max-block-size:100%;max-inline-size:none;}
-.plx-drawer{block-size:100%;border-bottom-left-radius:var(--plx-ref-radius-0px);border-bottom-right-radius:var(--plx-ref-radius-0px);border-top-left-radius:var(--plx-ref-radius-0px);border-top-right-radius:var(--plx-ref-radius-0px);max-block-size:100%;}
+.plx-drawer{animation-duration:var(--plx-ref-motion-duration-base);animation-name:motion-slide-in-right;animation-timing-function:var(--plx-ref-motion-ease-standard);block-size:100%;border-bottom-left-radius:var(--plx-ref-radius-0px);border-bottom-right-radius:var(--plx-ref-radius-0px);border-top-left-radius:var(--plx-ref-radius-0px);border-top-right-radius:var(--plx-ref-radius-0px);max-block-size:100%;}
 .plx-drawer--sm{max-inline-size:var(--plx-ref-size-320px);}
 .plx-drawer--md{max-inline-size:var(--plx-ref-size-400px);}
 .plx-drawer--lg{max-inline-size:var(--plx-ref-size-560px);}
@@ -27,3 +27,6 @@
 .plx-dialog__footer{align-items:center;background-color:var(--plx-sys-surface-dialog-chrome);border-top-color:var(--plx-sys-border-dialog-chrome);border-top-style:solid;border-top-width:var(--plx-ref-border-width-1px);column-gap:var(--plx-sys-space-inline-sm);display:flex;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;padding-block-end:var(--plx-sys-space-inset-md);padding-block-start:var(--plx-sys-space-inset-md);padding-inline-end:var(--plx-sys-space-inset-lg);padding-inline-start:var(--plx-sys-space-inset-lg);row-gap:var(--plx-sys-space-inline-sm);}
 .plx-dialog__footer .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-dialog);}
 .plx-dialog--destructive .plx-dialog__footer .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-dialog-destructive);}
+/* the drawer slides in from its edge (its animation is on .plx-drawer above): the start side with side="start"; mirrored in right to left (batch 215) */
+.plx-modal-layer--start .plx-drawer,.plx-drawer:dir(rtl){animation-name:motion-slide-in-left;}
+.plx-modal-layer--start .plx-drawer:dir(rtl){animation-name:motion-slide-in-right;}

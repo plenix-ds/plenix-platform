@@ -8,6 +8,7 @@
      alt: the picture's text alternative; default "" (empty when the name is next to it)
      icon: the icon shown without src; default "document"
    Behavior:
+     An image that fails to load falls back to the icon.
      The picture loads lazily.
      The icon is decorative and hidden from assistive technology.
 */
@@ -15,5 +16,8 @@ import React from 'react';
 import { Icon } from '../Icon/Icon.jsx';
 
 export function Thumbnail({ src, alt = '', icon = 'document' }) {
-  return src ? <img className="plx-thumbnail" src={src} alt={alt} loading="lazy" /> : <span className="plx-thumbnail plx-thumbnail--icon" aria-hidden="true"><Icon name={icon} size="sm" /></span>;
+  // an image that fails to load falls back to the icon, as when there is none (batch 215)
+  const [failed, setFailed] = React.useState(false);
+  React.useEffect(() => { setFailed(false); }, [src]);
+  return src && !failed ? <img className="plx-thumbnail" src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} /> : <span className="plx-thumbnail plx-thumbnail--icon" aria-hidden="true"><Icon name={icon} size="sm" /></span>;
 }

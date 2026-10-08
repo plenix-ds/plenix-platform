@@ -59,5 +59,8 @@ jobs:
       - name: Every page
         run: node tests/pages.test.js
 
+      - name: Keyboard behavior
+        run: node tests/keyboard.test.js
+
       - name: Accessibility (axe-core)
         run: node tests/a11y.test.js

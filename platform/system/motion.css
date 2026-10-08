@@ -8,6 +8,12 @@
 @keyframes motion-shimmer-reverse{from{background-position:200% 0;}to{background-position:-200% 0;}}
 @keyframes motion-toast-in{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
 @keyframes motion-toast-out{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(100%);}}
+/* right to left: the toast sits at the inline end (the left), so it slides in from and out to the left (batch 213) */
+@keyframes motion-toast-in-rtl{from{opacity:0;transform:translateX(-100%);}to{opacity:1;transform:translateX(0);}}
+@keyframes motion-toast-out-rtl{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-100%);}}
+/* the drawer slides in from the edge it is docked to (batch 215) */
+@keyframes motion-slide-in-right{from{transform:translateX(100%);}to{transform:translateX(0);}}
+@keyframes motion-slide-in-left{from{transform:translateX(-100%);}to{transform:translateX(0);}}
 /* People who ask their system for less motion get an effectively static interface: no slide, shimmer or fade
    (state changes still happen, instantly: a zero duration; animations still end, so Toast still leaves). */
 @media(prefers-reduced-motion:reduce){

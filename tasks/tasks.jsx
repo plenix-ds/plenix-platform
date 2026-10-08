@@ -17,7 +17,7 @@ export function TasksScreen() {
         <Stack gap="md">
           <Inline justify="between">
             <Text as="h1" variant="title">Tasks</Text>
-            <Button variant="primary" icon={<Icon name="plus" />}>Add Task</Button>
+            <Button variant="primary" icon={<Icon name="plus" />}>Add task</Button>
           </Inline>
           <Panel title="All tasks" flush>
             <ActivityList label="Tasks">{ALL_TASKS.map((t) => (

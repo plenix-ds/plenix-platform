@@ -20,3 +20,5 @@
 .plx-chat__message:not(.plx-chat__message--mine) .plx-chat__time{opacity:var(--plx-ref-opacity-70);}
 .plx-chat__composer{align-items:flex-end;border-block-start-color:var(--plx-sys-border-divider);border-block-start-style:solid;border-block-start-width:var(--plx-ref-border-width-1px);column-gap:var(--plx-sys-space-inline-sm);display:flex;padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
 .plx-chat__field{flex-basis:0%;flex-grow:1;min-inline-size:0;resize:none;}
+/* the thread scrolls and is in the Tab order: the focus ring, as every control (batch 215) */
+.plx-chat__thread:focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-focus-ring-offset) * -1);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}

@@ -45,3 +45,5 @@
 .plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle .plx-icon{transform:rotate(-90deg);}
 /* an accent edge in the data's color (Card accent, batch 197) */
 .plx-card--accent{border-inline-start-color:var(--plx-comp-card-accent);border-inline-start-width:var(--plx-ref-border-width-3px);}
+/* the collapse toggle shows the focus ring, as every control (batch 213) */
+.plx-panel__toggle:focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}

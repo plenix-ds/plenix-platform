@@ -83,7 +83,7 @@ export function ImageEditorPage() {
       <Toolbar label="Editor">
         <Toolbar.Group>
           <Button variant="primary" onClick={() => say('Saved')}>Save</Button>
-          <Button onClick={() => say('Saved as a copy')}>Save As</Button>
+          <Button onClick={() => say('Saved as a copy')}>Save as</Button>
           <Menu label="Export As" trigger={<Button caret>Export As</Button>}>
             {EXPORTS.map((x) => <MenuItem key={x} onSelect={() => say('Exported as ' + x)}>{x}</MenuItem>)}
           </Menu>
@@ -97,8 +97,8 @@ export function ImageEditorPage() {
           <Button variant="ghost" iconOnly icon="ed-redo" label="Redo" disabled={history.at >= history.list.length - 1} onClick={() => step(1)} />
         </Toolbar.Group>
         <Toolbar.Group>
-          <Button variant="ghost" iconOnly icon="ed-zoom-in" label="Zoom In" onClick={() => zoomTo(Math.min(4, zoom * 1.25))} />
-          <Button variant="ghost" iconOnly icon="ed-zoom-out" label="Zoom Out" onClick={() => zoomTo(Math.max(0.25, zoom / 1.25))} />
+          <Button variant="ghost" iconOnly icon="ed-zoom-in" label="Zoom in" onClick={() => zoomTo(Math.min(4, zoom * 1.25))} />
+          <Button variant="ghost" iconOnly icon="ed-zoom-out" label="Zoom out" onClick={() => zoomTo(Math.max(0.25, zoom / 1.25))} />
           <Button variant="ghost" iconOnly icon="ed-recenter" label="Recenter" onClick={() => zoomTo(1)} />
         </Toolbar.Group>
       </Toolbar>

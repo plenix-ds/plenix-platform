@@ -15,6 +15,8 @@
      Chat.Header.avatar: an Avatar before the title
      Chat.Header.actions: buttons at the end
      Chat.Thread.label: the accessible name of the thread (default "Conversation")
+     Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
+       to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
      Chat.Message.mine: the message is the person's own (end side, in the action color); default false
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
@@ -62,8 +64,14 @@ function Header({ title, meta, avatar, actions, className, ...rest }) {
   );
 }
 
-function Thread({ label = 'Conversation', className, children, ...rest }) {
-  return <div className={cx('plx-chat__thread', className)} role="log" aria-live="polite" aria-label={label} {...rest}>{children}</div>;
+function Thread({ label = 'Conversation', follow = true, className, children, ...rest }) {
+  // it opens at the newest message and follows new ones, unless the person has scrolled up to read (batch 215)
+  const ref = React.useRef(null), atEnd = React.useRef(true);
+  const count = React.Children.count(children);
+  React.useLayoutEffect(() => { const el = ref.current; if (follow && el && atEnd.current) el.scrollTop = el.scrollHeight; }, [count, follow]);
+  const onScroll = (e) => { const el = e.currentTarget; atEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight <= el.clientHeight / 4; if (rest.onScroll) rest.onScroll(e); };
+  // it scrolls, so it is in the Tab order: the keyboard can scroll it too
+  return <div ref={ref} className={cx('plx-chat__thread', className)} role="log" aria-live="polite" aria-label={label} tabIndex={0} {...rest} onScroll={onScroll}>{children}</div>;
 }
 
 function Message({ mine = false, author, time, dateTime, avatar, className, children, ...rest }) {

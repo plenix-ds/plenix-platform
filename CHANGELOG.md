@@ -6,13 +6,34 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- `strings` props on 14 components for their words and announcements (CodeBlock, Count `moreThan`, Button, Card,
+  WidgetGrid, BulkActions, NotificationList, MediaViewer, SearchWorkspace, NavList, FilterBar, AppShell, SecondaryPane,
+  Pagination); `locale` where numbers are formatted (they follow the page language). English output is unchanged.
+- Chat.Thread `follow`: opens at the newest message and keeps it in view as messages arrive.
+- tests/keyboard.test.js (in `npm test` and CI) and tests/compare.js (before/after pixel comparison of two copies).
+
 ### Fixed
+- Keyboard: Toolbar and ToolRail are one Tab stop (roving focus); Rating moves focus to the chosen star; the application
+  switcher closes when focus leaves it; focus rings on Panel and SectionHeading toggles, DropZone, Rating and Pagination;
+  the chat thread is reachable by keyboard. (batch 213)
+- Screen readers: CodeBlock announces Copied or Could not copy; a capped Count says "More than 99"; a selected Card is
+  aria-current. (batch 213)
+- Right to left: arrow keys follow reading order (Toolbar, Tabs, SegmentedControl, Rating, Tree, MediaViewer, WidgetGrid,
+  splitters); ButtonGroup joins, the Switch knob, the toast and the indeterminate progress mirror; directional icons
+  (chevrons, arrows, panel open and close, undo and redo) mirror. (batch 214)
+- Thumbnail and Avatar fall back to the icon or initials when their image fails to load. (batch 215)
+- Font sizes are rem (the same at the default 16px), so text follows the person's font-size setting (WCAG 1.4.4). (batch 215)
+- Object / record page: the aside stacks under the body below 1024px. (batch 215)
 - Accessibility (axe-core, WCAG 2.2 AA): 418 issues to 3 on 140 pages. The calendar month is a labeled group of day
   buttons named by full date (no broken grid roles); WidgetGrid's live region sits beside its list; a Table (and a
   design system table) that scrolls is a named region in the Tab order, with the focus ring; design system state
   samples set ARIA states only where the role allows them. (batches 211, 212)
 
 ### Changed (visual)
+- The drawer slides in from its edge (motion tokens; none with reduced motion). A Preview button shows a hover fill.
+- SearchWorkspace's result count uses the item noun ("8 assets", not "8 results").
+- Sentence case: "Add event", "Add task", "Save as", "Zoom in", "Zoom out". (batch 215)
 - Link text (`--plx-sys-content-link`, light theme) is blue-600 instead of blue-400: 6.04:1 on the canvas (was 4.46).
   Primary buttons and the header keep blue-400. (batch 212)
 - Subtle text (`--plx-sys-content-subtle`, light theme) is gray-700 instead of gray-600, as `content-muted`. (batch 212)

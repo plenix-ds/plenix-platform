@@ -27,6 +27,7 @@
      onClick(event): runs when the button is clicked, unless disabled or loading
      children: the button label
      className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
      ref: forwarded to the <button> or <a>
      ButtonGroup.label: the accessible name of the group
      ButtonGroup.children: the buttons
@@ -45,15 +46,18 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 
+const STRINGS = { working: 'Working' };
+
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', className, children, onClick, ...rest }, ref) {
+  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', className, children, onClick, strings, ...rest }, ref) {
+  const t = Object.assign({}, STRINGS, strings);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
     caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
   const content = (
     <>
-      {loading ? <span className="plx-button__icon"><Spinner size="sm" label="Working" /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon)}</span> : null)}
+      {loading ? <span className="plx-button__icon"><Spinner size="sm" label={t.working} /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon)}</span> : null)}
       {iconOnly ? null : (children !== undefined && children !== null ? <span className="plx-button__label">{children}</span> : null)}
       {iconEnd ? <span className="plx-button__icon">{asIcon(iconEnd)}</span> : null}
       {caret ? <span className="plx-button__caret" aria-hidden="true" /> : null}

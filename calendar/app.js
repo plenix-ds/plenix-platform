@@ -2421,7 +2421,7 @@ function CalendarScreen() {
     icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
       name: "plus"
     })
-  }, "Add Event"))), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
+  }, "Add event"))), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
     label: "Filter events"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Chip, {
     selected: !activeTag,

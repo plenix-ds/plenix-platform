@@ -28,6 +28,7 @@
        and pass idBase so the tabs point at it.
 */
 import React from 'react';
+import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Count } from '../Count/Count.jsx';
@@ -47,8 +48,9 @@ export function Tabs({ variant = 'contained', items, value, defaultValue, onChan
   const onKeyDown = (e) => {
     const at = enabled.findIndex((t) => t.value === current);
     let next = null;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (at + 1) % enabled.length;
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (at - 1 + enabled.length) % enabled.length;
+    const step = arrowStep(e, e.currentTarget);   // in reading order: right to left reverses Left and Right (batch 213)
+    if (step > 0) next = (at + 1) % enabled.length;
+    else if (step < 0) next = (at - 1 + enabled.length) % enabled.length;
     else if (e.key === 'Home') next = 0;
     else if (e.key === 'End') next = enabled.length - 1;
     else return;

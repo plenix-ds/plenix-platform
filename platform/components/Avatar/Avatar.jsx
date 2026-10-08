@@ -16,6 +16,7 @@
      className: more classes on the avatar
      style: more inline styles on the avatar
    Behavior:
+     A picture that fails to load falls back to the initials.
      The corner and the text size follow the size.
      Initials are the first letters of the first and last name ("Raphael Maher" → RM).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
@@ -43,8 +44,11 @@ export function Avatar({ name, src, initials, size = 'sm', background, color, la
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
+  // a picture that fails to load falls back to the initials (batch 215)
+  const [failed, setFailed] = React.useState(false);
+  React.useEffect(() => { setFailed(false); }, [src]);
   return (
     <span className={cx('plx-avatar', 'plx-avatar--' + s, className)} data-plx-avatar="" style={{ '--plx-comp-avatar-own-background': background || undefined, '--plx-comp-avatar-own-content': color || undefined }} role={label ? 'img' : undefined}
-      aria-label={label} aria-hidden={label ? undefined : true} {...rest}>{src ? <img className="plx-avatar__image" src={src} alt="" /> : text}</span>
+      aria-label={label} aria-hidden={label ? undefined : true} {...rest}>{src && !failed ? <img className="plx-avatar__image" src={src} alt="" onError={() => setFailed(true)} /> : text}</span>
   );
 }

@@ -168,7 +168,7 @@
       "$type": "color"
     },
     "font-size-09": {
-      "$value": "9px",
+      "$value": "0.5625rem",
       "$type": "dimension",
       "$extensions": {
         "com.plenix": {
@@ -179,35 +179,35 @@
       }
     },
     "font-size-10": {
-      "$value": "10px",
+      "$value": "0.625rem",
       "$type": "dimension"
     },
     "font-size-11": {
-      "$value": "11px",
+      "$value": "0.6875rem",
       "$type": "dimension"
     },
     "font-size-12": {
-      "$value": "12px",
+      "$value": "0.75rem",
       "$type": "dimension"
     },
     "font-size-13": {
-      "$value": "13px",
+      "$value": "0.8125rem",
       "$type": "dimension"
     },
     "font-size-14": {
-      "$value": "14px",
+      "$value": "0.875rem",
       "$type": "dimension"
     },
     "font-size-15": {
-      "$value": "15px",
+      "$value": "0.9375rem",
       "$type": "dimension"
     },
     "font-size-18": {
-      "$value": "18px",
+      "$value": "1.125rem",
       "$type": "dimension"
     },
     "font-size-20": {
-      "$value": "20px",
+      "$value": "1.25rem",
       "$type": "dimension"
     },
     "font-sans": {

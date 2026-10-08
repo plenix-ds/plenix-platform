@@ -20,10 +20,12 @@
      Panel.onToggle(next): runs when a collapsible panel opens or closes
      Panel.children: the body
      Panel.className: more classes on the <section>
+     Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
+       section: "section" } ({title} is the title, or the section word when the title is not text)
      Card.title: the card title; with onOpen or href it is the card's link or button
      Card.meta: a line of details under the title
      Card.actions: controls at the end of the header
-     Card.selected: shows the selected state (default false)
+     Card.selected: shows the selected state; with onOpen or href the card's link or button also gets aria-current="true" (default false)
      Card.href: makes the title a link
      Card.onOpen(): makes the title a button that runs this
      Card.headingLevel: the heading level of the title (default 3)
@@ -39,11 +41,13 @@
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
      MediaCard.onSelectChange(checked): runs when the selection box changes; without it there is no selection box
-     MediaCard.selectLabel: the accessible name of the selection box (default "Select " + the title)
+     MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
      MediaCard.href: makes the title a link
      MediaCard.onOpen(): makes the title a button that runs this
      MediaCard.actions: controls beside the title
      MediaCard.className: more classes on the <article>
+     MediaCard.strings: the words it announces, for other languages: { select: "Select {title}", item: "item" } (the selection
+       box's default name; {title} is the title, or the item word when the title is not text)
    Behavior:
      Panel is a section landmark named by its title.
      With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
@@ -58,9 +62,13 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
 
+const PANEL_STRINGS = { collapse: 'Collapse {title}', expand: 'Expand {title}', section: 'section' };
+const MEDIA_CARD_STRINGS = { select: 'Select {title}', item: 'item' };
+
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
 
-export function Panel({ title, description, actions, footer, flush = false, headingLevel = 2, collapsible = false, defaultExpanded = true, expanded, onToggle, className, children, ...rest }) {
+export function Panel({ title, description, actions, footer, flush = false, headingLevel = 2, collapsible = false, defaultExpanded = true, expanded, onToggle, strings, className, children, ...rest }) {
+  const t = Object.assign({}, PANEL_STRINGS, strings);
   const id = useUid('plx-panel');
   const [own, setOwn] = React.useState(defaultExpanded);
   const open = !collapsible || (expanded === undefined ? own : expanded);
@@ -75,7 +83,7 @@ export function Panel({ title, description, actions, footer, flush = false, head
           </div>
           {actions ? <div className="plx-panel__actions">{actions}</div> : null}
           {collapsible ? (
-            <button type="button" className="plx-panel__toggle" aria-expanded={open} aria-controls={id + '-body'} aria-label={(open ? 'Collapse ' : 'Expand ') + (typeof title === 'string' ? title : 'section')} onClick={toggle}>
+            <button type="button" className="plx-panel__toggle" aria-expanded={open} aria-controls={id + '-body'} aria-label={(open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.section)} onClick={toggle}>
               <Icon name="chevron-down" />
             </button>
           ) : null}
@@ -87,9 +95,9 @@ export function Panel({ title, description, actions, footer, flush = false, head
   );
 }
 
-function Opener({ href, onOpen, className, children }) {
-  if (href) return <a href={href} className={className}>{children}</a>;
-  if (onOpen) return <button type="button" className={className} onClick={onOpen}>{children}</button>;
+function Opener({ href, onOpen, current, className, children }) {
+  if (href) return <a href={href} className={className} aria-current={current ? 'true' : undefined}>{children}</a>;
+  if (onOpen) return <button type="button" className={className} aria-current={current ? 'true' : undefined} onClick={onOpen}>{children}</button>;
   return <span className={className}>{children}</span>;
 }
 
@@ -99,7 +107,7 @@ export function Card({ title, meta, actions, selected = false, href, onOpen, hea
     <article className={cx('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', className)} style={{ '--plx-comp-card-accent': accent || undefined }} {...rest}>
       {title ? (
         <div className="plx-card__header">
-          <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} className="plx-card__opener">{title}</Opener></H>
+          <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H>
           {actions ? <div className="plx-card__actions">{actions}</div> : null}
         </div>
       ) : null}
@@ -110,7 +118,8 @@ export function Card({ title, meta, actions, selected = false, href, onOpen, hea
 }
 
 export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4/3', selected = false, selecting = false, onSelectChange,
-  selectLabel, href, onOpen, actions, className, ...rest }) {
+  selectLabel, href, onOpen, actions, strings, className, ...rest }) {
+  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
   return (
     <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selected && 'is-selected', selecting && 'is-selecting', className)} {...rest}>
       <div className="plx-media-card__media" style={{ '--plx-comp-media-card-aspect': aspect.replace('/', ' / ') }}>
@@ -118,7 +127,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
         {badge ? <span className="plx-media-card__badge">{badge}</span> : null}
       </div>
       {onSelectChange ? (
-        <input type="checkbox" className="plx-media-card__select" checked={selected} aria-label={selectLabel || ('Select ' + (typeof title === 'string' ? title : 'item'))}
+        <input type="checkbox" className="plx-media-card__select" checked={selected} aria-label={selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item)}
           onChange={(e) => onSelectChange(e.target.checked)} />
       ) : null}
       <div className="plx-media-card__info">

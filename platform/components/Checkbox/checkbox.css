@@ -30,6 +30,8 @@
 .plx-switch__track::after{background-color:var(--plx-sys-control-background);block-size:var(--plx-ref-size-16px);border-bottom-left-radius:var(--plx-ref-radius-pill);border-bottom-right-radius:var(--plx-ref-radius-pill);border-top-left-radius:var(--plx-ref-radius-pill);border-top-right-radius:var(--plx-ref-radius-pill);box-shadow:var(--plx-sys-shadow-md);content:"";inline-size:var(--plx-ref-size-16px);inset-block-start:calc((var(--plx-ref-size-20px) - var(--plx-ref-size-16px)) / 2);inset-inline-start:calc((var(--plx-ref-size-20px) - var(--plx-ref-size-16px)) / 2);position:absolute;transition-duration:var(--plx-ref-motion-duration-base);transition-property:transform;transition-timing-function:var(--plx-ref-motion-ease-standard);}
 .plx-switch__input:checked+.plx-switch__track{background-color:var(--plx-sys-action-primary-background);}
 .plx-switch__input:checked+.plx-switch__track::after{transform:translateX(calc(var(--plx-ref-size-36px) - var(--plx-ref-size-20px)));}
+/* right to left: the knob starts at the inline start (the right), so on it slides the other way (batch 213) */
+.plx-switch__input:checked+.plx-switch__track:dir(rtl)::after{transform:translateX(calc(var(--plx-ref-size-20px) - var(--plx-ref-size-36px)));}
 .plx-switch__input:focus-visible+.plx-switch__track,
 .plx-switch__input.is-focus-visible+.plx-switch__track{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-ref-border-width-2px);}
 .plx-switch__input:disabled+.plx-switch__track{opacity:var(--plx-ref-opacity-50);}

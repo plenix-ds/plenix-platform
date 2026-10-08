@@ -44,15 +44,15 @@
   --plx-ref-color-purple-200: #dacfe8;
   --plx-ref-color-purple-100: #f3eef8;
   /* ── TYPOGRAPHY: sizes ── */
-  --plx-ref-font-size-09: 9px;
-  --plx-ref-font-size-10: 10px;
-  --plx-ref-font-size-11: 11px;
-  --plx-ref-font-size-12: 12px;
-  --plx-ref-font-size-13: 13px;
-  --plx-ref-font-size-14: 14px;
-  --plx-ref-font-size-15: 15px;
-  --plx-ref-font-size-18: 18px;
-  --plx-ref-font-size-20: 20px;
+  --plx-ref-font-size-09: 0.5625rem;
+  --plx-ref-font-size-10: 0.625rem;
+  --plx-ref-font-size-11: 0.6875rem;
+  --plx-ref-font-size-12: 0.75rem;
+  --plx-ref-font-size-13: 0.8125rem;
+  --plx-ref-font-size-14: 0.875rem;
+  --plx-ref-font-size-15: 0.9375rem;
+  --plx-ref-font-size-18: 1.125rem;
+  --plx-ref-font-size-20: 1.25rem;
   /* ── TYPOGRAPHY: families ── */
   --plx-ref-font-sans: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --plx-ref-font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;

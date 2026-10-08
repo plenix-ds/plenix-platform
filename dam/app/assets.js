@@ -6844,7 +6844,7 @@ function ImageEditorPage() {
     onClick: () => say('Saved')
   }, "Save"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     onClick: () => say('Saved as a copy')
-  }, "Save As"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
+  }, "Save as"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
     label: "Export As",
     trigger: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       caret: true
@@ -6882,13 +6882,13 @@ function ImageEditorPage() {
     variant: "ghost",
     iconOnly: true,
     icon: "ed-zoom-in",
-    label: "Zoom In",
+    label: "Zoom in",
     onClick: () => zoomTo(Math.min(4, zoom * 1.25))
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     variant: "ghost",
     iconOnly: true,
     icon: "ed-zoom-out",
-    label: "Zoom Out",
+    label: "Zoom out",
     onClick: () => zoomTo(Math.max(0.25, zoom / 1.25))
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     variant: "ghost",

@@ -11,11 +11,14 @@
      index: the shown item, when controlled
      defaultIndex: the first shown item, when uncontrolled (default 0)
      onIndexChange(next): runs with the new index when the item changes
-     label: the accessible name of the viewer (default "Preview")
+     label: the accessible name of the viewer (default strings.label: "Preview")
      actions: extra controls under the image (give them the class plx-media-viewer__control)
      className: more classes on the viewer
+     strings: the words it shows and announces, for other languages: { label: "Preview", close: "Close preview",
+       previous: "Previous", next: "Next", counter: "{index} of {total}" }
    Behavior:
-     Arrow Left / Right go to the previous / next item; with more than one item there are also Previous and Next buttons.
+     Arrow Left / Right go to the previous / next item in reading order (in a right-to-left page Arrow Right goes back);
+     with more than one item there are also Previous and Next buttons.
      Going past the last item wraps to the first, and back.
      Escape closes.
      Focus stays inside and returns to the opener.
@@ -29,8 +32,12 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { arrowStep } from '../../utils/direction.js';
 
-export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onIndexChange, label = 'Preview', actions, className }) {
+const STRINGS = { label: 'Preview', close: 'Close preview', previous: 'Previous', next: 'Next', counter: '{index} of {total}' };
+
+export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onIndexChange, label, actions, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
   const ref = React.useRef(null);
   const id = useUid('plx-mv');
   const [own, setOwn] = React.useState(defaultIndex);
@@ -42,15 +49,15 @@ export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onI
   const many = items.length > 1;
   const onKeyDown = (e) => {
     if (!many) return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(at + 1); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(at - 1); }
+    const step = arrowStep(e, e.currentTarget, { vertical: false });
+    if (step) { e.preventDefault(); go(at + step); }
   };
   return createPortal(
-    <div ref={ref} role="dialog" aria-modal="true" aria-label={label} aria-describedby={id + 'c'} tabIndex={-1}
+    <div ref={ref} role="dialog" aria-modal="true" aria-label={label || t.label} aria-describedby={id + 'c'} tabIndex={-1}
       className={cx('plx-media-viewer', className)} onKeyDown={onKeyDown}>
-      <div id={id + 'c'} className="plx-media-viewer__counter">{(at + 1) + ' of ' + items.length}</div>
-      <button type="button" className="plx-media-viewer__control plx-media-viewer__close" aria-label="Close preview" onClick={onClose}><Icon name="close" size="md" /></button>
-      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--previous" aria-label="Previous" onClick={() => go(at - 1)}><Icon name="chevron-down" size="md" /></button> : null}
+      <div id={id + 'c'} className="plx-media-viewer__counter">{t.counter.split('{index}').join(String(at + 1)).split('{total}').join(String(items.length))}</div>
+      <button type="button" className="plx-media-viewer__control plx-media-viewer__close" aria-label={t.close} onClick={onClose}><Icon name="close" size="md" /></button>
+      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--previous" aria-label={t.previous} onClick={() => go(at - 1)}><Icon name="chevron-down" size="md" /></button> : null}
       <figure className="plx-media-viewer__figure">
         <div className="plx-media-viewer__stage"><img src={item.src} alt={item.alt || ''} className="plx-media-viewer__image" /></div>
         {item.title || item.meta ? (
@@ -61,7 +68,7 @@ export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onI
         ) : null}
         {actions ? <div className="plx-media-viewer__actions">{actions}</div> : null}
       </figure>
-      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--next" aria-label="Next" onClick={() => go(at + 1)}><Icon name="chevron-down" size="md" /></button> : null}
+      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--next" aria-label={t.next} onClick={() => go(at + 1)}><Icon name="chevron-down" size="md" /></button> : null}
     </div>,
     document.body,
   );

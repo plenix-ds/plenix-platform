@@ -16,10 +16,18 @@
      Read-only, it is announced as "Rating: 3 of 5".
 */
 import React from 'react';
+import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 
 export function Rating({ value = 0, onChange, max = 5, label = 'Rating', readOnly = false, className, ...rest }) {
   const stars = Array.from({ length: max }, (_, i) => i + 1);
+  const starRefs = React.useRef({});
+  const focusNext = React.useRef(0);   // the star the keyboard chose: focus moves there once the value has changed
+  React.useEffect(() => {
+    const el = focusNext.current && starRefs.current[focusNext.current];
+    if (el) el.focus();
+    focusNext.current = 0;
+  }, [value]);
   if (readOnly) {
     return (
       <span className={cx('plx-rating', 'plx-rating--read-only', className)} role="img" aria-label={label + ': ' + value + ' of ' + max} {...rest}>
@@ -28,14 +36,19 @@ export function Rating({ value = 0, onChange, max = 5, label = 'Rating', readOnl
     );
   }
   const choose = (n) => onChange && onChange(n === value ? 0 : n);
+  // the arrow keys in reading order (Up is more, Down is less); focus follows the chosen star, as in a radio group (batch 213)
   const onKey = (e, n) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); if (onChange) onChange(Math.min(max, n + 1)); }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); if (onChange) onChange(Math.max(1, n - 1)); }
+    const step = e.key === 'ArrowUp' ? 1 : e.key === 'ArrowDown' ? -1 : arrowStep(e, e.currentTarget, { vertical: false });
+    if (!step) return;
+    e.preventDefault();
+    const next = Math.min(max, Math.max(1, n + step));
+    focusNext.current = next;
+    if (onChange) onChange(next);
   };
   return (
     <span className={cx('plx-rating', className)} role="radiogroup" aria-label={label} {...rest}>
       {stars.map((n) => (
-        <button type="button" key={n} role="radio" aria-checked={n === value} aria-label={n + (n === 1 ? ' star' : ' stars')}
+        <button type="button" key={n} ref={(el) => { starRefs.current[n] = el; }} role="radio" aria-checked={n === value} aria-label={n + (n === 1 ? ' star' : ' stars')}
           tabIndex={(value ? n === value : n === 1) ? 0 : -1} className={cx('plx-rating__star', n <= value && 'plx-rating__star--on')}
           onClick={() => choose(n)} onKeyDown={(e) => onKey(e, n)}>★</button>
       ))}

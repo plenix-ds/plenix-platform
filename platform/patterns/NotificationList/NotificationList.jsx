@@ -8,10 +8,12 @@
      onOpen(n): runs when a notification is opened
      onViewAll(): adds a "View all" button that runs it
      limit: how many to show (default: all)
-     label: the list's accessible name (default "Notifications")
+     label: the list's accessible name (default strings.label: "Notifications")
      footer: true (default) shows Mark all read and View all under the list; false when the page puts Mark all read in its
        own header (useSession().setNotifications)
      className: more classes
+     strings: the words it shows and announces, for other languages: { label: "Notifications", empty: "No notifications",
+       markAllRead: "Mark all read", viewAll: "View all" }
    Behavior:
      Unread ones are marked (ActivityList's unread dot) and bold.
      Opening one marks it read; Mark all read clears them, and is disabled when none are unread.
@@ -27,7 +29,10 @@ import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 
-export function NotificationList({ items, onChange, onOpen, onViewAll, limit, label = 'Notifications', footer = true, className }) {
+const STRINGS = { label: 'Notifications', empty: 'No notifications', markAllRead: 'Mark all read', viewAll: 'View all' };
+
+export function NotificationList({ items, onChange, onOpen, onViewAll, limit, label, footer = true, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
   const session = useSession();
   const own = items || session.notifications;
   const unread = own.filter((n) => n.unread).length;
@@ -38,15 +43,15 @@ export function NotificationList({ items, onChange, onOpen, onViewAll, limit, la
   return (
     <div className={cx('plx-notification-list', className)}>
       {shown.length ? (
-        <ActivityList label={label}>
+        <ActivityList label={label || t.label}>
           {shown.map((n) => (
             <ActivityList.Item key={n.id} title={n.text} time={n.time} unread={!!n.unread} onOpen={() => open(n)} />
           ))}
         </ActivityList>
-      ) : <EmptyState size="inline">No notifications</EmptyState>}
+      ) : <EmptyState size="inline">{t.empty}</EmptyState>}
       {footer ? <div className="plx-notification-list__footer">
-        <Button size="sm" variant="ghost" disabled={!unread} onClick={markAll}>Mark all read</Button>
-        {onViewAll ? <Button size="sm" variant="ghost" onClick={onViewAll}>View all</Button> : null}
+        <Button size="sm" variant="ghost" disabled={!unread} onClick={markAll}>{t.markAllRead}</Button>
+        {onViewAll ? <Button size="sm" variant="ghost" onClick={onViewAll}>{t.viewAll}</Button> : null}
       </div> : null}
     </div>
   );

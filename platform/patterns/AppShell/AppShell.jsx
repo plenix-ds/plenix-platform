@@ -15,6 +15,7 @@
      mainClassName: more classes on the main region
      className: more classes on the shell
      children: the main region's content
+     strings: the words it shows, for other languages: { skip: "Skip to main content" } (the skip link)
      PageContent.as: "section" (default) | "div"
      PageContent.className: more classes on the column
      PageContent.children: the page's parts
@@ -26,6 +27,8 @@
      The header and the footer always span the full width, above and below both side areas.
      The side areas live between the header and the footer, also when they open as overlays.
      Navigation: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge; the width is remembered.
+     The splitters follow the writing direction: in a right-to-left page the edges are mirrored, so dragging and Arrow Left /
+       Right move the edge the mirrored way (the key toward the outside widens the area).
      The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
        it again; this is remembered.
      Below 768px the navigation is a rail; Expand opens it over the main region, and Escape or a click outside closes it.
@@ -44,6 +47,9 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
+import { arrowStep, isRtl } from '../../utils/direction.js';
+
+const STRINGS = { skip: 'Skip to main content' };
 
 export const LayoutContext = React.createContext(null);
 export const useAppLayout = () => React.useContext(LayoutContext);
@@ -69,7 +75,8 @@ export function useMedia(query) {
 export const readPref = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key)); return v === null || v === undefined ? fallback : v; } catch (e) { return fallback; } };
 export const writePref = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* not stored: it lasts for this visit */ } };
 
-export function AppShell({ header, sideNav, panel, footer, mainId = 'main', mainClassName, className, children }) {
+export function AppShell({ header, sideNav, panel, footer, mainId = 'main', mainClassName, strings, className, children }) {
+  const t = Object.assign({}, STRINGS, strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
   const [expanded, setExpanded] = React.useState(() => readPref('plenix.sideNav.expanded', true));
   const [width, setWidthState] = React.useState(() => readPref('plenix.sideNav.width', null));
@@ -98,7 +105,7 @@ export function AppShell({ header, sideNav, panel, footer, mainId = 'main', main
   return (
     <LayoutContext.Provider value={ctx}>
       <div className={cx('plx-app-shell', className)}>
-        <a className="plx-app-shell__skip" href={'#' + mainId}>Skip to main content</a>
+        <a className="plx-app-shell__skip" href={'#' + mainId}>{t.skip}</a>
         {header}
         <div className="plx-app-shell__body">
           {sideNav || <div ref={setSlotEl} className="plx-app-shell__slot" />}
@@ -112,21 +119,23 @@ export function AppShell({ header, sideNav, panel, footer, mainId = 'main', main
 }
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
-   collapses the area when it can collapse. edge: "end" (a left area: dragging right widens it) or "start" (a right area). */
+   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
+   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
+   are mirrored (arrowStep gives the step in reading order). */
 export function PanelSplitter({ label, value, min, max, onChange, onCollapse, edge = 'end' }) {
   const dir = edge === 'end' ? 1 : -1;
   const clamp = (w) => Math.round(Math.max(min, Math.min(max(), w)));
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
     e.preventDefault();
-    const x0 = e.clientX, w0 = value;
-    const move = (ev) => onChange(clamp(w0 + (ev.clientX - x0) * dir));
+    const x0 = e.clientX, w0 = value, flip = isRtl(e.currentTarget) ? -1 : 1;
+    const move = (ev) => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
     const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.documentElement.classList.remove('is-resizing-columns'); };
     document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.documentElement.classList.add('is-resizing-columns');
   };
   const onKeyDown = (e) => {
     const s = tokenPx('--plx-sys-shell-splitter-step');
-    const step = { ArrowRight: s * dir, ArrowLeft: -s * dir }[e.key];
+    const step = arrowStep(e, e.currentTarget, { vertical: false }) * s * dir;
     if (step) { e.preventDefault(); onChange(clamp(value + step)); }
     else if (e.key === 'Home') { e.preventDefault(); onChange(clamp(min)); }
     else if (e.key === 'End') { e.preventDefault(); onChange(clamp(max())); }

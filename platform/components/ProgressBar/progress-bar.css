@@ -15,3 +15,6 @@
 /* indeterminate: a third of the track runs from start to end; still for people who ask for less motion (motion.css) */
 .plx-progress-bar.is-indeterminate .plx-progress-bar__fill{animation-duration:var(--plx-ref-motion-duration-loop-slow);animation-iteration-count:infinite;animation-name:plx-progress-bar-run;animation-timing-function:var(--plx-ref-motion-ease-standard);inline-size:33%;}
 @keyframes plx-progress-bar-run{from{transform:translateX(-100%);}to{transform:translateX(300%);}}
+/* right to left: the fill starts at the inline start (the right), so it runs toward the left (batch 213) */
+@keyframes plx-progress-bar-run-rtl{from{transform:translateX(100%);}to{transform:translateX(-300%);}}
+.plx-progress-bar.is-indeterminate .plx-progress-bar__fill:dir(rtl){animation-name:plx-progress-bar-run-rtl;}

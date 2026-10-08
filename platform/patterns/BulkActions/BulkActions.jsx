@@ -13,6 +13,8 @@
      SelectionSummary.onSelectAll(): runs from "Select all <total>"; without it (or without total) there is no Select all
      SelectionSummary.onClear(): runs from "Clear selection"; without it there is no Clear selection
      SelectionSummary.className: more classes
+     SelectionSummary.strings: the words it shows, for other languages: { selected: (n, word) => n + " " + word + " selected",
+       selectAll: (n) => "Select all " + n, clear: "Clear selection" } (word is the noun or plural, chosen by count)
      BulkActions.count: how many are selected; nothing renders at 0
      BulkActions.total: as for SelectionSummary
      BulkActions.noun: as for SelectionSummary
@@ -23,8 +25,9 @@
      BulkActions.actions[].danger: a destructive action, drawn as such
      BulkActions.actions[].single: the action applies to one item only, so it is disabled while more than one is selected
      BulkActions.actions[].items: [{ id, label, danger, single, onSelect }]; makes the action a menu button (a group of related actions)
-     BulkActions.label: the toolbar's accessible name (default "Selection actions")
+     BulkActions.label: the toolbar's accessible name (default strings.label: "Selection actions")
      BulkActions.className: more classes
+     BulkActions.strings: as for SelectionSummary, plus { label: "Selection actions", more: "More", moreLabel: "More actions" }
    Behavior:
      SelectionSummary reads "3 assets selected", announced politely.
      "Select all 120" shows when more can be selected.
@@ -38,25 +41,36 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup } from '../../components/Menu/Menu.jsx';
 
-export function SelectionSummary({ count, total, noun = 'item', plural, onSelectAll, onClear, className }) {
-  const words = count + ' ' + (count === 1 ? noun : (plural || noun + 's')) + ' selected';
+const STRINGS = {
+  selected: (n, word) => n + ' ' + word + ' selected',
+  selectAll: (n) => 'Select all ' + n,
+  clear: 'Clear selection',
+  label: 'Selection actions',
+  more: 'More',
+  moreLabel: 'More actions',
+};
+
+export function SelectionSummary({ count, total, noun = 'item', plural, onSelectAll, onClear, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const words = t.selected(count, count === 1 ? noun : (plural || noun + 's'));
   return (
     <div className={cx('plx-selection-summary', className)}>
       <span className="plx-selection-summary__count" aria-live="polite">{words}</span>
-      {onSelectAll && total !== undefined && count < total ? <Button size="sm" variant="link" onClick={onSelectAll}>{'Select all ' + total}</Button> : null}
-      {onClear ? <Button size="sm" variant="ghost" onClick={onClear}>Clear selection</Button> : null}
+      {onSelectAll && total !== undefined && count < total ? <Button size="sm" variant="link" onClick={onSelectAll}>{t.selectAll(total)}</Button> : null}
+      {onClear ? <Button size="sm" variant="ghost" onClick={onClear}>{t.clear}</Button> : null}
     </div>
   );
 }
 
-export function BulkActions({ count, total, noun, plural, onSelectAll, onClear, actions = [], label = 'Selection actions', className }) {
+export function BulkActions({ count, total, noun, plural, onSelectAll, onClear, actions = [], label, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
   const list = React.useRef(null);
   const fit = useOverflow(list, actions.length, actions.map((a) => a.label).join('|') + (count ? '' : '0'));
   if (!count) return null;
   const hidden = actions.slice(fit);
   return (
-    <div role="toolbar" aria-label={label} className={cx('plx-bulk-actions', className)}>
-      <SelectionSummary count={count} total={total} noun={noun} plural={plural} onSelectAll={onSelectAll} onClear={onClear} />
+    <div role="toolbar" aria-label={label || t.label} className={cx('plx-bulk-actions', className)}>
+      <SelectionSummary count={count} total={total} noun={noun} plural={plural} onSelectAll={onSelectAll} onClear={onClear} strings={strings} />
       <span className="plx-bulk-actions__divider" aria-hidden="true" />
       <div ref={list} className="plx-bulk-actions__list">
         {splitAt(actions.map((a) => (
@@ -69,7 +83,7 @@ export function BulkActions({ count, total, noun, plural, onSelectAll, onClear, 
           </span>
         )), fit, hidden.length ? (
           <span key="plx-more" data-plx-overflow-more="" className="plx-bulk-actions__slot">
-            <Menu label="More actions" placement="bottom-end" trigger={<Button size="sm" caret>More</Button>}>
+            <Menu label={t.moreLabel} placement="bottom-end" trigger={<Button size="sm" caret>{t.more}</Button>}>
               {hidden.map((a) => (a.items
                 ? <MenuGroup key={a.id} label={a.label}>{a.items.map((it) => <MenuItem key={it.id} danger={it.danger} disabled={off(it, count)} onSelect={it.onSelect}>{it.label}</MenuItem>)}</MenuGroup>
                 : <MenuItem key={a.id} icon={a.icon} danger={a.danger} disabled={off(a, count)} onSelect={a.onSelect}>{a.label}</MenuItem>))}

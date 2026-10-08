@@ -109,6 +109,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      tone: the pill color: "neutral" | "info" | "success" | "warning" | "danger" (default)
      max: above it the count shows max + "+" (e.g. "99+")
      label: the accessible name when the number alone is unclear ("3 unread notifications")
+     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
      className: more classes on the count
    Notes:
      Other props pass through to the <span>.
@@ -119,6 +120,7 @@ function Count({
   variant = 'plain',
   tone = 'danger',
   label,
+  moreThan = 'More than {max}',
   className,
   ...rest
 }) {
@@ -126,7 +128,7 @@ function Count({
   const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
-    "aria-label": label
+    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
   }, rest), shown);
 }
   } },
@@ -231,11 +233,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      max: the whole (default 100)
      label: what is progressing; always the accessible name, shown above the bar unless labelHidden
      labelHidden: the label is for assistive technology only (default false)
-     showValue: shows the percent at the end of the label row (default false)
+     showValue: shows the percent at the end of the label row, a whole percent in the locale's format ("42%") (default false)
      tone: "info" (default) | "success" | "warning" | "danger" | "neutral"
      color: a color the data brings (a project's color); it fills the bar instead of the tone
      size: "sm" (a 4px track) | "md" (default, an 8px track)
      className: more classes on the wrapper
+     locale: the language the percent is formatted in (default: the page's language, document.documentElement.lang)
    Behavior:
      The track is a progressbar (role="progressbar") with aria-valuenow, aria-valuemin and aria-valuemax; without a value it
      has none and its fill runs from start to end again and again.
@@ -254,9 +257,11 @@ function ProgressBar({
   tone = 'info',
   color,
   size = 'md',
+  locale,
   className,
   ...rest
 }) {
+  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
   const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -274,7 +279,10 @@ function ProgressBar({
     id: id
   }, label) : null, showValue && known ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-progress-bar__value"
-  }, Math.round(pct), "%") : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, new Intl.NumberFormat(loc, {
+    style: 'percent',
+    maximumFractionDigits: 0
+  }).format(pct / 100)) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-progress-bar__track",
     role: "progressbar",
     "aria-labelledby": showLabel ? id : undefined,
@@ -778,6 +786,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the avatar
      style: more inline styles on the avatar
    Behavior:
+     A picture that fails to load falls back to the initials.
      The corner and the text size follow the size.
      Initials are the first letters of the first and last name ("Raphael Maher" → RM).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
@@ -820,6 +829,11 @@ function Avatar({
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
+  // a picture that fails to load falls back to the initials (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, className),
     "data-plx-avatar": "",
@@ -830,10 +844,11 @@ function Avatar({
     role: label ? 'img' : undefined,
     "aria-label": label,
     "aria-hidden": label ? undefined : true
-  }, rest), src ? /*#__PURE__*/_react.default.createElement("img", {
+  }, rest), src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
     className: "plx-avatar__image",
     src: src,
-    alt: ""
+    alt: "",
+    onError: () => setFailed(true)
   }) : text);
 }
   } },
@@ -1013,6 +1028,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      alt: the picture's text alternative; default "" (empty when the name is next to it)
      icon: the icon shown without src; default "document"
    Behavior:
+     An image that fails to load falls back to the icon.
      The picture loads lazily.
      The icon is decorative and hidden from assistive technology.
 */
@@ -1022,11 +1038,17 @@ function Thumbnail({
   alt = '',
   icon = 'document'
 }) {
-  return src ? /*#__PURE__*/_react.default.createElement("img", {
+  // an image that fails to load falls back to the icon, as when there is none (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
+  return src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
     className: "plx-thumbnail",
     src: src,
     alt: alt,
-    loading: "lazy"
+    loading: "lazy",
+    onError: () => setFailed(true)
   }) : /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-thumbnail plx-thumbnail--icon",
     "aria-hidden": "true"
@@ -1519,6 +1541,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onClick(event): runs when the button is clicked, unless disabled or loading
      children: the button label
      className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
      ref: forwarded to the <button> or <a>
      ButtonGroup.label: the accessible name of the group
      ButtonGroup.children: the buttons
@@ -1532,6 +1555,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
      For one choice from several, use SegmentedControl instead of ButtonGroup.
 */
+const STRINGS = {
+  working: 'Working'
+};
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
@@ -1553,14 +1579,16 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
   className,
   children,
   onClick,
+  strings,
   ...rest
 }, ref) {
+  const t = Object.assign({}, STRINGS, strings);
   const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
   }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
     size: "sm",
-    label: "Working"
+    label: t.working
   })) : icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-button__icon"
   }, asIcon(icon)) : null, iconOnly ? null : children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("span", {
@@ -1616,7 +1644,7 @@ function ButtonGroup({
   }, rest), children);
 }
   } },
-  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1626,6 +1654,7 @@ exports.CodeBlock = CodeBlock;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · CodeBlock
    Summary: Code or a file's source, in the code font (DM Mono) on the page surface, with a Copy button.
@@ -1635,7 +1664,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      title: a file name or caption shown above the code (in the data font)
      maxHeight: "none" (default) | "tall" (a box that scrolls, for whole files)
      copy: false hides the Copy button (default true)
-     label: the accessible name of the code region (default the title, else "Code")
+     label: the accessible name of the code region (default the title, else strings.code)
+     strings: the words it shows and announces, for other languages: { code: "Code", copy: "Copy", copied: "Copied",
+       failed: "Could not copy" }
      language: "auto" (default: from the title's extension, else read from the code) | "jsx" | "js" | "css" | "html" | "text"
      children: the code, as a string
      className: more classes on the block
@@ -1645,7 +1676,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The code is colored in the usual editor manner: keywords, strings, comments, numbers, functions, tags, attributes and
        properties, custom properties, selectors.
      "text" is not colored.
-     Copy puts the code on the clipboard and reads "Copied" with a check for a moment.
+     Copy puts the code on the clipboard and reads "Copied" with a check for a moment; screen readers hear "Copied" (or
+       "Could not copy" when the clipboard refuses).
    Notes:
      The colors come from the --plx-sys-code-* roles.
 */
@@ -1708,25 +1740,42 @@ function highlight(text, language) {
   plain(text.slice(at));
   return out;
 }
+const STRINGS = {
+  code: 'Code',
+  copy: 'Copy',
+  copied: 'Copied',
+  failed: 'Could not copy'
+};
 function CodeBlock({
   title,
   maxHeight = 'none',
   copy = true,
   label,
   language = 'auto',
+  strings,
   className,
   children
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const [copied, setCopied] = _react.default.useState(false);
+  const [said, setSaid] = _react.default.useState(''); // what screen readers hear after Copy (batch 213)
   const text = typeof children === 'string' ? children : String(children == null ? '' : children);
   const lang = language === 'auto' ? detect(title, text) : language;
   const colored = _react.default.useMemo(() => highlight(text, lang), [text, lang]);
   const doCopy = () => {
     const done = () => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      setSaid(t.copied);
+      setTimeout(() => {
+        setCopied(false);
+        setSaid('');
+      }, 1500);
     };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => {});
+    const failed = () => {
+      setSaid(t.failed);
+      setTimeout(() => setSaid(''), 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, failed);else failed();
   };
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-code-block', 'plx-code-block--' + maxHeight, className)
@@ -1739,10 +1788,12 @@ function CodeBlock({
     variant: "ghost",
     icon: copied ? 'check' : undefined,
     onClick: doCopy
-  }, copied ? 'Copied' : 'Copy') : null) : null, /*#__PURE__*/_react.default.createElement("pre", {
+  }, copied ? t.copied : t.copy) : null, copy ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status"
+  }, said) : null) : null, /*#__PURE__*/_react.default.createElement("pre", {
     className: "plx-code-block__pre",
     tabIndex: 0,
-    "aria-label": label || title || 'Code'
+    "aria-label": label || title || t.code
   }, /*#__PURE__*/_react.default.createElement("code", {
     "data-plx-language": lang
   }, colored)));
@@ -2120,6 +2171,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Header.avatar: an Avatar before the title
      Chat.Header.actions: buttons at the end
      Chat.Thread.label: the accessible name of the thread (default "Conversation")
+     Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
+       to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
      Chat.Message.mine: the message is the person's own (end side, in the action color); default false
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
@@ -2182,16 +2235,35 @@ function Header({
 }
 function Thread({
   label = 'Conversation',
+  follow = true,
   className,
   children,
   ...rest
 }) {
+  // it opens at the newest message and follows new ones, unless the person has scrolled up to read (batch 215)
+  const ref = _react.default.useRef(null),
+    atEnd = _react.default.useRef(true);
+  const count = _react.default.Children.count(children);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (follow && el && atEnd.current) el.scrollTop = el.scrollHeight;
+  }, [count, follow]);
+  const onScroll = e => {
+    const el = e.currentTarget;
+    atEnd.current = el.scrollHeight - el.scrollTop - el.clientHeight <= el.clientHeight / 4;
+    if (rest.onScroll) rest.onScroll(e);
+  };
+  // it scrolls, so it is in the Tab order: the keyboard can scroll it too
   return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
     className: (0, _cx.cx)('plx-chat__thread', className),
     role: "log",
     "aria-live": "polite",
-    "aria-label": label
-  }, rest), children);
+    "aria-label": label,
+    tabIndex: 0
+  }, rest, {
+    onScroll: onScroll
+  }), children);
 }
 function Message({
   mine = false,
@@ -2345,14 +2417,25 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      perPage: the number of items per page
      perPageOptions: the per-page choices; with onPerPageChange the per-page choice shows
      onPerPageChange(n): runs when another per-page number is chosen
-     label: the accessible name of the navigation; default "Pages"
+     label: the accessible name of the navigation; default strings.label: "Pages"
      className: more classes on the navigation
+     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
+       previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
      ...rest: other attributes go on the navigation element
    Behavior:
      Shows the first and last page, the current page and its neighbors, with "…" between gaps.
      Previous is disabled on the first page; Next on the last.
      The current page carries aria-current="page".
 */
+const STRINGS = {
+  label: 'Pages',
+  range: '{first}–{last} of {total}',
+  previous: 'Previous page',
+  next: 'Next page',
+  page: 'Page {n}',
+  perPage: 'Per page'
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
   const list = Array.from(set).sort((a, b) => a - b),
@@ -2371,10 +2454,12 @@ function Pagination({
   perPage,
   perPageOptions,
   onPerPageChange,
-  label = 'Pages',
+  label,
+  strings,
   className,
   ...rest
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const go = p => {
     if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
   };
@@ -2382,15 +2467,19 @@ function Pagination({
   const last = total ? Math.min(total, page * (perPage || total)) : null;
   return /*#__PURE__*/_react.default.createElement("nav", _extends({
     className: (0, _cx.cx)('plx-pagination', className),
-    "aria-label": label
+    "aria-label": label || t.label
   }, rest), total ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-pagination__info"
-  }, first, "\u2013", last, " of ", total) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, fill(t.range, {
+    first,
+    last,
+    total
+  })) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-pagination__pages"
   }, /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-pagination__page plx-pagination__step",
-    "aria-label": "Previous page",
+    "aria-label": t.previous,
     disabled: page <= 1,
     onClick: () => go(page - 1)
   }, "\u2039"), pagesToShow(page, pageCount).map(p => typeof p === 'string' ? /*#__PURE__*/_react.default.createElement("span", {
@@ -2402,17 +2491,19 @@ function Pagination({
     key: p,
     className: "plx-pagination__page",
     "aria-current": p === page ? 'page' : undefined,
-    "aria-label": 'Page ' + p,
+    "aria-label": fill(t.page, {
+      n: p
+    }),
     onClick: () => go(p)
   }, p)), /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-pagination__page plx-pagination__step",
-    "aria-label": "Next page",
+    "aria-label": t.next,
     disabled: page >= pageCount,
     onClick: () => go(page + 1)
   }, "\u203A")), perPageOptions && onPerPageChange ? /*#__PURE__*/_react.default.createElement("label", {
     className: "plx-pagination__per-page"
-  }, /*#__PURE__*/_react.default.createElement("span", null, "Per page"), /*#__PURE__*/_react.default.createElement("select", {
+  }, /*#__PURE__*/_react.default.createElement("span", null, t.perPage), /*#__PURE__*/_react.default.createElement("select", {
     className: "plx-pagination__select",
     value: perPage,
     onChange: e => onPerPageChange(Number(e.target.value))
@@ -2422,7 +2513,46 @@ function Pagination({
   }, n)))) : null);
 }
   } },
-  "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.arrowStep = arrowStep;
+exports.isRtl = isRtl;
+/* Plenix · Writing direction (platform/utils/direction.js)
+   Summary: The arrow keys in reading order. In a right-to-left page Arrow Right moves back and Arrow Left forward, as the
+     eye reads; Up and Down are the same in both directions.
+   Usage:
+     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
+     if (step) { e.preventDefault(); move(index + step); }
+   Props:
+     isRtl(el): true when the element is laid out right to left (its computed direction)
+     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
+       false, Up and Down are ignored (a horizontal-only control)
+*/
+function isRtl(el) {
+  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function arrowStep(event, el, opts) {
+  const vertical = !opts || opts.vertical !== false;
+  const rtl = isRtl(el);
+  switch (event.key) {
+    case 'ArrowRight':
+      return rtl ? -1 : 1;
+    case 'ArrowLeft':
+      return rtl ? 1 : -1;
+    case 'ArrowDown':
+      return vertical ? 1 : 0;
+    case 'ArrowUp':
+      return vertical ? -1 : 0;
+    default:
+      return 0;
+  }
+}
+  } },
+  "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2430,6 +2560,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Rating = Rating;
 var _react = _interopRequireDefault(require("react"));
+var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Rating
@@ -2461,6 +2592,13 @@ function Rating({
   const stars = Array.from({
     length: max
   }, (_, i) => i + 1);
+  const starRefs = _react.default.useRef({});
+  const focusNext = _react.default.useRef(0); // the star the keyboard chose: focus moves there once the value has changed
+  _react.default.useEffect(() => {
+    const el = focusNext.current && starRefs.current[focusNext.current];
+    if (el) el.focus();
+    focusNext.current = 0;
+  }, [value]);
   if (readOnly) {
     return /*#__PURE__*/_react.default.createElement("span", _extends({
       className: (0, _cx.cx)('plx-rating', 'plx-rating--read-only', className),
@@ -2473,15 +2611,16 @@ function Rating({
     }, "\u2605")));
   }
   const choose = n => onChange && onChange(n === value ? 0 : n);
+  // the arrow keys in reading order (Up is more, Down is less); focus follows the chosen star, as in a radio group (batch 213)
   const onKey = (e, n) => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (onChange) onChange(Math.min(max, n + 1));
-    }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (onChange) onChange(Math.max(1, n - 1));
-    }
+    const step = e.key === 'ArrowUp' ? 1 : e.key === 'ArrowDown' ? -1 : (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    });
+    if (!step) return;
+    e.preventDefault();
+    const next = Math.min(max, Math.max(1, n + step));
+    focusNext.current = next;
+    if (onChange) onChange(next);
   };
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-rating', className),
@@ -2490,6 +2629,9 @@ function Rating({
   }, rest), stars.map(n => /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     key: n,
+    ref: el => {
+      starRefs.current[n] = el;
+    },
     role: "radio",
     "aria-checked": n === value,
     "aria-label": n + (n === 1 ? ' star' : ' stars'),
@@ -2552,7 +2694,7 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
   }), children);
 });
   } },
-  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2560,6 +2702,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SegmentedControl = SegmentedControl;
 var _react = _interopRequireDefault(require("react"));
+var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -2598,8 +2741,9 @@ function SegmentedControl({
   const index = Math.max(0, options.findIndex(o => o.value === value));
   const move = (e, i) => {
     let n = null;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % options.length;
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + options.length) % options.length;
+    const step = (0, _direction.arrowStep)(e, e.currentTarget); // in reading order: right to left reverses Left and Right (batch 213)
+    if (step > 0) n = (i + 1) % options.length;
+    if (step < 0) n = (i - 1 + options.length) % options.length;
     if (e.key === 'Home') n = 0;
     if (e.key === 'End') n = options.length - 1;
     if (n === null) return;
@@ -3327,7 +3471,51 @@ function Slider({
   }, rest)));
 }
   } },
-  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/roving.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.roveTo = roveTo;
+exports.useRovingFocus = useRovingFocus;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Roving focus (platform/utils/roving.js)
+   Summary: One Tab stop for a group of controls (a toolbar, a rail): only the current control is in the Tab order
+     (tabindex 0), the others are reached with the arrow keys (tabindex -1). The current control is the one last focused,
+     else the first. This is the WAI-ARIA toolbar pattern: Tab enters and leaves the group in one step.
+   Usage:
+     const ref = React.useRef(null);
+     useRovingFocus(ref, () => items());          // after every render
+     <div ref={ref} onFocus={(e) => roveTo(ref, items(), e.target)}>
+   Props:
+     useRovingFocus(ref, getItems): keeps exactly one item at tabindex 0 after every render
+     roveTo(ref, items, el): makes el the current item (call when focus enters an item)
+*/
+
+function apply(items, current) {
+  items.forEach(el => {
+    const on = el === current;
+    if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
+    el.setAttribute('data-plx-roving', on ? 'current' : '');
+  });
+}
+function roveTo(ref, items, el) {
+  if (!ref.current || items.indexOf(el) < 0) return;
+  apply(items, el);
+}
+function useRovingFocus(ref, getItems) {
+  _react.default.useEffect(() => {
+    if (!ref.current) return;
+    const items = getItems();
+    if (!items.length) return;
+    const current = items.filter(el => el.getAttribute('data-plx-roving') === 'current')[0] || items[0];
+    apply(items, current);
+  });
+}
+  } },
+  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3335,6 +3523,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Toolbar = Toolbar;
 var _react = _interopRequireDefault(require("react"));
+var _roving = require("../../utils/roving.js");
+var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
@@ -3354,7 +3544,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Toolbar.Group.children: the controls in the group
      Toolbar.Spacer: pushes what follows to the end of the row; no props
    Behavior:
-     Arrow keys move between its controls (wrapping); Home and End jump to the first and last.
+     One Tab stop: Tab enters and leaves the toolbar; the current control (the one last used) is in the Tab order.
+     Arrow keys move between its controls in reading order (wrapping; reversed in right to left); Home and End jump to the
+     first and last.
      Tab leaves the toolbar.
      In a text field, Left and Right move the caret instead.
      In a radio group, only the checked option is a stop.
@@ -3368,26 +3560,38 @@ function Toolbar({
   className,
   children,
   onKeyDown,
+  onFocus,
   ...rest
 }) {
   const ref = _react.default.useRef(null);
+  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), el => el.offsetParent !== null && !el.closest('[role="radiogroup"] [aria-checked="false"]')) : [];
+  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
+  (0, _roving.useRovingFocus)(ref, itemsOf);
   const onKey = e => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
     if (e.target.tagName === 'INPUT' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return; // the caret moves inside a field
-    const items = Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), el => el.offsetParent !== null && !el.closest('[role="radiogroup"] [aria-checked="false"]'));
+    const items = itemsOf();
     const i = items.indexOf(document.activeElement);
     if (i < 0) return;
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowRight' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
+    const step = (0, _direction.arrowStep)(e, ref.current, {
+      vertical: false
+    }); // in reading order: right to left reverses Left and Right
+    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
     e.preventDefault();
     items[n].focus();
+  };
+  const onFocusIn = e => {
+    if (onFocus) onFocus(e);
+    (0, _roving.roveTo)(ref, itemsOf(), e.target);
   };
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: ref,
     role: "toolbar",
     "aria-label": label,
     className: (0, _cx.cx)('plx-toolbar', className),
-    onKeyDown: onKey
+    onKeyDown: onKey,
+    onFocus: onFocusIn
   }, rest), children);
 }
 Toolbar.Group = function ToolbarGroup({
@@ -3901,7 +4105,7 @@ function useToast() {
   return api;
 }
   } },
-  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3910,6 +4114,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Tabs = Tabs;
 exports.tabsPanelId = void 0;
 var _react = _interopRequireDefault(require("react"));
+var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Count = require("../Count/Count.jsx");
@@ -3974,7 +4179,8 @@ function Tabs({
   const onKeyDown = e => {
     const at = enabled.findIndex(t => t.value === current);
     let next = null;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (at + 1) % enabled.length;else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (at - 1 + enabled.length) % enabled.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = enabled.length - 1;else return;
+    const step = (0, _direction.arrowStep)(e, e.currentTarget); // in reading order: right to left reverses Left and Right (batch 213)
+    if (step > 0) next = (at + 1) % enabled.length;else if (step < 0) next = (at - 1 + enabled.length) % enabled.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = enabled.length - 1;else return;
     e.preventDefault();
     const t = enabled[next];
     select(t.value);
@@ -4059,10 +4265,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Panel.onToggle(next): runs when a collapsible panel opens or closes
      Panel.children: the body
      Panel.className: more classes on the <section>
+     Panel.strings: the words it announces, for other languages: { collapse: "Collapse {title}", expand: "Expand {title}",
+       section: "section" } ({title} is the title, or the section word when the title is not text)
      Card.title: the card title; with onOpen or href it is the card's link or button
      Card.meta: a line of details under the title
      Card.actions: controls at the end of the header
-     Card.selected: shows the selected state (default false)
+     Card.selected: shows the selected state; with onOpen or href the card's link or button also gets aria-current="true" (default false)
      Card.href: makes the title a link
      Card.onOpen(): makes the title a button that runs this
      Card.headingLevel: the heading level of the title (default 3)
@@ -4078,11 +4286,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
      MediaCard.onSelectChange(checked): runs when the selection box changes; without it there is no selection box
-     MediaCard.selectLabel: the accessible name of the selection box (default "Select " + the title)
+     MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
      MediaCard.href: makes the title a link
      MediaCard.onOpen(): makes the title a button that runs this
      MediaCard.actions: controls beside the title
      MediaCard.className: more classes on the <article>
+     MediaCard.strings: the words it announces, for other languages: { select: "Select {title}", item: "item" } (the selection
+       box's default name; {title} is the title, or the item word when the title is not text)
    Behavior:
      Panel is a section landmark named by its title.
      With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
@@ -4092,6 +4302,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MediaCard meta is technical data and uses the data font.
      Other props pass through to the outer element.
 */
+const PANEL_STRINGS = {
+  collapse: 'Collapse {title}',
+  expand: 'Expand {title}',
+  section: 'section'
+};
+const MEDIA_CARD_STRINGS = {
+  select: 'Select {title}',
+  item: 'item'
+};
 const H = ({
   level,
   ...props
@@ -4107,10 +4326,12 @@ function Panel({
   defaultExpanded = true,
   expanded,
   onToggle,
+  strings,
   className,
   children,
   ...rest
 }) {
+  const t = Object.assign({}, PANEL_STRINGS, strings);
   const id = (0, _layer.useUid)('plx-panel');
   const [own, setOwn] = _react.default.useState(defaultExpanded);
   const open = !collapsible || (expanded === undefined ? own : expanded);
@@ -4138,7 +4359,7 @@ function Panel({
     className: "plx-panel__toggle",
     "aria-expanded": open,
     "aria-controls": id + '-body',
-    "aria-label": (open ? 'Collapse ' : 'Expand ') + (typeof title === 'string' ? title : 'section'),
+    "aria-label": (open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.section),
     onClick: toggle
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "chevron-down"
@@ -4153,16 +4374,19 @@ function Panel({
 function Opener({
   href,
   onOpen,
+  current,
   className,
   children
 }) {
   if (href) return /*#__PURE__*/_react.default.createElement("a", {
     href: href,
-    className: className
+    className: className,
+    "aria-current": current ? 'true' : undefined
   }, children);
   if (onOpen) return /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: className,
+    "aria-current": current ? 'true' : undefined,
     onClick: onOpen
   }, children);
   return /*#__PURE__*/_react.default.createElement("span", {
@@ -4196,6 +4420,7 @@ function Card({
   }, /*#__PURE__*/_react.default.createElement(Opener, {
     href: href,
     onOpen: onOpen,
+    current: selected,
     className: "plx-card__opener"
   }, title)), actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__actions"
@@ -4220,9 +4445,11 @@ function MediaCard({
   href,
   onOpen,
   actions,
+  strings,
   className,
   ...rest
 }) {
+  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
   return /*#__PURE__*/_react.default.createElement("article", _extends({
     className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selected && 'is-selected', selecting && 'is-selecting', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
@@ -4246,7 +4473,7 @@ function MediaCard({
     type: "checkbox",
     className: "plx-media-card__select",
     checked: selected,
-    "aria-label": selectLabel || 'Select ' + (typeof title === 'string' ? title : 'item'),
+    "aria-label": selectLabel || t.select.split('{title}').join(typeof title === 'string' ? title : t.item),
     onChange: e => onSelectChange(e.target.checked)
   }) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-media-card__info"
@@ -4499,6 +4726,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      items[].children: makes the item a subgroup: a row with a chevron that folds the rows inside it (same item shape)
      items[].defaultExpanded: whether a subgroup starts open; default false (it also opens while it holds the current item)
      className: more classes on the navigation
+     locale: the language the counts are formatted in (default: the page's language, document.documentElement.lang)
+     strings: the words it shows and announces, for other languages: { pin: "Pin", unpin: "Unpin", pinItem: "Pin {label}",
+       unpinItem: "Unpin {label}" } (pin and unpin are the pin button's tooltip; pinItem and unpinItem its name)
    Behavior:
      The current item carries aria-current="page".
      An item with href is a link; otherwise it is a button and onSelect(id) runs.
@@ -4510,6 +4740,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      item.actions are siblings of the row's own button, never inside it.
 */
+const STRINGS = {
+  pin: 'Pin',
+  unpin: 'Unpin',
+  pinItem: 'Pin {label}',
+  unpinItem: 'Unpin {label}'
+};
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
@@ -4517,7 +4753,9 @@ const holds = (item, current) => !!item.children && item.children.some(c => c.id
 function SubGroup({
   item,
   current,
-  onSelect
+  onSelect,
+  t,
+  loc
 }) {
   const inside = holds(item, current);
   const [open, setOpen] = _react.default.useState(!!item.defaultExpanded || inside);
@@ -4552,18 +4790,24 @@ function SubGroup({
     key: it.id,
     item: it,
     current: current,
-    onSelect: onSelect
+    onSelect: onSelect,
+    t: t,
+    loc: loc
   })) : null));
 }
 function Item({
   item,
   current,
-  onSelect
+  onSelect,
+  t,
+  loc
 }) {
   if (item.children) return /*#__PURE__*/_react.default.createElement(SubGroup, {
     item: item,
     current: current,
-    onSelect: onSelect
+    onSelect: onSelect,
+    t: t,
+    loc: loc
   });
   const on = item.id === current;
   const props = {
@@ -4578,7 +4822,7 @@ function Item({
     className: "plx-nav-list__name"
   }, item.label), item.count !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-list__count"
-  }, "(", typeof item.count === 'number' ? item.count.toLocaleString('en-US') : item.count, ")") : null));
+  }, "(", typeof item.count === 'number' ? item.count.toLocaleString(loc) : item.count, ")") : null));
   return /*#__PURE__*/_react.default.createElement("li", {
     className: (0, _cx.cx)('plx-nav-list__entry', (item.actions || item.onPin) && 'plx-nav-list__entry--actions', item.pinned && 'is-pinned')
   }, item.href ? /*#__PURE__*/_react.default.createElement("a", _extends({
@@ -4596,8 +4840,8 @@ function Item({
     type: "button",
     className: "plx-nav-list__pin",
     "aria-pressed": !!item.pinned,
-    "aria-label": (item.pinned ? 'Unpin ' : 'Pin ') + item.label,
-    title: item.pinned ? 'Unpin' : 'Pin',
+    "aria-label": (item.pinned ? t.unpinItem : t.pinItem).split('{label}').join(item.label),
+    title: item.pinned ? t.unpin : t.pin,
     onClick: () => item.onPin(item.id)
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: item.pinned ? 'pin-filled' : 'pin'
@@ -4610,7 +4854,9 @@ function Group({
   onSelect,
   collapsible = true,
   icon,
-  defaultExpanded = true
+  defaultExpanded = true,
+  t,
+  loc
 }) {
   const id = (0, _layer.useUid)('plx-nav');
   if (heading && collapsible) {
@@ -4627,7 +4873,9 @@ function Group({
       key: it.id,
       item: it,
       current: current,
-      onSelect: onSelect
+      onSelect: onSelect,
+      t: t,
+      loc: loc
     }))));
   }
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -4642,7 +4890,9 @@ function Group({
     key: it.id,
     item: it,
     current: current,
-    onSelect: onSelect
+    onSelect: onSelect,
+    t: t,
+    loc: loc
   }))));
 }
 function NavList({
@@ -4651,8 +4901,12 @@ function NavList({
   groups,
   value,
   onSelect,
+  locale,
+  strings,
   className
 }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
   const all = groups || [{
     heading: null,
     items: items || []
@@ -4668,11 +4922,13 @@ function NavList({
     icon: g.icon,
     defaultExpanded: g.defaultExpanded,
     current: value,
-    onSelect: onSelect
+    onSelect: onSelect,
+    t: t,
+    loc: loc
   })));
 }
   } },
-  "platform/components/Tree/Tree.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tree/Tree.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4680,6 +4936,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Tree = Tree;
 var _react = _interopRequireDefault(require("react"));
+var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -4763,9 +5020,11 @@ function Tree({
       if (flat[at + 1]) moveTo(flat[at + 1].node.id);
     } else if (e.key === 'ArrowUp') {
       if (flat[at - 1]) moveTo(flat[at - 1].node.id);
-    } else if (e.key === 'Home') moveTo(flat[0].node.id);else if (e.key === 'End') moveTo(flat[flat.length - 1].node.id);else if (e.key === 'ArrowRight') {
+    } else if (e.key === 'Home') moveTo(flat[0].node.id);else if (e.key === 'End') moveTo(flat[flat.length - 1].node.id);
+    // the key toward the reading end opens a branch, the other closes it or goes to the parent (right to left mirrors; batch 213)
+    else if (e.key === ((0, _direction.isRtl)(e.currentTarget) ? 'ArrowLeft' : 'ArrowRight')) {
       if (kids && !open.has(cur.node.id)) toggle(cur.node.id);else if (kids) moveTo(cur.node.children[0].id);
-    } else if (e.key === 'ArrowLeft') {
+    } else if (e.key === ((0, _direction.isRtl)(e.currentTarget) ? 'ArrowRight' : 'ArrowLeft')) {
       if (kids && open.has(cur.node.id)) toggle(cur.node.id);else if (cur.parent !== null) moveTo(cur.parent);
     } else if (e.key === 'Enter' || e.key === ' ') {
       if (onSelect) onSelect(cur.node.id);
@@ -4826,7 +5085,7 @@ function Tree({
   }, renderNodes(nodes, 1));
 }
   } },
-  "platform/components/MediaViewer/MediaViewer.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/MediaViewer/MediaViewer.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4838,6 +5097,7 @@ var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _direction = require("../../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MediaViewer
    Summary: A full-screen preview of images, one at a time (the lightbox).
@@ -4852,11 +5112,14 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      index: the shown item, when controlled
      defaultIndex: the first shown item, when uncontrolled (default 0)
      onIndexChange(next): runs with the new index when the item changes
-     label: the accessible name of the viewer (default "Preview")
+     label: the accessible name of the viewer (default strings.label: "Preview")
      actions: extra controls under the image (give them the class plx-media-viewer__control)
      className: more classes on the viewer
+     strings: the words it shows and announces, for other languages: { label: "Preview", close: "Close preview",
+       previous: "Previous", next: "Next", counter: "{index} of {total}" }
    Behavior:
-     Arrow Left / Right go to the previous / next item; with more than one item there are also Previous and Next buttons.
+     Arrow Left / Right go to the previous / next item in reading order (in a right-to-left page Arrow Right goes back);
+     with more than one item there are also Previous and Next buttons.
      Going past the last item wraps to the first, and back.
      Escape closes.
      Focus stays inside and returns to the opener.
@@ -4866,6 +5129,13 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The viewer renders in a portal on document.body.
 */
 
+const STRINGS = {
+  label: 'Preview',
+  close: 'Close preview',
+  previous: 'Previous',
+  next: 'Next',
+  counter: '{index} of {total}'
+};
 function MediaViewer({
   open,
   onClose,
@@ -4873,10 +5143,12 @@ function MediaViewer({
   index,
   defaultIndex = 0,
   onIndexChange,
-  label = 'Preview',
+  label,
   actions,
+  strings,
   className
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const ref = _react.default.useRef(null);
   const id = (0, _layer.useUid)('plx-mv');
   const [own, setOwn] = _react.default.useState(defaultIndex);
@@ -4895,19 +5167,19 @@ function MediaViewer({
   const many = items.length > 1;
   const onKeyDown = e => {
     if (!many) return;
-    if (e.key === 'ArrowRight') {
+    const step = (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    });
+    if (step) {
       e.preventDefault();
-      go(at + 1);
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      go(at - 1);
+      go(at + step);
     }
   };
   return /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
     ref: ref,
     role: "dialog",
     "aria-modal": "true",
-    "aria-label": label,
+    "aria-label": label || t.label,
     "aria-describedby": id + 'c',
     tabIndex: -1,
     className: (0, _cx.cx)('plx-media-viewer', className),
@@ -4915,10 +5187,10 @@ function MediaViewer({
   }, /*#__PURE__*/_react.default.createElement("div", {
     id: id + 'c',
     className: "plx-media-viewer__counter"
-  }, at + 1 + ' of ' + items.length), /*#__PURE__*/_react.default.createElement("button", {
+  }, t.counter.split('{index}').join(String(at + 1)).split('{total}').join(String(items.length))), /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-media-viewer__control plx-media-viewer__close",
-    "aria-label": "Close preview",
+    "aria-label": t.close,
     onClick: onClose
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "close",
@@ -4926,7 +5198,7 @@ function MediaViewer({
   })), many ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--previous",
-    "aria-label": "Previous",
+    "aria-label": t.previous,
     onClick: () => go(at - 1)
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "chevron-down",
@@ -4952,7 +5224,7 @@ function MediaViewer({
   }, actions) : null), many ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--next",
-    "aria-label": "Next",
+    "aria-label": t.next,
     onClick: () => go(at + 1)
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "chevron-down",
@@ -5314,7 +5586,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      The header name shows "Plenix" over the application's name with a chevron; it opens the application switcher.
      The switcher lists every application, pinned first; pin or unpin from there.
-     The switcher is a dialog: it focuses its first link, and Escape or a click outside closes it.
+     The switcher is a dialog: it focuses its first link, and Escape, a click outside or focus leaving it closes it.
      The header links are the applications the person pinned (from the switcher), as icon links with tooltips; the current one is marked.
      On a phone the header links leave the header; the switcher in the header name still has them.
      The end is right-aligned: search always first and furthest left, then the application's action, then the utilities with no gaps.
@@ -5627,9 +5899,14 @@ AppHeader.Switcher = function AppHeaderSwitcher({
       if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
     };
     document.addEventListener('mousedown', out);
+    // focus leaving it (Tab past the last application) closes it too: it never stays open behind the page (batch 213)
+    document.addEventListener('focusin', out);
     const first = panel.current && panel.current.querySelector('a');
     if (first) first.focus();
-    return () => document.removeEventListener('mousedown', out);
+    return () => {
+      document.removeEventListener('mousedown', out);
+      document.removeEventListener('focusin', out);
+    };
   }, [open]);
   const pinnedList = apps.filter(a => pinnedApps.indexOf(a.id) >= 0);
   const pin = a => setPinnedApps(prev => prev.indexOf(a.id) >= 0 ? prev.filter(x => x !== a.id) : prev.concat([a.id]));
@@ -5792,13 +6069,15 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        filters={[{ id: 'type', label: 'Type', options: [{ value: 'png', label: 'PNG', count: 12 }], value: ['png'], multiple: true }]}
        onChange={(id, value) => …} onClearAll={() => …} actions={<…/>} />
    Props:
-     label: the accessible name of the row of filters
+     label: the accessible name of the row of filters (default strings.label: "Filters")
      filters: the filters, in order: [{ id, label, options: [{ value, label, count }], value, multiple }]
      filters[].multiple: true: value is an array of option values and the menu stays open while choosing; false: value is one option value (or null) and choosing closes the menu
      onChange(id, value): runs when a filter's value changes
      onClearAll(): runs from "Clear all"; without it there is no "Clear all"
      actions: controls at the end of the row (a sort menu, a view switch)
      className: more classes on the row
+     strings: the words it shows and announces, for other languages: { label: "Filters", more: "More filters", clearAll:
+       "Clear all", one: "{label}: {value}", several: "{label} · {count}" } (one and several build a set filter's button text)
    Behavior:
      A filter with a value shows it in its button ("Type: PNG", or "Type · 2" for several) and the selected state.
      Filters that do not fit on the row move into a "More filters" menu: the same choices, grouped by filter.
@@ -5806,16 +6085,33 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const isSet = f => f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '';
-const summary = f => {
+const STRINGS = {
+  label: 'Filters',
+  more: 'More filters',
+  clearAll: 'Clear all',
+  one: '{label}: {value}',
+  several: '{label} · {count}'
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+const summary = (f, t) => {
   if (!isSet(f)) return f.label;
   if (f.multiple) {
     const v = f.value;
-    if (v.length > 1) return f.label + ' · ' + v.length;
+    if (v.length > 1) return fill(t.several, {
+      label: f.label,
+      count: v.length
+    });
     const o = f.options.find(x => x.value === v[0]);
-    return f.label + ': ' + (o ? o.label : v[0]);
+    return fill(t.one, {
+      label: f.label,
+      value: o ? o.label : v[0]
+    });
   }
   const o = f.options.find(x => x.value === f.value);
-  return f.label + ': ' + (o ? o.label : f.value);
+  return fill(t.one, {
+    label: f.label,
+    value: o ? o.label : f.value
+  });
 };
 function choices(f, onChange) {
   return f.options.map(o => {
@@ -5834,20 +6130,22 @@ function choices(f, onChange) {
   });
 }
 function FilterBar({
-  label = 'Filters',
+  label,
   filters,
   onChange,
   onClearAll,
   actions,
+  strings,
   className
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const list = _react.default.useRef(null);
-  const fit = (0, _overflow.useOverflow)(list, filters.length, filters.map(summary).join('|'));
+  const fit = (0, _overflow.useOverflow)(list, filters.length, filters.map(f => summary(f, t)).join('|'));
   const hidden = filters.slice(fit);
   const anySet = filters.some(isSet);
   return /*#__PURE__*/_react.default.createElement("div", {
     role: "group",
-    "aria-label": label,
+    "aria-label": label || t.label,
     className: (0, _cx.cx)('plx-filter-bar', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     ref: list,
@@ -5862,19 +6160,19 @@ function FilterBar({
       size: "sm",
       caret: true,
       selected: isSet(f)
-    }, summary(f))
+    }, summary(f, t))
   }, choices(f, onChange)))), fit, hidden.length ? /*#__PURE__*/_react.default.createElement("span", {
     key: "plx-more",
     "data-plx-overflow-more": "",
     className: "plx-filter-bar__slot"
   }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: "More filters",
+    label: t.more,
     placement: "bottom-end",
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "sm",
       caret: true,
       selected: hidden.some(isSet)
-    }, 'More filters')
+    }, t.more)
   }, hidden.map((f, i) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
     key: f.id
   }, i ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
@@ -5887,7 +6185,7 @@ function FilterBar({
     size: "sm",
     variant: "ghost",
     onClick: onClearAll
-  }, "Clear all") : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
+  }, t.clearAll) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-filter-bar__actions"
   }, actions) : null);
 }
@@ -5919,16 +6217,16 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        sort={{ value, options, onChange }} view={{ value, options, onChange }} onSave={() => …}
        headStart={<…/>} headEnd={<…/>} bulk={<BulkActions…/>}>{results}</SearchWorkspace>
    Props:
-     title: "Search" (default) before a query, "Search results" after one, or a saved search's name (the capability decides)
+     title: strings.title ("Search", the default) before a query, "Search results" after one, or a saved search's name (the capability decides)
      query: the search field's text (default "")
      onQueryChange(next): runs when the search field changes; Enter or typing updates the results (the capability filters)
-     placeholder: the search field's placeholder (default "Search…")
+     placeholder: the search field's placeholder (default strings.placeholder: "Search…")
      filters: FilterBar filters: [{ id, label, options, value, multiple }]
      onFilterChange(id, value): runs when a filter changes or its chip is removed
      onClearAll(): runs from Clear all, beside the chips of the set filters
      count: the number of results, for the result count line (default 0)
-     noun: the word for one result in the count line, as in "128 assets" (default "result")
-     plural: the word for several (default: noun + "s")
+     noun: the word for one result in both count lines, as in "128 assets" (default strings.result: "result")
+     plural: the word for several (default: noun + "s", or strings.results: "results" without a noun)
      sort: { value, options, onChange }; a Sort menu (optional)
      view: { value, options, onChange }; a Grid / Table switch (optional)
      onSave(): shows Save search (only capabilities that keep saved searches)
@@ -5937,6 +6235,12 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      bulk: a BulkActions bar shown above the results
      className: more classes
      children: the results
+     locale: the language the count is formatted in (default: the page's language, document.documentElement.lang)
+     strings: the words it shows and announces, for other languages: { title: "Search", placeholder: "Search…", result:
+       "result", results: "results", searchField: "Search {nouns}", save: "Save search", filters: "Filters", activeFilters:
+       "Active filters", chip: "{label}: {value}", remove: "Remove {text}", clearAll: "Clear all", view: "View", grid: "Grid",
+       table: "Table", sort: "Sort", sortValue: "Sort: {value}", noMatchQuery: "Nothing matches “{query}”.",
+       noMatchQueryFilters: "Nothing matches “{query}” with these filters.", noMatchFilters: "Nothing matches these filters." }
    Behavior:
      Set filters are repeated as removable chips under the toolbar ("Type: PNG ×") with Clear all.
      The count line is announced politely.
@@ -5946,20 +6250,42 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Pressing Enter in the header search opens it with the query kept.
 */
 
+const STRINGS = {
+  title: 'Search',
+  placeholder: 'Search…',
+  result: 'result',
+  results: 'results',
+  searchField: 'Search {nouns}',
+  save: 'Save search',
+  filters: 'Filters',
+  activeFilters: 'Active filters',
+  chip: '{label}: {value}',
+  remove: 'Remove {text}',
+  clearAll: 'Clear all',
+  view: 'View',
+  grid: 'Grid',
+  table: 'Table',
+  sort: 'Sort',
+  sortValue: 'Sort: {value}',
+  noMatchQuery: 'Nothing matches “{query}”.',
+  noMatchQueryFilters: 'Nothing matches “{query}” with these filters.',
+  noMatchFilters: 'Nothing matches these filters.'
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const label = (f, v) => {
   const o = (f.options || []).find(x => x.value === v);
   return o ? o.label : String(v);
 };
 function SearchWorkspace({
-  title = 'Search',
+  title,
   query = '',
   onQueryChange,
-  placeholder = 'Search…',
+  placeholder,
   filters = [],
   onFilterChange,
   onClearAll,
   count = 0,
-  noun = 'result',
+  noun,
   plural,
   sort,
   view,
@@ -5967,9 +6293,13 @@ function SearchWorkspace({
   headStart,
   headEnd,
   bulk,
+  locale,
+  strings,
   className,
   children
 }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
   const id = (0, _layer.useUid)('plx-search-ws');
   const field = _react.default.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
@@ -5978,16 +6308,23 @@ function SearchWorkspace({
     if (f.multiple) (f.value || []).forEach(v => chips.push({
       f,
       v,
-      text: f.label + ': ' + label(f, v),
+      text: fill(t.chip, {
+        label: f.label,
+        value: label(f, v)
+      }),
       remove: () => onFilterChange(f.id, (f.value || []).filter(x => x !== v))
     }));else if (f.value !== null && f.value !== undefined && f.value !== '') chips.push({
       f,
       v: f.value,
-      text: f.label + ': ' + label(f, f.value),
+      text: fill(t.chip, {
+        label: f.label,
+        value: label(f, f.value)
+      }),
       remove: () => onFilterChange(f.id, null)
     });
   });
-  const nouns = count === 1 ? noun : plural || noun + 's';
+  const nouns = count === 1 ? noun || t.result : plural || (noun ? noun + 's' : t.results);
+  const counted = count.toLocaleString(loc) + ' ' + nouns;
   return /*#__PURE__*/_react.default.createElement("section", {
     "aria-labelledby": id + '-title',
     className: (0, _cx.cx)('plx-search-ws', className)
@@ -5996,68 +6333,76 @@ function SearchWorkspace({
   }, headStart, /*#__PURE__*/_react.default.createElement("h2", {
     id: id + '-title',
     className: "plx-search-ws__title"
-  }, title), /*#__PURE__*/_react.default.createElement("span", {
+  }, title === undefined ? t.title : title), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search-ws__count",
     "aria-live": "polite"
-  }, count.toLocaleString('en-US') + ' ' + nouns), /*#__PURE__*/_react.default.createElement("span", {
+  }, counted), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search-ws__spacer"
   }), onSave ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     icon: "save",
     onClick: onSave
-  }, "Save search") : null, headEnd), /*#__PURE__*/_react.default.createElement("div", {
+  }, t.save) : null, headEnd), /*#__PURE__*/_react.default.createElement("div", {
     role: "search",
     className: "plx-search-ws__query"
   }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
     ref: field,
-    label: 'Search ' + nouns,
-    placeholder: placeholder,
+    label: fill(t.searchField, {
+      nouns
+    }),
+    placeholder: placeholder === undefined ? t.placeholder : placeholder,
     value: query,
     onChange: e => onQueryChange && onQueryChange(e.target.value),
     onClear: () => onQueryChange && onQueryChange('')
   })), filters.length ? /*#__PURE__*/_react.default.createElement(_FilterBar.FilterBar, {
-    label: "Filters",
+    label: t.filters,
     filters: filters,
     onChange: onFilterChange
   }) : null, chips.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-search-ws__active",
     role: "group",
-    "aria-label": "Active filters"
+    "aria-label": t.activeFilters
   }, chips.map(c => /*#__PURE__*/_react.default.createElement(_Tag.Chip, {
     key: c.f.id + ':' + c.v,
     selected: true,
     onRemove: c.remove,
-    removeLabel: 'Remove ' + c.text
+    removeLabel: fill(t.remove, {
+      text: c.text
+    })
   }, c.text)), onClearAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "xs",
     variant: "link",
     onClick: onClearAll
-  }, "Clear all") : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, t.clearAll) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-search-ws__bar"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search-ws__results"
-  }, count.toLocaleString('en-US') + ' ' + (count === 1 ? 'result' : 'results')), /*#__PURE__*/_react.default.createElement("span", {
+  }, counted), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search-ws__spacer"
   }), view ? /*#__PURE__*/_react.default.createElement(_SegmentedControl.SegmentedControl, {
-    label: "View",
+    label: t.view,
     value: view.value,
     onChange: view.onChange,
     options: view.options || [{
       value: 'grid',
-      label: 'Grid'
+      label: t.grid
     }, {
       value: 'table',
-      label: 'Table'
+      label: t.table
     }]
   }) : null, sort ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: "Sort",
+    label: t.sort,
     placement: "bottom-end",
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "sm",
       icon: "sort",
       caret: true,
-      "aria-label": 'Sort: ' + sort.value
-    }, 'Sort: ' + sort.value)
+      "aria-label": fill(t.sortValue, {
+        value: sort.value
+      })
+    }, fill(t.sortValue, {
+      value: sort.value
+    }))
   }, sort.options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: o,
     checked: sort.value === o,
@@ -6066,7 +6411,9 @@ function SearchWorkspace({
     className: "plx-search-ws__body"
   }, count ? children : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     size: "inline"
-  }, query ? 'Nothing matches “' + query + '”' + (chips.length ? ' with these filters' : '') + '.' : 'Nothing matches these filters.')));
+  }, query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, {
+    query
+  }) : t.noMatchFilters)));
 }
   } },
   "platform/patterns/DataToolbar/DataToolbar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -6141,6 +6488,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      SelectionSummary.onSelectAll(): runs from "Select all <total>"; without it (or without total) there is no Select all
      SelectionSummary.onClear(): runs from "Clear selection"; without it there is no Clear selection
      SelectionSummary.className: more classes
+     SelectionSummary.strings: the words it shows, for other languages: { selected: (n, word) => n + " " + word + " selected",
+       selectAll: (n) => "Select all " + n, clear: "Clear selection" } (word is the noun or plural, chosen by count)
      BulkActions.count: how many are selected; nothing renders at 0
      BulkActions.total: as for SelectionSummary
      BulkActions.noun: as for SelectionSummary
@@ -6151,8 +6500,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      BulkActions.actions[].danger: a destructive action, drawn as such
      BulkActions.actions[].single: the action applies to one item only, so it is disabled while more than one is selected
      BulkActions.actions[].items: [{ id, label, danger, single, onSelect }]; makes the action a menu button (a group of related actions)
-     BulkActions.label: the toolbar's accessible name (default "Selection actions")
+     BulkActions.label: the toolbar's accessible name (default strings.label: "Selection actions")
      BulkActions.className: more classes
+     BulkActions.strings: as for SelectionSummary, plus { label: "Selection actions", more: "More", moreLabel: "More actions" }
    Behavior:
      SelectionSummary reads "3 assets selected", announced politely.
      "Select all 120" shows when more can be selected.
@@ -6160,6 +6510,14 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Actions that do not fit move into a "More actions" menu; a menu button's items appear there as a group.
 */
 const off = (a, count) => !!(a.single && count > 1);
+const STRINGS = {
+  selected: (n, word) => n + ' ' + word + ' selected',
+  selectAll: n => 'Select all ' + n,
+  clear: 'Clear selection',
+  label: 'Selection actions',
+  more: 'More',
+  moreLabel: 'More actions'
+};
 function SelectionSummary({
   count,
   total,
@@ -6167,9 +6525,11 @@ function SelectionSummary({
   plural,
   onSelectAll,
   onClear,
+  strings,
   className
 }) {
-  const words = count + ' ' + (count === 1 ? noun : plural || noun + 's') + ' selected';
+  const t = Object.assign({}, STRINGS, strings);
+  const words = t.selected(count, count === 1 ? noun : plural || noun + 's');
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-selection-summary', className)
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -6179,11 +6539,11 @@ function SelectionSummary({
     size: "sm",
     variant: "link",
     onClick: onSelectAll
-  }, 'Select all ' + total) : null, onClear ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+  }, t.selectAll(total)) : null, onClear ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     variant: "ghost",
     onClick: onClear
-  }, "Clear selection") : null);
+  }, t.clear) : null);
 }
 function BulkActions({
   count,
@@ -6193,16 +6553,18 @@ function BulkActions({
   onSelectAll,
   onClear,
   actions = [],
-  label = 'Selection actions',
+  label,
+  strings,
   className
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const list = _react.default.useRef(null);
   const fit = (0, _overflow.useOverflow)(list, actions.length, actions.map(a => a.label).join('|') + (count ? '' : '0'));
   if (!count) return null;
   const hidden = actions.slice(fit);
   return /*#__PURE__*/_react.default.createElement("div", {
     role: "toolbar",
-    "aria-label": label,
+    "aria-label": label || t.label,
     className: (0, _cx.cx)('plx-bulk-actions', className)
   }, /*#__PURE__*/_react.default.createElement(SelectionSummary, {
     count: count,
@@ -6210,7 +6572,8 @@ function BulkActions({
     noun: noun,
     plural: plural,
     onSelectAll: onSelectAll,
-    onClear: onClear
+    onClear: onClear,
+    strings: strings
   }), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-bulk-actions__divider",
     "aria-hidden": "true"
@@ -6244,12 +6607,12 @@ function BulkActions({
     "data-plx-overflow-more": "",
     className: "plx-bulk-actions__slot"
   }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: "More actions",
+    label: t.moreLabel,
     placement: "bottom-end",
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "sm",
       caret: true
-    }, "More")
+    }, t.more)
   }, hidden.map(a => a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
     key: a.id,
     label: a.label
@@ -6567,10 +6930,12 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      onOpen(n): runs when a notification is opened
      onViewAll(): adds a "View all" button that runs it
      limit: how many to show (default: all)
-     label: the list's accessible name (default "Notifications")
+     label: the list's accessible name (default strings.label: "Notifications")
      footer: true (default) shows Mark all read and View all under the list; false when the page puts Mark all read in its
        own header (useSession().setNotifications)
      className: more classes
+     strings: the words it shows and announces, for other languages: { label: "Notifications", empty: "No notifications",
+       markAllRead: "Mark all read", viewAll: "View all" }
    Behavior:
      Unread ones are marked (ActivityList's unread dot) and bold.
      Opening one marks it read; Mark all read clears them, and is disabled when none are unread.
@@ -6580,16 +6945,24 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      It lives in the page (the dashboard's Notifications section), not in the header: the header carries no notifications.
 */
 
+const STRINGS = {
+  label: 'Notifications',
+  empty: 'No notifications',
+  markAllRead: 'Mark all read',
+  viewAll: 'View all'
+};
 function NotificationList({
   items,
   onChange,
   onOpen,
   onViewAll,
   limit,
-  label = 'Notifications',
+  label,
   footer = true,
+  strings,
   className
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const session = (0, _SessionProvider.useSession)();
   const own = items || session.notifications;
   const unread = own.filter(n => n.unread).length;
@@ -6610,7 +6983,7 @@ function NotificationList({
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-notification-list', className)
   }, shown.length ? /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList, {
-    label: label
+    label: label || t.label
   }, shown.map(n => /*#__PURE__*/_react.default.createElement(_ActivityList.ActivityList.Item, {
     key: n.id,
     title: n.text,
@@ -6619,21 +6992,21 @@ function NotificationList({
     onOpen: () => open(n)
   }))) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     size: "inline"
-  }, "No notifications"), footer ? /*#__PURE__*/_react.default.createElement("div", {
+  }, t.empty), footer ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-notification-list__footer"
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     variant: "ghost",
     disabled: !unread,
     onClick: markAll
-  }, "Mark all read"), onViewAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+  }, t.markAllRead), onViewAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     variant: "ghost",
     onClick: onViewAll
-  }, "View all") : null) : null);
+  }, t.viewAll) : null) : null);
 }
   } },
-  "platform/patterns/ToolRail/ToolRail.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ToolRail/ToolRail.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6641,6 +7014,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ToolRail = ToolRail;
 var _react = _interopRequireDefault(require("react"));
+var _roving = require("../../utils/roving.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
@@ -6664,7 +7038,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      ToolRail.Item.onClick: runs on click
      ToolRail.Item.className: more classes
    Behavior:
-     It is a toolbar with vertical orientation: Arrow Up / Down, Home and End move between tools; Tab leaves.
+     It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
+     enters and leaves the rail.
      Each tool is an icon-only toggle button with a tooltip at its end side.
    Notes:
      The editor page sets the dark mode on its container.
@@ -6678,9 +7053,12 @@ function ToolRail({
   children
 }) {
   const ref = _react.default.useRef(null);
+  const itemsOf = () => ref.current ? Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])')) : [];
+  // one Tab stop: Tab enters and leaves the rail; the arrows move between tools (batch 213)
+  (0, _roving.useRovingFocus)(ref, itemsOf);
   const onKeyDown = e => {
     if (['ArrowUp', 'ArrowDown', 'Home', 'End'].indexOf(e.key) < 0) return;
-    const items = Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])'));
+    const items = itemsOf();
     const i = items.indexOf(document.activeElement);
     if (i < 0) return;
     const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowDown' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
@@ -6695,7 +7073,8 @@ function ToolRail({
     "aria-orientation": "vertical",
     "aria-label": label,
     className: (0, _cx.cx)('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className),
-    onKeyDown: onKeyDown
+    onKeyDown: onKeyDown,
+    onFocus: e => (0, _roving.roveTo)(ref, itemsOf(), e.target)
   }, children));
 }
 ToolRail.Item = function ToolRailItem({
@@ -6731,7 +7110,7 @@ ToolRail.Divider = function ToolRailDivider() {
   });
 };
   } },
-  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6748,6 +7127,7 @@ exports.writePref = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
+var _direction = require("../../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
@@ -6766,6 +7146,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      mainClassName: more classes on the main region
      className: more classes on the shell
      children: the main region's content
+     strings: the words it shows, for other languages: { skip: "Skip to main content" } (the skip link)
      PageContent.as: "section" (default) | "div"
      PageContent.className: more classes on the column
      PageContent.children: the page's parts
@@ -6777,6 +7158,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The header and the footer always span the full width, above and below both side areas.
      The side areas live between the header and the footer, also when they open as overlays.
      Navigation: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge; the width is remembered.
+     The splitters follow the writing direction: in a right-to-left page the edges are mirrored, so dragging and Arrow Left /
+       Right move the edge the mirrored way (the key toward the outside widens the area).
      The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
        it again; this is remembered.
      Below 768px the navigation is a rail; Expand opens it over the main region, and Escape or a click outside closes it.
@@ -6792,6 +7175,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        navigation to the shell's navigation area from inside the main content, where it then behaves as above.
      Outside an AppShell, SideNavPortal renders its children in place.
 */
+const STRINGS = {
+  skip: 'Skip to main content'
+};
 const LayoutContext = exports.LayoutContext = /*#__PURE__*/_react.default.createContext(null);
 const useAppLayout = () => _react.default.useContext(LayoutContext);
 /* the shell's sizes and breakpoints come from the tokens, never from numbers here:
@@ -6840,9 +7226,11 @@ function AppShell({
   footer,
   mainId = 'main',
   mainClassName,
+  strings,
   className,
   children
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
   const [expanded, setExpanded] = _react.default.useState(() => readPref('plenix.sideNav.expanded', true));
   const [width, setWidthState] = _react.default.useState(() => readPref('plenix.sideNav.width', null));
@@ -6900,7 +7288,7 @@ function AppShell({
   }, /*#__PURE__*/_react.default.createElement("a", {
     className: "plx-app-shell__skip",
     href: '#' + mainId
-  }, "Skip to main content"), header, /*#__PURE__*/_react.default.createElement("div", {
+  }, t.skip), header, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-shell__body"
   }, sideNav || /*#__PURE__*/_react.default.createElement("div", {
     ref: setSlotEl,
@@ -6913,7 +7301,9 @@ function AppShell({
 }
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
-   collapses the area when it can collapse. edge: "end" (a left area: dragging right widens it) or "start" (a right area). */
+   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
+   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
+   are mirrored (arrowStep gives the step in reading order). */
 function PanelSplitter({
   label,
   value,
@@ -6929,8 +7319,9 @@ function PanelSplitter({
     if (e.button !== 0) return;
     e.preventDefault();
     const x0 = e.clientX,
-      w0 = value;
-    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir));
+      w0 = value,
+      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
+    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
     const up = () => {
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
@@ -6942,10 +7333,9 @@ function PanelSplitter({
   };
   const onKeyDown = e => {
     const s = tokenPx('--plx-sys-shell-splitter-step');
-    const step = {
-      ArrowRight: s * dir,
-      ArrowLeft: -s * dir
-    }[e.key];
+    const step = (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    }) * s * dir;
     if (step) {
       e.preventDefault();
       onChange(clamp(value + step));
@@ -7372,15 +7762,23 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        --plx-comp-secondary-pane-width-max; default false
      className: more classes
      children: the body
+     strings: the words it announces, for other languages: { expand: "Expand {name}", collapse: "Collapse {name}", resize:
+       "Resize {name}" } ({name} is the label, or the title)
    Behavior:
      The body scrolls on its own while the content scrolls beside it.
-     The resize edge is a separator (role="separator", aria-valuenow); Home and End jump to the smallest and largest width;
+     The resize edge is a separator (role="separator", aria-valuenow); Arrow Left / Right move the edge, mirrored in a
+     right-to-left page (as is dragging); Home and End jump to the smallest and largest width;
      Enter or a double click folds the pane when it is collapsible.
    Notes:
      It has the page surface, a divider on its content side, a header row (icon, title, actions) and a body.
      A dragged width reaches the stylesheet as --plx-comp-secondary-pane-width (no style is written).
      Other props go on its aside element.
 */
+const STRINGS = {
+  expand: 'Expand {name}',
+  collapse: 'Collapse {name}',
+  resize: 'Resize {name}'
+};
 function SecondaryPane({
   title,
   label,
@@ -7394,10 +7792,12 @@ function SecondaryPane({
   onCollapsedChange,
   rail,
   resizable = false,
+  strings,
   className,
   children,
   ...rest
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const [ownCollapsed, setOwnCollapsed] = _react.default.useState(defaultCollapsed);
   const folded = collapsible && (collapsed !== undefined ? collapsed : ownCollapsed);
   const setFolded = next => {
@@ -7406,13 +7806,14 @@ function SecondaryPane({
   };
   const [size, setSize] = _react.default.useState(null);
   const name = label || title;
+  const named = s => s.split('{name}').join(name);
   if (folded) {
     return /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail, {
       label: name,
       className: (0, _cx.cx)('plx-secondary-pane-rail', 'plx-secondary-pane-rail--' + side, className)
     }, /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Item, {
       icon: side === 'start' ? 'panel-left-open' : 'panel-right-open',
-      label: 'Expand ' + name,
+      label: named(t.expand),
       onClick: () => setFolded(false)
     }), rail ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Divider, null), rail) : null);
   }
@@ -7435,12 +7836,12 @@ function SecondaryPane({
     variant: "ghost",
     iconOnly: true,
     icon: side === 'start' ? 'panel-left-close' : 'panel-right-close',
-    label: 'Collapse ' + name,
+    label: named(t.collapse),
     onClick: () => setFolded(true)
   }) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-secondary-pane__body"
   }, children), resizable ? /*#__PURE__*/_react.default.createElement(_AppShell.PanelSplitter, {
-    label: 'Resize ' + name,
+    label: named(t.resize),
     edge: side === 'start' ? 'end' : 'start',
     min: min(),
     max: max,
@@ -7608,7 +8009,7 @@ function TimeGrid({
   }))))));
 }
   } },
-  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7619,6 +8020,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _direction = require("../../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WidgetGrid
    Summary: A dashboard's widgets in a grid that people reorder by dragging a widget's handle, or with the arrow keys on it
@@ -7634,14 +8036,25 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the accessible name of the grid
      columns: "auto" (default; as many as fit) | 2 | 3 | 4
      className: more classes on the grid
+     strings: the words it announces, for other languages: { widget: "Widget", widgetLower: "widget", move: "Move {title}
+       (arrow keys)", position: "{title}, position {index} of {total}" } (widget and widgetLower stand in for a widget
+       without a title, in the announcement and in the handle's name)
    Behavior:
      Each widget gets a handle (a button) when the grid can be reordered: drag it onto another widget to place it there;
-     or focus it and press Arrow Up / Left (earlier) or Arrow Down / Right (later).
+     or focus it and press Arrow Up (earlier) or Arrow Down (later); Arrow Left / Right follow reading order (in a
+     right-to-left page Arrow Right is earlier).
      While dragging, the widget under the pointer shows the drop ring.
      The new place is announced ("Site visits, position 2 of 6").
    Notes:
      The grid never changes the order by itself: onReorder hands the new order to the page, which keeps it.
 */
+const STRINGS = {
+  widget: 'Widget',
+  widgetLower: 'widget',
+  move: 'Move {title} (arrow keys)',
+  position: '{title}, position {index} of {total}'
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const move = (ids, from, to) => {
   const next = ids.slice();
   const [x] = next.splice(from, 1);
@@ -7654,9 +8067,11 @@ function WidgetGrid({
   onReorder,
   label,
   columns = 'auto',
+  strings,
   className,
   ...rest
 }) {
+  const t = Object.assign({}, STRINGS, strings);
   const [dragging, setDragging] = _react.default.useState(null);
   const [over, setOver] = _react.default.useState(null);
   const [said, setSaid] = _react.default.useState('');
@@ -7665,7 +8080,11 @@ function WidgetGrid({
     if (!onReorder || to < 0 || to >= ids.length || from === to) return;
     onReorder(move(ids, from, to));
     const it = items[from];
-    setSaid((it.title || 'Widget') + ', position ' + (to + 1) + ' of ' + ids.length);
+    setSaid(fill(t.position, {
+      title: it.title || t.widget,
+      index: to + 1,
+      total: ids.length
+    }));
   };
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-widget-grid', 'plx-widget-grid--' + columns, className),
@@ -7692,7 +8111,9 @@ function WidgetGrid({
       type: "button",
       className: (0, _cx.cx)('plx-widget-grid__handle', renderItem && renderItem.length > 1 && 'plx-widget-grid__handle--inline'),
       draggable: true,
-      "aria-label": 'Move ' + (it.title || 'widget') + ' (arrow keys)',
+      "aria-label": fill(t.move, {
+        title: it.title || t.widgetLower
+      }),
       onDragStart: e => {
         setDragging(it.id);
         e.dataTransfer.effectAllowed = 'move';
@@ -7703,12 +8124,10 @@ function WidgetGrid({
         setOver(null);
       },
       onKeyDown: e => {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        const step = (0, _direction.arrowStep)(e, e.currentTarget);
+        if (step) {
           e.preventDefault();
-          place(i, i - 1);
-        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-          e.preventDefault();
-          place(i, i + 1);
+          place(i, i + step);
         }
       }
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {

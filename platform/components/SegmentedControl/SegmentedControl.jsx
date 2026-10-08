@@ -21,6 +21,7 @@
      To switch between panels of content, use Tabs (variant "segmented").
 */
 import React from 'react';
+import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 
@@ -29,8 +30,9 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
   const index = Math.max(0, options.findIndex((o) => o.value === value));
   const move = (e, i) => {
     let n = null;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % options.length;
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + options.length) % options.length;
+    const step = arrowStep(e, e.currentTarget);   // in reading order: right to left reverses Left and Right (batch 213)
+    if (step > 0) n = (i + 1) % options.length;
+    if (step < 0) n = (i - 1 + options.length) % options.length;
     if (e.key === 'Home') n = 0;
     if (e.key === 'End') n = options.length - 1;
     if (n === null) return;

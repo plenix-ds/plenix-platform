@@ -24,6 +24,7 @@
      Clicking the chevron opens or closes; clicking the row selects.
 */
 import React from 'react';
+import { isRtl } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
@@ -58,8 +59,9 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
     else if (e.key === 'ArrowUp') { if (flat[at - 1]) moveTo(flat[at - 1].node.id); }
     else if (e.key === 'Home') moveTo(flat[0].node.id);
     else if (e.key === 'End') moveTo(flat[flat.length - 1].node.id);
-    else if (e.key === 'ArrowRight') { if (kids && !open.has(cur.node.id)) toggle(cur.node.id); else if (kids) moveTo(cur.node.children[0].id); }
-    else if (e.key === 'ArrowLeft') { if (kids && open.has(cur.node.id)) toggle(cur.node.id); else if (cur.parent !== null) moveTo(cur.parent); }
+    // the key toward the reading end opens a branch, the other closes it or goes to the parent (right to left mirrors; batch 213)
+    else if (e.key === (isRtl(e.currentTarget) ? 'ArrowLeft' : 'ArrowRight')) { if (kids && !open.has(cur.node.id)) toggle(cur.node.id); else if (kids) moveTo(cur.node.children[0].id); }
+    else if (e.key === (isRtl(e.currentTarget) ? 'ArrowRight' : 'ArrowLeft')) { if (kids && open.has(cur.node.id)) toggle(cur.node.id); else if (cur.parent !== null) moveTo(cur.parent); }
     else if (e.key === 'Enter' || e.key === ' ') { if (onSelect) onSelect(cur.node.id); }
     else return;
     e.preventDefault();

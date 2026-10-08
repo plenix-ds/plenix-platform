@@ -30,6 +30,8 @@ module.exports = function buildIcons(root) {
     const o = '--plx-comp-icon-glyph-' + s + (fill ? '-fill' : ''), f = '--plx-comp-icon-glyph-' + s + '-fill';
     return '.plx-icon--' + n + '{--plx-comp-icon-filled:var(' + f + ');--plx-comp-icon-filled-24:var(' + f.replace(/-fill$/, '-24-fill') + ');--plx-comp-icon-outline:var(' + o + ');--plx-comp-icon-outline-24:var(' + o.replace(/(-fill)?$/, '-24$1') + ');}';
   });
+  // the symbols that point along the reading direction: mirrored in right to left
+  const MIRROR = ['arrow_back', 'arrow_right', 'chevron_left', 'chevron_right', 'left_panel_close', 'left_panel_open', 'right_panel_close', 'right_panel_open', 'undo', 'redo'];
   const STATE = ['[aria-current="page"]', '[aria-current="true"]', '[aria-pressed="true"]', '[aria-selected="true"]', '.is-selected', '.is-current'];
   const BIG = ['.plx-app-header', '[data-plx-density="comfortable"]'];
   const css = [
@@ -59,6 +61,8 @@ module.exports = function buildIcons(root) {
     BIG.map((s) => s + ' .plx-icon').join(',') + '{--plx-comp-icon-url:var(--plx-comp-icon-outline-24);}',
     BIG.map((s) => STATE.map((t) => s + ' ' + t + ' .plx-icon').join(',')).join(',') + ',' + BIG.map((s) => s + ' .plx-icon.plx-icon--filled').join(',') + ',.plx-icon--size-lg.plx-icon--filled,.plx-icon--size-xl.plx-icon--filled{--plx-comp-icon-url:var(--plx-comp-icon-filled-24);}',
     ...names,
+    '/* right to left: the directional icons mirror (Material Symbols\' bidirectional set); scale, so a rotation on the icon still applies (batch 213) */',
+    Object.keys(M.map).filter((n) => MIRROR.indexOf(M.map[n].split('#')[0]) >= 0).sort().map((n) => '.plx-icon--' + n + ':dir(rtl)').join(',') + '{scale:-1 1;}',
   ].join('\n') + '\n';
   fs.writeFileSync(out, css);
   return { symbols: symbols.length, names: names.length, bytes: Buffer.byteLength(css) };

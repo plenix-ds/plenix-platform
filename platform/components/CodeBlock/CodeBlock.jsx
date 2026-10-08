@@ -6,7 +6,9 @@
      title: a file name or caption shown above the code (in the data font)
      maxHeight: "none" (default) | "tall" (a box that scrolls, for whole files)
      copy: false hides the Copy button (default true)
-     label: the accessible name of the code region (default the title, else "Code")
+     label: the accessible name of the code region (default the title, else strings.code)
+     strings: the words it shows and announces, for other languages: { code: "Code", copy: "Copy", copied: "Copied",
+       failed: "Could not copy" }
      language: "auto" (default: from the title's extension, else read from the code) | "jsx" | "js" | "css" | "html" | "text"
      children: the code, as a string
      className: more classes on the block
@@ -16,13 +18,15 @@
      The code is colored in the usual editor manner: keywords, strings, comments, numbers, functions, tags, attributes and
        properties, custom properties, selectors.
      "text" is not colored.
-     Copy puts the code on the clipboard and reads "Copied" with a check for a moment.
+     Copy puts the code on the clipboard and reads "Copied" with a check for a moment; screen readers hear "Copied" (or
+       "Could not copy" when the clipboard refuses).
    Notes:
      The colors come from the --plx-sys-code-* roles.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
+import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 
 const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
 // each rule: [kind, pattern]; the first that matches at a position wins
@@ -77,24 +81,30 @@ function highlight(text, language) {
   return out;
 }
 
-export function CodeBlock({ title, maxHeight = 'none', copy = true, label, language = 'auto', className, children }) {
+const STRINGS = { code: 'Code', copy: 'Copy', copied: 'Copied', failed: 'Could not copy' };
+
+export function CodeBlock({ title, maxHeight = 'none', copy = true, label, language = 'auto', strings, className, children }) {
+  const t = Object.assign({}, STRINGS, strings);
   const [copied, setCopied] = React.useState(false);
+  const [said, setSaid] = React.useState('');   // what screen readers hear after Copy (batch 213)
   const text = typeof children === 'string' ? children : String(children == null ? '' : children);
   const lang = language === 'auto' ? detect(title, text) : language;
   const colored = React.useMemo(() => highlight(text, lang), [text, lang]);
   const doCopy = () => {
-    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 1500); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => {});
+    const done = () => { setCopied(true); setSaid(t.copied); setTimeout(() => { setCopied(false); setSaid(''); }, 1500); };
+    const failed = () => { setSaid(t.failed); setTimeout(() => setSaid(''), 3000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, failed); else failed();
   };
   return (
     <div className={cx('plx-code-block', 'plx-code-block--' + maxHeight, className)}>
       {title || copy ? (
         <div className="plx-code-block__head">
           {title ? <span className="plx-code-block__title">{title}</span> : <span />}
-          {copy ? <Button size="xs" variant="ghost" icon={copied ? 'check' : undefined} onClick={doCopy}>{copied ? 'Copied' : 'Copy'}</Button> : null}
+          {copy ? <Button size="xs" variant="ghost" icon={copied ? 'check' : undefined} onClick={doCopy}>{copied ? t.copied : t.copy}</Button> : null}
+          {copy ? <VisuallyHidden role="status">{said}</VisuallyHidden> : null}
         </div>
       ) : null}
-      <pre className="plx-code-block__pre" tabIndex={0} aria-label={label || title || 'Code'}><code data-plx-language={lang}>{colored}</code></pre>
+      <pre className="plx-code-block__pre" tabIndex={0} aria-label={label || title || t.code}><code data-plx-language={lang}>{colored}</code></pre>
     </div>
   );
 }

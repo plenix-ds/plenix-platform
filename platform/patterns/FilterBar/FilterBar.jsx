@@ -5,13 +5,15 @@
        filters={[{ id: 'type', label: 'Type', options: [{ value: 'png', label: 'PNG', count: 12 }], value: ['png'], multiple: true }]}
        onChange={(id, value) => …} onClearAll={() => …} actions={<…/>} />
    Props:
-     label: the accessible name of the row of filters
+     label: the accessible name of the row of filters (default strings.label: "Filters")
      filters: the filters, in order: [{ id, label, options: [{ value, label, count }], value, multiple }]
      filters[].multiple: true: value is an array of option values and the menu stays open while choosing; false: value is one option value (or null) and choosing closes the menu
      onChange(id, value): runs when a filter's value changes
      onClearAll(): runs from "Clear all"; without it there is no "Clear all"
      actions: controls at the end of the row (a sort menu, a view switch)
      className: more classes on the row
+     strings: the words it shows and announces, for other languages: { label: "Filters", more: "More filters", clearAll:
+       "Clear all", one: "{label}: {value}", several: "{label} · {count}" } (one and several build a set filter's button text)
    Behavior:
      A filter with a value shows it in its button ("Type: PNG", or "Type · 2" for several) and the selected state.
      Filters that do not fit on the row move into a "More filters" menu: the same choices, grouped by filter.
@@ -24,16 +26,19 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 
 const isSet = (f) => (f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '');
-const summary = (f) => {
+const STRINGS = { label: 'Filters', more: 'More filters', clearAll: 'Clear all', one: '{label}: {value}', several: '{label} · {count}' };
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+
+const summary = (f, t) => {
   if (!isSet(f)) return f.label;
   if (f.multiple) {
     const v = f.value;
-    if (v.length > 1) return f.label + ' · ' + v.length;
+    if (v.length > 1) return fill(t.several, { label: f.label, count: v.length });
     const o = f.options.find((x) => x.value === v[0]);
-    return f.label + ': ' + (o ? o.label : v[0]);
+    return fill(t.one, { label: f.label, value: o ? o.label : v[0] });
   }
   const o = f.options.find((x) => x.value === f.value);
-  return f.label + ': ' + (o ? o.label : f.value);
+  return fill(t.one, { label: f.label, value: o ? o.label : f.value });
 };
 
 function choices(f, onChange) {
@@ -51,23 +56,24 @@ function choices(f, onChange) {
   });
 }
 
-export function FilterBar({ label = 'Filters', filters, onChange, onClearAll, actions, className }) {
+export function FilterBar({ label, filters, onChange, onClearAll, actions, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
   const list = React.useRef(null);
-  const fit = useOverflow(list, filters.length, filters.map(summary).join('|'));
+  const fit = useOverflow(list, filters.length, filters.map((f) => summary(f, t)).join('|'));
   const hidden = filters.slice(fit);
   const anySet = filters.some(isSet);
   return (
-    <div role="group" aria-label={label} className={cx('plx-filter-bar', className)}>
+    <div role="group" aria-label={label || t.label} className={cx('plx-filter-bar', className)}>
       <div ref={list} className="plx-filter-bar__filters">
         {splitAt(filters.map((f) => (
           <span key={f.id} data-plx-overflow-item="" className="plx-filter-bar__slot">
-            <Menu label={f.label} trigger={<Button size="sm" caret selected={isSet(f)}>{summary(f)}</Button>}>
+            <Menu label={f.label} trigger={<Button size="sm" caret selected={isSet(f)}>{summary(f, t)}</Button>}>
               {choices(f, onChange)}
             </Menu>
           </span>
         )), fit, hidden.length ? (
           <span key="plx-more" data-plx-overflow-more="" className="plx-filter-bar__slot">
-            <Menu label="More filters" placement="bottom-end" trigger={<Button size="sm" caret selected={hidden.some(isSet)}>{'More filters'}</Button>}>
+            <Menu label={t.more} placement="bottom-end" trigger={<Button size="sm" caret selected={hidden.some(isSet)}>{t.more}</Button>}>
               {hidden.map((f, i) => (
                 <React.Fragment key={f.id}>
                   {i ? <MenuDivider /> : null}
@@ -78,7 +84,7 @@ export function FilterBar({ label = 'Filters', filters, onChange, onClearAll, ac
           </span>
         ) : null)}
       </div>
-      {anySet && onClearAll ? <Button size="sm" variant="ghost" onClick={onClearAll}>Clear all</Button> : null}
+      {anySet && onClearAll ? <Button size="sm" variant="ghost" onClick={onClearAll}>{t.clearAll}</Button> : null}
       {actions ? <div className="plx-filter-bar__actions">{actions}</div> : null}
     </div>
   );

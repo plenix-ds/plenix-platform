@@ -41,8 +41,9 @@
 .plx-button__caret{-webkit-mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:currentcolor;block-size:var(--plx-comp-button-caret-height);flex-shrink:0;inline-size:var(--plx-comp-button-caret-width);mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;transition-duration:var(--plx-comp-button-caret-duration);transition-property:transform;}
 .plx-button[aria-expanded="true"] .plx-button__caret{transform:rotate(180deg);}
 .plx-button-group{display:inline-flex;}
-.plx-button-group>.plx-button:not(:first-child){border-bottom-left-radius:var(--plx-comp-button-group-joined-radius);border-left-width:0;border-top-left-radius:var(--plx-comp-button-group-joined-radius);}
-.plx-button-group>.plx-button:not(:last-child){border-bottom-right-radius:var(--plx-comp-button-group-joined-radius);border-top-right-radius:var(--plx-comp-button-group-joined-radius);}
+/* the joins on the inline sides (logical, so a right-to-left group joins on the mirrored side; batch 213) */
+.plx-button-group>.plx-button:not(:first-child){border-end-start-radius:var(--plx-comp-button-group-joined-radius);border-inline-start-width:0;border-start-start-radius:var(--plx-comp-button-group-joined-radius);}
+.plx-button-group>.plx-button:not(:last-child){border-end-end-radius:var(--plx-comp-button-group-joined-radius);border-start-end-radius:var(--plx-comp-button-group-joined-radius);}
 .plx-button-group>.plx-button:focus-visible,
 .plx-button-group>.plx-button.is-focus-visible{position:relative;z-index:var(--plx-comp-button-group-focus-layer);}
 .plx-button--ghost:disabled,.plx-button--ghost[aria-disabled="true"],.plx-button--link:disabled,.plx-button--link[aria-disabled="true"]{background-color:var(--plx-comp-button-disabled-quiet-background);border-bottom-color:var(--plx-comp-button-disabled-quiet-border);border-left-color:var(--plx-comp-button-disabled-quiet-border);border-right-color:var(--plx-comp-button-disabled-quiet-border);border-top-color:var(--plx-comp-button-disabled-quiet-border);box-shadow:none;}

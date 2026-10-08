@@ -57,7 +57,7 @@
    Behavior:
      The header name shows "Plenix" over the application's name with a chevron; it opens the application switcher.
      The switcher lists every application, pinned first; pin or unpin from there.
-     The switcher is a dialog: it focuses its first link, and Escape or a click outside closes it.
+     The switcher is a dialog: it focuses its first link, and Escape, a click outside or focus leaving it closes it.
      The header links are the applications the person pinned (from the switcher), as icon links with tooltips; the current one is marked.
      On a phone the header links leave the header; the switcher in the header name still has them.
      The end is right-aligned: search always first and furthest left, then the application's action, then the utilities with no gaps.
@@ -213,9 +213,11 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
     if (!open) return undefined;
     const out = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
     document.addEventListener('mousedown', out);
+    // focus leaving it (Tab past the last application) closes it too: it never stays open behind the page (batch 213)
+    document.addEventListener('focusin', out);
     const first = panel.current && panel.current.querySelector('a');
     if (first) first.focus();
-    return () => document.removeEventListener('mousedown', out);
+    return () => { document.removeEventListener('mousedown', out); document.removeEventListener('focusin', out); };
   }, [open]);
   const pinnedList = apps.filter((a) => pinnedApps.indexOf(a.id) >= 0);
   const pin = (a) => setPinnedApps((prev) => (prev.indexOf(a.id) >= 0 ? prev.filter((x) => x !== a.id) : prev.concat([a.id])));

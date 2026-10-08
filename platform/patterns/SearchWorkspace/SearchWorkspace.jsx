@@ -7,16 +7,16 @@
        sort={{ value, options, onChange }} view={{ value, options, onChange }} onSave={() => …}
        headStart={<…/>} headEnd={<…/>} bulk={<BulkActions…/>}>{results}</SearchWorkspace>
    Props:
-     title: "Search" (default) before a query, "Search results" after one, or a saved search's name (the capability decides)
+     title: strings.title ("Search", the default) before a query, "Search results" after one, or a saved search's name (the capability decides)
      query: the search field's text (default "")
      onQueryChange(next): runs when the search field changes; Enter or typing updates the results (the capability filters)
-     placeholder: the search field's placeholder (default "Search…")
+     placeholder: the search field's placeholder (default strings.placeholder: "Search…")
      filters: FilterBar filters: [{ id, label, options, value, multiple }]
      onFilterChange(id, value): runs when a filter changes or its chip is removed
      onClearAll(): runs from Clear all, beside the chips of the set filters
      count: the number of results, for the result count line (default 0)
-     noun: the word for one result in the count line, as in "128 assets" (default "result")
-     plural: the word for several (default: noun + "s")
+     noun: the word for one result in both count lines, as in "128 assets" (default strings.result: "result")
+     plural: the word for several (default: noun + "s", or strings.results: "results" without a noun)
      sort: { value, options, onChange }; a Sort menu (optional)
      view: { value, options, onChange }; a Grid / Table switch (optional)
      onSave(): shows Save search (only capabilities that keep saved searches)
@@ -25,6 +25,12 @@
      bulk: a BulkActions bar shown above the results
      className: more classes
      children: the results
+     locale: the language the count is formatted in (default: the page's language, document.documentElement.lang)
+     strings: the words it shows and announces, for other languages: { title: "Search", placeholder: "Search…", result:
+       "result", results: "results", searchField: "Search {nouns}", save: "Save search", filters: "Filters", activeFilters:
+       "Active filters", chip: "{label}: {value}", remove: "Remove {text}", clearAll: "Clear all", view: "View", grid: "Grid",
+       table: "Table", sort: "Sort", sortValue: "Sort: {value}", noMatchQuery: "Nothing matches “{query}”.",
+       noMatchQueryFilters: "Nothing matches “{query}” with these filters.", noMatchFilters: "Nothing matches these filters." }
    Behavior:
      Set filters are repeated as removable chips under the toolbar ("Type: PNG ×") with Clear all.
      The count line is announced politely.
@@ -44,54 +50,80 @@ import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
 import { useUid } from '../../utils/layer.js';
 
+const STRINGS = {
+  title: 'Search',
+  placeholder: 'Search…',
+  result: 'result',
+  results: 'results',
+  searchField: 'Search {nouns}',
+  save: 'Save search',
+  filters: 'Filters',
+  activeFilters: 'Active filters',
+  chip: '{label}: {value}',
+  remove: 'Remove {text}',
+  clearAll: 'Clear all',
+  view: 'View',
+  grid: 'Grid',
+  table: 'Table',
+  sort: 'Sort',
+  sortValue: 'Sort: {value}',
+  noMatchQuery: 'Nothing matches “{query}”.',
+  noMatchQueryFilters: 'Nothing matches “{query}” with these filters.',
+  noMatchFilters: 'Nothing matches these filters.',
+};
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+
 const label = (f, v) => { const o = (f.options || []).find((x) => x.value === v); return o ? o.label : String(v); };
 
-export function SearchWorkspace({ title = 'Search', query = '', onQueryChange, placeholder = 'Search…', filters = [], onFilterChange, onClearAll,
-  count = 0, noun = 'result', plural, sort, view, onSave, headStart, headEnd, bulk, className, children }) {
+export function SearchWorkspace({ title, query = '', onQueryChange, placeholder, filters = [], onFilterChange, onClearAll,
+  count = 0, noun, plural, sort, view, onSave, headStart, headEnd, bulk, locale, strings, className, children }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
   const id = useUid('plx-search-ws');
   const field = React.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
   const chips = [];
   filters.forEach((f) => {
-    if (f.multiple) (f.value || []).forEach((v) => chips.push({ f, v, text: f.label + ': ' + label(f, v), remove: () => onFilterChange(f.id, (f.value || []).filter((x) => x !== v)) }));
-    else if (f.value !== null && f.value !== undefined && f.value !== '') chips.push({ f, v: f.value, text: f.label + ': ' + label(f, f.value), remove: () => onFilterChange(f.id, null) });
+    if (f.multiple) (f.value || []).forEach((v) => chips.push({ f, v, text: fill(t.chip, { label: f.label, value: label(f, v) }), remove: () => onFilterChange(f.id, (f.value || []).filter((x) => x !== v)) }));
+    else if (f.value !== null && f.value !== undefined && f.value !== '') chips.push({ f, v: f.value, text: fill(t.chip, { label: f.label, value: label(f, f.value) }), remove: () => onFilterChange(f.id, null) });
   });
-  const nouns = count === 1 ? noun : (plural || noun + 's');
+  const nouns = count === 1 ? (noun || t.result) : (plural || (noun ? noun + 's' : t.results));
+  const counted = count.toLocaleString(loc) + ' ' + nouns;
   return (
     <section aria-labelledby={id + '-title'} className={cx('plx-search-ws', className)}>
       <div className="plx-search-ws__head">
         {headStart}
-        <h2 id={id + '-title'} className="plx-search-ws__title">{title}</h2>
-        <span className="plx-search-ws__count" aria-live="polite">{count.toLocaleString('en-US') + ' ' + nouns}</span>
+        <h2 id={id + '-title'} className="plx-search-ws__title">{title === undefined ? t.title : title}</h2>
+        <span className="plx-search-ws__count" aria-live="polite">{counted}</span>
         <span className="plx-search-ws__spacer" />
-        {onSave ? <Button size="sm" icon="save" onClick={onSave}>Save search</Button> : null}
+        {onSave ? <Button size="sm" icon="save" onClick={onSave}>{t.save}</Button> : null}
         {headEnd}
       </div>
       <div role="search" className="plx-search-ws__query">
-        <SearchField ref={field} label={'Search ' + nouns} placeholder={placeholder} value={query}
+        <SearchField ref={field} label={fill(t.searchField, { nouns })} placeholder={placeholder === undefined ? t.placeholder : placeholder} value={query}
           onChange={(e) => onQueryChange && onQueryChange(e.target.value)} onClear={() => onQueryChange && onQueryChange('')} />
       </div>
       {/* Clear all lives with the active-filter chips below, once */}
-      {filters.length ? <FilterBar label="Filters" filters={filters} onChange={onFilterChange} /> : null}
+      {filters.length ? <FilterBar label={t.filters} filters={filters} onChange={onFilterChange} /> : null}
       {chips.length ? (
-        <div className="plx-search-ws__active" role="group" aria-label="Active filters">
-          {chips.map((c) => <Chip key={c.f.id + ':' + c.v} selected onRemove={c.remove} removeLabel={'Remove ' + c.text}>{c.text}</Chip>)}
-          {onClearAll ? <Button size="xs" variant="link" onClick={onClearAll}>Clear all</Button> : null}
+        <div className="plx-search-ws__active" role="group" aria-label={t.activeFilters}>
+          {chips.map((c) => <Chip key={c.f.id + ':' + c.v} selected onRemove={c.remove} removeLabel={fill(t.remove, { text: c.text })}>{c.text}</Chip>)}
+          {onClearAll ? <Button size="xs" variant="link" onClick={onClearAll}>{t.clearAll}</Button> : null}
         </div>
       ) : null}
       <div className="plx-search-ws__bar">
-        <span className="plx-search-ws__results">{count.toLocaleString('en-US') + ' ' + (count === 1 ? 'result' : 'results')}</span>
+        <span className="plx-search-ws__results">{counted}</span>
         <span className="plx-search-ws__spacer" />
-        {view ? <SegmentedControl label="View" value={view.value} onChange={view.onChange} options={view.options || [{ value: 'grid', label: 'Grid' }, { value: 'table', label: 'Table' }]} /> : null}
+        {view ? <SegmentedControl label={t.view} value={view.value} onChange={view.onChange} options={view.options || [{ value: 'grid', label: t.grid }, { value: 'table', label: t.table }]} /> : null}
         {sort ? (
-          <Menu label="Sort" placement="bottom-end" trigger={<Button size="sm" icon="sort" caret aria-label={'Sort: ' + sort.value}>{'Sort: ' + sort.value}</Button>}>
+          <Menu label={t.sort} placement="bottom-end" trigger={<Button size="sm" icon="sort" caret aria-label={fill(t.sortValue, { value: sort.value })}>{fill(t.sortValue, { value: sort.value })}</Button>}>
             {sort.options.map((o) => <MenuItem key={o} checked={sort.value === o} onSelect={() => sort.onChange(o)}>{o}</MenuItem>)}
           </Menu>
         ) : null}
       </div>
       {bulk}
       <div className="plx-search-ws__body">
-        {count ? children : <EmptyState size="inline">{query ? 'Nothing matches “' + query + '”' + (chips.length ? ' with these filters' : '') + '.' : 'Nothing matches these filters.'}</EmptyState>}
+        {count ? children : <EmptyState size="inline">{query ? fill(chips.length ? t.noMatchQueryFilters : t.noMatchQuery, { query }) : t.noMatchFilters}</EmptyState>}
       </div>
     </section>
   );
