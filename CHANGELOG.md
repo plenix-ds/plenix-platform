@@ -6,6 +6,8 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-08
+
 ### Added
 - `strings` props on 14 components for their words and announcements (CodeBlock, Count `moreThan`, Button, Card,
   WidgetGrid, BulkActions, NotificationList, MediaViewer, SearchWorkspace, NavList, FilterBar, AppShell, SecondaryPane,
