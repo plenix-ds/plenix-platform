@@ -20,7 +20,7 @@ Phase 2 · safe to change
 Phase 3 · editable and governed
 - [ ] 8. The save server (below: design-system.lighthouseway.org) writes token changes, rebuilds, logs who changed what.
 - [ ] 9. Variant pages and the token Edit dialog for every component (the Button pattern).
-- [ ] 10. Contribution model: proposal → placeholder → built → released; approvals; review checklist.
+- [x] 10. Contribution model (batch 210): CONTRIBUTING.md (stages, who decides, the rules, the review checklist), a Component proposal issue form and a pull request checklist on GitHub.
 
 Phase 4 · grow
 - [ ] 11. Build the placeholders the next projects need.
