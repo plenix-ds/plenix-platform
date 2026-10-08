@@ -26,16 +26,23 @@
    Behavior:
      Each row is divided from the next.
      On a narrow layout the navigation stacks above the content.
+     It is a settings page: inside an AppShell it claims the page kind "settings", so the layout standard lays it out
+       (contained: one centered column at the form width).
    Notes:
      Fields (layout="inline" or "row") can be rows too.
      Give the control the row's label as its own accessible name.
 */
 import React from 'react';
+import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { NavPane } from '../NavPane/NavPane.jsx';
 
 export function SettingsLayout({ nav, className, children }) {
+  // a settings page: the layout standard (providers/pageLayouts.js) lays it out, through the shell (batch 218)
+  const shell = useAppLayout();
+  const claim = shell && shell.claimPage;
+  React.useEffect(() => (claim ? claim('settings') : undefined), [claim]);
   return (
     <div className={cx('plx-settings', className)}>
       <div className="plx-settings__frame">

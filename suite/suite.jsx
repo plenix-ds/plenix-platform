@@ -35,7 +35,7 @@ const FIRST_SUB = { messaging: 't-1', calendar: 'month' };
 export function readPrefs() { try { return JSON.parse(localStorage.getItem('plenix.prefs')) || {}; } catch (e) { return {}; } }
 export function writePrefs(p) { try { localStorage.setItem('plenix.prefs', JSON.stringify(p)); } catch (e) { /* this visit only */ } }
 
-function Suite({ app, render }) {
+function Suite({ app, render, page = 'workspace' }) {
   const [prefs, setPrefsState] = useState(readPrefs);
   const setPrefs = (next) => setPrefsState((cur) => { const v = typeof next === 'function' ? next(cur) : next; writePrefs(v); return v; });
   const [sub, setSub] = useState(FIRST_SUB[app] || null);
@@ -52,7 +52,7 @@ function Suite({ app, render }) {
     : find ? <FindWorkspace key={find.app} app={find.app} query={find.query} onQuery={(q) => { setFind({ ...find, query: q }); setHq(q); }} onOpen={openResult} onAskAI={(q) => { setFind(null); setAi(q); }} />
     : render({ prefs, setPrefs });
   return (
-    <AppShell layout="fluid" mainClassName="plx-shell-main"
+    <AppShell page={page} mainClassName="plx-shell-main"
       footer={<StatusBar start={<span>{SUITE.length - 1} applications · Lighthouse Way</span>} end={<span>Synced just now</span>} />}
       sideNav={HAS_NAV.includes(app) ? <LeftNav section={app} sub={sub} setSub={setSub} onSettings={() => { location.href = settingsPage(SETTINGS_FOR[app] || 'general'); }} /> : null}
       header={<AppHeader tone={tone} currentApp={inSuite ? app : null} appsRoot="../" appName={inSuite ? undefined : label}
@@ -68,6 +68,7 @@ function Suite({ app, render }) {
 }
 
 // mounts an application page: mountSuite('notes', () => <NotesScreen/>)
-export function mountSuite(app, render) {
-  ReactDOM.createRoot(document.getElementById('root')).render(<SessionProvider><Suite app={app} render={render} /></SessionProvider>);
+// opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
+export function mountSuite(app, render, opts) {
+  ReactDOM.createRoot(document.getElementById('root')).render(<SessionProvider><Suite app={app} render={render} page={(opts && opts.page) || 'workspace'} /></SessionProvider>);
 }

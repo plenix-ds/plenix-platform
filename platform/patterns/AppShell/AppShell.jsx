@@ -11,12 +11,11 @@
      sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
      panel: the inspector panel on the right (SidePanel)
      footer: the footer across the bottom (StatusBar)
-     layout: the page's layout mode (default "fluid"):
-       "fluid": the page content uses the main region's full width (dashboards, workspaces)
-       "contained": the content is one centered column at most 960px wide (the form width; settings, forms)
-       "hybrid": full width, with its paragraphs at most 760px and its forms at most 960px wide (a workspace with text)
-       "multi-pane": the main region is a row of panes that each scroll on their own; the page never scrolls as a whole
-       "focus": the navigation and the inspector panel are hidden for one task; the header and the footer stay
+     page: what kind of page this is (default "workspace"): "workspace" | "dashboard" | "settings" | "form" | "detail" |
+       "master-detail" | "editor". The design system's layout standard (providers/pageLayouts.js) decides its layout mode:
+       fluid (full width), contained (one centered column at the 960px form width), hybrid (full width, text at 760px and
+       forms at 960px), multi-pane (panes that each scroll on their own) or focus (navigation and inspector hidden).
+       An application never sets the mode itself; a pattern that is a kind of page claims it (SettingsLayout: "settings").
      mainId: the main region's id, the skip link's target (default "main")
      mainClassName: more classes on the main region
      className: more classes on the shell
@@ -27,7 +26,7 @@
      PageContent.children: the page's parts
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
-       { mode, open, expanded, width, setWidth, toggle, close, small, hasSideNav }
+       { mode, open, expanded, width, setWidth, toggle, close, small, hasSideNav, page, layout, claimPage(kind) }
    Behavior:
      The areas are the shell's immediate children.
      The header and the footer always span the full width, above and below both side areas.
@@ -41,6 +40,7 @@
      Inspector panel: see SidePanel (--plx-sys-panel-inspector-width by density; it collapses to a rail).
      The main region fills the rest and scrolls itself; the content grid lives in it.
      The layout mode is data-plx-layout on the shell and on the main region; app-shell.css draws each mode (batch 217).
+     The mode comes from the page's kind through the layout standard (providers/pageLayouts.js; batch 218).
      A skip link is the first stop.
      PageContent fills the rest of the main region (beside a SecondaryPane, if any) and scrolls itself.
      PageContent keeps the layout padding (--plx-sys-space-layout-*) and stacks its parts --plx-sys-space-stack-md apart.
@@ -55,6 +55,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
+import { pageLayout } from '../../providers/pageLayouts.js';
 
 const STRINGS = { skip: 'Skip to main content' };
 // the five layout modes (the Layout foundation; app-shell.css draws them)
@@ -84,7 +85,11 @@ export function useMedia(query) {
 export const readPref = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key)); return v === null || v === undefined ? fallback : v; } catch (e) { return fallback; } };
 export const writePref = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* not stored: it lasts for this visit */ } };
 
-export function AppShell({ header, sideNav, panel, footer, layout = 'fluid', mainId = 'main', mainClassName, strings, className, children }) {
+export function AppShell({ header, sideNav, panel, footer, page = 'workspace', mainId = 'main', mainClassName, strings, className, children }) {
+  // the page's kind, claimed by a pattern on the page when it is that kind of page (SettingsLayout), else the page prop
+  const [claimed, setClaimed] = React.useState(null);
+  const claimPage = React.useCallback((kind) => { setClaimed(kind); return () => setClaimed((k) => (k === kind ? null : k)); }, []);
+  const layout = pageLayout(claimed || page);   // the design system's layout standard decides the mode
   const t = Object.assign({}, STRINGS, strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
   const [expanded, setExpanded] = React.useState(() => readPref('plenix.sideNav.expanded', true));
@@ -109,8 +114,8 @@ export function AppShell({ header, sideNav, panel, footer, layout = 'fluid', mai
   }, [toggle, hasSide]);
   const mode = !hasSide ? 'none' : small ? (overlay ? 'overlay' : 'rail') : expanded ? 'inline' : 'rail';
   const ctx = React.useMemo(() => ({ hasSideNav: hasSide, slotEl, registerPortal, small, mode, open: mode === 'inline' || mode === 'overlay',
-    expanded: small ? overlay : expanded, width, setWidth, toggle, close: () => setOverlay(false) }),
-  [hasSide, slotEl, registerPortal, small, mode, overlay, expanded, width, setWidth, toggle]);
+    expanded: small ? overlay : expanded, width, setWidth, toggle, close: () => setOverlay(false), page: claimed || page, layout, claimPage }),
+  [hasSide, slotEl, registerPortal, small, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
   return (
     <LayoutContext.Provider value={ctx}>
       <div className={cx('plx-app-shell', className)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>

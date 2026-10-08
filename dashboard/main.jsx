@@ -10,4 +10,4 @@ function Home({ prefs }) {
   if (project) return <ProjectDetail proj={project} />;
   return <Dashboard prefs={prefs} setProject={setProject} setSection={(s) => { if (s !== 'project-detail') location.href = appPage(s); }} />;
 }
-mountSuite('home', ({ prefs }) => <Home prefs={prefs} />);
+mountSuite('home', ({ prefs }) => <Home prefs={prefs} />, { page: 'dashboard' });

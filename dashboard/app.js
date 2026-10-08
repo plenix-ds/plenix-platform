@@ -1949,7 +1949,8 @@ function writePrefs(p) {
 }
 function Suite({
   app,
-  render
+  render,
+  page = 'workspace'
 }) {
   const [prefs, setPrefsState] = useState(readPrefs);
   const setPrefs = next => setPrefsState(cur => {
@@ -1999,7 +2000,7 @@ function Suite({
     setPrefs
   });
   return /*#__PURE__*/React.createElement(_plenixPlatform.AppShell, {
-    layout: "fluid",
+    page: page,
     mainClassName: "plx-shell-main",
     footer: /*#__PURE__*/React.createElement(_plenixPlatform.StatusBar, {
       start: /*#__PURE__*/React.createElement("span", null, SUITE.length - 1, " applications \xB7 Lighthouse Way"),
@@ -2059,10 +2060,12 @@ function Suite({
 }
 
 // mounts an application page: mountSuite('notes', () => <NotesScreen/>)
-function mountSuite(app, render) {
+// opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
+function mountSuite(app, render, opts) {
   ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, null, /*#__PURE__*/React.createElement(Suite, {
     app: app,
-    render: render
+    render: render,
+    page: opts && opts.page || 'workspace'
   })));
 }
   } },
@@ -3148,7 +3151,9 @@ function Home({
   prefs
 }) => /*#__PURE__*/React.createElement(Home, {
   prefs: prefs
-}));
+}), {
+  page: 'dashboard'
+});
   } }
   };
   var cache = {};

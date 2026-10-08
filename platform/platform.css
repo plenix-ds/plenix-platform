@@ -68,6 +68,7 @@
 @import url("patterns/SettingsLayout/settings-layout.css");
 @import url("patterns/ToolRail/tool-rail.css");
 @import url("patterns/AppShell/app-shell.css");
+@import url("system/layout-modes.css");   /* the layout modes, generated from platform/standards/layout.json */
 @import url("patterns/NavPane/nav-pane.css");
 @import url("patterns/SidePanel/side-panel.css");
 @import url("patterns/SecondaryPane/secondary-pane.css");

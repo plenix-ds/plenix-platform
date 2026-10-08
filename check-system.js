@@ -18,12 +18,16 @@
 //               application) except an object whose every key is a --plx- custom property (a
 //               value from the data, e.g. a category's color, read by the Platform's stylesheet). Applications not yet
 //               converted are listed in INLINE_STYLE_PENDING with their count, until their batch removes them (batch 150).
-//   generated   the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
+//   generated   the token stylesheets and the standards' code (build-standards.js: providers/pageLayouts.js, system/layout-modes.css)
+//               are exactly what is generated from their JSON (platform/tokens/*.tokens.json, platform/standards/*.json);
+//               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
 //               tokens are edited in the JSON, never in the CSS (batch 158)
 //   palette     a stylesheet takes colors from roles (--plx-sys-, --plx-comp-), never from the palette (--plx-ref-color-)
 //   raw-value   no length, time or color written as a number in a stylesheet declaration (tokens only; 0 excepted)
 //   palette-class an application never colors with a palette utility class (plx-u-text-gray-700…): components only
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
+//   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
+//               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
 const fs = require('fs');
@@ -106,6 +110,10 @@ for (const { file } of files) {
   if (!/\.(jsx|js|html)$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
   const lineOf = (i) => text.slice(0, i).split('\n').length;
+  // page-layout: an application says what a page is (<AppShell page="settings">); the layout standard picks the mode
+  if (!/[\\/]platform[\\/]/.test(file) && !/(^|[\\/])(app|assets)\.js$/.test(file)) {
+    for (const m of text.matchAll(/<AppShell\b[^>]*?\blayout\s*=|\bdata-plx-layout\s*=|['"]data-plx-layout['"]/g)) add('page-layout', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
+  }
   // style: in h()/createElement props — allowed only as an object literal of custom properties
   for (const m of text.matchAll(/[{,]\s*style\s*:\s*/g)) {
     const at = m.index + m[0].length;
@@ -237,6 +245,8 @@ for (const kind of ['components', 'patterns']) {
     if (platformCss.indexOf('"' + want + '"') < 0) add('imports', path.join(dir, c, f), 0, want + ' is not imported by platform.css');
   }
 }
+// generated: the code made from the design system's standards matches its JSON source (platform/standards/*.json)
+for (const f of require('./build-standards.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/standards: edit the standard (JSON) and run node build-app.js, never the generated file');
 // generated: the token stylesheets match their JSON source
 for (const f of require('./build-tokens.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/tokens: edit the .tokens.json, then build');
 // legacy files stay gone

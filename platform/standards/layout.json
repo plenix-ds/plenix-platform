@@ -1,0 +1,36 @@
+{
+  "$description": "The Plenix layout standard: how each kind of page is laid out. This is the design system's definition; build-standards.js generates the code the applications run from it (providers/pageLayouts.js and system/layout-modes.css). Edit here, never the generated files: change a value, rebuild, and every page of that kind, in every app, follows.",
+  "modes": {
+    "fluid": {
+      "description": "The page content uses the main region's full width."
+    },
+    "contained": {
+      "description": "One column at the form width; the scroll area keeps the full width.",
+      "maxWidth": "{plx-ref.content-max-960px}",
+      "align": "center"
+    },
+    "hybrid": {
+      "description": "Full width, with readable text and forms.",
+      "proseMaxWidth": "{plx-ref.content-max-760px}",
+      "formMaxWidth": "{plx-ref.content-max-960px}"
+    },
+    "multi-pane": {
+      "description": "A row of panes that each scroll on their own; the page never scrolls as a whole.",
+      "panesScroll": true
+    },
+    "focus": {
+      "description": "One task: the navigation and the inspector panel are hidden; the header and the footer stay.",
+      "hide": ["navigation", "inspector"]
+    }
+  },
+  "pages": {
+    "workspace": { "mode": "fluid", "use": "Lists, grids, browse and search: most application screens (the default)" },
+    "dashboard": { "mode": "fluid", "use": "An overview of widgets and sections" },
+    "settings": { "mode": "contained", "use": "Settings and preferences (every SettingsLayout page)" },
+    "form": { "mode": "contained", "use": "A form on its own page: create or edit one thing" },
+    "detail": { "mode": "hybrid", "use": "One record or document, with text to read" },
+    "master-detail": { "mode": "multi-pane", "use": "A list beside the chosen item, each scrolling on its own (mail, chat)" },
+    "editor": { "mode": "focus", "use": "One task that needs all the room (image editor)" }
+  },
+  "default": "workspace"
+}

@@ -74,6 +74,7 @@ export { StatusBar } from './patterns/StatusBar/StatusBar.jsx';
 export { ThemeProvider } from './providers/ThemeProvider.jsx';
 export { SessionProvider, useSession, DEMO_SESSION } from './providers/SessionProvider.jsx';
 export { PLENIX_APPS, appById, appHref } from './providers/apps.js';
+export { PAGE_LAYOUTS, pageLayout } from './providers/pageLayouts.js';
 export { useDensity } from './hooks/useDensity.js';
 export { useInteraction } from './hooks/useInteraction.js';
 export { TimeGrid } from './patterns/TimeGrid/TimeGrid.jsx';

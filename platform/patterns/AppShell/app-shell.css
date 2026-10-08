@@ -27,16 +27,6 @@
 .plx-page-panes{display:flex;flex-basis:0%;flex-grow:1;min-block-size:0;min-inline-size:0;}
 /* while a pane splitter is dragged the whole page shows the resize pointer (PanelSplitter sets the state on the root) */
 :root.is-resizing-columns body{cursor:col-resize;}
-/* ── the layout modes (data-plx-layout on the shell and the main region; AppShell layout, batch 217) ── */
-/* fluid (the default): nothing to change: the page content uses the main region's full width */
-/* contained: one centered column at most the form width; the padding grows so the scroll area keeps the full width */
-.plx-app-shell[data-plx-layout="contained"] .plx-page-content{padding-inline-end:max(var(--plx-sys-space-layout-md), calc((100% - var(--plx-ref-content-max-960px)) / 2));padding-inline-start:max(var(--plx-sys-space-layout-md), calc((100% - var(--plx-ref-content-max-960px)) / 2));}
-/* hybrid: full width, with readable text and forms */
-.plx-app-shell[data-plx-layout="hybrid"] .plx-page-content>p{max-inline-size:var(--plx-ref-content-max-760px);}
-.plx-app-shell[data-plx-layout="hybrid"] .plx-page-content>:is(form,.plx-fieldset,.plx-field){max-inline-size:var(--plx-ref-content-max-960px);}
-/* multi-pane: a row of panes, each scrolling on its own; the page never scrolls as a whole */
-.plx-app-shell[data-plx-layout="multi-pane"] .plx-app-shell__main{overflow-x:hidden;overflow-y:hidden;}
-.plx-app-shell[data-plx-layout="multi-pane"] .plx-app-shell__main>*{min-block-size:0;overflow-y:auto;}
-/* focus: one task: the navigation and the inspector panel are hidden; the header and the footer stay */
-.plx-app-shell[data-plx-layout="focus"] .plx-app-shell__body>:not(.plx-app-shell__main){display:none;}
+/* the layout modes (data-plx-layout, from the page's kind) are drawn by system/layout-modes.css, generated from the
+   design system's layout standard (platform/standards/layout.json; batch 218) */
 

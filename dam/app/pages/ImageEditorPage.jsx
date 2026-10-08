@@ -185,7 +185,7 @@ export function ImageEditorPage() {
   const toolLabel = TOOLS.find((t) => t[0] === tool)[1];
 
   return (
-    <AppShell header={header} layout="focus" mainClassName="plx-shell-main">
+    <AppShell header={header} page="editor" mainClassName="plx-shell-main">
       <h1 className="plx-visually-hidden">Plenix Asset Manager: Image Editor</h1>
       <ToolRail label="Tools" showLabels>
         {TOOLS.map(([id, label, icon]) => <ToolRail.Item key={id} icon={icon} label={label} pressed={open && tool === id} onClick={() => chooseTool(id)} />)}
