@@ -46,10 +46,9 @@ export const P={
   folder:"M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2v11z",
   back:"M19 12H5M12 5l-7 7 7 7",
 };
-/* size: a token value (e.g. "var(--plx-ref-size-12px)"); without it the icon takes its container's --plx-comp-icon-size
-   (a button's, a navigation row's), or the system icon size: never a number here */
-export const Ico=({n,size,color="currentColor",sw=1.65})=>(
-  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"    className="plx-u-shrink-0 plx-u-block-var plx-u-inline-var" style={{ '--plx-comp-u-block': size||"var(--plx-comp-icon-size,var(--plx-sys-icon-size))", '--plx-comp-u-inline': size||"var(--plx-comp-icon-size,var(--plx-sys-icon-size))" }}>
+/* the icon takes its container's --plx-comp-icon-size (a button's, a navigation row's), or the system icon size */
+export const Ico=({n,color="currentColor",sw=1.65})=>(
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"    className="plx-u-shrink-0 plx-u-icon-box">
     <path d={P[n]} stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );

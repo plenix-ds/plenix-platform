@@ -350,5 +350,5 @@
 .plx-u-z-menu{z-index:var(--plx-sys-layer-menu) !important;}
 .plx-u-z-raised{z-index:var(--plx-sys-layer-raised) !important;}
 .plx-u-bg-var{background-color:var(--plx-comp-u-bg) !important;}
-.plx-u-block-var{block-size:var(--plx-comp-u-block) !important;}
-.plx-u-inline-var{inline-size:var(--plx-comp-u-inline) !important;}
+/* an icon at its container's icon size (batch 267: replaces the -var pair, whose value came in a style attribute) */
+.plx-u-icon-box{block-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size)) !important;inline-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size)) !important;}

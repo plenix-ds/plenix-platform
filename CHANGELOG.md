@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.19.1] - 2026-10-09
+
+### Changed
+- Strict design system, step 1 (owner: "strictly follow the DS.. no exceptions": no value in a style attribute, not even
+  a custom property). Values from the data now arrive as attributes, and the new generated stylesheet
+  platform/system/steps.css (build-steps.js, run by build-app.js) has one rule per allowed step: Tree indents from
+  aria-level, MediaCard and Preview shapes from data-plx-aspect, Skeleton sizes from size-token names (width="200px"),
+  and TimeGrid's hours, days and events (quarter hours, at least 30 minutes). The suite's icon takes its container's
+  size by a class (.plx-u-icon-box replaces the -var pair). Every measured position and size is unchanged. (batch 267)
+
 ## [0.19.0] - 2026-10-09
 
 ### Changed

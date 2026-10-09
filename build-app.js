@@ -33,6 +33,9 @@ const ICONS = buildIcons(ROOT);
 const STANDARDS = require('./build-standards.js')(ROOT);
 console.log('Built ' + STANDARDS.files.join(', ') + ' from platform/standards (' + STANDARDS.pages + ' kinds of page' + (STANDARDS.stale.length ? ', ' + STANDARDS.stale.length + ' changed' : '') + ')');
 console.log('Built platform/components/Icon/icon.css (' + ICONS.names + ' icon names, ' + ICONS.symbols + ' symbols, ' + Math.round(ICONS.bytes / 1024) + ' KB)');
+// then the step rules (build-steps.js -> system/steps.css): values from the data arrive as attributes (batch 267)
+const STEPS = require('./build-steps.js')(ROOT);
+console.log('Built platform/system/steps.css (' + STEPS.rules + ' rules' + (STEPS.changed ? '' : ', unchanged') + ')');
 // the only files this build may write
 const ALLOWED_OUTPUTS = [
   path.join(ROOT, 'platform', 'dist', 'platform.js'),

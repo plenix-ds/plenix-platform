@@ -19,8 +19,7 @@ import { cx } from '../../utils/cx.js';
 
 export function Preview({ as: As = 'div', aspect = '4/3', topStart, bottomEnd, className, children, ...rest }) {
   return (
-    <As type={As === 'button' ? 'button' : undefined} className={cx('plx-preview', As === 'button' && 'plx-preview--button', className)}
-      style={{ '--plx-comp-preview-aspect': aspect.replace('/', ' / ') }} {...rest}>
+    <As type={As === 'button' ? 'button' : undefined} className={cx('plx-preview', As === 'button' && 'plx-preview--button', className)} data-plx-aspect={aspect} {...rest}>
       {children}
       {topStart ? <span className="plx-preview__corner plx-preview__corner--top-start">{topStart}</span> : null}
       {bottomEnd ? <span className="plx-preview__corner plx-preview__corner--bottom-end">{bottomEnd}</span> : null}

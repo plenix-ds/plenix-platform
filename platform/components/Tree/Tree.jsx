@@ -80,7 +80,7 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
         aria-expanded={kids ? !!isOpen : undefined} aria-selected={n.id === selected} tabIndex={n.id === active ? 0 : -1}
         className={cx('plx-tree__item', n.id === selected && 'is-selected')}
         onFocus={(e) => { if (e.target === e.currentTarget) setFocusId(n.id); }}>
-        <div className="plx-tree__row" style={{ '--plx-comp-tree-level': level - 1 }} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
+        <div className="plx-tree__row" onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected))}</span> : null}

@@ -2,6 +2,21 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Strict DS: no inline styles, no exceptions (added 2026-10-09)
+
+Owner: "i want this to strictly follow the DS.. no exceptions": not even a custom-property value in a style attribute.
+A value from the data reaches the stylesheet as an attribute with one rule per step (system/steps.css, build-steps.js)
+or as a class from a palette. Say "continue Strict DS" to pick it up.
+- [x] 1. No visible change: tree indent (aria-level), picture shape (data-plx-aspect), skeleton sizes (size-token names),
+  calendar grid and events (quarter hours), suite icon size (a class) (batch 267)
+- [ ] 2. Data colors: a --plx-sys-data-* palette from existing hues; Avatar, Card accent, Color swatch, Event chip,
+  project dots, Progress bar color as palette classes; app data from hex to palette names
+- [ ] 3. Progress bar: native <progress value> (the function reports the amount; the DS styles it); the spec says so
+- [ ] 4. Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
+- [ ] 5. Image editor in steps: zoom, opacity, text on a 5% grid, palette text colors, filter presets, crop classes
+- [ ] 6. The design system's 15 sample styles: a generated class per token
+- [ ] 7. check-system rejects every style attribute, custom properties included
+
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)
 
 Owner: "every variant for every component to have navigation and design specs just like we did for the buttons". Say

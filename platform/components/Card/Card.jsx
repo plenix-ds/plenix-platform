@@ -122,7 +122,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
   const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
   return (
     <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selected && 'is-selected', selecting && 'is-selecting', className)} {...rest}>
-      <div className="plx-media-card__media" style={{ '--plx-comp-media-card-aspect': aspect.replace('/', ' / ') }}>
+      <div className="plx-media-card__media" data-plx-aspect={aspect}>
         {src ? <img src={src} alt={alt} loading="lazy" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
         {badge ? <span className="plx-media-card__badge">{badge}</span> : null}
       </div>

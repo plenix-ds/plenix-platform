@@ -32,7 +32,7 @@ export function SearchScreen({ initialQuery = '' }) {
         {loading ? (
           <Stack gap="sm">
             <Notice tone="info"><Inline gap="sm"><Chat.Typing label="Searching" /><span>Scanning all modules…</span></Inline></Notice>
-            {[1, 2, 3].map((i) => <Skeleton key={i} height="var(--plx-ref-size-72px)" />)}
+            {[1, 2, 3].map((i) => <Skeleton key={i} height="72px" />)}
           </Stack>
         ) : null}
         {res && !loading ? (

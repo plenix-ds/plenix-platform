@@ -27,8 +27,8 @@ export function CaptureUI({ onClose }) {
             {loading ? (
               <Stack gap="sm">
                 <Notice tone="info"><Inline gap="sm"><Chat.Typing label="Thinking" /><span>Reading content and extracting metadata…</span></Inline></Notice>
-                <Skeleton height="var(--plx-ref-size-32px)" />
-                <Skeleton height="var(--plx-ref-size-24px)" width="var(--plx-ref-size-200px)" />
+                <Skeleton height="32px" />
+                <Skeleton height="24px" width="200px" />
               </Stack>
             ) : null}
             {res && !loading && !saved ? (

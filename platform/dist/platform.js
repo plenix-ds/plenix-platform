@@ -1248,9 +1248,7 @@ function Preview({
   return /*#__PURE__*/_react.default.createElement(As, _extends({
     type: As === 'button' ? 'button' : undefined,
     className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', className),
-    style: {
-      '--plx-comp-preview-aspect': aspect.replace('/', ' / ')
-    }
+    "data-plx-aspect": aspect
   }, rest), children, topStart ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-preview__corner plx-preview__corner--top-start"
   }, topStart) : null, bottomEnd ? /*#__PURE__*/_react.default.createElement("span", {
@@ -1469,8 +1467,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Skeleton width="160px" height="16px" />
      <Spinner size="sm" label="Saving" />
    Props:
-     Skeleton.width: the block width (a size token, var(--plx-ref-size-…))
-     Skeleton.height: the block height (a size token)
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
      Skeleton.className: more classes on the block
      Spinner.size: "sm" | "md" (default) | "lg"
      Spinner.label: the text announced to assistive technology (default "Loading")
@@ -1483,6 +1481,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the <span>.
      The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
 */
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
 function Skeleton({
   width,
   height,
@@ -1492,10 +1492,8 @@ function Skeleton({
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-skeleton', className),
     "aria-hidden": "true",
-    style: {
-      '--plx-comp-skeleton-inline-size': width,
-      '--plx-comp-skeleton-block-size': height
-    }
+    "data-plx-width": sizeName(width),
+    "data-plx-height": sizeName(height)
   }, rest));
 }
 function Spinner({
@@ -4467,9 +4465,7 @@ function MediaCard({
     className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selected && 'is-selected', selecting && 'is-selecting', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-media-card__media",
-    style: {
-      '--plx-comp-media-card-aspect': aspect.replace('/', ' / ')
-    }
+    "data-plx-aspect": aspect
   }, src ? /*#__PURE__*/_react.default.createElement("img", {
     src: src,
     alt: alt,
@@ -5757,9 +5753,6 @@ function Tree({
       }
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "plx-tree__row",
-      style: {
-        '--plx-comp-tree-level': level - 1
-      },
       onClick: () => {
         moveTo(n.id);
         if (onSelect) onSelect(n.id);
@@ -8839,6 +8832,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the accessible name of the grid
      className: more classes on the grid
    Behavior:
+     An event is placed on quarter hours (start and end round to 15 minutes; at least 30 minutes tall): the grid takes its
+     hours, days and each event's place as attributes, and system/steps.css has a rule per step (no style attribute).
      Each day is a group named by its date; its events are buttons when they have onClick (EventChip).
      The grid scrolls inside its own box when it is taller than its container.
    Notes:
@@ -8862,10 +8857,8 @@ function TimeGrid({
     className: (0, _cx.cx)('plx-time-grid', className),
     role: "group",
     "aria-label": label,
-    style: {
-      '--plx-comp-time-grid-hours': endHour - startHour,
-      '--plx-comp-time-grid-days': days.length
-    }
+    "data-plx-hours": endHour - startHour,
+    "data-plx-days": days.length
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-time-grid__corner",
     "aria-hidden": "true"
@@ -8895,10 +8888,8 @@ function TimeGrid({
   })), events.filter(e => e.day === d.key).map(e => /*#__PURE__*/_react.default.createElement("div", {
     key: e.id,
     className: "plx-time-grid__event",
-    style: {
-      '--plx-comp-time-grid-start': Math.max(0, e.start - startHour),
-      '--plx-comp-time-grid-span': Math.max(0.5, e.end - e.start)
-    }
+    "data-plx-start": Math.max(0, Math.round((e.start - startHour) * 4)),
+    "data-plx-span": Math.max(2, Math.round((e.end - e.start) * 4))
   }, /*#__PURE__*/_react.default.createElement(_EventChip.EventChip, {
     fill: true,
     title: e.title,

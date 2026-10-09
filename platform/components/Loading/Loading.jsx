@@ -5,8 +5,8 @@
      <Skeleton width="160px" height="16px" />
      <Spinner size="sm" label="Saving" />
    Props:
-     Skeleton.width: the block width (a size token, var(--plx-ref-size-…))
-     Skeleton.height: the block height (a size token)
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
      Skeleton.className: more classes on the block
      Spinner.size: "sm" | "md" (default) | "lg"
      Spinner.label: the text announced to assistive technology (default "Loading")
@@ -23,8 +23,10 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = (v) => (v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined);
 export function Skeleton({ width, height, className, ...rest }) {
-  return <span className={cx('plx-skeleton', className)} aria-hidden="true" style={{ '--plx-comp-skeleton-inline-size': width, '--plx-comp-skeleton-block-size': height }} {...rest} />;
+  return <span className={cx('plx-skeleton', className)} aria-hidden="true" data-plx-width={sizeName(width)} data-plx-height={sizeName(height)} {...rest} />;
 }
 
 export function Spinner({ size = 'md', label = 'Loading', className, ...rest }) {
