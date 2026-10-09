@@ -33,7 +33,7 @@ export const FIND_SOURCES={
     columns:[{title:"Bookmark",field:"name",kind:"name"},{title:"Site",field:"url",kind:"data"},{title:"Collection",field:"col"},{title:"Date",field:"date",kind:"data"}],
     rows:()=>ALL_BOOKMARKS.map(b=>({key:"b"+b.id,name:b.title,sub:b.url,cells:{url:b.url,col:b.col,date:b.date},facets:{col:b.col,tags:b.tags}}))},
   files:{label:"Files",noun:"file",filters:[{id:"t",label:"Type",multiple:true},{id:"folder",label:"Folder",multiple:true}],
-    columns:[{title:"Name",field:"name",kind:"name"},{title:"Type",field:"t",kind:"center",render:r=><Tag>{r.t}</Tag>},{title:"Size",field:"s",kind:"data",hozAlign:"right",headerHozAlign:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
+    columns:[{title:"Name",field:"name",kind:"name"},{title:"Type",field:"t",kind:"data"},{title:"Size",field:"s",kind:"data",hozAlign:"right",headerHozAlign:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
     rows:()=>ALL_FILES.map((f,i)=>({key:"f"+i,name:f.name,sub:f.folder,cells:{t:f.t,s:f.s,folder:f.folder,d:f.d},facets:{t:f.t,folder:f.folder}}))},
 };
 // the dashboard home: everything, with the section each row comes from

@@ -342,7 +342,6 @@
   --plx-comp-data-grid-filter-min-width: var(--plx-ref-size-220px);
   --plx-comp-data-grid-filter-label-font-size: var(--plx-ref-font-size-11);
   --plx-comp-data-grid-filter-label-letter-spacing: var(--plx-sys-letter-spacing-caps);
-  --plx-comp-property-list-label-width: var(--plx-ref-size-240px);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);

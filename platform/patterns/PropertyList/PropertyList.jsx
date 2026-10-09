@@ -6,8 +6,6 @@
      </PropertyList>
    Props:
      layout: "columns" (default; label and value side by side on a shared baseline) | "stacked" (label above value)
-     variant: "plain" (default) | "table" (drawn as a table: an outer border like Table, a divider between rows, the labels on
-       a shaded column), for reference data such as a component's details
      className: more classes on the list
      children: the PropertyList.Item pairs
      PropertyList.Item.label: the label
@@ -18,12 +16,14 @@
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
+     A name/value table (reference data, a component's details) is a DataGrid, not a PropertyList: every table is a
+     Tabulator grid (batch 229).
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
-export function PropertyList({ layout = 'columns', variant = 'plain', className, children }) {
-  return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, variant === 'table' && 'plx-property-list--table', className)}>{children}</dl>;
+export function PropertyList({ layout = 'columns', className, children }) {
+  return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, className)}>{children}</dl>;
 }
 
 PropertyList.Item = function PropertyListItem({ label, htmlFor, description, data = false, className, children }) {

@@ -8,6 +8,12 @@ import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, Conte
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
+// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// are the row header, values wrap, a value may be any React content
+const facts=(label,rows)=>{const list=rows.filter(Boolean);return <DataGrid label={label} headerMenu={false} options={{headerVisible:false}}
+  data={list.map((r,i)=>({id:i,name:r[0],value:typeof r[1]==="string"||typeof r[1]==="number"?String(r[1]):""}))}
+  columns={[{title:"Name",field:"name",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px",headerSort:false},
+    {title:"Value",field:"value",kind:"wrap",headerSort:false,render:d=>{const r=list[d.id];return r?(r[2]?<Text variant="data">{r[1]}</Text>:r[1]):null;}}]}/>;};
 
 /* A feature's status as a Badge: [tone, label] */
 const FEATURE_STATUS={done:["success","Done"],planned:["info","Planned"],wip:["warning","In progress"]};
@@ -42,13 +48,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
   const ui=cap.ui||{};
   const sections=[
     {title:"Baseline Operations",content:(
-      <PropertyList variant="table">
-        {Object.entries(cap.baselineOps||{}).map(e=>(
-          <PropertyList.Item key={e[0]} label={e[0].charAt(0).toUpperCase()+e[0].slice(1)}>
-            {e[1]==="Not started"?<Text variant="danger">{e[1]}</Text>:e[1]}
-          </PropertyList.Item>
-        ))}
-      </PropertyList>
+      facts("Baseline operations",Object.entries(cap.baselineOps||{}).map(e=>[e[0].charAt(0).toUpperCase()+e[0].slice(1),e[1]==="Not started"?<Text variant="danger">{e[1]}</Text>:e[1]]))
     )},
     {title:"Features",content:(
       <Stack gap="xs">
@@ -80,9 +80,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
       </Stack>
     )},
     {title:"Functionality",content:(
-      <PropertyList variant="table">
-        {(cap.functionality||[]).map((f,i)=><PropertyList.Item key={i} label={f.feature}>{f.behavior}</PropertyList.Item>)}
-      </PropertyList>
+      facts("Functionality",(cap.functionality||[]).map(f=>[f.feature,f.behavior]))
     )},
     {title:"Scenarios",content:(
       <DataGrid label="Scenarios" data={(cap.scenarios||[]).map((r,i)=>({...r,id:i}))} columns={[
@@ -109,16 +107,12 @@ function CapDoc({cap,backLabel,onBack,crumb}){
       </Stack>
     )},
     {title:"Enablers",content:(
-      <PropertyList variant="table">
-        {(cap.enablers||[]).map((e,i)=><PropertyList.Item key={i} label={e.name}>{e.desc}</PropertyList.Item>)}
-      </PropertyList>
+      facts("Enablers",(cap.enablers||[]).map(e=>[e.name,e.desc]))
     )},
     {title:"UI",content:(
-      <PropertyList variant="table">
-        {ui.screen&&ui.screen!=="Not started"&&<PropertyList.Item label="Screen" data>{ui.screen}</PropertyList.Item>}
-        {(ui.components||[]).length>0&&<PropertyList.Item label="Components"><Stack gap="xs">{ui.components.map((c,i)=><Text key={i}>{c}</Text>)}</Stack></PropertyList.Item>}
-        {(ui.widgets||[]).length>0&&<PropertyList.Item label="Widgets"><Stack gap="xs">{ui.widgets.map((w,i)=><Text key={i} variant="data">{w}</Text>)}</Stack></PropertyList.Item>}
-      </PropertyList>
+      facts("UI",[ui.screen&&ui.screen!=="Not started"&&["Screen",ui.screen,true],
+        (ui.components||[]).length>0&&["Components",<Stack gap="xs">{ui.components.map((c,i)=><Text key={i}>{c}</Text>)}</Stack>],
+        (ui.widgets||[]).length>0&&["Widgets",<Stack gap="xs">{ui.widgets.map((w,i)=><Text key={i} variant="data">{w}</Text>)}</Stack>]])
     )},
     {title:"Modules",content:(
       <TagList label="Modules">
@@ -162,14 +156,10 @@ function CapDoc({cap,backLabel,onBack,crumb}){
         </Panel>
         <DocSection title="Why it fits this product">
           <Text as="p">The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness.</Text>
-          <PropertyList variant="table">
-            {(window.PV_FIT||[]).map(p=><PropertyList.Item key={p.principle} label={p.principle}>{p.meaning}</PropertyList.Item>)}
-          </PropertyList>
+          {facts("Why Plenix fits",(window.PV_FIT||[]).map(p=>[p.principle,p.meaning]))}
         </DocSection>
         <DocSection title="Core Data Model">
-          <PropertyList variant="table">
-            {(window.PV_MODEL||[]).map(m=><PropertyList.Item key={m.name} label={m.name}>{m.desc}</PropertyList.Item>)}
-          </PropertyList>
+          {facts("Core data model",(window.PV_MODEL||[]).map(m=>[m.name,m.desc]))}
         </DocSection>
         <Metric.Group label="Documentation figures">
           {[["Capabilities",74],["Features Documented",807],["PRDs with Content",50],["Project Types",(window.ALL_PROJ_TYPES||[]).length]].map(s=>(
@@ -197,9 +187,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           </Stack>
         </Notice>
         <DocSection title="Core Philosophy">
-          <PropertyList variant="table">
-            {(window.PV_PHILOSOPHY||[]).map(ph=><PropertyList.Item key={ph.p} label={ph.p}>{ph.d}</PropertyList.Item>)}
-          </PropertyList>
+          {facts("Core philosophy",(window.PV_PHILOSOPHY||[]).map(ph=>[ph.p,ph.d]))}
         </DocSection>
         <DocSection title="What the Platform Unifies">
           <DataGrid label="What the Platform Unifies" data={(window.PV_UNIFIES||[]).map((r,i)=>({id:i,silo:r[0],unified:r[1]}))} columns={[
@@ -209,9 +197,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
         </DocSection>
         <DocSection title="Unified Messaging Hub">
           <Text as="p">A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure.</Text>
-          <PropertyList variant="table">
-            {(window.PV_MESSAGING||[]).map(s=><PropertyList.Item key={s.label} label={s.label}>{s.desc}</PropertyList.Item>)}
-          </PropertyList>
+          {facts("Unified messaging hub",(window.PV_MESSAGING||[]).map(s=>[s.label,s.desc]))}
         </DocSection>
         <DocSection title="Smart File Naming">
           <Panel title="Example" headingLevel={3}>
@@ -237,9 +223,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           </Notice>
         </DocSection>
         <DocSection title="Key Use Cases">
-          <PropertyList variant="table">
-            {(window.PV_USECASES||[]).map((u,i)=><PropertyList.Item key={u.uc} label={(i+1)+". "+u.uc}>{u.d}</PropertyList.Item>)}
-          </PropertyList>
+          {facts("Key use cases",(window.PV_USECASES||[]).map((u,i)=>[(i+1)+". "+u.uc,u.d]))}
         </DocSection>
         <DocSection title="What Plenix Is Not">
           <List label="What Plenix Is Not" items={(window.PV_NOT||[]).map(n=>({icon:"close",tone:"danger",children:n}))}/>
@@ -301,14 +285,12 @@ function CapDoc({cap,backLabel,onBack,crumb}){
 
         {/* Fully mapped example */}
         <Panel title="Fully Mapped Example">
-          <PropertyList variant="table">
-            {window.TERM_EXAMPLE&&Object.entries(window.TERM_EXAMPLE).map(entry=>{
-              const labels={capability:"Capability",feature:"Feature",useCase:"Use Case",functionality:"Functionality",scenario:"Scenario",specification:"Specification",enabler:"Enabler",ui:"UI",module:"Module",entity:"Entity",schema:"Schema"};
-              const k=entry[0];const v=entry[1];
-              const technical=v.includes("SCHEMA")||v.includes("Screen")||v.includes("Widget")||v.includes("Module");
-              return <PropertyList.Item key={k} label={labels[k]||k} data={technical}>{v}</PropertyList.Item>;
-            })}
-          </PropertyList>
+          {facts("Fully mapped example",window.TERM_EXAMPLE?Object.entries(window.TERM_EXAMPLE).map(entry=>{
+            const labels={capability:"Capability",feature:"Feature",useCase:"Use Case",functionality:"Functionality",scenario:"Scenario",specification:"Specification",enabler:"Enabler",ui:"UI",module:"Module",entity:"Entity",schema:"Schema"};
+            const k=entry[0];const v=entry[1];
+            const technical=v.includes("SCHEMA")||v.includes("Screen")||v.includes("Widget")||v.includes("Module");
+            return [labels[k]||k,v,technical];
+          }):[])}
         </Panel>
       </Stack>
     );

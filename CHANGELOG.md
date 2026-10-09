@@ -57,6 +57,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   change). tests/layout.test.js (12 checks) runs in `npm test` and CI. (batch 217)
 
 ### Removed
+- Every name/value table is a DataGrid (owner: "everything must be tabular"): PropertyList's table variant, its stylesheet
+  rules and --plx-comp-property-list-label-width are removed; the design spec's fact tables (props(), prop and class),
+  Settings (baseline operations, functionality, enablers, UI, the product vision's tables, the mapped example) and
+  Capture draw DataGrids (names as the row header, values wrap, no header row). The app grids drop the old Table's
+  habits: Files and Projects lose the shaded name column, Type is a technical value (no chip) in Files, Projects and
+  Search, sizes align to the end. check-system rule tables also rejects the PropertyList table variant. (batch 229)
 - The Table component (components/Table), system/table.css (.plx-data-table) and the 33 table tokens
   (--plx-sys-table-*, --plx-comp-table-*): every table is a DataGrid. PropertyList (variant "table") and ActivityList take
   the grid tokens (row height, lines, header shade); PropertyList gets --plx-comp-property-list-label-width. check-system

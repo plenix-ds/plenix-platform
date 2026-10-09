@@ -22,9 +22,9 @@ export function FilesScreen() {
           </Inline>
           <DataGrid label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }}
             on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[
-              { title: 'Name', field: 'name', kind: 'name', rowLabel: true, filter: true, width: '--plx-ref-size-240px' },
-              { title: 'Type', field: 't', kind: 'center', filter: 'list', render: (f) => <Tag>{f.t}</Tag> },
-              { title: 'Size', field: 's', kind: 'data' },
+              { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-320px' },
+              { title: 'Type', field: 't', kind: 'data', filter: 'list' },
+              { title: 'Size', field: 's', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },
               { title: 'Modified', field: 'd', kind: 'data' },
             ]} />
         </Stack>

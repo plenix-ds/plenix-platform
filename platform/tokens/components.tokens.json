@@ -1376,10 +1376,6 @@
     "data-grid-filter-label-letter-spacing": {
       "$value": "{plx-sys.letter-spacing-caps}",
       "$type": "dimension"
-    },
-    "property-list-label-width": {
-      "$value": "{plx-ref.size-240px}",
-      "$type": "dimension"
     }
   }
 }

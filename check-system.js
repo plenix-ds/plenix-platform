@@ -32,7 +32,7 @@
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
 //   tables      every table is a DataGrid (Tabulator in the Plenix grid style): no <table>, no table element made in code, no
-//               retired Table component or plx-table / plx-data-table class (batch 226)
+//               retired Table component or plx-table / plx-data-table class (batch 226), no PropertyList table variant (batch 229)
 //   fonts       no call to Google Fonts: DM Sans and DM Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
@@ -98,7 +98,7 @@ for (const { file } of files) {
 for (const { file } of files) {
   if (!/\.css$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/\.plx-(data-)?table(?![\w-])|\.plx-table(__|--|-wrap|-scroll)/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
+  for (const m of text.matchAll(/\.plx-property-list--table\b|\.plx-(data-)?table(?![\w-])|\.plx-table(__|--|-wrap|-scroll)/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
 }
 // inline-style: application code takes its look from the Platform only (see the rule's description above)
 const INLINE_STYLE_PENDING = [];   // every application converted (batches 150-151)
@@ -129,6 +129,10 @@ for (const { file } of files) {
   // tables: every table is a DataGrid (Tabulator in the Plenix grid style, batch 226): no <table>, no table element made
   // in code, no retired Table component or its classes. The design system's builders draw a table and hand it to DS.grid
   // at once (tests/pages.test.js fails any table left on a page); generated bundles are checked through their sources.
+  // a name/value table is a DataGrid too: no PropertyList table variant anywhere, the design system included (batch 229)
+  if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
+    for (const m of text.matchAll(/<PropertyList\b[^>]*\bvariant=["'{]+table|PropertyList,\s*\{\s*variant:\s*["']table|\bplx-property-list--table\b/g)) add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
+  }
   if (!SPEC_PAGE.test(file) && !/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/<table[\s>]|createElement\(\s*['"]table['"]|\bel\(\s*['"]table['"]|\bh\(\s*['"]table['"]|\bplx-(data-)?table\b(?!-)|\bimport\s*\{[^}]*\bTable\b[^}]*\}\s*from\s*['"]plenix-platform['"]|\bP(?:lenix)?\.Table\b/g)) {
       add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);

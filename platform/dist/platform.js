@@ -7245,8 +7245,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      </PropertyList>
    Props:
      layout: "columns" (default; label and value side by side on a shared baseline) | "stacked" (label above value)
-     variant: "plain" (default) | "table" (drawn as a table: an outer border like Table, a divider between rows, the labels on
-       a shaded column), for reference data such as a component's details
      className: more classes on the list
      children: the PropertyList.Item pairs
      PropertyList.Item.label: the label
@@ -7257,16 +7255,17 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
+     A name/value table (reference data, a component's details) is a DataGrid, not a PropertyList: every table is a
+     Tabulator grid (batch 229).
 */
 
 function PropertyList({
   layout = 'columns',
-  variant = 'plain',
   className,
   children
 }) {
   return /*#__PURE__*/_react.default.createElement("dl", {
-    className: (0, _cx.cx)('plx-property-list', 'plx-property-list--' + layout, variant === 'table' && 'plx-property-list--table', className)
+    className: (0, _cx.cx)('plx-property-list', 'plx-property-list--' + layout, className)
   }, children);
 }
 PropertyList.Item = function PropertyListItem({

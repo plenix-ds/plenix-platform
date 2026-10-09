@@ -877,6 +877,42 @@ var _shared = require("./shared.jsx");
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
 
+// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// are the row header, values wrap, a value may be any React content
+const facts = (label, rows) => {
+  const list = rows.filter(Boolean);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: label,
+    headerMenu: false,
+    options: {
+      headerVisible: false
+    },
+    data: list.map((r, i) => ({
+      id: i,
+      name: r[0],
+      value: typeof r[1] === "string" || typeof r[1] === "number" ? String(r[1]) : ""
+    })),
+    columns: [{
+      title: "Name",
+      field: "name",
+      kind: "wrap",
+      rowLabel: true,
+      width: "--plx-ref-size-240px",
+      headerSort: false
+    }, {
+      title: "Value",
+      field: "value",
+      kind: "wrap",
+      headerSort: false,
+      render: d => {
+        const r = list[d.id];
+        return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+          variant: "data"
+        }, r[1]) : r[1] : null;
+      }
+    }]
+  });
+};
 const {
   useState
 } = React;
@@ -925,14 +961,7 @@ function CaptureUI({
     }))
   }), sel ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    label: "Original filename",
-    data: true
-  }, sel.fileName), /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    label: "Type"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, sel.type))), loading ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+  }, facts("Selected file", [["Original filename", sel.fileName, true], ["Type", sel.type, true]]), loading ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
     tone: "info"
@@ -1705,8 +1734,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     }, {
       title: "Type",
       field: "t",
-      kind: "center",
-      render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, r.t)
+      kind: "data"
     }, {
       title: "Size",
       field: "s",
@@ -2334,6 +2362,42 @@ var _classification = require("../suite/classification.jsx");
 const {
   useState
 } = React;
+// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// are the row header, values wrap, a value may be any React content
+const facts = (label, rows) => {
+  const list = rows.filter(Boolean);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: label,
+    headerMenu: false,
+    options: {
+      headerVisible: false
+    },
+    data: list.map((r, i) => ({
+      id: i,
+      name: r[0],
+      value: typeof r[1] === "string" || typeof r[1] === "number" ? String(r[1]) : ""
+    })),
+    columns: [{
+      title: "Name",
+      field: "name",
+      kind: "wrap",
+      rowLabel: true,
+      width: "--plx-ref-size-240px",
+      headerSort: false
+    }, {
+      title: "Value",
+      field: "value",
+      kind: "wrap",
+      headerSort: false,
+      render: d => {
+        const r = list[d.id];
+        return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+          variant: "data"
+        }, r[1]) : r[1] : null;
+      }
+    }]
+  });
+};
 
 /* A feature's status as a Badge: [tone, label] */
 const FEATURE_STATUS = {
@@ -2400,14 +2464,9 @@ function CapDoc({
   const ui = cap.ui || {};
   const sections = [{
     title: "Baseline Operations",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-      variant: "table"
-    }, Object.entries(cap.baselineOps || {}).map(e => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      key: e[0],
-      label: e[0].charAt(0).toUpperCase() + e[0].slice(1)
-    }, e[1] === "Not started" ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+    content: facts("Baseline operations", Object.entries(cap.baselineOps || {}).map(e => [e[0].charAt(0).toUpperCase() + e[0].slice(1), e[1] === "Not started" ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "danger"
-    }, e[1]) : e[1])))
+    }, e[1]) : e[1]]))
   }, {
     title: "Features",
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -2445,12 +2504,7 @@ function CapDoc({
     }, i + 1, "."), /*#__PURE__*/React.createElement(_plenixPlatform.Text, null, step)))))))))
   }, {
     title: "Functionality",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-      variant: "table"
-    }, (cap.functionality || []).map((f, i) => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      key: i,
-      label: f.feature
-    }, f.behavior)))
+    content: facts("Functionality", (cap.functionality || []).map(f => [f.feature, f.behavior]))
   }, {
     title: "Scenarios",
     content: /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
@@ -2524,33 +2578,19 @@ function CapDoc({
     })))
   }, {
     title: "Enablers",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-      variant: "table"
-    }, (cap.enablers || []).map((e, i) => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      key: i,
-      label: e.name
-    }, e.desc)))
+    content: facts("Enablers", (cap.enablers || []).map(e => [e.name, e.desc]))
   }, {
     title: "UI",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-      variant: "table"
-    }, ui.screen && ui.screen !== "Not started" && /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      label: "Screen",
-      data: true
-    }, ui.screen), (ui.components || []).length > 0 && /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      label: "Components"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    content: facts("UI", [ui.screen && ui.screen !== "Not started" && ["Screen", ui.screen, true], (ui.components || []).length > 0 && ["Components", /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "xs"
     }, ui.components.map((c, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       key: i
-    }, c)))), (ui.widgets || []).length > 0 && /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      label: "Widgets"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    }, c)))], (ui.widgets || []).length > 0 && ["Widgets", /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "xs"
     }, ui.widgets.map((w, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       key: i,
       variant: "data"
-    }, w)))))
+    }, w)))]])
   }, {
     title: "Modules",
     content: /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
@@ -2629,19 +2669,9 @@ function DocsPanel({
     title: "Why it fits this product"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
-  }, "The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness."), /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, (window.PV_FIT || []).map(p => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: p.principle,
-    label: p.principle
-  }, p.meaning)))), /*#__PURE__*/React.createElement(DocSection, {
+  }, "The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness."), facts("Why Plenix fits", (window.PV_FIT || []).map(p => [p.principle, p.meaning]))), /*#__PURE__*/React.createElement(DocSection, {
     title: "Core Data Model"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, (window.PV_MODEL || []).map(m => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: m.name,
-    label: m.name
-  }, m.desc)))), /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
+  }, facts("Core data model", (window.PV_MODEL || []).map(m => [m.name, m.desc]))), /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
     label: "Documentation figures"
   }, [["Capabilities", 74], ["Features Documented", 807], ["PRDs with Content", 50], ["Project Types", (window.ALL_PROJ_TYPES || []).length]].map(s => /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
     key: s[0],
@@ -2676,12 +2706,7 @@ function DocsPanel({
     variant: "strong"
   }, "A single, AI-powered ecosystem that unifies how a person captures, organizes, connects, communicates, retrieves, and acts on all forms of personal information -- without duplicating data or replacing the heavy-duty tools they already use."))), /*#__PURE__*/React.createElement(DocSection, {
     title: "Core Philosophy"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, (window.PV_PHILOSOPHY || []).map(ph => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: ph.p,
-    label: ph.p
-  }, ph.d)))), /*#__PURE__*/React.createElement(DocSection, {
+  }, facts("Core philosophy", (window.PV_PHILOSOPHY || []).map(ph => [ph.p, ph.d]))), /*#__PURE__*/React.createElement(DocSection, {
     title: "What the Platform Unifies"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
     label: "What the Platform Unifies",
@@ -2705,12 +2730,7 @@ function DocsPanel({
     title: "Unified Messaging Hub"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
-  }, "A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure."), /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, (window.PV_MESSAGING || []).map(s => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: s.label,
-    label: s.label
-  }, s.desc)))), /*#__PURE__*/React.createElement(DocSection, {
+  }, "A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure."), facts("Unified messaging hub", (window.PV_MESSAGING || []).map(s => [s.label, s.desc]))), /*#__PURE__*/React.createElement(DocSection, {
     title: "Smart File Naming"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
     title: "Example",
@@ -2745,12 +2765,7 @@ function DocsPanel({
     as: "p"
   }, "Today a user presenting on Zoom alt-tabs frantically between PowerPoint, a spreadsheet, file explorer, and notes. With Project Home, all linked resources are accessible from one workspace. The project view becomes the cockpit for the meeting -- everything is one click away, not five windows deep.")))), /*#__PURE__*/React.createElement(DocSection, {
     title: "Key Use Cases"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, (window.PV_USECASES || []).map((u, i) => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: u.uc,
-    label: i + 1 + ". " + u.uc
-  }, u.d)))), /*#__PURE__*/React.createElement(DocSection, {
+  }, facts("Key use cases", (window.PV_USECASES || []).map((u, i) => [i + 1 + ". " + u.uc, u.d]))), /*#__PURE__*/React.createElement(DocSection, {
     title: "What Plenix Is Not"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.List, {
     label: "What Plenix Is Not",
@@ -2827,9 +2842,7 @@ function DocsPanel({
     variant: "caption"
   }, "\u2014 ", item.note))))))), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
     title: "Fully Mapped Example"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, window.TERM_EXAMPLE && Object.entries(window.TERM_EXAMPLE).map(entry => {
+  }, facts("Fully mapped example", window.TERM_EXAMPLE ? Object.entries(window.TERM_EXAMPLE).map(entry => {
     const labels = {
       capability: "Capability",
       feature: "Feature",
@@ -2846,12 +2859,8 @@ function DocsPanel({
     const k = entry[0];
     const v = entry[1];
     const technical = v.includes("SCHEMA") || v.includes("Screen") || v.includes("Widget") || v.includes("Module");
-    return /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      key: k,
-      label: labels[k] || k,
-      data: technical
-    }, v);
-  }))));
+    return [labels[k] || k, v, technical];
+  }) : [])));
   if (docSection === "capabilities") {
     const cap = selCap && (window.CAP_DOCS || {})[selCap];
     if (cap) return /*#__PURE__*/React.createElement(CapDoc, {

@@ -877,6 +877,42 @@ var _shared = require("./shared.jsx");
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
 
+// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// are the row header, values wrap, a value may be any React content
+const facts = (label, rows) => {
+  const list = rows.filter(Boolean);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: label,
+    headerMenu: false,
+    options: {
+      headerVisible: false
+    },
+    data: list.map((r, i) => ({
+      id: i,
+      name: r[0],
+      value: typeof r[1] === "string" || typeof r[1] === "number" ? String(r[1]) : ""
+    })),
+    columns: [{
+      title: "Name",
+      field: "name",
+      kind: "wrap",
+      rowLabel: true,
+      width: "--plx-ref-size-240px",
+      headerSort: false
+    }, {
+      title: "Value",
+      field: "value",
+      kind: "wrap",
+      headerSort: false,
+      render: d => {
+        const r = list[d.id];
+        return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+          variant: "data"
+        }, r[1]) : r[1] : null;
+      }
+    }]
+  });
+};
 const {
   useState
 } = React;
@@ -925,14 +961,7 @@ function CaptureUI({
     }))
   }), sel ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    variant: "table"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    label: "Original filename",
-    data: true
-  }, sel.fileName), /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    label: "Type"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, sel.type))), loading ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+  }, facts("Selected file", [["Original filename", sel.fileName, true], ["Type", sel.type, true]]), loading ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
     tone: "info"
@@ -1705,8 +1734,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     }, {
       title: "Type",
       field: "t",
-      kind: "center",
-      render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, r.t)
+      kind: "data"
     }, {
       title: "Size",
       field: "s",
