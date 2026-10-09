@@ -80,6 +80,6 @@ Z:\Plenix\
 │   ├── terminology.md       # Product terminology
 │   └── <name>/              # One folder per capability
 │       └── <name>-prd.md    # PRD file (future: schema, API spec, UI spec)
-├── docs/                    # plenix-docs.html (the PRD viewer, built from capabilities/), plenix-data.js, datagrid-tabulator-demo.html
+├── docs/                    # plenix-docs.html (the PRD viewer, built from capabilities/), plenix-data.js, data-table-reference.html
 └── Archived/                # Outdated or unused files and folders (metadata/, architecture/, old docs), on disk only (not in git)
 ```

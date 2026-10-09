@@ -22,10 +22,16 @@
      TagList.label: the accessible name of the group; without it the list is not a group
      TagList.className: more classes on the list
      TagList.children: the tags or chips
+     TagInput.onAdd(text): adds a tag: runs on Enter with the typed text (trimmed; never empty), then the field clears;
+       the application ignores a tag it already has
      TagInput.className: more classes on the input
    Behavior:
      The × button is a 24px target in a 16px box.
      Selected chips are filled.
+     TagInput is a text field like every other (the input's border, hover, focus and disabled states; owner, batch 268):
+       type a tag and press Enter to add it; it appears before the field and its × removes it. Without onAdd the field
+       only reports what is typed (onChange, onKeyDown).
+     A tag being renamed is a small field with the input's focused border.
    Notes:
      TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
      TagInput is the "add a tag" field at the end of a TagList.
@@ -73,6 +79,19 @@ export function TagList({ className, children, label, ...rest }) {
   return <div className={cx('plx-tag-list', className)} role={label ? 'group' : undefined} aria-label={label} {...rest}>{children}</div>;
 }
 
-export const TagInput = React.forwardRef(function TagInput({ className, ...rest }, ref) {
-  return <input ref={ref} type="text" className={cx('plx-tag-input', className)} {...rest} />;
+export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, className, ...rest }, ref) {
+  const [own, setOwn] = React.useState('');
+  const text = value !== undefined ? value : own;
+  const change = (e) => { if (value === undefined) setOwn(e.target.value); if (onChange) onChange(e); };
+  const keyDown = (e) => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || !onAdd || e.key !== 'Enter') return;
+    e.preventDefault();
+    const t = String(text).trim();
+    if (!t) return;
+    onAdd(t);
+    if (value === undefined) setOwn('');
+    else if (onChange) onChange({ target: { value: '' }, currentTarget: { value: '' } });
+  };
+  return <input ref={ref} type="text" className={cx('plx-input', 'plx-tag-input', className)} value={text} onChange={change} onKeyDown={keyDown} {...rest} />;
 });

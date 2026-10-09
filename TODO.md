@@ -79,12 +79,12 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
 - [ ] To discuss first (owner, 2026-10-08): renaming to Lighthouse Design System (lighthouse-ds); the design system as its own source of truth that every app takes its UI from; themes (the current look as the default theme, more themes later).
 
-Every table is a Tabulator DataTable (owner, 2026-10-08: "every table rebuilt"; the style: docs/datagrid-tabulator-demo.html)
-- [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataTable component (Tabulator's own column definitions), data-grid.css from the reference with tokens only, grid tokens, icons; 180/180 parts match the reference.
+Every table is a Tabulator DataTable (owner, 2026-10-08: "every table rebuilt"; the style: docs/data-table-reference.html)
+- [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataTable component (Tabulator's own column definitions), data-table.css from the reference with tokens only, table tokens, icons; 180/180 parts match the reference.
 - [x] 2. (batch 226) The apps' tables rewritten as DataTables: 22 grid views (Files, Projects, Search workspace, Settings, the Asset Manager's home, system settings and field dialogs); tests/data-table.test.js.
 - [x] 3. (batch 226) The design system's own tables as DataTables: the spec pages' React tables, DS.table for every table a page or lab builds (the button matrix in its frame too); 149 pages, no <table> left.
 - [x] 4. (batch 226) Table, system/table.css and the 33 table tokens removed; ActivityList and PropertyList on the grid tokens; check-system rule tables and a pages-test check reject any table that is not a DataTable.
-- [x] 5. (batch 226) The Data table page (#/data-display/data-grid): the rule, how to apply it, every part of the style with its tokens, density, light and dark, one live grid.
+- [x] 5. (batch 226) The Data table page (#/data-display/data-table): the rule, how to apply it, every part of the style with its tokens, density, light and dark, one live grid.
 
 Themes and components (owner, 2026-10-08: "do the foundations and then the components")
 - [x] Themes defined in the design system (platform/standards/themes.json), the current look as the "default" theme, switching (batch 219).

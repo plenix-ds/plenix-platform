@@ -608,10 +608,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      TagList.label: the accessible name of the group; without it the list is not a group
      TagList.className: more classes on the list
      TagList.children: the tags or chips
+     TagInput.onAdd(text): adds a tag: runs on Enter with the typed text (trimmed; never empty), then the field clears;
+       the application ignores a tag it already has
      TagInput.className: more classes on the input
    Behavior:
      The × button is a 24px target in a 16px box.
      Selected chips are filled.
+     TagInput is a text field like every other (the input's border, hover, focus and disabled states; owner, batch 268):
+       type a tag and press Enter to add it; it appears before the field and its × removes it. Without onAdd the field
+       only reports what is typed (onChange, onKeyDown).
+     A tag being renamed is a small field with the input's focused border.
    Notes:
      TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
      TagInput is the "add a tag" field at the end of a TagList.
@@ -719,13 +725,42 @@ function TagList({
   }, rest), children);
 }
 const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(function TagInput({
+  onAdd,
+  onKeyDown,
+  value,
+  onChange,
   className,
   ...rest
 }, ref) {
+  const [own, setOwn] = _react.default.useState('');
+  const text = value !== undefined ? value : own;
+  const change = e => {
+    if (value === undefined) setOwn(e.target.value);
+    if (onChange) onChange(e);
+  };
+  const keyDown = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || !onAdd || e.key !== 'Enter') return;
+    e.preventDefault();
+    const t = String(text).trim();
+    if (!t) return;
+    onAdd(t);
+    if (value === undefined) setOwn('');else if (onChange) onChange({
+      target: {
+        value: ''
+      },
+      currentTarget: {
+        value: ''
+      }
+    });
+  };
   return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "text",
-    className: (0, _cx.cx)('plx-tag-input', className)
+    className: (0, _cx.cx)('plx-input', 'plx-tag-input', className),
+    value: text,
+    onChange: change,
+    onKeyDown: keyDown
   }, rest));
 });
   } },
@@ -4633,7 +4668,7 @@ var _tabulator = require("./tabulator.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable (and the engine the static Table shares, components/Table)
    Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
-     grid style (docs/datagrid-tabulator-demo.html, the owner's reference), drawn only with tokens (data-grid.css).
+     table style (docs/data-table-reference.html, the owner's reference), drawn only with tokens (data-table.css).
    Usage:
      <DataTable label="Assets" data={assets} index="id" selectable
        columns={[

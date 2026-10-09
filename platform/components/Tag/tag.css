@@ -14,17 +14,16 @@ button.plx-chip,.plx-chip__toggle{appearance:none;border-bottom-style:none;borde
 .plx-chip--selected .plx-tag__remove:hover,
 .plx-chip--selected .plx-tag__remove.is-hover{color:inherit;opacity:1;}
 .plx-tag-list{align-items:center;column-gap:var(--plx-sys-space-cluster-xs);display:flex;flex-wrap:wrap;row-gap:var(--plx-sys-space-cluster-xs);}
-.plx-tag-input{background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:var(--plx-sys-content-default);font-family:inherit;font-size:var(--plx-ref-font-size-10);inline-size:var(--plx-ref-size-60px);min-block-size:var(--plx-sys-control-height-inline);outline-style:none;padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-xs);padding-inline-start:var(--plx-sys-space-inset-xs);}
-.plx-tag-input:focus-visible,
-.plx-tag-input.is-focus-visible{box-shadow:var(--plx-sys-shadow-underline-focus);}
-.plx-tag-input::placeholder{color:var(--plx-sys-content-subtle);}
+/* TagInput (batch 268, owner: consistent with the input controls): .plx-input draws it (border, hover, focus, disabled); in a
+   tag list it is a short field that takes the rest of the row */
+.plx-tag-input{flex-basis:var(--plx-sys-field-width-lg);flex-grow:1;inline-size:auto;min-inline-size:var(--plx-sys-field-width-md);}
 /* a renamable tag (Tag onRename, batch 197): the text is a button, then a field the tag's own size */
 .plx-tag__rename{appearance:none;background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:inherit;cursor:text;font-family:inherit;font-size:inherit;font-weight:inherit;line-height:inherit;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-tag__rename:hover,
 .plx-tag__rename.is-hover{text-decoration-line:underline;}
 .plx-tag__rename:focus-visible,
 .plx-tag__rename.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
-.plx-tag__input{background-color:var(--plx-sys-surface-default);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;box-shadow:var(--plx-sys-shadow-underline-focus);color:inherit;font-family:inherit;font-size:inherit;line-height:inherit;min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-tag__input{background-color:var(--plx-sys-surface-default);border-bottom-style:solid;border-bottom-width:var(--plx-comp-input-border-width);border-left-style:solid;border-left-width:var(--plx-comp-input-border-width);border-right-style:solid;border-right-width:var(--plx-comp-input-border-width);border-top-style:solid;border-top-width:var(--plx-comp-input-border-width);border-bottom-color:var(--plx-comp-input-focus-border-color);border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-left-color:var(--plx-comp-input-focus-border-color);border-right-color:var(--plx-comp-input-focus-border-color);border-top-color:var(--plx-comp-input-focus-border-color);border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);color:inherit;font-family:inherit;font-size:inherit;line-height:inherit;min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-tag__input:focus-visible,
 .plx-tag__input.is-focus-visible{outline-style:none;}
 /* a tag's edge (owner, batch 260): two shades darker than its fill (gray-100 -> gray-300; dark gray-800 -> gray-900), inside

@@ -1,4 +1,4 @@
-// Plenix tests · the DataTable against the owner's reference (docs/datagrid-tabulator-demo.html, "Tabulator in Plenix"):
+// Plenix tests · the DataTable against the owner's reference (docs/data-table-reference.html, "Tabulator in Plenix"):
 // the same grid is drawn twice, once by the reference page and once by the Platform DataTable, and every part's computed
 // style is compared: the frame, header, titles, column lines, rows, cells (name, technical values), the checkbox and
 // icon columns, hover, selected, selected + hover, the sort arrow and filter button on hover, the header menu, the row
@@ -106,7 +106,7 @@ async function read(page, sel, props, pseudo) {
   for (const mode of ['light', 'dark']) {
     for (const density of ['compact', 'standard', 'comfortable']) {
       const tag = mode + ' ' + density + ' · ';
-      await ref.goto('http://127.0.0.1:8806/Plenix/docs/datagrid-tabulator-demo.html', { waitUntil: 'networkidle0' });
+      await ref.goto('http://127.0.0.1:8806/Plenix/docs/data-table-reference.html', { waitUntil: 'networkidle0' });
       await ref.evaluate((m, d) => { document.documentElement.setAttribute('data-theme', m); document.querySelector('#den [data-d="' + d + '"]').click(); }, mode, density);
       await ours.goto('http://127.0.0.1:8806/Plenix/tests/.grid-page.html', { waitUntil: 'networkidle0' });
       await ours.evaluate((m, d) => { document.documentElement.setAttribute('data-plx-mode', m); document.documentElement.setAttribute('data-plx-density', d); }, mode, density);
@@ -132,7 +132,7 @@ async function read(page, sel, props, pseudo) {
       if (SHOTS) {
         await (await ref.$('#grid .tabulator-row:nth-child(5)')).hover(); await (await ours.$('.plx-data-table .tabulator-row:nth-child(5)')).hover(); await sleep(250);
         await (await ref.$('.frame')).screenshot({ path: path.join(SHOTS, 'reference-' + mode + '-' + density + '.png') });
-        await (await ours.$('.plx-data-table')).screenshot({ path: path.join(SHOTS, 'datagrid-' + mode + '-' + density + '.png') });
+        await (await ours.$('.plx-data-table')).screenshot({ path: path.join(SHOTS, 'data-table-' + mode + '-' + density + '.png') });
       }
 
       // the header menu and the row menu

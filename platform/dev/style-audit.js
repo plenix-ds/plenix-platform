@@ -6,7 +6,7 @@
      2. style element: a style block written into the page (styles come from platform.css and the page's own
         stylesheet files only).
    Left alone: the geometry the DataTable's engine (Tabulator) writes on its own elements while it lays out (inside a
-   .tabulator grid, its menus and popups): widths, heights, offsets, not colors or type (those come from data-grid.css).
+   .tabulator table, its menus and popups): widths, heights, offsets, not colors or type (those come from data-table.css).
    The source check (node check-system.js: inline-style, palette, raw-value) rejects the same things before a page runs;
    this audit catches what only appears at run time (a script or a component writing a style).
      PlenixStyleAudit.audit()   -> [{ kind, element, detail }] for the current document
@@ -27,7 +27,7 @@
     return cls.length ? s + '.' + cls.join('.') : s;
   }
   // the DataTable's engine (Tabulator, platform/vendor/tabulator) writes widths, heights and offsets on its own elements while
-  // it lays out: its geometry, not styling. Its elements are inside a .tabulator grid, or are its menus and popups.
+  // it lays out: its geometry, not styling. Its elements are inside a .tabulator table, or are its menus and popups.
   var ENGINE = '.tabulator, .tabulator-menu, .tabulator-popup-container, .tabulator-tooltip, .tabulator-alert, .tabulator-col-resize-guide, .tabulator-row-resize-guide';
   function engine(el) {
     if (typeof el.className === 'string' && /(^|\s)tabulator(-|\s|$)/.test(el.className)) return true;

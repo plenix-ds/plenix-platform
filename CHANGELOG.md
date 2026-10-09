@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-10-09
+
+### Changed
+- TagInput is a text field like every other input control (owner: "make it consistent with the rest of the UI"): it
+  takes .plx-input's border, hover, focus (border color only) and disabled states and height; in a tag list it fills
+  the rest of the row. New prop onAdd(text): Enter adds the trimmed text and clears the field (the application ignores
+  a tag it has). The Asset Manager's Tags and the add-asset dialog use it. A tag being renamed is a small field with
+  the input's focused border (it was a blue underline shadow). (batch 268)
+- "DataGrid" / "data grid" is gone from every active file (owner: "nowhere"): the reference file is
+  docs/data-table-reference.html (was datagrid-tabulator-demo.html), the Data table alias and the orphan "Data grid"
+  guidance entry are removed, guidance says "data table", and the two Fluent 2 mapping rows that named its
+  "Data grid" are dropped. Only the changelog and the work log keep the old name. (batch 268)
+
+### Fixed
+- The design system's usage.js said 0.19.0 in git after the 0.19.1 release (the deploy regenerated it). (batch 268)
+
 ## [0.19.1] - 2026-10-09
 
 ### Changed

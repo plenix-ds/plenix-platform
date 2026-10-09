@@ -2136,14 +2136,6 @@ function Tags({
   act
 }) {
   const [tags, setTags] = _react.default.useState(initial);
-  const [text, setText] = _react.default.useState('');
-  const add = e => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const t = text.trim().toLowerCase();
-    if (t && tags.indexOf(t) < 0) setTags(tags.concat(t));
-    setText('');
-  };
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagList, {
     label: "Tags"
   }, tags.map(t => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tag, {
@@ -2151,11 +2143,12 @@ function Tags({
     onRemove: () => setTags(tags.filter(x => x !== t)),
     removeLabel: 'Remove tag ' + t
   }, t)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagInput, {
-    value: text,
-    onChange: e => setText(e.target.value),
-    onKeyDown: add,
-    placeholder: "+ add tag",
-    "aria-label": "Add tag"
+    onAdd: t => {
+      const v = t.toLowerCase();
+      if (tags.indexOf(v) < 0) setTags(tags.concat(v));
+    },
+    placeholder: "Add a tag",
+    "aria-label": "Add a tag"
   })), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     icon: "sparkle",
@@ -2700,7 +2693,6 @@ function NewCatDialog({
     description: ''
   });
   const [tags, setTags] = _react.default.useState([]);
-  const [tagText, setTagText] = _react.default.useState('');
   const [color, setColor] = _react.default.useState(HASH + CATEGORY_COLORS[0]);
   const [hex, setHex] = _react.default.useState(HASH + CATEGORY_COLORS[0]);
   const [fieldsOpen, setFieldsOpen] = _react.default.useState(false);
@@ -2720,12 +2712,8 @@ function NewCatDialog({
     setHex(v);
     if (/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v);
   };
-  const addTag = e => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const t = tagText.trim();
-    if (t && tags.indexOf(t) < 0) setTags(tags.concat(t));
-    setTagText('');
+  const addTag = t => {
+    if (tags.indexOf(t) < 0) setTags(tags.concat(t));
   };
   const save = e => {
     e.preventDefault();
@@ -2785,11 +2773,9 @@ function NewCatDialog({
   }, t)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.TagInput, {
     id: uid + 'tags',
     name: "tags",
-    placeholder: "Tags",
-    value: tagText,
+    placeholder: "Add a tag",
     "aria-describedby": uid + 'tags-d',
-    onChange: e => setTagText(e.target.value),
-    onKeyDown: addTag
+    onAdd: addTag
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: uid + 'tags-d'

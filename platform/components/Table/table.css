@@ -1,5 +1,5 @@
 /* Plenix · Table (platform/components/Table). The static table: the DataTable's look (the owner's reference,
-   docs/datagrid-tabulator-demo.html) without anything interactive, from its own tokens (--plx-sys-table-*,
+   docs/data-table-reference.html) without anything interactive, from its own tokens (--plx-sys-table-*,
    --plx-comp-table-*), which have the DataTable's values by default. Tabulator's core stylesheet keeps the structure.
    Generated from data-table.css in batch 234; edit it here from now on. */
 .plx-table{background-color:var(--plx-sys-table-surface);border-color:var(--plx-sys-table-border);border-radius:var(--plx-comp-table-radius);border-style:solid;border-width:var(--plx-comp-table-border-width);min-inline-size:0;overflow:hidden;}

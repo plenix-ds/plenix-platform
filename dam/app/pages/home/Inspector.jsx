@@ -21,19 +21,11 @@ const Row = ({ label, children, info }) => <Field label={label} layout="inline" 
 
 function Tags({ initial, act }) {
   const [tags, setTags] = React.useState(initial);
-  const [text, setText] = React.useState('');
-  const add = (e) => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const t = text.trim().toLowerCase();
-    if (t && tags.indexOf(t) < 0) setTags(tags.concat(t));
-    setText('');
-  };
   return (
     <>
       <TagList label="Tags">
         {tags.map((t) => <Tag key={t} onRemove={() => setTags(tags.filter((x) => x !== t))} removeLabel={'Remove tag ' + t}>{t}</Tag>)}
-        <TagInput value={text} onChange={(e) => setText(e.target.value)} onKeyDown={add} placeholder="+ add tag" aria-label="Add tag" />
+        <TagInput onAdd={(t) => { const v = t.toLowerCase(); if (tags.indexOf(v) < 0) setTags(tags.concat(v)); }} placeholder="Add a tag" aria-label="Add a tag" />
       </TagList>
       <div><Button size="sm" icon="sparkle" onClick={act('AI tagging', 'info')}>AI tagging</Button></div>
     </>

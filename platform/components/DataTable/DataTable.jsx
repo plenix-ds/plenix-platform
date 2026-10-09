@@ -1,6 +1,6 @@
 /* Plenix · DataTable (and the engine the static Table shares, components/Table)
    Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
-     grid style (docs/datagrid-tabulator-demo.html, the owner's reference), drawn only with tokens (data-grid.css).
+     table style (docs/data-table-reference.html, the owner's reference), drawn only with tokens (data-table.css).
    Usage:
      <DataTable label="Assets" data={assets} index="id" selectable
        columns={[

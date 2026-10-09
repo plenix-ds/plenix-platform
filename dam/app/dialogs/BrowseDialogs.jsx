@@ -91,7 +91,6 @@ export function NewCatDialog({ open, onClose, onSave }) {
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [form, setForm] = React.useState({ name: '', description: '' });
   const [tags, setTags] = React.useState([]);
-  const [tagText, setTagText] = React.useState('');
   const [color, setColor] = React.useState(HASH + CATEGORY_COLORS[0]);
   const [hex, setHex] = React.useState(HASH + CATEGORY_COLORS[0]);
   const [fieldsOpen, setFieldsOpen] = React.useState(false);
@@ -99,13 +98,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
   const pick = (c) => { setColor(c); setHex(c); };
   // The hex box moves the color well only once it holds a full #rrggbb value (syncColorPicker).
   const typeHex = (v) => { setHex(v); if (/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v); };
-  const addTag = (e) => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const t = tagText.trim();
-    if (t && tags.indexOf(t) < 0) setTags(tags.concat(t));
-    setTagText('');
-  };
+  const addTag = (t) => { if (tags.indexOf(t) < 0) setTags(tags.concat(t)); };
   const save = (e) => {
     e.preventDefault();
     toast.show('Save', { tone: 'success' });
@@ -125,8 +118,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
           <div className="plx-field__control">
             <TagList>
               {tags.map((t) => <Tag key={t} onRemove={() => setTags(tags.filter((x) => x !== t))}>{t}</Tag>)}
-              <TagInput id={uid + 'tags'} name="tags" placeholder="Tags" value={tagText} aria-describedby={uid + 'tags-d'}
-                onChange={(e) => setTagText(e.target.value)} onKeyDown={addTag} />
+              <TagInput id={uid + 'tags'} name="tags" placeholder="Add a tag" aria-describedby={uid + 'tags-d'} onAdd={addTag} />
             </TagList>
             <div className="plx-field__description" id={uid + 'tags-d'}>Hit <Kbd>enter</Kbd> or <Kbd>return</Kbd> key after typing each tag</div>
           </div>
