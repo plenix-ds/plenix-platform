@@ -77,6 +77,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   (#/data-display/data-grid): how to apply it, every part of its style with its tokens, one live grid. (batch 226)
 
 ### Changed (visual)
+- Dark navigation borders are visible: --plx-sys-state-hover-border and --plx-sys-state-selected-border in dark are
+  gray-500 (two shades lighter than the gray-700 fill; was gray-850). Large cards use two stacked cards (view_agenda;
+  crop_square removed). Design system: the Action bar leaf is the ActionBar's home, Data toolbar moves to Action panel.
+  (batch 233)
 - Menus have a shadow again (owner): --plx-sys-elevation-menu points to --plx-sys-shadow-menu (was none, decision D9), so
   the Menu, the Combobox list and the app switcher float with the same soft shadow and border. Property table and
   Comparison table now lead to the Data grid page. (batch 232)

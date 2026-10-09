@@ -204,8 +204,8 @@
   --plx-sys-state-hover: var(--plx-ref-color-gray-700);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-600);
   --plx-sys-state-selected: var(--plx-ref-color-gray-700);
-  --plx-sys-state-hover-border: var(--plx-ref-color-gray-850);
-  --plx-sys-state-selected-border: var(--plx-ref-color-gray-850);
+  --plx-sys-state-hover-border: var(--plx-ref-color-gray-500);
+  --plx-sys-state-selected-border: var(--plx-ref-color-gray-500);
   --plx-sys-content-default: var(--plx-ref-color-gray-200);
   --plx-sys-content-muted: var(--plx-ref-color-gray-300);
   --plx-sys-content-subtle: var(--plx-ref-color-gray-500);

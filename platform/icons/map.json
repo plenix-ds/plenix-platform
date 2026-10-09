@@ -13,7 +13,7 @@
     "briefcase-plus": "library_add",
     "button": "smart_button",
     "calendar": "calendar_month",
-    "cards-large": "crop_square",
+    "cards-large": "view_agenda",
     "cards-medium": "grid_view",
     "cards-small": "view_comfy",
     "caret": "arrow_drop_down",
