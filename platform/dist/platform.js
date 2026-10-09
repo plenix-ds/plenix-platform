@@ -2126,19 +2126,21 @@ function useUid(prefix) {
   return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
 }
   } },
-  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CollapsibleSection = CollapsibleSection;
+exports.ShowMore = ShowMore;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · CollapsibleSection
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CollapsibleSection
    Summary: A titled section that expands and collapses.
    Usage:
      <CollapsibleSection title="Collections" icon="collection" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
@@ -2153,6 +2155,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the <section>
      bodyClassName: more classes on the body
      children: the body
+     ShowMore: the "Show more" button under a list that shows only its first rows (owner, batch 276: it carries an icon):
+       ShowMore.expanded: the rest is shown (aria-expanded); the label reads "Show less" and the chevron points up
+       ShowMore.count: how many are hidden, shown as "Show more (count)" (a number, or text such as "+3")
+       ShowMore.onToggle(next): runs with the new state
+       ShowMore.size: the button size (default "2xs", the smallest); other props reach the Button (variant)
    Behavior:
      Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
      The header is one button (aria-expanded, pointing at the body).
@@ -2162,7 +2169,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      It keeps the legacy section header: an accent uppercase title with an optional icon, a divider beneath it and a
        chevron at the end.
 */
-
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
@@ -2213,6 +2219,24 @@ function CollapsibleSection({
     className: (0, _cx.cx)('plx-collapsible-section__body', bodyClassName),
     hidden: !open
   }, children));
+}
+
+// "Show more (n)" / "Show less" with its chevron after the label: down to show more, up to show less (batch 276)
+function ShowMore({
+  expanded = false,
+  count,
+  onToggle,
+  size = '2xs',
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    size: size,
+    iconEnd: expanded ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": expanded,
+    onClick: () => {
+      if (onToggle) onToggle(!expanded);
+    }
+  }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
 }
   } },
   "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9831,6 +9855,12 @@ Object.defineProperty(exports, "SettingsSection", {
   enumerable: true,
   get: function () {
     return _SettingsLayout.SettingsSection;
+  }
+});
+Object.defineProperty(exports, "ShowMore", {
+  enumerable: true,
+  get: function () {
+    return _CollapsibleSection.ShowMore;
   }
 });
 Object.defineProperty(exports, "SideNavPortal", {

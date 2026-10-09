@@ -6,7 +6,7 @@
    that is current; onOpen(kind, name) opens it (kind: categories | collections | saved | import | trash). onAdd(dialogId)
    opens an "Add …" dialog. It is the page's navigation pane: its Collapse button makes it a rail of Home, Files, Categories, Collections and Expand. */
 import React from 'react';
-import { NavList, NavPane, CollapsibleSection, Button, Input, ToolRail, Stack } from 'plenix-platform';
+import { NavList, NavPane, CollapsibleSection, ShowMore, Button, Input, ToolRail, Stack } from 'plenix-platform';
 import * as D from './homeData.js';
 
 
@@ -28,7 +28,7 @@ function PinnedList({ items, setItems, kind, icon, label, active, onOpen, limit,
     <>
       <NavList label={label} value={active} onSelect={(id) => onOpen(kind, id)}
         items={shown.map((it) => ({ id: it.name, label: it.name, icon, count: it.count, pinned: it.pinned, onPin: pin }))} />
-      {limit && !q && hiddenCount > 0 ? <div><Button size="2xs" aria-expanded={more} onClick={() => setMore(!more)}>{more ? 'Show less' : 'Show more (' + hiddenCount + ')'}</Button></div> : null}
+      {limit && !q && hiddenCount > 0 ? <div><ShowMore expanded={more} count={hiddenCount} onToggle={setMore} /></div> : null}
     </>
   );
 }

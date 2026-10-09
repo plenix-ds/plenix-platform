@@ -27,7 +27,7 @@ export { Breadcrumbs } from './components/Breadcrumbs/Breadcrumbs.jsx';
 export { List } from './components/List/List.jsx';
 export { CodeBlock } from './components/CodeBlock/CodeBlock.jsx';
 export { SectionHeading } from './components/SectionHeading/SectionHeading.jsx';
-export { CollapsibleSection } from './components/CollapsibleSection/CollapsibleSection.jsx';
+export { CollapsibleSection, ShowMore } from './components/CollapsibleSection/CollapsibleSection.jsx';
 export { Skeleton, Spinner } from './components/Loading/Loading.jsx';
 export { Chat } from './components/Chat/Chat.jsx';
 export { EmptyState } from './components/EmptyState/EmptyState.jsx';

@@ -15,7 +15,7 @@
    - Each group collapses from its heading (toggleMetaSection) and shows its extra fields with "Show more (+N)" /
      "Show less" (toggleShowMore). */
 import React from 'react';
-import { Dialog, Field, Input, Checkbox, CollapsibleSection, Button, Stack, Inline } from 'plenix-platform';
+import { Dialog, Field, Input, Checkbox, CollapsibleSection, ShowMore, Button, Stack, Inline } from 'plenix-platform';
 
 // DATA: the asset type choices and the metadata field groups come from the back end; the legacy markup until then.
 // A field is [label, name, back-end field key]; the first `shown` fields are always visible, the rest sit behind
@@ -183,7 +183,7 @@ function MetaGroup({ group, index, fields, onField, collapsed, onToggle, expande
         ))}
         {extra > 0 ? (
           <div className="plx-u-flex">
-            <Button variant="link" size="sm" aria-expanded={expanded} onClick={onShowMore}>{expanded ? 'Show less' : 'Show more (+' + extra + ')'}</Button>
+            <ShowMore variant="link" size="sm" expanded={expanded} count={'+' + extra} onToggle={onShowMore} />
           </div>
         ) : null}
       </Stack>

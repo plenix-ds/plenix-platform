@@ -1944,11 +1944,11 @@ function PinnedList({
       pinned: it.pinned,
       onPin: pin
     }))
-  }), limit && !q && hiddenCount > 0 ? /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    size: "2xs",
-    "aria-expanded": more,
-    onClick: () => setMore(!more)
-  }, more ? 'Show less' : 'Show more (' + hiddenCount + ')')) : null);
+  }), limit && !q && hiddenCount > 0 ? /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ShowMore, {
+    expanded: more,
+    count: hiddenCount,
+    onToggle: setMore
+  })) : null);
 }
 function Sidebar({
   mode = 'browse',
@@ -4370,12 +4370,13 @@ function MetaGroup({
     onChange: e => onField(name, e.target.value)
   }))), extra > 0 ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-u-flex"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ShowMore, {
     variant: "link",
     size: "sm",
-    "aria-expanded": expanded,
-    onClick: onShowMore
-  }, expanded ? 'Show less' : 'Show more (+' + extra + ')')) : null));
+    expanded: expanded,
+    count: '+' + extra,
+    onToggle: onShowMore
+  })) : null));
 }
 function MetadataFilterDialog({
   open,

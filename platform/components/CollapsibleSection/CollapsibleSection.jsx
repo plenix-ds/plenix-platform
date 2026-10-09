@@ -13,6 +13,11 @@
      className: more classes on the <section>
      bodyClassName: more classes on the body
      children: the body
+     ShowMore: the "Show more" button under a list that shows only its first rows (owner, batch 276: it carries an icon):
+       ShowMore.expanded: the rest is shown (aria-expanded); the label reads "Show less" and the chevron points up
+       ShowMore.count: how many are hidden, shown as "Show more (count)" (a number, or text such as "+3")
+       ShowMore.onToggle(next): runs with the new state
+       ShowMore.size: the button size (default "2xs", the smallest); other props reach the Button (variant)
    Behavior:
      Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
      The header is one button (aria-expanded, pointing at the body).
@@ -26,6 +31,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { Button } from '../Button/Button.jsx';
 
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
@@ -47,5 +53,14 @@ export function CollapsibleSection({ title, icon, expanded, defaultExpanded = tr
       </Tag>
       <div id={id + '-body'} className={cx('plx-collapsible-section__body', bodyClassName)} hidden={!open}>{children}</div>
     </section>
+  );
+}
+
+// "Show more (n)" / "Show less" with its chevron after the label: down to show more, up to show less (batch 276)
+export function ShowMore({ expanded = false, count, onToggle, size = '2xs', ...rest }) {
+  return (
+    <Button size={size} iconEnd={expanded ? 'chevron-up' : 'chevron-down'} aria-expanded={expanded} onClick={() => { if (onToggle) onToggle(!expanded); }} {...rest}>
+      {expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : '')}
+    </Button>
   );
 }

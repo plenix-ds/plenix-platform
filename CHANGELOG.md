@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.4] - 2026-10-09
+
+### Added
+- ShowMore (with CollapsibleSection): "Show more (n)" / "Show less" under a list that shows only its first rows, with
+  a chevron after the label, down to show more and up to show less (owner: "show more/show less needs an icon");
+  aria-expanded. The DAM's category, collection and metadata-filter lists use it. Icon chevron-up (expand_less).
+  (batch 276)
+
 ## [0.22.3] - 2026-10-09
 
 ### Changed
