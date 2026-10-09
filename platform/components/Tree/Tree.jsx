@@ -23,7 +23,8 @@
      Home and End go to the first and last visible item.
      Enter or Space selects.
      Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
-     An open folder shows the open-folder icon (batch 239).
+     An open folder shows the open-folder icon (batch 239). Icons are outline while closed and filled while open, by
+     the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
 import React from 'react';
 import { isRtl } from '../../utils/direction.js';

@@ -5629,7 +5629,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Home and End go to the first and last visible item.
      Enter or Space selects.
      Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
-     An open folder shows the open-folder icon (batch 239).
+     An open folder shows the open-folder icon (batch 239). Icons are outline while closed and filled while open, by
+     the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
 
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {

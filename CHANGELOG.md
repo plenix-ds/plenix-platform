@@ -6,6 +6,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Tree (owner: "only the open icons should be fully shaded"): a selected item filled the icons of every item inside it,
+  because the icon set fills icons under any selected element and a tree item holds its subtree. A tree row's icon now
+  follows its own item only: outline while closed, filled while open (also at Comfortable density's 24px). (batch 240)
+
 ## [0.8.0] - 2026-10-09
 
 ### Added
