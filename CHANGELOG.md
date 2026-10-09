@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-09
+
+### Changed (visual)
+- One typography in every table (owner: "it's extremely frustrating to see typography not consistent"). An audit of all
+  text in 212 tables (apps and design system) found DM Mono at 11–12px from Text variant="data" and token/class links
+  inside cells, and List items at 13px in 12px tables. Now any Text, code or List inside a Table or DataTable cell takes
+  the cell's font and size (color and weight stay), and the design system's token and class links use .ds-code-link
+  (the data font in prose, the table's font in a cell) instead of the !important utility. Result: every body text is
+  DM Sans at the table size (12px Compact, 13px Standard), regular, with names medium; badges, tags, chips and buttons
+  keep their component sizes. tests/data-table.test.js now fails on any other font or size in a table and covers the
+  design system's reference tables (25 views). (batch 247)
+
 ## [0.10.0] - 2026-10-09
 
 ### Fixed

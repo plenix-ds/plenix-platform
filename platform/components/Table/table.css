@@ -35,3 +35,6 @@
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label+.tabulator-cell:not(.plx-table__cell--row-label)::before,
 .plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label+.tabulator-col:not(.plx-table__cell--row-label)::before{content:none;}
 .plx-table .tabulator .tabulator-placeholder .tabulator-placeholder-contents{color:var(--plx-sys-table-text-muted);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
+/* one typography in a table (owner, batch 247): text placed in a cell (Text in any variant, code) takes the cell's font and
+   size; its color and weight stay (a link stays a link, strong stays strong) */
+.plx-table .tabulator-cell .plx-text,.plx-table .tabulator-cell code,.plx-table .tabulator-cell .plx-list,.plx-table .tabulator-cell .plx-list__text,.plx-table .tabulator-cell .plx-list__item{font-family:inherit;font-size:inherit;}

@@ -167,3 +167,6 @@
   .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > *,
   .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > *{transition-property:none;}
 }
+/* one typography in a table (owner, batch 247): text placed in a cell (Text in any variant, code) takes the cell's font and
+   size; its color and weight stay (a link stays a link, strong stays strong) */
+.plx-data-table .tabulator-cell .plx-text,.plx-data-table .tabulator-cell code,.plx-data-table .tabulator-cell .plx-list,.plx-data-table .tabulator-cell .plx-list__text,.plx-data-table .tabulator-cell .plx-list__item{font-family:inherit;font-size:inherit;}

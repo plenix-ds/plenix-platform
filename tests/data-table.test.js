@@ -1,7 +1,9 @@
 // Plenix tests · every Table and DataTable in the apps: each page (and the tab or view that shows its tables) is opened, the tables are
 // awaited (Tabulator loads the first time a table renders), and for each table: it is built, it has its rows or its empty
 // message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
-// and header take the table tokens (row height, text size).
+// and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own font and size
+// (owner: one typography in tables, batch 247; badges, tags, chips, buttons and keys keep their component sizes, and the design
+// system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-table.test.js
 const { serve, launch, sleep } = require('./lib.js');
 const PORT = 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
@@ -30,6 +32,10 @@ const STATES = [
   ['settings/index.html', ['Documentation', 'Terminology'], 3],
   ['settings/index.html', ['Documentation', 'Data Model'], 2],
   ['settings/index.html', ['Documentation', 'Capabilities', 'main:Notes'], 2],
+  // the design system's reference tables (props, states, classes, tokens), where token and class names sit in cells
+  ['platform/design-system/index.html#/data-display/data-table', [], 1],
+  ['platform/design-system/index.html#/data-display/badge', [], 1],
+  ['platform/design-system/index.html#/actions/button', [], 1],
 ];
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -80,10 +86,23 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
           rowHeight: row ? Math.round(row.getBoundingClientRect().height) : null, want: Math.round(want) + 1,
           font: getComputedStyle(g.querySelector('.tabulator')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-table-font-size').trim() };
       });
-      return { violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
+      // one typography: each text in the body rows in the table's font family and size (component labels excepted)
+      const type = [];
+      grids.forEach((g) => {
+        const first = g.querySelector('.tabulator-row .tabulator-cell'); if (!first) return;
+        const base = getComputedStyle(first), fam = base.fontFamily.split(',')[0], size = base.fontSize;
+        const w = document.createTreeWalker(g.querySelector('.tabulator-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
+        while ((n = w.nextNode()) && type.length < 3) {
+          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .tabulator-placeholder, .ds-vis')) continue;
+          const c = getComputedStyle(el);
+          if (c.fontFamily.split(',')[0] !== fam || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + c.fontFamily.split(',')[0] + ' ' + c.fontSize + ', the table ' + fam + ' ' + size);
+        }
+      });
+      return { type, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
     }, TAGS);
     const bad = [];
     if (r.violations.length) bad.push('axe: ' + r.violations.join('; '));
+    if (r.type.length) bad.push('typography: ' + r.type.join('; '));
     if (r.audit.length) bad.push('style audit: ' + r.audit.slice(0, 3).join('; '));
     r.sizes.forEach((s) => { if (!s.label) bad.push('a table has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });
     res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')', !bad.length, bad.join(' · ')]);
