@@ -56,14 +56,6 @@
       "$value": "{plx-ref.size-20px}",
       "$type": "dimension"
     },
-    "table-row-height": {
-      "$value": "{plx-ref.size-36px}",
-      "$type": "dimension"
-    },
-    "table-row-height-multiline": {
-      "$value": "{plx-ref.size-40px}",
-      "$type": "dimension"
-    },
     "card-grid-gap": {
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"

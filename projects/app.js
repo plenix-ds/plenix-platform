@@ -2096,7 +2096,7 @@ var _plenixPlatform = require("plenix-platform");
 var _shared = require("../suite/shared.jsx");
 /* Plenix · projects (projects/projects.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: the projects in the shell's NavPane, a project's capabilities in a SecondaryPane, its home as a record page
-   header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a Table, the
+   header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a DataGrid, the
    capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes. */
 
 const {

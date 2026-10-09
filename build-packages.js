@@ -145,11 +145,11 @@ json(path.join(R, 'package.json'), manifest('react', 'Plenix React components an
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
 }));
 readme('react', `
-${exportsList.length} exports: every Platform component, pattern, provider and hook (\`Button\`, \`Table\`, \`Dialog\`, \`AppShell\`, \`NavPane\`, \`ThemeProvider\`, …).
+${exportsList.length} exports: every Platform component, pattern, provider and hook (\`Button\`, \`DataGrid\`, \`Dialog\`, \`AppShell\`, \`NavPane\`, \`ThemeProvider\`, …).
 
 \`\`\`js
 import '${SCOPE}/styles/plenix.css';
-import { AppShell, Button, Table } from '${SCOPE}/react';
+import { AppShell, Button, DataGrid } from '${SCOPE}/react';
 \`\`\`
 
 Pages without a build tool load \`dist/plenix.global.js\` after React 18 and use \`window.Plenix\`.

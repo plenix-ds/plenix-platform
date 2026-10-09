@@ -50,7 +50,6 @@ export { Dialog, ConfirmDialog, Drawer } from './components/Dialog/Dialog.jsx';
 export { ToastProvider, useToast } from './components/Toast/Toast.jsx';
 export { Tabs, tabsPanelId } from './components/Tabs/Tabs.jsx';
 export { Panel, Card, MediaCard } from './components/Card/Card.jsx';
-export { Table } from './components/Table/Table.jsx';
 export { DataGrid } from './components/DataGrid/DataGrid.jsx';
 export { NavList } from './components/NavList/NavList.jsx';
 export { Tree } from './components/Tree/Tree.jsx';

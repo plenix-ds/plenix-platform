@@ -40,7 +40,7 @@ Every table is a Tabulator DataGrid (owner, 2026-10-08: "every table rebuilt"; t
 - [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataGrid component (Tabulator's own column definitions), data-grid.css from the reference with tokens only, grid tokens, icons; 180/180 parts match the reference.
 - [x] 2. (batch 226) The apps' tables rewritten as DataGrids: 22 grid views (Files, Projects, Search workspace, Settings, the Asset Manager's home, system settings and field dialogs); tests/grid.test.js.
 - [x] 3. (batch 226) The design system's own tables as DataGrids: the spec pages' React tables, DS.grid for every table a page or lab builds (the button matrix in its frame too); 149 pages, no <table> left.
-- [ ] 4. Remove Table, system/table.css (.plx-data-table) and the 13 table-* tokens; ActivityList and PropertyList use the grid tokens; a check-system rule rejects any table that is not a DataGrid.
+- [x] 4. (batch 226) Table, system/table.css and the 33 table tokens removed; ActivityList and PropertyList on the grid tokens; check-system rule tables and a pages-test check reject any table that is not a DataGrid.
 - [x] 5. (batch 226) The Data grid page (#/data-display/data-grid): the rule, how to apply it, every part of the style with its tokens, density, light and dark, one live grid.
 
 Themes and components (owner, 2026-10-08: "do the foundations and then the components")

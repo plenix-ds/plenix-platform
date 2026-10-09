@@ -441,22 +441,6 @@
       "$value": "{plx-ref.color-brown-200}",
       "$type": "color"
     },
-    "table-header-background": {
-      "$value": "{plx-ref.color-black}",
-      "$type": "color"
-    },
-    "table-row-hover": {
-      "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
-    },
-    "table-line": {
-      "$value": "{plx-ref.color-gray-600}",
-      "$type": "color"
-    },
-    "table-header-line": {
-      "$value": "{plx-ref.color-gray-600}",
-      "$type": "color"
-    },
     "header-card-tint": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",

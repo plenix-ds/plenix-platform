@@ -442,40 +442,6 @@
       "$value": "{plx-ref.color-brown-500}",
       "$type": "color"
     },
-    "table-header-background": {
-      "$value": "{plx-ref.color-gray-100}",
-      "$type": "color",
-      "$description": "a soft gray header row",
-      "$extensions": {
-        "com.plenix": {
-          "after": "   /* a soft gray header row */"
-        }
-      }
-    },
-    "table-row-hover": {
-      "$value": "{plx-ref.color-blue-100}",
-      "$type": "color"
-    },
-    "table-line": {
-      "$value": "{plx-ref.color-gray-300}",
-      "$type": "color",
-      "$description": "the soft inner lines: between rows and between columns",
-      "$extensions": {
-        "com.plenix": {
-          "after": "   /* the soft inner lines: between rows and between columns */"
-        }
-      }
-    },
-    "table-header-line": {
-      "$value": "{plx-ref.color-gray-500}",
-      "$type": "color",
-      "$description": "the column lines inside the header row",
-      "$extensions": {
-        "com.plenix": {
-          "after": "   /* the column lines inside the header row */"
-        }
-      }
-    },
     "header-card-tint": {
       "$value": "{plx-ref.color-brown-100}",
       "$type": "color",

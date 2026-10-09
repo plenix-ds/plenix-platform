@@ -56,6 +56,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   own; focus hides the navigation and the inspector. The suite apps are fluid, the image editor is focus (no visual
   change). tests/layout.test.js (12 checks) runs in `npm test` and CI. (batch 217)
 
+### Removed
+- The Table component (components/Table), system/table.css (.plx-data-table) and the 33 table tokens
+  (--plx-sys-table-*, --plx-comp-table-*): every table is a DataGrid. PropertyList (variant "table") and ActivityList take
+  the grid tokens (row height, lines, header shade); PropertyList gets --plx-comp-property-list-label-width. check-system
+  rule tables rejects a <table>, a table element made in code, an import of Table and the retired table classes;
+  tests/pages.test.js fails any page that shows a <table>. The design system's Data table item is now Data grid
+  (#/data-display/data-grid): how to apply it, every part of its style with its tokens, one live grid. (batch 226)
+
 ### Changed (visual)
 - Every table in the apps is a DataGrid (Tabulator, the owner's grid style): Files, Projects (files), the suite's
   Search workspace (every source), Settings (scenarios, fields, product vision, terminology, data model: 7 kinds of

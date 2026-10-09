@@ -108,8 +108,6 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-20px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-36px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-20px);
-  --plx-sys-table-row-height: var(--plx-ref-size-36px);
-  --plx-sys-table-row-height-multiline: var(--plx-ref-size-40px);
   --plx-sys-card-grid-gap: var(--plx-ref-space-16px);
   --plx-sys-grid-gutter: var(--plx-ref-grid-gutter-16px);
   --plx-sys-page-margin-desktop: var(--plx-ref-grid-margin-24px);
@@ -152,8 +150,6 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-20px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-36px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-20px);
-  --plx-sys-table-row-height: var(--plx-ref-size-28px);
-  --plx-sys-table-row-height-multiline: var(--plx-ref-size-32px);
   --plx-sys-card-grid-gap: var(--plx-ref-space-12px);
   --plx-sys-grid-gutter: var(--plx-ref-grid-gutter-12px);
   --plx-sys-page-margin-desktop: var(--plx-ref-grid-margin-24px);
@@ -189,8 +185,6 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-24px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-40px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-24px);
-  --plx-sys-table-row-height: var(--plx-ref-size-44px);
-  --plx-sys-table-row-height-multiline: var(--plx-ref-size-48px);
   --plx-sys-card-grid-gap: var(--plx-ref-space-24px);
   --plx-sys-grid-gutter: var(--plx-ref-grid-gutter-24px);
   --plx-sys-page-margin-desktop: var(--plx-ref-grid-margin-32px);
@@ -227,7 +221,6 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-20px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-44px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-20px);
-  --plx-sys-table-row-height: var(--plx-ref-size-44px);
   --plx-sys-grid-row-height: var(--plx-ref-size-44px);
 }
 :root[data-plx-interaction="mobile"],:root[data-plx-interaction="mobile"] [data-plx-density]{
@@ -244,7 +237,6 @@
   --plx-sys-control-icon-dialog: var(--plx-ref-size-20px);
   --plx-sys-control-height-dialog-destructive: var(--plx-ref-control-size-44px);
   --plx-sys-control-icon-dialog-destructive: var(--plx-ref-size-20px);
-  --plx-sys-table-row-height: var(--plx-ref-size-44px);
   --plx-sys-grid-row-height: var(--plx-ref-size-44px);
 }
 :root:not([data-plx-interaction]){

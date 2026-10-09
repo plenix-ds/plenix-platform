@@ -202,9 +202,12 @@ export function DataGrid(props) {
   React.useEffect(() => {
     let alive = true, table = null;
     builtRef.current = false;
-    // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator
-    loadTabulator(hostRef.current && hostRef.current.ownerDocument.defaultView).then((Tabulator) => {
-      if (!alive || !hostRef.current) return;
+    // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
+    // (a frame that loaded again meanwhile) gets no grid
+    const win = hostRef.current && hostRef.current.ownerDocument.defaultView;
+    if (!win) return undefined;
+    loadTabulator(win).then((Tabulator) => {
+      if (!alive || !hostRef.current || !hostRef.current.ownerDocument.defaultView) return;
       const host = hostRef.current, lead = gridPx(LEAD, host);
       const p = latest.current;
       const placeholder = el('div', 'plx-data-grid__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);

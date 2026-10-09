@@ -139,9 +139,6 @@
   /* the footer row pinned to the bottom of the navigation pane and the inspector: a toolbar control (size="sm") with 8px
      above and below, so the control and its icon sit on the 4px grid in every density (44px compact, 44 standard, 48 comfortable) */
   --plx-comp-pane-footer-height: calc(var(--plx-sys-control-height-toolbar) + var(--plx-sys-space-inset-sm) * 2);
-  /* ── TABLE COLUMNS: named column widths (columns[].size), so every data grid lines up: the label column and the visual column are one width everywhere; the other columns share the rest ── */
-  --plx-comp-table-column-label-width: var(--plx-ref-size-240px);
-  --plx-comp-table-column-visual-width: var(--plx-ref-size-64px);
   /* ── SECONDARY PANE: its widths, and the widest it can be dragged to (resizable) ── */
   --plx-comp-secondary-pane-width-sm: var(--plx-ref-size-180px);
   --plx-comp-secondary-pane-width-md: var(--plx-ref-size-220px);
@@ -345,6 +342,7 @@
   --plx-comp-data-grid-filter-min-width: var(--plx-ref-size-220px);
   --plx-comp-data-grid-filter-label-font-size: var(--plx-ref-font-size-11);
   --plx-comp-data-grid-filter-label-letter-spacing: var(--plx-sys-letter-spacing-caps);
+  --plx-comp-property-list-label-width: var(--plx-ref-size-240px);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);
@@ -370,11 +368,6 @@
   --plx-comp-dialog-body-footer-gap: var(--plx-ref-space-24px);
   --plx-comp-dialog-action-gap: var(--plx-ref-space-8px);
   --plx-comp-drawer-padding: var(--plx-ref-space-16px);
-  --plx-comp-table-cell-padding-inline: var(--plx-ref-space-12px);
-  --plx-comp-table-cell-padding-block: var(--plx-ref-space-4px);
-  --plx-comp-table-cell-content-gap: var(--plx-ref-space-8px);
-  --plx-comp-table-inline-action-gap: var(--plx-ref-space-8px);
-  --plx-comp-table-title-metadata-gap: var(--plx-ref-space-4px);
   --plx-comp-metadata-item-gap: var(--plx-ref-space-8px);
   --plx-comp-metadata-icon-gap: var(--plx-ref-space-8px);
   --plx-comp-metadata-title-gap: var(--plx-ref-space-8px);
@@ -404,11 +397,6 @@
   --plx-comp-dialog-body-footer-gap: var(--plx-ref-space-16px);
   --plx-comp-dialog-action-gap: var(--plx-ref-space-8px);
   --plx-comp-drawer-padding: var(--plx-ref-space-12px);
-  --plx-comp-table-cell-padding-inline: var(--plx-ref-space-8px);
-  --plx-comp-table-cell-padding-block: var(--plx-ref-space-4px);
-  --plx-comp-table-cell-content-gap: var(--plx-ref-space-4px);
-  --plx-comp-table-inline-action-gap: var(--plx-ref-space-4px);
-  --plx-comp-table-title-metadata-gap: var(--plx-ref-space-4px);
   --plx-comp-metadata-item-gap: var(--plx-ref-space-4px);
   --plx-comp-metadata-icon-gap: var(--plx-ref-space-4px);
   --plx-comp-metadata-title-gap: var(--plx-ref-space-4px);
@@ -439,11 +427,6 @@
   --plx-comp-dialog-body-footer-gap: var(--plx-ref-space-32px);
   --plx-comp-dialog-action-gap: var(--plx-ref-space-12px);
   --plx-comp-drawer-padding: var(--plx-ref-space-24px);
-  --plx-comp-table-cell-padding-inline: var(--plx-ref-space-16px);
-  --plx-comp-table-cell-padding-block: var(--plx-ref-space-8px);
-  --plx-comp-table-cell-content-gap: var(--plx-ref-space-8px);
-  --plx-comp-table-inline-action-gap: var(--plx-ref-space-8px);
-  --plx-comp-table-title-metadata-gap: var(--plx-ref-space-8px);
   --plx-comp-metadata-item-gap: var(--plx-ref-space-8px);
   --plx-comp-metadata-icon-gap: var(--plx-ref-space-8px);
   --plx-comp-metadata-title-gap: var(--plx-ref-space-8px);

@@ -31,6 +31,8 @@
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
+//   tables      every table is a DataGrid (Tabulator in the Plenix grid style): no <table>, no table element made in code, no
+//               retired Table component or plx-table / plx-data-table class (batch 226)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
 const fs = require('fs');
@@ -91,6 +93,12 @@ for (const { file } of files) {
   for (const m of text.matchAll(/(--plx-[\w-]+)\s*:/g)) PLX.add(m[1]);
   for (const m of text.matchAll(/["'](--plx-[\w-]+)["']\s*[:,)]/g)) PLX.add(m[1]);
 }
+// tables, in stylesheets: no rule for the retired table classes (every table is a DataGrid, batch 226)
+for (const { file } of files) {
+  if (!/\.css$/.test(file)) continue;
+  const text = fs.readFileSync(file, 'utf8');
+  for (const m of text.matchAll(/\.plx-(data-)?table(?![\w-])|\.plx-table(__|--|-wrap|-scroll)/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
+}
 // inline-style: application code takes its look from the Platform only (see the rule's description above)
 const INLINE_STYLE_PENDING = [];   // every application converted (batches 150-151)
 const pendingStyles = {};
@@ -116,6 +124,14 @@ for (const { file } of files) {
   // page-layout: an application says what a page is (<AppShell page="settings">); the layout standard picks the mode
   if (!/[\\/]platform[\\/]/.test(file) && !/(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/<AppShell\b[^>]*?\blayout\s*=|\bdata-plx-layout\s*=|['"]data-plx-layout['"]/g)) add('page-layout', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
+  }
+  // tables: every table is a DataGrid (Tabulator in the Plenix grid style, batch 226): no <table>, no table element made
+  // in code, no retired Table component or its classes. The design system's builders draw a table and hand it to DS.grid
+  // at once (tests/pages.test.js fails any table left on a page); generated bundles are checked through their sources.
+  if (!SPEC_PAGE.test(file) && !/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
+    for (const m of text.matchAll(/<table[\s>]|createElement\(\s*['"]table['"]|\bel\(\s*['"]table['"]|\bh\(\s*['"]table['"]|\bplx-(data-)?table\b(?!-)|\bimport\s*\{[^}]*\bTable\b[^}]*\}\s*from\s*['"]plenix-platform['"]|\bP(?:lenix)?\.Table\b/g)) {
+      add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
+    }
   }
   // style: in h()/createElement props — allowed only as an object literal of custom properties
   for (const m of text.matchAll(/[{,]\s*style\s*:\s*/g)) {

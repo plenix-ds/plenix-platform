@@ -100,26 +100,6 @@
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"
     },
-    "table-cell-padding-inline": {
-      "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
-    "table-cell-padding-block": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "table-cell-content-gap": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
-    },
-    "table-inline-action-gap": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
-    },
-    "table-title-metadata-gap": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
     "metadata-item-gap": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"

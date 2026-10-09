@@ -562,21 +562,6 @@
         }
       }
     },
-    "table-column-label-width": {
-      "$value": "{plx-ref.size-240px}",
-      "$type": "dimension",
-      "$extensions": {
-        "com.plenix": {
-          "before": [
-            "  /* ── TABLE COLUMNS: named column widths (columns[].size), so every data grid lines up: the label column and the visual column are one width everywhere; the other columns share the rest ── */"
-          ]
-        }
-      }
-    },
-    "table-column-visual-width": {
-      "$value": "{plx-ref.size-64px}",
-      "$type": "dimension"
-    },
     "secondary-pane-width-sm": {
       "$value": "{plx-ref.size-180px}",
       "$type": "dimension",
@@ -1390,6 +1375,10 @@
     },
     "data-grid-filter-label-letter-spacing": {
       "$value": "{plx-sys.letter-spacing-caps}",
+      "$type": "dimension"
+    },
+    "property-list-label-width": {
+      "$value": "{plx-ref.size-240px}",
       "$type": "dimension"
     }
   }
