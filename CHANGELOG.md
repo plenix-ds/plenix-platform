@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.20.2] - 2026-10-09
+
+### Changed
+- Inline fields stay side by side (owner: side by side takes less height; "the side by side is utilizing a very wide
+  width for the fields... no reason to"; "use tooltip to show the label"): in a group the control column runs from
+  --plx-sys-field-width-md to --plx-sys-field-width-lg, packed to the start, so controls never stretch; when space is
+  short the control keeps its minimum and the label shortens with an ellipsis, its full text in a Tooltip; the label
+  moves above only below 180px (the value of --plx-ref-size-180px). PropertyList's columns do the same. (batch 270)
+
+### Added
+- Tooltip disabled: neither shows nor describes its trigger (for a label that only needs it when cut short).
+  useTruncated(ref) in utils/overflow.js tells when a one-line text is cut short. (batch 270)
+
 ## [0.20.1] - 2026-10-09
 
 ### Fixed

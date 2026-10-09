@@ -21,15 +21,19 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useTruncated } from '../../utils/overflow.js';
+import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 
 export function PropertyList({ layout = 'columns', className, children }) {
   return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, className)}>{children}</dl>;
 }
 
 PropertyList.Item = function PropertyListItem({ label, htmlFor, description, data = false, className, children }) {
+  const textRef = React.useRef(null);
+  const cut = useTruncated(textRef);
   return (
     <div className={cx('plx-property-list__item', className)}>
-      <dt className="plx-property-list__label">{htmlFor ? <label htmlFor={htmlFor}>{label}</label> : label}
+      <dt className="plx-property-list__label"><Tooltip content={label} disabled={!cut} className="plx-property-list__label-tip"><span ref={textRef} className="plx-property-list__label-text">{htmlFor ? <label htmlFor={htmlFor}>{label}</label> : label}</span></Tooltip>
         {description ? <span className="plx-property-list__description">{description}</span> : null}
       </dt>
       <dd className={cx('plx-property-list__value', data && 'plx-property-list__value--data')}>{children}</dd>

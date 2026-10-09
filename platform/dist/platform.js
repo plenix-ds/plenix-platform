@@ -2817,7 +2817,147 @@ function SegmentedControl({
   }) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/overflow.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.splitAt = void 0;
+exports.useOverflow = useOverflow;
+exports.useTruncated = useTruncated;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · overflow (platform/utils/overflow.js). Internal; not part of the public API.
+   A one-row list whose items move into a "More" menu when they do not fit. The list wraps (flex-wrap) inside a box one
+   row high that clips the rest. Its children, in DOM order (which is also the focus order), are the shown items, the
+   More control (data-plx-overflow-more) and then the hidden items (each item: data-plx-overflow-item; render them with
+   splitAt). useOverflow(listRef, count, key)
+   returns how many items are shown: it starts from all of them whenever the width, the count or `key` (anything that
+   changes the items' widths, such as their labels) changes, and lowers the number, before the browser paints, until the
+   shown items and the More control are all on the first row. Items past that number are made inert. */
+
+const firstRowTop = list => Math.min.apply(null, Array.prototype.map.call(list.children, el => el.offsetTop));
+function useOverflow(listRef, count, key) {
+  const [fit, setFit] = _react.default.useState(count);
+  const [width, setWidth] = _react.default.useState(0);
+  _react.default.useLayoutEffect(() => {
+    setFit(count);
+  }, [count, key, width]);
+  _react.default.useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => setWidth(list.clientWidth));
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, []);
+  _react.default.useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list || !list.children.length) return;
+    const items = list.querySelectorAll(':scope > [data-plx-overflow-item]');
+    const more = list.querySelector(':scope > [data-plx-overflow-more]');
+    const top = firstRowTop(list);
+    let fits = !(more && more.offsetTop !== top);
+    for (let i = 0; i < Math.min(fit, items.length); i += 1) if (items[i].offsetTop !== top) fits = false;
+    Array.prototype.forEach.call(items, (el, i) => {
+      if (i >= fit) {
+        el.setAttribute('inert', '');
+        el.setAttribute('aria-hidden', 'true');
+      } else {
+        el.removeAttribute('inert');
+        el.removeAttribute('aria-hidden');
+      }
+    });
+    if (!fits && fit > 0) setFit(fit - 1);
+  });
+  return Math.min(fit, count);
+}
+
+/* the list's children in DOM order: the first `fit` items, the More control, the rest */
+const splitAt = (items, fit, more) => items.slice(0, fit).concat(more ? [more] : [], items.slice(fit));
+
+/* useTruncated(ref) (batch 270): true while the element's one line of text is cut short (shown with an ellipsis), so
+   its full text can be offered in a Tooltip; checked again whenever the element's width changes. */
+exports.splitAt = splitAt;
+function useTruncated(ref) {
+  const [cut, setCut] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const check = () => setCut(el.scrollWidth > el.clientWidth + 1);
+    check();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+  return cut;
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Tooltip = Tooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover and on keyboard focus.
+   Usage:
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+   Props:
+     content: the tooltip text
+     placement: "bottom" (default) | "top" | "end"
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
+   Behavior:
+     It shows on hover and on keyboard focus, and hides on leave, on blur and with Escape.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+   Notes:
+     An icon-only control still needs its own label: the tooltip repeats it visually, it does not replace it.
+     Not for essential or interactive content.
+*/
+
+function Tooltip({
+  content,
+  placement = 'bottom',
+  disabled = false,
+  className,
+  children
+}) {
+  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    return () => document.removeEventListener('keydown', esc);
+  }, [open]);
+  const child = _react.default.Children.only(children);
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, {
+    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onMouseEnter: () => setOpen(true),
+    onMouseLeave: () => setOpen(false),
+    onFocus: () => setOpen(true),
+    onBlur: () => setOpen(false)
+  }, trigger, disabled ? null : /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + placement, open && 'is-open')
+  }, content));
+}
+  } },
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2826,6 +2966,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.Field = Field;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _overflow = require("../../utils/overflow.js");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -2870,6 +3012,8 @@ function Field({
   const descId = description ? controlId + '-d' : undefined,
     errId = error ? controlId + '-e' : undefined;
   const [showInfo, setShowInfo] = _react.default.useState(false);
+  const labelRef = _react.default.useRef(null);
+  const cut = (0, _overflow.useTruncated)(labelRef);
   const child = _react.default.Children.only(children);
   const control = /*#__PURE__*/_react.default.cloneElement(child, {
     id: child.props.id || controlId,
@@ -2881,13 +3025,18 @@ function Field({
     className: (0, _cx.cx)('plx-field', 'plx-field--' + layout, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__head"
+  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label,
+    disabled: !cut,
+    className: "plx-field__label-tip"
   }, /*#__PURE__*/_react.default.createElement("label", {
+    ref: labelRef,
     className: "plx-field__label",
     htmlFor: child.props.id || controlId
   }, label, required ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-field__required",
     "aria-hidden": "true"
-  }, " *") : null), info ? /*#__PURE__*/_react.default.createElement("button", {
+  }, " *") : null)), info ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-field__info",
     "aria-label": infoLabel || 'About ' + label,
@@ -3381,66 +3530,6 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
     onAccent: onAccent
   }, shortcut)) : null);
 });
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover and on keyboard focus.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-   Props:
-     content: the tooltip text
-     placement: "bottom" (default) | "top" | "end"
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover and on keyboard focus, and hides on leave, on blur and with Escape.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-   Notes:
-     An icon-only control still needs its own label: the tooltip repeats it visually, it does not replace it.
-     Not for essential or interactive content.
-*/
-
-function Tooltip({
-  content,
-  placement = 'bottom',
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    return () => document.removeEventListener('keydown', esc);
-  }, [open]);
-  const child = _react.default.Children.only(children);
-  const trigger = /*#__PURE__*/_react.default.cloneElement(child, {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  });
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onMouseEnter: () => setOpen(true),
-    onMouseLeave: () => setOpen(false),
-    onFocus: () => setOpen(true),
-    onBlur: () => setOpen(false)
-  }, trigger, /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + placement, open && 'is-open')
-  }, content));
-}
   } },
   "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -6785,65 +6874,6 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, apps.filter(a => pinnedApps.indexOf(a.id) < 0).map(tile))) : null) : null);
 };
   } },
-  "platform/utils/overflow.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.splitAt = void 0;
-exports.useOverflow = useOverflow;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · overflow (platform/utils/overflow.js). Internal; not part of the public API.
-   A one-row list whose items move into a "More" menu when they do not fit. The list wraps (flex-wrap) inside a box one
-   row high that clips the rest. Its children, in DOM order (which is also the focus order), are the shown items, the
-   More control (data-plx-overflow-more) and then the hidden items (each item: data-plx-overflow-item; render them with
-   splitAt). useOverflow(listRef, count, key)
-   returns how many items are shown: it starts from all of them whenever the width, the count or `key` (anything that
-   changes the items' widths, such as their labels) changes, and lowers the number, before the browser paints, until the
-   shown items and the More control are all on the first row. Items past that number are made inert. */
-
-const firstRowTop = list => Math.min.apply(null, Array.prototype.map.call(list.children, el => el.offsetTop));
-function useOverflow(listRef, count, key) {
-  const [fit, setFit] = _react.default.useState(count);
-  const [width, setWidth] = _react.default.useState(0);
-  _react.default.useLayoutEffect(() => {
-    setFit(count);
-  }, [count, key, width]);
-  _react.default.useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(() => setWidth(list.clientWidth));
-    ro.observe(list);
-    return () => ro.disconnect();
-  }, []);
-  _react.default.useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list || !list.children.length) return;
-    const items = list.querySelectorAll(':scope > [data-plx-overflow-item]');
-    const more = list.querySelector(':scope > [data-plx-overflow-more]');
-    const top = firstRowTop(list);
-    let fits = !(more && more.offsetTop !== top);
-    for (let i = 0; i < Math.min(fit, items.length); i += 1) if (items[i].offsetTop !== top) fits = false;
-    Array.prototype.forEach.call(items, (el, i) => {
-      if (i >= fit) {
-        el.setAttribute('inert', '');
-        el.setAttribute('aria-hidden', 'true');
-      } else {
-        el.removeAttribute('inert');
-        el.removeAttribute('aria-hidden');
-      }
-    });
-    if (!fits && fit > 0) setFit(fit - 1);
-  });
-  return Math.min(fit, count);
-}
-
-/* the list's children in DOM order: the first `fit` items, the More control, the rest */
-const splitAt = (items, fit, more) => items.slice(0, fit).concat(more ? [more] : [], items.slice(fit));
-exports.splitAt = splitAt;
-  } },
   "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -7463,7 +7493,7 @@ function ContentGrid({
   }, c)));
 }
   } },
-  "platform/patterns/PropertyList/PropertyList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PropertyList/PropertyList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7472,6 +7502,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.PropertyList = PropertyList;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _overflow = require("../../utils/overflow.js");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · PropertyList
    Summary: Label and value pairs (metadata, details, settings summaries), as a description list.
@@ -7512,13 +7544,22 @@ PropertyList.Item = function PropertyListItem({
   className,
   children
 }) {
+  const textRef = _react.default.useRef(null);
+  const cut = (0, _overflow.useTruncated)(textRef);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-property-list__item', className)
   }, /*#__PURE__*/_react.default.createElement("dt", {
     className: "plx-property-list__label"
+  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label,
+    disabled: !cut,
+    className: "plx-property-list__label-tip"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    ref: textRef,
+    className: "plx-property-list__label-text"
   }, htmlFor ? /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: htmlFor
-  }, label) : label, description ? /*#__PURE__*/_react.default.createElement("span", {
+  }, label) : label)), description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-property-list__description"
   }, description) : null), /*#__PURE__*/_react.default.createElement("dd", {
     className: (0, _cx.cx)('plx-property-list__value', data && 'plx-property-list__value--data')

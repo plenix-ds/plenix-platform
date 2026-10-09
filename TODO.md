@@ -15,10 +15,15 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
 - [ ] 4. Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
 - [ ] 5. Image editor in steps: zoom, opacity, text on a 5% grid, palette text colors, filter presets, crop classes
 - [ ] 6. The design system's 15 sample styles: a generated class per token
-- [ ] 6b. Tabulator drawn by Plenix (prototype in batch 269 reached 0 inline styles with sorting, selection and class
-  widths): basic row renderer, column widths as size-token classes (cssClass), a sticky class instead of frozen,
-  Tabulator's own geometry writes switched off; then editing, menus and popups (Plenix menus instead of Tabulator's
-  positioned popups), tree, grouping, row moving, column resizing (snapping to width tokens), and paging for long lists
+- [ ] 6b. Tabulator drawn by Plenix. PROVEN in the prototype (Plenix - DAM/audit/tabulator-prototype/, 2026-10-09):
+  zero inline styles with every feature working: sorting, row selection, widths as size-token classes (cssClass), a
+  sticky class instead of frozen, editing (a custom editor: Plenix input), tree rows (indent by tabulator-tree-level-N
+  class; expand and collapse work), grouping, row moving by native drag and drop (drop line as a class, row.move),
+  row menus anchored to their button (no coordinates), column resize by switching the width class (snaps to tokens),
+  paging (10 per page). How: renderVertical "basic"; Tabulator's own geometry writes switched off (cell and column
+  width/height, header vertical align, row height normalising, holder sizing, frozen-rows holder width) and the tree's
+  row layout replaced by one without indent. To do: move this into DataTable and Table, a test that fails if a
+  Tabulator update writes a style again, then the real tables (25 data-table views, the reference test).
 - [ ] 7. check-system rejects every style attribute, custom properties included
 
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)

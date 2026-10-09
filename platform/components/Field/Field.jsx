@@ -25,12 +25,16 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useTruncated } from '../../utils/overflow.js';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
 
 export function Field({ label, description, error, required = false, info, infoLabel, layout = 'stacked', labelWidth, className, children, ...rest }) {
   const id = React.useId();
   const controlId = 'plx-f' + id.replace(/[^a-zA-Z0-9]/g, '');
   const descId = description ? controlId + '-d' : undefined, errId = error ? controlId + '-e' : undefined;
   const [showInfo, setShowInfo] = React.useState(false);
+  const labelRef = React.useRef(null);
+  const cut = useTruncated(labelRef);
   const child = React.Children.only(children);
   const control = React.cloneElement(child, {
     id: child.props.id || controlId,
@@ -41,7 +45,9 @@ export function Field({ label, description, error, required = false, info, infoL
   return (
     <div className={cx('plx-field', 'plx-field--' + layout, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)} {...rest}>
       <div className="plx-field__head">
-        <label className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
+        <Tooltip content={label} disabled={!cut} className="plx-field__label-tip">
+          <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
+        </Tooltip>
         {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || 'About ' + label} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
         {layout === 'row' && description ? <div className="plx-field__description" id={descId}>{description}</div> : null}
       </div>
