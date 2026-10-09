@@ -2,10 +2,10 @@
 -- Prompt Studio — PostgreSQL Schema (DDL v0.3, Migration Candidate)
 -- =====================================================================================
 -- Final artifact of the schema pipeline:
---   PRD → prompt-studio-logical-schema.md → prompt-studio-domain-types.ts → [THIS FILE]
+--   PRD → Archived/docs/prompt-studio-logical-schema.md → prompt-studio-domain-types.ts → [THIS FILE]
 -- Supersedes the retired Gemini "Physical Model v0.1" (PRD §27.4).
 -- Grounded in verified OSS schemas (Langfuse, Opik, Agenta, Helicone, Promptfoo,
--- Dify, Espanso, ComfyUI PromptManager) — see oss-landscape.md §6.40.
+-- Dify, Espanso, ComfyUI PromptManager) — see Archived/docs/oss-landscape.md §6.40.
 --
 -- MERGE DECISIONS (this file consolidates two SQL drafts):
 --   SQL-D1  Body/variant model ... NORMALIZED (ChatGPT): prompts hold metadata only;

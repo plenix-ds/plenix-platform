@@ -80,14 +80,6 @@ Z:\Plenix\
 │   ├── terminology.md       # Product terminology
 │   └── <name>/              # One folder per capability
 │       └── <name>-prd.md    # PRD file (future: schema, API spec, UI spec)
-├── docs/                    # Product documentation (non-PRD); plenix-docs.html (the PRD viewer) and its data files
-│   ├── product-vision.md
-│   ├── about-plenix.md
-│   ├── data-model.md
-│   ├── oss-landscape.md
-│   └── prompt-studio-logical-schema.md
-├── architecture/            # Architecture specs (F1-F10 + OSS integration)
-│   └── oss-resourcespace.md
-├── Archived/                # Outdated files and folders, kept on disk only (not in git)
-└── metadata/                # Metadata XML schemas (117 files)
+├── docs/                    # plenix-docs.html (the PRD viewer, built from capabilities/), plenix-data.js, datagrid-tabulator-demo.html
+└── Archived/                # Outdated or unused files and folders (metadata/, architecture/, old docs), on disk only (not in git)
 ```

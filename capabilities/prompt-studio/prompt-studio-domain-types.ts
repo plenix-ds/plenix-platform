@@ -2,13 +2,13 @@
  * Prompt Studio — TypeScript Domain Model  (Canonical / Merged)
  * ============================================================
  * Step 2 of the schema pipeline:
- *   PRD → prompt-studio-logical-schema.md → [THIS FILE] → prompt-studio-schema.sql (DDL v0.3)
+ *   PRD → Archived/docs/prompt-studio-logical-schema.md → [THIS FILE] → prompt-studio-schema.sql (DDL v0.3)
  *
  * Application-level domain types, unions, value objects, entity shapes, and guard
  * contracts. NOT an ORM mapping and NOT SQL. Physical concerns (indexes, JSONB-vs-column,
  * cascades) are decided in DDL v0.2, guided by this file.
  *
- * Source of truth for entities/relationships: prompt-studio-logical-schema.md (56 entities).
+ * Source of truth for entities/relationships: Archived/docs/prompt-studio-logical-schema.md (56 entities).
  *
  * -------------------------------------------------------------------------------------
  * RESOLVED OPEN DECISIONS (locked here)
