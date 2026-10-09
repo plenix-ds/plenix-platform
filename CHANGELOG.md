@@ -6,6 +6,28 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Changed (visual)
+- Feel (owner: "I want it very snappy… responds instantly… crisp animations"): every control answers at once. Hover colors
+  and edges fade in over 80ms instead of switching; buttons, chips, segmented items, tiles and small icon controls shrink
+  to 98% while pressed (rows, tabs and menu items keep their hover fill); menus, combobox lists and dialogs pop in (fade
+  and grow from 96%) in 120ms from their anchor corner, and the modal backdrop fades in. Drawers and toasts keep their
+  slides. New tokens: --plx-ref-motion-duration-instant (0.08s), --plx-ref-motion-ease-out, --plx-ref-motion-scale-98 and
+  -96; theme roles --plx-sys-motion-duration-instant, --plx-sys-motion-ease-enter, --plx-sys-motion-press-scale,
+  --plx-sys-motion-enter-scale. The rules are in system/motion.css with zero specificity (:where), so a component's own
+  transition still wins; reduced motion still turns all of it off. (batch 236)
+
+### Added
+- Loading: DataTable.preload() and Table.preload() start loading Tabulator before the first grid mounts; the Asset
+  Manager and Files call it as they start. Every other page prefetches Tabulator into the cache once idle after load.
+  (batch 237)
+- Next page ready before the click: in Chromium browsers a same-site link is prerendered when the pointer rests on it
+  (speculation rules, moderate eagerness), so switching apps shows the finished page at once; other browsers fetch the
+  page on hover. Links with target, download, data-plx-no-prefetch or a same-page anchor are skipped; nothing runs from
+  file://. (platform/utils/prefetch.js, batch 237)
+- Deploy: live app pages drop the development audits (radius-audit.js, style-audit.js) and preconnect to the CDN; the
+  hosted design system loads one bundled stylesheet (platform/dist/platform.bundle.css) instead of platform.css and its
+  imports: 12 stylesheet requests instead of 107, computed styles identical. (batch 237)
+
 ## [0.5.0] - 2026-10-09
 
 ### Changed (visual)

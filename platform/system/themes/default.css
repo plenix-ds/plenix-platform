@@ -32,6 +32,7 @@
   --plx-sys-border-style-solid: var(--plx-ref-border-style-solid);
   --plx-sys-border-style-dashed: var(--plx-ref-border-style-dashed);
   --plx-sys-motion-duration-quick: var(--plx-ref-motion-duration-quick);
+  --plx-sys-motion-duration-instant: var(--plx-ref-motion-duration-instant);
   /* motion: durations and easing (reduced motion still sets 0s) */
   --plx-sys-motion-duration-fast: var(--plx-ref-motion-duration-fast);
   --plx-sys-motion-duration-base: var(--plx-ref-motion-duration-base);
@@ -40,6 +41,9 @@
   --plx-sys-motion-duration-loop-base: var(--plx-ref-motion-duration-loop-base);
   --plx-sys-motion-duration-loop-slow: var(--plx-ref-motion-duration-loop-slow);
   --plx-sys-motion-ease-standard: var(--plx-ref-motion-ease-standard);
+  --plx-sys-motion-ease-enter: var(--plx-ref-motion-ease-out);
+  --plx-sys-motion-press-scale: var(--plx-ref-motion-scale-98);
+  --plx-sys-motion-enter-scale: var(--plx-ref-motion-scale-96);
   --plx-sys-motion-delay-stagger: var(--plx-ref-motion-delay-stagger);
   /* opacity levels */
   --plx-sys-opacity-low: var(--plx-ref-opacity-30);

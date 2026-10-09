@@ -137,6 +137,10 @@
       "$value": "{plx-ref.motion-duration-quick}",
       "$type": "duration"
     },
+    "motion-duration-instant": {
+      "$value": "{plx-ref.motion-duration-instant}",
+      "$type": "duration"
+    },
     "motion-duration-fast": {
       "$value": "{plx-ref.motion-duration-fast}",
       "$type": "duration",
@@ -171,6 +175,18 @@
     "motion-ease-standard": {
       "$value": "{plx-ref.motion-ease-standard}",
       "$type": "cubicBezier"
+    },
+    "motion-ease-enter": {
+      "$value": "{plx-ref.motion-ease-out}",
+      "$type": "cubicBezier"
+    },
+    "motion-press-scale": {
+      "$value": "{plx-ref.motion-scale-98}",
+      "$type": "number"
+    },
+    "motion-enter-scale": {
+      "$value": "{plx-ref.motion-scale-96}",
+      "$type": "number"
     },
     "motion-delay-stagger": {
       "$value": "{plx-ref.motion-delay-stagger}",

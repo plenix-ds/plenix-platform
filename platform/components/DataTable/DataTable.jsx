@@ -43,6 +43,7 @@
        with rowClick, rows are focusable and Enter does what a click does
      onReady(table): the Tabulator instance, once built (for anything Tabulator offers)
      className: more classes on the grid's frame
+     DataTable.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
@@ -370,3 +371,5 @@ export function TableEngine(props) {
 
 // the interactive table: records to sort, filter, select, open, edit, group or nest
 export function DataTable(props) { return <TableEngine {...props} isStatic={false} />; }
+// starts loading the engine before the first grid mounts (a page whose first screen has a table calls it as it starts)
+DataTable.preload = () => { loadTabulator().catch(() => {}); };

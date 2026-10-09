@@ -682,6 +682,10 @@
       "$value": "0.12s",
       "$type": "duration"
     },
+    "motion-duration-instant": {
+      "$value": "0.08s",
+      "$type": "duration"
+    },
     "motion-duration-fast": {
       "$value": "0.15s",
       "$type": "duration",
@@ -703,6 +707,17 @@
     },
     "motion-ease-standard": {
       "$value": "ease"
+    },
+    "motion-ease-out": {
+      "$value": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    "motion-scale-98": {
+      "$value": "0.98",
+      "$type": "number"
+    },
+    "motion-scale-96": {
+      "$value": "0.96",
+      "$type": "number"
     },
     "motion-duration-loop-fast": {
       "$value": "0.7s",

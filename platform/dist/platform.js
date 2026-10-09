@@ -4497,6 +4497,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.loadTabulator = loadTabulator;
+exports.prefetchTabulator = prefetchTabulator;
 exports.tablePx = tablePx;
 /* Plenix · DataTable engine (tabulator.js)
    Summary: Loads the engine every DataTable runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
@@ -4507,9 +4508,13 @@ exports.tablePx = tablePx;
      loadTabulator(win): adds Tabulator's core stylesheet and script to the page once (the given window's, default this
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
      tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
+     prefetchTabulator(): fetches the two files into the browser's cache without running them (no-op when loaded)
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
+     Early load (batch 237): a page whose first screen has a table calls DataTable.preload() (or Table.preload()) as
+     its script starts, so Tabulator arrives while React draws the page instead of after the grid mounts. Every other
+     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache.
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
      build's plenix.js -> ./vendor/); window.PlenixVendorBase (a folder URL ending in /) overrides it.
@@ -4564,6 +4569,30 @@ function loadTabulator(win) {
   });
   loading.set(w, p);
   return p;
+}
+
+// the files into the HTTP cache at low priority, not run: the first grid then loads them from the cache
+function prefetchTabulator() {
+  if (typeof document === 'undefined' || window.Tabulator || loading.has(window)) return;
+  if (document.querySelector('link[data-plx-vendor-prefetch="tabulator"]')) return;
+  const base = vendorBase() + 'tabulator/';
+  ['tabulator.min.js', 'tabulator.min.css'].forEach(f => {
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = base + f;
+    link.setAttribute('data-plx-vendor-prefetch', 'tabulator');
+    document.head.appendChild(link);
+  });
+}
+
+// every page: prefetch once the page has loaded and the browser is idle (a table page has already started the real load)
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof window.addEventListener === 'function') {
+  const idle = () => window.requestIdleCallback ? window.requestIdleCallback(prefetchTabulator, {
+    timeout: 3000
+  }) : setTimeout(prefetchTabulator, 1000);
+  if (document.readyState === 'complete') idle();else window.addEventListener('load', idle, {
+    once: true
+  });
 }
 
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too
@@ -4634,6 +4663,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        with rowClick, rows are focusable and Enter does what a click does
      onReady(table): the Tabulator instance, once built (for anything Tabulator offers)
      className: more classes on the grid's frame
+     DataTable.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
@@ -5217,8 +5247,12 @@ function DataTable(props) {
     isStatic: false
   }));
 }
+// starts loading the engine before the first grid mounts (a page whose first screen has a table calls it as it starts)
+DataTable.preload = () => {
+  (0, _tabulator.loadTabulator)().catch(() => {});
+};
   } },
-  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","../DataTable/tabulator.js":"platform/components/DataTable/tabulator.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5227,6 +5261,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Table = Table;
 var _react = _interopRequireDefault(require("react"));
 var _DataTable = require("../DataTable/DataTable.jsx");
+var _tabulator = require("../DataTable/tabulator.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Table
    Summary: A static table: information in rows and columns, read and nothing else. It looks like a DataTable (the same
@@ -5247,6 +5282,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      height: a fixed height (a size token) for a long table; rows render as they scroll into view
      options: Tabulator table options that only change the layout (layout, headerVisible…)
      className: more classes on the frame
+     Table.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
      Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
      in cells work as themselves. Row height and text size follow the density.
@@ -5259,6 +5295,10 @@ function Table(props) {
     isStatic: true
   }));
 }
+// starts loading the engine before the first table mounts (see DataTable.preload)
+Table.preload = () => {
+  (0, _tabulator.loadTabulator)().catch(() => {});
+};
   } },
   "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -8771,6 +8811,58 @@ function TimeGrid({
   }))))));
 }
   } },
+  "platform/utils/prefetch.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+/* Plenix · prefetch (platform/utils/prefetch.js): the next page is ready before the click (batch 237). Internal; not part
+   of the public API: the Platform bundle runs it once, on every page that loads the Platform over http(s).
+   Chromium browsers get speculation rules: a link to another page of the same site is prerendered when the pointer
+   rests on it (about 200ms) or presses it, so switching apps shows the finished page at once instead of a blank reload.
+   Other browsers get the page's document fetched into the cache on hover. Links that open elsewhere (target, download),
+   same-page anchors and links marked data-plx-no-prefetch are left alone. Nothing runs from file://. */
+const SKIP = '[target], [download], [data-plx-no-prefetch], [href^="#"]';
+function speculationRules(doc) {
+  if (!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return false;
+  const rules = {
+    prerender: [{
+      where: {
+        and: [{
+          href_matches: '/*'
+        }, {
+          not: {
+            selector_matches: SKIP
+          }
+        }]
+      },
+      eagerness: 'moderate'
+    }]
+  };
+  const s = doc.createElement('script');
+  s.type = 'speculationrules';
+  s.textContent = JSON.stringify(rules);
+  doc.head.appendChild(s);
+  return true;
+}
+function hoverPrefetch(doc) {
+  const done = new Set();
+  doc.addEventListener('pointerover', e => {
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || a.matches(SKIP)) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || url.pathname === location.pathname || done.has(url.pathname)) return;
+    done.add(url.pathname);
+    const link = doc.createElement('link');
+    link.rel = 'prefetch';
+    link.href = url.origin + url.pathname + url.search;
+    doc.head.appendChild(link);
+  }, {
+    passive: true
+  });
+}
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.head && /^https?:$/.test(location.protocol)) {
+  if (!speculationRules(document)) hoverPrefetch(document);
+}
+  } },
   "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -8902,7 +8994,7 @@ function WidgetGrid({
   }, said));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9702,6 +9794,7 @@ var _pageLayouts = require("./providers/pageLayouts.js");
 var _useDensity = require("./hooks/useDensity.js");
 var _useInteraction = require("./hooks/useInteraction.js");
 var _TimeGrid = require("./patterns/TimeGrid/TimeGrid.jsx");
+require("./utils/prefetch.js");
 var _WidgetGrid = require("./patterns/WidgetGrid/WidgetGrid.jsx");
   } }
   };

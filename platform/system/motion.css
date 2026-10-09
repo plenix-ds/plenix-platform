@@ -14,6 +14,10 @@
 /* the drawer slides in from the edge it is docked to (batch 215) */
 @keyframes motion-slide-in-right{from{transform:translateX(100%);}to{transform:translateX(0);}}
 @keyframes motion-slide-in-left{from{transform:translateX(-100%);}to{transform:translateX(0);}}
+/* an overlay opens: it fades and grows from just under its size into place; the backdrop fades in (batch 236). No "to"
+   frame: each ends on the element's own opacity and transform. */
+@keyframes motion-pop-in{from{opacity:0;transform:scale(var(--plx-sys-motion-enter-scale));}}
+@keyframes motion-fade-in{from{opacity:0;}}
 /* People who ask their system for less motion get an effectively static interface: no slide, shimmer or fade
    (state changes still happen, instantly: a zero duration; animations still end, so Toast still leaves). */
 @media(prefers-reduced-motion:reduce){
@@ -21,3 +25,25 @@
 }
 /* content that has just appeared rises into place (the dashboard's .fu, batch 113) */
 .plx-motion-enter{animation-duration:var(--plx-sys-motion-duration-fast);animation-fill-mode:both;animation-name:motion-fade-up;animation-timing-function:var(--plx-sys-motion-ease-standard);}
+
+/* ── Feel (batch 236): every control answers at once ──
+   Hover: colors and edges fade in over --plx-sys-motion-duration-instant (80ms) instead of switching.
+   Press: buttons, chips, tiles and small icon controls shrink a touch (--plx-sys-motion-press-scale) while held; rows,
+   tabs and menu items keep their hover fill (a whole row does not shrink).
+   Open: menus, lists and dialogs pop in (fade and grow from --plx-sys-motion-enter-scale) in 120ms; the modal backdrop
+   fades in. Drawers and toasts keep their slides.
+   All of it is written with :where(), so a component's own transition or transform still wins, and reduced motion (above)
+   sets every duration to 0s. */
+:where(.plx-button,.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-chip,.plx-chip__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-header__switch,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input){transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+:where(.plx-button,.plx-segmented__item,.plx-chip,.plx-chip__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile,.plx-app-header__switch):active:not(:disabled):not([aria-disabled="true"]){transform:scale(var(--plx-sys-motion-press-scale));}
+:where(.plx-menu,.plx-combobox__list,.plx-dialog){animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}
+:where(.plx-menu--bottom-start){transform-origin:top left;}
+:where(.plx-menu--bottom-end){transform-origin:top right;}
+:where(.plx-menu--top-start){transform-origin:bottom left;}
+:where(.plx-menu--top-end){transform-origin:bottom right;}
+:where(.plx-menu--bottom-start:dir(rtl)){transform-origin:top right;}
+:where(.plx-menu--bottom-end:dir(rtl)){transform-origin:top left;}
+:where(.plx-menu--top-start:dir(rtl)){transform-origin:bottom right;}
+:where(.plx-menu--top-end:dir(rtl)){transform-origin:bottom left;}
+:where(.plx-combobox__list){transform-origin:top center;}
+:where(.plx-modal-layer)::before{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-fade-in;animation-timing-function:var(--plx-sys-motion-ease-standard);}

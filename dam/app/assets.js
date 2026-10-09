@@ -7270,6 +7270,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Temporary event bridges between islands and plenix.js: none yet. Each one added must be named plx:<subject>-<event>,
    with one publisher, its consumers and its removal condition listed here. */
 
+// the Asset Manager's pages are built on tables: start loading their engine while the page draws (batch 237)
+_plenixPlatform.DataTable.preload();
 const PAGES = {
   'my-account': _MyAccountPage.MyAccountPage,
   'system-settings': _SystemSettingsPage.SystemSettingsPage,

@@ -2441,11 +2441,14 @@ function FilesScreen() {
   }))) : null);
 }
   } },
-  "files/main.jsx": { deps: {"../suite/suite.jsx":"suite/suite.jsx","./files.jsx":"files/files.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "files/main.jsx": { deps: {"../suite/suite.jsx":"suite/suite.jsx","plenix-platform":null,"./files.jsx":"files/files.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 var _suite = require("../suite/suite.jsx");
+var _plenixPlatform = require("plenix-platform");
 var _files = require("./files.jsx");
 /* Plenix · Files (files/main.jsx): the application's page entry; build-app.js compiles it to files/app.js. */
 
+// the file list is a table: start loading its engine while the page draws (batch 237)
+_plenixPlatform.DataTable.preload();
 (0, _suite.mountSuite)('files', () => /*#__PURE__*/React.createElement(_files.FilesScreen, null));
   } }
   };

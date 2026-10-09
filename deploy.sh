@@ -22,7 +22,7 @@ PKG=$(mktemp -u).tgz
 tar -czf "$PKG" --force-local --exclude='*.bak' --exclude='node_modules' \
   Plenix/platform Plenix/suite Plenix/bookmarks Plenix/calendar Plenix/contacts Plenix/dam Plenix/dashboard Plenix/files \
   Plenix/messages Plenix/notes Plenix/projects Plenix/settings Plenix/tasks Plenix/check-system.js \
-  "Plenix - DAM/audit/batches/15-26.md" Plenix/release
+  "Plenix - DAM/audit/batches/15-26.md" Plenix/release Plenix/packages/styles/plenix.css
 
 gzip -t "$PKG" || { echo "package is damaged; nothing published"; rm -f "$PKG"; exit 1; }
 SUM=$(sha256sum "$PKG" | cut -d' ' -f1)
@@ -55,6 +55,18 @@ ssh "$HOST" "set -e
       -e \"s|<script src=\\\"../platform/vendor/react-loader.js\\\"></script>|<script src=\\\"\$CDN/vendor/react.production.min.js\\\"></script><script src=\\\"\$CDN/vendor/react-dom.production.min.js\\\"></script>|\" \
       -e \"s|<script src=\\\"../platform/dist/platform.js\\\"></script>|<script src=\\\"\$CDN/plenix.js\\\"></script>|\" \"\$f\"
   done
+  # live app pages leave out the development audits and open the connection to the CDN first thing (batch 237)
+  for f in /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html; do
+    sudo sed -i -e '/platform\/dev\//d' -e '/the radius audit (development)/d' \
+      -e '/<meta name=\"viewport\"/a <link rel=\"preconnect\" href=\"https://design-system.lighthouseway.org\">' \"\$f\"
+  done
+  # the design system loads one stylesheet (the source platform.css with its imports inlined, built by build-packages.js)
+  # instead of platform.css and its hundred imports; its labs still read platform.css itself (batch 237)
+  sudo mv /srv/plenix/www.new/Plenix/packages/styles/plenix.css /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css
+  sudo rm -rf /srv/plenix/www.new/Plenix/packages
+  B=\$(sha256sum /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css | cut -c1-8)
+  sudo sed -i \"s|href=\\\"../platform.css?v=[0-9]*\\\"|href=\\\"../dist/platform.bundle.css?v=\$B\\\"|\" /srv/plenix/www.new/Plenix/platform/design-system/index.html
+  grep -q platform.bundle.css /srv/plenix/www.new/Plenix/platform/design-system/index.html && echo 'Design system on one stylesheet'
   pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | wc -l)
   echo \"Apps on release $VERSION: \$pinned pages\"
   ls /srv/plenix/cdn | grep -E '^[0-9]+[.][0-9]+[.][0-9]+' | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null

@@ -164,11 +164,15 @@
   --plx-ref-opacity-50: 0.5;
   --plx-ref-opacity-70: 0.7;
   --plx-ref-motion-duration-quick: 0.12s;
+  --plx-ref-motion-duration-instant: 0.08s;
   /* ── MOTION: durations and easing ── */
   --plx-ref-motion-duration-fast: 0.15s;
   --plx-ref-motion-duration-base: 0.2s;
   --plx-ref-motion-duration-slow: 0.25s;
   --plx-ref-motion-ease-standard: ease;
+  --plx-ref-motion-ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --plx-ref-motion-scale-98: 0.98;
+  --plx-ref-motion-scale-96: 0.96;
   --plx-ref-motion-duration-loop-fast: 0.7s;
   --plx-ref-motion-duration-loop-base: 1.1s;
   --plx-ref-motion-duration-loop-slow: 1.4s;

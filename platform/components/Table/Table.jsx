@@ -17,6 +17,7 @@
      height: a fixed height (a size token) for a long table; rows render as they scroll into view
      options: Tabulator table options that only change the layout (layout, headerVisible…)
      className: more classes on the frame
+     Table.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
      Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
      in cells work as themselves. Row height and text size follow the density.
@@ -26,5 +27,8 @@
 */
 import React from 'react';
 import { TableEngine } from '../DataTable/DataTable.jsx';
+import { loadTabulator } from '../DataTable/tabulator.js';
 
 export function Table(props) { return <TableEngine {...props} isStatic />; }
+// starts loading the engine before the first table mounts (see DataTable.preload)
+Table.preload = () => { loadTabulator().catch(() => {}); };

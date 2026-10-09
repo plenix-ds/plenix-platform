@@ -7,9 +7,13 @@
      loadTabulator(win): adds Tabulator's core stylesheet and script to the page once (the given window's, default this
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
      tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
+     prefetchTabulator(): fetches the two files into the browser's cache without running them (no-op when loaded)
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
+     Early load (batch 237): a page whose first screen has a table calls DataTable.preload() (or Table.preload()) as
+     its script starts, so Tabulator arrives while React draws the page instead of after the grid mounts. Every other
+     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache.
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
      build's plenix.js -> ./vendor/); window.PlenixVendorBase (a folder URL ending in /) overrides it.
@@ -57,6 +61,24 @@ export function loadTabulator(win) {
   });
   loading.set(w, p);
   return p;
+}
+
+// the files into the HTTP cache at low priority, not run: the first grid then loads them from the cache
+export function prefetchTabulator() {
+  if (typeof document === 'undefined' || window.Tabulator || loading.has(window)) return;
+  if (document.querySelector('link[data-plx-vendor-prefetch="tabulator"]')) return;
+  const base = vendorBase() + 'tabulator/';
+  ['tabulator.min.js', 'tabulator.min.css'].forEach((f) => {
+    const link = document.createElement('link');
+    link.rel = 'prefetch'; link.href = base + f; link.setAttribute('data-plx-vendor-prefetch', 'tabulator');
+    document.head.appendChild(link);
+  });
+}
+
+// every page: prefetch once the page has loaded and the browser is idle (a table page has already started the real load)
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof window.addEventListener === 'function') {
+  const idle = () => (window.requestIdleCallback ? window.requestIdleCallback(prefetchTabulator, { timeout: 3000 }) : setTimeout(prefetchTabulator, 1000));
+  if (document.readyState === 'complete') idle(); else window.addEventListener('load', idle, { once: true });
 }
 
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too

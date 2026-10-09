@@ -81,4 +81,6 @@ export { PAGE_LAYOUTS, pageLayout } from './providers/pageLayouts.js';
 export { useDensity } from './hooks/useDensity.js';
 export { useInteraction } from './hooks/useInteraction.js';
 export { TimeGrid } from './patterns/TimeGrid/TimeGrid.jsx';
+// not exported: runs once on every page (the next page is prerendered on hover; batch 237)
+import './utils/prefetch.js';
 export { WidgetGrid } from './patterns/WidgetGrid/WidgetGrid.jsx';
