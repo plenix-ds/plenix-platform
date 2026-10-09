@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Changed
+- Design system: the Button lab is now the shared component lab (component-lab.js; batch 252). A component registers a
+  description of itself (sizes, variants, states, content, its property-to-token map, its markup) with DS.registerLab(id,
+  spec), and the item pages draw any registered component's matrix, variant anatomy and Edit dialog (spec.js looks the lab
+  up by the item's id; it called the Button lab by name). button-lab.js is the Button's description. The Button pages
+  (base, All buttons, five variant pages, the Edit dialog) are pixel-identical before and after. First step of the form
+  controls' labs (owner: one shared lab; every page).
+
 ## [0.13.1] - 2026-10-09
 
 ### Fixed
