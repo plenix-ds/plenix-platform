@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.1] - 2026-10-09
+
+### Added
+- The full icon library: every Material Symbols Sharp symbol (4,150), weight 300, optical sizes 20 and 24, outline and
+  filled, unedited, from the pinned commit, hosted with Plenix at /Plenix/platform/icons/library/ (index.json lists
+  them; owner: "download all material svg icons.. i want them all hosted on plenix"). build-icons.js takes a symbol from
+  the library when the working set has none, so adding an icon is one line in map.json. (batch 273)
+- Icons drag (drag_indicator) and sign-out (logout). (batch 273)
+
+### Changed
+- The dashboard's move handle uses the drag icon; Sign out (the account menu, Settings > Account) has the sign-out icon.
+  (batch 273)
+
 ## [0.22.0] - 2026-10-09
 
 ### Added

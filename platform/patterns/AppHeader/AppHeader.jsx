@@ -202,7 +202,7 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
         {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={'density-' + d.value} checked={dens === d.value} onSelect={() => setDens(d.value)}>{d.label}</MenuItem>)}
       </MenuGroup></> : null}
       {extra ? <><MenuDivider />{extra}</> : null}
-      {has(signOut) ? <><MenuDivider /><MenuItem href={signOut.href} onSelect={signOut.onSelect}>Sign out</MenuItem></> : null}
+      {has(signOut) ? <><MenuDivider /><MenuItem icon="sign-out" href={signOut.href} onSelect={signOut.onSelect}>Sign out</MenuItem></> : null}
     </Menu>
   );
 };

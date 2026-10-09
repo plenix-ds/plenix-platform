@@ -63,7 +63,7 @@ export function WidgetGrid({ items = [], renderItem, onReorder, label, columns =
                 const step = arrowStep(e, e.currentTarget);
                 if (step) { e.preventDefault(); place(i, i + step); }
               }}>
-              <Icon name="move" size="md" />
+              <Icon name="drag" size="md" />
             </button>
           ) : null;
           return renderItem && renderItem.length > 1 ? renderItem(it, handle) : <>{handle}{renderItem ? renderItem(it) : null}</>; })()}

@@ -21,7 +21,9 @@ module.exports = function buildIcons(root) {
   const symbols = [...new Set(Object.values(M.map).map((v) => v.split('#')[0]))].sort();
   const glyphs = [];
   for (const s of symbols) for (const [file, suffix] of VARIANTS) {
-    const f = path.join(dir, s + file + '.svg');
+    // the working set first, then the full library (platform/icons/library: every symbol, batch 273)
+    let f = path.join(dir, s + file + '.svg');
+    if (!fs.existsSync(f)) f = path.join(dir, 'library', s + file + '.svg');
     if (!fs.existsSync(f)) throw new Error('icon file missing: ' + s + file + '.svg');
     glyphs.push('  --plx-comp-icon-glyph-' + ident(s) + suffix + ':' + dataUri(fs.readFileSync(f, 'utf8')) + ';');
   }

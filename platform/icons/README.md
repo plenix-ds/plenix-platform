@@ -17,3 +17,11 @@ https://github.com/google/material-design-icons/tree/737e3324305806514d7909874fa
 Rules: never edit, redraw, re-pad or re-weight a file; never mix in another set. To add an icon: pick the symbol on
 https://fonts.google.com/icons?icon.style=Sharp, download its four files from the same commit, add its name to
 `map.json`, build. A concept with no symbol is listed for a decision, not drawn.
+
+## The full library (batch 273)
+
+`library/` holds every symbol of the set (4,150 symbols, 16,600 files: the same four files each, same names, unedited) at
+the same commit, and `library/index.json` lists them. Hosted with the site:
+https://plenix.lighthouseway.org/Plenix/platform/icons/library/<symbol>.svg (and design-system.lighthouseway.org at the
+same path). To use a symbol, add its Plenix name to `map.json`: build-icons.js takes a file from this folder first, then
+from `library/`, so nothing needs copying.

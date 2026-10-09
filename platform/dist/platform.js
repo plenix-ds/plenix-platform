@@ -6925,6 +6925,7 @@ AppHeader.Account = function AppHeaderAccount({
     checked: dens === d.value,
     onSelect: () => setDens(d.value)
   }, d.label)))) : null, extra ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), extra) : null, has(signOut) ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "sign-out",
     href: signOut.href,
     onSelect: signOut.onSelect
   }, "Sign out")) : null);
@@ -9357,7 +9358,7 @@ function WidgetGrid({
         }
       }
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "move",
+      name: "drag",
       size: "md"
     })) : null;
     return renderItem && renderItem.length > 1 ? renderItem(it, handle) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, handle, renderItem ? renderItem(it) : null);

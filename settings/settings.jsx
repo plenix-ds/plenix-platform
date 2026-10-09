@@ -847,7 +847,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
         </SettingsSection>
         <SettingsSection title="Security">
           <Row label="Browser notifications"><Toggle val={prefs.notifs!==false} onChange={v=>set("notifs",v)}/></Row>
-          <Row label="Sign out"><Button variant="danger-secondary" href="/outpost.goauthentik.io/sign_out">Sign out</Button></Row>
+          <Row label="Sign out"><Button variant="danger-secondary" icon="sign-out" href="/outpost.goauthentik.io/sign_out">Sign out</Button></Row>
         </SettingsSection>
       </Screen>
     ),

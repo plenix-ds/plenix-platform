@@ -4375,6 +4375,7 @@ function Settings({
       label: "Sign out"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       variant: "danger-secondary",
+      icon: "sign-out",
       href: "/outpost.goauthentik.io/sign_out"
     }, "Sign out"))))
   };
