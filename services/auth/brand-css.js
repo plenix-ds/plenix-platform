@@ -29,6 +29,7 @@ const roles = (mode) => ({
   danger: v('--plx-sys-feedback-danger-content', mode),
   header: v('--plx-comp-app-header-surface', mode),
   headerText: v('--plx-comp-app-header-brand', mode),
+  scrollbar: v('--plx-sys-scrollbar-thumb', mode),
 });
 const fixed = {
   font: v('--plx-sys-font-body'),
@@ -75,7 +76,16 @@ html, body, .pf-c-login, .pf-c-page, .pf-c-drawer__body, .pf-c-drawer__content, 
 :host, body { font-family: var(--plenix-font) !important; color: var(--plenix-text); }
 /* the Plenix header: the application header's blue bar with the brand in the largest type size */
 .pf-c-login::before { content: "Plenix"; position: fixed; inset-block-start: 0; inset-inline: 0; z-index: 1; display: flex; align-items: center; box-sizing: border-box; block-size: var(--plenix-header-height); padding-inline: var(--plenix-header-inset); background: var(--plenix-header); color: var(--plenix-header-text); font-family: var(--plenix-font); font-size: var(--plenix-brand-size); font-weight: var(--plenix-bold); }
-.pf-c-login { padding-block-start: calc(var(--plenix-header-height) + var(--plenix-gap)) !important; }
+.pf-c-login { box-sizing: border-box !important; min-block-size: 100vh !important; block-size: auto !important; padding-block-start: calc(var(--plenix-header-height) + var(--plenix-gap)) !important; }
+/* Authentik sets the card's container to the window height less its own padding; under the header that is taller than
+   the page, so it takes its content's height */
+.ak-login-container { block-size: auto !important; min-block-size: 0 !important; }
+/* no scrollbar unless the page is taller than the window (the header's padding sits inside the page's height); when one
+   shows, it is the Plenix thumb, not Authentik's accent */
+html, body, .pf-c-drawer__body, .pf-c-drawer__content, .pf-c-page__main { overflow-x: hidden !important; }
+* { scrollbar-color: var(--plenix-scrollbar) transparent !important; scrollbar-width: thin; }
+::-webkit-scrollbar-thumb { background-color: var(--plenix-scrollbar) !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
 /* the card: a raised surface with the default border and the card radius */
 .pf-c-login__main { background: var(--plenix-card) !important; border: var(--plenix-border-width) solid var(--plenix-border); border-radius: var(--plenix-card-radius); box-shadow: none !important; }
 .pf-c-title, .pf-c-login__main-header h1 { color: var(--plenix-text); font-family: var(--plenix-font) !important; font-weight: var(--plenix-semibold) !important; }
