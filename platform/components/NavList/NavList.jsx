@@ -14,7 +14,7 @@
      value: the id of the current item
      onSelect(id): runs when an item is chosen
      items[].href: makes the item a link; otherwise it is a button
-     items[].icon: an icon name or element before the label
+     items[].icon: an icon name or element before the label; the current item's "folder" shows as "folder-open" (batch 242)
      items[].count: shown right after the name, small, italic and in parentheses ("Branding (326)")
      items[].muted: shows the row in the subtle text color (a place that exists but has nothing in it yet); it still opens
      items[].disabled: disables a button item
@@ -47,6 +47,9 @@ import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx
 const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem: 'Unpin {label}' };
 
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+// the current item is the open one: a folder shows as an open folder (filled, like every current icon)
+const OPEN_ICONS = { folder: 'folder-open' };
+const iconOf = (icon, on) => (on && typeof icon === 'string' && OPEN_ICONS[icon]) || icon;
 
 const holds = (item, current) => !!item.children && item.children.some((c) => c.id === current || holds(c, current));
 
@@ -76,7 +79,7 @@ function Item({ item, current, onSelect, t, loc }) {
   const props = { className: cx('plx-nav-list__item', item.muted && 'plx-nav-list__item--muted', on && 'is-current'), 'aria-current': on ? 'page' : undefined };
   const content = (
     <>
-      {item.icon ? <span className="plx-nav-list__icon">{asIcon(item.icon)}</span> : null}
+      {item.icon ? <span className="plx-nav-list__icon">{asIcon(iconOf(item.icon, on))}</span> : null}
       <span className="plx-nav-list__label"><span className="plx-nav-list__name">{item.label}</span>
         {item.count !== undefined ? <span className="plx-nav-list__count">({typeof item.count === 'number' ? item.count.toLocaleString(loc) : item.count})</span> : null}</span>
     </>

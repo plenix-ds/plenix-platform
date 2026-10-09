@@ -5379,7 +5379,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      value: the id of the current item
      onSelect(id): runs when an item is chosen
      items[].href: makes the item a link; otherwise it is a button
-     items[].icon: an icon name or element before the label
+     items[].icon: an icon name or element before the label; the current item's "folder" shows as "folder-open" (batch 242)
      items[].count: shown right after the name, small, italic and in parentheses ("Branding (326)")
      items[].muted: shows the row in the subtle text color (a place that exists but has nothing in it yet); it still opens
      items[].disabled: disables a button item
@@ -5412,6 +5412,11 @@ const STRINGS = {
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
+// the current item is the open one: a folder shows as an open folder (filled, like every current icon)
+const OPEN_ICONS = {
+  folder: 'folder-open'
+};
+const iconOf = (icon, on) => on && typeof icon === 'string' && OPEN_ICONS[icon] || icon;
 const holds = (item, current) => !!item.children && item.children.some(c => c.id === current || holds(c, current));
 function SubGroup({
   item,
@@ -5479,7 +5484,7 @@ function Item({
   };
   const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, item.icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-list__icon"
-  }, asIcon(item.icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, asIcon(iconOf(item.icon, on))) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-list__label"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-list__name"

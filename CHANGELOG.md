@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.8.3] - 2026-10-09
+
+### Changed (visual)
+- NavList (owner: "in categories, also show the open folder when selected"): the current item's "folder" icon shows as
+  "folder-open" (filled, like every current icon); the Asset Manager's categories follow. (batch 242)
+
 ## [0.8.2] - 2026-10-09
 
 ### Fixed
