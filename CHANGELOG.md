@@ -7,6 +7,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Added
+- Design system: the Text area and Native select labs (batch 254). Each gets "All text areas" / "All native selects" and
+  seven state pages (Empty, Filled, Focused, Read-only, Disabled, Invalid, Required) with the lettered anatomy and the Edit
+  dialog: the input tokens plus the text area's own type, height and block padding, and the select's end padding, width
+  and chevron (read from .plx-select::after). Mapping proof: 156 and 192 checks, every field moves exactly its property.
+  The three input-family labs share one builder (form-labs.js); the shared lab reads a wrapper's properties (host:
+  parent), and the anatomy lists left and right padding apart when they differ.
+
+### Added
 - Design system: the Text field lab (form-labs.js; batch 253). Text field · Base gains "All text fields" (every style in
   every state, at each width) and 13 variant pages: XS, SM, MD and LG; Data and Emphasis; Empty, Filled, Focused, Read-only,
   Disabled, Invalid and Required. Each lab page has the lettered anatomy, the attributes and the Edit dialog, one
