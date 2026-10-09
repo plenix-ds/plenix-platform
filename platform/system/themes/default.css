@@ -100,12 +100,12 @@
   --plx-sys-feedback-danger-soft: var(--plx-ref-color-red-100);
   --plx-sys-feedback-danger-content: var(--plx-ref-color-red-500);
   /* elevation recipes (the shadow-* classes) and roles */
-  --plx-sys-shadow-sm: 0 0 2px var(--plx-ref-color-gray-100), 0 0 0 1px var(--plx-ref-color-gray-200);
-  --plx-sys-shadow-md: 0 0 8px var(--plx-ref-color-gray-200), 0 0 0 1px var(--plx-ref-color-gray-200);
-  --plx-sys-shadow-lg: 0 0 32px var(--plx-ref-color-gray-300), 0 0 0 1px var(--plx-ref-color-gray-200);
-  --plx-sys-shadow-card: 0 0 4px var(--plx-ref-color-gray-200), 0 0 0 1px var(--plx-ref-color-gray-200);
-  --plx-sys-shadow-raised: 0 0 16px var(--plx-ref-color-gray-300), 0 0 0 1px var(--plx-ref-color-gray-200);
-  --plx-sys-shadow-menu: 0 0 40px var(--plx-ref-color-gray-300), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-sm: 0 0 2px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-md: 0 0 8px var(--plx-ref-color-black-alpha-14), 0 0 2px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-lg: 0 0 32px var(--plx-ref-color-black-alpha-14), 0 0 8px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-card: 0 0 4px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-raised: 0 0 16px var(--plx-ref-color-black-alpha-14), 0 0 4px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-menu: 0 0 40px var(--plx-ref-color-black-alpha-14), 0 0 8px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
   --plx-sys-shadow-modal: 0 0 40px var(--plx-ref-color-gray-800), 0 0 0 1px var(--plx-ref-color-gray-800);
   --plx-sys-shadow-ring: 0 0 0 2px var(--plx-ref-color-blue-400);
   --plx-sys-shadow-ring-subtle: 0 0 0 2px var(--plx-ref-color-blue-100);

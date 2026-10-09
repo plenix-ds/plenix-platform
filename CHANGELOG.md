@@ -16,6 +16,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   Capture; record lists stay DataTables. Design system: Table and Data table items (#/data-display/table,
   #/data-display/data-table), the group is Tables, Data grid merged into Data table (STANDARD.md §3 updated). Tests
   renamed tests/data-table.test.js and tests/data-table-reference.js (180/180). (batch 234)
+- Light-theme shadows: shadow-sm, -md, -lg, -card, -raised and -menu were opaque gray (gray-100/200/300), which glowed
+  white over the blue header. They are now layered black at 14% (--plx-ref-color-black-alpha-14), an outer blur and a tight
+  inner one, equal on every side (no offset), over the same 1px gray-200 edge; e.g. menus 0 0 40px + 0 0 8px. Dark theme
+  unchanged. (batch 235)
 
 ## [0.4.0] - 2026-10-08
 
