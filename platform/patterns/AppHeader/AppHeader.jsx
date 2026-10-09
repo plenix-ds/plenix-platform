@@ -37,7 +37,7 @@
      AppHeader.Item.ref: forwarded to the link or button, so it can be a Menu trigger
      AppHeader.Account.settings: { href | onSelect } for "Plenix settings", the suite's settings (owner, batch 272)
      AppHeader.Account.signOut: { href | onSelect } for "Sign out", last in the menu (default: the sign-in proxy's sign-out,
-       /outpost.goauthentik.io/sign_out); Change picture sets the person's picture (useSession().setPicture)
+       /outpost.goauthentik.io/sign_out); the picture is changed under My account (Settings > Account), not in this menu (owner, batch 274)
      AppHeader.Account.appSettings: { app, href | onSelect, icon } for "<app> settings", this application's own settings
        ("Notes settings", "Asset Manager settings"); left out when the application has none
      AppHeader.Account.name: the person's name (default: the session's)
@@ -84,7 +84,7 @@ import { Count } from '../../components/Count/Count.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { useSession, choosePicture } from '../../providers/SessionProvider.jsx';
+import { useSession } from '../../providers/SessionProvider.jsx';
 import { PLENIX_APPS, appById, appHref } from '../../providers/apps.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
@@ -178,7 +178,7 @@ AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon, label, current 
 // the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session, then signs in again
 export const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
 AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, appSettings = {}, signOut = { href: SIGN_OUT }, density = false, extra }) {
-  const { account, setPicture } = useSession();   // who is signed in: the session, unless the application names someone
+  const { account } = useSession();   // who is signed in: the session, unless the application names someone
   const name = nameProp || account.name, email = emailProp || account.email, src = srcProp || account.src;
   const [dens, setDens] = useDensity();
   const inPane = placement === 'pane';
@@ -194,7 +194,6 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
       <MenuGroup label={email ? <>{name}<br />{email}</> : name}>
         <MenuDivider />
         {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>My account</MenuItem> : null}
-        {setPicture ? <MenuItem icon="settings-camera" onSelect={() => { choosePicture().then((p) => { if (p) setPicture(p); }); }}>Change picture</MenuItem> : null}
         {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>Plenix settings</MenuItem> : null}
         {has(appSettings) ? <MenuItem icon={appSettings.icon || 'settings-customize'} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{(appSettings.app || 'App') + ' settings'}</MenuItem> : null}
       </MenuGroup>

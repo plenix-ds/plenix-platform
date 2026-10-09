@@ -6617,7 +6617,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      AppHeader.Item.ref: forwarded to the link or button, so it can be a Menu trigger
      AppHeader.Account.settings: { href | onSelect } for "Plenix settings", the suite's settings (owner, batch 272)
      AppHeader.Account.signOut: { href | onSelect } for "Sign out", last in the menu (default: the sign-in proxy's sign-out,
-       /outpost.goauthentik.io/sign_out); Change picture sets the person's picture (useSession().setPicture)
+       /outpost.goauthentik.io/sign_out); the picture is changed under My account (Settings > Account), not in this menu (owner, batch 274)
      AppHeader.Account.appSettings: { app, href | onSelect, icon } for "<app> settings", this application's own settings
        ("Notes settings", "Asset Manager settings"); left out when the application has none
      AppHeader.Account.name: the person's name (default: the session's)
@@ -6856,8 +6856,7 @@ AppHeader.Account = function AppHeaderAccount({
   extra
 }) {
   const {
-    account,
-    setPicture
+    account
   } = (0, _SessionProvider.useSession)(); // who is signed in: the session, unless the application names someone
   const name = nameProp || account.name,
     email = emailProp || account.email,
@@ -6899,14 +6898,7 @@ AppHeader.Account = function AppHeaderAccount({
     href: myAccount.href,
     onSelect: myAccount.onSelect,
     "aria-current": current === 'account' ? 'page' : undefined
-  }, "My account") : null, setPicture ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "settings-camera",
-    onSelect: () => {
-      (0, _SessionProvider.choosePicture)().then(p => {
-        if (p) setPicture(p);
-      });
-    }
-  }, "Change picture") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, "My account") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: "gear",
     href: settings.href,
     onSelect: settings.onSelect,

@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.2] - 2026-10-09
+
+### Changed
+- The account menu no longer has Change picture: the picture is changed under My account (Settings > Account > Profile)
+  (owner: "i never said to add change picture here... this is under my account"). (batch 274)
+
 ## [0.22.1] - 2026-10-09
 
 ### Added
