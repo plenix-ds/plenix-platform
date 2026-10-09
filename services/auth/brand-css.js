@@ -27,6 +27,8 @@ const roles = (mode) => ({
   text: v('--plx-sys-content-default', mode),
   muted: v('--plx-sys-content-muted', mode),
   danger: v('--plx-sys-feedback-danger-content', mode),
+  header: v('--plx-comp-app-header-surface', mode),
+  headerText: v('--plx-comp-app-header-brand', mode),
 });
 const fixed = {
   font: v('--plx-sys-font-body'),
@@ -41,6 +43,11 @@ const fixed = {
   borderWidth: v('--plx-comp-input-border-width'),
   semibold: v('--plx-sys-font-weight-semibold'),
   medium: v('--plx-sys-font-weight-medium'),
+  bold: v('--plx-sys-font-weight-bold'),
+  headerHeight: v('--plx-sys-shell-header-height', 'light'),
+  headerInset: v('--plx-sys-space-inset-md', 'light'),
+  brandSize: v('--plx-ref-font-size-20'),   // the largest type size in the tokens (owner: "Plenix in the blue header")
+  gap: v('--plx-sys-space-layout-xl', 'light'),
 };
 const vars = (r) => Object.keys(r).map((k) => '  --plenix-' + k + ': ' + r[k] + ';').join('\n');
 
@@ -66,6 +73,9 @@ ${vars(roles('dark')).replace(/^/gm, '  ')}
 .pf-c-background-image, .pf-c-login__main-header.pf-c-brand, .ak-brand, ak-brand-links, .pf-c-login__footer { display: none !important; }
 html, body, .pf-c-login, .pf-c-page, .pf-c-drawer__body, .pf-c-drawer__content, .pf-c-drawer__main { background: var(--plenix-canvas) !important; }
 :host, body { font-family: var(--plenix-font) !important; color: var(--plenix-text); }
+/* the Plenix header: the application header's blue bar with the brand in the largest type size */
+.pf-c-login::before { content: "Plenix"; position: fixed; inset-block-start: 0; inset-inline: 0; z-index: 1; display: flex; align-items: center; box-sizing: border-box; block-size: var(--plenix-header-height); padding-inline: var(--plenix-header-inset); background: var(--plenix-header); color: var(--plenix-header-text); font-family: var(--plenix-font); font-size: var(--plenix-brand-size); font-weight: var(--plenix-bold); }
+.pf-c-login { padding-block-start: calc(var(--plenix-header-height) + var(--plenix-gap)) !important; }
 /* the card: a raised surface with the default border and the card radius */
 .pf-c-login__main { background: var(--plenix-card) !important; border: var(--plenix-border-width) solid var(--plenix-border); border-radius: var(--plenix-card-radius); box-shadow: none !important; }
 .pf-c-title, .pf-c-login__main-header h1 { color: var(--plenix-text); font-family: var(--plenix-font) !important; font-weight: var(--plenix-semibold) !important; }

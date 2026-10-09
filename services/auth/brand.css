@@ -8,6 +8,8 @@
   --plenix-text: #000000 /* --plx-sys-content-default */;
   --plenix-muted: #56585e /* --plx-sys-content-muted */;
   --plenix-danger: #c42b1c /* --plx-sys-feedback-danger-content */;
+  --plenix-header: #2a6fdb /* --plx-comp-app-header-surface */;
+  --plenix-header-text: #ffffff /* --plx-comp-app-header-brand */;
   --plenix-font: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif /* --plx-sys-font-body */;
   --plenix-primary: #2a6fdb /* --plx-sys-action-primary-background */;
   --plenix-primary-hover: #1f5bb8 /* --plx-sys-action-primary-background-hover */;
@@ -20,6 +22,11 @@
   --plenix-border-width: 1px /* --plx-comp-input-border-width */;
   --plenix-semibold: 600 /* --plx-sys-font-weight-semibold */;
   --plenix-medium: 500 /* --plx-sys-font-weight-medium */;
+  --plenix-bold: 700 /* --plx-sys-font-weight-bold */;
+  --plenix-header-height: 56px /* --plx-sys-shell-header-height */;
+  --plenix-header-inset: 0.75rem /* --plx-sys-space-inset-md */;
+  --plenix-brand-size: 1.25rem /* --plx-ref-font-size-20 */;
+  --plenix-gap: 3rem /* --plx-sys-space-layout-xl */;
   --pf-global--FontFamily--sans-serif: var(--plenix-font);
   --pf-global--FontFamily--heading--sans-serif: var(--plenix-font);
   --pf-global--FontFamily--text--sans-serif: var(--plenix-font);
@@ -37,12 +44,17 @@
     --plenix-text: #e8e9ec /* --plx-sys-content-default */;
     --plenix-muted: #d0d0d0 /* --plx-sys-content-muted */;
     --plenix-danger: #efc6c2 /* --plx-sys-feedback-danger-content */;
+    --plenix-header: #000000 /* --plx-comp-app-header-surface */;
+    --plenix-header-text: #e8e9ec /* --plx-comp-app-header-brand */;
   }
 }
 /* the page: the canvas, no photo, no authentik logo or footer */
 .pf-c-background-image, .pf-c-login__main-header.pf-c-brand, .ak-brand, ak-brand-links, .pf-c-login__footer { display: none !important; }
 html, body, .pf-c-login, .pf-c-page, .pf-c-drawer__body, .pf-c-drawer__content, .pf-c-drawer__main { background: var(--plenix-canvas) !important; }
 :host, body { font-family: var(--plenix-font) !important; color: var(--plenix-text); }
+/* the Plenix header: the application header's blue bar with the brand in the largest type size */
+.pf-c-login::before { content: "Plenix"; position: fixed; inset-block-start: 0; inset-inline: 0; z-index: 1; display: flex; align-items: center; box-sizing: border-box; block-size: var(--plenix-header-height); padding-inline: var(--plenix-header-inset); background: var(--plenix-header); color: var(--plenix-header-text); font-family: var(--plenix-font); font-size: var(--plenix-brand-size); font-weight: var(--plenix-bold); }
+.pf-c-login { padding-block-start: calc(var(--plenix-header-height) + var(--plenix-gap)) !important; }
 /* the card: a raised surface with the default border and the card radius */
 .pf-c-login__main { background: var(--plenix-card) !important; border: var(--plenix-border-width) solid var(--plenix-border); border-radius: var(--plenix-card-radius); box-shadow: none !important; }
 .pf-c-title, .pf-c-login__main-header h1 { color: var(--plenix-text); font-family: var(--plenix-font) !important; font-weight: var(--plenix-semibold) !important; }
