@@ -2,6 +2,16 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Sign-in email: SMTP for "Forgot username or password?" (added 2026-10-09)
+
+The sign-in page (auth.lighthouseway.org, Authentik) has the link and Authentik's reset flow (default-recovery-flow: your
+email or username, an email with a link, a new password, signed in). The email cannot be sent yet: Authentik's mail
+settings are its defaults (localhost:25).
+- [ ] Owner: the outgoing mail account (SMTP host, port, username, From address); the password goes on the server by the
+  owner, not in chat.
+- [ ] Set Authentik's email settings (AUTHENTIK_EMAIL__* in CT 104's .env) and restart it; send a test email.
+- [ ] Try the whole reset with a test account. Done = the email arrives and the new password signs in.
+
 ## Roadmap: establishing the design system (owner: "do it systematically, all of it", 2026-10-08)
 
 Worked in this order; each step is verified (snapshot diff, checks, page check) and logged as a batch.
