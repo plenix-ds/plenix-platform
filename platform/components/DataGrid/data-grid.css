@@ -92,7 +92,7 @@
 
 /* long text: it wraps and the row grows; the first line sits where a one-line cell's text does (half the row height
    around one line) */
-.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--wrap{line-height:var(--plx-comp-data-grid-wrap-line-height);padding-bottom:calc((var(--plx-sys-grid-row-height) - 1lh) / 2);padding-top:calc((var(--plx-sys-grid-row-height) - 1lh) / 2);white-space:normal;}
+.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--wrap{height:auto;line-height:var(--plx-comp-data-grid-wrap-line-height);padding-bottom:calc((var(--plx-sys-grid-row-height) - 1lh) / 2);padding-top:calc((var(--plx-sys-grid-row-height) - 1lh) / 2);white-space:normal;}
 
 /* row actions: shown while the row is hovered or selected */
 .plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions{justify-content:flex-end;}

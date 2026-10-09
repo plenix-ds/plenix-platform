@@ -4,7 +4,8 @@
      loadTabulator().then((Tabulator) => new Tabulator(element, options));
      const width = gridPx('--plx-ref-size-36px');
    Props:
-     loadTabulator(): adds Tabulator's core stylesheet and script to the page once, and resolves with window.Tabulator
+     loadTabulator(win): adds Tabulator's core stylesheet and script to the page once (the given window's, default this
+       one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
      gridPx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
@@ -32,26 +33,30 @@ function vendorBase() {
   return 'platform/vendor/';
 }
 
-let loading = null;
-export function loadTabulator() {
-  if (typeof window === 'undefined') return Promise.reject(new Error('Tabulator needs a browser'));
-  if (window.Tabulator) return Promise.resolve(window.Tabulator);
-  if (loading) return loading;
-  const base = vendorBase() + 'tabulator/';
-  loading = new Promise((resolve, reject) => {
+// one load per window: a grid in a frame (the design system's labs) runs on its own window's Tabulator, which only
+// accepts elements of its own document
+const loading = new WeakMap();
+export function loadTabulator(win) {
+  const w = win || (typeof window !== 'undefined' ? window : null);
+  if (!w) return Promise.reject(new Error('Tabulator needs a browser'));
+  if (w.Tabulator) return Promise.resolve(w.Tabulator);
+  if (loading.has(w)) return loading.get(w);
+  const doc = w.document, base = vendorBase() + 'tabulator/';
+  const p = new Promise((resolve, reject) => {
     // the core stylesheet goes first in the head, so platform.css (Plenix's look) comes after it and wins
-    if (!document.querySelector('link[data-plx-vendor="tabulator"]')) {
-      const link = document.createElement('link');
+    if (!doc.querySelector('link[data-plx-vendor="tabulator"]')) {
+      const link = doc.createElement('link');
       link.rel = 'stylesheet'; link.href = base + 'tabulator.min.css'; link.setAttribute('data-plx-vendor', 'tabulator');
-      document.head.insertBefore(link, document.head.firstChild);
+      doc.head.insertBefore(link, doc.head.firstChild);
     }
-    const script = document.createElement('script');
+    const script = doc.createElement('script');
     script.src = base + 'tabulator.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'tabulator');
-    script.onload = () => (window.Tabulator ? resolve(window.Tabulator) : reject(new Error('Tabulator did not load from ' + script.src)));
-    script.onerror = () => { loading = null; reject(new Error('Tabulator could not be loaded from ' + script.src)); };
-    document.head.appendChild(script);
+    script.onload = () => (w.Tabulator ? resolve(w.Tabulator) : reject(new Error('Tabulator did not load from ' + script.src)));
+    script.onerror = () => { loading.delete(w); reject(new Error('Tabulator could not be loaded from ' + script.src)); };
+    doc.head.appendChild(script);
   });
-  return loading;
+  loading.set(w, p);
+  return p;
 }
 
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too

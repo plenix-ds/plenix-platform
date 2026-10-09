@@ -200,7 +200,8 @@ export function DataGrid(props) {
   React.useEffect(() => {
     let alive = true, table = null;
     builtRef.current = false;
-    loadTabulator().then((Tabulator) => {
+    // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator
+    loadTabulator(hostRef.current && hostRef.current.ownerDocument.defaultView).then((Tabulator) => {
       if (!alive || !hostRef.current) return;
       const host = hostRef.current, lead = gridPx(LEAD, host);
       const p = latest.current;
