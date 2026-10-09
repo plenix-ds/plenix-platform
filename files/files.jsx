@@ -1,9 +1,11 @@
 /* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the files in a Table, the open one in a SidePanel. */
-import { Button, Icon, Inline, PageContent, SidePanel, Stack, Table, Tag, Text } from 'plenix-platform';
+   the files in a DataGrid (batch 226), the open one in a SidePanel. */
+import { Button, DataGrid, Icon, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
 const { useState } = React;
+// the grid's rows: each file with its place in the list as its id
+const ROWS = ALL_FILES.map((f, i) => ({ ...f, id: i }));
 
 /* ─── Files ─────────────────────────────────────────────────────── */
 export function FilesScreen() {
@@ -18,12 +20,12 @@ export function FilesScreen() {
             <Text as="h1" variant="title">Files</Text>
             <Button variant="primary" icon={<Icon name="plus" />}>Upload</Button>
           </Inline>
-          <Table caption="Files" rows={ALL_FILES} rowKey={(f, i) => i} current={sel === null ? undefined : sel}
-            onRowClick={(f) => { const i = ALL_FILES.indexOf(f); setSel(sel === i ? null : i); }} columns={[
-              { key: 'name', header: 'Name', label: true, size: 'label' },
-              { key: 't', header: 'Type', render: (f) => <Tag>{f.t}</Tag> },
-              { key: 's', header: 'Size' },
-              { key: 'd', header: 'Modified' },
+          <DataGrid label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }}
+            on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[
+              { title: 'Name', field: 'name', kind: 'name', rowLabel: true, filter: true, width: '--plx-ref-size-240px' },
+              { title: 'Type', field: 't', kind: 'center', filter: 'list', render: (f) => <Tag>{f.t}</Tag> },
+              { title: 'Size', field: 's', kind: 'data' },
+              { title: 'Modified', field: 'd', kind: 'data' },
             ]} />
         </Stack>
       </PageContent>

@@ -73,3 +73,6 @@ jobs:
 
       - name: Accessibility (axe-core)
         run: node tests/a11y.test.js
+
+      - name: Data grids (every DataGrid view: built, axe, style audit, row height)
+        run: node tests/grid.test.js

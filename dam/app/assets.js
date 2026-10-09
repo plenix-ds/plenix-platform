@@ -601,11 +601,13 @@ const rowsOf = (list, keys) => list.map((r, i) => Object.assign({
 }, ...keys.map((k, j) => ({
   [k]: r[j]
 }))));
-const switchCol = header => ({
-  key: 'on',
-  header,
+const switchCol = title => ({
+  title,
+  field: 'on',
+  kind: 'center',
+  headerSort: false,
   render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
-    label: r.name + ': ' + header,
+    label: r.name + ': ' + title,
     labelHidden: true,
     checked: r.on,
     onChange: () => r.toggle()
@@ -677,9 +679,11 @@ function Properties({
     viewAll = useToggles(D.VIEW_ALL),
     editAll = useToggles(D.EDIT_ALL);
   const roleCol = {
-    key: 'name',
-    header: 'Group / Role',
-    emphasis: true
+    title: 'Group / Role',
+    field: 'name',
+    kind: 'name',
+    frozen: true,
+    filter: true
   };
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
@@ -757,29 +761,32 @@ function Properties({
     }, {
       value: 'enabled',
       label: 'Enabled for',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "Enabled for",
-        pinFirst: true,
-        rows: enabled,
+      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "Enabled for",
+        data: enabled,
         columns: [roleCol, switchCol('Enabled')]
       })
     }, {
       value: 'actions',
       label: 'Actions',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "Actions",
-        pinFirst: true,
-        rows: rowsOf(D.ACTIONS, ['name', 'roles']),
+      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "Actions",
+        data: rowsOf(D.ACTIONS, ['name', 'roles']),
         columns: [{
-          key: 'name',
-          header: 'Action',
-          emphasis: true
+          title: 'Action',
+          field: 'name',
+          kind: 'name',
+          frozen: true,
+          filter: true
         }, {
-          key: 'roles',
-          header: 'Roles'
+          title: 'Roles',
+          field: 'roles',
+          filter: true
         }, {
-          key: 'status',
-          header: 'Status',
+          title: 'Status',
+          field: 'status',
+          kind: 'center',
+          headerSort: false,
           render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
             tone: "success"
           }, "Active")
@@ -788,19 +795,17 @@ function Properties({
     }, {
       value: 'view-all',
       label: 'View all folders',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can view all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "View all folders",
-        pinFirst: true,
-        rows: viewAll,
+      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can view all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "View all folders",
+        data: viewAll,
         columns: [roleCol, switchCol('View all')]
       }))
     }, {
       value: 'edit-all',
       label: 'Edit all folders',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can edit all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "Edit all folders",
-        pinFirst: true,
-        rows: editAll,
+      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can edit all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "Edit all folders",
+        data: editAll,
         columns: [roleCol, switchCol('Edit all')]
       }))
     }]
@@ -840,22 +845,24 @@ function Fields({
         value: q,
         onChange: setQ,
         label: 'Search ' + D.FIELD_TOTAL + ' fields'
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "Fields",
-        pinFirst: true,
-        rows: rows,
+      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "Fields",
+        data: rows,
         empty: "No fields match",
         columns: [{
-          key: 'name',
-          header: 'Field name',
-          emphasis: true
+          title: 'Field name',
+          field: 'name',
+          kind: 'name',
+          frozen: true,
+          filter: true
         }, {
-          key: 'id2',
-          header: 'ID',
-          data: true
+          title: 'ID',
+          field: 'id2',
+          kind: 'data'
         }, {
-          key: 'type',
-          header: 'Field type'
+          title: 'Field type',
+          field: 'type',
+          filter: 'list'
         }]
       }), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.FIELD_TOTAL + ' fields'))
     }, {
@@ -1005,27 +1012,31 @@ function Transcoding({
         icon: "add",
         label: "Add new conversion",
         act: act
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "Conversion presets",
-        pinFirst: true,
-        rows: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
+      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "Conversion presets",
+        data: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
         columns: [{
-          key: 'name',
-          header: 'Conversion',
-          emphasis: true
+          title: 'Conversion',
+          field: 'name',
+          kind: 'name',
+          frozen: true,
+          filter: true
         }, {
-          key: 'file',
-          header: 'Generated file',
-          data: true
+          title: 'Generated file',
+          field: 'file',
+          kind: 'data'
         }, {
-          key: 'system',
-          header: 'System defined'
+          title: 'System defined',
+          field: 'system',
+          filter: 'list'
         }, {
-          key: 'onImport',
-          header: 'On import'
+          title: 'On import',
+          field: 'onImport',
+          filter: 'list'
         }, {
-          key: 'media',
-          header: 'Media type'
+          title: 'Media type',
+          field: 'media',
+          filter: 'list'
         }]
       }))
     }, {
@@ -1068,35 +1079,40 @@ function Users({
     value: q,
     onChange: setQ,
     label: "Search users"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: "Users",
-    pinFirst: true,
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    label: "Users",
     empty: "No users match",
-    rows: rowsOf(D.USERS.filter(r => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login']),
+    data: rowsOf(D.USERS.filter(r => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login']),
     columns: [{
-      key: 'user',
-      header: 'Username',
-      emphasis: true
+      title: 'Username',
+      field: 'user',
+      kind: 'name',
+      frozen: true,
+      filter: true
     }, {
-      key: 'name',
-      header: 'Name'
+      title: 'Name',
+      field: 'name',
+      filter: true
     }, {
-      key: 'email',
-      header: 'Email'
+      title: 'Email',
+      field: 'email',
+      filter: true
     }, {
-      key: 'role',
-      header: 'Role',
+      title: 'Role',
+      field: 'role',
+      kind: 'center',
+      filter: 'list',
       render: r => r.role ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
         tone: "info"
       }, r.role) : '—'
     }, {
-      key: 'created',
-      header: 'Created',
-      data: true
+      title: 'Created',
+      field: 'created',
+      kind: 'data'
     }, {
-      key: 'login',
-      header: 'Last login',
-      data: true
+      title: 'Last login',
+      field: 'login',
+      kind: 'data'
     }]
   })));
 }
@@ -1220,21 +1236,24 @@ function EmailTemplates({
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
     card: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: "Email templates",
-    pinFirst: true,
-    rows: rowsOf(D.EMAIL_TEMPLATES, ['name', 'file']),
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    label: "Email templates",
+    data: rowsOf(D.EMAIL_TEMPLATES, ['name', 'file']),
     columns: [{
-      key: 'name',
-      header: 'Template',
-      emphasis: true
+      title: 'Template',
+      field: 'name',
+      kind: 'name',
+      frozen: true,
+      filter: true
     }, {
-      key: 'file',
-      header: 'File',
-      data: true
+      title: 'File',
+      field: 'file',
+      kind: 'data'
     }, {
-      key: 'actions',
-      header: 'Actions',
+      title: 'Actions',
+      field: 'actions',
+      kind: 'center',
+      headerSort: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
         variant: "link",
@@ -1379,15 +1398,15 @@ function Database({
     ['c' + j]: r[j]
   }))));
   const columns = D.DB_COLUMNS.map((c, j) => ({
-    key: 'c' + j,
-    header: c,
-    emphasis: c === 'Asset title',
-    data: c === 'Created on'
+    title: c,
+    field: 'c' + j,
+    frozen: j === 0,
+    filter: true,
+    kind: c === 'Asset title' ? 'name' : c === 'Created on' ? 'data' : undefined
   }));
-  const grid = cap => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: cap,
-    pinFirst: true,
-    rows: rows,
+  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    label: label,
+    data: rows,
     columns: columns,
     empty: "No records match"
   });
@@ -1545,26 +1564,29 @@ function Customizations({
     tone: "warning",
     variant: "danger-secondary",
     act: act
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: "Customizations",
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    label: "Customizations",
     selectable: true,
     selected: sel,
     onSelectionChange: setSel,
-    rows: rows,
+    data: rows,
     columns: [{
-      key: 'type',
-      header: 'Type'
+      title: 'Type',
+      field: 'type',
+      filter: 'list'
     }, {
-      key: 'name',
-      header: 'Customization'
+      title: 'Customization',
+      field: 'name',
+      kind: 'name',
+      filter: true
     }, {
-      key: 'modules',
-      header: 'Modules',
-      data: true
+      title: 'Modules',
+      field: 'modules',
+      kind: 'data'
     }, {
-      key: 'date',
-      header: 'Date',
-      data: true
+      title: 'Date',
+      field: 'date',
+      kind: 'data'
     }]
   })));
 }
@@ -1588,21 +1610,23 @@ function Scheduler({
         label: "Refresh",
         tone: "info",
         act: act
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-        caption: "Scheduled tasks",
-        pinFirst: true,
-        rows: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
+      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+        label: "Scheduled tasks",
+        data: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
         columns: [{
-          key: 'name',
-          header: 'Name',
-          emphasis: true
+          title: 'Name',
+          field: 'name',
+          kind: 'name',
+          frozen: true,
+          filter: true
         }, {
-          key: 'path',
-          header: 'Path',
-          data: true
+          title: 'Path',
+          field: 'path',
+          kind: 'data'
         }, {
-          key: 'status',
-          header: 'Status'
+          title: 'Status',
+          field: 'status',
+          filter: 'list'
         }]
       }))
     }, {
@@ -3024,34 +3048,42 @@ function FieldVisibilityDialog({
     value: q,
     onChange: e => setQ(e.target.value),
     onClear: () => setQ('')
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: title,
-    rows: rows,
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    label: title,
+    data: rows,
     empty: EMPTY_TEXT,
+    headerMenu: false,
+    options: {
+      movableRows: true
+    },
     columns: [{
-      key: 'handle',
-      header: 'Order',
-      render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-        variant: "secondary"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
+      title: 'Order',
+      field: 'handle',
+      kind: 'icon',
+      icon: 'menu-lines',
+      rowHandle: true,
+      headerSort: false,
+      render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
         name: "menu-lines",
         size: "sm"
-      }))
+      })
     }, {
-      key: 'name',
-      header: 'Field',
-      data: true,
-      emphasis: true
+      title: 'Field',
+      field: 'name',
+      kind: 'name',
+      headerSort: false
     }, {
-      key: 'type',
-      header: 'Type',
-      render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-        variant: "secondary"
-      }, r.type)
+      title: 'Type',
+      field: 'type',
+      kind: 'data',
+      headerSort: false
     }, {
-      key: 'show',
-      header: 'Show',
-      align: 'end',
+      title: 'Show',
+      field: 'show',
+      kind: 'center',
+      hozAlign: 'right',
+      headerHozAlign: 'right',
+      headerSort: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
         label: 'Show ' + r.name,
         labelHidden: true,
@@ -3128,36 +3160,45 @@ function CatEditFieldsDialog({
     label: "Edit for all users",
     checked: forAll,
     onChange: e => setForAll(e.target.checked)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-    caption: "Edit fields",
-    rows: fields.map(f => ({
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    label: "Edit fields",
+    data: fields.map(f => ({
       id: f.name,
       ...f
     })),
     empty: EMPTY_TEXT,
+    headerMenu: false,
+    options: {
+      movableRows: true
+    },
     columns: [{
-      key: 'handle',
-      header: 'Order',
-      render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-        variant: "secondary"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
-        name: "merge",
-        size: "xs"
-      }))
+      title: 'Order',
+      field: 'handle',
+      kind: 'icon',
+      icon: 'menu-lines',
+      rowHandle: true,
+      headerSort: false,
+      render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
+        name: "menu-lines",
+        size: "sm"
+      })
     }, {
-      key: 'name',
-      header: 'Field',
-      emphasis: true
+      title: 'Field',
+      field: 'name',
+      kind: 'name',
+      headerSort: false
     }, {
-      key: 'type',
-      header: 'Type',
-      render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-        variant: "secondary"
-      }, r.type)
+      title: 'Type',
+      field: 'type',
+      kind: 'data',
+      headerSort: false
     }, {
-      key: 'remove',
-      header: 'Remove',
-      align: 'end',
+      title: 'Remove',
+      field: 'remove',
+      kind: 'center',
+      hozAlign: 'right',
+      headerHozAlign: 'right',
+      headerSort: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
         variant: "ghost",
@@ -5723,7 +5764,7 @@ function useNarrow() {
   return narrow;
 }
 
-/* sorting the tables as the legacy sortTable did: numbers, sizes, dates or text */
+/* the grids' sorters (Tabulator sorter functions): numbers written with commas, file sizes, dates */
 const parseSize = s => {
   const m = /([\d.]+)\s*(KB|MB|GB|TB|B)/i.exec(s || '');
   if (!m) return 0;
@@ -5736,17 +5777,9 @@ const parseSize = s => {
     B: 1
   }[m[2].toUpperCase()];
 };
-function sortRows(rows, sort, types) {
-  if (!sort) return rows;
-  const t = types[sort.key] || 'text';
-  const val = r => t === 'num' ? parseFloat(String(r[sort.key]).replace(/,/g, '')) || 0 : t === 'size' ? parseSize(r[sort.key]) : t === 'date' ? new Date(r[sort.key]).getTime() : String(r[sort.key]);
-  return rows.slice().sort((a, b) => {
-    const x = val(a),
-      y = val(b);
-    const r = typeof x === 'string' ? x.localeCompare(y) : x - y;
-    return sort.direction === 'ascending' ? r : -r;
-  });
-}
+const byNumber = (a, b) => (parseFloat(String(a).replace(/,/g, '')) || 0) - (parseFloat(String(b).replace(/,/g, '')) || 0);
+const bySize = (a, b) => parseSize(a) - parseSize(b);
+const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const ThumbName = ({
   src,
   icon,
@@ -5890,7 +5923,6 @@ function HomePage() {
   const [mode, setMode] = _react.default.useState('grid');
   const [size, setSize] = _react.default.useState('L');
   const [sortLabel, setSortLabel] = _react.default.useState('Sort');
-  const [tableSort, setTableSort] = _react.default.useState(null);
   const [selCats, setSelCats] = _react.default.useState([]);
   const [selAssets, setSelAssets] = _react.default.useState([]);
   const [asset, setAsset] = _react.default.useState(null);
@@ -5916,7 +5948,6 @@ function HomePage() {
     setView(v);
     setFiles(false);
     setSelCats([]);
-    setTableSort(null);
   };
   const openCategory = name => {
     setView('search');
@@ -5924,7 +5955,6 @@ function HomePage() {
     setQuery('');
     setSelAssets([]);
     setActive(name);
-    setTableSort(null);
   };
   // the Search workspace: opened from the header search (Enter) with the query, or from a saved search with its criteria
   const openFind = f => {
@@ -5935,7 +5965,6 @@ function HomePage() {
     setView('find');
     setFiles(false);
     setSelAssets([]);
-    setTableSort(null);
   };
   const onSidebar = (kind, name) => {
     setActive(name);
@@ -6307,42 +6336,40 @@ function HomePage() {
         danger: label === 'Delete',
         onSelect: act(msg, 'info')
       }, label)))
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-      caption: "Categories",
-      pinFirst: true,
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      label: "Categories",
+      data: D.CATEGORY_CARDS,
       selectable: true,
       selected: selCats,
       onSelectionChange: setSelCats,
-      sort: tableSort,
-      onSortChange: setTableSort,
-      onRowClick: r => openCategory(r.name),
-      rows: sortRows(D.CATEGORY_CARDS, tableSort, {
-        count: 'num',
-        modified: 'date'
-      }),
+      on: {
+        rowClick: (e, row) => openCategory(row.getData().name)
+      },
       columns: [{
-        key: 'name',
-        header: 'Category name',
-        sortable: true,
-        emphasis: true,
+        title: 'Category name',
+        field: 'name',
+        kind: 'name',
+        frozen: true,
+        filter: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
           src: r.thumb,
           name: r.name
         })
       }, {
-        key: 'count',
-        header: 'Assets',
-        sortable: true,
-        data: true
+        title: 'Assets',
+        field: 'count',
+        kind: 'data',
+        sorter: byNumber
       }, {
-        key: 'modified',
-        header: 'Modified',
-        sortable: true,
-        data: true
+        title: 'Modified',
+        field: 'modified',
+        kind: 'data',
+        sorter: byDate
       }, {
-        key: 'status',
-        header: 'Status',
-        sortable: true,
+        title: 'Status',
+        field: 'status',
+        kind: 'center',
+        filter: 'list',
         render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
           tone: "success"
         }, r.status)
@@ -6358,39 +6385,36 @@ function HomePage() {
       title: c.name,
       meta: c.count + ' assets',
       onOpen: () => openCategory(c.name)
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-      caption: "Collections",
-      pinFirst: true,
-      sort: tableSort,
-      onSortChange: setTableSort,
-      onRowClick: r => openCategory(r.name),
-      rows: sortRows(D.COLLECTION_CARDS, tableSort, {
-        count: 'num',
-        updated: 'date'
-      }),
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      label: "Collections",
+      data: D.COLLECTION_CARDS,
+      on: {
+        rowClick: (e, row) => openCategory(row.getData().name)
+      },
       columns: [{
-        key: 'name',
-        header: 'Collection name',
-        sortable: true,
-        emphasis: true,
+        title: 'Collection name',
+        field: 'name',
+        kind: 'name',
+        frozen: true,
+        filter: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
           icon: "briefcase",
           name: r.name
         })
       }, {
-        key: 'count',
-        header: 'Assets',
-        sortable: true,
-        data: true
+        title: 'Assets',
+        field: 'count',
+        kind: 'data',
+        sorter: byNumber
       }, {
-        key: 'updated',
-        header: 'Updated',
-        sortable: true,
-        data: true
+        title: 'Updated',
+        field: 'updated',
+        kind: 'data',
+        sorter: byDate
       }, {
-        key: 'owner',
-        header: 'Owner',
-        sortable: true
+        title: 'Owner',
+        field: 'owner',
+        filter: 'list'
       }]
     });
   } else {
@@ -6420,32 +6444,30 @@ function HomePage() {
         }));
       },
       "aria-current": asset === a.id ? 'true' : undefined
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
-      caption: "Search results",
-      pinFirst: true,
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      label: "Search results",
+      data: list,
       selectable: true,
       selected: selAssets,
       onSelectionChange: setSelAssets,
-      sort: tableSort,
-      onSortChange: setTableSort,
-      onRowClick: r => setAsset(r.id),
-      rows: sortRows(list, tableSort, {
-        size: 'size',
-        date: 'date'
-      }),
+      on: {
+        rowClick: (e, row) => setAsset(row.getData().id)
+      },
       columns: [{
-        key: 'name',
-        header: 'Name',
-        sortable: true,
-        emphasis: true,
+        title: 'Name',
+        field: 'name',
+        kind: 'name',
+        frozen: true,
+        filter: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
           src: r.thumb,
           name: r.name
         })
       }, {
-        key: 'cat',
-        header: 'Category',
-        sortable: true,
+        title: 'Category',
+        field: 'cat',
+        kind: 'center',
+        filter: 'list',
         render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
           gap: "xs"
         }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
@@ -6453,23 +6475,27 @@ function HomePage() {
           size: "xs"
         }), r.cat)
       }, {
-        key: 'badge',
-        header: 'Format',
-        sortable: true
+        title: 'Format',
+        field: 'badge',
+        kind: 'data',
+        filter: 'list'
       }, {
-        key: 'size',
-        header: 'Size',
-        sortable: true,
-        data: true
+        title: 'Size',
+        field: 'size',
+        kind: 'data',
+        hozAlign: 'right',
+        headerHozAlign: 'right',
+        sorter: bySize
       }, {
-        key: 'date',
-        header: 'Date added',
-        sortable: true,
-        data: true
+        title: 'Date added',
+        field: 'date',
+        kind: 'data',
+        sorter: byDate
       }, {
-        key: 'status',
-        header: 'Status',
-        sortable: true,
+        title: 'Status',
+        field: 'status',
+        kind: 'center',
+        filter: 'list',
         render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
           tone: r.status === 'Complete' ? 'success' : 'neutral'
         }, r.status)

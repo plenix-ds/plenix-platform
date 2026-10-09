@@ -4801,7 +4801,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: the data font, smaller, muted) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
-       selected)
+       selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does)
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
@@ -4809,14 +4809,18 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        header row (and so is the checkbox column)
      columns[].width, minWidth, maxWidth: a size token ("--plx-ref-size-240px"); a number is read as Tabulator's pixels
      index: the field that identifies a row; default "id"
-     selectable: a checkbox column (select all in its header) and row selection; default false
+     selectable: a checkbox column (select all in its header) and row selection; default false. Without it,
+       options.selectableRows (Tabulator) selects rows by click (1: one row, as the open row of a list)
+     selected: the index values of the selected rows, for a selection kept by the page (bulk actions); with
+     onSelectionChange(keys): runs when the person changes the selection (not when selected changes it)
      headerMenu: right-click on a header: sort, clear sort, clear filter, group by, fit, hide, show all; default true
      rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
      empty: shown when no row matches; default "Nothing to show"
      height: the grid's height (a size token, or a Tabulator height such as "100%"); with it, rows render as they scroll
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
-     on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… }
+     on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
+       with rowClick, rows are focusable and Enter does what a click does
      onReady(table): the Tabulator instance, once built (for anything Tabulator offers)
      className: more classes on the grid's frame
    Behavior:
@@ -4824,7 +4828,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
      The row height and text size follow the density (--plx-sys-grid-row-height, --plx-sys-grid-font-size), also a
-     density region's; a density change redraws the grid.
+     density region's; a density change redraws the grid. A grid built while hidden is drawn again when it is shown.
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
    Notes:
@@ -4877,6 +4881,17 @@ function menuLabel(text, icon, danger) {
   item.appendChild(el('span', 'plx-data-grid__menu-label', text));
   return item;
 }
+// two row lists with the same rows: same length, each row's fields the same values (children compared the same way)
+function sameRows(a, b) {
+  if (a === b) return true;
+  if (!a || !b || a.length !== b.length) return false;
+  return a.every((r, i) => {
+    const s = b[i],
+      ka = Object.keys(r),
+      kb = Object.keys(s);
+    return ka.length === kb.length && ka.every(k => k === '_children' ? sameRows(r[k], s[k]) : r[k] === s[k]);
+  });
+}
 const sizeOf = (v, host) => typeof v === 'string' && /^(var\()?--/.test(v) ? (0, _tabulator.gridPx)(v, host) : v;
 function DataGrid(props) {
   const {
@@ -4885,6 +4900,7 @@ function DataGrid(props) {
     columns,
     index = 'id',
     selectable = false,
+    selected,
     headerMenu = true,
     rowMenu,
     empty,
@@ -4892,6 +4908,7 @@ function DataGrid(props) {
     options,
     className
   } = props;
+  const syncing = _react.default.useRef(false); // the selection is being set from the selected prop
   const frameRef = _react.default.useRef(null);
   const hostRef = _react.default.useRef(null);
   const tableRef = _react.default.useRef(null);
@@ -5090,6 +5107,7 @@ function DataGrid(props) {
         resizable: false,
         hozAlign: 'right'
       });
+      if (kind === 'wrap') d.variableHeight = true;
       if (render) d.formatter = cell => {
         const id = String(cell.getRow().getIndex()) + SEP + c.field;
         owners.current.set(id, cell);
@@ -5156,6 +5174,22 @@ function DataGrid(props) {
         } : false,
         selectableRows: p.selectable ? true : false,
         selectableRowsRangeMode: 'click',
+        // with a rowClick handler, a row is a Tab stop and Enter does what a click does
+        rowFormatter: row => {
+          const own = latest.current.options && latest.current.options.rowFormatter;
+          if (own) own(row);
+          const e = row.getElement();
+          if (latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
+            e.setAttribute('data-plx-open', '');
+            e.tabIndex = 0;
+            e.addEventListener('keydown', ev => {
+              if (ev.key === 'Enter' && ev.target === e) {
+                ev.preventDefault();
+                e.click();
+              }
+            });
+          }
+        },
         // a group row: its value and a count, one cell (Tabulator marks it a row group with no rows: axe aria-required-children)
         groupHeader: (value, count) => {
           const s = el('span', null, String(value));
@@ -5163,12 +5197,13 @@ function DataGrid(props) {
           s.appendChild(el('span', 'plx-data-grid__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items)));
           return s;
         },
-        ...(p.options || {}),
+        ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => k !== 'rowFormatter')),
         data: p.data || [],
         height: p.height ? sizeOf(p.height, host) : p.options && p.options.height
       };
       opts.columns = defsOf(p.columns, host);
       table = new Tabulator(host, opts);
+      shown.current = opts.data;
       tableRef.current = table;
 
       // the ARIA tree: Tabulator's scrolling body is a Tab stop (the keyboard scrolls it), and inside role="grid" a Tab stop
@@ -5198,6 +5233,11 @@ function DataGrid(props) {
           const h = (latest.current.on || {})[ev];
           if (h) h(...a);
         }));
+        table.on('rowSelectionChanged', () => {
+          const q = latest.current;
+          if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map(x => x[q.index || 'id']));
+        });
+        syncSelection(table);
         if (latest.current.onReady) latest.current.onReady(table);
         bump();
       });
@@ -5218,9 +5258,19 @@ function DataGrid(props) {
       attributes: true,
       attributeFilter: ['data-plx-density']
     });
+    // a grid built while hidden (a closed tab, a section not shown) has no size to lay out in: once it is shown, it is
+    // drawn again in full (columns and rows)
+    let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth);
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
+      const now = !!(frameRef.current && frameRef.current.offsetWidth);
+      if (now && !shownBefore && tableRef.current && builtRef.current) tableRef.current.redraw(true);
+      shownBefore = now;
+    });
+    if (ro && frameRef.current) ro.observe(frameRef.current);
     return () => {
       alive = false;
       mo.disconnect();
+      if (ro) ro.disconnect();
       builtRef.current = false;
       if (table) {
         try {
@@ -5235,11 +5285,37 @@ function DataGrid(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '']);
 
-  // new data in place: sort, filters, scroll and column widths stay
+  // the selection kept by the page (the selected prop) onto the grid
+  const syncSelection = table => {
+    const want = latest.current.selected;
+    if (!want || !table) return;
+    const key = latest.current.index || 'id';
+    const have = new Set(table.getSelectedData().map(x => String(x[key]))),
+      goal = new Set(want.map(String));
+    if (have.size === goal.size && Array.from(goal).every(k => have.has(k))) return;
+    syncing.current = true;
+    table.getSelectedRows().forEach(r => {
+      if (!goal.has(String(r.getData()[key]))) r.deselect();
+    });
+    table.getRows().forEach(r => {
+      if (goal.has(String(r.getData()[key])) && !r.isSelected()) r.select();
+    });
+    syncing.current = false;
+  };
+  _react.default.useEffect(() => {
+    if (builtRef.current) syncSelection(tableRef.current);
+  }, [(selected || []).join(SEP)]);
+
+  // new data in place: sort, filters, scroll and column widths stay. Rows equal to the ones shown (a page that builds its
+  // rows again on every render) change nothing.
+  const shown = _react.default.useRef(null);
   _react.default.useEffect(() => {
     const table = tableRef.current;
     if (!table || !builtRef.current) return;
+    if (sameRows(shown.current, data || [])) return;
+    shown.current = data || [];
     table.replaceData(data || []).then(() => {
+      syncSelection(table);
       const keep = new Set();
       (function walk(rows) {
         rows.forEach(r => {
@@ -5247,11 +5323,13 @@ function DataGrid(props) {
           if (r._children) walk(r._children);
         });
       })(data || []);
+      let gone = false;
       for (const id of Array.from(cells.current.keys())) if (!keep.has(id.split(SEP)[0])) {
         cells.current.delete(id);
         owners.current.delete(id);
+        gone = true;
       }
-      bump();
+      if (gone) bump();
     }).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);

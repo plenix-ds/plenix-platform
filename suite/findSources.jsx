@@ -2,42 +2,43 @@
    the main work area: inside an application (Notes, Files…) it searches only that application, with that application's
    filters; on the dashboard home it searches everything, with a Section filter. Each source says what its rows are, which
    text is searched, its filters and its result columns; FindWorkspace draws them with the Platform SearchWorkspace. */
-import { SearchWorkspace, Table, Tag, Badge, Button } from 'plenix-platform';
+import { SearchWorkspace, DataGrid, Tag, Badge, Button } from 'plenix-platform';
 import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, CAL_EVENTS, CONTACTS, PROJECTS, THREADS } from './shared.jsx';
 const {useState}=React;
 
 const PRI={high:"High",med:"Medium",low:"Low"};
 const cap=(s)=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (Tabulator column
+// definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
 export const FIND_SOURCES={
   projects:{label:"Projects",noun:"project",filters:[{id:"status",label:"Status"},{id:"tags",label:"Tags",multiple:true}],
-    columns:[{key:"name",header:"Project",emphasis:true},{key:"status",header:"Status",render:r=><Badge tone={r.cells.status==="Active"?"success":"neutral"}>{r.cells.status}</Badge>},{key:"tags",header:"Tags"},{key:"files",header:"Files",data:true,align:"end"}],
+    columns:[{title:"Project",field:"name",kind:"name"},{title:"Status",field:"status",kind:"center",render:r=><Badge tone={r.status==="Active"?"success":"neutral"}>{r.status}</Badge>},{title:"Tags",field:"tags"},{title:"Files",field:"files",kind:"data",hozAlign:"right",headerHozAlign:"right"}],
     rows:()=>PROJECTS.map(p=>({key:"p"+p.id,name:p.name,sub:p.desc,cells:{status:cap(p.status),tags:p.tags.join(", "),files:p.files},facets:{status:cap(p.status),tags:p.tags}}))},
   messaging:{label:"Messages",noun:"conversation",filters:[{id:"ch",label:"Channel",multiple:true}],
-    columns:[{key:"name",header:"Conversation",emphasis:true},{key:"preview",header:"Last message"},{key:"ch",header:"Channel"},{key:"time",header:"Time",data:true}],
+    columns:[{title:"Conversation",field:"name",kind:"name"},{title:"Last message",field:"preview"},{title:"Channel",field:"ch"},{title:"Time",field:"time",kind:"data"}],
     rows:()=>THREADS.map(t=>({key:"t"+t.id,id:t.id,name:t.name,sub:t.preview,cells:{preview:t.preview,ch:t.ch,time:t.time},facets:{ch:t.ch}}))},
   contacts:{label:"Contacts",noun:"contact",filters:[{id:"co",label:"Company",multiple:true}],
-    columns:[{key:"name",header:"Name",emphasis:true},{key:"role",header:"Role"},{key:"co",header:"Company"}],
+    columns:[{title:"Name",field:"name",kind:"name"},{title:"Role",field:"role"},{title:"Company",field:"co"}],
     rows:()=>CONTACTS.map(c=>({key:"c"+c.id,name:c.name,sub:c.role+" · "+c.co,cells:{role:c.role,co:c.co},facets:{co:c.co}}))},
   calendar:{label:"Calendar",noun:"event",filters:[{id:"cal",label:"Calendar",multiple:true}],
-    columns:[{key:"name",header:"Event",emphasis:true},{key:"date",header:"Date",data:true},{key:"time",header:"Time",data:true},{key:"cal",header:"Calendar"}],
+    columns:[{title:"Event",field:"name",kind:"name"},{title:"Date",field:"date",kind:"data"},{title:"Time",field:"time",kind:"data"},{title:"Calendar",field:"cal"}],
     rows:()=>CAL_EVENTS.map(e=>({key:"e"+e.id,name:e.title,sub:"Mar "+e.date+" · "+e.time,cells:{date:"Mar "+e.date,time:e.time,cal:cap(e.cal)},facets:{cal:cap(e.cal)}}))},
   tasks:{label:"Tasks",noun:"task",filters:[{id:"proj",label:"Project",multiple:true},{id:"pri",label:"Priority"},{id:"state",label:"Status"}],
-    columns:[{key:"name",header:"Task",emphasis:true},{key:"proj",header:"Project"},{key:"pri",header:"Priority"},{key:"due",header:"Due",data:true},{key:"state",header:"Status"}],
+    columns:[{title:"Task",field:"name",kind:"name"},{title:"Project",field:"proj"},{title:"Priority",field:"pri"},{title:"Due",field:"due",kind:"data"},{title:"Status",field:"state"}],
     rows:()=>ALL_TASKS.map(t=>({key:"k"+t.id,name:t.title,sub:t.proj,cells:{proj:t.proj,pri:PRI[t.pri]||t.pri,due:t.due,state:t.done?"Done":"Open"},facets:{proj:t.proj,pri:PRI[t.pri]||t.pri,state:t.done?"Done":"Open"}}))},
   notes:{label:"Notes",noun:"note",filters:[{id:"folder",label:"Folder",multiple:true},{id:"tags",label:"Tags",multiple:true}],
-    columns:[{key:"name",header:"Note",emphasis:true},{key:"folder",header:"Folder"},{key:"tags",header:"Tags",render:r=>r.facets.tags.map(t=><Tag key={t}>{t}</Tag>)},{key:"date",header:"Date",data:true}],
+    columns:[{title:"Note",field:"name",kind:"name"},{title:"Folder",field:"folder"},{title:"Tags",field:"tags",kind:"center",render:r=>r.facets.tags.map(t=><Tag key={t}>{t}</Tag>)},{title:"Date",field:"date",kind:"data"}],
     rows:()=>ALL_NOTES.map(n=>({key:"n"+n.id,name:n.title,sub:n.preview,cells:{folder:n.folder,date:n.date},facets:{folder:n.folder,tags:n.tags}}))},
   bookmarks:{label:"Bookmarks",noun:"bookmark",filters:[{id:"col",label:"Collection",multiple:true},{id:"tags",label:"Tags",multiple:true}],
-    columns:[{key:"name",header:"Bookmark",emphasis:true},{key:"url",header:"Site",data:true},{key:"col",header:"Collection"},{key:"date",header:"Date",data:true}],
+    columns:[{title:"Bookmark",field:"name",kind:"name"},{title:"Site",field:"url",kind:"data"},{title:"Collection",field:"col"},{title:"Date",field:"date",kind:"data"}],
     rows:()=>ALL_BOOKMARKS.map(b=>({key:"b"+b.id,name:b.title,sub:b.url,cells:{url:b.url,col:b.col,date:b.date},facets:{col:b.col,tags:b.tags}}))},
   files:{label:"Files",noun:"file",filters:[{id:"t",label:"Type",multiple:true},{id:"folder",label:"Folder",multiple:true}],
-    columns:[{key:"name",header:"Name",emphasis:true},{key:"t",header:"Type",render:r=><Tag>{r.cells.t}</Tag>},{key:"s",header:"Size",data:true,align:"end"},{key:"folder",header:"Folder"},{key:"d",header:"Modified",data:true}],
+    columns:[{title:"Name",field:"name",kind:"name"},{title:"Type",field:"t",kind:"center",render:r=><Tag>{r.t}</Tag>},{title:"Size",field:"s",kind:"data",hozAlign:"right",headerHozAlign:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
     rows:()=>ALL_FILES.map((f,i)=>({key:"f"+i,name:f.name,sub:f.folder,cells:{t:f.t,s:f.s,folder:f.folder,d:f.d},facets:{t:f.t,folder:f.folder}}))},
 };
 // the dashboard home: everything, with the section each row comes from
 const ALL={label:"Everything",noun:"result",filters:[{id:"section",label:"Section",multiple:true}],
-  columns:[{key:"name",header:"Name",emphasis:true},{key:"section",header:"Section"},{key:"sub",header:"Details"}],
+  columns:[{title:"Name",field:"name",kind:"name"},{title:"Section",field:"section"},{title:"Details",field:"sub"}],
   rows:()=>[].concat.apply([],Object.keys(FIND_SOURCES).map(id=>FIND_SOURCES[id].rows().map(r=>({...r,key:id+":"+r.key,app:id,cells:{...r.cells,section:FIND_SOURCES[id].label,sub:r.sub},facets:{...r.facets,section:FIND_SOURCES[id].label}}))))};
 
 const optsOf=(rows,id)=>{const all=[].concat.apply([],rows.map(r=>[].concat(r.facets[id]===undefined?[]:r.facets[id])));return Array.from(new Set(all)).sort().map(v=>({value:v,label:String(v),count:all.filter(x=>x===v).length}));};
@@ -69,7 +70,9 @@ export function FindWorkspace({app,query,onQuery,onOpen,onAskAI}){
         filters={defs} onFilterChange={(id,v)=>setFilters({...filters,[id]:v})} onClearAll={()=>setFilters({})}
         sort={{value:sort,options:["Relevance","Name A–Z","Name Z–A"],onChange:setSort}}
         headEnd={app==="home"&&onAskAI?<Button size="sm" icon="sparkle" onClick={()=>onAskAI(query)}>Ask AI</Button>:null}>
-        <Table caption={(app==="home"?"Everything":src.label)+" search results"} rows={found} rowKey="key" onRowClick={r=>onOpen(r,r.app||app)} columns={src.columns.map(c=>({...c,render:c.render||(r=>c.key==="name"?r.name:r.cells[c.key])}))}/>
+        <DataGrid label={(app==="home"?"Everything":src.label)+" search results"} columns={src.columns}
+          data={found.map(r=>({...r.cells,id:r.key,name:r.name,facets:r.facets}))}
+          on={{rowClick:(e,row)=>{const r=found.find(x=>x.key===row.getData().id);if(r)onOpen(r,r.app||app);}}}/>
       </SearchWorkspace>
     </div>
   );

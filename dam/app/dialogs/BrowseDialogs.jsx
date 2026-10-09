@@ -19,7 +19,7 @@
    their own selection, starting from the legacy defaults. Actions with no back end yet confirm with a toast. */
 import React from 'react';
 import {
-  Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, Table, Tag, TagList, TagInput, Button, Icon,
+  Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataGrid, Tag, TagList, TagInput, Button, Icon,
   Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorSwatch,
 } from 'plenix-platform';
 
@@ -223,11 +223,11 @@ function FieldVisibilityDialog({ open, onClose, value, onSave, title, descriptio
       footer={<Footer onCancel={onClose}><Button variant="primary" onClick={save}>Save</Button></Footer>}>
       <Stack>
         <SearchField name="searchFields" label="Search fields" placeholder="Search fields..." value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} />
-        <Table caption={title} rows={rows} empty={EMPTY_TEXT} columns={[
-          { key: 'handle', header: 'Order', render: () => <Text variant="secondary"><Icon name="menu-lines" size="sm" /></Text> },
-          { key: 'name', header: 'Field', data: true, emphasis: true },
-          { key: 'type', header: 'Type', render: (r) => <Text variant="secondary">{r.type}</Text> },
-          { key: 'show', header: 'Show', align: 'end', render: (r) => (
+        <DataGrid label={title} data={rows} empty={EMPTY_TEXT} headerMenu={false} options={{ movableRows: true }} columns={[
+          { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, headerSort: false, render: () => <Icon name="menu-lines" size="sm" /> },
+          { title: 'Field', field: 'name', kind: 'name', headerSort: false },
+          { title: 'Type', field: 'type', kind: 'data', headerSort: false },
+          { title: 'Show', field: 'show', kind: 'center', hozAlign: 'right', headerHozAlign: 'right', headerSort: false, render: (r) => (
             <Switch label={'Show ' + r.name} labelHidden checked={!!draft[r.name]} onChange={(e) => setDraft({ ...draft, [r.name]: e.target.checked })} />) },
         ]} />
       </Stack>
@@ -262,11 +262,11 @@ export function CatEditFieldsDialog({ open, onClose, onDone }) {
         <Inline justify="end">
           <Checkbox name="editForAllUsers" label="Edit for all users" checked={forAll} onChange={(e) => setForAll(e.target.checked)} />
         </Inline>
-        <Table caption="Edit fields" rows={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} columns={[
-          { key: 'handle', header: 'Order', render: () => <Text variant="secondary"><Icon name="merge" size="xs" /></Text> },
-          { key: 'name', header: 'Field', emphasis: true },
-          { key: 'type', header: 'Type', render: (r) => <Text variant="secondary">{r.type}</Text> },
-          { key: 'remove', header: 'Remove', align: 'end', render: (r) => (
+        <DataGrid label="Edit fields" data={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} headerMenu={false} options={{ movableRows: true }} columns={[
+          { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, headerSort: false, render: () => <Icon name="menu-lines" size="sm" /> },
+          { title: 'Field', field: 'name', kind: 'name', headerSort: false },
+          { title: 'Type', field: 'type', kind: 'data', headerSort: false },
+          { title: 'Remove', field: 'remove', kind: 'center', hozAlign: 'right', headerHozAlign: 'right', headerSort: false, render: (r) => (
             <Button size="xs" variant="ghost" iconOnly icon="close" label={'Remove ' + r.name} onClick={() => remove(r.name)} />) },
         ]} />
         <Select name="addAnotherField" aria-label="Add another field" value="" onChange={add}>

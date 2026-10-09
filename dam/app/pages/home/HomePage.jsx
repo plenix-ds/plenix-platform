@@ -7,7 +7,7 @@
    The address: ?q=text opens the search results for it; ?upload=1 opens the upload dialog (the header on other pages
    links here). Dialogs are opened by their legacy ids from app/dialogs (one host renders the open one). */
 import React from 'react';
-import { DataToolbar, BulkActions, ContentGrid, MediaCard, Table, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone } from 'plenix-platform';
+import { DataToolbar, BulkActions, ContentGrid, MediaCard, DataGrid, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -27,14 +27,11 @@ function useNarrow() {
   return narrow;
 }
 
-/* sorting the tables as the legacy sortTable did: numbers, sizes, dates or text */
+/* the grids' sorters (Tabulator sorter functions): numbers written with commas, file sizes, dates */
 const parseSize = (s) => { const m = /([\d.]+)\s*(KB|MB|GB|TB|B)/i.exec(s || ''); if (!m) return 0; const v = parseFloat(m[1]); return v * ({ TB: 1e12, GB: 1e9, MB: 1e6, KB: 1e3, B: 1 })[m[2].toUpperCase()]; };
-function sortRows(rows, sort, types) {
-  if (!sort) return rows;
-  const t = types[sort.key] || 'text';
-  const val = (r) => (t === 'num' ? parseFloat(String(r[sort.key]).replace(/,/g, '')) || 0 : t === 'size' ? parseSize(r[sort.key]) : t === 'date' ? new Date(r[sort.key]).getTime() : String(r[sort.key]));
-  return rows.slice().sort((a, b) => { const x = val(a), y = val(b); const r = typeof x === 'string' ? x.localeCompare(y) : x - y; return sort.direction === 'ascending' ? r : -r; });
-}
+const byNumber = (a, b) => (parseFloat(String(a).replace(/,/g, '')) || 0) - (parseFloat(String(b).replace(/,/g, '')) || 0);
+const bySize = (a, b) => parseSize(a) - parseSize(b);
+const byDate = (a, b) => new Date(a).getTime() - new Date(b).getTime();
 const ThumbName = ({ src, icon, name }) => <Inline><Thumbnail src={src} icon={icon} />{name}</Inline>;
 
 function FilesPane({ onUpload, onClose }) {
@@ -100,7 +97,6 @@ export function HomePage() {
   const [mode, setMode] = React.useState('grid');
   const [size, setSize] = React.useState('L');
   const [sortLabel, setSortLabel] = React.useState('Sort');
-  const [tableSort, setTableSort] = React.useState(null);
   const [selCats, setSelCats] = React.useState([]);
   const [selAssets, setSelAssets] = React.useState([]);
   const [asset, setAsset] = React.useState(null);
@@ -116,10 +112,10 @@ export function HomePage() {
   const browse = view === 'categories' || view === 'collections';
   const collections = view === 'collections';
 
-  const showView = (v) => { setView(v); setFiles(false); setSelCats([]); setTableSort(null); };
-  const openCategory = (name) => { setView('search'); setHeading(name); setQuery(''); setSelAssets([]); setActive(name); setTableSort(null); };
+  const showView = (v) => { setView(v); setFiles(false); setSelCats([]); };
+  const openCategory = (name) => { setView('search'); setHeading(name); setQuery(''); setSelAssets([]); setActive(name); };
   // the Search workspace: opened from the header search (Enter) with the query, or from a saved search with its criteria
-  const openFind = (f) => { setFind({ ...FIND_EMPTY, ...f }); setView('find'); setFiles(false); setSelAssets([]); setTableSort(null); };
+  const openFind = (f) => { setFind({ ...FIND_EMPTY, ...f }); setView('find'); setFiles(false); setSelAssets([]); };
   const onSidebar = (kind, name) => {
     setActive(name);
     if (kind === 'saved') { const s = saved.find((x) => x.name === name); openFind({ query: s ? s.query : '', filters: s ? s.filters : {}, saved: name }); return; }
@@ -225,11 +221,10 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <Table caption="Categories" pinFirst selectable selected={selCats} onSelectionChange={setSelCats} sort={tableSort} onSortChange={setTableSort} onRowClick={(r) => openCategory(r.name)}
-        rows={sortRows(D.CATEGORY_CARDS, tableSort, { count: 'num', modified: 'date' })} columns={[
-          { key: 'name', header: 'Category name', sortable: true, emphasis: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
-          { key: 'count', header: 'Assets', sortable: true, data: true }, { key: 'modified', header: 'Modified', sortable: true, data: true },
-          { key: 'status', header: 'Status', sortable: true, render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
+      <DataGrid label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
+        { title: 'Category name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
+        { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Modified', field: 'modified', kind: 'data', sorter: byDate },
+        { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
     );
   } else if (view === 'collections') {
     content = mode === 'grid' ? (
@@ -237,10 +232,9 @@ export function HomePage() {
         {D.COLLECTION_CARDS.map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={c.count + ' assets'} onOpen={() => openCategory(c.name)} />)}
       </ContentGrid>
     ) : (
-      <Table caption="Collections" pinFirst sort={tableSort} onSortChange={setTableSort} onRowClick={(r) => openCategory(r.name)}
-        rows={sortRows(D.COLLECTION_CARDS, tableSort, { count: 'num', updated: 'date' })} columns={[
-          { key: 'name', header: 'Collection name', sortable: true, emphasis: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
-          { key: 'count', header: 'Assets', sortable: true, data: true }, { key: 'updated', header: 'Updated', sortable: true, data: true }, { key: 'owner', header: 'Owner', sortable: true }]} />
+      <DataGrid label="Collections" data={D.COLLECTION_CARDS} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
+        { title: 'Collection name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
+        { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Updated', field: 'updated', kind: 'data', sorter: byDate }, { title: 'Owner', field: 'owner', filter: 'list' }]} />
     );
   } else {
     const list = view === 'find' ? found : D.ASSETS;
@@ -253,12 +247,12 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <Table caption="Search results" pinFirst selectable selected={selAssets} onSelectionChange={setSelAssets} sort={tableSort} onSortChange={setTableSort} onRowClick={(r) => setAsset(r.id)}
-        rows={sortRows(list, tableSort, { size: 'size', date: 'date' })} columns={[
-          { key: 'name', header: 'Name', sortable: true, emphasis: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
-          { key: 'cat', header: 'Category', sortable: true, render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
-          { key: 'badge', header: 'Format', sortable: true }, { key: 'size', header: 'Size', sortable: true, data: true }, { key: 'date', header: 'Date added', sortable: true, data: true },
-          { key: 'status', header: 'Status', sortable: true, render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
+      <DataGrid label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => setAsset(row.getData().id) }} columns={[
+        { title: 'Name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
+        { title: 'Category', field: 'cat', kind: 'center', filter: 'list', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
+        { title: 'Format', field: 'badge', kind: 'data', filter: 'list' }, { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: bySize },
+        { title: 'Date added', field: 'date', kind: 'data', sorter: byDate },
+        { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
     );
   }
   const pagination = view === 'categories' ? <Pagination page={1} pageCount={3} total={D.CATEGORY_TOTAL} perPage={16} perPageOptions={[16, 32, 64]} onPageChange={(n) => toast.show('Page ' + n, { tone: 'info' })} onPerPageChange={() => {}} />

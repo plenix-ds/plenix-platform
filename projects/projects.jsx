@@ -2,7 +2,7 @@
    batch 201: the projects in the shell's NavPane, a project's capabilities in a SecondaryPane, its home as a record page
    header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a Table, the
    capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes. */
-import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RecordPage, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, Table, Tag, TagList, Text, ToolRail } from 'plenix-platform';
+import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RecordPage, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -173,11 +173,11 @@ export function ProjectContent({ proj, panel }) {
     <PageContent>
       <Stack gap="md">
         <Text as="h1" variant="title">Files</Text>
-        <Table caption="Files" rows={pFiles} rowKey={(f, i) => i} empty="No files attached. Connect OneDrive in Settings to link files." onRowClick={() => {}} columns={[
-          { key: 'name', header: 'Name', label: true, size: 'label' },
-          { key: 't', header: 'Type', render: (f) => <Tag>{f.t}</Tag> },
-          { key: 's', header: 'Size' },
-          { key: 'd', header: 'Modified' },
+        <DataGrid label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
+          { title: 'Name', field: 'name', kind: 'name', rowLabel: true, filter: true, width: '--plx-ref-size-240px' },
+          { title: 'Type', field: 't', kind: 'center', filter: 'list', render: (f) => <Tag>{f.t}</Tag> },
+          { title: 'Size', field: 's', kind: 'data' },
+          { title: 'Modified', field: 'd', kind: 'data' },
         ]} />
       </Stack>
     </PageContent>

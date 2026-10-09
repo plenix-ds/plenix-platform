@@ -38,7 +38,7 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 
 Every table is a Tabulator DataGrid (owner, 2026-10-08: "every table rebuilt"; the style: docs/datagrid-tabulator-demo.html)
 - [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataGrid component (Tabulator's own column definitions), data-grid.css from the reference with tokens only, grid tokens, icons; 180/180 parts match the reference.
-- [ ] 2. The apps' tables (Settings, the Asset Manager's system settings and home, Files, Projects, Find) rewritten as DataGrids.
+- [x] 2. (batch 226) The apps' tables rewritten as DataGrids: 22 grid views (Files, Projects, Search workspace, Settings, the Asset Manager's home, system settings and field dialogs); tests/grid.test.js.
 - [ ] 3. The design system's own tables (token tables, labs, inventory docs) as DataGrids.
 - [ ] 4. Remove Table, system/table.css (.plx-data-table) and the 13 table-* tokens; ActivityList and PropertyList use the grid tokens; a check-system rule rejects any table that is not a DataGrid.
 - [ ] 5. The Data grid page of the design system: how to apply it, always Tabulator, every detail of the style and its tokens, one live grid.

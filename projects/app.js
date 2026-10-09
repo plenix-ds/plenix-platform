@@ -1391,7 +1391,8 @@ const PRI = {
   low: "Low"
 };
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (Tabulator column
+// definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
 const FIND_SOURCES = exports.FIND_SOURCES = {
   projects: {
     label: "Projects",
@@ -1405,23 +1406,25 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Project",
-      emphasis: true
+      title: "Project",
+      field: "name",
+      kind: "name"
     }, {
-      key: "status",
-      header: "Status",
+      title: "Status",
+      field: "status",
+      kind: "center",
       render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-        tone: r.cells.status === "Active" ? "success" : "neutral"
-      }, r.cells.status)
+        tone: r.status === "Active" ? "success" : "neutral"
+      }, r.status)
     }, {
-      key: "tags",
-      header: "Tags"
+      title: "Tags",
+      field: "tags"
     }, {
-      key: "files",
-      header: "Files",
-      data: true,
-      align: "end"
+      title: "Files",
+      field: "files",
+      kind: "data",
+      hozAlign: "right",
+      headerHozAlign: "right"
     }],
     rows: () => _shared.PROJECTS.map(p => ({
       key: "p" + p.id,
@@ -1447,19 +1450,19 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Conversation",
-      emphasis: true
+      title: "Conversation",
+      field: "name",
+      kind: "name"
     }, {
-      key: "preview",
-      header: "Last message"
+      title: "Last message",
+      field: "preview"
     }, {
-      key: "ch",
-      header: "Channel"
+      title: "Channel",
+      field: "ch"
     }, {
-      key: "time",
-      header: "Time",
-      data: true
+      title: "Time",
+      field: "time",
+      kind: "data"
     }],
     rows: () => _shared.THREADS.map(t => ({
       key: "t" + t.id,
@@ -1485,15 +1488,15 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Name",
-      emphasis: true
+      title: "Name",
+      field: "name",
+      kind: "name"
     }, {
-      key: "role",
-      header: "Role"
+      title: "Role",
+      field: "role"
     }, {
-      key: "co",
-      header: "Company"
+      title: "Company",
+      field: "co"
     }],
     rows: () => _shared.CONTACTS.map(c => ({
       key: "c" + c.id,
@@ -1517,20 +1520,20 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Event",
-      emphasis: true
+      title: "Event",
+      field: "name",
+      kind: "name"
     }, {
-      key: "date",
-      header: "Date",
-      data: true
+      title: "Date",
+      field: "date",
+      kind: "data"
     }, {
-      key: "time",
-      header: "Time",
-      data: true
+      title: "Time",
+      field: "time",
+      kind: "data"
     }, {
-      key: "cal",
-      header: "Calendar"
+      title: "Calendar",
+      field: "cal"
     }],
     rows: () => _shared.CAL_EVENTS.map(e => ({
       key: "e" + e.id,
@@ -1561,22 +1564,22 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       label: "Status"
     }],
     columns: [{
-      key: "name",
-      header: "Task",
-      emphasis: true
+      title: "Task",
+      field: "name",
+      kind: "name"
     }, {
-      key: "proj",
-      header: "Project"
+      title: "Project",
+      field: "proj"
     }, {
-      key: "pri",
-      header: "Priority"
+      title: "Priority",
+      field: "pri"
     }, {
-      key: "due",
-      header: "Due",
-      data: true
+      title: "Due",
+      field: "due",
+      kind: "data"
     }, {
-      key: "state",
-      header: "Status"
+      title: "Status",
+      field: "state"
     }],
     rows: () => _shared.ALL_TASKS.map(t => ({
       key: "k" + t.id,
@@ -1608,22 +1611,23 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Note",
-      emphasis: true
+      title: "Note",
+      field: "name",
+      kind: "name"
     }, {
-      key: "folder",
-      header: "Folder"
+      title: "Folder",
+      field: "folder"
     }, {
-      key: "tags",
-      header: "Tags",
+      title: "Tags",
+      field: "tags",
+      kind: "center",
       render: r => r.facets.tags.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
         key: t
       }, t))
     }, {
-      key: "date",
-      header: "Date",
-      data: true
+      title: "Date",
+      field: "date",
+      kind: "data"
     }],
     rows: () => _shared.ALL_NOTES.map(n => ({
       key: "n" + n.id,
@@ -1652,20 +1656,20 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Bookmark",
-      emphasis: true
+      title: "Bookmark",
+      field: "name",
+      kind: "name"
     }, {
-      key: "url",
-      header: "Site",
-      data: true
+      title: "Site",
+      field: "url",
+      kind: "data"
     }, {
-      key: "col",
-      header: "Collection"
+      title: "Collection",
+      field: "col"
     }, {
-      key: "date",
-      header: "Date",
-      data: true
+      title: "Date",
+      field: "date",
+      kind: "data"
     }],
     rows: () => _shared.ALL_BOOKMARKS.map(b => ({
       key: "b" + b.id,
@@ -1695,25 +1699,27 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Name",
-      emphasis: true
+      title: "Name",
+      field: "name",
+      kind: "name"
     }, {
-      key: "t",
-      header: "Type",
-      render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, r.cells.t)
+      title: "Type",
+      field: "t",
+      kind: "center",
+      render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, r.t)
     }, {
-      key: "s",
-      header: "Size",
-      data: true,
-      align: "end"
+      title: "Size",
+      field: "s",
+      kind: "data",
+      hozAlign: "right",
+      headerHozAlign: "right"
     }, {
-      key: "folder",
-      header: "Folder"
+      title: "Folder",
+      field: "folder"
     }, {
-      key: "d",
-      header: "Modified",
-      data: true
+      title: "Modified",
+      field: "d",
+      kind: "data"
     }],
     rows: () => _shared.ALL_FILES.map((f, i) => ({
       key: "f" + i,
@@ -1742,15 +1748,15 @@ const ALL = {
     multiple: true
   }],
   columns: [{
-    key: "name",
-    header: "Name",
-    emphasis: true
+    title: "Name",
+    field: "name",
+    kind: "name"
   }, {
-    key: "section",
-    header: "Section"
+    title: "Section",
+    field: "section"
   }, {
-    key: "sub",
-    header: "Details"
+    title: "Details",
+    field: "sub"
   }],
   rows: () => [].concat.apply([], Object.keys(FIND_SOURCES).map(id => FIND_SOURCES[id].rows().map(r => ({
     ...r,
@@ -1832,15 +1838,21 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-    caption: (app === "home" ? "Everything" : src.label) + " search results",
-    rows: found,
-    rowKey: "key",
-    onRowClick: r => onOpen(r, r.app || app),
-    columns: src.columns.map(c => ({
-      ...c,
-      render: c.render || (r => c.key === "name" ? r.name : r.cells[c.key])
-    }))
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: (app === "home" ? "Everything" : src.label) + " search results",
+    columns: src.columns,
+    data: found.map(r => ({
+      ...r.cells,
+      id: r.key,
+      name: r.name,
+      facets: r.facets
+    })),
+    on: {
+      rowClick: (e, row) => {
+        const r = found.find(x => x.key === row.getData().id);
+        if (r) onOpen(r, r.app || app);
+      }
+    }
   })));
 }
   } },
@@ -2504,27 +2516,34 @@ function ProjectContent({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "h1",
     variant: "title"
-  }, "Files"), /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-    caption: "Files",
-    rows: pFiles,
-    rowKey: (f, i) => i,
+  }, "Files"), /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: "Files",
+    data: pFiles.map((f, i) => ({
+      ...f,
+      id: i
+    })),
     empty: "No files attached. Connect OneDrive in Settings to link files.",
-    onRowClick: () => {},
     columns: [{
-      key: 'name',
-      header: 'Name',
-      label: true,
-      size: 'label'
+      title: 'Name',
+      field: 'name',
+      kind: 'name',
+      rowLabel: true,
+      filter: true,
+      width: '--plx-ref-size-240px'
     }, {
-      key: 't',
-      header: 'Type',
+      title: 'Type',
+      field: 't',
+      kind: 'center',
+      filter: 'list',
       render: f => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, f.t)
     }, {
-      key: 's',
-      header: 'Size'
+      title: 'Size',
+      field: 's',
+      kind: 'data'
     }, {
-      key: 'd',
-      header: 'Modified'
+      title: 'Modified',
+      field: 'd',
+      kind: 'data'
     }]
   })));
 

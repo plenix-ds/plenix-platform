@@ -1232,6 +1232,10 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
+    "data-grid-wrap-line-height": {
+      "$value": "{plx-ref.line-height-snug}",
+      "$type": "number"
+    },
     "data-grid-cell-padding-inline": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"

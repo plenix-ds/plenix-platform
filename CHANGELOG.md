@@ -57,6 +57,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   change). tests/layout.test.js (12 checks) runs in `npm test` and CI. (batch 217)
 
 ### Changed (visual)
+- Every table in the apps is a DataGrid (Tabulator, the owner's grid style): Files, Projects (files), the suite's
+  Search workspace (every source), Settings (scenarios, fields, product vision, terminology, data model: 7 kinds of
+  table), the Asset Manager's categories, collections and asset results, its system settings (enabled for, actions,
+  view and edit all folders, fields, conversion presets, users, email templates, database, customizations, scheduled
+  tasks) and its field dialogs. Columns are written as Tabulator column definitions; sorting is Tabulator's (sorter
+  functions for counts, sizes and dates); dialogs reorder rows by their handle (movableRows). DataGrid adds: selected /
+  onSelectionChange, Enter opens a row that has rowClick, the wrap kind (long text grows the row), a grid built while
+  hidden is drawn when shown, rows equal to the ones shown change nothing. tests/grid.test.js (in npm test and CI)
+  opens all 22 grid views and checks each grid is built, axe-clean, free of inline styles and on the grid row height.
+  (batch 226)
 - Checkbox in compact density: no top and bottom padding, so a single-line Checkbox, Radio or row is 24px (the
   compact control role, on the 4px grid) instead of 26px. Standard and comfortable are unchanged. Token: a compact
   value for --plx-comp-check-padding-block. On the app pages only the 10 checkboxes of Asset Manager › System settings

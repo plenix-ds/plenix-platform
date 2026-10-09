@@ -305,6 +305,7 @@
   --plx-comp-data-grid-header-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-data-grid-data-font-size: var(--plx-ref-font-size-12);
   --plx-comp-data-grid-name-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-data-grid-wrap-line-height: var(--plx-ref-line-height-snug);
   --plx-comp-data-grid-cell-padding-inline: var(--plx-ref-space-8px);
   --plx-comp-data-grid-header-line-inset: var(--plx-ref-space-8px);
   --plx-comp-data-grid-column-line-inset: var(--plx-ref-space-6px);

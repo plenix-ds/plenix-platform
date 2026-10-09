@@ -1391,7 +1391,8 @@ const PRI = {
   low: "Low"
 };
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns
+// each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (Tabulator column
+// definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
 const FIND_SOURCES = exports.FIND_SOURCES = {
   projects: {
     label: "Projects",
@@ -1405,23 +1406,25 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Project",
-      emphasis: true
+      title: "Project",
+      field: "name",
+      kind: "name"
     }, {
-      key: "status",
-      header: "Status",
+      title: "Status",
+      field: "status",
+      kind: "center",
       render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-        tone: r.cells.status === "Active" ? "success" : "neutral"
-      }, r.cells.status)
+        tone: r.status === "Active" ? "success" : "neutral"
+      }, r.status)
     }, {
-      key: "tags",
-      header: "Tags"
+      title: "Tags",
+      field: "tags"
     }, {
-      key: "files",
-      header: "Files",
-      data: true,
-      align: "end"
+      title: "Files",
+      field: "files",
+      kind: "data",
+      hozAlign: "right",
+      headerHozAlign: "right"
     }],
     rows: () => _shared.PROJECTS.map(p => ({
       key: "p" + p.id,
@@ -1447,19 +1450,19 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Conversation",
-      emphasis: true
+      title: "Conversation",
+      field: "name",
+      kind: "name"
     }, {
-      key: "preview",
-      header: "Last message"
+      title: "Last message",
+      field: "preview"
     }, {
-      key: "ch",
-      header: "Channel"
+      title: "Channel",
+      field: "ch"
     }, {
-      key: "time",
-      header: "Time",
-      data: true
+      title: "Time",
+      field: "time",
+      kind: "data"
     }],
     rows: () => _shared.THREADS.map(t => ({
       key: "t" + t.id,
@@ -1485,15 +1488,15 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Name",
-      emphasis: true
+      title: "Name",
+      field: "name",
+      kind: "name"
     }, {
-      key: "role",
-      header: "Role"
+      title: "Role",
+      field: "role"
     }, {
-      key: "co",
-      header: "Company"
+      title: "Company",
+      field: "co"
     }],
     rows: () => _shared.CONTACTS.map(c => ({
       key: "c" + c.id,
@@ -1517,20 +1520,20 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Event",
-      emphasis: true
+      title: "Event",
+      field: "name",
+      kind: "name"
     }, {
-      key: "date",
-      header: "Date",
-      data: true
+      title: "Date",
+      field: "date",
+      kind: "data"
     }, {
-      key: "time",
-      header: "Time",
-      data: true
+      title: "Time",
+      field: "time",
+      kind: "data"
     }, {
-      key: "cal",
-      header: "Calendar"
+      title: "Calendar",
+      field: "cal"
     }],
     rows: () => _shared.CAL_EVENTS.map(e => ({
       key: "e" + e.id,
@@ -1561,22 +1564,22 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       label: "Status"
     }],
     columns: [{
-      key: "name",
-      header: "Task",
-      emphasis: true
+      title: "Task",
+      field: "name",
+      kind: "name"
     }, {
-      key: "proj",
-      header: "Project"
+      title: "Project",
+      field: "proj"
     }, {
-      key: "pri",
-      header: "Priority"
+      title: "Priority",
+      field: "pri"
     }, {
-      key: "due",
-      header: "Due",
-      data: true
+      title: "Due",
+      field: "due",
+      kind: "data"
     }, {
-      key: "state",
-      header: "Status"
+      title: "Status",
+      field: "state"
     }],
     rows: () => _shared.ALL_TASKS.map(t => ({
       key: "k" + t.id,
@@ -1608,22 +1611,23 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Note",
-      emphasis: true
+      title: "Note",
+      field: "name",
+      kind: "name"
     }, {
-      key: "folder",
-      header: "Folder"
+      title: "Folder",
+      field: "folder"
     }, {
-      key: "tags",
-      header: "Tags",
+      title: "Tags",
+      field: "tags",
+      kind: "center",
       render: r => r.facets.tags.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
         key: t
       }, t))
     }, {
-      key: "date",
-      header: "Date",
-      data: true
+      title: "Date",
+      field: "date",
+      kind: "data"
     }],
     rows: () => _shared.ALL_NOTES.map(n => ({
       key: "n" + n.id,
@@ -1652,20 +1656,20 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Bookmark",
-      emphasis: true
+      title: "Bookmark",
+      field: "name",
+      kind: "name"
     }, {
-      key: "url",
-      header: "Site",
-      data: true
+      title: "Site",
+      field: "url",
+      kind: "data"
     }, {
-      key: "col",
-      header: "Collection"
+      title: "Collection",
+      field: "col"
     }, {
-      key: "date",
-      header: "Date",
-      data: true
+      title: "Date",
+      field: "date",
+      kind: "data"
     }],
     rows: () => _shared.ALL_BOOKMARKS.map(b => ({
       key: "b" + b.id,
@@ -1695,25 +1699,27 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
       multiple: true
     }],
     columns: [{
-      key: "name",
-      header: "Name",
-      emphasis: true
+      title: "Name",
+      field: "name",
+      kind: "name"
     }, {
-      key: "t",
-      header: "Type",
-      render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, r.cells.t)
+      title: "Type",
+      field: "t",
+      kind: "center",
+      render: r => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, r.t)
     }, {
-      key: "s",
-      header: "Size",
-      data: true,
-      align: "end"
+      title: "Size",
+      field: "s",
+      kind: "data",
+      hozAlign: "right",
+      headerHozAlign: "right"
     }, {
-      key: "folder",
-      header: "Folder"
+      title: "Folder",
+      field: "folder"
     }, {
-      key: "d",
-      header: "Modified",
-      data: true
+      title: "Modified",
+      field: "d",
+      kind: "data"
     }],
     rows: () => _shared.ALL_FILES.map((f, i) => ({
       key: "f" + i,
@@ -1742,15 +1748,15 @@ const ALL = {
     multiple: true
   }],
   columns: [{
-    key: "name",
-    header: "Name",
-    emphasis: true
+    title: "Name",
+    field: "name",
+    kind: "name"
   }, {
-    key: "section",
-    header: "Section"
+    title: "Section",
+    field: "section"
   }, {
-    key: "sub",
-    header: "Details"
+    title: "Details",
+    field: "sub"
   }],
   rows: () => [].concat.apply([], Object.keys(FIND_SOURCES).map(id => FIND_SOURCES[id].rows().map(r => ({
     ...r,
@@ -1832,15 +1838,21 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-    caption: (app === "home" ? "Everything" : src.label) + " search results",
-    rows: found,
-    rowKey: "key",
-    onRowClick: r => onOpen(r, r.app || app),
-    columns: src.columns.map(c => ({
-      ...c,
-      render: c.render || (r => c.key === "name" ? r.name : r.cells[c.key])
-    }))
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: (app === "home" ? "Everything" : src.label) + " search results",
+    columns: src.columns,
+    data: found.map(r => ({
+      ...r.cells,
+      id: r.key,
+      name: r.name,
+      facets: r.facets
+    })),
+    on: {
+      rowClick: (e, row) => {
+        const r = found.find(x => x.key === row.getData().id);
+        if (r) onOpen(r, r.app || app);
+      }
+    }
   })));
 }
   } },
@@ -2441,45 +2453,54 @@ function CapDoc({
     }, f.behavior)))
   }, {
     title: "Scenarios",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-      caption: "Scenarios",
-      rows: cap.scenarios || [],
-      rowKey: (r, i) => i,
+    content: /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+      label: "Scenarios",
+      data: (cap.scenarios || []).map((r, i) => ({
+        ...r,
+        id: i
+      })),
       columns: [{
-        key: "condition",
-        header: "If",
-        label: true,
-        size: "label"
+        title: "If",
+        field: "condition",
+        kind: "wrap",
+        rowLabel: true,
+        width: "--plx-ref-size-240px"
       }, {
-        key: "expected",
-        header: "Then"
+        title: "Then",
+        field: "expected",
+        kind: "wrap"
       }]
     })
   }, {
     title: "Specification",
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-      caption: "Fields",
-      rows: spec.ownFields || [],
-      rowKey: (r, i) => i,
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+      label: "Fields",
+      data: (spec.ownFields || []).map((f, i) => ({
+        id: i,
+        field: f.field + (f.required ? " *" : ""),
+        type: f.type,
+        required: f.required ? "Yes" : "No",
+        notes: f.notes || (f.default !== undefined ? "Default: " + f.default : "")
+      })),
       columns: [{
-        key: "field",
-        header: "Field",
-        label: true,
-        size: "label",
-        render: f => f.field + (f.required ? " *" : "")
+        title: "Field",
+        field: "field",
+        kind: "name",
+        rowLabel: true,
+        width: "--plx-ref-size-240px"
       }, {
-        key: "type",
-        header: "Type"
+        title: "Type",
+        field: "type",
+        kind: "data"
       }, {
-        key: "required",
-        header: "Required",
-        render: f => f.required ? "Yes" : "No"
+        title: "Required",
+        field: "required"
       }, {
-        key: "notes",
-        header: "Notes",
-        render: f => f.notes || (f.default !== undefined ? "Default: " + f.default : "")
+        title: "Notes",
+        field: "notes",
+        kind: "wrap"
       }]
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
@@ -2662,20 +2683,23 @@ function DocsPanel({
     label: ph.p
   }, ph.d)))), /*#__PURE__*/React.createElement(DocSection, {
     title: "What the Platform Unifies"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-    caption: "What the Platform Unifies",
-    rows: window.PV_UNIFIES || [],
-    rowKey: (r, i) => i,
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    label: "What the Platform Unifies",
+    data: (window.PV_UNIFIES || []).map((r, i) => ({
+      id: i,
+      silo: r[0],
+      unified: r[1]
+    })),
     columns: [{
-      key: "silo",
-      header: "Traditional Silo",
-      label: true,
-      size: "label",
-      render: r => r[0]
+      title: "Traditional Silo",
+      field: "silo",
+      kind: "wrap",
+      rowLabel: true,
+      width: "--plx-ref-size-240px"
     }, {
-      key: "unified",
-      header: "Unified in Plenix",
-      render: r => r[1]
+      title: "Unified in Plenix",
+      field: "unified",
+      kind: "wrap"
     }]
   })), /*#__PURE__*/React.createElement(DocSection, {
     title: "Unified Messaging Hub"
@@ -2746,13 +2770,19 @@ function DocsPanel({
   }, ["1 Product", "2 Feature", "3 Usage", "4 Behavior", "5 Scenario", "6 Spec", "7 Enabler", "8 UI", "9 Architecture", "10 Data"].map(l => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
     key: l
   }, l))), (window.TERM_LAYERS || []).map(layer => {
+    // a layer's table: its headers as Tabulator columns (c0, c1…), its rows as grid rows; the first column names the row
     const tableColumns = t => t.headers.map((h, j) => ({
-      key: "c" + j,
-      header: h,
-      render: r => r[j],
-      label: j === 0,
-      size: j === 0 ? "label" : undefined
+      title: h,
+      field: "c" + j,
+      kind: "wrap",
+      rowLabel: j === 0,
+      width: j === 0 ? "--plx-ref-size-240px" : undefined
     }));
+    const tableRows = t => t.rows.map((r, i) => Object.assign({
+      id: i
+    }, ...r.map((v, j) => ({
+      ["c" + j]: v
+    }))));
     return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
       key: layer.num,
       title: layer.num + ". " + layer.term,
@@ -2763,19 +2793,17 @@ function DocsPanel({
       as: "p"
     }, layer.desc), layer.note && /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
-    }, layer.note), layer.table && /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-      caption: layer.term,
-      rows: layer.table.rows,
-      rowKey: (r, i) => i,
+    }, layer.note), layer.table && /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+      label: layer.term,
+      data: tableRows(layer.table),
       columns: tableColumns(layer.table)
     }), layer.subTerm && /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "xs"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "heading"
-    }, layer.subTerm, " \u2014 ", layer.subDesc), /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-      caption: layer.subTerm,
-      rows: layer.subTable.rows,
-      rowKey: (r, i) => i,
+    }, layer.subTerm, " \u2014 ", layer.subDesc), /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+      label: layer.subTerm,
+      data: tableRows(layer.subTable),
       columns: tableColumns(layer.subTable)
     })), layer.correction && /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
       tone: "info"
@@ -2896,24 +2924,28 @@ function DocsPanel({
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       as: "p"
-    }, "The 4 universal fields present on every item in every capability. They connect items to the rest of the system \u2014 to projects, categories, and tags \u2014 enabling cross-cutting views, filtering, and retrieval."), /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-      caption: "Anchor fields",
-      rowKey: (r, i) => i,
-      rows: [["projectType", "string | null", "Dropdown — single select from Settings > Project Types"], ["projects[]", "string[]", "Search-to-select with create — many-to-many"], ["categories[]", "string[]", "Grouped search-to-select with create — shows hierarchy"], ["tags[]", "string[]", "Grouped search-to-select with create — auto-lowercase-hyphen"]],
+    }, "The 4 universal fields present on every item in every capability. They connect items to the rest of the system \u2014 to projects, categories, and tags \u2014 enabling cross-cutting views, filtering, and retrieval."), /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+      label: "Anchor fields",
+      data: [["projectType", "string | null", "Dropdown — single select from Settings > Project Types"], ["projects[]", "string[]", "Search-to-select with create — many-to-many"], ["categories[]", "string[]", "Grouped search-to-select with create — shows hierarchy"], ["tags[]", "string[]", "Grouped search-to-select with create — auto-lowercase-hyphen"]].map((r, i) => ({
+        id: i,
+        field: r[0],
+        type: r[1],
+        ui: r[2]
+      })),
       columns: [{
-        key: "field",
-        header: "Field",
-        label: true,
-        size: "label",
-        render: r => r[0]
+        title: "Field",
+        field: "field",
+        kind: "name",
+        rowLabel: true,
+        width: "--plx-ref-size-240px"
       }, {
-        key: "type",
-        header: "Type",
-        render: r => r[1]
+        title: "Type",
+        field: "type",
+        kind: "data"
       }, {
-        key: "ui",
-        header: "UI",
-        render: r => r[2]
+        title: "UI",
+        field: "ui",
+        kind: "wrap"
       }]
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
@@ -2951,28 +2983,29 @@ function DocsPanel({
         }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
           variant: "data"
         }, fieldCount, " own field", fieldCount !== 1 ? "s" : ""), /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, type.capability))
-      }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-        caption: type.label + " fields",
-        rows: fields,
-        rowKey: r => r[0],
+      }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+        label: type.label + " fields",
         empty: "No own fields",
+        data: fields.map(([n, d]) => ({
+          id: n,
+          name: n + (d.required ? " *" : ""),
+          type: d.type,
+          detail: d.enum ? "enum: " + d.enum.join(", ") : d.desc || d.unit ? "unit: " + d.unit : ""
+        })),
         columns: [{
-          key: "name",
-          header: "Field",
-          label: true,
-          size: "label",
-          render: r => r[0] + (r[1].required ? " *" : "")
+          title: "Field",
+          field: "name",
+          kind: "name",
+          rowLabel: true,
+          width: "--plx-ref-size-240px"
         }, {
-          key: "type",
-          header: "Type",
-          render: r => r[1].type
+          title: "Type",
+          field: "type",
+          kind: "data"
         }, {
-          key: "detail",
-          header: "Detail",
-          render: r => {
-            const d = r[1];
-            return d.enum ? "enum: " + d.enum.join(", ") : d.desc || d.unit ? "unit: " + d.unit : "";
-          }
+          title: "Detail",
+          field: "detail",
+          kind: "wrap"
         }]
       }));
     }))), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {

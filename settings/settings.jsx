@@ -4,7 +4,7 @@
    tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
    SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
    the design system (../platform/design-system/), the point of truth. */
-import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
+import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, DataGrid, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -85,18 +85,18 @@ function CapDoc({cap,backLabel,onBack,crumb}){
       </PropertyList>
     )},
     {title:"Scenarios",content:(
-      <Table caption="Scenarios" rows={cap.scenarios||[]} rowKey={(r,i)=>i} columns={[
-        {key:"condition",header:"If",label:true,size:"label"},
-        {key:"expected",header:"Then"},
+      <DataGrid label="Scenarios" data={(cap.scenarios||[]).map((r,i)=>({...r,id:i}))} columns={[
+        {title:"If",field:"condition",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px"},
+        {title:"Then",field:"expected",kind:"wrap"},
       ]}/>
     )},
     {title:"Specification",content:(
       <Stack gap="sm">
-        <Table caption="Fields" rows={spec.ownFields||[]} rowKey={(r,i)=>i} columns={[
-          {key:"field",header:"Field",label:true,size:"label",render:f=>f.field+(f.required?" *":"")},
-          {key:"type",header:"Type"},
-          {key:"required",header:"Required",render:f=>f.required?"Yes":"No"},
-          {key:"notes",header:"Notes",render:f=>f.notes||(f.default!==undefined?"Default: "+f.default:"")},
+        <DataGrid label="Fields" data={(spec.ownFields||[]).map((f,i)=>({id:i,field:f.field+(f.required?" *":""),type:f.type,required:f.required?"Yes":"No",notes:f.notes||(f.default!==undefined?"Default: "+f.default:"")}))} columns={[
+          {title:"Field",field:"field",kind:"name",rowLabel:true,width:"--plx-ref-size-240px"},
+          {title:"Type",field:"type",kind:"data"},
+          {title:"Required",field:"required"},
+          {title:"Notes",field:"notes",kind:"wrap"},
         ]}/>
         <Text variant="secondary">+ 4 Anchor fields: <Text variant="data">projectType · projects[] · categories[] · tags[]</Text></Text>
         <Text variant="secondary">+ 3 base fields: <Text variant="data">id · createdAt · updatedAt</Text></Text>
@@ -202,9 +202,9 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           </PropertyList>
         </DocSection>
         <DocSection title="What the Platform Unifies">
-          <Table caption="What the Platform Unifies" rows={window.PV_UNIFIES||[]} rowKey={(r,i)=>i} columns={[
-            {key:"silo",header:"Traditional Silo",label:true,size:"label",render:r=>r[0]},
-            {key:"unified",header:"Unified in Plenix",render:r=>r[1]},
+          <DataGrid label="What the Platform Unifies" data={(window.PV_UNIFIES||[]).map((r,i)=>({id:i,silo:r[0],unified:r[1]}))} columns={[
+            {title:"Traditional Silo",field:"silo",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px"},
+            {title:"Unified in Plenix",field:"unified",kind:"wrap"},
           ]}/>
         </DocSection>
         <DocSection title="Unified Messaging Hub">
@@ -258,18 +258,20 @@ function CapDoc({cap,backLabel,onBack,crumb}){
 
         {/* 10 Layers */}
         {(window.TERM_LAYERS||[]).map(layer=>{
-          const tableColumns=t=>t.headers.map((h,j)=>({key:"c"+j,header:h,render:r=>r[j],label:j===0,size:j===0?"label":undefined}));
+          // a layer's table: its headers as Tabulator columns (c0, c1…), its rows as grid rows; the first column names the row
+          const tableColumns=t=>t.headers.map((h,j)=>({title:h,field:"c"+j,kind:"wrap",rowLabel:j===0,width:j===0?"--plx-ref-size-240px":undefined}));
+          const tableRows=t=>t.rows.map((r,i)=>Object.assign({id:i},...r.map((v,j)=>({["c"+j]:v}))));
           return(
             <Panel key={layer.num} title={layer.num+". "+layer.term} description={layer.name}>
               <Stack gap="sm">
                 <Text as="p">{layer.desc}</Text>
                 {layer.note&&<Text variant="secondary">{layer.note}</Text>}
-                {layer.table&&<Table caption={layer.term} rows={layer.table.rows} rowKey={(r,i)=>i} columns={tableColumns(layer.table)}/>}
+                {layer.table&&<DataGrid label={layer.term} data={tableRows(layer.table)} columns={tableColumns(layer.table)}/>}
                 {/* Sub-term (layer 4) */}
                 {layer.subTerm&&(
                   <Stack gap="xs">
                     <Text variant="heading">{layer.subTerm} — {layer.subDesc}</Text>
-                    <Table caption={layer.subTerm} rows={layer.subTable.rows} rowKey={(r,i)=>i} columns={tableColumns(layer.subTable)}/>
+                    <DataGrid label={layer.subTerm} data={tableRows(layer.subTable)} columns={tableColumns(layer.subTable)}/>
                   </Stack>
                 )}
                 {/* Correction note */}
@@ -361,15 +363,15 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           <Panel title="Anchors" description={'UI label: "Classification"'}>
             <Stack gap="sm">
               <Text as="p">The 4 universal fields present on every item in every capability. They connect items to the rest of the system — to projects, categories, and tags — enabling cross-cutting views, filtering, and retrieval.</Text>
-              <Table caption="Anchor fields" rowKey={(r,i)=>i} rows={[
+              <DataGrid label="Anchor fields" data={[
                 ["projectType","string | null","Dropdown — single select from Settings > Project Types"],
                 ["projects[]","string[]","Search-to-select with create — many-to-many"],
                 ["categories[]","string[]","Grouped search-to-select with create — shows hierarchy"],
                 ["tags[]","string[]","Grouped search-to-select with create — auto-lowercase-hyphen"],
-              ]} columns={[
-                {key:"field",header:"Field",label:true,size:"label",render:r=>r[0]},
-                {key:"type",header:"Type",render:r=>r[1]},
-                {key:"ui",header:"UI",render:r=>r[2]},
+              ].map((r,i)=>({id:i,field:r[0],type:r[1],ui:r[2]}))} columns={[
+                {title:"Field",field:"field",kind:"name",rowLabel:true,width:"--plx-ref-size-240px"},
+                {title:"Type",field:"type",kind:"data"},
+                {title:"UI",field:"ui",kind:"wrap"},
               ]}/>
               <Text variant="secondary">Plus base fields on every item: <Text variant="data">id</Text> · <Text variant="data">createdAt</Text> · <Text variant="data">updatedAt</Text></Text>
             </Stack>
@@ -392,10 +394,10 @@ function CapDoc({cap,backLabel,onBack,crumb}){
                 return(
                   <Panel key={key} flush headingLevel={3} title={type.label} description={type.desc}
                     actions={<Inline gap="sm"><Ico n={type.icon||"file"}/><Text variant="data">{fieldCount} own field{fieldCount!==1?"s":""}</Text><Tag>{type.capability}</Tag></Inline>}>
-                    <Table caption={type.label+" fields"} rows={fields} rowKey={r=>r[0]} empty="No own fields" columns={[
-                      {key:"name",header:"Field",label:true,size:"label",render:r=>r[0]+(r[1].required?" *":"")},
-                      {key:"type",header:"Type",render:r=>r[1].type},
-                      {key:"detail",header:"Detail",render:r=>{const d=r[1];return d.enum?"enum: "+d.enum.join(", "):d.desc||d.unit?"unit: "+d.unit:"";}},
+                    <DataGrid label={type.label+" fields"} empty="No own fields" data={fields.map(([n,d])=>({id:n,name:n+(d.required?" *":""),type:d.type,detail:d.enum?"enum: "+d.enum.join(", "):d.desc||d.unit?"unit: "+d.unit:""}))} columns={[
+                      {title:"Field",field:"name",kind:"name",rowLabel:true,width:"--plx-ref-size-240px"},
+                      {title:"Type",field:"type",kind:"data"},
+                      {title:"Detail",field:"detail",kind:"wrap"},
                     ]}/>
                   </Panel>
                 );
