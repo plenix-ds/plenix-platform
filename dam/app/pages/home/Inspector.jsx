@@ -43,7 +43,7 @@ function Tags({ initial, act }) {
 function Downloads({ groups, act }) {
   return groups.map((g) => (
     <Accordion key={g.title} title={g.title}>
-      <ActivityList label={g.title}>
+      <ActivityList label={g.title} stacked>
         {g.items.map(([icon, name, size]) => (
           <ActivityList.Item key={name} leading={<Icon name={icon} size="lg" />} title={name} meta={<Text variant="data" className="plx-u-leading-16px">{size}</Text>}
             actions={<Button size="xs" variant="ghost" iconOnly icon="download-arrow" label={'Download ' + name} onClick={act('Downloading ' + name + '...', 'success')} />} />

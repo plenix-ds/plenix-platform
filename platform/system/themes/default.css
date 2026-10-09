@@ -129,6 +129,7 @@
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-100);
   --plx-sys-fill-neutral-hover: var(--plx-ref-color-gray-200);
+  --plx-sys-fill-neutral-border: var(--plx-ref-color-gray-300);
   --plx-sys-fill-neutral-pressed: var(--plx-ref-color-gray-300);
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-700);
   --plx-sys-border-divider: var(--plx-ref-color-gray-100);
@@ -289,6 +290,7 @@
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-800);
   --plx-sys-fill-neutral-hover: var(--plx-ref-color-gray-700);
+  --plx-sys-fill-neutral-border: var(--plx-ref-color-gray-900);
   --plx-sys-fill-neutral-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-200);
   --plx-sys-border-divider: var(--plx-ref-color-gray-700);

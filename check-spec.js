@@ -118,6 +118,7 @@ const NOT_VARIANTS = {
   'plx-nav-pane--inline': 'a responsive mode the shell sets (the pane opens over the main region on narrow windows)',
   'plx-nav-pane--overlay': 'a responsive mode the shell sets',
   'plx-side-panel--overlay': 'a responsive mode the shell sets (the inspector opens over the main region)',
+  'plx-side-panel--resized': 'a state the panel sets once someone drags its edge (the resizable card shows it)',
 };
 const ICON_NAMES = new Set(Object.keys(JSON.parse(read(path.join(PLATFORM, 'icons', 'map.json'))).map).map((n) => 'plx-icon--' + n));
 const claimedMods = new Set();

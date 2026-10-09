@@ -7592,6 +7592,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      </ActivityList>
    Props:
      label: the list's accessible name
+     stacked: the meta on its own line under the title, in the smallest type (--plx-ref-font-size-09): for narrow panes
+       such as an inspector (batch 260); default false: title and meta on one line
      className: more classes on the list
      children: the ActivityList.Item rows
      ActivityList.Item.leading: content before the text (an avatar, an icon)
@@ -7612,12 +7614,13 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 function ActivityList({
   label,
+  stacked = false,
   className,
   children
 }) {
   return /*#__PURE__*/_react.default.createElement("ul", {
     "aria-label": label,
-    className: (0, _cx.cx)('plx-activity-list', className)
+    className: (0, _cx.cx)('plx-activity-list', stacked && 'plx-activity-list--stacked', className)
   }, children);
 }
 ActivityList.Item = function ActivityListItem({

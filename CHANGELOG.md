@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-10-09
+
+### Added
+- ActivityList `stacked` (owner: "put the '## files…' on a second line in the smallest font available in the tokens"):
+  the meta sits on its own line under the title in --plx-ref-font-size-09, the smallest type token. The Asset Manager's
+  Downloads lists use it, and the "Download by File Type" heading is now sentence case. (batch 260)
+- Token role --plx-sys-fill-neutral-border: gray-300 in light, gray-900 in dark, two shades darker than
+  --plx-sys-fill-neutral. (batch 260)
+
+### Changed
+- Tag (owner: "add a border 2 shades darker than the color of the bg"): a thin solid border in
+  --plx-sys-fill-neutral-border. Chips are unchanged. (batch 260)
+- The spec now has variant cards for ActivityList "Stacked" and SidePanel "Resizable"; check-spec treats
+  plx-side-panel--resized as a state the panel sets, not a variant. (batch 260)
+
 ## [0.14.0] - 2026-10-09
 
 ### Added

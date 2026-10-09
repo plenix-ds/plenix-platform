@@ -80,11 +80,11 @@ export const CATEGORY_DETAIL = {
 export const COLLECTION_DETAIL = { name: 'Website Assets', count: '84 assets' };
 export const CATEGORY_DOWNLOADS = [
   { title: 'Download entire category', items: [['file-zip', 'All Files (Source)', '78 files · ~1.4 GB']] },
-  { title: 'Download by File Type', items: [['file-ai', 'Adobe Illustrator (.ai)', '42 files · ~820 MB'], ['file-png', 'PNG Images', '78 files · ~340 MB'], ['file-jpg', 'JPEG Thumbnails', '78 files · ~18 MB'], ['file-svg', 'SVG Vectors', '35 files · ~12 MB'], ['file-pdf', 'PDF Print-Ready', '42 files · ~280 MB']] },
+  { title: 'Download by file type', items: [['file-ai', 'Adobe Illustrator (.ai)', '42 files · ~820 MB'], ['file-png', 'PNG Images', '78 files · ~340 MB'], ['file-jpg', 'JPEG Thumbnails', '78 files · ~18 MB'], ['file-svg', 'SVG Vectors', '35 files · ~12 MB'], ['file-pdf', 'PDF Print-Ready', '42 files · ~280 MB']] },
   { title: 'Variations', items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '78 files · ~45 MB'], ['file-png', 'Social Media (1080×1080)', '78 files · ~62 MB']] },
 ];
 export const ASSET_DOWNLOADS = [
-  { title: 'Download by File Type', items: [['file-png', 'Preview.png', '4.2 MB'], ['file-jpg', 'Web.jpg', '245 KB']] },
+  { title: 'Download by file type', items: [['file-png', 'Preview.png', '4.2 MB'], ['file-jpg', 'Web.jpg', '245 KB']] },
   { title: 'Variations', items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '180 KB'], ['file-png', 'Social Media (1080×1080)', '520 KB']] },
 ];
 export const ASSET_STATUSES = ['Complete', 'New', 'In progress', 'Pending review', 'Archived'];

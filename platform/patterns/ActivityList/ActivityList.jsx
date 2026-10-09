@@ -7,6 +7,8 @@
      </ActivityList>
    Props:
      label: the list's accessible name
+     stacked: the meta on its own line under the title, in the smallest type (--plx-ref-font-size-09): for narrow panes
+       such as an inspector (batch 260); default false: title and meta on one line
      className: more classes on the list
      children: the ActivityList.Item rows
      ActivityList.Item.leading: content before the text (an avatar, an icon)
@@ -27,8 +29,8 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
-export function ActivityList({ label, className, children }) {
-  return <ul aria-label={label} className={cx('plx-activity-list', className)}>{children}</ul>;
+export function ActivityList({ label, stacked = false, className, children }) {
+  return <ul aria-label={label} className={cx('plx-activity-list', stacked && 'plx-activity-list--stacked', className)}>{children}</ul>;
 }
 
 ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {

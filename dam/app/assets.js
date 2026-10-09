@@ -1832,14 +1832,14 @@ const CATEGORY_DOWNLOADS = exports.CATEGORY_DOWNLOADS = [{
   title: 'Download entire category',
   items: [['file-zip', 'All Files (Source)', '78 files · ~1.4 GB']]
 }, {
-  title: 'Download by File Type',
+  title: 'Download by file type',
   items: [['file-ai', 'Adobe Illustrator (.ai)', '42 files · ~820 MB'], ['file-png', 'PNG Images', '78 files · ~340 MB'], ['file-jpg', 'JPEG Thumbnails', '78 files · ~18 MB'], ['file-svg', 'SVG Vectors', '35 files · ~12 MB'], ['file-pdf', 'PDF Print-Ready', '42 files · ~280 MB']]
 }, {
   title: 'Variations',
   items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '78 files · ~45 MB'], ['file-png', 'Social Media (1080×1080)', '78 files · ~62 MB']]
 }];
 const ASSET_DOWNLOADS = exports.ASSET_DOWNLOADS = [{
-  title: 'Download by File Type',
+  title: 'Download by file type',
   items: [['file-png', 'Preview.png', '4.2 MB'], ['file-jpg', 'Web.jpg', '245 KB']]
 }, {
   title: 'Variations',
@@ -2170,7 +2170,8 @@ function Downloads({
     key: g.title,
     title: g.title
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList, {
-    label: g.title
+    label: g.title,
+    stacked: true
   }, g.items.map(([icon, name, size]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList.Item, {
     key: name,
     leading: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {

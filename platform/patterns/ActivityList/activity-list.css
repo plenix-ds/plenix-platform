@@ -19,3 +19,8 @@
 .plx-activity-list__time{color:var(--plx-sys-content-muted);flex-shrink:0;font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);white-space:nowrap;}
 .plx-activity-list__actions{align-items:center;column-gap:var(--plx-sys-space-cluster-xs);display:flex;flex-shrink:0;position:relative;z-index:var(--plx-sys-layer-raised);}
 .plx-activity-list__item.is-selected,.plx-activity-list__item.is-selected:hover,.plx-activity-list__item.is-selected.is-hover{background-color:var(--plx-sys-state-selected);}
+/* stacked (batch 260): the meta on its own line under the title, in the smallest type; for narrow panes */
+.plx-activity-list--stacked .plx-activity-list__text{align-items:flex-start;flex-direction:column;row-gap:0;}
+.plx-activity-list--stacked .plx-activity-list__title{max-inline-size:100%;}
+.plx-activity-list--stacked .plx-activity-list__meta{flex-basis:auto;font-size:var(--plx-ref-font-size-09);max-inline-size:100%;}
+.plx-activity-list--stacked .plx-activity-list__meta .plx-text{font-size:inherit;}

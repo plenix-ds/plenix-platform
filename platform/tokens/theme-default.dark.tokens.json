@@ -322,6 +322,10 @@
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
     },
+    "fill-neutral-border": {
+      "$value": "{plx-ref.color-gray-900}",
+      "$type": "color"
+    },
     "fill-neutral-pressed": {
       "$value": "{plx-ref.color-gray-600}",
       "$type": "color"
