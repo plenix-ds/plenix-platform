@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-10-09
+
+### Fixed
+- Tabs, contained (owner: "the left corner of the tab container is not consistent with other corners"): the panel's top-left
+  corner was always square; it is rounded like the others and square only while the first tab is open, where that tab
+  meets it. (batch 249)
+
 ## [0.12.0] - 2026-10-09
 
 ### Changed (visual)
