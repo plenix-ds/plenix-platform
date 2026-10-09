@@ -84,9 +84,6 @@ Z:\Plenix\
 │   ├── product-vision.md
 │   ├── about-plenix.md
 │   ├── data-model.md
-│   ├── MASTER-PROMPT.md
-│   ├── preparation-plan.md
-│   ├── style-guide.md
 │   ├── oss-landscape.md
 │   └── prompt-studio-logical-schema.md
 ├── architecture/            # Architecture specs (F1-F10 + OSS integration)

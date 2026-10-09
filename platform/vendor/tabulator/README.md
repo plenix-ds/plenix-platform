@@ -3,7 +3,7 @@
 Every Plenix table runs on Tabulator: the Platform `DataTable` component builds a Tabulator table and draws it in the
 Plenix grid style with tokens only (`platform/components/DataTable/data-table.css`; the owner's reference is
 `docs/datagrid-tabulator-demo.html`). The owner chose Tabulator on 2026-10-08 (the data table study,
-`docs/datagrid-study.html`): free, MIT, a plain script that sets `window.Tabulator`, so it fits the Plenix build with no
+`Archived/docs/datagrid-study.html`, kept on disk only): free, MIT, a plain script that sets `window.Tabulator`, so it fits the Plenix build with no
 bundler, and it covers selection, resize, filter, sort, grouping, tree rows, row actions, inline editing, drag to move
 and context menus.
 
