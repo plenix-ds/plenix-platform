@@ -6,6 +6,8 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-09
+
 ### Changed (visual)
 - Feel (owner: "I want it very snappy… responds instantly… crisp animations"): every control answers at once. Hover colors
   and edges fade in over 80ms instead of switching; buttons, chips, segmented items, tiles and small icon controls shrink
