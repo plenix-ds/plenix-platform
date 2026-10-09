@@ -44,7 +44,11 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const res = [];
+  // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
+  const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+  if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
   for (const [url, steps, want] of STATES) {
+    if (!HAS_DS && url.indexOf('platform/design-system/') === 0) continue;
     const name = url + (steps.length ? ' › ' + steps.join(' › ') : '');
     await page.goto('about:blank'); await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await sleep(400);
     let missing = null;
