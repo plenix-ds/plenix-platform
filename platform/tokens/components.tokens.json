@@ -637,8 +637,19 @@
       "$value": "{plx-ref.size-400px}",
       "$type": "dimension"
     },
+    "side-panel-width-default": {
+      "$value": "{plx-sys.shell-nav-width}",
+      "$type": "dimension",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── SIDE PANEL: opens as wide as the navigation pane (owner, batch 261); a resizable panel is dragged between min and max ── */"
+          ]
+        }
+      }
+    },
     "side-panel-width-min": {
-      "$value": "{plx-ref.size-280px}",
+      "$value": "{plx-sys.shell-nav-width}",
       "$type": "dimension"
     },
     "side-panel-width-max": {

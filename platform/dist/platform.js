@@ -1222,13 +1222,14 @@ var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Preview
    Summary: The large picture of the item an inspector shows (or a placeholder with its icon and count).
-     It is the sunken surface, rounded, at least 140px tall, with its content centered.
+     It is the sunken surface, rounded, in a standard image shape (4:3 by default), with its content centered.
    Usage:
      <Preview as="button" onClick={openViewer} topStart={<Tag>PNG</Tag>} bottomEnd={<Icon name="expand" />}>
        <img src={src} alt="" />
      </Preview>
    Props:
      as: "div" (default) | "button" (opens the item, e.g. the media viewer)
+     aspect: the shape, as a photo's: "4/3" (default) | "3/2" | "1/1" | "16/9" (as MediaCard's)
      topStart: a small mark in the top-start corner (the type)
      bottomEnd: a small mark in the bottom-end corner (an expand icon)
      className: more classes on the preview
@@ -1237,6 +1238,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 function Preview({
   as: As = 'div',
+  aspect = '4/3',
   topStart,
   bottomEnd,
   className,
@@ -1245,7 +1247,10 @@ function Preview({
 }) {
   return /*#__PURE__*/_react.default.createElement(As, _extends({
     type: As === 'button' ? 'button' : undefined,
-    className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', className)
+    className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', className),
+    style: {
+      '--plx-comp-preview-aspect': aspect.replace('/', ' / ')
+    }
   }, rest), children, topStart ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-preview__corner plx-preview__corner--top-start"
   }, topStart) : null, bottomEnd ? /*#__PURE__*/_react.default.createElement("span", {
@@ -6579,7 +6584,8 @@ AppHeader.Account = function AppHeaderAccount({
     }),
     label: label,
     current: !!current,
-    tooltip: false
+    tooltip: false,
+    className: "plx-app-header__item--account"
   });
   const has = o => !!(o.href || o.onSelect);
   const choices = typeof window !== 'undefined' && window.PlenixWorkspace ? window.PlenixWorkspace.densities() : DENSITY_CHOICES;

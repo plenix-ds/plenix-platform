@@ -6,6 +6,26 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-10-09
+
+### Added
+- Preview `aspect` (owner: "this preview area should be based on standard image proportions"): "4/3" (default), "3/2",
+  "1/1" or "16/9", as MediaCard's. It was a 140px-high strip (about 2:1). (batch 261)
+- Token --plx-comp-side-panel-width-default: the navigation pane's width. (batch 261)
+
+### Changed
+- SidePanel opens as wide as the navigation pane (owner: "the right pane default size should be the same size as the left
+  pane"), and can be dragged down to it (min was 280px). (batch 261)
+- Card and MediaCard, selected (owner: "use the primary token color 1px border"): a 1px border in
+  --plx-sys-action-primary-background, without the ring. (batch 261)
+- The header's account picture gets no fill around it on hover or while its menu is open (owner: "no need to make this
+  enlarge when hovered"). (batch 261)
+
+### Fixed
+- MediaCard clipped everything inside it, so its actions menu was cut off at the card's edge (it looked like a layering
+  fault; the menu's layer token was right). The picture now clips itself to the card's inner corners and the menu shows in
+  full. (batch 261)
+
 ## [0.15.0] - 2026-10-09
 
 ### Added
