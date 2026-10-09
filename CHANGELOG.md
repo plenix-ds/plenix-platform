@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.16.2] - 2026-10-09
+
+### Added
+- The spec's Edit dialog saves (owner, items 10/11): it shows who is signed in (Authentik), and Save opens a pull request
+  with the changed tokens after the save service rebuilds them and runs the system check. Signed out, a Sign in link that
+  returns to the same page; a Viewer, why Save is off; a conflict, a failed check, an unconfigured server or a page
+  without the service, its own message and the changes to copy. (batch 262)
+
 ## [0.16.1] - 2026-10-09
 
 ### Fixed
