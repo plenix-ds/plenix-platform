@@ -1,6 +1,6 @@
 // Plenix tests · every page loads clean: each app page, the design system home, every built item (and its variant pages)
 // and every placeholder item. A console error (the style audit reports inline styles as errors), a page error, a
-// failed request, or a <table> that is not a DataGrid fails it. Only the work log is allowed to be missing: it lives outside this repository.
+// failed request, or a <table> that is not a DataTable fails it. Only the work log is allowed to be missing: it lives outside this repository.
 //   node tests/pages.test.js
 const { serve, launch, sleep } = require('./lib.js');
 const PORT = 8790, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
@@ -17,9 +17,9 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
   page.on('pageerror', (e) => errs.push('page error: ' + String(e).slice(0, 200)));
   page.on('response', (r) => { if (r.status() >= 400 && !ALLOWED_MISSING.test(r.url()) && !/favicon/.test(r.url())) errs.push(r.status() + ' ' + r.url()); });
   const failed = []; let n = 0;
-  // every table is a DataGrid (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it
+  // every table is a DataTable (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it
   const tables = async () => { const left = await page.evaluate(() => [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean))
-    .reduce((n, d) => n + d.querySelectorAll('table').length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataGrid'); };
+    .reduce((n, d) => n + d.querySelectorAll('table').length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataTable'); };
   const done = (name) => { n++; if (errs.length) failed.push([name, [...new Set(errs)].slice(0, 4)]); errs = []; };
 
   for (const a of APP_PAGES) { await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(600); await tables(); done(a); }

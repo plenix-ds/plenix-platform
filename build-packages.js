@@ -147,11 +147,11 @@ json(path.join(R, 'package.json'), manifest('react', 'Plenix React components an
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
 }));
 readme('react', `
-${exportsList.length} exports: every Platform component, pattern, provider and hook (\`Button\`, \`DataGrid\`, \`Dialog\`, \`AppShell\`, \`NavPane\`, \`ThemeProvider\`, …).
+${exportsList.length} exports: every Platform component, pattern, provider and hook (\`Button\`, \`DataTable\`, \`Dialog\`, \`AppShell\`, \`NavPane\`, \`ThemeProvider\`, …).
 
 \`\`\`js
 import '${SCOPE}/styles/plenix.css';
-import { AppShell, Button, DataGrid } from '${SCOPE}/react';
+import { AppShell, Button, DataTable } from '${SCOPE}/react';
 \`\`\`
 
 Pages without a build tool load \`dist/plenix.global.js\` after React 18 and use \`window.Plenix\`.
@@ -167,7 +167,7 @@ copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
-// the DataGrid's engine (Tabulator, MIT): loaded by the DataGrid from ./vendor/tabulator/ next to plenix.js, and shipped in the
+// the DataTable's engine (Tabulator, MIT): loaded by the DataTable from ./vendor/tabulator/ next to plenix.js, and shipped in the
 // React package (dist/vendor/tabulator/) for pages that set window.PlenixVendorBase or load window.Tabulator themselves
 copyDir(path.join(P, 'vendor', 'tabulator'), path.join(CDN, 'vendor', 'tabulator'));
 copyDir(path.join(P, 'vendor', 'tabulator'), path.join(R, 'dist', 'vendor', 'tabulator'));

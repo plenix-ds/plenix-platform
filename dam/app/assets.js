@@ -764,7 +764,7 @@ function Properties({
     }, {
       value: 'enabled',
       label: 'Enabled for',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "Enabled for",
         data: enabled,
         columns: [roleCol, switchCol('Enabled')]
@@ -772,7 +772,7 @@ function Properties({
     }, {
       value: 'actions',
       label: 'Actions',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "Actions",
         data: rowsOf(D.ACTIONS, ['name', 'roles']),
         columns: [{
@@ -798,7 +798,7 @@ function Properties({
     }, {
       value: 'view-all',
       label: 'View all folders',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can view all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can view all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "View all folders",
         data: viewAll,
         columns: [roleCol, switchCol('View all')]
@@ -806,7 +806,7 @@ function Properties({
     }, {
       value: 'edit-all',
       label: 'Edit all folders',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can edit all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can edit all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "Edit all folders",
         data: editAll,
         columns: [roleCol, switchCol('Edit all')]
@@ -846,7 +846,7 @@ function Fields({
         value: q,
         onChange: setQ,
         label: 'Search ' + D.FIELD_TOTAL + ' fields'
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "Fields",
         data: rows,
         empty: "No fields match",
@@ -1011,7 +1011,7 @@ function Transcoding({
         icon: "add",
         label: "Add new conversion",
         act: act
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "Conversion presets",
         data: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
         columns: [{
@@ -1078,7 +1078,7 @@ function Users({
     value: q,
     onChange: setQ,
     label: "Search users"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: "Users",
     empty: "No users match",
     data: rowsOf(D.USERS.filter(r => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login']),
@@ -1231,7 +1231,7 @@ function EmailTemplates({
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
     card: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: "Email templates",
     data: rowsOf(D.EMAIL_TEMPLATES, ['name', 'file']),
     columns: [{
@@ -1399,7 +1399,7 @@ function Database({
     filter: true,
     kind: c === 'Asset title' ? 'name' : c === 'Created on' ? 'data' : undefined
   }));
-  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+  const grid = label => /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: label,
     data: rows,
     columns: columns,
@@ -1559,7 +1559,7 @@ function Customizations({
     tone: "warning",
     variant: "danger-secondary",
     act: act
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: "Customizations",
     selectable: true,
     selected: sel,
@@ -1605,7 +1605,7 @@ function Scheduler({
         label: "Refresh",
         tone: "info",
         act: act
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
         label: "Scheduled tasks",
         data: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
         columns: [{
@@ -3043,7 +3043,7 @@ function FieldVisibilityDialog({
     value: q,
     onChange: e => setQ(e.target.value),
     onClear: () => setQ('')
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: title,
     data: rows,
     empty: EMPTY_TEXT,
@@ -3155,7 +3155,7 @@ function CatEditFieldsDialog({
     label: "Edit for all users",
     checked: forAll,
     onChange: e => setForAll(e.target.checked)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: "Edit fields",
     data: fields.map(f => ({
       id: f.name,
@@ -6339,7 +6339,7 @@ function HomePage() {
         danger: label === 'Delete',
         onSelect: act(msg, 'info')
       }, label)))
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
       label: "Categories",
       data: D.CATEGORY_CARDS,
       selectable: true,
@@ -6388,7 +6388,7 @@ function HomePage() {
       title: c.name,
       meta: c.count + ' assets',
       onOpen: () => openCategory(c.name)
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
       label: "Collections",
       data: D.COLLECTION_CARDS,
       on: {
@@ -6447,7 +6447,7 @@ function HomePage() {
         }));
       },
       "aria-current": asset === a.id ? 'true' : undefined
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
       label: "Search results",
       data: list,
       selectable: true,

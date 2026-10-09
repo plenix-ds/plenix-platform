@@ -3,7 +3,7 @@
    follows the navigation; every section stays mounted, so unsaved edits survive switching. Actions that have no back end
    yet confirm with a toast, as the HTML page did. */
 import React from 'react';
-import { SettingsLayout, SettingsSection, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, Tabs, DataGrid, Badge, Card, Icon, Menu, MenuItem, PropertyList, SearchField, Dialog, Toolbar, useToast, NavPane, Stack, Inline, Text, CodeBlock } from 'plenix-platform';
+import { SettingsLayout, SettingsSection, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, Tabs, DataTable, Badge, Card, Icon, Menu, MenuItem, PropertyList, SearchField, Dialog, Toolbar, useToast, NavPane, Stack, Inline, Text, CodeBlock } from 'plenix-platform';
 import { AssetPage } from '../shell/AssetShell.jsx';
 import * as D from './systemSettingsData.js';
 
@@ -83,11 +83,11 @@ function Properties({ act }) {
             <Field label="AI search prompt" layout="inline"><Textarea {...text('aiSearchPrompt', { placeholder: 'AI search prompt' })} /></Field>
             <Field label="AI search contains" layout="inline"><Textarea {...text('aiSearchContains', { placeholder: 'AI search contains' })} /></Field>
           </div>) },
-        { value: 'enabled', label: 'Enabled for', content: <DataGrid label="Enabled for" data={enabled} columns={[roleCol, switchCol('Enabled')]} /> },
-        { value: 'actions', label: 'Actions', content: <DataGrid label="Actions" data={rowsOf(D.ACTIONS, ['name', 'roles'])}
+        { value: 'enabled', label: 'Enabled for', content: <DataTable label="Enabled for" data={enabled} columns={[roleCol, switchCol('Enabled')]} /> },
+        { value: 'actions', label: 'Actions', content: <DataTable label="Actions" data={rowsOf(D.ACTIONS, ['name', 'roles'])}
           columns={[{ title: 'Action', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Roles', field: 'roles', filter: true }, { title: 'Status', field: 'status', kind: 'center', headerSort: false, render: () => <Badge tone="success">Active</Badge> }]} /> },
-        { value: 'view-all', label: 'View all folders', content: <><Lead>Groups and roles that can view all folders for this module.</Lead><DataGrid label="View all folders" data={viewAll} columns={[roleCol, switchCol('View all')]} /></> },
-        { value: 'edit-all', label: 'Edit all folders', content: <><Lead>Groups and roles that can edit all folders for this module.</Lead><DataGrid label="Edit all folders" data={editAll} columns={[roleCol, switchCol('Edit all')]} /></> },
+        { value: 'view-all', label: 'View all folders', content: <><Lead>Groups and roles that can view all folders for this module.</Lead><DataTable label="View all folders" data={viewAll} columns={[roleCol, switchCol('View all')]} /></> },
+        { value: 'edit-all', label: 'Edit all folders', content: <><Lead>Groups and roles that can edit all folders for this module.</Lead><DataTable label="Edit all folders" data={editAll} columns={[roleCol, switchCol('Edit all')]} /></> },
       ]} />
       <Actions act={act} />
     </Form>
@@ -108,7 +108,7 @@ function Fields({ act }) {
               <B icon="add" label="Add field" act={act} />
               <Search value={q} onChange={setQ} label={'Search ' + D.FIELD_TOTAL + ' fields'} />
             </Bar>
-            <DataGrid label="Fields" data={rows} empty="No fields match" columns={[{ title: 'Field name', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'ID', field: 'id2', kind: 'data' }, { title: 'Field type', field: 'type', filter: 'list' }]} />
+            <DataTable label="Fields" data={rows} empty="No fields match" columns={[{ title: 'Field name', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'ID', field: 'id2', kind: 'data' }, { title: 'Field type', field: 'type', filter: 'list' }]} />
             <CountNote>{'Showing ' + rows.length + ' of ' + D.FIELD_TOTAL + ' fields'}</CountNote>
           </>) },
         { value: 'edit-views', label: 'Edit views', content: <Lead>Configure which fields appear on the asset edit form, and in what order.</Lead> },
@@ -167,7 +167,7 @@ function Transcoding({ act }) {
         { value: 'presets', label: 'Preset configuration', content: (
           <>
             <Bar label="Conversion actions"><B icon="add" label="Add new conversion" act={act} /></Bar>
-            <DataGrid label="Conversion presets" data={rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media'])} columns={[
+            <DataTable label="Conversion presets" data={rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media'])} columns={[
               { title: 'Conversion', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Generated file', field: 'file', kind: 'data' }, { title: 'System defined', field: 'system', filter: 'list' },
               { title: 'On import', field: 'onImport', filter: 'list' }, { title: 'Media type', field: 'media', filter: 'list' }]} />
           </>) },
@@ -189,7 +189,7 @@ function Users({ act }) {
           <ButtonGroup label="Maintenance"><B icon="import" label="Import / Export" act={act} /><B icon="refresh" label="Reindex" tone="info" act={act} /></ButtonGroup>
           <Search value={q} onChange={setQ} label="Search users" />
         </Bar>
-        <DataGrid label="Users" empty="No users match" data={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
+        <DataTable label="Users" empty="No users match" data={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
           { title: 'Username', field: 'user', kind: 'name', frozen: true, filter: true }, { title: 'Name', field: 'name', filter: true }, { title: 'Email', field: 'email', filter: true },
           { title: 'Role', field: 'role', kind: 'center', filter: 'list', render: (r) => (r.role ? <Badge tone="info">{r.role}</Badge> : '—') },
           { title: 'Created', field: 'created', kind: 'data' }, { title: 'Last login', field: 'login', kind: 'data' }]} />
@@ -247,7 +247,7 @@ function EmailTemplates({ act }) {
     <div>
       <RecordPage.Header title="Email templates" description="The notification emails the catalog sends, and the template file behind each one." headingLevel={2} />
       <SettingsSection card>
-        <DataGrid label="Email templates" data={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
+        <DataTable label="Email templates" data={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
           { title: 'Template', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'File', field: 'file', kind: 'data' },
           { title: 'Actions', field: 'actions', kind: 'center', headerSort: false, render: (r) => <Button size="xs" variant="link" aria-label={'Edit ' + r.name} onClick={act('Edit ' + r.file, 'info')}>Edit</Button> }]} />
       </SettingsSection>
@@ -309,7 +309,7 @@ function Database({ act }) {
   const [expanded, setExpanded] = React.useState(false);
   const rows = D.DB_ROWS.filter((r) => match(q, r)).map((r, i) => Object.assign({ id: i }, ...D.DB_COLUMNS.map((c, j) => ({ ['c' + j]: r[j] }))));
   const columns = D.DB_COLUMNS.map((c, j) => ({ title: c, field: 'c' + j, frozen: j === 0, filter: true, kind: c === 'Asset title' ? 'name' : c === 'Created on' ? 'data' : undefined }));
-  const grid = (label) => <DataGrid label={label} data={rows} columns={columns} empty="No records match" />;
+  const grid = (label) => <DataTable label={label} data={rows} columns={columns} empty="No records match" />;
   return (
     <div>
       <RecordPage.Header title="Database" description="Browse, edit, import, or export any underlying data table." headingLevel={2} />
@@ -361,7 +361,7 @@ function Customizations({ act }) {
           <ButtonGroup label="Transfer"><B icon="export" label="Export" tone="info" act={act} /><B icon="import" label="Import" act={act} /></ButtonGroup>
           <B icon="trash" label="Delete" tone="warning" variant="danger-secondary" act={act} />
         </Bar>
-        <DataGrid label="Customizations" selectable selected={sel} onSelectionChange={setSel} data={rows} columns={[
+        <DataTable label="Customizations" selectable selected={sel} onSelectionChange={setSel} data={rows} columns={[
           { title: 'Type', field: 'type', filter: 'list' }, { title: 'Customization', field: 'name', kind: 'name', filter: true }, { title: 'Modules', field: 'modules', kind: 'data' }, { title: 'Date', field: 'date', kind: 'data' }]} />
       </SettingsSection>
     </div>
@@ -376,7 +376,7 @@ function Scheduler({ act }) {
         { value: 'scheduled', label: 'Scheduled', content: (
           <>
             <Bar label="Scheduled task actions"><B icon="refresh" label="Refresh" tone="info" act={act} /></Bar>
-            <DataGrid label="Scheduled tasks" data={rowsOf(D.SCHEDULED, ['name', 'path', 'status'])} columns={[
+            <DataTable label="Scheduled tasks" data={rowsOf(D.SCHEDULED, ['name', 'path', 'status'])} columns={[
               { title: 'Name', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Path', field: 'path', kind: 'data' }, { title: 'Status', field: 'status', filter: 'list' }]} />
           </>) },
         { value: 'events', label: 'Events', content: <Lead>Events that trigger scripts to run, such as an asset upload or a metadata change.</Lead> },

@@ -1,8 +1,8 @@
-/* Plenix · DataGrid
-   Summary: Every table in Plenix: a Tabulator grid (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
+/* Plenix · DataTable (and the engine the static Table shares, components/Table)
+   Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
      grid style (docs/datagrid-tabulator-demo.html, the owner's reference), drawn only with tokens (data-grid.css).
    Usage:
-     <DataGrid label="Assets" data={assets} index="id" selectable
+     <DataTable label="Assets" data={assets} index="id" selectable
        columns={[
          { title: 'Attachments', field: 'attach', kind: 'icon', icon: 'attachment', sorter: 'number',
            render: (a) => (a.attach ? <Icon name="attachment" label={a.attach + ' attachments'} /> : null) },
@@ -47,7 +47,7 @@
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
-     The row height and text size follow the density (--plx-sys-grid-row-height, --plx-sys-grid-font-size), also a
+     The row height and text size follow the density (--plx-sys-data-table-row-height, --plx-sys-data-table-font-size), also a
      density region's; a density change redraws the grid. A grid built while hidden is drawn again when it is shown.
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
@@ -58,12 +58,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { cx } from '../../utils/cx.js';
-import { loadTabulator, gridPx } from './tabulator.js';
+import { loadTabulator, tablePx } from './tabulator.js';
 
 const SEP = '\u0000';
-const LEAD = '--plx-comp-data-grid-lead-column-width';   // the checkbox and icon columns
+const LEAD = '--plx-comp-data-table-lead-column-width';   // the checkbox and icon columns
 const MIN = '--plx-ref-size-80px';                      // a resizable column's smallest width
-const INDENT = '--plx-comp-data-grid-tree-indent';      // a tree row's indent per level
+const INDENT = '--plx-comp-data-table-tree-indent';      // a tree row's indent per level
 const STRINGS = {
   empty: 'Nothing to show', sortUp: 'Sort A to Z', sortDown: 'Sort Z to A', clearSort: 'Clear sort', clearFilter: 'Clear filter',
   group: 'Group by this column', ungroup: 'Ungroup', fit: 'Fit to content', hide: 'Hide column', showAll: 'Show all columns',
@@ -74,10 +74,10 @@ const el = (tag, className, text) => { const e = document.createElement(tag); if
 const iconEl = (name) => { const s = el('span', 'plx-icon plx-icon--' + name); s.setAttribute('aria-hidden', 'true'); return s; };
 // a menu item's label: its icon box, its text; danger in the danger color
 function menuLabel(text, icon, danger) {
-  const item = el('span', cx('plx-data-grid__menu-item', danger && 'plx-data-grid__menu-item--danger'));
-  const box = el('span', 'plx-data-grid__menu-icon');
+  const item = el('span', cx('plx-data-table__menu-item', danger && 'plx-data-table__menu-item--danger'));
+  const box = el('span', 'plx-data-table__menu-icon');
   if (icon) box.appendChild(iconEl(icon));
-  item.appendChild(box); item.appendChild(el('span', 'plx-data-grid__menu-label', text));
+  item.appendChild(box); item.appendChild(el('span', 'plx-data-table__menu-label', text));
   return item;
 }
 // a copy of the rows as the page gave them (Tabulator writes into the row objects it is given: a field for every column)
@@ -89,9 +89,12 @@ function sameRows(a, b) {
   return a.every((r, i) => { const s = b[i], ka = Object.keys(r), kb = Object.keys(s);
     return ka.length === kb.length && ka.every((k) => (k === '_children' ? sameRows(r[k], s[k]) : r[k] === s[k])); });
 }
-const sizeOf = (v, host) => (typeof v === 'string' && /^(var\()?--/.test(v) ? gridPx(v, host) : v);
+const sizeOf = (v, host) => (typeof v === 'string' && /^(var\()?--/.test(v) ? tablePx(v, host) : v);
 
-export function DataGrid(props) {
+// the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
+// resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
+export function TableEngine(props) {
+  const isStatic = !!props.isStatic, B = isStatic ? 'plx-table' : 'plx-data-table';
   const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className } = props;
   const syncing = React.useRef(false);   // the selection is being set from the selected prop
   const frameRef = React.useRef(null);
@@ -108,7 +111,7 @@ export function DataGrid(props) {
   // a container for a React cell, kept per cell so React keeps its state between renders
   const container = (id) => {
     let e = cells.current.get(id);
-    if (!e) { e = el('span', 'plx-data-grid__portal'); cells.current.set(id, e); pending.current = true; bump(); }
+    if (!e) { e = el('span', B + '__portal'); cells.current.set(id, e); pending.current = true; bump(); }
     return e;
   };
   // once React has filled new cells, Tabulator measures again (column widths, row heights)
@@ -122,7 +125,7 @@ export function DataGrid(props) {
   // Plenix columns -> Tabulator column definitions
   const defsOf = (cols, host) => {
     const T = () => tableRef.current;
-    const lead = gridPx(LEAD, host);
+    const lead = tablePx(LEAD, host);
     const labelAt = cols.findIndex((c) => c.rowLabel);
     const filters = (field) => T().getFilters().filter((f) => f.field === field);
     const setFilter = (column, kind, value) => {
@@ -135,20 +138,20 @@ export function DataGrid(props) {
     const close = () => document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     const filterPopup = (c) => (e, column, onRendered) => {
       const field = column.getField(), active = filters(field)[0];
-      const id = 'plx-data-grid-filter-' + Math.random().toString(36).slice(2);
-      const box = el('div', 'plx-data-grid__filter');
-      const lab = el('label', 'plx-data-grid__filter-label', STRINGS.filter + ' ' + (c.title || field)); lab.htmlFor = id;
+      const id = 'plx-data-table-filter-' + Math.random().toString(36).slice(2);
+      const box = el('div', 'plx-data-table__filter');
+      const lab = el('label', 'plx-data-table__filter-label', STRINGS.filter + ' ' + (c.title || field)); lab.htmlFor = id;
       let input;
       if (c.filter === 'list') {
-        input = el('select', 'plx-input plx-data-grid__filter-input');
+        input = el('select', 'plx-input plx-data-table__filter-input');
         const values = [];
         (function walk(rows) { rows.forEach((r) => { if (r[field] != null && r[field] !== '') values.push(r[field]); if (r._children) walk(r._children); }); })(latest.current.data || []);
         [''].concat(Array.from(new Set(values)).sort()).forEach((v) => { const o = el('option', null, v === '' ? STRINGS.any : String(v)); o.value = v; input.appendChild(o); });
       } else {
-        input = el('input', 'plx-input plx-data-grid__filter-input'); input.type = 'text'; input.placeholder = STRINGS.contains;
+        input = el('input', 'plx-input plx-data-table__filter-input'); input.type = 'text'; input.placeholder = STRINGS.contains;
       }
       input.id = id; input.value = active ? active.value : '';
-      const actions = el('div', 'plx-data-grid__filter-actions');
+      const actions = el('div', 'plx-data-table__filter-actions');
       const button = (text, primary, fn) => { const b = el('button', cx('plx-button', primary ? 'plx-button--primary' : 'plx-button--secondary', 'plx-button--size-sm'), text); b.type = 'button'; b.addEventListener('click', fn); return b; };
       actions.appendChild(button(STRINGS.clear, false, () => { setFilter(column, c.filter, ''); close(); }));
       actions.appendChild(button(STRINGS.apply, true, () => { setFilter(column, c.filter, input.value); close(); }));
@@ -180,18 +183,19 @@ export function DataGrid(props) {
     return cols.map((c, i) => {
       const { kind, icon, render, filter, rowLabel, ...rest } = c;
       const d = { ...rest };
+      if (isStatic) { Object.assign(d, { headerSort: false, resizable: false }); delete d.editor; delete d.headerContextMenu; delete d.headerPopup; delete d.cellClick; delete d.rowHandle; }
       ['width', 'minWidth', 'maxWidth'].forEach((k) => { if (d[k] != null) d[k] = sizeOf(d[k], host); });
-      d.cssClass = cx(c.cssClass, kind && 'plx-data-grid__cell--' + kind, (rowLabel || (labelAt > i)) && 'plx-data-grid__cell--row-label') || undefined;
+      d.cssClass = cx(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || (labelAt > i)) && B + '__cell--row-label') || undefined;
       if (labelAt >= i) d.frozen = true;
       if (kind === 'icon') {
         Object.assign(d, { width: lead, minWidth: lead, maxWidth: lead, resizable: false, hozAlign: 'center', headerHozAlign: 'center' });
-        d.titleFormatter = () => { const s = el('span', 'plx-data-grid__header-icon'); s.title = c.title || c.field; s.setAttribute('role', 'img'); s.setAttribute('aria-label', s.title); s.appendChild(iconEl(icon || 'circle-info')); return s; };
+        d.titleFormatter = () => { const s = el('span', B + '__header-icon'); s.title = c.title || c.field; s.setAttribute('role', 'img'); s.setAttribute('aria-label', s.title); s.appendChild(iconEl(icon || 'circle-info')); return s; };
       }
       if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false, hozAlign: 'right' });
       if (kind === 'wrap') d.variableHeight = true;
       if (render) d.formatter = (cell) => { const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
-      if (filter) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
-      if (headerMenu && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
+      if (filter && !isStatic) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
+      if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
       return d;
     });
   };
@@ -208,9 +212,9 @@ export function DataGrid(props) {
     if (!win) return undefined;
     loadTabulator(win).then((Tabulator) => {
       if (!alive || !hostRef.current || !hostRef.current.ownerDocument.defaultView) return;
-      const host = hostRef.current, lead = gridPx(LEAD, host);
+      const host = hostRef.current, lead = tablePx(LEAD, host);
       const p = latest.current;
-      const placeholder = el('div', 'plx-data-grid__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
+      const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
       const rowContextMenu = p.rowMenu ? (e, row) => {
         const cur = latest.current.rowMenu, d = row.getData();
         const list = typeof cur === 'function' ? cur(d) : cur;
@@ -225,13 +229,13 @@ export function DataGrid(props) {
         layout: 'fitColumns',
         index: p.index || 'id',
         placeholder,
-        columnDefaults: { resizable: true, minWidth: gridPx(MIN, host) },
+        columnDefaults: { resizable: true, minWidth: tablePx(MIN, host) },
         editTriggerEvent: 'dblclick',
-        dataTreeChildIndent: gridPx(INDENT, host),
+        dataTreeChildIndent: tablePx(INDENT, host),
         rowContextMenu,
         rowHeader: p.selectable ? { formatter: 'rowSelection', titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
           width: lead, minWidth: lead, maxWidth: lead, hozAlign: 'center', headerHozAlign: 'center',
-          cssClass: cx('plx-data-grid__cell--select', labelled && 'plx-data-grid__cell--row-label'),
+          cssClass: cx('plx-data-table__cell--select', labelled && 'plx-data-table__cell--row-label'),
           cellClick: (e, cell) => cell.getRow().toggleSelect() } : false,
         selectableRows: p.selectable ? true : false,
         selectableRowsRangeMode: 'click',
@@ -240,18 +244,19 @@ export function DataGrid(props) {
           const own = latest.current.options && latest.current.options.rowFormatter;
           if (own) own(row);
           const e = row.getElement();
-          if (latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
+          if (!isStatic && latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
             e.setAttribute('data-plx-open', ''); e.tabIndex = 0;
             e.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target === e) { ev.preventDefault(); e.click(); } });
           }
         },
         // a group row: its value and a count, one cell (Tabulator marks it a row group with no rows: axe aria-required-children)
-        groupHeader: (value, count) => { const s = el('span', null, String(value)); s.setAttribute('role', 'gridcell'); s.appendChild(el('span', 'plx-data-grid__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items))); return s; },
+        groupHeader: (value, count) => { const s = el('span', null, String(value)); s.setAttribute('role', 'gridcell'); s.appendChild(el('span', 'plx-data-table__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items))); return s; },
         ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => k !== 'rowFormatter')),
         data: p.data || [],
 
         height: p.height ? sizeOf(p.height, host) : (p.options && p.options.height)
       };
+      if (isStatic) Object.assign(opts, { rowContextMenu: undefined, rowHeader: false, selectableRows: false, movableColumns: false, movableRows: false, groupBy: false });
       opts.columns = defsOf(p.columns, host);
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
@@ -275,7 +280,7 @@ export function DataGrid(props) {
       table.on('renderComplete', aria);
       table.on('tableBuilt', () => {
         aria(); builtRef.current = true;
-        const on = latest.current.on || {};
+        const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h) h(...a); }));
         table.on('rowSelectionChanged', () => { const q = latest.current; if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map((x) => x[q.index || 'id'])); });
         syncSelection(table);
@@ -355,10 +360,13 @@ export function DataGrid(props) {
   }
 
   return (
-    <div ref={frameRef} className={cx('plx-data-grid', columns.some((c) => c.rowLabel) && 'plx-data-grid--row-header', className)}>
-      {error ? <div className="plx-data-grid__empty" role="alert">{STRINGS.failed} {String(error.message || error)}</div> : null}
-      <div ref={hostRef} className="plx-data-grid__grid" />
+    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', className)}>
+      {error ? <div className={B + '__empty'} role="alert">{STRINGS.failed} {String(error.message || error)}</div> : null}
+      <div ref={hostRef} className={B + '__table'} />
       {portals}
     </div>
   );
 }
+
+// the interactive table: records to sort, filter, select, open, edit, group or nest
+export function DataTable(props) { return <TableEngine {...props} isStatic={false} />; }

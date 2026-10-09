@@ -1,10 +1,10 @@
-// Plenix tests · the DataGrid against the owner's reference (docs/datagrid-tabulator-demo.html, "Tabulator in Plenix"):
-// the same grid is drawn twice, once by the reference page and once by the Platform DataGrid, and every part's computed
+// Plenix tests · the DataTable against the owner's reference (docs/datagrid-tabulator-demo.html, "Tabulator in Plenix"):
+// the same grid is drawn twice, once by the reference page and once by the Platform DataTable, and every part's computed
 // style is compared: the frame, header, titles, column lines, rows, cells (name, technical values), the checkbox and
 // icon columns, hover, selected, selected + hover, the sort arrow and filter button on hover, the header menu, the row
 // menu, the filter popup, group rows and tree controls; in light and dark, at Compact, Standard and Comfortable.
 // The reference loads its fonts and Tabulator from the network, so this is a check to run by hand, not part of npm test.
-//   node tests/grid-reference.js [--all] [--shots <folder>]
+//   node tests/data-table-reference.js [--all] [--shots <folder>]
 const fs = require('fs');
 const path = require('path');
 const { ROOT, serve, launch, sleep } = require('./lib.js');
@@ -48,29 +48,29 @@ const PAGE_JS = `(function () {
   ];
   var rowMenu = [{ label: 'Open', icon: 'open', onSelect: function () {} }, { label: 'Rename', icon: 'pencil', onSelect: function () {} }, { separator: true },
     { label: 'Delete', icon: 'trash', danger: true, onSelect: function () {} }];
-  ReactDOM.createRoot(document.getElementById('app')).render(h(P.DataGrid, { label: 'Assets', data: data, columns: columns, selectable: true, rowMenu: rowMenu, height: '520px',
+  ReactDOM.createRoot(document.getElementById('app')).render(h(P.DataTable, { label: 'Assets', data: data, columns: columns, selectable: true, rowMenu: rowMenu, height: '520px',
     options: { dataTree: true, dataTreeElementColumn: 'name', dataTreeStartExpanded: [true, false], movableColumns: true },
     onReady: function (t) { window.__grid = t; } }));
 })();`;
 
-// the parts compared: [name, reference selector, DataGrid selector, properties, pseudo-element]
+// the parts compared: [name, reference selector, DataTable selector, properties, pseudo-element]
 const COLORS = ['background-color', 'color'];
 const PARTS = [
-  ['frame', '.frame', '.plx-data-grid', ['background-color', 'border-top-color', 'border-top-width', 'border-top-left-radius']],
-  ['grid', '#grid', '.plx-data-grid__grid', ['background-color', 'color', 'font-size', 'font-family']],
-  ['header', '#grid .tabulator-header', '.plx-data-grid .tabulator-header', ['background-color', 'color', 'font-weight', 'border-bottom-color', 'border-bottom-width']],
-  ['header cell', '#grid .tabulator-col[tabulator-field="name"] .tabulator-col-content', '.plx-data-grid .tabulator-col[tabulator-field="name"] .tabulator-col-content', ['height', 'padding-left', 'padding-right']],
-  ['column title', '#grid .tabulator-col[tabulator-field="name"] .tabulator-col-title', '.plx-data-grid .tabulator-col[tabulator-field="name"] .tabulator-col-title', ['font-size', 'font-weight', 'color']],
-  ['header column line', '#grid .tabulator-col[tabulator-field="type"]', '.plx-data-grid .tabulator-col[tabulator-field="type"]', ['background-color', 'top', 'bottom', 'width'], '::before'],
-  ['row', '#grid .tabulator-row:nth-child(7)', '.plx-data-grid .tabulator-row:nth-child(7)', ['background-color', 'border-bottom-color', 'border-bottom-width', 'height']],
-  ['cell', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', ['padding-left', 'padding-right', 'height', 'line-height', 'font-size', 'color']],
-  ['column line', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', ['background-color', 'top', 'bottom', 'width'], '::before'],
-  ['name cell', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="name"] .name', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="name"]', ['font-weight', 'color']],
-  ['technical value', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="type"] .mono', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="type"]', ['font-size', 'color', 'font-family']],
-  ['checkbox', '#grid .tabulator-row:nth-child(7) .tabulator-row-header input', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-row-header input', ['width', 'height', 'accent-color']],
-  ['checkbox column', '#grid .tabulator-row:nth-child(7) .tabulator-row-header', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-row-header', ['width', 'padding-left']],
-  ['icon column', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="attach"]', '.plx-data-grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="attach"]', ['width', 'color']],
-  ['tree control', '#grid .tabulator-data-tree-control', '.plx-data-grid .tabulator-data-tree-control', ['width', 'height', 'border-top-color', 'border-top-left-radius', 'margin-right']],
+  ['frame', '.frame', '.plx-data-table', ['background-color', 'border-top-color', 'border-top-width', 'border-top-left-radius']],
+  ['grid', '#grid', '.plx-data-table__table', ['background-color', 'color', 'font-size', 'font-family']],
+  ['header', '#grid .tabulator-header', '.plx-data-table .tabulator-header', ['background-color', 'color', 'font-weight', 'border-bottom-color', 'border-bottom-width']],
+  ['header cell', '#grid .tabulator-col[tabulator-field="name"] .tabulator-col-content', '.plx-data-table .tabulator-col[tabulator-field="name"] .tabulator-col-content', ['height', 'padding-left', 'padding-right']],
+  ['column title', '#grid .tabulator-col[tabulator-field="name"] .tabulator-col-title', '.plx-data-table .tabulator-col[tabulator-field="name"] .tabulator-col-title', ['font-size', 'font-weight', 'color']],
+  ['header column line', '#grid .tabulator-col[tabulator-field="type"]', '.plx-data-table .tabulator-col[tabulator-field="type"]', ['background-color', 'top', 'bottom', 'width'], '::before'],
+  ['row', '#grid .tabulator-row:nth-child(7)', '.plx-data-table .tabulator-row:nth-child(7)', ['background-color', 'border-bottom-color', 'border-bottom-width', 'height']],
+  ['cell', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', ['padding-left', 'padding-right', 'height', 'line-height', 'font-size', 'color']],
+  ['column line', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="owner"]', ['background-color', 'top', 'bottom', 'width'], '::before'],
+  ['name cell', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="name"] .name', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="name"]', ['font-weight', 'color']],
+  ['technical value', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="type"] .mono', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="type"]', ['font-size', 'color', 'font-family']],
+  ['checkbox', '#grid .tabulator-row:nth-child(7) .tabulator-row-header input', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-row-header input', ['width', 'height', 'accent-color']],
+  ['checkbox column', '#grid .tabulator-row:nth-child(7) .tabulator-row-header', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-row-header', ['width', 'padding-left']],
+  ['icon column', '#grid .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="attach"]', '.plx-data-table .tabulator-row:nth-child(7) .tabulator-cell[tabulator-field="attach"]', ['width', 'color']],
+  ['tree control', '#grid .tabulator-data-tree-control', '.plx-data-table .tabulator-data-tree-control', ['width', 'height', 'border-top-color', 'border-top-left-radius', 'margin-right']],
 ];
 const first = (v) => v.split(',')[0].replace(/["']/g, '').trim();
 const SHOTS = process.argv.includes('--shots') ? path.resolve(process.argv[process.argv.indexOf('--shots') + 1]) : null;
@@ -110,54 +110,54 @@ async function read(page, sel, props, pseudo) {
       await ref.evaluate((m, d) => { document.documentElement.setAttribute('data-theme', m); document.querySelector('#den [data-d="' + d + '"]').click(); }, mode, density);
       await ours.goto('http://127.0.0.1:8806/Plenix/tests/.grid-page.html', { waitUntil: 'networkidle0' });
       await ours.evaluate((m, d) => { document.documentElement.setAttribute('data-plx-mode', m); document.documentElement.setAttribute('data-plx-density', d); }, mode, density);
-      await ours.waitForFunction(() => window.__grid && document.querySelectorAll('.plx-data-grid .tabulator-row').length > 8, { timeout: 15000 });
+      await ours.waitForFunction(() => window.__grid && document.querySelectorAll('.plx-data-table .tabulator-row').length > 8, { timeout: 15000 });
       await sleep(600);
       for (const [name, a, b, props, pseudo] of PARTS) await compare(tag + name, a, b, props, pseudo);
 
       // hover, selected, selected + hover (the same row in both)
       const row = (p, s) => p.$(s + ' .tabulator-row:nth-child(9)');
-      await (await row(ref, '#grid')).hover(); await (await row(ours, '.plx-data-grid')).hover(); await sleep(250);
-      await compare(tag + 'row hover', '#grid .tabulator-row:nth-child(9)', '.plx-data-grid .tabulator-row:nth-child(9)', COLORS.slice(0, 1));
-      await compare(tag + 'header hover: sort arrow', '#grid .tabulator-col[tabulator-field="owner"] .tabulator-col-sorter', '.plx-data-grid .tabulator-col[tabulator-field="owner"] .tabulator-col-sorter', ['opacity']);
-      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-grid']]) await (await p.$(s + ' .tabulator-col[tabulator-field="owner"]')).hover();
+      await (await row(ref, '#grid')).hover(); await (await row(ours, '.plx-data-table')).hover(); await sleep(250);
+      await compare(tag + 'row hover', '#grid .tabulator-row:nth-child(9)', '.plx-data-table .tabulator-row:nth-child(9)', COLORS.slice(0, 1));
+      await compare(tag + 'header hover: sort arrow', '#grid .tabulator-col[tabulator-field="owner"] .tabulator-col-sorter', '.plx-data-table .tabulator-col[tabulator-field="owner"] .tabulator-col-sorter', ['opacity']);
+      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-table']]) await (await p.$(s + ' .tabulator-col[tabulator-field="owner"]')).hover();
       await sleep(250);
-      await compare(tag + 'header hover: filter button', '#grid .tabulator-col[tabulator-field="owner"] .tabulator-header-popup-button', '.plx-data-grid .tabulator-col[tabulator-field="owner"] .tabulator-header-popup-button', ['opacity', 'color', 'right', 'border-top-left-radius', 'padding-top', 'padding-left', 'padding-right']);
-      await compare(tag + 'header hover: title room', '#grid .tabulator-col[tabulator-field="owner"] .tabulator-col-title', '.plx-data-grid .tabulator-col[tabulator-field="owner"] .tabulator-col-title', ['padding-right']);
-      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-grid']]) await (await p.$(s + ' .tabulator-row:nth-child(9) .tabulator-row-header input')).click();
+      await compare(tag + 'header hover: filter button', '#grid .tabulator-col[tabulator-field="owner"] .tabulator-header-popup-button', '.plx-data-table .tabulator-col[tabulator-field="owner"] .tabulator-header-popup-button', ['opacity', 'color', 'right', 'border-top-left-radius', 'padding-top', 'padding-left', 'padding-right']);
+      await compare(tag + 'header hover: title room', '#grid .tabulator-col[tabulator-field="owner"] .tabulator-col-title', '.plx-data-table .tabulator-col[tabulator-field="owner"] .tabulator-col-title', ['padding-right']);
+      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-table']]) await (await p.$(s + ' .tabulator-row:nth-child(9) .tabulator-row-header input')).click();
       await ref.mouse.move(5, 5); await ours.mouse.move(5, 5); await sleep(250);
-      await compare(tag + 'row selected', '#grid .tabulator-row:nth-child(9)', '.plx-data-grid .tabulator-row:nth-child(9)', COLORS.slice(0, 1));
-      await (await row(ref, '#grid')).hover(); await (await row(ours, '.plx-data-grid')).hover(); await sleep(250);
-      await compare(tag + 'row selected + hover', '#grid .tabulator-row:nth-child(9)', '.plx-data-grid .tabulator-row:nth-child(9)', COLORS.slice(0, 1));
+      await compare(tag + 'row selected', '#grid .tabulator-row:nth-child(9)', '.plx-data-table .tabulator-row:nth-child(9)', COLORS.slice(0, 1));
+      await (await row(ref, '#grid')).hover(); await (await row(ours, '.plx-data-table')).hover(); await sleep(250);
+      await compare(tag + 'row selected + hover', '#grid .tabulator-row:nth-child(9)', '.plx-data-table .tabulator-row:nth-child(9)', COLORS.slice(0, 1));
       // --shots <folder>: pictures of both grids (a selected row, another row hovered), side by side for a person to see
       if (SHOTS) {
-        await (await ref.$('#grid .tabulator-row:nth-child(5)')).hover(); await (await ours.$('.plx-data-grid .tabulator-row:nth-child(5)')).hover(); await sleep(250);
+        await (await ref.$('#grid .tabulator-row:nth-child(5)')).hover(); await (await ours.$('.plx-data-table .tabulator-row:nth-child(5)')).hover(); await sleep(250);
         await (await ref.$('.frame')).screenshot({ path: path.join(SHOTS, 'reference-' + mode + '-' + density + '.png') });
-        await (await ours.$('.plx-data-grid')).screenshot({ path: path.join(SHOTS, 'datagrid-' + mode + '-' + density + '.png') });
+        await (await ours.$('.plx-data-table')).screenshot({ path: path.join(SHOTS, 'datagrid-' + mode + '-' + density + '.png') });
       }
 
       // the header menu and the row menu
-      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-grid']]) { const e = await p.$(s + ' .tabulator-col[tabulator-field="owner"]'); const bx = await e.boundingBox(); await p.mouse.click(bx.x + 10, bx.y + 10, { button: 'right' }); }
+      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-table']]) { const e = await p.$(s + ' .tabulator-col[tabulator-field="owner"]'); const bx = await e.boundingBox(); await p.mouse.click(bx.x + 10, bx.y + 10, { button: 'right' }); }
       await sleep(300);
       await compare(tag + 'header menu', '.tabulator-menu', '.tabulator-menu', ['background-color', 'border-top-color', 'border-top-left-radius', 'box-shadow', 'font-size', 'padding-top', 'color']);
       await compare(tag + 'menu item', '.tabulator-menu .tabulator-menu-item', '.tabulator-menu .tabulator-menu-item', ['padding-top', 'padding-left', 'padding-right', 'border-top-left-radius']);
       await compare(tag + 'menu separator', '.tabulator-menu .tabulator-menu-separator', '.tabulator-menu .tabulator-menu-separator', ['border-top-color', 'margin-top']);
-      await compare(tag + 'menu icon gap', '.tabulator-menu .tabulator-menu-item', '.tabulator-menu .plx-data-grid__menu-item', ['column-gap'], null, null, null);
+      await compare(tag + 'menu icon gap', '.tabulator-menu .tabulator-menu-item', '.tabulator-menu .plx-data-table__menu-item', ['column-gap'], null, null, null);
       await ref.keyboard.press('Escape'); await ours.keyboard.press('Escape'); await ref.mouse.click(5, 5); await ours.mouse.click(5, 5); await sleep(200);
 
       // the filter popup
-      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-grid']]) { await (await p.$(s + ' .tabulator-col[tabulator-field="owner"]')).hover(); await sleep(150); await (await p.$(s + ' .tabulator-col[tabulator-field="owner"] .tabulator-header-popup-button')).click(); }
+      for (const [p, s] of [[ref, '#grid'], [ours, '.plx-data-table']]) { await (await p.$(s + ' .tabulator-col[tabulator-field="owner"]')).hover(); await sleep(150); await (await p.$(s + ' .tabulator-col[tabulator-field="owner"] .tabulator-header-popup-button')).click(); }
       await sleep(300);
       await compare(tag + 'filter popup', '.tabulator-popup-container', '.tabulator-popup-container', ['background-color', 'border-top-color', 'border-top-left-radius', 'box-shadow']);
-      await compare(tag + 'filter label', '.fp label', '.plx-data-grid__filter-label', ['font-size', 'font-weight', 'letter-spacing', 'text-transform', 'color']);
-      await compare(tag + 'filter body', '.fp', '.plx-data-grid__filter', ['padding-top', 'row-gap', 'min-width']);
+      await compare(tag + 'filter label', '.fp label', '.plx-data-table__filter-label', ['font-size', 'font-weight', 'letter-spacing', 'text-transform', 'color']);
+      await compare(tag + 'filter body', '.fp', '.plx-data-table__filter', ['padding-top', 'row-gap', 'min-width']);
       await ref.mouse.click(5, 5); await ours.mouse.click(5, 5); await sleep(200);
 
       // group rows
       await ref.evaluate(() => document.querySelector('#grp [data-g="type"]').click());
       await ours.evaluate(() => { window.__grid.setGroupBy('type'); });
       await sleep(500);
-      await compare(tag + 'group row', '#grid .tabulator-group', '.plx-data-grid .tabulator-group', ['background-color', 'color', 'font-weight', 'height', 'padding-left', 'border-bottom-color']);
-      await compare(tag + 'group count', '#grid .tabulator-group span', '.plx-data-grid .tabulator-group .plx-data-grid__group-count', ['color', 'font-size', 'font-family', 'margin-left', 'font-weight']);
+      await compare(tag + 'group row', '#grid .tabulator-group', '.plx-data-table .tabulator-group', ['background-color', 'color', 'font-weight', 'height', 'padding-left', 'border-bottom-color']);
+      await compare(tag + 'group count', '#grid .tabulator-group span', '.plx-data-table .tabulator-group .plx-data-table__group-count', ['color', 'font-size', 'font-family', 'margin-left', 'font-weight']);
     }
   }
   for (const b of browsers) await b.close();
@@ -165,6 +165,6 @@ async function read(page, sel, props, pseudo) {
   fs.unlinkSync(pageFile); fs.unlinkSync(jsFile);
   const bad = res.filter((r) => !r[1]);
   res.forEach(([n, ok, d]) => { if (!ok || process.argv.includes('--all')) console.log((ok ? '  ok   ' : '  DIFF ') + n + (ok ? '' : ' · ' + d)); });
-  console.log((bad.length ? 'GRID_DIFF ' : 'GRID_SAME ') + (res.length - bad.length) + '/' + res.length + ' parts match the reference');
+  console.log((bad.length ? 'TABLE_DIFF ' : 'TABLE_SAME ') + (res.length - bad.length) + '/' + res.length + ' parts match the reference');
   process.exit(bad.length ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

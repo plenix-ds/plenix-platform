@@ -877,11 +877,11 @@ var _shared = require("./shared.jsx");
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
 
-// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
 const facts = (label, rows) => {
   const list = rows.filter(Boolean);
-  return /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
     label: label,
     headerMenu: false,
     options: {
@@ -1421,7 +1421,7 @@ const PRI = {
 };
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 // each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (Tabulator column
-// definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
+// definitions for the DataTable; a grid row is the source row's cells with its key as id, its name and its facets)
 const FIND_SOURCES = exports.FIND_SOURCES = {
   projects: {
     label: "Projects",
@@ -1866,7 +1866,7 @@ function FindWorkspace({
       icon: "sparkle",
       onClick: () => onAskAI(query)
     }, "Ask AI") : null
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
     label: (app === "home" ? "Everything" : src.label) + " search results",
     columns: src.columns,
     data: found.map(r => ({
@@ -2362,11 +2362,11 @@ var _classification = require("../suite/classification.jsx");
 const {
   useState
 } = React;
-// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
 const facts = (label, rows) => {
   const list = rows.filter(Boolean);
-  return /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
     label: label,
     headerMenu: false,
     options: {
@@ -2507,7 +2507,7 @@ function CapDoc({
     content: facts("Functionality", (cap.functionality || []).map(f => [f.feature, f.behavior]))
   }, {
     title: "Scenarios",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    content: /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: "Scenarios",
       data: (cap.scenarios || []).map((r, i) => ({
         ...r,
@@ -2529,7 +2529,7 @@ function CapDoc({
     title: "Specification",
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: "Fields",
       data: (spec.ownFields || []).map((f, i) => ({
         id: i,
@@ -2708,7 +2708,7 @@ function DocsPanel({
     title: "Core Philosophy"
   }, facts("Core philosophy", (window.PV_PHILOSOPHY || []).map(ph => [ph.p, ph.d]))), /*#__PURE__*/React.createElement(DocSection, {
     title: "What the Platform Unifies"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
     label: "What the Platform Unifies",
     data: (window.PV_UNIFIES || []).map((r, i) => ({
       id: i,
@@ -2808,7 +2808,7 @@ function DocsPanel({
       as: "p"
     }, layer.desc), layer.note && /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
-    }, layer.note), layer.table && /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    }, layer.note), layer.table && /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: layer.term,
       data: tableRows(layer.table),
       columns: tableColumns(layer.table)
@@ -2816,7 +2816,7 @@ function DocsPanel({
       gap: "xs"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "heading"
-    }, layer.subTerm, " \u2014 ", layer.subDesc), /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    }, layer.subTerm, " \u2014 ", layer.subDesc), /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: layer.subTerm,
       data: tableRows(layer.subTable),
       columns: tableColumns(layer.subTable)
@@ -2933,7 +2933,7 @@ function DocsPanel({
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       as: "p"
-    }, "The 4 universal fields present on every item in every capability. They connect items to the rest of the system \u2014 to projects, categories, and tags \u2014 enabling cross-cutting views, filtering, and retrieval."), /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+    }, "The 4 universal fields present on every item in every capability. They connect items to the rest of the system \u2014 to projects, categories, and tags \u2014 enabling cross-cutting views, filtering, and retrieval."), /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: "Anchor fields",
       data: [["projectType", "string | null", "Dropdown — single select from Settings > Project Types"], ["projects[]", "string[]", "Search-to-select with create — many-to-many"], ["categories[]", "string[]", "Grouped search-to-select with create — shows hierarchy"], ["tags[]", "string[]", "Grouped search-to-select with create — auto-lowercase-hyphen"]].map((r, i) => ({
         id: i,
@@ -2992,7 +2992,7 @@ function DocsPanel({
         }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
           variant: "data"
         }, fieldCount, " own field", fieldCount !== 1 ? "s" : ""), /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, type.capability))
-      }, /*#__PURE__*/React.createElement(_plenixPlatform.DataGrid, {
+      }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
         label: type.label + " fields",
         empty: "No own fields",
         data: fields.map(([n, d]) => ({

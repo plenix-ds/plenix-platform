@@ -4490,31 +4490,31 @@ function MediaCard({
   }, actions) : null));
 }
   } },
-  "platform/components/DataGrid/tabulator.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/DataTable/tabulator.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.gridPx = gridPx;
 exports.loadTabulator = loadTabulator;
-/* Plenix · DataGrid engine (tabulator.js)
-   Summary: Loads the engine every DataGrid runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
+exports.tablePx = tablePx;
+/* Plenix · DataTable engine (tabulator.js)
+   Summary: Loads the engine every DataTable runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
    Usage:
      loadTabulator().then((Tabulator) => new Tabulator(element, options));
-     const width = gridPx('--plx-ref-size-36px');
+     const width = tablePx('--plx-ref-size-36px');
    Props:
      loadTabulator(win): adds Tabulator's core stylesheet and script to the page once (the given window's, default this
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
-     gridPx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
+     tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
-     The core stylesheet goes first in the head, so platform.css (the Plenix look, data-grid.css) wins over it.
+     The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
      build's plenix.js -> ./vendor/); window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
-     A failed load rejects; the DataGrid shows the reason in place of the grid. */
+     A failed load rejects; the DataTable shows the reason in place of the grid. */
 
 // the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
 const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
@@ -4567,7 +4567,7 @@ function loadTabulator(win) {
 }
 
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too
-function gridPx(token, el) {
+function tablePx(token, el) {
   if (!token || typeof document === 'undefined') return 0;
   const m = /--[\w-]+/.exec(String(token));
   if (!m) return parseFloat(token) || 0;
@@ -4576,23 +4576,24 @@ function gridPx(token, el) {
   return parseFloat(v) || 0;
 }
   } },
-  "platform/components/DataGrid/DataGrid.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataGrid/tabulator.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DataGrid = DataGrid;
+exports.DataTable = DataTable;
+exports.TableEngine = TableEngine;
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = _interopRequireDefault(require("react-dom"));
 var _cx = require("../../utils/cx.js");
 var _tabulator = require("./tabulator.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DataGrid
-   Summary: Every table in Plenix: a Tabulator grid (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable (and the engine the static Table shares, components/Table)
+   Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
      grid style (docs/datagrid-tabulator-demo.html, the owner's reference), drawn only with tokens (data-grid.css).
    Usage:
-     <DataGrid label="Assets" data={assets} index="id" selectable
+     <DataTable label="Assets" data={assets} index="id" selectable
        columns={[
          { title: 'Attachments', field: 'attach', kind: 'icon', icon: 'attachment', sorter: 'number',
            render: (a) => (a.attach ? <Icon name="attachment" label={a.attach + ' attachments'} /> : null) },
@@ -4637,7 +4638,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
-     The row height and text size follow the density (--plx-sys-grid-row-height, --plx-sys-grid-font-size), also a
+     The row height and text size follow the density (--plx-sys-data-table-row-height, --plx-sys-data-table-font-size), also a
      density region's; a density change redraws the grid. A grid built while hidden is drawn again when it is shown.
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
@@ -4645,11 +4646,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Nothing on the grid is styled inline by Plenix: Tabulator writes only its own geometry (widths, heights, offsets).
      The data changes in place (sort, filters, scroll and column widths stay); new columns rebuild the column set.
 */
-
 const SEP = '\u0000';
-const LEAD = '--plx-comp-data-grid-lead-column-width'; // the checkbox and icon columns
+const LEAD = '--plx-comp-data-table-lead-column-width'; // the checkbox and icon columns
 const MIN = '--plx-ref-size-80px'; // a resizable column's smallest width
-const INDENT = '--plx-comp-data-grid-tree-indent'; // a tree row's indent per level
+const INDENT = '--plx-comp-data-table-tree-indent'; // a tree row's indent per level
 const STRINGS = {
   empty: 'Nothing to show',
   sortUp: 'Sort A to Z',
@@ -4684,11 +4684,11 @@ const iconEl = name => {
 };
 // a menu item's label: its icon box, its text; danger in the danger color
 function menuLabel(text, icon, danger) {
-  const item = el('span', (0, _cx.cx)('plx-data-grid__menu-item', danger && 'plx-data-grid__menu-item--danger'));
-  const box = el('span', 'plx-data-grid__menu-icon');
+  const item = el('span', (0, _cx.cx)('plx-data-table__menu-item', danger && 'plx-data-table__menu-item--danger'));
+  const box = el('span', 'plx-data-table__menu-icon');
   if (icon) box.appendChild(iconEl(icon));
   item.appendChild(box);
-  item.appendChild(el('span', 'plx-data-grid__menu-label', text));
+  item.appendChild(el('span', 'plx-data-table__menu-label', text));
   return item;
 }
 // a copy of the rows as the page gave them (Tabulator writes into the row objects it is given: a field for every column)
@@ -4710,8 +4710,13 @@ function sameRows(a, b) {
     return ka.length === kb.length && ka.every(k => k === '_children' ? sameRows(r[k], s[k]) : r[k] === s[k]);
   });
 }
-const sizeOf = (v, host) => typeof v === 'string' && /^(var\()?--/.test(v) ? (0, _tabulator.gridPx)(v, host) : v;
-function DataGrid(props) {
+const sizeOf = (v, host) => typeof v === 'string' && /^(var\()?--/.test(v) ? (0, _tabulator.tablePx)(v, host) : v;
+
+// the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
+// resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
+function TableEngine(props) {
+  const isStatic = !!props.isStatic,
+    B = isStatic ? 'plx-table' : 'plx-data-table';
   const {
     label,
     data,
@@ -4743,7 +4748,7 @@ function DataGrid(props) {
   const container = id => {
     let e = cells.current.get(id);
     if (!e) {
-      e = el('span', 'plx-data-grid__portal');
+      e = el('span', B + '__portal');
       cells.current.set(id, e);
       pending.current = true;
       bump();
@@ -4766,7 +4771,7 @@ function DataGrid(props) {
   // Plenix columns -> Tabulator column definitions
   const defsOf = (cols, host) => {
     const T = () => tableRef.current;
-    const lead = (0, _tabulator.gridPx)(LEAD, host);
+    const lead = (0, _tabulator.tablePx)(LEAD, host);
     const labelAt = cols.findIndex(c => c.rowLabel);
     const filters = field => T().getFilters().filter(f => f.field === field);
     const setFilter = (column, kind, value) => {
@@ -4782,13 +4787,13 @@ function DataGrid(props) {
     const filterPopup = c => (e, column, onRendered) => {
       const field = column.getField(),
         active = filters(field)[0];
-      const id = 'plx-data-grid-filter-' + Math.random().toString(36).slice(2);
-      const box = el('div', 'plx-data-grid__filter');
-      const lab = el('label', 'plx-data-grid__filter-label', STRINGS.filter + ' ' + (c.title || field));
+      const id = 'plx-data-table-filter-' + Math.random().toString(36).slice(2);
+      const box = el('div', 'plx-data-table__filter');
+      const lab = el('label', 'plx-data-table__filter-label', STRINGS.filter + ' ' + (c.title || field));
       lab.htmlFor = id;
       let input;
       if (c.filter === 'list') {
-        input = el('select', 'plx-input plx-data-grid__filter-input');
+        input = el('select', 'plx-input plx-data-table__filter-input');
         const values = [];
         (function walk(rows) {
           rows.forEach(r => {
@@ -4802,13 +4807,13 @@ function DataGrid(props) {
           input.appendChild(o);
         });
       } else {
-        input = el('input', 'plx-input plx-data-grid__filter-input');
+        input = el('input', 'plx-input plx-data-table__filter-input');
         input.type = 'text';
         input.placeholder = STRINGS.contains;
       }
       input.id = id;
       input.value = active ? active.value : '';
-      const actions = el('div', 'plx-data-grid__filter-actions');
+      const actions = el('div', 'plx-data-table__filter-actions');
       const button = (text, primary, fn) => {
         const b = el('button', (0, _cx.cx)('plx-button', primary ? 'plx-button--primary' : 'plx-button--secondary', 'plx-button--size-sm'), text);
         b.type = 'button';
@@ -4897,10 +4902,21 @@ function DataGrid(props) {
       const d = {
         ...rest
       };
+      if (isStatic) {
+        Object.assign(d, {
+          headerSort: false,
+          resizable: false
+        });
+        delete d.editor;
+        delete d.headerContextMenu;
+        delete d.headerPopup;
+        delete d.cellClick;
+        delete d.rowHandle;
+      }
       ['width', 'minWidth', 'maxWidth'].forEach(k => {
         if (d[k] != null) d[k] = sizeOf(d[k], host);
       });
-      d.cssClass = (0, _cx.cx)(c.cssClass, kind && 'plx-data-grid__cell--' + kind, (rowLabel || labelAt > i) && 'plx-data-grid__cell--row-label') || undefined;
+      d.cssClass = (0, _cx.cx)(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || labelAt > i) && B + '__cell--row-label') || undefined;
       if (labelAt >= i) d.frozen = true;
       if (kind === 'icon') {
         Object.assign(d, {
@@ -4912,7 +4928,7 @@ function DataGrid(props) {
           headerHozAlign: 'center'
         });
         d.titleFormatter = () => {
-          const s = el('span', 'plx-data-grid__header-icon');
+          const s = el('span', B + '__header-icon');
           s.title = c.title || c.field;
           s.setAttribute('role', 'img');
           s.setAttribute('aria-label', s.title);
@@ -4931,11 +4947,11 @@ function DataGrid(props) {
         owners.current.set(id, cell);
         return container(id);
       };
-      if (filter) {
+      if (filter && !isStatic) {
         d.headerPopup = filterPopup(c);
         d.headerPopupIcon = iconEl('filter').outerHTML;
       }
-      if (headerMenu && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
+      if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
       return d;
     });
   };
@@ -4953,9 +4969,9 @@ function DataGrid(props) {
     (0, _tabulator.loadTabulator)(win).then(Tabulator => {
       if (!alive || !hostRef.current || !hostRef.current.ownerDocument.defaultView) return;
       const host = hostRef.current,
-        lead = (0, _tabulator.gridPx)(LEAD, host);
+        lead = (0, _tabulator.tablePx)(LEAD, host);
       const p = latest.current;
-      const placeholder = el('div', 'plx-data-grid__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
+      const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
       const rowContextMenu = p.rowMenu ? (e, row) => {
         const cur = latest.current.rowMenu,
           d = row.getData();
@@ -4975,10 +4991,10 @@ function DataGrid(props) {
         placeholder,
         columnDefaults: {
           resizable: true,
-          minWidth: (0, _tabulator.gridPx)(MIN, host)
+          minWidth: (0, _tabulator.tablePx)(MIN, host)
         },
         editTriggerEvent: 'dblclick',
-        dataTreeChildIndent: (0, _tabulator.gridPx)(INDENT, host),
+        dataTreeChildIndent: (0, _tabulator.tablePx)(INDENT, host),
         rowContextMenu,
         rowHeader: p.selectable ? {
           formatter: 'rowSelection',
@@ -4991,7 +5007,7 @@ function DataGrid(props) {
           maxWidth: lead,
           hozAlign: 'center',
           headerHozAlign: 'center',
-          cssClass: (0, _cx.cx)('plx-data-grid__cell--select', labelled && 'plx-data-grid__cell--row-label'),
+          cssClass: (0, _cx.cx)('plx-data-table__cell--select', labelled && 'plx-data-table__cell--row-label'),
           cellClick: (e, cell) => cell.getRow().toggleSelect()
         } : false,
         selectableRows: p.selectable ? true : false,
@@ -5001,7 +5017,7 @@ function DataGrid(props) {
           const own = latest.current.options && latest.current.options.rowFormatter;
           if (own) own(row);
           const e = row.getElement();
-          if (latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
+          if (!isStatic && latest.current.on && latest.current.on.rowClick && !e.hasAttribute('data-plx-open')) {
             e.setAttribute('data-plx-open', '');
             e.tabIndex = 0;
             e.addEventListener('keydown', ev => {
@@ -5016,13 +5032,21 @@ function DataGrid(props) {
         groupHeader: (value, count) => {
           const s = el('span', null, String(value));
           s.setAttribute('role', 'gridcell');
-          s.appendChild(el('span', 'plx-data-grid__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items)));
+          s.appendChild(el('span', 'plx-data-table__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items)));
           return s;
         },
         ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => k !== 'rowFormatter')),
         data: p.data || [],
         height: p.height ? sizeOf(p.height, host) : p.options && p.options.height
       };
+      if (isStatic) Object.assign(opts, {
+        rowContextMenu: undefined,
+        rowHeader: false,
+        selectableRows: false,
+        movableColumns: false,
+        movableRows: false,
+        groupBy: false
+      });
       opts.columns = defsOf(p.columns, host);
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
@@ -5053,7 +5077,7 @@ function DataGrid(props) {
       table.on('tableBuilt', () => {
         aria();
         builtRef.current = true;
-        const on = latest.current.on || {};
+        const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach(ev => table.on(ev, (...a) => {
           const h = (latest.current.on || {})[ev];
           if (h) h(...a);
@@ -5177,14 +5201,63 @@ function DataGrid(props) {
   }
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: frameRef,
-    className: (0, _cx.cx)('plx-data-grid', columns.some(c => c.rowLabel) && 'plx-data-grid--row-header', className)
+    className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', className)
   }, error ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-data-grid__empty",
+    className: B + '__empty',
     role: "alert"
   }, STRINGS.failed, " ", String(error.message || error)) : null, /*#__PURE__*/_react.default.createElement("div", {
     ref: hostRef,
-    className: "plx-data-grid__grid"
+    className: B + '__table'
   }), portals);
+}
+
+// the interactive table: records to sort, filter, select, open, edit, group or nest
+function DataTable(props) {
+  return /*#__PURE__*/_react.default.createElement(TableEngine, _extends({}, props, {
+    isStatic: false
+  }));
+}
+  } },
+  "platform/components/Table/Table.jsx": { deps: {"react":null,"../DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Table = Table;
+var _react = _interopRequireDefault(require("react"));
+var _DataTable = require("../DataTable/DataTable.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Table
+   Summary: A static table: information in rows and columns, read and nothing else. It looks like a DataTable (the same
+     header, lines, type and row heights, from its own tokens) and runs on the same Tabulator engine, with no sorting,
+     filters, menus, selection, resizing, moving, editing or row hover.
+   Usage:
+     <Table label="Fields" data={fields} columns={[
+       { title: 'Field', field: 'name', kind: 'name', rowLabel: true, width: '--plx-ref-size-240px' },
+       { title: 'Type', field: 'type', kind: 'data' },
+       { title: 'Notes', field: 'notes', kind: 'wrap' }]} />
+   Props:
+     label: names the table for screen readers (required)
+     data: the rows: plain objects with an id (or name the field with index)
+     columns: Tabulator column definitions (title, field, hozAlign, width…) with the Plenix kinds: "name", "data", "wrap",
+       "center", "icon"; render(row) for React content; rowLabel for the row header. Interactive options are ignored.
+     index: the field that identifies a row; default "id"
+     empty: shown when there are no rows; default "Nothing to show"
+     height: a fixed height (a size token) for a long table; rows render as they scroll into view
+     options: Tabulator table options that only change the layout (layout, headerVisible…)
+     className: more classes on the frame
+   Behavior:
+     Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
+     in cells work as themselves. Row height and text size follow the density.
+   Notes:
+     For records people work with (sort, filter, select, open, edit) use DataTable. Its look comes from --plx-sys-table-*
+     and --plx-comp-table-* tokens (table.css), separate from the DataTable's, with the same values by default.
+*/
+function Table(props) {
+  return /*#__PURE__*/_react.default.createElement(_DataTable.TableEngine, _extends({}, props, {
+    isStatic: true
+  }));
 }
   } },
   "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -7299,7 +7372,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
-     A name/value table (reference data, a component's details) is a DataGrid, not a PropertyList: every table is a
+     A name/value table (reference data, a component's details) is a DataTable, not a PropertyList: every table is a
      Tabulator grid (batch 229).
 */
 
@@ -8829,7 +8902,7 @@ function WidgetGrid({
   }, said));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8985,10 +9058,10 @@ Object.defineProperty(exports, "DEMO_SESSION", {
     return _SessionProvider.DEMO_SESSION;
   }
 });
-Object.defineProperty(exports, "DataGrid", {
+Object.defineProperty(exports, "DataTable", {
   enumerable: true,
   get: function () {
-    return _DataGrid.DataGrid;
+    return _DataTable.DataTable;
   }
 });
 Object.defineProperty(exports, "DataToolbar", {
@@ -9363,6 +9436,12 @@ Object.defineProperty(exports, "THEMES", {
     return _themes.THEMES;
   }
 });
+Object.defineProperty(exports, "Table", {
+  enumerable: true,
+  get: function () {
+    return _Table.Table;
+  }
+});
 Object.defineProperty(exports, "Tabs", {
   enumerable: true,
   get: function () {
@@ -9592,7 +9671,8 @@ var _Dialog = require("./components/Dialog/Dialog.jsx");
 var _Toast = require("./components/Toast/Toast.jsx");
 var _Tabs = require("./components/Tabs/Tabs.jsx");
 var _Card = require("./components/Card/Card.jsx");
-var _DataGrid = require("./components/DataGrid/DataGrid.jsx");
+var _DataTable = require("./components/DataTable/DataTable.jsx");
+var _Table = require("./components/Table/Table.jsx");
 var _ActionBar = require("./patterns/ActionBar/ActionBar.jsx");
 var _NavList = require("./components/NavList/NavList.jsx");
 var _Tree = require("./components/Tree/Tree.jsx");

@@ -1,0 +1,166 @@
+/* Plenix · DataTable (platform/components/DataTable). The Plenix grid style on Tabulator's own classes, rule for rule from the
+   owner's reference (docs/datagrid-tabulator-demo.html, "Tabulator in Plenix"); every value is a token. Tabulator's core
+   stylesheet (platform/vendor/tabulator) keeps the structure: positions, scrolling, pinned columns, menus. */
+
+/* the frame */
+.plx-data-table{background-color:var(--plx-sys-data-table-surface);border-color:var(--plx-sys-data-table-border);border-radius:var(--plx-comp-data-table-radius);border-style:solid;border-width:var(--plx-comp-data-table-border-width);min-inline-size:0;overflow:hidden;}
+.plx-data-table__empty{color:var(--plx-sys-data-table-text-muted);font-family:var(--plx-comp-data-table-font-family);font-size:var(--plx-comp-data-table-placeholder-font-size);font-weight:var(--plx-comp-data-table-placeholder-font-weight);}
+.plx-data-table__portal{display:contents;}
+
+/* the grid */
+.plx-data-table .tabulator{background-color:var(--plx-sys-data-table-surface);border-style:none;color:var(--plx-sys-data-table-text);font-family:var(--plx-comp-data-table-font-family);font-size:var(--plx-comp-data-table-font-size);}
+.plx-data-table .tabulator .tabulator-tableholder{background-color:var(--plx-sys-data-table-surface);}
+.plx-data-table .tabulator .tabulator-tableholder:focus-visible{outline-color:var(--plx-sys-data-table-accent);outline-offset:calc(var(--plx-comp-data-table-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-table-editing-outline-width);}
+.plx-data-table .tabulator .tabulator-tableholder .tabulator-table{background-color:var(--plx-sys-data-table-surface);color:var(--plx-sys-data-table-text);}
+
+/* the header: shaded, heavier weight, a soft line under it */
+.plx-data-table .tabulator .tabulator-header{background-color:var(--plx-sys-data-table-header-background);border-bottom-color:var(--plx-sys-data-table-header-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);color:var(--plx-sys-data-table-text-muted);font-weight:var(--plx-comp-data-table-header-font-weight);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col{background-color:var(--plx-sys-data-table-header-background);border-right-style:none;position:relative;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:not(:first-child)::before{background-color:var(--plx-sys-data-table-header-line);bottom:var(--plx-comp-data-table-header-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-data-table-header-line-inset);width:var(--plx-comp-data-table-line-width);z-index:1;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content{align-items:center;display:flex;height:var(--plx-sys-data-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title-holder{flex:1;min-width:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-title{color:var(--plx-sys-data-table-text);font-size:var(--plx-comp-data-table-header-font-size);font-weight:var(--plx-comp-data-table-header-font-weight);padding-right:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover{background-color:var(--plx-sys-data-table-line);}
+
+/* the sort arrow: hidden until the header is hovered, shown while sorted */
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-sorter{align-items:center;bottom:0;display:flex;opacity:0;position:absolute;right:var(--plx-comp-data-table-sorter-inset);top:0;transition-duration:var(--plx-comp-data-table-duration);transition-property:opacity;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:hover .tabulator-col-sorter,
+.plx-data-table .tabulator .tabulator-header .tabulator-col[aria-sort="ascending"] .tabulator-col-sorter,
+.plx-data-table .tabulator .tabulator-header .tabulator-col[aria-sort="descending"] .tabulator-col-sorter{opacity:1;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-sorter .tabulator-arrow{border-bottom-color:var(--plx-sys-data-table-text-subtle);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col[aria-sort="ascending"] .tabulator-col-sorter .tabulator-arrow{border-bottom-color:var(--plx-sys-data-table-accent);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col[aria-sort="descending"] .tabulator-col-sorter .tabulator-arrow{border-top-color:var(--plx-sys-data-table-accent);}
+
+/* the filter button: hidden until hover, kept (in the accent color) while the column is filtered */
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button{align-items:center;background-color:var(--plx-sys-data-table-header-background);border-radius:var(--plx-comp-data-table-popup-button-radius);color:var(--plx-sys-data-table-text-subtle);display:inline-flex;opacity:0;padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;position:absolute;right:var(--plx-comp-data-table-popup-button-inset);top:50%;transform:translateY(-50%);transition-duration:var(--plx-comp-data-table-duration);transition-property:opacity;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:hover .tabulator-col-title,
+.plx-data-table .tabulator .tabulator-header .tabulator-col.is-filtered .tabulator-col-title,
+.plx-data-table .tabulator .tabulator-header .tabulator-col[aria-sort="ascending"] .tabulator-col-title,
+.plx-data-table .tabulator .tabulator-header .tabulator-col[aria-sort="descending"] .tabulator-col-title{padding-right:var(--plx-comp-data-table-title-reserve);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:hover .tabulator-header-popup-button{opacity:1;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.is-filtered .tabulator-header-popup-button{color:var(--plx-sys-data-table-accent);opacity:1;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button:hover{color:var(--plx-sys-data-table-text);opacity:1;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon{block-size:var(--plx-comp-data-table-header-icon-size);inline-size:var(--plx-comp-data-table-header-icon-size);}
+
+/* the resize handle: a hairline on hover */
+.plx-data-table .tabulator .tabulator-col-resize-handle:hover{background-image:linear-gradient(var(--plx-sys-data-table-accent),var(--plx-sys-data-table-accent));background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-resize-mark-width) 60%;}
+
+/* the rows: soft lines, no zebra; hover, selected and selected + hover */
+.plx-data-table .tabulator .tabulator-row{background-color:var(--plx-sys-data-table-surface);border-bottom-color:var(--plx-sys-data-table-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);min-height:var(--plx-sys-data-table-row-height);}
+.plx-data-table .tabulator .tabulator-row.tabulator-row-even{background-color:var(--plx-sys-data-table-surface);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover{background-color:var(--plx-sys-data-table-row-hover);cursor:default;}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected{background-color:var(--plx-sys-data-table-row-selected);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected:hover{background-color:var(--plx-sys-data-table-row-selected-hover);}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell{border-right-style:none;height:var(--plx-sys-data-table-row-height);line-height:var(--plx-sys-data-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;position:relative;}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{background-color:var(--plx-sys-data-table-line);bottom:var(--plx-comp-data-table-column-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-data-table-column-line-inset);width:var(--plx-comp-data-table-line-width);}
+
+/* editing in place */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-editing{background-color:var(--plx-sys-data-table-surface);border-style:none;outline-color:var(--plx-sys-data-table-accent);outline-offset:calc(var(--plx-comp-data-table-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-table-editing-outline-width);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-editing input,
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-editing select{background-color:transparent;color:var(--plx-sys-data-table-text);font:inherit;padding:0;}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-validation-fail{outline-color:var(--plx-sys-data-table-danger);outline-offset:calc(var(--plx-comp-data-table-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-table-editing-outline-width);}
+
+/* centered cells (badges, buttons), the checkbox column, the icon column */
+.plx-data-table .tabulator-row .tabulator-cell.tabulator-row-header{border-right-style:none;text-align:center;}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--center,
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--actions{align-items:center;display:inline-flex;line-height:normal;}
+/* the checkbox column: pinned, but drawn like any other column (the row line under it, no heavy edge) */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-row-header{align-items:center;background-color:inherit;border-bottom-style:none;display:inline-flex;justify-content:center;line-height:normal;padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content,
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-content{padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content{justify-content:center;}
+.plx-data-table .tabulator input[type="checkbox"]{accent-color:var(--plx-sys-data-table-accent);block-size:var(--plx-comp-data-table-mark-size);cursor:pointer;inline-size:var(--plx-comp-data-table-mark-size);margin:0;vertical-align:middle;}
+
+/* pinned columns keep no heavy edge */
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-frozen.tabulator-frozen-left,
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left{border-right-style:none;}
+
+/* the icon column: a mark at the start of a row (an attachment, like a mail list) */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--icon,
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-content{align-items:center;color:var(--plx-sys-data-table-text-muted);display:inline-flex;justify-content:center;line-height:normal;}
+.plx-data-table .plx-data-table__cell--icon .plx-icon,
+.plx-data-table .plx-data-table__header-icon .plx-icon{block-size:var(--plx-comp-data-table-mark-size);inline-size:var(--plx-comp-data-table-mark-size);}
+.plx-data-table__header-icon{display:flex;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-title{display:flex;padding-right:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover .tabulator-col-title{padding-right:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-sorter{display:none;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover{background-color:var(--plx-sys-data-table-line);}
+
+/* the cell kinds: the row's name, technical values */
+.plx-data-table .plx-data-table__cell--name{font-weight:var(--plx-comp-data-table-name-font-weight);}
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--data{color:var(--plx-sys-data-table-text-muted);font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);}
+
+/* long text: it wraps and the row grows; the first line sits where a one-line cell's text does (half the row height
+   around one line) */
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--wrap{height:auto;line-height:var(--plx-comp-data-table-wrap-line-height);padding-bottom:calc((var(--plx-sys-data-table-row-height) - 1lh) / 2);padding-top:calc((var(--plx-sys-data-table-row-height) - 1lh) / 2);white-space:normal;}
+
+/* row actions: shown while the row is hovered or selected */
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions{justify-content:flex-end;}
+/* (a React cell's content sits in a display:contents portal, so the rule reaches through it) */
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > :not(.plx-data-table__portal),
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > *{opacity:0;transition-duration:var(--plx-comp-data-table-duration);transition-property:opacity;}
+.plx-data-table .tabulator-row:hover .tabulator-cell.plx-data-table__cell--actions > :not(.plx-data-table__portal),
+.plx-data-table .tabulator-row:hover .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > *,
+.plx-data-table .tabulator-row.tabulator-selected .tabulator-cell.plx-data-table__cell--actions > :not(.plx-data-table__portal),
+.plx-data-table .tabulator-row.tabulator-selected .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > *,
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > :focus-within,
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > :focus-within{opacity:1;}
+
+/* the row header (the row's name as the first column): the header shade, pinned, a soft edge where the scrolling
+   columns pass under it; the checkbox and icon columns before it shade with it */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--row-label{background-color:var(--plx-sys-data-table-header-background);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.tabulator-frozen,
+.plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.plx-data-table__cell--row-label{background-color:var(--plx-sys-data-table-row-hover);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected .tabulator-cell.tabulator-frozen,
+.plx-data-table .tabulator .tabulator-row.tabulator-selected .tabulator-cell.plx-data-table__cell--row-label{background-color:var(--plx-sys-data-table-row-selected);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.tabulator-frozen,
+.plx-data-table .tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.plx-data-table__cell--row-label{background-color:var(--plx-sys-data-table-row-selected-hover);}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--row-label.tabulator-frozen-left,
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--row-label.tabulator-frozen-left{border-right-color:var(--plx-sys-data-table-header-line);border-right-style:solid;border-right-width:var(--plx-comp-data-table-line-width);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected .tabulator-cell.plx-data-table__cell--row-label.plx-data-table__cell--name{color:var(--plx-sys-data-table-row-selected-text);}
+
+/* tree rows */
+.plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-control{background-color:transparent;block-size:var(--plx-comp-data-table-tree-control-size);border-color:var(--plx-sys-data-table-border);border-radius:var(--plx-comp-data-table-tree-control-radius);border-style:solid;border-width:var(--plx-comp-data-table-line-width);inline-size:var(--plx-comp-data-table-tree-control-size);margin-right:var(--plx-comp-data-table-tree-control-gap);}
+.plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand,
+.plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand::after,
+.plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-collapse::after{background-color:var(--plx-sys-data-table-text-muted);}
+.plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-branch{border-bottom-left-radius:var(--plx-comp-data-table-tree-control-radius);border-color:var(--plx-sys-data-table-header-line);}
+
+/* groups */
+.plx-data-table .tabulator-row.tabulator-group{background-color:var(--plx-sys-data-table-header-background);border-bottom-color:var(--plx-sys-data-table-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);border-top-style:none;color:var(--plx-sys-data-table-text);font-weight:var(--plx-comp-data-table-group-font-weight);line-height:var(--plx-sys-data-table-row-height);min-height:var(--plx-sys-data-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
+.plx-data-table .tabulator-row.tabulator-group:hover{background-color:var(--plx-sys-data-table-line);cursor:pointer;}
+.plx-data-table .tabulator-row.tabulator-group .plx-data-table__group-count{color:var(--plx-sys-data-table-text-muted);font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);font-weight:var(--plx-sys-font-weight-regular);margin-left:var(--plx-comp-data-table-group-count-gap);}
+.plx-data-table .tabulator-row.tabulator-group .tabulator-arrow{border-left-color:var(--plx-sys-data-table-text-muted);}
+.plx-data-table .tabulator-row.tabulator-group.tabulator-group-visible .tabulator-arrow{border-left-color:transparent;border-top-color:var(--plx-sys-data-table-text-muted);}
+.plx-data-table .tabulator .tabulator-row.tabulator-calcs{background-color:var(--plx-sys-data-table-header-background);font-weight:var(--plx-comp-data-table-group-font-weight);}
+
+/* footer, empty message, moving rows and columns */
+.plx-data-table .tabulator .tabulator-footer{background-color:var(--plx-sys-data-table-header-background);border-top-color:var(--plx-sys-data-table-line);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);color:var(--plx-sys-data-table-text-muted);font-weight:var(--plx-comp-data-table-footer-font-weight);}
+.plx-data-table .tabulator .tabulator-placeholder .tabulator-placeholder-contents{color:var(--plx-sys-data-table-text-muted);font-size:var(--plx-comp-data-table-placeholder-font-size);font-weight:var(--plx-comp-data-table-placeholder-font-weight);}
+.plx-data-table .tabulator-row.tabulator-moving{border-color:var(--plx-sys-data-table-accent);border-style:solid;border-width:var(--plx-comp-data-table-line-width);box-shadow:var(--plx-sys-data-table-menu-shadow);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-moving{background-color:var(--plx-sys-data-table-row-selected);border-color:var(--plx-sys-data-table-accent);border-style:solid;border-width:var(--plx-comp-data-table-line-width);}
+
+/* menus and popups (Tabulator places them on the page body): the grid's menu look, soft shadow */
+.tabulator-menu,
+.tabulator-popup-container{background-color:var(--plx-sys-data-table-surface);border-color:var(--plx-sys-data-table-border);border-radius:var(--plx-comp-data-table-menu-radius);border-style:solid;border-width:var(--plx-comp-data-table-line-width);box-shadow:var(--plx-sys-data-table-menu-shadow);color:var(--plx-sys-data-table-text);font-family:var(--plx-comp-data-table-font-family);font-size:var(--plx-comp-data-table-menu-font-size);overflow:hidden;padding:var(--plx-comp-data-table-menu-padding);}
+.tabulator-menu .tabulator-menu-item{align-items:center;border-radius:var(--plx-comp-data-table-menu-item-radius);display:flex;padding-bottom:var(--plx-comp-data-table-menu-item-padding-block);padding-left:var(--plx-comp-data-table-menu-item-padding-inline-start);padding-right:var(--plx-comp-data-table-menu-item-padding-inline-end);padding-top:var(--plx-comp-data-table-menu-item-padding-block);white-space:nowrap;}
+.tabulator-menu .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover{background-color:var(--plx-sys-data-table-row-hover);}
+.tabulator-menu .tabulator-menu-separator{border-top-color:var(--plx-sys-data-table-line);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);margin-bottom:var(--plx-comp-data-table-menu-separator-margin);margin-top:var(--plx-comp-data-table-menu-separator-margin);}
+.tabulator-menu .tabulator-menu-item.tabulator-menu-item-disabled{opacity:var(--plx-comp-data-table-menu-disabled-opacity);}
+.plx-data-table__menu-item{align-items:center;column-gap:var(--plx-comp-data-table-menu-item-gap);display:flex;}
+.plx-data-table__menu-icon{color:var(--plx-sys-data-table-text-muted);display:inline-flex;}
+.plx-data-table__menu-icon .plx-icon{block-size:var(--plx-comp-data-table-menu-icon-size);inline-size:var(--plx-comp-data-table-menu-icon-size);}
+.plx-data-table__menu-item--danger,
+.plx-data-table__menu-item--danger .plx-data-table__menu-icon{color:var(--plx-sys-data-table-danger);}
+
+/* the filter popup: a label, the input, Clear and Apply */
+.plx-data-table__filter{display:flex;flex-direction:column;min-width:var(--plx-comp-data-table-filter-min-width);padding:var(--plx-comp-data-table-filter-padding);row-gap:var(--plx-comp-data-table-filter-gap);}
+.plx-data-table__filter-label{color:var(--plx-sys-data-table-text-muted);font-size:var(--plx-comp-data-table-filter-label-font-size);font-weight:var(--plx-comp-data-table-header-font-weight);letter-spacing:var(--plx-comp-data-table-filter-label-letter-spacing);text-transform:uppercase;}
+.plx-data-table__filter-actions{column-gap:var(--plx-comp-data-table-filter-gap);display:flex;justify-content:flex-end;}
+
+@media (prefers-reduced-motion: reduce){
+  .plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-sorter,
+  .plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button,
+  .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > *,
+  .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions > .plx-data-table__portal > *{transition-property:none;}
+}

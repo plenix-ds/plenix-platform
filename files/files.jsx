@@ -1,6 +1,6 @@
 /* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the files in a DataGrid (batch 226), the open one in a SidePanel. */
-import { Button, DataGrid, Icon, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
+   the files in a DataTable (batch 226), the open one in a SidePanel. */
+import { Button, DataTable, Icon, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
 const { useState } = React;
@@ -20,7 +20,7 @@ export function FilesScreen() {
             <Text as="h1" variant="title">Files</Text>
             <Button variant="primary" icon={<Icon name="plus" />}>Upload</Button>
           </Inline>
-          <DataGrid label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }}
+          <DataTable label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }}
             on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[
               { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-320px' },
               { title: 'Type', field: 't', kind: 'data', filter: 'list' },

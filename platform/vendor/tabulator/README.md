@@ -1,8 +1,8 @@
 # Tabulator (vendored)
 
-Every Plenix table runs on Tabulator: the Platform `DataGrid` component builds a Tabulator grid and draws it in the
-Plenix grid style with tokens only (`platform/components/DataGrid/data-grid.css`; the owner's reference is
-`docs/datagrid-tabulator-demo.html`). The owner chose Tabulator on 2026-10-08 (the data grid study,
+Every Plenix table runs on Tabulator: the Platform `DataTable` component builds a Tabulator table and draws it in the
+Plenix grid style with tokens only (`platform/components/DataTable/data-table.css`; the owner's reference is
+`docs/datagrid-tabulator-demo.html`). The owner chose Tabulator on 2026-10-08 (the data table study,
 `docs/datagrid-study.html`): free, MIT, a plain script that sets `window.Tabulator`, so it fits the Plenix build with no
 bundler, and it covers selection, resize, filter, sort, grouping, tree rows, row actions, inline editing, drag to move
 and context menus.
@@ -19,15 +19,15 @@ top of the script.
 
 ## How pages load it
 
-Only pages that show a grid load it. The `DataGrid` component calls `loadTabulator()`
-(`platform/components/DataGrid/tabulator.js`) the first time it renders: it adds `tabulator.min.css` and then
+Only pages that show a grid load it. The `DataTable` component calls `loadTabulator()`
+(`platform/components/DataTable/tabulator.js`) the first time it renders: it adds `tabulator.min.css` and then
 `tabulator.min.js` from this folder, once per page, and waits for `window.Tabulator`. The folder is found from the
 address of `platform/dist/platform.js`; a page that loads the Platform from somewhere else sets
 `window.PlenixVendorBase` (the URL of a folder holding `tabulator/`) before the first grid renders. A page that already
 loaded Tabulator itself is used as is.
 
 The core stylesheet keeps Tabulator's structure (positions, scrolling, frozen columns, menus). Every color, line, font,
-size and spacing on top of it comes from Plenix tokens in `components/DataGrid/data-grid.css`, which is loaded later and wins.
+size and spacing on top of it comes from Plenix tokens in `components/DataTable/data-table.css`, which is loaded later and wins.
 The style audit (`platform/dev/style-audit.js`) leaves alone the widths, heights and offsets Tabulator writes on its own
 elements while it lays out (inside a `.tabulator` element): that is the engine's geometry, not styling.
 
@@ -37,5 +37,5 @@ elements while it lays out (inside a `.tabulator` element): that is the engine's
 2. Download `dist/js/tabulator.min.js`, `dist/css/tabulator.min.css` and `LICENSE` from the jsDelivr paths above with
    the new version, and remove the `sourceMappingURL` comment from the last line of the script and the stylesheet.
 3. Record the new SHA-256 values (`sha256sum tabulator.min.*`) and the date in this table.
-4. Run `node build-app.js`, `node check-system.js`, the tests, and run `node tests/grid-reference.js` (every part of the grid against the owner's reference, light and
+4. Run `node build-app.js`, `node check-system.js`, the tests, and run `node tests/data-table-reference.js` (every part of the grid against the owner's reference, light and
    dark, each density): a new major version can rename the classes `data-grid.css` restyles.

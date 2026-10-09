@@ -10,7 +10,7 @@
     "build:docs": "node build-docs.js",
     "build:packages": "node build-packages.js",
     "release:build": "node build-app.js && node build-usage.js && node check-system.js && node build-packages.js",
-    "test": "node tests/visual.test.js && node tests/density.test.js && node tests/layout.test.js && node tests/theme.test.js && node tests/pages.test.js && node tests/keyboard.test.js && node tests/a11y.test.js && node tests/grid.test.js",
+    "test": "node tests/visual.test.js && node tests/density.test.js && node tests/layout.test.js && node tests/theme.test.js && node tests/pages.test.js && node tests/keyboard.test.js && node tests/a11y.test.js && node tests/data-table.test.js",
     "test:visual": "node tests/visual.test.js",
     "test:pages": "node tests/pages.test.js",
     "test:a11y": "node tests/a11y.test.js",

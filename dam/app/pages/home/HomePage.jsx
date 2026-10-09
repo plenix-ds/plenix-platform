@@ -7,7 +7,7 @@
    The address: ?q=text opens the search results for it; ?upload=1 opens the upload dialog (the header on other pages
    links here). Dialogs are opened by their legacy ids from app/dialogs (one host renders the open one). */
 import React from 'react';
-import { DataToolbar, BulkActions, ContentGrid, MediaCard, DataGrid, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone } from 'plenix-platform';
+import { DataToolbar, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -221,7 +221,7 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <DataGrid label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
+      <DataTable label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
         { title: 'Category name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Modified', field: 'modified', kind: 'data', sorter: byDate },
         { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
@@ -232,7 +232,7 @@ export function HomePage() {
         {D.COLLECTION_CARDS.map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={c.count + ' assets'} onOpen={() => openCategory(c.name)} />)}
       </ContentGrid>
     ) : (
-      <DataGrid label="Collections" data={D.COLLECTION_CARDS} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
+      <DataTable label="Collections" data={D.COLLECTION_CARDS} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
         { title: 'Collection name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
         { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Updated', field: 'updated', kind: 'data', sorter: byDate }, { title: 'Owner', field: 'owner', filter: 'list' }]} />
     );
@@ -247,7 +247,7 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <DataGrid label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => setAsset(row.getData().id) }} columns={[
+      <DataTable label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => setAsset(row.getData().id) }} columns={[
         { title: 'Name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Category', field: 'cat', kind: 'center', filter: 'list', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
         { title: 'Format', field: 'badge', kind: 'data', filter: 'list' }, { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: bySize },

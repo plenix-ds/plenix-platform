@@ -6,8 +6,8 @@
 //               file declares for itself (e.g. --ds-r on the spec page); no old names
 //   hex         no raw hex colors outside the reference token file and the themes (colors come from tokens)
 //   font-size   no font size written as a number: font sizes come from --plx-ref-font-size-* tokens
-//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
-//               stylesheet also restyles its engine's tabulator-… classes, there only)
+//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataTable's
+//               stylesheets (DataTable, Table) also restyle their engine's tabulator-… classes, there only)
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
@@ -31,8 +31,9 @@
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
-//   tables      every table is a DataGrid (Tabulator in the Plenix grid style): no <table>, no table element made in code, no
-//               retired Table component or plx-table / plx-data-table class (batch 226), no PropertyList table variant (batch 229)
+//   tables      every table is a DataTable (Tabulator in the Plenix table style): no <table>, no table element made in code, no
+//               PropertyList table variant: every table is a Table (static) or a DataTable, both on Tabulator (batches
+//               226, 229, 234)
 //   fonts       no call to Google Fonts: DM Sans and DM Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
@@ -94,11 +95,12 @@ for (const { file } of files) {
   for (const m of text.matchAll(/(--plx-[\w-]+)\s*:/g)) PLX.add(m[1]);
   for (const m of text.matchAll(/["'](--plx-[\w-]+)["']\s*[:,)]/g)) PLX.add(m[1]);
 }
-// tables, in stylesheets: no rule for the retired table classes (every table is a DataGrid, batch 226)
+// tables, in stylesheets: no rule for the retired PropertyList table variant (every table is a Table or a DataTable on
+// Tabulator, batches 226, 229, 234)
 for (const { file } of files) {
   if (!/\.css$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/\.plx-property-list--table\b|\.plx-(data-)?table(?![\w-])|\.plx-table(__|--|-wrap|-scroll)/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
+  for (const m of text.matchAll(/\.plx-property-list--table\b/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
 }
 // inline-style: application code takes its look from the Platform only (see the rule's description above)
 const INLINE_STYLE_PENDING = [];   // every application converted (batches 150-151)
@@ -126,16 +128,16 @@ for (const { file } of files) {
   if (!/[\\/]platform[\\/]/.test(file) && !/(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/<AppShell\b[^>]*?\blayout\s*=|\bdata-plx-layout\s*=|['"]data-plx-layout['"]/g)) add('page-layout', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
   }
-  // tables: every table is a DataGrid (Tabulator in the Plenix grid style, batch 226): no <table>, no table element made
-  // in code, no retired Table component or its classes. The design system's builders draw a table and hand it to DS.grid
+  // tables: every table is a DataTable (Tabulator in the Plenix table style, batch 226): no <table>, no table element made
+  // in code, no retired Table component or its classes. The design system's builders draw a table and hand it to DS.table
   // at once (tests/pages.test.js fails any table left on a page); generated bundles are checked through their sources.
-  // a name/value table is a DataGrid too: no PropertyList table variant anywhere, the design system included (batch 229)
+  // a name/value table is a DataTable too: no PropertyList table variant anywhere, the design system included (batch 229)
   if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
-    for (const m of text.matchAll(/<PropertyList\b[^>]*\bvariant=["'{]+table|PropertyList,\s*\{\s*variant:\s*["']table|\bplx-property-list--table\b/g)) add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
+    for (const m of text.matchAll(/<PropertyList\b[^>]*\bvariant=["'{]+table|PropertyList,\s*\{\s*variant:\s*["']table|\bplx-property-list--table\b/g)) add('tables', file, lineOf(m.index), 'not a DataTable: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
   }
   if (!SPEC_PAGE.test(file) && !/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
-    for (const m of text.matchAll(/<table[\s>]|createElement\(\s*['"]table['"]|\bel\(\s*['"]table['"]|\bh\(\s*['"]table['"]|\bplx-(data-)?table\b(?!-)|\bimport\s*\{[^}]*\bTable\b[^}]*\}\s*from\s*['"]plenix-platform['"]|\bP(?:lenix)?\.Table\b/g)) {
-      add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
+    for (const m of text.matchAll(/<table[\s>]|createElement\(\s*['"]table['"]|\bel\(\s*['"]table['"]|\bh\(\s*['"]table['"]/g)) {
+      add('tables', file, lineOf(m.index), 'not a DataTable: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
     }
   }
   // fonts: the typefaces are hosted with the Platform (platform/fonts, system/fonts.css, batch 227): no page calls Google
@@ -241,8 +243,8 @@ for (const { file } of files) {
     const sel = css.replace(/\{[^{}]*\}/g, '{}');
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       if (/^(plx-|is-)/.test(m[1])) continue;
-      // the DataGrid's stylesheet restyles the classes its engine writes (Tabulator, platform/vendor/tabulator): there only
-      if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/]DataGrid[\\/]data-grid\.css$/.test(file)) continue;
+      // the DataTable's stylesheet restyles the classes its engine writes (Tabulator, platform/vendor/tabulator): there only
+      if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/](DataTable[\\/]data-table|Table[\\/]table)\.css$/.test(file)) continue;
       add('classes', file, 0, '.' + m[1] + ' is not a plx- class');
     }
   }

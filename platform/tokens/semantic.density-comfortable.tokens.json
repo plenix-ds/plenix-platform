@@ -132,11 +132,19 @@
       "$value": "{plx-ref.space-64px}",
       "$type": "dimension"
     },
-    "grid-row-height": {
+    "data-table-row-height": {
       "$value": "{plx-ref.size-40px}",
       "$type": "dimension"
     },
-    "grid-font-size": {
+    "table-row-height": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension"
+    },
+    "data-table-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
+    },
+    "table-font-size": {
       "$value": "{plx-ref.font-size-13}",
       "$type": "dimension"
     }

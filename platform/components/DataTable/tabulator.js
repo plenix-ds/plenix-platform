@@ -1,20 +1,20 @@
-/* Plenix · DataGrid engine (tabulator.js)
-   Summary: Loads the engine every DataGrid runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
+/* Plenix · DataTable engine (tabulator.js)
+   Summary: Loads the engine every DataTable runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
    Usage:
      loadTabulator().then((Tabulator) => new Tabulator(element, options));
-     const width = gridPx('--plx-ref-size-36px');
+     const width = tablePx('--plx-ref-size-36px');
    Props:
      loadTabulator(win): adds Tabulator's core stylesheet and script to the page once (the given window's, default this
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
-     gridPx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
+     tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
-     The core stylesheet goes first in the head, so platform.css (the Plenix look, data-grid.css) wins over it.
+     The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
      build's plenix.js -> ./vendor/); window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
-     A failed load rejects; the DataGrid shows the reason in place of the grid. */
+     A failed load rejects; the DataTable shows the reason in place of the grid. */
 
 // the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
 const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
@@ -60,7 +60,7 @@ export function loadTabulator(win) {
 }
 
 // a token's value on the page, as pixels: '--plx-ref-size-36px' -> 36; the token written inside var() is accepted too
-export function gridPx(token, el) {
+export function tablePx(token, el) {
   if (!token || typeof document === 'undefined') return 0;
   const m = /--[\w-]+/.exec(String(token));
   if (!m) return parseFloat(token) || 0;

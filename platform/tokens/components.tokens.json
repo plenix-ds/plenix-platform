@@ -1181,199 +1181,267 @@
       "$value": "{plx-sys.label-width-sm} minmax(0,1fr)",
       "$type": "dimension"
     },
-    "data-grid-radius": {
+    "data-table-radius": {
       "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
-    "data-grid-border-width": {
+    "table-radius": {
+      "$value": "{plx-sys.shape-md}",
+      "$type": "dimension"
+    },
+    "data-table-border-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "data-grid-font-family": {
+    "table-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "data-table-font-family": {
       "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
-    "data-grid-data-font-family": {
+    "table-font-family": {
+      "$value": "{plx-sys.typeface-sans}",
+      "$type": "fontFamily"
+    },
+    "data-table-data-font-family": {
       "$value": "{plx-sys.typeface-mono}",
       "$type": "fontFamily"
     },
-    "data-grid-font-size": {
-      "$value": "{plx-sys.grid-font-size}",
+    "table-data-font-family": {
+      "$value": "{plx-sys.typeface-mono}",
+      "$type": "fontFamily"
+    },
+    "data-table-font-size": {
+      "$value": "{plx-sys.data-table-font-size}",
       "$type": "dimension"
     },
-    "data-grid-header-font-size": {
+    "table-font-size": {
+      "$value": "{plx-sys.table-font-size}",
+      "$type": "dimension"
+    },
+    "data-table-header-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
-    "data-grid-header-font-weight": {
+    "table-header-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "data-table-header-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
-    "data-grid-data-font-size": {
+    "table-header-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "data-table-data-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
-    "data-grid-name-font-weight": {
+    "table-data-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "data-table-name-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "data-grid-wrap-line-height": {
+    "table-name-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "data-table-wrap-line-height": {
       "$value": "{plx-ref.line-height-snug}",
       "$type": "number"
     },
-    "data-grid-cell-padding-inline": {
+    "table-wrap-line-height": {
+      "$value": "{plx-ref.line-height-snug}",
+      "$type": "number"
+    },
+    "data-table-cell-padding-inline": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
-    "data-grid-header-line-inset": {
+    "table-cell-padding-inline": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
-    "data-grid-column-line-inset": {
+    "data-table-header-line-inset": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "table-header-line-inset": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "data-table-column-line-inset": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-line-width": {
+    "table-column-line-inset": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-table-line-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "data-grid-lead-column-width": {
+    "table-line-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "data-table-lead-column-width": {
       "$value": "{plx-ref.size-36px}",
       "$type": "dimension"
     },
-    "data-grid-mark-size": {
+    "data-table-mark-size": {
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
-    "data-grid-header-icon-size": {
+    "table-mark-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "data-table-header-icon-size": {
       "$value": "{plx-ref.glyph-size-14px}",
       "$type": "dimension"
     },
-    "data-grid-sorter-inset": {
+    "data-table-sorter-inset": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-popup-button-inset": {
+    "data-table-popup-button-inset": {
       "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
-    "data-grid-popup-button-radius": {
+    "data-table-popup-button-radius": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "data-grid-title-reserve": {
+    "data-table-title-reserve": {
       "$value": "{plx-ref.size-36px}",
       "$type": "dimension"
     },
-    "data-grid-resize-mark-width": {
+    "data-table-resize-mark-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "data-grid-duration": {
+    "data-table-duration": {
       "$value": "{plx-sys.motion-duration-quick}",
       "$type": "duration"
     },
-    "data-grid-editing-outline-width": {
+    "data-table-editing-outline-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "data-grid-tree-indent": {
+    "data-table-tree-indent": {
       "$value": "{plx-ref.size-18px}",
       "$type": "dimension"
     },
-    "data-grid-tree-control-size": {
+    "data-table-tree-control-size": {
       "$value": "{plx-ref.glyph-size-14px}",
       "$type": "dimension"
     },
-    "data-grid-tree-control-radius": {
+    "data-table-tree-control-radius": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "data-grid-tree-control-gap": {
+    "data-table-tree-control-gap": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-group-font-weight": {
+    "data-table-group-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
-    "data-grid-group-count-gap": {
+    "data-table-group-count-gap": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-menu-radius": {
+    "data-table-menu-radius": {
       "$value": "{plx-sys.shape-md}",
       "$type": "dimension"
     },
-    "data-grid-menu-padding": {
+    "data-table-menu-padding": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
     },
-    "data-grid-menu-font-size": {
+    "data-table-menu-font-size": {
       "$value": "{plx-ref.font-size-13}",
       "$type": "dimension"
     },
-    "data-grid-menu-item-radius": {
+    "data-table-menu-item-radius": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "data-grid-menu-item-padding-block": {
+    "data-table-menu-item-padding-block": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-menu-item-padding-inline-start": {
+    "data-table-menu-item-padding-inline-start": {
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
-    "data-grid-menu-item-padding-inline-end": {
+    "data-table-menu-item-padding-inline-end": {
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension"
     },
-    "data-grid-menu-item-gap": {
+    "data-table-menu-item-gap": {
       "$value": "{plx-ref.space-10px}",
       "$type": "dimension"
     },
-    "data-grid-menu-icon-size": {
+    "data-table-menu-icon-size": {
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
-    "data-grid-menu-separator-margin": {
+    "data-table-menu-separator-margin": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
     },
-    "data-grid-menu-disabled-opacity": {
+    "data-table-menu-disabled-opacity": {
       "$value": "{plx-ref.opacity-45}",
       "$type": "number"
     },
-    "data-grid-placeholder-font-size": {
+    "data-table-placeholder-font-size": {
       "$value": "{plx-ref.font-size-14}",
       "$type": "dimension"
     },
-    "data-grid-placeholder-font-weight": {
+    "table-placeholder-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension"
+    },
+    "data-table-placeholder-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "data-grid-footer-font-weight": {
+    "table-placeholder-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "data-grid-filter-gap": {
+    "data-table-footer-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "data-table-filter-gap": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-filter-padding": {
+    "data-table-filter-padding": {
       "$value": "{plx-ref.space-6px}",
       "$type": "dimension"
     },
-    "data-grid-filter-min-width": {
+    "data-table-filter-min-width": {
       "$value": "{plx-ref.size-220px}",
       "$type": "dimension"
     },
-    "data-grid-filter-label-font-size": {
+    "data-table-filter-label-font-size": {
       "$value": "{plx-ref.font-size-11}",
       "$type": "dimension"
     },
-    "data-grid-filter-label-letter-spacing": {
+    "data-table-filter-label-letter-spacing": {
       "$value": "{plx-sys.letter-spacing-caps}",
       "$type": "dimension"
     },

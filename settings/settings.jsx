@@ -4,13 +4,13 @@
    tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
    SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
    the design system (../platform/design-system/), the point of truth. */
-import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, DataGrid, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
+import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
-// a name/value table as a DataGrid (batch 229: every table is a Tabulator grid): rows [name, value, technical?]; the names
+// a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
-const facts=(label,rows)=>{const list=rows.filter(Boolean);return <DataGrid label={label} headerMenu={false} options={{headerVisible:false}}
+const facts=(label,rows)=>{const list=rows.filter(Boolean);return <Table label={label} headerMenu={false} options={{headerVisible:false}}
   data={list.map((r,i)=>({id:i,name:r[0],value:typeof r[1]==="string"||typeof r[1]==="number"?String(r[1]):""}))}
   columns={[{title:"Name",field:"name",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px",headerSort:false},
     {title:"Value",field:"value",kind:"wrap",headerSort:false,render:d=>{const r=list[d.id];return r?(r[2]?<Text variant="data">{r[1]}</Text>:r[1]):null;}}]}/>;};
@@ -83,14 +83,14 @@ function CapDoc({cap,backLabel,onBack,crumb}){
       facts("Functionality",(cap.functionality||[]).map(f=>[f.feature,f.behavior]))
     )},
     {title:"Scenarios",content:(
-      <DataGrid label="Scenarios" data={(cap.scenarios||[]).map((r,i)=>({...r,id:i}))} columns={[
+      <Table label="Scenarios" data={(cap.scenarios||[]).map((r,i)=>({...r,id:i}))} columns={[
         {title:"If",field:"condition",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px"},
         {title:"Then",field:"expected",kind:"wrap"},
       ]}/>
     )},
     {title:"Specification",content:(
       <Stack gap="sm">
-        <DataGrid label="Fields" data={(spec.ownFields||[]).map((f,i)=>({id:i,field:f.field+(f.required?" *":""),type:f.type,required:f.required?"Yes":"No",notes:f.notes||(f.default!==undefined?"Default: "+f.default:"")}))} columns={[
+        <Table label="Fields" data={(spec.ownFields||[]).map((f,i)=>({id:i,field:f.field+(f.required?" *":""),type:f.type,required:f.required?"Yes":"No",notes:f.notes||(f.default!==undefined?"Default: "+f.default:"")}))} columns={[
           {title:"Field",field:"field",kind:"name",rowLabel:true,width:"--plx-ref-size-240px"},
           {title:"Type",field:"type",kind:"data"},
           {title:"Required",field:"required"},
@@ -190,7 +190,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           {facts("Core philosophy",(window.PV_PHILOSOPHY||[]).map(ph=>[ph.p,ph.d]))}
         </DocSection>
         <DocSection title="What the Platform Unifies">
-          <DataGrid label="What the Platform Unifies" data={(window.PV_UNIFIES||[]).map((r,i)=>({id:i,silo:r[0],unified:r[1]}))} columns={[
+          <Table label="What the Platform Unifies" data={(window.PV_UNIFIES||[]).map((r,i)=>({id:i,silo:r[0],unified:r[1]}))} columns={[
             {title:"Traditional Silo",field:"silo",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px"},
             {title:"Unified in Plenix",field:"unified",kind:"wrap"},
           ]}/>
@@ -250,12 +250,12 @@ function CapDoc({cap,backLabel,onBack,crumb}){
               <Stack gap="sm">
                 <Text as="p">{layer.desc}</Text>
                 {layer.note&&<Text variant="secondary">{layer.note}</Text>}
-                {layer.table&&<DataGrid label={layer.term} data={tableRows(layer.table)} columns={tableColumns(layer.table)}/>}
+                {layer.table&&<Table label={layer.term} data={tableRows(layer.table)} columns={tableColumns(layer.table)}/>}
                 {/* Sub-term (layer 4) */}
                 {layer.subTerm&&(
                   <Stack gap="xs">
                     <Text variant="heading">{layer.subTerm} — {layer.subDesc}</Text>
-                    <DataGrid label={layer.subTerm} data={tableRows(layer.subTable)} columns={tableColumns(layer.subTable)}/>
+                    <Table label={layer.subTerm} data={tableRows(layer.subTable)} columns={tableColumns(layer.subTable)}/>
                   </Stack>
                 )}
                 {/* Correction note */}
@@ -345,7 +345,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           <Panel title="Anchors" description={'UI label: "Classification"'}>
             <Stack gap="sm">
               <Text as="p">The 4 universal fields present on every item in every capability. They connect items to the rest of the system — to projects, categories, and tags — enabling cross-cutting views, filtering, and retrieval.</Text>
-              <DataGrid label="Anchor fields" data={[
+              <Table label="Anchor fields" data={[
                 ["projectType","string | null","Dropdown — single select from Settings > Project Types"],
                 ["projects[]","string[]","Search-to-select with create — many-to-many"],
                 ["categories[]","string[]","Grouped search-to-select with create — shows hierarchy"],
@@ -376,7 +376,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
                 return(
                   <Panel key={key} flush headingLevel={3} title={type.label} description={type.desc}
                     actions={<Inline gap="sm"><Ico n={type.icon||"file"}/><Text variant="data">{fieldCount} own field{fieldCount!==1?"s":""}</Text><Tag>{type.capability}</Tag></Inline>}>
-                    <DataGrid label={type.label+" fields"} empty="No own fields" data={fields.map(([n,d])=>({id:n,name:n+(d.required?" *":""),type:d.type,detail:d.enum?"enum: "+d.enum.join(", "):d.desc||d.unit?"unit: "+d.unit:""}))} columns={[
+                    <Table label={type.label+" fields"} empty="No own fields" data={fields.map(([n,d])=>({id:n,name:n+(d.required?" *":""),type:d.type,detail:d.enum?"enum: "+d.enum.join(", "):d.desc||d.unit?"unit: "+d.unit:""}))} columns={[
                       {title:"Field",field:"name",kind:"name",rowLabel:true,width:"--plx-ref-size-240px"},
                       {title:"Type",field:"type",kind:"data"},
                       {title:"Detail",field:"detail",kind:"wrap"},

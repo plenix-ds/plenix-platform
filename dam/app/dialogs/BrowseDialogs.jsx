@@ -19,7 +19,7 @@
    their own selection, starting from the legacy defaults. Actions with no back end yet confirm with a toast. */
 import React from 'react';
 import {
-  Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataGrid, Tag, TagList, TagInput, Button, Icon,
+  Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataTable, Tag, TagList, TagInput, Button, Icon,
   Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorSwatch,
 } from 'plenix-platform';
 
@@ -223,7 +223,7 @@ function FieldVisibilityDialog({ open, onClose, value, onSave, title, descriptio
       footer={<Footer onCancel={onClose}><Button variant="primary" onClick={save}>Save</Button></Footer>}>
       <Stack>
         <SearchField name="searchFields" label="Search fields" placeholder="Search fields..." value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} />
-        <DataGrid label={title} data={rows} empty={EMPTY_TEXT} headerMenu={false} options={{ movableRows: true }} columns={[
+        <DataTable label={title} data={rows} empty={EMPTY_TEXT} headerMenu={false} options={{ movableRows: true }} columns={[
           { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, headerSort: false, render: () => <Icon name="menu-lines" size="sm" /> },
           { title: 'Field', field: 'name', kind: 'name', headerSort: false },
           { title: 'Type', field: 'type', kind: 'data', headerSort: false },
@@ -262,7 +262,7 @@ export function CatEditFieldsDialog({ open, onClose, onDone }) {
         <Inline justify="end">
           <Checkbox name="editForAllUsers" label="Edit for all users" checked={forAll} onChange={(e) => setForAll(e.target.checked)} />
         </Inline>
-        <DataGrid label="Edit fields" data={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} headerMenu={false} options={{ movableRows: true }} columns={[
+        <DataTable label="Edit fields" data={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} headerMenu={false} options={{ movableRows: true }} columns={[
           { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, headerSort: false, render: () => <Icon name="menu-lines" size="sm" /> },
           { title: 'Field', field: 'name', kind: 'name', headerSort: false },
           { title: 'Type', field: 'type', kind: 'data', headerSort: false },

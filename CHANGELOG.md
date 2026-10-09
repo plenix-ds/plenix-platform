@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Changed (visual)
+- Tables (owner: "data grid should be merged into data table… Table should have the same UI as data table except it is purely
+  static"): DataGrid is DataTable (components/DataTable, plx-data-table, --plx-sys-data-table-*, --plx-comp-data-table-*;
+  no "grid" name left), and Table is back as the static table: the same Tabulator engine and look (its own tokens
+  --plx-sys-table-*, --plx-comp-table-*, equal to the DataTable's: computed styles identical in light and dark at each
+  density) with no hover, sorting, filters, menus, selection, resizing, moving or editing. Reference tables use Table: the
+  design system's props, attributes, states, classes and token tables, Settings' documentation and fact tables,
+  Capture; record lists stay DataTables. Design system: Table and Data table items (#/data-display/table,
+  #/data-display/data-table), the group is Tables, Data grid merged into Data table (STANDARD.md §3 updated). Tests
+  renamed tests/data-table.test.js and tests/data-table-reference.js (180/180). (batch 234)
+
 ## [0.4.0] - 2026-10-08
 
 ### Fixed

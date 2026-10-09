@@ -1,8 +1,8 @@
-// Plenix tests · every DataGrid in the apps: each page (and the tab or view that shows its grids) is opened, the grids are
-// awaited (Tabulator loads the first time a grid renders), and for each grid: it is built, it has its rows or its empty
+// Plenix tests · every Table and DataTable in the apps: each page (and the tab or view that shows its tables) is opened, the tables are
+// awaited (Tabulator loads the first time a table renders), and for each table: it is built, it has its rows or its empty
 // message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
-// and header take the grid tokens (row height, text size).
-//   node tests/grid.test.js
+// and header take the table tokens (row height, text size).
+//   node tests/data-table.test.js
 const { serve, launch, sleep } = require('./lib.js');
 const PORT = 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 // [page, the steps first (a control's visible text to press, or #section to go to without reloading), the grids expected]
@@ -62,35 +62,35 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
       await sleep(400);
     }
     if (missing) { res.push([name, false, 'no control "' + missing + '"']); continue; }
-    try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent).length >= n
-      && Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent).every((g) => g.querySelector('.tabulator-row, .tabulator-placeholder')), { timeout: 15000 }, want); }
-    catch (e) { res.push([name, false, 'grids not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent && g.querySelector('.tabulator-row, .tabulator-placeholder')).length)) + ' of ' + want]); continue; }
+    try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).length >= n
+      && Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).every((g) => g.querySelector('.tabulator-row, .tabulator-placeholder')), { timeout: 15000 }, want); }
+    catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent && g.querySelector('.tabulator-row, .tabulator-placeholder')).length)) + ' of ' + want]); continue; }
     await sleep(600);
     if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });
     if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
     const r = await page.evaluate(async (TAGS) => {
-      const grids = Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent);
+      const grids = Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent);
       const ax = await window.axe.run({ include: grids.map((g) => [g]) }, { runOnly: { type: 'tag', values: TAGS }, resultTypes: ['violations'] });
       const audit = (window.PlenixStyleAudit ? window.PlenixStyleAudit.audit() : []).filter((f) => f.element && grids.some((g) => g.querySelector('*') && document.querySelector(f.element) && g.contains(document.querySelector(f.element))));
       const root = getComputedStyle(document.documentElement);
       const sizes = grids.map((g) => {
         const row = g.querySelector('.tabulator-row:not(.tabulator-group)'), cs = getComputedStyle(g);
-        const want = parseFloat(cs.getPropertyValue('--plx-sys-grid-row-height')) * (/rem/.test(cs.getPropertyValue('--plx-sys-grid-row-height')) ? parseFloat(root.fontSize) : 1);
+        const want = parseFloat(cs.getPropertyValue('--plx-sys-data-table-row-height')) * (/rem/.test(cs.getPropertyValue('--plx-sys-data-table-row-height')) ? parseFloat(root.fontSize) : 1);
         return { label: g.querySelector('.tabulator') && g.querySelector('.tabulator').getAttribute('aria-label'), rows: g.querySelectorAll('.tabulator-row').length,
           rowHeight: row ? Math.round(row.getBoundingClientRect().height) : null, want: Math.round(want) + 1,
-          font: getComputedStyle(g.querySelector('.tabulator')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() };
+          font: getComputedStyle(g.querySelector('.tabulator')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-table-font-size').trim() };
       });
       return { violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
     }, TAGS);
     const bad = [];
     if (r.violations.length) bad.push('axe: ' + r.violations.join('; '));
     if (r.audit.length) bad.push('style audit: ' + r.audit.slice(0, 3).join('; '));
-    r.sizes.forEach((s) => { if (!s.label) bad.push('a grid has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });
+    r.sizes.forEach((s) => { if (!s.label) bad.push('a table has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });
     res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')', !bad.length, bad.join(' · ')]);
   }
   await browser.close(); server.close();
   const failed = res.filter((x) => !x[1]);
   res.forEach(([n, ok, d]) => console.log((ok ? '  ok   ' : '  FAIL ') + n + (ok ? '' : ' · ' + d)));
-  console.log((failed.length ? 'GRIDS_FAIL ' : 'GRIDS_OK ') + (res.length - failed.length) + '/' + res.length + ' grid views');
+  console.log((failed.length ? 'DATA_TABLES_FAIL ' : 'DATA_TABLES_OK ') + (res.length - failed.length) + '/' + res.length + ' table views');
   process.exit(failed.length ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

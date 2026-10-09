@@ -16,7 +16,7 @@
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
-     A name/value table (reference data, a component's details) is a DataGrid, not a PropertyList: every table is a
+     A name/value table (reference data, a component's details) is a DataTable, not a PropertyList: every table is a
      Tabulator grid (batch 229).
 */
 import React from 'react';
