@@ -6,6 +6,8 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-09
+
 ### Added
 - Badge: variant="soft" (owner: yes to a soft Badge): the tone's text on its pale fill, the pair Notice uses
   (--plx-sys-feedback-{tone}-soft and -content), quieter for many statuses in a dense list. Every tone passes AA in both
