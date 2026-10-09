@@ -67,7 +67,9 @@ const comp = tok['plx-comp'];
 const toJson = (v) => v.replace(/var\(--(plx-(?:ref|sys|comp))-([a-z0-9-]+)\)/g, '{$1.$2}');
 const added = [], kept = [];
 let out = '', last = 0;
-const body = css;
+// comments are set aside first: a brace inside one (".plx-badge--{tone}") read as a rule and rewrote the comment (batch 263)
+const comments = [];
+const body = css.replace(/\/\*[\s\S]*?\*\//g, (c) => '/*@' + (comments.push(c) - 1) + '@*/');
 for (const m of body.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const selRaw = m[1], decls = m[2];
   const sel = selRaw.replace(/\/\*[\s\S]*?\*\//g, '').trim();
@@ -96,6 +98,7 @@ for (const m of body.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   last = m.index + m[0].length;
 }
 out += body.slice(last);
+out = out.replace(/\/\*@(\d+)@\*\//g, (m, i) => comments[+i]);
 console.log(file + ': ' + added.length + ' component tokens' + (kept.length ? ', ' + kept.length + ' values stay local' : ''));
 if (process.argv.includes('--list')) { added.forEach((a) => console.log('  ' + a)); kept.forEach((k) => console.log('  local: ' + k)); }
 if (!dry) {

@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-09
+
+### Added
+- Badge has the Button treatment (owner: "every variant for every component to have navigation and design specs just
+  like we did for the buttons"; the first of 49 components): 29 component tokens (--plx-comp-badge-*), a lab that draws
+  every tone, style and size with each value's token and an Edit dialog (display-labs.js), and a page for each of its
+  nine variants in the navigation. Nothing changes on screen. (batch 263)
+
+### Fixed
+- tokenize-component.js rewrote a stylesheet's comment when it held a brace (".plx-badge--{tone}"); comments are now set
+  aside before the rules are read. (batch 263)
+
 ## [0.16.2] - 2026-10-09
 
 ### Added

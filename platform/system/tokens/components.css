@@ -384,6 +384,35 @@
   --plx-comp-action-bar-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-action-bar-layer: var(--plx-sys-layer-sticky);
   --plx-comp-action-bar-stick: 0;
+  --plx-comp-badge-radius: var(--plx-sys-radius-compact-4px);
+  --plx-comp-badge-font-size: var(--plx-ref-font-size-10);
+  --plx-comp-badge-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-badge-line-height: var(--plx-ref-line-height-snug);
+  --plx-comp-badge-min-height: var(--plx-sys-label-height-20px);
+  --plx-comp-badge-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-badge-sm-font-size: var(--plx-ref-font-size-09);
+  --plx-comp-badge-sm-min-height: var(--plx-sys-label-height-16px);
+  --plx-comp-badge-sm-padding-inline: var(--plx-sys-space-inset-xs);
+  --plx-comp-badge-neutral-background: var(--plx-sys-feedback-neutral-solid-label);
+  --plx-comp-badge-neutral-text: var(--plx-sys-feedback-neutral-on-solid);
+  --plx-comp-badge-info-background: var(--plx-sys-feedback-info-solid-label);
+  --plx-comp-badge-info-text: var(--plx-sys-feedback-info-on-solid);
+  --plx-comp-badge-success-background: var(--plx-sys-feedback-success-solid-label);
+  --plx-comp-badge-success-text: var(--plx-sys-feedback-success-on-solid);
+  --plx-comp-badge-warning-background: var(--plx-sys-feedback-warning-solid-label);
+  --plx-comp-badge-warning-text: var(--plx-sys-feedback-warning-on-solid);
+  --plx-comp-badge-danger-background: var(--plx-sys-feedback-danger-solid-label);
+  --plx-comp-badge-danger-text: var(--plx-sys-feedback-danger-on-solid);
+  --plx-comp-badge-soft-neutral-background: var(--plx-sys-feedback-neutral-soft);
+  --plx-comp-badge-soft-neutral-text: var(--plx-sys-feedback-neutral-content);
+  --plx-comp-badge-soft-info-background: var(--plx-sys-feedback-info-soft);
+  --plx-comp-badge-soft-info-text: var(--plx-sys-feedback-info-content);
+  --plx-comp-badge-soft-success-background: var(--plx-sys-feedback-success-soft);
+  --plx-comp-badge-soft-success-text: var(--plx-sys-feedback-success-content);
+  --plx-comp-badge-soft-warning-background: var(--plx-sys-feedback-warning-soft);
+  --plx-comp-badge-soft-warning-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-badge-soft-danger-background: var(--plx-sys-feedback-danger-soft);
+  --plx-comp-badge-soft-danger-text: var(--plx-sys-feedback-danger-content);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);

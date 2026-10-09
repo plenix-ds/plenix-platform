@@ -1548,6 +1548,122 @@
       "$value": "0",
       "$type": "dimension",
       "$description": "How far below the scrolling area's padding edge the bar sticks: a scrolling area sets it to minus its own bottom padding, so the bar sits flush with the bottom (batch 231)"
+    },
+    "badge-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension"
+    },
+    "badge-font-size": {
+      "$value": "{plx-ref.font-size-10}",
+      "$type": "dimension"
+    },
+    "badge-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight"
+    },
+    "badge-line-height": {
+      "$value": "{plx-ref.line-height-snug}",
+      "$type": "number"
+    },
+    "badge-min-height": {
+      "$value": "{plx-sys.label-height-20px}",
+      "$type": "dimension"
+    },
+    "badge-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "badge-sm-font-size": {
+      "$value": "{plx-ref.font-size-09}",
+      "$type": "dimension"
+    },
+    "badge-sm-min-height": {
+      "$value": "{plx-sys.label-height-16px}",
+      "$type": "dimension"
+    },
+    "badge-sm-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "badge-neutral-background": {
+      "$value": "{plx-sys.feedback-neutral-solid-label}",
+      "$type": "color"
+    },
+    "badge-neutral-text": {
+      "$value": "{plx-sys.feedback-neutral-on-solid}",
+      "$type": "color"
+    },
+    "badge-info-background": {
+      "$value": "{plx-sys.feedback-info-solid-label}",
+      "$type": "color"
+    },
+    "badge-info-text": {
+      "$value": "{plx-sys.feedback-info-on-solid}",
+      "$type": "color"
+    },
+    "badge-success-background": {
+      "$value": "{plx-sys.feedback-success-solid-label}",
+      "$type": "color"
+    },
+    "badge-success-text": {
+      "$value": "{plx-sys.feedback-success-on-solid}",
+      "$type": "color"
+    },
+    "badge-warning-background": {
+      "$value": "{plx-sys.feedback-warning-solid-label}",
+      "$type": "color"
+    },
+    "badge-warning-text": {
+      "$value": "{plx-sys.feedback-warning-on-solid}",
+      "$type": "color"
+    },
+    "badge-danger-background": {
+      "$value": "{plx-sys.feedback-danger-solid-label}",
+      "$type": "color"
+    },
+    "badge-danger-text": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color"
+    },
+    "badge-soft-neutral-background": {
+      "$value": "{plx-sys.feedback-neutral-soft}",
+      "$type": "color"
+    },
+    "badge-soft-neutral-text": {
+      "$value": "{plx-sys.feedback-neutral-content}",
+      "$type": "color"
+    },
+    "badge-soft-info-background": {
+      "$value": "{plx-sys.feedback-info-soft}",
+      "$type": "color"
+    },
+    "badge-soft-info-text": {
+      "$value": "{plx-sys.feedback-info-content}",
+      "$type": "color"
+    },
+    "badge-soft-success-background": {
+      "$value": "{plx-sys.feedback-success-soft}",
+      "$type": "color"
+    },
+    "badge-soft-success-text": {
+      "$value": "{plx-sys.feedback-success-content}",
+      "$type": "color"
+    },
+    "badge-soft-warning-background": {
+      "$value": "{plx-sys.feedback-warning-soft}",
+      "$type": "color"
+    },
+    "badge-soft-warning-text": {
+      "$value": "{plx-sys.feedback-warning-content}",
+      "$type": "color"
+    },
+    "badge-soft-danger-background": {
+      "$value": "{plx-sys.feedback-danger-soft}",
+      "$type": "color"
+    },
+    "badge-soft-danger-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color"
     }
   }
 }
