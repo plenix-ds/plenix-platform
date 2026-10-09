@@ -6,7 +6,8 @@
      --plx-sys-radius-control wherever they sit, and never take a radius from their container. --plx-sys-radius-control follows density:
      6px (standard, comfortable), 4px in compact (a compact control takes the smaller corner). Checks, swatches, tabs and
      list rows keep their own roles.
-   - Menus and dropdowns are containment surfaces: --plx-sys-radius-menu-8px. A menu item is a control, not a nested surface;
+   - Menus and dropdowns are containment surfaces at the lowest radius role (owner, batch 272): --plx-sys-radius-surface-4px
+     (--plx-sys-radius-menu-8px stays defined, unused). A menu item is a control, not a nested surface;
      only an item whose outer corners meet the menu's rounded edge is checked corner by corner (it must follow the menu,
      or the menu clips it).
    - Focus rings: an outline (or ring shadow) offset by --plx-sys-focus-ring-offset follows the element's corner, so the ring's

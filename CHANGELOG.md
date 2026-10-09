@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.21.1] - 2026-10-09
+
+### Fixed
+- Menus open on top of everything (owner: "the correct standard for any menu is to always be on top"): a Menu opens in
+  the browser's top layer (popover="manual"), placed beside its trigger by CSS anchor positioning (anchor-scope on the
+  wrapper, anchor-name on the trigger, position-area per placement, flipping at the window's edges); no card,
+  checkbox, pane or scroll area covers or clips it, and nothing is written inline. Browsers without anchor positioning
+  keep the previous placement. Verified in Chrome and Firefox 157. (batch 272)
+
+### Changed
+- Menus, the combobox list and the app switcher take the lowest radius role, --plx-sys-radius-surface-4px (owner: "the
+  lowest size in the existing DS"; --plx-ref-radius-2px is a reference value, which stylesheets may not use for a
+  themeable radius). (batch 272)
+
 ## [0.21.0] - 2026-10-09
 
 ### Changed

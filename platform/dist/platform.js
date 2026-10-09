@@ -3844,6 +3844,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Tab closes the menu and moves on.
      A click outside closes the menu.
      Choosing an item closes the menu and returns focus to the trigger, unless keepOpen.
+     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by CSS
+       anchor positioning, so no card, pane or scroll area can cover or clip it. The trigger's wrapper scopes the anchor, so
+       each menu finds its own trigger; near an edge the menu flips to the other side. A browser without anchor
+       positioning draws it inside the wrapper as before.
    Notes:
      Menus are border-only (no shadow, D9); dialogs keep their shadow.
 */
@@ -3852,6 +3856,9 @@ const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createEl
   name: i
 }) : i;
 const itemsIn = list => list ? Array.prototype.slice.call(list.querySelectorAll('[data-plx-menu-item]:not([aria-disabled="true"])')) : [];
+
+// the top layer and CSS anchor positioning (Chrome 125, Firefox 147, Safari 26), checked once
+const TOP_LAYER = typeof window !== 'undefined' && typeof CSS !== 'undefined' && CSS.supports && CSS.supports('anchor-name', '--plx-a') && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 function Menu({
   trigger,
   label,
@@ -3872,6 +3879,11 @@ function Menu({
   (0, _layer.useLayer)(list, open, {
     onEscape: () => close(true)
   });
+  // into the top layer as soon as it is in the page (before the first item takes focus)
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useEffect(() => {
     if (!open) return undefined;
     const items = itemsIn(list.current);
@@ -3929,6 +3941,7 @@ function Menu({
     id: id,
     role: "menu",
     "aria-label": label,
+    popover: TOP_LAYER ? 'manual' : undefined,
     className: (0, _cx.cx)('plx-menu', 'plx-menu--' + placement),
     onKeyDown: onKeyDown
   }, children)) : null);
