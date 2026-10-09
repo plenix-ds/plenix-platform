@@ -44,7 +44,7 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
         if (spec.after) spec.after(document);
         const el = host.querySelector('.lab-specimen');
         for (const p of spec.props) {
-          const full = spec.token(p.id, size, variant, state); if (!full) continue;
+          const full = spec.token(p.id, size, variant, state, content); if (!full) continue;
           const m = MARK[p.cat]; if (!m) { bad.push(p.id + ': no marker for the category ' + p.cat); continue; }
           tokens.add(full);
           const target = p.host === 'parent' ? el.parentElement : p.part ? el.querySelector(p.part) : el;

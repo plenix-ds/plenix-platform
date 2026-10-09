@@ -1,7 +1,7 @@
 /* Plenix · StatusDot (platform/components/StatusDot). */
-.plx-status-dot{block-size:var(--plx-ref-glyph-size-6px);border-bottom-left-radius:var(--plx-sys-shape-pill);border-bottom-right-radius:var(--plx-sys-shape-pill);border-top-left-radius:var(--plx-sys-shape-pill);border-top-right-radius:var(--plx-sys-shape-pill);display:inline-block;flex-shrink:0;inline-size:var(--plx-ref-glyph-size-6px);position:relative;}
-.plx-status-dot--neutral{background-color:var(--plx-sys-feedback-neutral-solid);}
-.plx-status-dot--info{background-color:var(--plx-sys-feedback-info-solid);}
-.plx-status-dot--success{background-color:var(--plx-sys-feedback-success-solid);}
-.plx-status-dot--warning{background-color:var(--plx-sys-feedback-warning-solid);}
-.plx-status-dot--danger{background-color:var(--plx-sys-feedback-danger-solid);}
+.plx-status-dot{block-size:var(--plx-comp-status-dot-height);border-bottom-left-radius:var(--plx-comp-status-dot-radius);border-bottom-right-radius:var(--plx-comp-status-dot-radius);border-top-left-radius:var(--plx-comp-status-dot-radius);border-top-right-radius:var(--plx-comp-status-dot-radius);display:inline-block;flex-shrink:0;inline-size:var(--plx-comp-status-dot-width);position:relative;}
+.plx-status-dot--neutral{background-color:var(--plx-comp-status-dot-neutral-background);}
+.plx-status-dot--info{background-color:var(--plx-comp-status-dot-info-background);}
+.plx-status-dot--success{background-color:var(--plx-comp-status-dot-success-background);}
+.plx-status-dot--warning{background-color:var(--plx-comp-status-dot-warning-background);}
+.plx-status-dot--danger{background-color:var(--plx-comp-status-dot-danger-background);}

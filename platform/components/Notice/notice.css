@@ -1,7 +1,7 @@
 /* Plenix · Notice (platform/components/Notice). */
-.plx-notice{align-items:flex-start;border-bottom-left-radius:var(--plx-sys-radius-surface-4px);border-bottom-right-radius:var(--plx-sys-radius-surface-4px);border-top-left-radius:var(--plx-sys-radius-surface-4px);border-top-right-radius:var(--plx-sys-radius-surface-4px);column-gap:var(--plx-sys-space-cluster-sm);display:flex;font-size:var(--plx-ref-font-size-12);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
+.plx-notice{align-items:flex-start;border-bottom-left-radius:var(--plx-comp-notice-radius);border-bottom-right-radius:var(--plx-comp-notice-radius);border-top-left-radius:var(--plx-comp-notice-radius);border-top-right-radius:var(--plx-comp-notice-radius);column-gap:var(--plx-comp-notice-gap);display:flex;font-size:var(--plx-comp-notice-font-size);padding-block-end:var(--plx-comp-notice-padding-block);padding-block-start:var(--plx-comp-notice-padding-block);padding-inline-end:var(--plx-comp-notice-padding-inline);padding-inline-start:var(--plx-comp-notice-padding-inline);}
 .plx-notice__text{flex-grow:1;min-inline-size:0;}
-.plx-notice--info{background-color:var(--plx-sys-feedback-info-soft);color:var(--plx-sys-feedback-info-content);}
-.plx-notice--success{background-color:var(--plx-sys-feedback-success-soft);color:var(--plx-sys-feedback-success-content);}
-.plx-notice--warning{background-color:var(--plx-sys-feedback-warning-soft);color:var(--plx-sys-feedback-warning-content);}
-.plx-notice--danger{background-color:var(--plx-sys-feedback-danger-soft);color:var(--plx-sys-feedback-danger-content);}
+.plx-notice--info{background-color:var(--plx-comp-notice-info-background);color:var(--plx-comp-notice-info-text);}
+.plx-notice--success{background-color:var(--plx-comp-notice-success-background);color:var(--plx-comp-notice-success-text);}
+.plx-notice--warning{background-color:var(--plx-comp-notice-warning-background);color:var(--plx-comp-notice-warning-text);}
+.plx-notice--danger{background-color:var(--plx-comp-notice-danger-background);color:var(--plx-comp-notice-danger-text);}

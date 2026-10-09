@@ -1664,6 +1664,326 @@
     "badge-soft-danger-text": {
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
+    },
+    "count-plain-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "count-plain-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "count-pill-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension"
+    },
+    "count-pill-font-size": {
+      "$value": "{plx-ref.font-size-10}",
+      "$type": "dimension"
+    },
+    "count-pill-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight"
+    },
+    "count-pill-line-height": {
+      "$value": "{plx-ref.line-height-none}",
+      "$type": "number"
+    },
+    "count-pill-min-height": {
+      "$value": "{plx-sys.label-height-16px}",
+      "$type": "dimension"
+    },
+    "count-pill-min-width": {
+      "$value": "{plx-sys.label-height-16px}",
+      "$type": "dimension"
+    },
+    "count-pill-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "count-pill-neutral-background": {
+      "$value": "{plx-sys.feedback-neutral-solid-label}",
+      "$type": "color"
+    },
+    "count-pill-neutral-text": {
+      "$value": "{plx-sys.feedback-neutral-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-info-background": {
+      "$value": "{plx-sys.feedback-info-solid-label}",
+      "$type": "color"
+    },
+    "count-pill-info-text": {
+      "$value": "{plx-sys.feedback-info-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-success-background": {
+      "$value": "{plx-sys.feedback-success-solid-label}",
+      "$type": "color"
+    },
+    "count-pill-success-text": {
+      "$value": "{plx-sys.feedback-success-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-warning-background": {
+      "$value": "{plx-sys.feedback-warning-solid-label}",
+      "$type": "color"
+    },
+    "count-pill-warning-text": {
+      "$value": "{plx-sys.feedback-warning-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-danger-background": {
+      "$value": "{plx-sys.feedback-danger-solid-label}",
+      "$type": "color"
+    },
+    "count-pill-danger-text": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color"
+    },
+    "status-dot-height": {
+      "$value": "{plx-ref.glyph-size-6px}",
+      "$type": "dimension"
+    },
+    "status-dot-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension"
+    },
+    "status-dot-width": {
+      "$value": "{plx-ref.glyph-size-6px}",
+      "$type": "dimension"
+    },
+    "status-dot-neutral-background": {
+      "$value": "{plx-sys.feedback-neutral-solid}",
+      "$type": "color"
+    },
+    "status-dot-info-background": {
+      "$value": "{plx-sys.feedback-info-solid}",
+      "$type": "color"
+    },
+    "status-dot-success-background": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color"
+    },
+    "status-dot-warning-background": {
+      "$value": "{plx-sys.feedback-warning-solid}",
+      "$type": "color"
+    },
+    "status-dot-danger-background": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color"
+    },
+    "notice-radius": {
+      "$value": "{plx-sys.radius-surface-4px}",
+      "$type": "dimension"
+    },
+    "notice-gap": {
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension"
+    },
+    "notice-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "notice-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "notice-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "notice-info-background": {
+      "$value": "{plx-sys.feedback-info-soft}",
+      "$type": "color"
+    },
+    "notice-info-text": {
+      "$value": "{plx-sys.feedback-info-content}",
+      "$type": "color"
+    },
+    "notice-success-background": {
+      "$value": "{plx-sys.feedback-success-soft}",
+      "$type": "color"
+    },
+    "notice-success-text": {
+      "$value": "{plx-sys.feedback-success-content}",
+      "$type": "color"
+    },
+    "notice-warning-background": {
+      "$value": "{plx-sys.feedback-warning-soft}",
+      "$type": "color"
+    },
+    "notice-warning-text": {
+      "$value": "{plx-sys.feedback-warning-content}",
+      "$type": "color"
+    },
+    "notice-danger-background": {
+      "$value": "{plx-sys.feedback-danger-soft}",
+      "$type": "color"
+    },
+    "notice-danger-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color"
+    },
+    "skeleton-animation-duration": {
+      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$type": "duration"
+    },
+    "skeleton-animation-timing-function": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "dimension"
+    },
+    "skeleton-background": {
+      "$value": "{plx-sys.skeleton-base}",
+      "$type": "color"
+    },
+    "skeleton-background-image": {
+      "$value": "linear-gradient(90deg,{plx-sys.skeleton-base} 25%,{plx-sys.skeleton-highlight} 50%,{plx-sys.skeleton-base} 75%)",
+      "$type": "color"
+    },
+    "skeleton-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension"
+    },
+    "spinner-animation-duration": {
+      "$value": "{plx-sys.motion-duration-loop-fast}",
+      "$type": "duration"
+    },
+    "spinner-border-bottom-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "spinner-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension"
+    },
+    "spinner-border-left-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "spinner-border-right-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "spinner-sm-height": {
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension"
+    },
+    "spinner-sm-border-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "spinner-sm-width": {
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension"
+    },
+    "spinner-md-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "spinner-md-border-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "spinner-md-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "spinner-lg-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension"
+    },
+    "spinner-lg-border-width": {
+      "$value": "{plx-sys.border-width-thick}",
+      "$type": "dimension"
+    },
+    "spinner-lg-width": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension"
+    },
+    "progress-bar-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "progress-bar-head-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "progress-bar-label-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "progress-bar-label-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "progress-bar-value-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "progress-bar-value-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily"
+    },
+    "progress-bar-value-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "progress-bar-track-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color"
+    },
+    "progress-bar-track-height": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension"
+    },
+    "progress-bar-track-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension"
+    },
+    "progress-bar-sm-track-height": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension"
+    },
+    "progress-bar-fill-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension"
+    },
+    "progress-bar-fill-duration": {
+      "$value": "{plx-sys.motion-duration-base}",
+      "$type": "duration"
+    },
+    "progress-bar-fill-easing": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "cubicBezier"
+    },
+    "progress-bar-indeterminate-fill-animation-duration": {
+      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$type": "duration"
+    },
+    "progress-bar-indeterminate-fill-animation-timing-function": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "dimension"
+    },
+    "progress-bar-info-fill": {
+      "$value": "{plx-sys.feedback-info-solid}",
+      "$type": "color"
+    },
+    "progress-bar-success-fill": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color"
+    },
+    "progress-bar-warning-fill": {
+      "$value": "{plx-sys.feedback-warning-solid}",
+      "$type": "color"
+    },
+    "progress-bar-danger-fill": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color"
+    },
+    "progress-bar-neutral-fill": {
+      "$value": "{plx-sys.feedback-neutral-solid}",
+      "$type": "color"
     }
   }
 }

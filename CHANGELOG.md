@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-10-09
+
+### Added
+- The Button treatment for Counter, Status dot, Notice, Spinner and Progress bar (owner: "every variant for every
+  component"): component tokens (count, status-dot, notice, spinner, skeleton, progress-bar), a lab for each that draws
+  every variant with each value's token and an Edit dialog (display-labs.js), and a page for each of their 28 variants
+  in the navigation. Progress bar's tones are now tokens (--plx-comp-progress-bar-{tone}-fill). Nothing changes on
+  screen. (batch 264)
+- The component lab passes the chosen content to a lab's token lookup, for parts some content leaves out (a progress
+  bar of unknown amount has no value text). (batch 264)
+
 ## [0.17.0] - 2026-10-09
 
 ### Added
