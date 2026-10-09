@@ -14,7 +14,7 @@ export function EmailsWidget({ handle,  onViewAll, prefs }) {
   const max = parseInt(prefs?.emailMax || '5', 10);
   const open = EMAILS.find((e) => e.id === exp);
   return (
-    <Panel title="Emails" flush actions={<Inline gap="xs"><Badge tone="danger" size="sm">2</Badge>{allLink('View all emails', onViewAll)}{handle}</Inline>}>
+    <Panel icon="message" title="Emails" flush actions={<Inline gap="xs"><Badge tone="danger" size="sm">2</Badge>{allLink('View all emails', onViewAll)}{handle}</Inline>}>
       <ActivityList label="Emails">{EMAILS.slice(0, max).map((em) => (
         <ActivityList.Item key={em.id} unread={!!em.unread} selected={exp === em.id} onOpen={() => setExp(exp === em.id ? null : em.id)}
           leading={showAv ? <Avatar name={em.from} size="xs" /> : null} title={em.from} meta={em.subj} time={em.time} />
@@ -31,7 +31,7 @@ export function EmailsWidget({ handle,  onViewAll, prefs }) {
 
 export function CalendarWidget({ handle,  onViewAll }) {
   return (
-    <Panel title="Calendar" description="Mar 5" actions={<Inline gap="xs">{allLink('View all calendar', onViewAll)}{handle}</Inline>}>
+    <Panel icon="calendar" title="Calendar" description="Mar 5" actions={<Inline gap="xs">{allLink('View all calendar', onViewAll)}{handle}</Inline>}>
       <Stack gap="xs">{EVENTS.map((ev) => <EventChip key={ev.id} title={ev.title} time={ev.time} color={ev.color} />)}</Stack>
     </Panel>
   );
@@ -46,7 +46,7 @@ export function ProjectsWidget({ handle,  onViewAll, onProject, prefs }) {
   const active = PROJECTS.filter((p) => p.status === 'active');
   const catLabel = { personal: 'Personal', client: 'Client', research: 'Research', travel: 'Travel', finance: 'Finance' };
   return (
-    <Panel title="Projects" flush={density !== 'card'} actions={<Inline gap="xs">{allLink('View all projects', onViewAll)}{handle}</Inline>}>
+    <Panel icon="briefcase" title="Projects" flush={density !== 'card'} actions={<Inline gap="xs">{allLink('View all projects', onViewAll)}{handle}</Inline>}>
       {density === 'card' ? (
         <ContentGrid size="md" label="Active projects">
           {active.map((p) => (
@@ -73,7 +73,7 @@ export function ProjectsWidget({ handle,  onViewAll, onProject, prefs }) {
 
 export function ContactsWidget({ handle,  onViewAll }) {
   return (
-    <Panel title="Contacts" actions={<Inline gap="xs">{allLink('View all contacts', onViewAll)}{handle}</Inline>}>
+    <Panel icon="settings-users" title="Contacts" actions={<Inline gap="xs">{allLink('View all contacts', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{CONTACTS.map((c) => (
         <Inline key={c.id} gap="sm">
           <Avatar name={c.name} size="sm" />
@@ -94,7 +94,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
   const max = parseInt(prefs?.taskMax || '7', 10);
   const pending = ALL_TASKS.filter((t) => !done[t.id]).slice(0, max);
   return (
-    <Panel title="To do" actions={<Inline gap="xs"><Badge tone="warning" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
+    <Panel icon="circle-check" title="To do" actions={<Inline gap="xs"><Badge tone="warning" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{pending.map((t) => (
         <Inline key={t.id} gap="sm" justify="between">
           <Inline gap="xs">{showPri ? <PriDot pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
@@ -110,7 +110,7 @@ export function NotesWidget({ handle,  onViewAll, prefs }) {
   const showFolder = prefs?.noteFolder !== false;
   const max = parseInt(prefs?.noteMax || '6', 10);
   return (
-    <Panel title="Notes" flush actions={<Inline gap="xs">{allLink('View all notes', onViewAll)}{handle}</Inline>}>
+    <Panel icon="document" title="Notes" flush actions={<Inline gap="xs">{allLink('View all notes', onViewAll)}{handle}</Inline>}>
       <Stack gap="none">{ALL_NOTES.slice(0, max).map((n) => (
         <RowButton key={n.id} onClick={onViewAll}>
           <Inline gap="sm" inset="sm" justify="between">
@@ -128,7 +128,7 @@ export function NotificationsWidget({ handle }) {
   const { notifications, setNotifications } = useSession();
   const unread = notifications.filter((n) => n.unread).length;
   return (
-    <Panel title="Notifications" flush actions={<Inline gap="xs">{unread ? <Badge tone="danger" size="sm">{String(unread)}</Badge> : null}
+    <Panel icon="hdr-bell" title="Notifications" flush actions={<Inline gap="xs">{unread ? <Badge tone="danger" size="sm">{String(unread)}</Badge> : null}
       <Button variant="ghost" size="xs" disabled={!unread} onClick={() => setNotifications(notifications.map((n) => ({ ...n, unread: false })))}>Mark all read</Button>{handle}</Inline>}>
       <NotificationList limit={5} footer={false} />
     </Panel>

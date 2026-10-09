@@ -20,7 +20,7 @@
      onOpenApp(app): return true when the page opens the application itself (a section of the same page); otherwise the link opens it
      nav: replaces the header links (default: the pinned applications)
      navLabel: the header links' accessible name (default "Pinned applications")
-     action: the application's action (AppHeader.Action), a labeled button between search and the utilities
+     action: the application's action (AppHeader.Action), an icon item with its label as tooltip, between search and the utilities
      search: the search field (a SearchField onAccent), shown when search is asked for; without it there is no search
      actions: other utilities, before the account
      account: the account menu (AppHeader.Account), last in the utilities
@@ -35,6 +35,11 @@
      AppHeader.Item.tooltip: shows the label as a tooltip (default true)
      AppHeader.Item.className: more classes
      AppHeader.Item.ref: forwarded to the link or button, so it can be a Menu trigger
+     AppHeader.Account.settings: { href | onSelect } for "Plenix settings", the suite's settings (owner, batch 272)
+     AppHeader.Account.signOut: { href | onSelect } for "Sign out", last in the menu (default: the sign-in proxy's sign-out,
+       /outpost.goauthentik.io/sign_out); Change picture sets the person's picture (useSession().setPicture)
+     AppHeader.Account.appSettings: { app, href | onSelect, icon } for "<app> settings", this application's own settings
+       ("Notes settings", "Asset Manager settings"); left out when the application has none
      AppHeader.Account.name: the person's name (default: the session's)
      AppHeader.Account.email: the person's email (default: the session's)
      AppHeader.Account.src: the person's picture (default: the session's)
@@ -47,7 +52,7 @@
        the current one checked); default false
      AppHeader.Account.extra: further items after a divider (Sign out)
      AppHeader.Action.icon: an icon name (such as "hdr-upload") or an icon element, header-sized
-     AppHeader.Action.children: the button's label
+     AppHeader.Action.children: the action's label: its tooltip and accessible name (or label)
      AppHeader.Action.onClick: runs on click
      AppHeader.Switcher.currentApp: the open application's id, marked in the switcher
      AppHeader.Switcher.appsRoot: as for AppHeader (default "")
@@ -79,7 +84,7 @@ import { Count } from '../../components/Count/Count.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
-import { useSession } from '../../providers/SessionProvider.jsx';
+import { useSession, choosePicture } from '../../providers/SessionProvider.jsx';
 import { PLENIX_APPS, appById, appHref } from '../../providers/apps.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
@@ -170,8 +175,10 @@ AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon, label, current 
   return tooltip ? <Tooltip content={label}>{el}</Tooltip> : el;
 });
 
-AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, density = false, extra }) {
-  const { account } = useSession();   // who is signed in: the session, unless the application names someone
+// the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session, then signs in again
+export const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
+AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, appSettings = {}, signOut = { href: SIGN_OUT }, density = false, extra }) {
+  const { account, setPicture } = useSession();   // who is signed in: the session, unless the application names someone
   const name = nameProp || account.name, email = emailProp || account.email, src = srcProp || account.src;
   const [dens, setDens] = useDensity();
   const inPane = placement === 'pane';
@@ -185,21 +192,27 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
   return (
     <Menu label="Account" placement={inPane ? 'top-start' : 'bottom-end'} trigger={trigger}>
       <MenuGroup label={email ? <>{name}<br />{email}</> : name}>
+        <MenuDivider />
         {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>My account</MenuItem> : null}
-        {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>Settings</MenuItem> : null}
+        {setPicture ? <MenuItem icon="settings-camera" onSelect={() => { choosePicture().then((p) => { if (p) setPicture(p); }); }}>Change picture</MenuItem> : null}
+        {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>Plenix settings</MenuItem> : null}
+        {has(appSettings) ? <MenuItem icon={appSettings.icon || 'settings-customize'} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{(appSettings.app || 'App') + ' settings'}</MenuItem> : null}
       </MenuGroup>
       {density ? <><MenuDivider /><MenuGroup label="Display density">
         {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={'density-' + d.value} checked={dens === d.value} onSelect={() => setDens(d.value)}>{d.label}</MenuItem>)}
       </MenuGroup></> : null}
       {extra ? <><MenuDivider />{extra}</> : null}
+      {has(signOut) ? <><MenuDivider /><MenuItem href={signOut.href} onSelect={signOut.onSelect}>Sign out</MenuItem></> : null}
     </Menu>
   );
 };
 // the density choices when the workspace script is not on the page
 const DENSITY_CHOICES = [{ value: 'compact', label: 'Compact' }, { value: 'standard', label: 'Standard' }, { value: 'comfortable', label: 'Comfortable' }];
 
-AppHeader.Action = function AppHeaderAction({ icon, children, ...rest }) {
-  return <Button icon={typeof icon === 'string' ? <Icon name={icon} /> : icon} {...rest}>{children}</Button>;
+// the application's action is an icon item like the header's others: its label is the tooltip and the accessible name
+// (owner, batch 272: "just an icon with tooltip"); a variant the application passes is no longer used
+AppHeader.Action = function AppHeaderAction({ icon, children, label, variant, ...rest }) {
+  return <AppHeader.Item icon={typeof icon === 'string' ? <Icon name={icon} /> : icon} label={label || (typeof children === 'string' ? children : undefined)} {...rest} />;
 };
 
 

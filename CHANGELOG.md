@@ -6,6 +6,34 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-10-09
+
+### Added
+- Panel.icon: a card's icon before its heading (owner: "in all cards... ALWAYS the icon that represents the card is
+  always on the left side before the heading"); the dashboard's seven cards show their applications' icons. (batch 272)
+- The account menu (AppHeader.Account): My account, Change picture, Plenix settings, <app> settings (appSettings: the
+  application's own settings, "Notes settings", "Asset Manager settings"), a divider, Sign out (signOut, default the
+  sign-in proxy's /outpost.goauthentik.io/sign_out); a divider under the name and email. The person's picture is set
+  with choosePicture() and useSession().setPicture (a 128px square, kept in this browser until the back end stores
+  it); Settings > Account > Profile has Picture with Change and Remove, and its Sign out signs out. (batch 272)
+- A selectable MediaCard selects on a click anywhere but its title, box and actions (owner: "clicking the card selects
+  it"); its title or a double-click opens it. (batch 272)
+
+### Changed
+- TagInput's + is a chip: the tags' 20px height, border, corners and fill, a 24px target. (batch 272)
+- A navigation row's actions (the saved searches' x) show on hover and keyboard focus only, always on touch; the pin
+  keeps its own rules. (batch 272)
+- The side panel's footer actions sit at its end, the primary last (Cancel, then Save). Tabs in a side panel use the
+  Folder variant. (batch 272)
+- AppHeader.Action (Upload, Capture) is an icon item with its label as the tooltip. (batch 272)
+- The dashboard's move handle icon is the next size up (md). (batch 272)
+
+### Fixed
+- The header's account picture showed a fill on the browser's own hover (the 0.16 rule covered only the scripted
+  hover). (batch 272)
+- The design-system docs called Table "retired" (Codex M-02); the work log is backfilled for batches 235-264 (M-05).
+  (batch 272)
+
 ## [0.21.2] - 2026-10-09
 
 ### Added

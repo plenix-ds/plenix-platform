@@ -18,6 +18,7 @@
      className: more classes on the tabs
      panelClassName: more classes on each panel
    Behavior:
+     In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
      The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
      Arrow keys move and select (wrapping); Home and End go to the first and last.
      Only the selected tab is in the Tab order.

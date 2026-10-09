@@ -9,7 +9,7 @@
 /* collapsed: the rail on the inspector's edge */
 .plx-side-panel-rail{align-self:stretch;box-shadow:inset var(--plx-sys-border-width-thin) 0 0 var(--plx-sys-border-default);flex-shrink:0;}
 /* the footer: the panel's actions, pinned to its bottom (the same row as the navigation pane's footer) */
-.plx-side-panel__footer{align-items:center;box-shadow:inset 0 var(--plx-sys-border-width-thin) 0 var(--plx-sys-border-divider);box-sizing:border-box;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-pane-footer-height);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
+.plx-side-panel__footer{align-items:center;box-shadow:inset 0 var(--plx-sys-border-width-thin) 0 var(--plx-sys-border-divider);box-sizing:border-box;column-gap:var(--plx-sys-space-inline-xs);display:flex;justify-content:flex-end;flex-shrink:0;min-block-size:var(--plx-comp-pane-footer-height);padding-block-end:var(--plx-sys-space-inset-sm);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
 /* resizable (batch 259): its start edge is dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
    -max; the width reaches the stylesheet as --plx-comp-side-panel-width (no style is written) */
 .plx-side-panel--resizable{position:relative;}

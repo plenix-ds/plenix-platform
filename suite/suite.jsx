@@ -26,6 +26,8 @@ export const SUITE = [
 // the page of an application, from another application's page (every application folder sits beside the others)
 export const appPage = (id, hash) => { const a = SUITE.find((x) => x.id === id); return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (hash ? '#' + hash : ''); };
 export const settingsPage = (cat) => '../settings/index.html' + (cat ? '#' + cat : '');
+// each application's own settings category in Settings (none yet for Bookmarks)
+const APP_SETTINGS = { home: 'dashboard', projects: 'projects', messaging: 'email', contacts: 'contacts', calendar: 'calendar', tasks: 'tasks', notes: 'notes', files: 'files' };
 // the settings page each application's navigation footer opens
 const SETTINGS_FOR = { messaging: 'email', contacts: 'contacts', calendar: 'calendar', tasks: 'tasks', notes: 'notes', files: 'files', projects: 'projects' };
 // the applications whose page has a navigation pane (the dashboard, projects and settings draw their own)
@@ -60,7 +62,8 @@ function Suite({ app, render, page = 'workspace' }) {
         search={<SearchField placeholder={inSuite && app !== 'home' ? 'Search ' + label.toLowerCase() + '…' : 'Search files, notes, contacts…'} label="Search" shortcut="Ctrl K" onAccent={onAccent}
           value={hq} onChange={(e) => setHq(e.target.value)} onClear={() => setHq('')} onKeyDown={(e) => { if (e.key === 'Enter') { setAi(null); setFind({ app: inSuite && app !== 'home' ? app : 'home', query: hq.trim() }); } }} />}
         account={<AppHeader.Account current={app === 'settings' ? (location.hash === '#account' ? 'account' : 'settings') : undefined}
-          myAccount={{ href: settingsPage('account') }} settings={{ href: settingsPage('general') }} />} />}>
+          myAccount={{ href: settingsPage('account') }} settings={{ href: settingsPage('general') }}
+          appSettings={APP_SETTINGS[app] ? { app: label, href: settingsPage(APP_SETTINGS[app]) } : {}} />} />}>
       <div className="plx-app-shell__page">{main}</div>
       {capture ? <CaptureUI onClose={() => setCapture(false)} /> : null}
     </AppShell>

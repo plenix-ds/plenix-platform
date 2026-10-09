@@ -1952,8 +1952,19 @@ const appPage = (id, hash) => {
 };
 exports.appPage = appPage;
 const settingsPage = cat => '../settings/index.html' + (cat ? '#' + cat : '');
-// the settings page each application's navigation footer opens
+// each application's own settings category in Settings (none yet for Bookmarks)
 exports.settingsPage = settingsPage;
+const APP_SETTINGS = {
+  home: 'dashboard',
+  projects: 'projects',
+  messaging: 'email',
+  contacts: 'contacts',
+  calendar: 'calendar',
+  tasks: 'tasks',
+  notes: 'notes',
+  files: 'files'
+};
+// the settings page each application's navigation footer opens
 const SETTINGS_FOR = {
   messaging: 'email',
   contacts: 'contacts',
@@ -2083,7 +2094,11 @@ function Suite({
         },
         settings: {
           href: settingsPage('general')
-        }
+        },
+        appSettings: APP_SETTINGS[app] ? {
+          app: label,
+          href: settingsPage(APP_SETTINGS[app])
+        } : {}
       })
     })
   }, /*#__PURE__*/React.createElement("div", {
@@ -2144,6 +2159,7 @@ function EmailsWidget({
   const max = parseInt(prefs?.emailMax || '5', 10);
   const open = _shared.EMAILS.find(e => e.id === exp);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "message",
     title: "Emails",
     flush: true,
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
@@ -2187,6 +2203,7 @@ function CalendarWidget({
   onViewAll
 }) {
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "calendar",
     title: "Calendar",
     description: "Mar 5",
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
@@ -2221,6 +2238,7 @@ function ProjectsWidget({
     finance: 'Finance'
   };
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "briefcase",
     title: "Projects",
     flush: density !== 'card',
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
@@ -2268,6 +2286,7 @@ function ContactsWidget({
   onViewAll
 }) {
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "settings-users",
     title: "Contacts",
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
@@ -2315,6 +2334,7 @@ function TasksWidget({
   const max = parseInt(prefs?.taskMax || '7', 10);
   const pending = _shared.ALL_TASKS.filter(t => !done[t.id]).slice(0, max);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "circle-check",
     title: "To do",
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
@@ -2352,6 +2372,7 @@ function NotesWidget({
   const showFolder = prefs?.noteFolder !== false;
   const max = parseInt(prefs?.noteMax || '6', 10);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "document",
     title: "Notes",
     flush: true,
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
@@ -2388,6 +2409,7 @@ function NotificationsWidget({
   } = (0, _plenixPlatform.useSession)();
   const unread = notifications.filter(n => n.unread).length;
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "hdr-bell",
     title: "Notifications",
     flush: true,
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {

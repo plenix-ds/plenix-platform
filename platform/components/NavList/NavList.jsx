@@ -28,6 +28,8 @@
      strings: the words it shows and announces, for other languages: { pin: "Pin", unpin: "Unpin", pinItem: "Pin {label}",
        unpinItem: "Unpin {label}" } (pin and unpin are the pin button's tooltip; pinItem and unpinItem its name)
    Behavior:
+     A row's actions (item.actions) show on hover and when the row holds keyboard focus; on touch they always show. The pin
+       is different: it shows a state, so a pinned row keeps it (batch 272).
      The current item carries aria-current="page".
      An item with href is a link; otherwise it is a button and onSelect(id) runs.
      A collapsible group heading folds its rows, the same in every navigation pane.

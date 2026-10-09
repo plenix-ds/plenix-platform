@@ -4,7 +4,7 @@
    tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
    SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
    the design system (../platform/design-system/), the point of truth. */
-import { Badge, Button, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
+import { Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -475,7 +475,7 @@ function ThemeChoice(){const {theme,setTheme,themes}=useTheme();return <Select a
 
 export function Settings({prefs,setPrefs,startCat="general",onBack}){
   const [cat,setCat]=useState(startCat);
-  const {account}=useSession(); // who is signed in (the Platform session)
+  const {account,setPicture}=useSession(); // who is signed in (the Platform session)
   const [featArea,setFeatArea]=useState(null);
   const [featOpen,setFeatOpen]=useState(false);
   const [docOpen,setDocOpen]=useState(false);
@@ -829,6 +829,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     account:(
       <Screen title="Account" desc="Profile, integrations and connected services.">
         <SettingsSection title="Profile">
+          <Row label="Picture"><Inline gap="sm" align="center"><Avatar name={account.name} src={account.src} size="md"/><Button size="sm" icon="settings-camera" onClick={()=>choosePicture().then(p=>{if(p)setPicture(p);})}>Change picture</Button>{account.src?<Button size="sm" variant="ghost" onClick={()=>setPicture(null)}>Remove</Button>:null}</Inline></Row>
           <Row label="Name"><Stack width="sm"><Input defaultValue={account.name} aria-label="Name"/></Stack></Row>
           <Row label="Email"><Stack width="md"><Input defaultValue={account.email} aria-label="Email"/></Stack></Row>
         </SettingsSection>
@@ -846,7 +847,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
         </SettingsSection>
         <SettingsSection title="Security">
           <Row label="Browser notifications"><Toggle val={prefs.notifs!==false} onChange={v=>set("notifs",v)}/></Row>
-          <Row label="Sign out"><Button variant="danger-secondary">Sign out</Button></Row>
+          <Row label="Sign out"><Button variant="danger-secondary" href="/outpost.goauthentik.io/sign_out">Sign out</Button></Row>
         </SettingsSection>
       </Screen>
     ),

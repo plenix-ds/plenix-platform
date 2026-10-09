@@ -50,3 +50,8 @@
 .plx-nav-list__item--group.is-current-parent{color:var(--plx-sys-selected-content);}
 .plx-nav-list__items--nested{padding-inline-start:calc(var(--plx-sys-control-icon-standard) + var(--plx-sys-space-inline-sm));}
 .plx-nav-list__items--nested[hidden]{display:none;}
+/* a row's actions (owner, batch 272: shown only on hover, unlike the pin, which shows a state): hidden until the row is
+   hovered or holds keyboard focus, so they stay reachable by keyboard; touch and mobile show them (no hover there) */
+.plx-nav-list__actions>:not(.plx-nav-list__pin){opacity:0;}
+.plx-nav-list__entry:hover .plx-nav-list__actions>:not(.plx-nav-list__pin),.plx-nav-list__entry.is-hover .plx-nav-list__actions>:not(.plx-nav-list__pin),.plx-nav-list__entry:focus-within .plx-nav-list__actions>:not(.plx-nav-list__pin){opacity:1;}
+:root[data-plx-interaction="touch"] .plx-nav-list__actions>:not(.plx-nav-list__pin),:root[data-plx-interaction="mobile"] .plx-nav-list__actions>:not(.plx-nav-list__pin){opacity:1;}

@@ -92,4 +92,4 @@
   .plx-app-switcher__grid{grid-template-columns:repeat(3,minmax(0,1fr));}
 }
 /* the account item is its picture alone: no fill grows around it on hover or while its menu is open (owner, batch 261) */
-.plx-app-header__item--account.is-hover,.plx-app-header__item--account.is-current{background-color:transparent;}
+.plx-app-header__item.plx-app-header__item--account:hover,.plx-app-header__item.plx-app-header__item--account.is-hover,.plx-app-header__item.plx-app-header__item--account.is-current,.plx-app-header__item.plx-app-header__item--account[aria-expanded="true"]{background-color:transparent;}

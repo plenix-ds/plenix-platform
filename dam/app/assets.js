@@ -67,11 +67,15 @@ function AssetHeader({
       onAccent: true
     }),
     account: /*#__PURE__*/_react.default.createElement(_plenixPlatform.AppHeader.Account, {
-      current: current === 'system' ? 'settings' : current,
+      current: current === 'system' ? 'app-settings' : current,
       myAccount: {
         href: 'settings-myaccount.html'
       },
       settings: {
+        href: '../settings/index.html#general'
+      },
+      appSettings: {
+        app: 'Asset Manager',
         href: 'settings-system.html'
       }
     })
@@ -2193,14 +2197,14 @@ function InspectorFooter({
 }) {
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
+    icon: "close-2",
+    onClick: act('Cancel', 'info')
+  }, "Cancel"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    size: "sm",
     variant: "primary",
     icon: "save-doc",
     onClick: act('Save', 'success')
-  }, "Save"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    size: "sm",
-    icon: "close-2",
-    onClick: act('Cancel', 'info')
-  }, "Cancel"));
+  }, "Save"));
 }
 function EditBar({
   onFields
@@ -2262,7 +2266,7 @@ function CategoryInspector({
       name: e.target.value
     })
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
+    variant: "folder",
     label: "Details",
     items: [{
       value: 'details',
@@ -2423,7 +2427,7 @@ function AssetDetail({
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     variant: "secondary"
   }, asset.cat)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
+    variant: "folder",
     label: "Asset details",
     items: [{
       value: 'details',

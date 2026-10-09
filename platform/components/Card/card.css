@@ -47,3 +47,11 @@
 .plx-card--accent{border-inline-start-color:var(--plx-comp-card-accent);border-inline-start-width:var(--plx-sys-border-width-thick);}
 /* the collapse toggle shows the focus ring, as every control (batch 213) */
 .plx-panel__toggle:focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+/* a card's icon (owner, batch 272): before the heading, at the control icon size, in the heading's color */
+.plx-panel__title--icon{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:flex;}
+.plx-panel__icon{display:inline-flex;flex-shrink:0;}
+.plx-panel__icon .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
+/* a selectable media card (owner, batch 272): a click on the card selects it, so the title's link no longer covers the card;
+   the title alone opens it (or a double-click) */
+.plx-media-card--selectable{cursor:pointer;}
+.plx-media-card--selectable .plx-card__opener::after{content:none;}

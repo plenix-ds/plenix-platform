@@ -571,211 +571,6 @@ function StatusDot({
   }, rest), label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Skeleton = Skeleton;
-exports.Spinner = Spinner;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
-   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
-     dots are a Chat variant: Chat.Typing.)
-   Usage:
-     <Skeleton width="160px" height="16px" />
-     <Spinner size="sm" label="Saving" />
-   Props:
-     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
-     Skeleton.height: the block height, a size token's name ("16px")
-     Skeleton.className: more classes on the block
-     Spinner.size: "sm" | "md" (default) | "lg"
-     Spinner.label: the text announced to assistive technology (default "Loading")
-     Spinner.className: more classes on the ring
-   Behavior:
-     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
-     Spinner is a status region (role="status"), so its label is announced.
-     People who ask their system for less motion see the indicators still.
-   Notes:
-     Other props pass through to the <span>.
-     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
-*/
-// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
-const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
-function Skeleton({
-  width,
-  height,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-skeleton', className),
-    "aria-hidden": "true",
-    "data-plx-width": sizeName(width),
-    "data-plx-height": sizeName(height)
-  }, rest));
-}
-function Spinner({
-  size = 'md',
-  label = 'Loading',
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
-}
-  } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-exports.ButtonGroup = ButtonGroup;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
-   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
-   Usage:
-     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
-     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
-     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
-   Props:
-     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
-       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis; "quiet", its old name, still works) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover) | "link" (looks like link text)
-     size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
-       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
-       tint on hover) | "lg" (the prominent role: page actions)
-     icon: an <Icon> (or an icon name) before the label
-     iconEnd: an <Icon> (or an icon name) after the label
-     iconOnly: a square button with only its icon; give it a label (default false)
-     label: the accessible name (aria-label); an icon-only button falls back to string children
-     caret: the button opens a menu: a chevron after the label (default false)
-     expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed)
-     selected: shows the selected state without a toggle role (default false)
-     loading: shows a spinner in place of the icon (default false)
-     disabled: the button does nothing (default false)
-     href: renders a link styled as a button
-     type: the button type (default "button")
-     onClick(event): runs when the button is clicked, unless disabled or loading
-     children: the button label
-     className: more classes on the button
-     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
-     ref: forwarded to the <button> or <a>
-     ButtonGroup.label: the accessible name of the group
-     ButtonGroup.children: the buttons
-     ButtonGroup.className: more classes on the group
-   Behavior:
-     Placement can also set the role: a dialog footer gives its buttons the dialog role.
-     Selected, pressed and expanded all show the selected state.
-     Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
-     A disabled link loses its href.
-   Notes:
-     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
-     For one choice from several, use SegmentedControl instead of ButtonGroup.
-*/
-const STRINGS = {
-  working: 'Working'
-};
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
-const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
-  variant = 'secondary',
-  size = 'md',
-  icon,
-  iconEnd,
-  iconOnly = false,
-  label,
-  caret = false,
-  expanded,
-  pressed,
-  selected = false,
-  loading = false,
-  disabled = false,
-  href,
-  type = 'button',
-  className,
-  children,
-  onClick,
-  strings,
-  ...rest
-}, ref) {
-  const t = Object.assign({}, STRINGS, strings);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.working
-  })) : icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(icon)) : null, iconOnly ? null : children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__label"
-  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(iconEnd)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__caret",
-    "aria-hidden": "true"
-  }) : null);
-  const a11y = {
-    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
-    'aria-expanded': expanded,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || loading ? true : undefined,
-    'aria-busy': loading || undefined
-  };
-  const handle = e => {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    if (onClick) onClick(e);
-  };
-  if (href) return /*#__PURE__*/_react.default.createElement("a", _extends({
-    ref: ref,
-    href: disabled ? undefined : href,
-    className: classes
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-  return /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: type,
-    className: classes,
-    disabled: disabled && !loading ? true : undefined
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-});
-
-/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-function ButtonGroup({
-  label,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), children);
-}
-  } },
   "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -839,7 +634,7 @@ function Tooltip({
   }, content));
 }
   } },
-  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -851,7 +646,7 @@ exports.TagInput = void 0;
 exports.TagList = TagList;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
-var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tag, Chip, TagList, TagInput
@@ -886,7 +681,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      The × button is a 24px target in a 16px box.
      Selected chips are filled.
-     TagInput is a + button at the end of the tag list (owner, batch 271: "it should be a + and clicking that plus
+     TagInput is a + at the end of the tag list, drawn as a Chip (the tag look as a button: its height, corners, fill and
+       border; owner, batch 272), its target 24px like the tag's × (owner, batch 271: "it should be a + and clicking that plus
        exposes the text field"): pressing it reveals a text field like every other (the input's border, hover, focus and
        disabled states), focused. Type a tag and press Enter to add it: it appears before the field, the field clears and
        stays open for the next one. Escape, or leaving the field empty, closes it and returns focus to the +. Each tag's
@@ -1060,16 +856,17 @@ const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(funct
   if (!open) {
     return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
       content: label
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    }, /*#__PURE__*/_react.default.createElement("button", {
       ref: plusRef,
       id: id,
-      size: "xs",
-      icon: "add",
-      iconOnly: true,
-      label: label,
-      className: (0, _cx.cx)('plx-tag-input__add', className),
+      type: "button",
+      "aria-label": label,
+      className: (0, _cx.cx)('plx-tag', 'plx-chip', 'plx-tag-input__add', className),
       onClick: () => setOpen(true)
-    }));
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "add",
+      size: "sm"
+    })));
   }
   return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: inputRef,
@@ -1803,6 +1600,211 @@ List.Item = function ListItem({
     className: "plx-list__text"
   }, children));
 };
+  } },
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Skeleton = Skeleton;
+exports.Spinner = Spinner;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
+   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
+     dots are a Chat variant: Chat.Typing.)
+   Usage:
+     <Skeleton width="160px" height="16px" />
+     <Spinner size="sm" label="Saving" />
+   Props:
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
+     Skeleton.className: more classes on the block
+     Spinner.size: "sm" | "md" (default) | "lg"
+     Spinner.label: the text announced to assistive technology (default "Loading")
+     Spinner.className: more classes on the ring
+   Behavior:
+     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
+     Spinner is a status region (role="status"), so its label is announced.
+     People who ask their system for less motion see the indicators still.
+   Notes:
+     Other props pass through to the <span>.
+     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
+*/
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
+function Skeleton({
+  width,
+  height,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-skeleton', className),
+    "aria-hidden": "true",
+    "data-plx-width": sizeName(width),
+    "data-plx-height": sizeName(height)
+  }, rest));
+}
+function Spinner({
+  size = 'md',
+  label = 'Loading',
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+}
+  } },
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Button = void 0;
+exports.ButtonGroup = ButtonGroup;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
+   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
+   Usage:
+     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
+     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
+     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
+   Props:
+     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
+       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
+       hovered; the lowest emphasis; "quiet", its old name, still works) | "danger" (filled red; destructive) | "danger-secondary"
+       (red outline, fills on hover) | "link" (looks like link text)
+     size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
+       tint on hover) | "lg" (the prominent role: page actions)
+     icon: an <Icon> (or an icon name) before the label
+     iconEnd: an <Icon> (or an icon name) after the label
+     iconOnly: a square button with only its icon; give it a label (default false)
+     label: the accessible name (aria-label); an icon-only button falls back to string children
+     caret: the button opens a menu: a chevron after the label (default false)
+     expanded: sets aria-expanded, for a button that opens a menu
+     pressed: makes a toggle button (aria-pressed)
+     selected: shows the selected state without a toggle role (default false)
+     loading: shows a spinner in place of the icon (default false)
+     disabled: the button does nothing (default false)
+     href: renders a link styled as a button
+     type: the button type (default "button")
+     onClick(event): runs when the button is clicked, unless disabled or loading
+     children: the button label
+     className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
+     ref: forwarded to the <button> or <a>
+     ButtonGroup.label: the accessible name of the group
+     ButtonGroup.children: the buttons
+     ButtonGroup.className: more classes on the group
+   Behavior:
+     Placement can also set the role: a dialog footer gives its buttons the dialog role.
+     Selected, pressed and expanded all show the selected state.
+     Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
+     A disabled link loses its href.
+   Notes:
+     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
+     For one choice from several, use SegmentedControl instead of ButtonGroup.
+*/
+const STRINGS = {
+  working: 'Working'
+};
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  iconEnd,
+  iconOnly = false,
+  label,
+  caret = false,
+  expanded,
+  pressed,
+  selected = false,
+  loading = false,
+  disabled = false,
+  href,
+  type = 'button',
+  className,
+  children,
+  onClick,
+  strings,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.working
+  })) : icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(icon)) : null, iconOnly ? null : children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__label"
+  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(iconEnd)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__caret",
+    "aria-hidden": "true"
+  }) : null);
+  const a11y = {
+    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
+    'aria-expanded': expanded,
+    'aria-pressed': pressed,
+    'aria-disabled': disabled || loading ? true : undefined,
+    'aria-busy': loading || undefined
+  };
+  const handle = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    if (onClick) onClick(e);
+  };
+  if (href) return /*#__PURE__*/_react.default.createElement("a", _extends({
+    ref: ref,
+    href: disabled ? undefined : href,
+    className: classes
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: type,
+    className: classes,
+    disabled: disabled && !loading ? true : undefined
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+});
+
+/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
+function ButtonGroup({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-button-group', className)
+  }, rest), children);
+}
   } },
   "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -4339,6 +4341,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the tabs
      panelClassName: more classes on each panel
    Behavior:
+     In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
      The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
      Arrow keys move and select (wrapping); Home and End go to the first and last.
      Only the selected tab is in the Tab order.
@@ -4456,6 +4459,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      Card.accent: a color from the data (a project's color): a 3px start edge in it (it reaches the stylesheet as --plx-comp-card-accent)
      Panel.title: the heading; it also names the section landmark
+     Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
+       icon always sits on the left of its heading)
      Panel.description: a line of text under the title
      Panel.actions: controls at the end of the header
      Panel.footer: content in a footer below the body
@@ -4487,7 +4492,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
-     MediaCard.onSelectChange(checked): runs when the selection box changes; without it there is no selection box
+     MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
+       title, box and actions (it toggles the selection); without it there is no selection box and a click opens the card.
+       A selectable card opens from its title or a double-click.
      MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
      MediaCard.href: makes the title a link
      MediaCard.onOpen(): makes the title a button that runs this
@@ -4518,6 +4525,7 @@ const H = ({
   ...props
 }) => /*#__PURE__*/_react.default.createElement(level ? 'h' + level : 'div', props);
 function Panel({
+  icon,
   title,
   description,
   actions,
@@ -4551,8 +4559,13 @@ function Panel({
   }, title ? /*#__PURE__*/_react.default.createElement(H, {
     level: headingLevel,
     id: id,
-    className: "plx-panel__title"
-  }, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: (0, _cx.cx)('plx-panel__title', icon && 'plx-panel__title--icon')
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-panel__icon",
+    "aria-hidden": "true"
+  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }) : icon) : null, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-panel__description"
   }, description) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-panel__actions"
@@ -4649,11 +4662,29 @@ function MediaCard({
   actions,
   strings,
   className,
+  onClick,
+  onDoubleClick,
   ...rest
 }) {
   const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  const selectable = !!onSelectChange;
+  // a selectable card (owner, batch 272: "clicking the card selects it"): a click anywhere but its controls toggles the
+  // selection; the title, or a double-click, opens it
+  const inControl = e => !!(e.target.closest && e.target.closest('a, button, input, select, textarea, [role=menu], .plx-card__actions'));
+  const click = e => {
+    if (onClick) onClick(e);
+    if (!selectable || e.defaultPrevented || inControl(e)) return;
+    onSelectChange(!selected);
+  };
+  const dblClick = e => {
+    if (onDoubleClick) onDoubleClick(e);
+    if (!selectable || e.defaultPrevented || inControl(e)) return;
+    if (onOpen) onOpen();else if (href) location.href = href;
+  };
   return /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selected && 'is-selected', selecting && 'is-selecting', className)
+    className: (0, _cx.cx)('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className),
+    onClick: click,
+    onDoubleClick: dblClick
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-media-card__media",
     "data-plx-aspect": aspect
@@ -5612,6 +5643,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      strings: the words it shows and announces, for other languages: { pin: "Pin", unpin: "Unpin", pinItem: "Pin {label}",
        unpinItem: "Unpin {label}" } (pin and unpin are the pin button's tooltip; pinItem and unpinItem its name)
    Behavior:
+     A row's actions (item.actions) show on hover and when the row holds keyboard focus; on touch they always show. The pin
+       is different: it shows a state, so a pinned row keeps it (batch 272).
      The current item carries aria-current="page".
      An item with href is a link; otherwise it is a button and onSelect(id) runs.
      A collapsible group heading folds its rows, the same in every navigation pane.
@@ -6132,6 +6165,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DEMO_SESSION = void 0;
 exports.SessionProvider = SessionProvider;
+exports.choosePicture = choosePicture;
 exports.useSession = useSession;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -6144,9 +6178,12 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      session: { account, notifications, pinnedApps } (default: the demo session below, DEMO_SESSION)
      children: the application root or React island
      useSession(): { account: { name, firstName, lastName, email, src }, notifications: [{ id, text, time, unread }],
-       setNotifications(next), pinnedApps: [application ids], setPinnedApps(next | (prev) => next) }
+       setNotifications(next), pinnedApps: [application ids], setPinnedApps(next | (prev) => next),
+       setPicture(dataUrl | null) }
+     choosePicture(): opens the file picker for an image and resolves to a 128px square picture (a data: URL), or null
    Behavior:
      The pins are remembered in the browser (localStorage plenix.pinnedApps) until the back end stores them.
+     The person's picture is too (localStorage plenix.accountPicture, batch 272): it replaces account.src everywhere.
      Outside a provider useSession() returns the demo session, so a page that has not been wrapped still shows the same person.
    Notes:
      The header's account menu (AppHeader.Account) and the dashboard's notifications (NotificationList) read it.
@@ -6194,6 +6231,47 @@ const DEMO_SESSION = exports.DEMO_SESSION = {
 };
 const SessionContext = /*#__PURE__*/_react.default.createContext(null);
 const PINS_KEY = 'plenix.pinnedApps';
+const PICTURE_KEY = 'plenix.accountPicture';
+const readPicture = () => {
+  try {
+    return localStorage.getItem(PICTURE_KEY) || null;
+  } catch (e) {
+    return null;
+  }
+};
+
+// the file picker for a picture: the image cut to a centered square and drawn at 128px (a small data: URL, a PNG)
+function choosePicture() {
+  return new Promise(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.addEventListener('change', () => {
+      const file = input.files && input.files[0];
+      if (!file) {
+        resolve(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const side = Math.min(img.naturalWidth, img.naturalHeight),
+            c = document.createElement('canvas');
+          c.width = 128;
+          c.height = 128;
+          c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 128, 128);
+          resolve(c.toDataURL('image/png'));
+        };
+        img.onerror = () => resolve(null);
+        img.src = reader.result;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+    input.click();
+  });
+}
 const readPins = fallback => {
   try {
     const v = JSON.parse(localStorage.getItem(PINS_KEY));
@@ -6208,6 +6286,13 @@ function SessionProvider({
 }) {
   const [notifications, setNotifications] = _react.default.useState(session.notifications || []);
   const [pinnedApps, setPins] = _react.default.useState(() => readPins(session.pinnedApps || DEMO_SESSION.pinnedApps));
+  const [picture, setPictureState] = _react.default.useState(readPicture);
+  const setPicture = _react.default.useCallback(v => {
+    try {
+      if (v) localStorage.setItem(PICTURE_KEY, v);else localStorage.removeItem(PICTURE_KEY);
+    } catch (e) {/* not stored: it lasts for this visit */}
+    setPictureState(v || null);
+  }, []);
   _react.default.useEffect(() => {
     setNotifications(session.notifications || []);
   }, [session]);
@@ -6218,13 +6303,17 @@ function SessionProvider({
     } catch (e) {/* not stored: the pins last for this visit */}
     return v;
   }), []);
+  const account = _react.default.useMemo(() => Object.assign({}, session.account || {}, picture ? {
+    src: picture
+  } : null), [session, picture]);
   const value = _react.default.useMemo(() => ({
-    account: session.account || {},
+    account,
     notifications,
     setNotifications,
     pinnedApps,
-    setPinnedApps
-  }), [session, notifications, pinnedApps, setPinnedApps]);
+    setPinnedApps,
+    setPicture
+  }), [account, notifications, pinnedApps, setPinnedApps, setPicture]);
   return /*#__PURE__*/_react.default.createElement(SessionContext.Provider, {
     value: value
   }, children);
@@ -6233,12 +6322,22 @@ function SessionProvider({
 // the session, or the demo session outside a provider (a page that has not been wrapped still shows the same person)
 function useSession() {
   const ctx = _react.default.useContext(SessionContext);
-  return ctx || {
-    account: DEMO_SESSION.account,
+  if (ctx) return ctx;
+  const pic = readPicture();
+  return {
+    account: pic ? Object.assign({}, DEMO_SESSION.account, {
+      src: pic
+    }) : DEMO_SESSION.account,
     notifications: DEMO_SESSION.notifications,
     setNotifications: () => {},
     pinnedApps: DEMO_SESSION.pinnedApps,
-    setPinnedApps: () => {}
+    setPinnedApps: () => {},
+    setPicture: v => {
+      try {
+        if (v) localStorage.setItem(PICTURE_KEY, v);else localStorage.removeItem(PICTURE_KEY);
+      } catch (e) {/* not stored */}
+      location.reload();
+    }
   };
 }
   } },
@@ -6465,6 +6564,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AppHeader = AppHeader;
+exports.SIGN_OUT = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
@@ -6500,7 +6600,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onOpenApp(app): return true when the page opens the application itself (a section of the same page); otherwise the link opens it
      nav: replaces the header links (default: the pinned applications)
      navLabel: the header links' accessible name (default "Pinned applications")
-     action: the application's action (AppHeader.Action), a labeled button between search and the utilities
+     action: the application's action (AppHeader.Action), an icon item with its label as tooltip, between search and the utilities
      search: the search field (a SearchField onAccent), shown when search is asked for; without it there is no search
      actions: other utilities, before the account
      account: the account menu (AppHeader.Account), last in the utilities
@@ -6515,6 +6615,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      AppHeader.Item.tooltip: shows the label as a tooltip (default true)
      AppHeader.Item.className: more classes
      AppHeader.Item.ref: forwarded to the link or button, so it can be a Menu trigger
+     AppHeader.Account.settings: { href | onSelect } for "Plenix settings", the suite's settings (owner, batch 272)
+     AppHeader.Account.signOut: { href | onSelect } for "Sign out", last in the menu (default: the sign-in proxy's sign-out,
+       /outpost.goauthentik.io/sign_out); Change picture sets the person's picture (useSession().setPicture)
+     AppHeader.Account.appSettings: { app, href | onSelect, icon } for "<app> settings", this application's own settings
+       ("Notes settings", "Asset Manager settings"); left out when the application has none
      AppHeader.Account.name: the person's name (default: the session's)
      AppHeader.Account.email: the person's email (default: the session's)
      AppHeader.Account.src: the person's picture (default: the session's)
@@ -6527,7 +6632,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        the current one checked); default false
      AppHeader.Account.extra: further items after a divider (Sign out)
      AppHeader.Action.icon: an icon name (such as "hdr-upload") or an icon element, header-sized
-     AppHeader.Action.children: the button's label
+     AppHeader.Action.children: the action's label: its tooltip and accessible name (or label)
      AppHeader.Action.onClick: runs on click
      AppHeader.Switcher.currentApp: the open application's id, marked in the switcher
      AppHeader.Switcher.appsRoot: as for AppHeader (default "")
@@ -6732,6 +6837,9 @@ AppHeader.Item = /*#__PURE__*/_react.default.forwardRef(function AppHeaderItem({
     content: label
   }, el) : el;
 });
+
+// the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session, then signs in again
+const SIGN_OUT = exports.SIGN_OUT = '/outpost.goauthentik.io/sign_out';
 AppHeader.Account = function AppHeaderAccount({
   name: nameProp,
   email: emailProp,
@@ -6740,11 +6848,16 @@ AppHeader.Account = function AppHeaderAccount({
   current,
   myAccount = {},
   settings = {},
+  appSettings = {},
+  signOut = {
+    href: SIGN_OUT
+  },
   density = false,
   extra
 }) {
   const {
-    account
+    account,
+    setPicture
   } = (0, _SessionProvider.useSession)(); // who is signed in: the session, unless the application names someone
   const name = nameProp || account.name,
     email = emailProp || account.email,
@@ -6781,17 +6894,29 @@ AppHeader.Account = function AppHeaderAccount({
     trigger: trigger
   }, /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
     label: email ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, name, /*#__PURE__*/_react.default.createElement("br", null), email) : name
-  }, has(myAccount) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), has(myAccount) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: "settings-profile",
     href: myAccount.href,
     onSelect: myAccount.onSelect,
     "aria-current": current === 'account' ? 'page' : undefined
-  }, "My account") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, "My account") : null, setPicture ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "settings-camera",
+    onSelect: () => {
+      (0, _SessionProvider.choosePicture)().then(p => {
+        if (p) setPicture(p);
+      });
+    }
+  }, "Change picture") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: "gear",
     href: settings.href,
     onSelect: settings.onSelect,
     "aria-current": current === 'settings' ? 'page' : undefined
-  }, "Settings") : null), density ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
+  }, "Plenix settings") : null, has(appSettings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: appSettings.icon || 'settings-customize',
+    href: appSettings.href,
+    onSelect: appSettings.onSelect,
+    "aria-current": current === 'app-settings' ? 'page' : undefined
+  }, (appSettings.app || 'App') + ' settings') : null), density ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
     label: "Display density"
   }, choices.map(d => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: d.value,
@@ -6799,7 +6924,10 @@ AppHeader.Account = function AppHeaderAccount({
     icon: 'density-' + d.value,
     checked: dens === d.value,
     onSelect: () => setDens(d.value)
-  }, d.label)))) : null, extra ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), extra) : null);
+  }, d.label)))) : null, extra ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), extra) : null, has(signOut) ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    href: signOut.href,
+    onSelect: signOut.onSelect
+  }, "Sign out")) : null);
 };
 // the density choices when the workspace script is not on the page
 const DENSITY_CHOICES = [{
@@ -6812,16 +6940,22 @@ const DENSITY_CHOICES = [{
   value: 'comfortable',
   label: 'Comfortable'
 }];
+
+// the application's action is an icon item like the header's others: its label is the tooltip and the accessible name
+// (owner, batch 272: "just an icon with tooltip"); a variant the application passes is no longer used
 AppHeader.Action = function AppHeaderAction({
   icon,
   children,
+  label,
+  variant,
   ...rest
 }) {
-  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+  return /*#__PURE__*/_react.default.createElement(AppHeader.Item, _extends({
     icon: typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: icon
-    }) : icon
-  }, rest), children);
+    }) : icon,
+    label: label || (typeof children === 'string' ? children : undefined)
+  }, rest));
 };
 AppHeader.Switcher = function AppHeaderSwitcher({
   currentApp,
@@ -8652,6 +8786,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes
      children: the body
    Behavior:
+     The footer's actions sit at its end, the primary action last (the Action bar rule; owner, batch 272).
+     Tabs inside a side panel use the Folder variant (the tab strip alone): the panel is already the frame (owner, batch 272).
      Width: --plx-sys-panel-inspector-width (by density: 320 / 360 / 400px), docked.
      Its own Collapse button starts its header row; collapsed, it is a rail with Expand.
      Below 1024px Expand opens it over the main region, between the header and the footer; Escape or a click outside closes it.
@@ -9222,7 +9358,7 @@ function WidgetGrid({
       }
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: "move",
-      size: "sm"
+      size: "md"
     })) : null;
     return renderItem && renderItem.length > 1 ? renderItem(it, handle) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, handle, renderItem ? renderItem(it) : null);
   })()))), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
@@ -9882,6 +10018,12 @@ Object.defineProperty(exports, "below", {
   enumerable: true,
   get: function () {
     return _AppShell.below;
+  }
+});
+Object.defineProperty(exports, "choosePicture", {
+  enumerable: true,
+  get: function () {
+    return _SessionProvider.choosePicture;
   }
 });
 Object.defineProperty(exports, "initialsOf", {

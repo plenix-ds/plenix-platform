@@ -1952,8 +1952,19 @@ const appPage = (id, hash) => {
 };
 exports.appPage = appPage;
 const settingsPage = cat => '../settings/index.html' + (cat ? '#' + cat : '');
-// the settings page each application's navigation footer opens
+// each application's own settings category in Settings (none yet for Bookmarks)
 exports.settingsPage = settingsPage;
+const APP_SETTINGS = {
+  home: 'dashboard',
+  projects: 'projects',
+  messaging: 'email',
+  contacts: 'contacts',
+  calendar: 'calendar',
+  tasks: 'tasks',
+  notes: 'notes',
+  files: 'files'
+};
+// the settings page each application's navigation footer opens
 const SETTINGS_FOR = {
   messaging: 'email',
   contacts: 'contacts',
@@ -2083,7 +2094,11 @@ function Suite({
         },
         settings: {
           href: settingsPage('general')
-        }
+        },
+        appSettings: APP_SETTINGS[app] ? {
+          app: label,
+          href: settingsPage(APP_SETTINGS[app])
+        } : {}
       })
     })
   }, /*#__PURE__*/React.createElement("div", {
@@ -3172,7 +3187,8 @@ function Settings({
 }) {
   const [cat, setCat] = useState(startCat);
   const {
-    account
+    account,
+    setPicture
   } = (0, _plenixPlatform.useSession)(); // who is signed in (the Platform session)
   const [featArea, setFeatArea] = useState(null);
   const [featOpen, setFeatOpen] = useState(false);
@@ -4294,6 +4310,25 @@ function Settings({
     }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
       title: "Profile"
     }, /*#__PURE__*/React.createElement(Row, {
+      label: "Picture"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+      gap: "sm",
+      align: "center"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
+      name: account.name,
+      src: account.src,
+      size: "md"
+    }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+      size: "sm",
+      icon: "settings-camera",
+      onClick: () => (0, _plenixPlatform.choosePicture)().then(p => {
+        if (p) setPicture(p);
+      })
+    }, "Change picture"), account.src ? /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+      size: "sm",
+      variant: "ghost",
+      onClick: () => setPicture(null)
+    }, "Remove") : null)), /*#__PURE__*/React.createElement(Row, {
       label: "Name"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       width: "sm"
@@ -4339,7 +4374,8 @@ function Settings({
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Sign out"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      variant: "danger-secondary"
+      variant: "danger-secondary",
+      href: "/outpost.goauthentik.io/sign_out"
     }, "Sign out"))))
   };
 

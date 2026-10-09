@@ -49,8 +49,8 @@ function Downloads({ groups, act }) {
 export function InspectorFooter({ act }) {
   return (
     <>
-      <Button size="sm" variant="primary" icon="save-doc" onClick={act('Save', 'success')}>Save</Button>
       <Button size="sm" icon="close-2" onClick={act('Cancel', 'info')}>Cancel</Button>
+      <Button size="sm" variant="primary" icon="save-doc" onClick={act('Save', 'success')}>Save</Button>
     </>
   );
 }
@@ -76,7 +76,7 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
         <Text variant="data" className="plx-u-leading-16px">{collection ? D.COLLECTION_DETAIL.count : c.count}</Text>
       </Preview>
       <Input aria-label="Title" emphasis value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
-      <Tabs variant="contained" label="Details" items={[
+      <Tabs variant="folder" label="Details" items={[
         { value: 'details', label: 'Details', content: (
           <Stack>
             <EditBar act={act} onFields={() => onDialog('editFieldsCatModal')} />
@@ -123,7 +123,7 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
         <Input aria-label="Title" emphasis value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />
         <Text variant="secondary">{asset.cat}</Text>
       </Stack>
-      <Tabs variant="contained" label="Asset details" items={[
+      <Tabs variant="folder" label="Asset details" items={[
         { value: 'details', label: 'Details', content: (
           <Stack>
             <EditBar act={act} onFields={() => onDialog('editFieldsFileModal')} />

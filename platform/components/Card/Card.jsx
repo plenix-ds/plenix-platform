@@ -9,6 +9,8 @@
    Props:
      Card.accent: a color from the data (a project's color): a 3px start edge in it (it reaches the stylesheet as --plx-comp-card-accent)
      Panel.title: the heading; it also names the section landmark
+     Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
+       icon always sits on the left of its heading)
      Panel.description: a line of text under the title
      Panel.actions: controls at the end of the header
      Panel.footer: content in a footer below the body
@@ -40,7 +42,9 @@
      MediaCard.aspect: the media shape: "4/3" (default) | "1/1" | "16/9"
      MediaCard.selected: whether the asset is selected (default false)
      MediaCard.selecting: true while anything in the view is selected (default false)
-     MediaCard.onSelectChange(checked): runs when the selection box changes; without it there is no selection box
+     MediaCard.onSelectChange(checked): runs when the selection box changes, or when the card is clicked anywhere but its
+       title, box and actions (it toggles the selection); without it there is no selection box and a click opens the card.
+       A selectable card opens from its title or a double-click.
      MediaCard.selectLabel: the accessible name of the selection box (default strings.select: "Select " + the title)
      MediaCard.href: makes the title a link
      MediaCard.onOpen(): makes the title a button that runs this
@@ -67,7 +71,7 @@ const MEDIA_CARD_STRINGS = { select: 'Select {title}', item: 'item' };
 
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
 
-export function Panel({ title, description, actions, footer, flush = false, headingLevel = 2, collapsible = false, defaultExpanded = true, expanded, onToggle, strings, className, children, ...rest }) {
+export function Panel({ icon, title, description, actions, footer, flush = false, headingLevel = 2, collapsible = false, defaultExpanded = true, expanded, onToggle, strings, className, children, ...rest }) {
   const t = Object.assign({}, PANEL_STRINGS, strings);
   const id = useUid('plx-panel');
   const [own, setOwn] = React.useState(defaultExpanded);
@@ -78,7 +82,7 @@ export function Panel({ title, description, actions, footer, flush = false, head
       {title || actions || collapsible ? (
         <div className="plx-panel__header">
           <div className="plx-panel__heading">
-            {title ? <H level={headingLevel} id={id} className="plx-panel__title">{title}</H> : null}
+            {title ? <H level={headingLevel} id={id} className={cx('plx-panel__title', icon && 'plx-panel__title--icon')}>{icon ? <span className="plx-panel__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null}{title}</H> : null}
             {description ? <p className="plx-panel__description">{description}</p> : null}
           </div>
           {actions ? <div className="plx-panel__actions">{actions}</div> : null}
@@ -118,10 +122,17 @@ export function Card({ title, meta, actions, selected = false, href, onOpen, hea
 }
 
 export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4/3', selected = false, selecting = false, onSelectChange,
-  selectLabel, href, onOpen, actions, strings, className, ...rest }) {
+  selectLabel, href, onOpen, actions, strings, className, onClick, onDoubleClick, ...rest }) {
   const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  const selectable = !!onSelectChange;
+  // a selectable card (owner, batch 272: "clicking the card selects it"): a click anywhere but its controls toggles the
+  // selection; the title, or a double-click, opens it
+  const inControl = (e) => !!(e.target.closest && e.target.closest('a, button, input, select, textarea, [role=menu], .plx-card__actions'));
+  const click = (e) => { if (onClick) onClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; onSelectChange(!selected); };
+  const dblClick = (e) => { if (onDoubleClick) onDoubleClick(e); if (!selectable || e.defaultPrevented || inControl(e)) return; if (onOpen) onOpen(); else if (href) location.href = href; };
   return (
-    <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selected && 'is-selected', selecting && 'is-selecting', className)} {...rest}>
+    <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
+      onClick={click} onDoubleClick={dblClick} {...rest}>
       <div className="plx-media-card__media" data-plx-aspect={aspect}>
         {src ? <img src={src} alt={alt} loading="lazy" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
         {badge ? <span className="plx-media-card__badge">{badge}</span> : null}

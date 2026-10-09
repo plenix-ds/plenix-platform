@@ -75,7 +75,7 @@ export { NavPane } from './patterns/NavPane/NavPane.jsx';
 export { StatusBar } from './patterns/StatusBar/StatusBar.jsx';
 export { ThemeProvider, useTheme } from './providers/ThemeProvider.jsx';
 export { THEMES, DEFAULT_THEME } from './providers/themes.js';
-export { SessionProvider, useSession, DEMO_SESSION } from './providers/SessionProvider.jsx';
+export { SessionProvider, useSession, DEMO_SESSION, choosePicture } from './providers/SessionProvider.jsx';
 export { PLENIX_APPS, appById, appHref } from './providers/apps.js';
 export { PAGE_LAYOUTS, pageLayout } from './providers/pageLayouts.js';
 export { useDensity } from './hooks/useDensity.js';

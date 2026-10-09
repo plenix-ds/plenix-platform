@@ -17,6 +17,8 @@
      className: more classes
      children: the body
    Behavior:
+     The footer's actions sit at its end, the primary action last (the Action bar rule; owner, batch 272).
+     Tabs inside a side panel use the Folder variant (the tab strip alone): the panel is already the frame (owner, batch 272).
      Width: --plx-sys-panel-inspector-width (by density: 320 / 360 / 400px), docked.
      Its own Collapse button starts its header row; collapsed, it is a rail with Expand.
      Below 1024px Expand opens it over the main region, between the header and the footer; Escape or a click outside closes it.
