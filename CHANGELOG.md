@@ -6,6 +6,8 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-08
+
 ### Fixed
 - Regional density for component tokens: a Button inside a compact or comfortable region (data-plx-density on part of a
   page) kept the page's size since 0.2.0, because component tokens were declared only on :root (a custom property is
