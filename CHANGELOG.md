@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.8.4] - 2026-10-09
+
+### Changed (visual)
+- App switcher (owner: "should not have any scrolling… it can be wider… whatever is pinned should not be repeated"):
+  600px wide with five applications to a row and no height limit or scrolling (a phone-sized viewport keeps 320px and
+  three to a row); each application shows once: pinned ones under "Pinned to the header", the rest under "More
+  applications" ("All applications" when nothing is pinned; hidden when everything is). (batch 243)
+
 ## [0.8.3] - 2026-10-09
 
 ### Changed (visual)

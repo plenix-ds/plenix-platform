@@ -56,7 +56,8 @@
      AppHeader.Switcher.brand: the header name, drawn as the trigger; without brand it is an icon button
    Behavior:
      The header name shows "Plenix" over the application's name with a chevron; it opens the application switcher.
-     The switcher lists every application, pinned first; pin or unpin from there.
+     The switcher shows the pinned applications first, then the others (each application once, batch 243), five to a
+     row with no scrolling; pin or unpin from there.
      The switcher is a dialog: it focuses its first link, and Escape, a click outside or focus leaving it closes it.
      The header links are the applications the person pinned (from the switcher), as icon links with tooltips; the current one is marked.
      On a phone the header links leave the header; the switcher in the header name still has them.
@@ -255,10 +256,10 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
               <ul className="plx-app-switcher__grid">{pinnedList.map(tile)}</ul>
             </section>
           ) : null}
-          <section aria-labelledby={id + '-all'}>
-            <h2 id={id + '-all'} className="plx-app-switcher__heading">All applications</h2>
-            <ul className="plx-app-switcher__grid">{apps.map(tile)}</ul>
-          </section>
+          {apps.length > pinnedList.length ? <section aria-labelledby={id + '-all'}>
+            <h2 id={id + '-all'} className="plx-app-switcher__heading">{pinnedList.length ? 'More applications' : 'All applications'}</h2>
+            <ul className="plx-app-switcher__grid">{apps.filter((a) => pinnedApps.indexOf(a.id) < 0).map(tile)}</ul>
+          </section> : null}
         </div>
       ) : null}
     </div>
