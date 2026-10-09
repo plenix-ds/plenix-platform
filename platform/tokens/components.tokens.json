@@ -1376,6 +1376,39 @@
     "data-grid-filter-label-letter-spacing": {
       "$value": "{plx-sys.letter-spacing-caps}",
       "$type": "dimension"
+    },
+    "action-bar-background": {
+      "$value": "{plx-sys.surface-canvas}",
+      "$type": "color"
+    },
+    "action-bar-line": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color"
+    },
+    "action-bar-line-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "action-bar-gap": {
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension"
+    },
+    "action-bar-margin-block-start": {
+      "$value": "{plx-sys.space-stack-lg}",
+      "$type": "dimension"
+    },
+    "action-bar-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "action-bar-layer": {
+      "$value": "{plx-sys.layer-sticky}",
+      "$type": "number"
+    },
+    "action-bar-stick": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "How far below the scrolling area's padding edge the bar sticks: a scrolling area sets it to minus its own bottom padding, so the bar sits flush with the bottom (batch 231)"
     }
   }
 }

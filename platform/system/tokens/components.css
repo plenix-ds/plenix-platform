@@ -342,6 +342,14 @@
   --plx-comp-data-grid-filter-min-width: var(--plx-ref-size-220px);
   --plx-comp-data-grid-filter-label-font-size: var(--plx-ref-font-size-11);
   --plx-comp-data-grid-filter-label-letter-spacing: var(--plx-sys-letter-spacing-caps);
+  --plx-comp-action-bar-background: var(--plx-sys-surface-canvas);
+  --plx-comp-action-bar-line: var(--plx-sys-border-divider);
+  --plx-comp-action-bar-line-width: var(--plx-sys-border-width-thin);
+  --plx-comp-action-bar-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-action-bar-margin-block-start: var(--plx-sys-space-stack-lg);
+  --plx-comp-action-bar-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-action-bar-layer: var(--plx-sys-layer-sticky);
+  --plx-comp-action-bar-stick: 0;
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);

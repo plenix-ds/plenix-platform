@@ -190,11 +190,11 @@ function Profile() {
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
     card: true,
     actions: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+      onClick: () => toast.show('Change password')
+    }, "Change password"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       type: "submit",
       variant: "primary"
-    }, "Save"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      onClick: () => toast.show('Change password')
-    }, "Change password"))
+    }, "Save"))
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "First name",
     layout: "inline"
@@ -622,17 +622,20 @@ function useToggles(list) {
     toggle: () => setOn(on.map((v, j) => j === i ? !v : v))
   }));
 }
+// the form's buttons: in an ActionBar (on the right, sticky at the bottom), a destructive action first, the primary last
 const Actions = ({
   act,
   save = 'Save',
   del = 'Delete'
-}) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-  type: "submit",
-  variant: "primary"
-}, save), del ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+}) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActionBar, {
+  label: "Form actions"
+}, del ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
   variant: "danger-secondary",
   onClick: act(del, 'warning')
-}, del) : null);
+}, del) : null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+  type: "submit",
+  variant: "primary"
+}, save));
 const Form = ({
   act,
   saved,
@@ -809,11 +812,9 @@ function Properties({
         columns: [roleCol, switchCol('Edit all')]
       }))
     }]
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-settings__actions"
-  }, /*#__PURE__*/_react.default.createElement(Actions, {
+  }), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act
-  })));
+  }));
 }
 function Fields({
   act
@@ -944,12 +945,10 @@ function AssetTypes({
         onChange: edit(i, 'order')
       })))
     }))
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-settings__actions"
-  }, /*#__PURE__*/_react.default.createElement(Actions, {
+  }), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act,
     save: "Save changes"
-  })));
+  }));
 }
 function HotFolders({
   act
@@ -1152,13 +1151,11 @@ function Groups({
         onChange: e => setNames(names.map((n, j) => j === i ? e.target.value : n))
       })))
     }))
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-settings__actions"
-  }, /*#__PURE__*/_react.default.createElement(Actions, {
+  }), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act,
     save: "Save changes",
     del: "Delete group"
-  })));
+  }));
 }
 function Permissions({
   act
@@ -1219,11 +1216,9 @@ function Permissions({
         });
       })), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + a.items.length + ' of ' + a.total + ' permissions in this view'))
     }))
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-settings__actions"
-  }, /*#__PURE__*/_react.default.createElement(Actions, {
+  }), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act
-  })));
+  }));
 }
 
 /* ── System ── */
@@ -1292,8 +1287,8 @@ function CatalogParameters({
       variant: "data"
     }, id),
     data: true
-  }, value))), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings')), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-settings__actions"
+  }, value))), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings')), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActionBar, {
+    label: "Form actions"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     type: "submit",
     variant: "primary"

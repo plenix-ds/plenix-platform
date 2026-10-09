@@ -23,7 +23,7 @@
 /* an application's main column inside the main region: fills it, stacks its content, never scrolls sideways */
 .plx-app-shell__page{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
 /* the content column of a page (PageContent) and a row of panes beside it */
-.plx-page-content{box-sizing:border-box;display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-block-size:0;min-inline-size:0;overflow-y:auto;padding-block-end:var(--plx-sys-space-layout-sm);padding-block-start:var(--plx-sys-space-layout-sm);padding-inline-end:var(--plx-sys-space-layout-md);padding-inline-start:var(--plx-sys-space-layout-md);position:relative;row-gap:var(--plx-sys-space-stack-md);}
+.plx-page-content{--plx-comp-action-bar-stick:calc(var(--plx-sys-space-layout-sm) * -1);box-sizing:border-box;display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-block-size:0;min-inline-size:0;overflow-y:auto;padding-block-end:var(--plx-sys-space-layout-sm);padding-block-start:var(--plx-sys-space-layout-sm);padding-inline-end:var(--plx-sys-space-layout-md);padding-inline-start:var(--plx-sys-space-layout-md);position:relative;row-gap:var(--plx-sys-space-stack-md);}
 .plx-page-panes{display:flex;flex-basis:0%;flex-grow:1;min-block-size:0;min-inline-size:0;}
 /* while a pane splitter is dragged the whole page shows the resize pointer (PanelSplitter sets the state on the root) */
 :root.is-resizing-columns body{cursor:col-resize;}

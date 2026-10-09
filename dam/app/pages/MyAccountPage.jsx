@@ -35,7 +35,7 @@ function Profile() {
   return (
     <form noValidate onSubmit={(e) => { e.preventDefault(); toast.show('Profile saved', { tone: 'success' }); }}>
       <RecordPage.Header title="Profile" description="Edit your account details and update your password." headingLevel={2} />
-      <SettingsSection card actions={<><Button type="submit" variant="primary">Save</Button><Button onClick={() => toast.show('Change password')}>Change password</Button></>}>
+      <SettingsSection card actions={<><Button onClick={() => toast.show('Change password')}>Change password</Button><Button type="submit" variant="primary">Save</Button></>}>
         <Field label="First name" layout="inline"><Input name="firstName" autoComplete="given-name" {...field('firstName')} /></Field>
         <Field label="Last name" layout="inline"><Input name="lastName" autoComplete="family-name" {...field('lastName')} /></Field>
         <Field label="Email" layout="inline"><Input name="email" type="email" autoComplete="email" {...field('email')} /></Field>

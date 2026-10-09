@@ -51,6 +51,7 @@ export { ToastProvider, useToast } from './components/Toast/Toast.jsx';
 export { Tabs, tabsPanelId } from './components/Tabs/Tabs.jsx';
 export { Panel, Card, MediaCard } from './components/Card/Card.jsx';
 export { DataGrid } from './components/DataGrid/DataGrid.jsx';
+export { ActionBar } from './patterns/ActionBar/ActionBar.jsx';
 export { NavList } from './components/NavList/NavList.jsx';
 export { Tree } from './components/Tree/Tree.jsx';
 export { MediaViewer } from './components/MediaViewer/MediaViewer.jsx';

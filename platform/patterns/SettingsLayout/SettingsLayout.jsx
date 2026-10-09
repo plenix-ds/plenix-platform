@@ -14,7 +14,8 @@
      SettingsSection.title: the section's heading; it names the section landmark
      SettingsSection.description: a paragraph under the title
      SettingsSection.card: true draws it as a bordered card (asset-app style) for a form that needs grouping; default false
-     SettingsSection.actions: the form's buttons, under the rows
+     SettingsSection.actions: the form's buttons, drawn in an ActionBar under the rows (on the right, kept in view at the
+       bottom while the page scrolls): the primary action last
      SettingsSection.headingLevel: the title's heading level (default 2)
      SettingsSection.className: more classes
      SettingsSection.children: the rows
@@ -37,6 +38,7 @@ import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { NavPane } from '../NavPane/NavPane.jsx';
+import { ActionBar } from '../ActionBar/ActionBar.jsx';
 
 export function SettingsLayout({ nav, className, children }) {
   // a settings page: the layout standard (providers/pageLayouts.js) lays it out, through the shell (batch 218)
@@ -61,7 +63,7 @@ export function SettingsSection({ title, description, card = false, actions, hea
       {title ? <H id={id} className="plx-settings__section-title">{title}</H> : null}
       {description ? <p className="plx-settings__section-description">{description}</p> : null}
       <div className="plx-settings__rows">{children}</div>
-      {actions ? <div className="plx-settings__actions">{actions}</div> : null}
+      {actions ? <ActionBar label={(title ? title + ': ' : '') + 'actions'}>{actions}</ActionBar> : null}
     </section>
   );
 }

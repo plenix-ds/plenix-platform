@@ -3,7 +3,7 @@
    follows the navigation; every section stays mounted, so unsaved edits survive switching. Actions that have no back end
    yet confirm with a toast, as the HTML page did. */
 import React from 'react';
-import { SettingsLayout, SettingsSection, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, Button, ButtonGroup, Tabs, DataGrid, Badge, Card, Icon, Menu, MenuItem, PropertyList, SearchField, Dialog, Toolbar, useToast, NavPane, Stack, Inline, Text, CodeBlock } from 'plenix-platform';
+import { SettingsLayout, SettingsSection, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, Tabs, DataGrid, Badge, Card, Icon, Menu, MenuItem, PropertyList, SearchField, Dialog, Toolbar, useToast, NavPane, Stack, Inline, Text, CodeBlock } from 'plenix-platform';
 import { AssetPage } from '../shell/AssetShell.jsx';
 import * as D from './systemSettingsData.js';
 
@@ -46,8 +46,9 @@ function useToggles(list) {
   const [on, setOn] = React.useState(list.map((r) => r[1]));
   return list.map((r, i) => ({ id: i, name: r[0], on: on[i], toggle: () => setOn(on.map((v, j) => (j === i ? !v : v))) }));
 }
+// the form's buttons: in an ActionBar (on the right, sticky at the bottom), a destructive action first, the primary last
 const Actions = ({ act, save = 'Save', del = 'Delete' }) => (
-  <><Button type="submit" variant="primary">{save}</Button>{del ? <Button variant="danger-secondary" onClick={act(del, 'warning')}>{del}</Button> : null}</>
+  <ActionBar label="Form actions">{del ? <Button variant="danger-secondary" onClick={act(del, 'warning')}>{del}</Button> : null}<Button type="submit" variant="primary">{save}</Button></ActionBar>
 );
 const Form = ({ act, saved, children }) => <form noValidate onSubmit={(e) => { e.preventDefault(); act(saved, 'success')(); }}>{children}</form>;
 
@@ -88,7 +89,7 @@ function Properties({ act }) {
         { value: 'view-all', label: 'View all folders', content: <><Lead>Groups and roles that can view all folders for this module.</Lead><DataGrid label="View all folders" data={viewAll} columns={[roleCol, switchCol('View all')]} /></> },
         { value: 'edit-all', label: 'Edit all folders', content: <><Lead>Groups and roles that can edit all folders for this module.</Lead><DataGrid label="Edit all folders" data={editAll} columns={[roleCol, switchCol('Edit all')]} /></> },
       ]} />
-      <div className="plx-settings__actions"><Actions act={act} /></div>
+      <Actions act={act} />
     </Form>
   );
 }
@@ -132,7 +133,7 @@ function AssetTypes({ act }) {
           <Field label="Paths" layout="inline"><Input name="paths" placeholder="Paths" value={t.paths} onChange={edit(i, 'paths')} /></Field>
           <Field label="Ordering" layout="inline"><Input name="ordering" width="sm" value={t.order} onChange={edit(i, 'order')} /></Field>
         </div>) }))} />
-      <div className="plx-settings__actions"><Actions act={act} save="Save changes" /></div>
+      <Actions act={act} save="Save changes" />
     </Form>
   );
 }
@@ -208,7 +209,7 @@ function Groups({ act }) {
           <Sub first>Properties</Sub>
           <Field label="Name" layout="inline"><Input name="name" value={names[i]} onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} /></Field>
         </div>) }))} />
-      <div className="plx-settings__actions"><Actions act={act} save="Save changes" del="Delete group" /></div>
+      <Actions act={act} save="Save changes" del="Delete group" />
     </Form>
   );
 }
@@ -235,7 +236,7 @@ function Permissions({ act }) {
           </Stack>
           <CountNote>{'Showing ' + a.items.length + ' of ' + a.total + ' permissions in this view'}</CountNote>
         </>) }))} />
-      <div className="plx-settings__actions"><Actions act={act} /></div>
+      <Actions act={act} />
     </Form>
   );
 }
@@ -269,7 +270,7 @@ function CatalogParameters({ act }) {
         </PropertyList>
         <CountNote>{'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings'}</CountNote>
       </SettingsSection>
-      <div className="plx-settings__actions"><Button type="submit" variant="primary">Save changes</Button></div>
+      <ActionBar label="Form actions"><Button type="submit" variant="primary">Save changes</Button></ActionBar>
     </Form>
   );
 }

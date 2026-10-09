@@ -13,6 +13,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   context. No app page used a density region, so nothing changed on screen; tests/density.test.js guards it. (batch 221)
 
 ### Added
+- ActionBar (new pattern): a page's or a form's buttons on the right, the primary last, in a bar that sticks to the
+  bottom of the scrolling page (owner: buttons on the right, in a bar that sticks to the bottom of long pages and all pages
+  with actions). SettingsSection's actions are drawn in one; the Asset Manager's system settings and My account use it,
+  with a destructive action first and the primary last. Tokens --plx-comp-action-bar-*; a scrolling area sets
+  --plx-comp-action-bar-stick to minus its bottom padding so the stuck bar is flush. Design system: Action bar
+  (#/actions/page-actions). Dialog, panel and side panel footers were already on the right. (batch 231)
 - DataGrid: every table in Plenix is a Tabulator grid (6.6.1, MIT, vendored in platform/vendor/tabulator, loaded the
   first time a grid renders) in the owner's grid style (docs/datagrid-tabulator-demo.html), drawn with tokens only
   (components/DataGrid/data-grid.css). Columns are Tabulator's own definitions plus Plenix kinds (name, data, icon,
