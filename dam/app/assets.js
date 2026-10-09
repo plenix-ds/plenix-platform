@@ -2289,7 +2289,9 @@ function CategoryInspector({
         type: "number"
       }, text('order')))), /*#__PURE__*/_react.default.createElement(Row, {
         label: "Color"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+        wrap: true
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
         name: "color",
         type: "color",
         "aria-label": "Color",

@@ -85,7 +85,7 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
               <Row label="Parent"><Select name="parent" {...text('parent')}>{c.parents.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Display order"><Input name="displayOrder" type="number" {...text('order')} /></Row>
               <Row label="Color">
-                <Inline>
+                <Inline wrap>
                   <Input name="color" type="color" aria-label="Color" className="plx-u-w-40px plx-u-h-28px plx-u-p-0" {...text('color')} />
                   <Text variant="data" className="plx-u-leading-16px">{f.color}</Text>
                 </Inline>

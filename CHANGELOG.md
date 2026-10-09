@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.20.1] - 2026-10-09
+
+### Fixed
+- Narrow panels (owner: "the text is going outside the lines!! This needs to be responsive", option A, no new tokens): a
+  Stack of inline Fields shares one label column as wide as its longest label (at most --plx-ref-size-160px), so there
+  is no dead space between short labels and their fields; below 320px of width (the value of --plx-ref-size-320px; a
+  container condition cannot read a custom property) every label moves above its control. PropertyList's columns do the
+  same, and its values wrap between words only ("1.4 GB" and "Jul 3, 2026" stay whole). Rating's stars close their gap
+  in a narrow group. The Asset Manager's color and hex wrap together. (batch 269)
+
 ## [0.20.0] - 2026-10-09
 
 ### Changed

@@ -20,3 +20,13 @@
 .plx-field__info.is-focus-visible{outline-color:var(--plx-comp-field-info-focus-outline-color);outline-offset:var(--plx-comp-field-info-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-field-info-focus-outline-width);}
 .plx-field__info-text{background-color:var(--plx-comp-field-info-text-background);border-bottom-left-radius:var(--plx-comp-field-info-text-radius);border-bottom-right-radius:var(--plx-comp-field-info-text-radius);border-top-left-radius:var(--plx-comp-field-info-text-radius);border-top-right-radius:var(--plx-comp-field-info-text-radius);color:var(--plx-comp-field-info-text-text);font-size:var(--plx-comp-field-info-text-font-size);padding-block-end:var(--plx-comp-field-info-text-padding-block);padding-block-start:var(--plx-comp-field-info-text-padding-block);padding-inline-end:var(--plx-comp-field-info-text-padding-inline);padding-inline-start:var(--plx-comp-field-info-text-padding-inline);}
 .plx-field--inline.plx-field--label-sm{grid-template-columns:var(--plx-comp-field-inline-label-sm-grid-template-columns);}
+/* A group of inline fields (owner, batch 269: "responsive... a lot of dead space"): in a Stack, the inline fields share one
+   label column as wide as the longest label (at most the inline label column, --plx-ref-size-160px), then the field gap,
+   then the controls (CSS subgrid). The Stack is a size container: below 320px (the value of --plx-ref-size-320px; a
+   container condition cannot read a custom property) every label moves above its control, as in the stacked layout. */
+.plx-stack:has(>.plx-field--inline){column-gap:var(--plx-comp-field-inline-gap);container-type:inline-size;display:grid;grid-template-columns:fit-content(var(--plx-ref-size-160px)) minmax(0,1fr);}
+.plx-stack:has(>.plx-field--inline)>*{grid-column:1 / -1;min-inline-size:0;}
+.plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:subgrid;}
+@container (max-width: 320px){
+.plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-sys-space-stack-xs);}
+}
