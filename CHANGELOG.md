@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-10-09
+
+### Fixed
+- Tree (owner: "this selected folder should be in open state"): the selected item shows its open icon, filled (a selected
+  folder is an open folder), also when it has no children. (batch 241)
+
 ## [0.8.1] - 2026-10-09
 
 ### Fixed

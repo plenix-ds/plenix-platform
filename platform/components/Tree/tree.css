@@ -15,10 +15,10 @@
 .plx-tree__toggle.is-leaf{visibility:hidden;}
 .plx-tree__icon{display:inline-flex;flex-shrink:0;}
 /* a row's icon follows its own item, never a selected ancestor (an open selected item holds its whole subtree): outline
-   while closed, filled while open (owner, batch 240); the 24px glyphs where the density draws 24px icons */
+   while closed, filled while open (owner, batch 240) or selected (batch 241); the 24px glyphs where the density draws 24px icons */
 .plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled){--plx-comp-icon-url:var(--plx-comp-icon-outline);}
-.plx-tree__item[aria-expanded="true"]>.plx-tree__row .plx-tree__icon .plx-icon{--plx-comp-icon-url:var(--plx-comp-icon-filled);}
+.plx-tree__item[aria-expanded="true"]>.plx-tree__row .plx-tree__icon .plx-icon,.plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon{--plx-comp-icon-url:var(--plx-comp-icon-filled);}
 [data-plx-density="comfortable"] .plx-tree .plx-tree__icon .plx-icon:not(.plx-icon--filled){--plx-comp-icon-url:var(--plx-comp-icon-outline-24);}
-[data-plx-density="comfortable"] .plx-tree__item[aria-expanded="true"]>.plx-tree__row .plx-tree__icon .plx-icon{--plx-comp-icon-url:var(--plx-comp-icon-filled-24);}
+[data-plx-density="comfortable"] .plx-tree__item[aria-expanded="true"]>.plx-tree__row .plx-tree__icon .plx-icon,[data-plx-density="comfortable"] .plx-tree__item.is-selected>.plx-tree__row .plx-tree__icon .plx-icon{--plx-comp-icon-url:var(--plx-comp-icon-filled-24);}
 .plx-tree__label{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-tree__meta{color:var(--plx-sys-content-muted);flex-shrink:0;font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);}

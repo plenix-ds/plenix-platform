@@ -5613,7 +5613,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      label: the accessible name of the tree
      nodes: the top-level items: [{ id, label, icon, meta, children }]
      nodes[].icon: an icon name or element before the label
-     nodes[].openIcon: the icon while the item is open; default: "folder" opens as "folder-open", others stay
+     nodes[].openIcon: the icon while the item is open or selected; default: "folder" opens as "folder-open", others stay
      nodes[].meta: extra content at the end of the row
      nodes[].children: the item's child items, in the same shape
      selected: the id of the selected item
@@ -5629,8 +5629,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Home and End go to the first and last visible item.
      Enter or Space selects.
      Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
-     An open folder shows the open-folder icon (batch 239). Icons are outline while closed and filled while open, by
-     the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
+     An open folder shows the open-folder icon (batch 239). Icons are outline while closed and open and filled while the item
+     is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
 
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -5739,7 +5739,7 @@ function Tree({
       } : undefined
     }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__icon"
-    }, asIcon(iconOf(n, isOpen))) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }, asIcon(iconOf(n, isOpen || n.id === selected))) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__label"
     }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__meta"
