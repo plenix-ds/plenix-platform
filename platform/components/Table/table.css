@@ -29,4 +29,9 @@
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--data{color:var(--plx-sys-table-text-muted);font-family:var(--plx-comp-table-data-font-family);font-size:var(--plx-comp-table-data-font-size);}
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--wrap{height:auto;line-height:var(--plx-comp-table-wrap-line-height);padding-bottom:calc((var(--plx-sys-table-row-height) - 1lh) / 2);padding-top:calc((var(--plx-sys-table-row-height) - 1lh) / 2);white-space:normal;}
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label{background-color:var(--plx-sys-table-header-background);}
+/* the row header ends in one solid line, top to bottom of each row (owner, batch 244): the next column's short line gives way */
+.plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label.tabulator-frozen-left,
+.plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label.tabulator-frozen-left{border-right-color:var(--plx-sys-table-header-line);border-right-style:solid;border-right-width:var(--plx-comp-table-line-width);}
+.plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label+.tabulator-cell:not(.plx-table__cell--row-label)::before,
+.plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label+.tabulator-col:not(.plx-table__cell--row-label)::before{content:none;}
 .plx-table .tabulator .tabulator-placeholder .tabulator-placeholder-contents{color:var(--plx-sys-table-text-muted);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}

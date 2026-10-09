@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.8.5] - 2026-10-09
+
+### Changed (visual)
+- Table and DataTable (owner: "the border right should be solid without any space top and bottom"): a row header (rowLabel)
+  ends in one solid line, top to bottom of each row and the header; the next column's short line gives way. Table now
+  has the solid edge the DataTable already had. (batch 244)
+
 ## [0.8.4] - 2026-10-09
 
 ### Changed (visual)
