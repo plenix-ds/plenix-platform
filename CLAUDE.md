@@ -91,7 +91,6 @@ Z:\Plenix\
 │   └── prompt-studio-logical-schema.md
 ├── architecture/            # Architecture specs (F1-F10 + OSS integration)
 │   └── oss-resourcespace.md
-├── archive/                 # Retired/merged files (excluded from build)
-├── AI_CONTEXT/              # AI context files
+├── Archived/                # Outdated files and folders, kept on disk only (not in git)
 └── metadata/                # Metadata XML schemas (117 files)
 ```

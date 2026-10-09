@@ -6,7 +6,6 @@ build.log
 .claude/settings.local.json
 # backups and stale copies (legacy stays separate)
 Archived/
-shared - Copy/
 *.bak
 packages/
 release/
