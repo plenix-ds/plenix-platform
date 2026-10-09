@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-10-09
+
+### Changed
+- TagInput is a + button (owner: "it should be a + and clicking that plus exposes the textfield"): pressing it reveals
+  the field, focused; Enter adds the tag and keeps the field open for the next; Escape, or leaving it empty, closes it
+  and returns focus to the +. New props label (default "Add a tag") and collapsible (default true). (batch 271)
+- Lists align with their section (owner: "the alignment of the list should align with the alignment of the header
+  underline"): ActivityList rows have no inline inset, so a row's content starts and ends at the list's edges; a row
+  that opens keeps a small inset for its hover fill, pulled back by the same token. (batch 271)
+- Drag and drop shows the grab cursor on a handle and grabbing while dragging (DataTable row handles, WidgetGrid
+  handles). (batch 271)
+
+### Fixed
+- A thin line under the open tab at fractional display scales (125%, 110%): the tab list clipped the open tab's joint
+  with the panel; the list now reaches one thin line further and gives it back, and the open tab draws its own joint.
+  Clean at 100-200%. (batch 271)
+
 ## [0.20.2] - 2026-10-09
 
 ### Changed

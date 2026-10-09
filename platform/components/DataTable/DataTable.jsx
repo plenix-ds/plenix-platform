@@ -45,6 +45,8 @@
      className: more classes on the grid's frame
      DataTable.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
+     Drag and drop (batch 271): a row handle (a column with rowHandle) shows the grab cursor; the row being moved shows
+       grabbing.
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.

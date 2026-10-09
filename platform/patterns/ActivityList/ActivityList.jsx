@@ -23,6 +23,8 @@
      ActivityList.Item.actions: controls at the row's end
      ActivityList.Item.className: more classes on the row
    Behavior:
+     Alignment (owner, batch 271): a row's content starts and ends at the list's edges, in line with a section heading and
+       its line; a row that opens keeps a small inset for its hover fill, pulled back by the same token.
      With onOpen or href the title opens the item and covers the row: one Tab stop, and the actions stay reachable.
      Row padding follows the density.
 */

@@ -16,6 +16,7 @@
        (arrow keys)", position: "{title}, position {index} of {total}" } (widget and widgetLower stand in for a widget
        without a title, in the announcement and in the handle's name)
    Behavior:
+     Drag and drop (batch 271): the handle shows the grab cursor, grabbing while held or while its widget moves.
      Each widget gets a handle (a button) when the grid can be reordered: drag it onto another widget to place it there;
      or focus it and press Arrow Up (earlier) or Arrow Down (later); Arrow Left / Right follow reading order (in a
      right-to-left page Arrow Right is earlier).

@@ -173,3 +173,7 @@
 /* a row label is the row's name: the same medium weight as a name column, also for links and text inside it (owner, batch 248) */
 .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label{font-weight:var(--plx-comp-data-table-name-font-weight);}
 .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--row-label .plx-text{font-weight:inherit;}
+/* drag and drop (owner, batch 271: "with drag and drop the cursor needs to change"): a row handle shows grab; the row
+   being moved (it follows the pointer) shows grabbing */
+.plx-data-table .tabulator-row-handle{cursor:grab;}
+.plx-data-table .tabulator-row.tabulator-moving,.plx-data-table .tabulator-row.tabulator-moving *{cursor:grabbing;}

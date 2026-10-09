@@ -14,3 +14,5 @@
 .plx-widget-grid__handle.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
 /* a handle the widget places itself (renderItem(item, handle)): in the flow, not in the corner */
 .plx-widget-grid__handle.plx-widget-grid__handle--inline{inset-block-start:auto;inset-inline-end:auto;position:static;}
+/* drag and drop (batch 271): the handle shows grab, grabbing while held or while its widget moves */
+.plx-widget-grid__handle:active,.plx-widget-grid__item.is-dragging,.plx-widget-grid__item.is-dragging *{cursor:grabbing;}

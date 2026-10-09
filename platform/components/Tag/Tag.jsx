@@ -24,13 +24,17 @@
      TagList.children: the tags or chips
      TagInput.onAdd(text): adds a tag: runs on Enter with the typed text (trimmed; never empty), then the field clears;
        the application ignores a tag it already has
+     TagInput.label: the accessible name of the + button and the field, and the field's placeholder (default "Add a tag")
+     TagInput.collapsible: true (default): a + button that reveals the field; false: the field is always shown
      TagInput.className: more classes on the input
    Behavior:
      The × button is a 24px target in a 16px box.
      Selected chips are filled.
-     TagInput is a text field like every other (the input's border, hover, focus and disabled states; owner, batch 268):
-       type a tag and press Enter to add it; it appears before the field and its × removes it. Without onAdd the field
-       only reports what is typed (onChange, onKeyDown).
+     TagInput is a + button at the end of the tag list (owner, batch 271: "it should be a + and clicking that plus
+       exposes the text field"): pressing it reveals a text field like every other (the input's border, hover, focus and
+       disabled states), focused. Type a tag and press Enter to add it: it appears before the field, the field clears and
+       stays open for the next one. Escape, or leaving the field empty, closes it and returns focus to the +. Each tag's
+       × removes it. Without onAdd the field only reports what is typed (onChange, onKeyDown).
      A tag being renamed is a small field with the input's focused border.
    Notes:
      TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
@@ -39,6 +43,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { Button } from '../Button/Button.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
 
 function RemoveButton({ label, onClick }) {
   return <button type="button" className="plx-tag__remove" aria-label={label} onClick={onClick}><span aria-hidden="true">×</span></button>;
@@ -79,19 +85,39 @@ export function TagList({ className, children, label, ...rest }) {
   return <div className={cx('plx-tag-list', className)} role={label ? 'group' : undefined} aria-label={label} {...rest}>{children}</div>;
 }
 
-export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, className, ...rest }, ref) {
+export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, label = 'Add a tag', collapsible = true, id, className, onBlur, ...rest }, ref) {
   const [own, setOwn] = React.useState('');
+  const [open, setOpen] = React.useState(!collapsible);
   const text = value !== undefined ? value : own;
+  const inputRef = React.useRef(null), plusRef = React.useRef(null);
+  React.useImperativeHandle(ref, () => inputRef.current || plusRef.current);
+  const wasOpen = React.useRef(open);
+  React.useEffect(() => {   // opening focuses the field; closing returns focus to the + (only after a change, never on mount)
+    if (wasOpen.current === open) return;
+    wasOpen.current = open;
+    if (open && inputRef.current) inputRef.current.focus();
+    else if (!open && plusRef.current && plusRef.current.focus) plusRef.current.focus();
+  }, [open]);
+  const setText = (v) => { if (value === undefined) setOwn(v); else if (onChange) onChange({ target: { value: v }, currentTarget: { value: v } }); };
   const change = (e) => { if (value === undefined) setOwn(e.target.value); if (onChange) onChange(e); };
   const keyDown = (e) => {
     if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || !onAdd || e.key !== 'Enter') return;
+    if (e.defaultPrevented) return;
+    if (e.key === 'Escape' && collapsible) { e.preventDefault(); setText(''); setOpen(false); return; }
+    if (!onAdd || e.key !== 'Enter') return;
     e.preventDefault();
     const t = String(text).trim();
     if (!t) return;
     onAdd(t);
-    if (value === undefined) setOwn('');
-    else if (onChange) onChange({ target: { value: '' }, currentTarget: { value: '' } });
+    setText('');
   };
-  return <input ref={ref} type="text" className={cx('plx-input', 'plx-tag-input', className)} value={text} onChange={change} onKeyDown={keyDown} {...rest} />;
+  const blur = (e) => { if (onBlur) onBlur(e); if (collapsible && !String(text).trim()) setOpen(false); };
+  if (!open) {
+    return (
+      <Tooltip content={label}>
+        <Button ref={plusRef} id={id} size="xs" icon="add" iconOnly label={label} className={cx('plx-tag-input__add', className)} onClick={() => setOpen(true)} />
+      </Tooltip>
+    );
+  }
+  return <input ref={inputRef} id={id} type="text" aria-label={rest['aria-labelledby'] ? undefined : label} placeholder={label} className={cx('plx-input', 'plx-tag-input', className)} value={text} onChange={change} onKeyDown={keyDown} onBlur={blur} {...rest} />;
 });

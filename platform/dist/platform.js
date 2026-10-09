@@ -571,7 +571,275 @@ function StatusDot({
   }, rest), label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
-  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Skeleton = Skeleton;
+exports.Spinner = Spinner;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
+   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
+     dots are a Chat variant: Chat.Typing.)
+   Usage:
+     <Skeleton width="160px" height="16px" />
+     <Spinner size="sm" label="Saving" />
+   Props:
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
+     Skeleton.className: more classes on the block
+     Spinner.size: "sm" | "md" (default) | "lg"
+     Spinner.label: the text announced to assistive technology (default "Loading")
+     Spinner.className: more classes on the ring
+   Behavior:
+     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
+     Spinner is a status region (role="status"), so its label is announced.
+     People who ask their system for less motion see the indicators still.
+   Notes:
+     Other props pass through to the <span>.
+     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
+*/
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
+function Skeleton({
+  width,
+  height,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-skeleton', className),
+    "aria-hidden": "true",
+    "data-plx-width": sizeName(width),
+    "data-plx-height": sizeName(height)
+  }, rest));
+}
+function Spinner({
+  size = 'md',
+  label = 'Loading',
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+}
+  } },
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Button = void 0;
+exports.ButtonGroup = ButtonGroup;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
+   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
+   Usage:
+     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
+     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
+     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
+   Props:
+     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
+       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
+       hovered; the lowest emphasis; "quiet", its old name, still works) | "danger" (filled red; destructive) | "danger-secondary"
+       (red outline, fills on hover) | "link" (looks like link text)
+     size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
+       tint on hover) | "lg" (the prominent role: page actions)
+     icon: an <Icon> (or an icon name) before the label
+     iconEnd: an <Icon> (or an icon name) after the label
+     iconOnly: a square button with only its icon; give it a label (default false)
+     label: the accessible name (aria-label); an icon-only button falls back to string children
+     caret: the button opens a menu: a chevron after the label (default false)
+     expanded: sets aria-expanded, for a button that opens a menu
+     pressed: makes a toggle button (aria-pressed)
+     selected: shows the selected state without a toggle role (default false)
+     loading: shows a spinner in place of the icon (default false)
+     disabled: the button does nothing (default false)
+     href: renders a link styled as a button
+     type: the button type (default "button")
+     onClick(event): runs when the button is clicked, unless disabled or loading
+     children: the button label
+     className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
+     ref: forwarded to the <button> or <a>
+     ButtonGroup.label: the accessible name of the group
+     ButtonGroup.children: the buttons
+     ButtonGroup.className: more classes on the group
+   Behavior:
+     Placement can also set the role: a dialog footer gives its buttons the dialog role.
+     Selected, pressed and expanded all show the selected state.
+     Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
+     A disabled link loses its href.
+   Notes:
+     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
+     For one choice from several, use SegmentedControl instead of ButtonGroup.
+*/
+const STRINGS = {
+  working: 'Working'
+};
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  iconEnd,
+  iconOnly = false,
+  label,
+  caret = false,
+  expanded,
+  pressed,
+  selected = false,
+  loading = false,
+  disabled = false,
+  href,
+  type = 'button',
+  className,
+  children,
+  onClick,
+  strings,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.working
+  })) : icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(icon)) : null, iconOnly ? null : children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__label"
+  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(iconEnd)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__caret",
+    "aria-hidden": "true"
+  }) : null);
+  const a11y = {
+    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
+    'aria-expanded': expanded,
+    'aria-pressed': pressed,
+    'aria-disabled': disabled || loading ? true : undefined,
+    'aria-busy': loading || undefined
+  };
+  const handle = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    if (onClick) onClick(e);
+  };
+  if (href) return /*#__PURE__*/_react.default.createElement("a", _extends({
+    ref: ref,
+    href: disabled ? undefined : href,
+    className: classes
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: type,
+    className: classes,
+    disabled: disabled && !loading ? true : undefined
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+});
+
+/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
+function ButtonGroup({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-button-group', className)
+  }, rest), children);
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Tooltip = Tooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover and on keyboard focus.
+   Usage:
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+   Props:
+     content: the tooltip text
+     placement: "bottom" (default) | "top" | "end"
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
+   Behavior:
+     It shows on hover and on keyboard focus, and hides on leave, on blur and with Escape.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+   Notes:
+     An icon-only control still needs its own label: the tooltip repeats it visually, it does not replace it.
+     Not for essential or interactive content.
+*/
+
+function Tooltip({
+  content,
+  placement = 'bottom',
+  disabled = false,
+  className,
+  children
+}) {
+  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    return () => document.removeEventListener('keydown', esc);
+  }, [open]);
+  const child = _react.default.Children.only(children);
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, {
+    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onMouseEnter: () => setOpen(true),
+    onMouseLeave: () => setOpen(false),
+    onFocus: () => setOpen(true),
+    onBlur: () => setOpen(false)
+  }, trigger, disabled ? null : /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + placement, open && 'is-open')
+  }, content));
+}
+  } },
+  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -583,6 +851,8 @@ exports.TagInput = void 0;
 exports.TagList = TagList;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tag, Chip, TagList, TagInput
    Summary: Small gray labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button.
@@ -610,13 +880,17 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      TagList.children: the tags or chips
      TagInput.onAdd(text): adds a tag: runs on Enter with the typed text (trimmed; never empty), then the field clears;
        the application ignores a tag it already has
+     TagInput.label: the accessible name of the + button and the field, and the field's placeholder (default "Add a tag")
+     TagInput.collapsible: true (default): a + button that reveals the field; false: the field is always shown
      TagInput.className: more classes on the input
    Behavior:
      The × button is a 24px target in a 16px box.
      Selected chips are filled.
-     TagInput is a text field like every other (the input's border, hover, focus and disabled states; owner, batch 268):
-       type a tag and press Enter to add it; it appears before the field and its × removes it. Without onAdd the field
-       only reports what is typed (onChange, onKeyDown).
+     TagInput is a + button at the end of the tag list (owner, batch 271: "it should be a + and clicking that plus
+       exposes the text field"): pressing it reveals a text field like every other (the input's border, hover, focus and
+       disabled states), focused. Type a tag and press Enter to add it: it appears before the field, the field clears and
+       stays open for the next one. Escape, or leaving the field empty, closes it and returns focus to the +. Each tag's
+       × removes it. Without onAdd the field only reports what is typed (onChange, onKeyDown).
      A tag being renamed is a small field with the input's focused border.
    Notes:
      TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
@@ -729,38 +1003,85 @@ const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(funct
   onKeyDown,
   value,
   onChange,
+  label = 'Add a tag',
+  collapsible = true,
+  id,
   className,
+  onBlur,
   ...rest
 }, ref) {
   const [own, setOwn] = _react.default.useState('');
+  const [open, setOpen] = _react.default.useState(!collapsible);
   const text = value !== undefined ? value : own;
+  const inputRef = _react.default.useRef(null),
+    plusRef = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => inputRef.current || plusRef.current);
+  const wasOpen = _react.default.useRef(open);
+  _react.default.useEffect(() => {
+    // opening focuses the field; closing returns focus to the + (only after a change, never on mount)
+    if (wasOpen.current === open) return;
+    wasOpen.current = open;
+    if (open && inputRef.current) inputRef.current.focus();else if (!open && plusRef.current && plusRef.current.focus) plusRef.current.focus();
+  }, [open]);
+  const setText = v => {
+    if (value === undefined) setOwn(v);else if (onChange) onChange({
+      target: {
+        value: v
+      },
+      currentTarget: {
+        value: v
+      }
+    });
+  };
   const change = e => {
     if (value === undefined) setOwn(e.target.value);
     if (onChange) onChange(e);
   };
   const keyDown = e => {
     if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || !onAdd || e.key !== 'Enter') return;
+    if (e.defaultPrevented) return;
+    if (e.key === 'Escape' && collapsible) {
+      e.preventDefault();
+      setText('');
+      setOpen(false);
+      return;
+    }
+    if (!onAdd || e.key !== 'Enter') return;
     e.preventDefault();
     const t = String(text).trim();
     if (!t) return;
     onAdd(t);
-    if (value === undefined) setOwn('');else if (onChange) onChange({
-      target: {
-        value: ''
-      },
-      currentTarget: {
-        value: ''
-      }
-    });
+    setText('');
   };
+  const blur = e => {
+    if (onBlur) onBlur(e);
+    if (collapsible && !String(text).trim()) setOpen(false);
+  };
+  if (!open) {
+    return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+      content: label
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      ref: plusRef,
+      id: id,
+      size: "xs",
+      icon: "add",
+      iconOnly: true,
+      label: label,
+      className: (0, _cx.cx)('plx-tag-input__add', className),
+      onClick: () => setOpen(true)
+    }));
+  }
   return /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
+    ref: inputRef,
+    id: id,
     type: "text",
+    "aria-label": rest['aria-labelledby'] ? undefined : label,
+    placeholder: label,
     className: (0, _cx.cx)('plx-input', 'plx-tag-input', className),
     value: text,
     onChange: change,
-    onKeyDown: keyDown
+    onKeyDown: keyDown,
+    onBlur: blur
   }, rest));
 });
   } },
@@ -1482,211 +1803,6 @@ List.Item = function ListItem({
     className: "plx-list__text"
   }, children));
 };
-  } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Skeleton = Skeleton;
-exports.Spinner = Spinner;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
-   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
-     dots are a Chat variant: Chat.Typing.)
-   Usage:
-     <Skeleton width="160px" height="16px" />
-     <Spinner size="sm" label="Saving" />
-   Props:
-     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
-     Skeleton.height: the block height, a size token's name ("16px")
-     Skeleton.className: more classes on the block
-     Spinner.size: "sm" | "md" (default) | "lg"
-     Spinner.label: the text announced to assistive technology (default "Loading")
-     Spinner.className: more classes on the ring
-   Behavior:
-     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
-     Spinner is a status region (role="status"), so its label is announced.
-     People who ask their system for less motion see the indicators still.
-   Notes:
-     Other props pass through to the <span>.
-     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
-*/
-// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
-const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
-function Skeleton({
-  width,
-  height,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-skeleton', className),
-    "aria-hidden": "true",
-    "data-plx-width": sizeName(width),
-    "data-plx-height": sizeName(height)
-  }, rest));
-}
-function Spinner({
-  size = 'md',
-  label = 'Loading',
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
-}
-  } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-exports.ButtonGroup = ButtonGroup;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
-   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
-   Usage:
-     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
-     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
-     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
-   Props:
-     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
-       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis; "quiet", its old name, still works) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover) | "link" (looks like link text)
-     size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
-       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
-       tint on hover) | "lg" (the prominent role: page actions)
-     icon: an <Icon> (or an icon name) before the label
-     iconEnd: an <Icon> (or an icon name) after the label
-     iconOnly: a square button with only its icon; give it a label (default false)
-     label: the accessible name (aria-label); an icon-only button falls back to string children
-     caret: the button opens a menu: a chevron after the label (default false)
-     expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed)
-     selected: shows the selected state without a toggle role (default false)
-     loading: shows a spinner in place of the icon (default false)
-     disabled: the button does nothing (default false)
-     href: renders a link styled as a button
-     type: the button type (default "button")
-     onClick(event): runs when the button is clicked, unless disabled or loading
-     children: the button label
-     className: more classes on the button
-     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
-     ref: forwarded to the <button> or <a>
-     ButtonGroup.label: the accessible name of the group
-     ButtonGroup.children: the buttons
-     ButtonGroup.className: more classes on the group
-   Behavior:
-     Placement can also set the role: a dialog footer gives its buttons the dialog role.
-     Selected, pressed and expanded all show the selected state.
-     Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
-     A disabled link loses its href.
-   Notes:
-     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
-     For one choice from several, use SegmentedControl instead of ButtonGroup.
-*/
-const STRINGS = {
-  working: 'Working'
-};
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
-const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
-  variant = 'secondary',
-  size = 'md',
-  icon,
-  iconEnd,
-  iconOnly = false,
-  label,
-  caret = false,
-  expanded,
-  pressed,
-  selected = false,
-  loading = false,
-  disabled = false,
-  href,
-  type = 'button',
-  className,
-  children,
-  onClick,
-  strings,
-  ...rest
-}, ref) {
-  const t = Object.assign({}, STRINGS, strings);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', className);
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.working
-  })) : icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(icon)) : null, iconOnly ? null : children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__label"
-  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(iconEnd)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__caret",
-    "aria-hidden": "true"
-  }) : null);
-  const a11y = {
-    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
-    'aria-expanded': expanded,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || loading ? true : undefined,
-    'aria-busy': loading || undefined
-  };
-  const handle = e => {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    if (onClick) onClick(e);
-  };
-  if (href) return /*#__PURE__*/_react.default.createElement("a", _extends({
-    ref: ref,
-    href: disabled ? undefined : href,
-    className: classes
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-  return /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: type,
-    className: classes,
-    disabled: disabled && !loading ? true : undefined
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-});
-
-/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-function ButtonGroup({
-  label,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), children);
-}
   } },
   "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -2892,69 +3008,6 @@ function useTruncated(ref) {
     return () => ro.disconnect();
   }, [ref]);
   return cut;
-}
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover and on keyboard focus.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-   Props:
-     content: the tooltip text
-     placement: "bottom" (default) | "top" | "end"
-     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
-       the time and only needs its tooltip when it is cut short
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover and on keyboard focus, and hides on leave, on blur and with Escape.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-   Notes:
-     An icon-only control still needs its own label: the tooltip repeats it visually, it does not replace it.
-     Not for essential or interactive content.
-*/
-
-function Tooltip({
-  content,
-  placement = 'bottom',
-  disabled = false,
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    return () => document.removeEventListener('keydown', esc);
-  }, [open]);
-  const child = _react.default.Children.only(children);
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  });
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onMouseEnter: () => setOpen(true),
-    onMouseLeave: () => setOpen(false),
-    onFocus: () => setOpen(true),
-    onBlur: () => setOpen(false)
-  }, trigger, disabled ? null : /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + placement, open && 'is-open')
-  }, content));
 }
   } },
   "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -4273,6 +4326,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the tabs
      panelClassName: more classes on each panel
    Behavior:
+     The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
      Arrow keys move and select (wrapping); Home and End go to the first and last.
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
@@ -4802,6 +4856,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the grid's frame
      DataTable.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
+     Drag and drop (batch 271): a row handle (a column with rowHandle) shows the grab cursor; the row being moved shows
+       grabbing.
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
@@ -7683,6 +7739,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      ActivityList.Item.actions: controls at the row's end
      ActivityList.Item.className: more classes on the row
    Behavior:
+     Alignment (owner, batch 271): a row's content starts and ends at the list's edges, in line with a section heading and
+       its line; a row that opens keeps a small inset for its hover fill, pulled back by the same token.
      With onOpen or href the title opens the item and covers the row: one Tab stop, and the actions stay reachable.
      Row padding follows the density.
 */
@@ -9058,6 +9116,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (arrow keys)", position: "{title}, position {index} of {total}" } (widget and widgetLower stand in for a widget
        without a title, in the announcement and in the handle's name)
    Behavior:
+     Drag and drop (batch 271): the handle shows the grab cursor, grabbing while held or while its widget moves.
      Each widget gets a handle (a button) when the grid can be reordered: drag it onto another widget to place it there;
      or focus it and press Arrow Up (earlier) or Arrow Down (later); Arrow Left / Right follow reading order (in a
      right-to-left page Arrow Right is earlier).
