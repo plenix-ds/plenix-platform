@@ -87,7 +87,7 @@ async function read(page, sel, props, pseudo) {
 (async () => {
   const pageFile = path.join(__dirname, '.grid-page.html'), jsFile = path.join(__dirname, '.grid-page.js');
   fs.writeFileSync(jsFile, PAGE_JS);
-  fs.writeFileSync(pageFile, '<!doctype html><html lang="en" data-plx-density="standard"><head><meta charset="utf-8"><title>Grid</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap\">'
+  fs.writeFileSync(pageFile, '<!doctype html><html lang="en" data-plx-density="standard"><head><meta charset="utf-8"><title>Grid</title><link rel="stylesheet" href="../platform/system/fonts.css">'
     + '<script src="../platform/providers/theme-boot.js"></script><link rel="stylesheet" href="../platform/platform.css"></head><body>'
     + '<main id="app" class="plx-u-p-md"></main><script src="../platform/vendor/react-loader.js"></script><script src="../platform/dist/platform.js"></script>'
     + '<script src=".grid-page.js"></script></body></html>');

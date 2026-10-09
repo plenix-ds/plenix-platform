@@ -65,6 +65,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   (#/data-display/data-grid): how to apply it, every part of its style with its tokens, one live grid. (batch 226)
 
 ### Changed (visual)
+- Button labels no longer cut letters that reach below the line (the g in "Tagging"): the Button's line height is
+  1.3 (--plx-comp-button-line-height = line-height-tight, was 1); button heights are unchanged. (batch 227)
+- Fonts are hosted with the Platform: DM Sans (variable 300–700, italic) and DM Mono (300, 400, 500, italic) in
+  platform/fonts with platform/system/fonts.css (SIL Open Font License); every page preloads DM Sans and no page calls
+  Google. The styles package and the CDN carry the font files beside fonts.css. check-system rule fonts rejects a call
+  to Google Fonts. The package build's default theme path (renamed in batch 219) is fixed. (batch 227)
 - Every table in the apps is a DataGrid (Tabulator, the owner's grid style): Files, Projects (files), the suite's
   Search workspace (every source), Settings (scenarios, fields, product vision, terminology, data model: 7 kinds of
   table), the Asset Manager's categories, collections and asset results, its system settings (enabled for, actions,

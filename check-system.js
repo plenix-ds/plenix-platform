@@ -33,6 +33,7 @@
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
 //   tables      every table is a DataGrid (Tabulator in the Plenix grid style): no <table>, no table element made in code, no
 //               retired Table component or plx-table / plx-data-table class (batch 226)
+//   fonts       no call to Google Fonts: DM Sans and DM Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
 const fs = require('fs');
@@ -132,6 +133,10 @@ for (const { file } of files) {
     for (const m of text.matchAll(/<table[\s>]|createElement\(\s*['"]table['"]|\bel\(\s*['"]table['"]|\bh\(\s*['"]table['"]|\bplx-(data-)?table\b(?!-)|\bimport\s*\{[^}]*\bTable\b[^}]*\}\s*from\s*['"]plenix-platform['"]|\bP(?:lenix)?\.Table\b/g)) {
       add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
     }
+  }
+  // fonts: the typefaces are hosted with the Platform (platform/fonts, system/fonts.css, batch 227): no page calls Google
+  if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
+    for (const m of text.matchAll(/fonts\.(googleapis|gstatic)\.com/g)) add('fonts', file, lineOf(m.index), 'a call to Google Fonts: ' + text.slice(Math.max(0, m.index - 20), m.index + 40).split('\n')[0]);
   }
   // style: in h()/createElement props — allowed only as an object literal of custom properties
   for (const m of text.matchAll(/[{,]\s*style\s*:\s*/g)) {

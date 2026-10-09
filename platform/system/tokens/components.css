@@ -129,7 +129,7 @@
   --plx-comp-button-caret-width: var(--plx-ref-glyph-size-10px);
   --plx-comp-button-caret-height: var(--plx-ref-glyph-size-6px);
   --plx-comp-button-font-family: var(--plx-sys-font-label);
-  --plx-comp-button-line-height: var(--plx-ref-line-height-none);
+  --plx-comp-button-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-button-caret-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-button-group-joined-radius: var(--plx-sys-shape-none);
   --plx-comp-button-group-focus-layer: var(--plx-sys-layer-raised);

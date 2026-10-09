@@ -26,7 +26,6 @@ const PKG = path.join(ROOT, 'packages');
 const REL = path.join(ROOT, 'release');
 const CDN = path.join(REL, 'cdn', VERSION);
 const API = path.join(REL, 'api', 'v1');
-const FONTS = 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap';
 
 if (!/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(VERSION || '')) throw new Error('package.json needs a version like 0.1.0');
 for (const f of ['dist/platform.js', 'system/tokens/reference.css', 'components/Icon/icon.css', 'tokens/tokens.index.json']) {
@@ -58,7 +57,7 @@ const T = path.join(PKG, 'tokens');
 const index = JSON.parse(fs.readFileSync(path.join(P, 'tokens', 'tokens.index.json'), 'utf8'));
 copyDir(path.join(P, 'tokens'), path.join(T, 'json'), (n) => n.endsWith('.tokens.json'));
 copyDir(path.join(P, 'system', 'tokens'), path.join(T, 'css'));
-copy(path.join(P, 'system', 'themes', 'plenix.css'), path.join(T, 'css', 'theme-plenix.css'));
+copy(path.join(P, 'system', 'themes', 'default.css'), path.join(T, 'css', 'theme-default.css'));   // the default theme (renamed in batch 219)
 // the module: every token with its tier, type and value per selector (theme, density, interaction)
 const tokens = index.tokens.map((t) => ({ name: t.name, tier: t.tier, type: t.type, description: t.description || '',
   values: t.sets.map((s) => ({ selector: s.selector, value: s.value, file: s.file })), refs: t.refs || [] }));
@@ -68,7 +67,7 @@ write(path.join(T, 'index.js'), '/* ' + SCOPE + '/tokens ' + VERSION + ' (genera
   '/** Its value for one selector (":root" when left out). */\nexport function value(name, selector = ":root") { const t = byName.get(name); const s = t && (t.values.find((v) => v.selector === selector) || t.values[0]); return s ? s.value : undefined; }\n' +
   '/** The CSS reference for use in styles: var(--plx-…). */\nexport function cssVar(name) { return "var(" + name + ")"; }\n');
 write(path.join(T, 'index.d.ts'), 'export interface TokenValue { selector: string; value: string; file: string }\nexport interface Token { name: string; tier: "plx-ref" | "plx-sys" | "plx-comp"; type: string; description: string; values: TokenValue[]; refs: string[] }\nexport declare const version: string;\nexport declare const tokens: Token[];\nexport declare function token(name: string): Token | undefined;\nexport declare function value(name: string, selector?: string): string | undefined;\nexport declare function cssVar(name: string): string;\n');
-write(path.join(T, 'css', 'all.css'), ['reference.css', 'semantic.css', 'components.css', 'theme-plenix.css'].map((f) => '@import url("' + f + '");').join('\n') + '\n');
+write(path.join(T, 'css', 'all.css'), ['reference.css', 'semantic.css', 'components.css', 'theme-default.css'].map((f) => '@import url("' + f + '");').join('\n') + '\n');
 json(path.join(T, 'package.json'), manifest('tokens', 'Plenix design tokens: the source JSON, CSS custom properties (--plx-…) and a JS module.', {
   type: 'module', main: 'index.js', types: 'index.d.ts',
   exports: { '.': { types: './index.d.ts', default: './index.js' }, './tokens.json': './tokens.json', './css/*': './css/*', './json/*': './json/*', './package.json': './package.json' },
@@ -77,7 +76,7 @@ readme('tokens', `
 The ${tokens.length} Plenix tokens in three tiers: \`plx-ref\` (reference palette and scales), \`plx-sys\` (semantic roles) and \`plx-comp\` (component values).
 
 - \`json/*.tokens.json\`: the source, the files the Platform is edited in.
-- \`css/all.css\`: every token as a CSS custom property, with the Plenix theme. \`css/reference.css\`, \`semantic.css\`, \`components.css\` and \`theme-plenix.css\` load each tier on its own.
+- \`css/all.css\`: every token as a CSS custom property, with the default theme. \`css/reference.css\`, \`semantic.css\`, \`components.css\` and \`theme-default.css\` load each tier on its own.
 - \`index.js\` exports \`tokens\`, \`token(name)\`, \`value(name, selector)\` and \`cssVar(name)\`.
 
 Use the semantic (\`--plx-sys-…\`) and component (\`--plx-comp-…\`) tokens in products, never the reference palette directly.`);
@@ -105,15 +104,18 @@ const S = path.join(PKG, 'styles');
 const cssOpts = { entryPoints: [path.join(P, 'platform.css')], bundle: true, logLevel: 'silent', loader: { '.svg': 'dataurl', '.png': 'dataurl', '.woff2': 'dataurl' } };
 esbuild.buildSync(Object.assign({}, cssOpts, { outfile: path.join(S, 'plenix.css') }));
 esbuild.buildSync(Object.assign({}, cssOpts, { outfile: path.join(S, 'plenix.min.css'), minify: true }));
-write(path.join(S, 'fonts.css'), '/* The Plenix typefaces: DM Sans (all interface text) and DM Mono (code and technical values). */\n@import url("' + FONTS + '");\n');
+// the hosted typefaces (batch 227): fonts.css beside the font files, as the Platform has them (platform/system/fonts.css,
+// platform/fonts); no page calls Google
+copyDir(path.join(P, 'fonts'), path.join(S, 'fonts'));
+write(path.join(S, 'fonts.css'), fs.readFileSync(path.join(P, 'system', 'fonts.css'), 'utf8').split('url("../fonts/').join('url("fonts/'));
 copy(path.join(P, 'providers', 'theme-boot.js'), path.join(S, 'theme-boot.js'));
 json(path.join(S, 'package.json'), manifest('styles', 'Plenix styles: the whole Platform stylesheet (tokens, theme, foundations, every component and pattern) in one file.', {
   style: 'plenix.css',
-  exports: { '.': './plenix.css', './plenix.css': './plenix.css', './plenix.min.css': './plenix.min.css', './fonts.css': './fonts.css', './theme-boot.js': './theme-boot.js', './package.json': './package.json' },
+  exports: { '.': './plenix.css', './plenix.css': './plenix.css', './plenix.min.css': './plenix.min.css', './fonts.css': './fonts.css', './fonts/*': './fonts/*', './theme-boot.js': './theme-boot.js', './package.json': './package.json' },
 }));
 readme('styles', `
 - \`plenix.css\` (and \`plenix.min.css\`): tokens, the Plenix theme, the foundations and every component and pattern.
-- \`fonts.css\`: DM Sans and DM Mono from Google Fonts.
+- \`fonts.css\` and \`fonts/\`: DM Sans and DM Mono (SIL Open Font License), hosted with the styles: nothing is fetched from Google.
 - \`theme-boot.js\`: load it in \`<head>\` before the page draws; it sets the light or dark mode, the display density and the interaction environment (\`data-plx-mode\`, \`data-plx-density-policy\` on \`<html>\`).
 
 \`\`\`html
@@ -159,6 +161,7 @@ React 18 is a peer dependency. Rules: compose from these components and the toke
 copy(path.join(S, 'plenix.css'), path.join(CDN, 'plenix.css'));
 copy(path.join(S, 'plenix.min.css'), path.join(CDN, 'plenix.min.css'));
 copy(path.join(S, 'fonts.css'), path.join(CDN, 'fonts.css'));
+copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefaces beside fonts.css (batch 227)
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
 copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));

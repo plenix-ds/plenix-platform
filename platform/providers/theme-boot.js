@@ -47,9 +47,6 @@
   }
   followSystem();
   if (sysDark && sysDark.addEventListener) sysDark.addEventListener('change', followSystem);
-  // the web-font stylesheet (<link id="fontCss" media="print">) never delays the first paint; switch it on now
-  var fontCss = document.getElementById('fontCss');
-  if (fontCss) fontCss.media = 'all';
   // the three levels, densest first; standard is the system default (a name, never "Default")
   var DENSITIES = ['compact', 'standard', 'comfortable'];
   var LABELS = { compact: 'Compact', standard: 'Standard', comfortable: 'Comfortable' };

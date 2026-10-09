@@ -521,7 +521,7 @@
       "$type": "fontFamily"
     },
     "button-line-height": {
-      "$value": "{plx-ref.line-height-none}",
+      "$value": "{plx-ref.line-height-tight}",
       "$type": "number"
     },
     "button-caret-duration": {
