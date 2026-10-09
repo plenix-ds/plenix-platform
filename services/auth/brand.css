@@ -56,7 +56,12 @@ html, body, .pf-c-login, .pf-c-page, .pf-c-drawer__body, .pf-c-drawer__content, 
 :host, body { font-family: var(--plenix-font) !important; color: var(--plenix-text); }
 /* the Plenix header: the application header's blue bar with the brand in the largest type size */
 .pf-c-login::before { content: "Plenix"; position: fixed; inset-block-start: 0; inset-inline: 0; z-index: 1; display: flex; align-items: center; box-sizing: border-box; block-size: var(--plenix-header-height); padding-inline: var(--plenix-header-inset); background: var(--plenix-header); color: var(--plenix-header-text); font-family: var(--plenix-font); font-size: var(--plenix-brand-size); font-weight: var(--plenix-bold); }
-.pf-c-login { box-sizing: border-box !important; min-block-size: 100vh !important; block-size: auto !important; padding-block-start: calc(var(--plenix-header-height) + var(--plenix-gap)) !important; }
+/* the card in the middle of the window, across and down: the same room above and below (the header's height plus the gap),
+   so the header never covers it and its center is the window's */
+.pf-c-login { box-sizing: border-box !important; display: flex !important; align-items: center !important; justify-content: center !important; min-block-size: 100vh !important; block-size: auto !important; padding-block: calc(var(--plenix-header-height) + var(--plenix-gap)) !important; padding-inline: var(--plenix-header-inset) !important; }
+.ak-login-container { margin: 0 auto !important; }
+/* Authentik's stacked layout pushes the card down with its own top margin; the page centers it instead */
+.pf-c-login__main { margin-block: 0 !important; }
 /* Authentik sets the card's container to the window height less its own padding; under the header that is taller than
    the page, so it takes its content's height */
 .ak-login-container { block-size: auto !important; min-block-size: 0 !important; }
