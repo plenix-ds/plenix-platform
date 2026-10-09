@@ -91,6 +91,10 @@
       "$value": "{plx-sys.border-strong}",
       "$type": "color"
     },
+    "button-size-md-pressed-background": {
+      "$value": "{plx-sys.state-pressed}",
+      "$type": "color"
+    },
     "button-size-md-selected-border": {
       "$value": "{plx-sys.selected-border}",
       "$type": "color"
@@ -137,6 +141,10 @@
     },
     "button-size-sm-hover-border": {
       "$value": "{plx-sys.control-border}",
+      "$type": "color"
+    },
+    "button-size-sm-pressed-background": {
+      "$value": "{plx-sys.fill-neutral-pressed}",
       "$type": "color"
     },
     "button-size-sm-selected-border": {
@@ -187,6 +195,10 @@
       "$value": "{plx-sys.control-border}",
       "$type": "color"
     },
+    "button-size-xs-pressed-background": {
+      "$value": "{plx-sys.fill-neutral-pressed}",
+      "$type": "color"
+    },
     "button-size-xs-selected-border": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
@@ -235,6 +247,10 @@
       "$value": "{plx-sys.selected-border}",
       "$type": "color"
     },
+    "button-size-2xs-pressed-background": {
+      "$value": "{plx-sys.state-selected-pressed}",
+      "$type": "color"
+    },
     "button-size-2xs-selected-border": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
@@ -281,6 +297,10 @@
     },
     "button-size-lg-hover-border": {
       "$value": "{plx-sys.border-strong}",
+      "$type": "color"
+    },
+    "button-size-lg-pressed-background": {
+      "$value": "{plx-sys.state-pressed}",
       "$type": "color"
     },
     "button-size-lg-selected-border": {
@@ -338,6 +358,14 @@
       "$value": "{plx-sys.action-primary-content}",
       "$type": "color"
     },
+    "button-primary-pressed-background": {
+      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$type": "color"
+    },
+    "button-primary-pressed-border": {
+      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$type": "color"
+    },
     "button-tertiary-background": {
       "$value": "transparent",
       "$type": "color"
@@ -360,6 +388,14 @@
     },
     "button-tertiary-hover-text": {
       "$value": "{plx-sys.action-primary-content}",
+      "$type": "color"
+    },
+    "button-tertiary-pressed-background": {
+      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$type": "color"
+    },
+    "button-tertiary-pressed-border": {
+      "$value": "{plx-sys.action-primary-background-pressed}",
       "$type": "color"
     },
     "button-ghost-background": {
@@ -406,6 +442,14 @@
       "$value": "{plx-sys.action-danger-content}",
       "$type": "color"
     },
+    "button-danger-pressed-background": {
+      "$value": "{plx-sys.action-danger-background-pressed}",
+      "$type": "color"
+    },
+    "button-danger-pressed-border": {
+      "$value": "{plx-sys.action-danger-background-pressed}",
+      "$type": "color"
+    },
     "button-danger-secondary-border": {
       "$value": "{plx-sys.action-danger-background}",
       "$type": "color"
@@ -424,6 +468,14 @@
     },
     "button-danger-secondary-hover-text": {
       "$value": "{plx-sys.action-danger-content}",
+      "$type": "color"
+    },
+    "button-danger-secondary-pressed-background": {
+      "$value": "{plx-sys.action-danger-background-pressed}",
+      "$type": "color"
+    },
+    "button-danger-secondary-pressed-border": {
+      "$value": "{plx-sys.action-danger-background-pressed}",
       "$type": "color"
     },
     "button-link-background": {

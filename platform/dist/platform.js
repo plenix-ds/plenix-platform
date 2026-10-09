@@ -15,25 +15,30 @@ exports.Badge = Badge;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
-   Summary: A small solid label with white bold text.
+   Summary: A small label with bold text: solid (white text on the tone) or soft (the tone's text on its pale fill).
    Usage:
      <Badge tone="success">Published</Badge>
      <Badge tone="danger" size="sm">3</Badge>
+     <Badge tone="warning" variant="soft">Draft</Badge>
    Props:
      tone: "neutral" (default) | "info" | "success" | "warning" | "danger"
+     variant: "solid" (default; white text on the tone) | "soft" (the tone's text on its pale fill: quieter, for many
+       statuses in a dense list)
      size: "md" (default; a 20px label) | "sm" (16px, for counts)
      children: the badge text
      className: more classes on the badge
    Behavior:
-     An unknown tone or size falls back to the default.
+     An unknown tone, variant or size falls back to the default.
    Notes:
      Other props (title, aria-*, …) pass through to the <span>.
      A badge is text: give a count enough context nearby or an accessible name on its control.
 */
 const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
 const SIZES = ['md', 'sm'];
+const VARIANTS = ['solid', 'soft'];
 function Badge({
   tone = 'neutral',
+  variant = 'solid',
   size = 'md',
   className,
   children,
@@ -41,7 +46,8 @@ function Badge({
 }) {
   const t = TONES.indexOf(tone) >= 0 ? tone : 'neutral';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'solid';
+  const classes = ['plx-badge', 'plx-badge--' + t, v === 'soft' ? 'plx-badge--soft' : null, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: classes
   }, rest), children);
@@ -5621,7 +5627,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
      Home and End go to the first and last visible item.
      Enter or Space selects.
-     Clicking the chevron opens or closes; clicking the row selects.
+     Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
 */
 
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {

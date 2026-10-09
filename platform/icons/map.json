@@ -132,6 +132,8 @@
     "sort-ascending": "arrow_upward",
     "sort-descending": "arrow_downward",
     "sparkle": "auto_awesome",
+    "square-minus": "indeterminate_check_box",
+    "square-plus": "add_box",
     "tags": "sell",
     "text-card": "article",
     "trash": "delete",

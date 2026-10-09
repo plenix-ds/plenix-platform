@@ -6,6 +6,26 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- Badge: variant="soft" (owner: yes to a soft Badge): the tone's text on its pale fill, the pair Notice uses
+  (--plx-sys-feedback-{tone}-soft and -content), quieter for many statuses in a dense list. Every tone passes AA in both
+  themes (lowest: danger in dark, 4.58:1). Class plx-badge--soft; design system: Badge › Variant. (batch 238)
+- Pressed colors (owner: yes to a darker pressed fill): new roles --plx-sys-state-pressed, -state-selected-pressed,
+  -fill-neutral-pressed, -action-primary-background-pressed and -action-danger-background-pressed (light: gray-200,
+  blue-200, gray-300, blue-700, red-700; dark: gray-600, gray-600, gray-600, blue-700, red-700; existing palette colors).
+  Button: 13 tokens (--plx-comp-button-size-{s}-pressed-background, --plx-comp-button-{variant}-pressed-background and
+  -border) and :active rules, .is-pointer-down to draw it; the Button lab has a Pressed state, and the design system's
+  States panels read :active as "Pressed (held)" (a state inside :not(…) no longer counts as that state). On the accent
+  header, secondary buttons use --plx-sys-accent-state-pressed (light blue-700, dark gray-700). Menu items, tree rows, row
+  buttons, activity items, nav items, tool rail items, pagination and chips take the pressed fill while held; selected
+  and current items keep theirs. Danger has no darker red in the palette, so its pressed role is red-700 like hover for
+  now. (batch 238)
+
+### Changed (visual)
+- Tree (owner): the open control is a + box on a closed row and a − box on an open row (Material Symbols add_box and
+  indeterminate_check_box, unedited, the 16px square; icon names square-plus, square-minus) instead of the turning
+  chevron. (batch 238)
+
 ### Fixed
 - Badge and Count: the warning tone failed WCAG AA contrast (white text on brown-500, 4.46:1). New semantic roles
   `--plx-sys-feedback-{tone}-solid-label` (light and dark) are the fill behind text: warning points to brown-800 (8.34:1),

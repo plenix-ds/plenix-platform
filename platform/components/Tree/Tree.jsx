@@ -21,7 +21,7 @@
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
      Home and End go to the first and last visible item.
      Enter or Space selects.
-     Clicking the chevron opens or closes; clicking the row selects.
+     Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
 */
 import React from 'react';
 import { isRtl } from '../../utils/direction.js';

@@ -24,6 +24,7 @@
   --plx-comp-button-size-md-text: var(--plx-sys-content-default);
   --plx-comp-button-size-md-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-md-hover-border: var(--plx-sys-border-strong);
+  --plx-comp-button-size-md-pressed-background: var(--plx-sys-state-pressed);
   --plx-comp-button-size-md-selected-border: var(--plx-sys-selected-border);
   --plx-comp-button-size-md-selected-text: var(--plx-sys-selected-content);
   --plx-comp-button-size-md-primary-ring: var(--plx-sys-shadow-ring-subtle);
@@ -36,6 +37,7 @@
   --plx-comp-button-size-sm-text: var(--plx-sys-content-muted);
   --plx-comp-button-size-sm-hover-background: var(--plx-sys-fill-neutral-hover);
   --plx-comp-button-size-sm-hover-border: var(--plx-sys-control-border);
+  --plx-comp-button-size-sm-pressed-background: var(--plx-sys-fill-neutral-pressed);
   --plx-comp-button-size-sm-selected-border: var(--plx-sys-action-primary-background);
   --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-link);
   --plx-comp-button-size-sm-primary-ring: none;
@@ -48,6 +50,7 @@
   --plx-comp-button-size-xs-text: var(--plx-sys-content-muted);
   --plx-comp-button-size-xs-hover-background: var(--plx-sys-fill-neutral-hover);
   --plx-comp-button-size-xs-hover-border: var(--plx-sys-control-border);
+  --plx-comp-button-size-xs-pressed-background: var(--plx-sys-fill-neutral-pressed);
   --plx-comp-button-size-xs-selected-border: var(--plx-sys-action-primary-background);
   --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-link);
   --plx-comp-button-size-xs-primary-ring: none;
@@ -60,6 +63,7 @@
   --plx-comp-button-size-2xs-text: var(--plx-sys-content-muted);
   --plx-comp-button-size-2xs-hover-background: var(--plx-sys-state-selected);
   --plx-comp-button-size-2xs-hover-border: var(--plx-sys-selected-border);
+  --plx-comp-button-size-2xs-pressed-background: var(--plx-sys-state-selected-pressed);
   --plx-comp-button-size-2xs-selected-border: var(--plx-sys-action-primary-background);
   --plx-comp-button-size-2xs-selected-text: var(--plx-sys-content-link);
   --plx-comp-button-size-2xs-primary-ring: none;
@@ -72,6 +76,7 @@
   --plx-comp-button-size-lg-text: var(--plx-sys-content-default);
   --plx-comp-button-size-lg-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-lg-hover-border: var(--plx-sys-border-strong);
+  --plx-comp-button-size-lg-pressed-background: var(--plx-sys-state-pressed);
   --plx-comp-button-size-lg-selected-border: var(--plx-sys-selected-border);
   --plx-comp-button-size-lg-selected-text: var(--plx-sys-selected-content);
   --plx-comp-button-size-lg-primary-ring: var(--plx-sys-shadow-ring-subtle);
@@ -85,12 +90,16 @@
   --plx-comp-button-primary-hover-background: var(--plx-sys-action-primary-background-hover);
   --plx-comp-button-primary-hover-border: var(--plx-sys-action-primary-background-hover);
   --plx-comp-button-primary-hover-text: var(--plx-sys-action-primary-content);
+  --plx-comp-button-primary-pressed-background: var(--plx-sys-action-primary-background-pressed);
+  --plx-comp-button-primary-pressed-border: var(--plx-sys-action-primary-background-pressed);
   --plx-comp-button-tertiary-background: transparent;
   --plx-comp-button-tertiary-border: var(--plx-sys-action-primary-background);
   --plx-comp-button-tertiary-text: var(--plx-sys-action-primary-background);
   --plx-comp-button-tertiary-hover-background: var(--plx-sys-action-primary-background);
   --plx-comp-button-tertiary-hover-border: var(--plx-sys-action-primary-background);
   --plx-comp-button-tertiary-hover-text: var(--plx-sys-action-primary-content);
+  --plx-comp-button-tertiary-pressed-background: var(--plx-sys-action-primary-background-pressed);
+  --plx-comp-button-tertiary-pressed-border: var(--plx-sys-action-primary-background-pressed);
   --plx-comp-button-ghost-background: transparent;
   --plx-comp-button-ghost-border: transparent;
   --plx-comp-button-ghost-text: var(--plx-sys-content-muted);
@@ -102,11 +111,15 @@
   --plx-comp-button-danger-hover-background: var(--plx-sys-action-danger-background-hover);
   --plx-comp-button-danger-hover-border: var(--plx-sys-action-danger-background-hover);
   --plx-comp-button-danger-hover-text: var(--plx-sys-action-danger-content);
+  --plx-comp-button-danger-pressed-background: var(--plx-sys-action-danger-background-pressed);
+  --plx-comp-button-danger-pressed-border: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-secondary-border: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-secondary-text: var(--plx-sys-feedback-danger-content);
   --plx-comp-button-danger-secondary-hover-background: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-secondary-hover-border: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-secondary-hover-text: var(--plx-sys-action-danger-content);
+  --plx-comp-button-danger-secondary-pressed-background: var(--plx-sys-action-danger-background-pressed);
+  --plx-comp-button-danger-secondary-pressed-border: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-link-background: transparent;
   --plx-comp-button-link-text: var(--plx-sys-content-link);
   --plx-comp-button-link-hover-background: transparent;

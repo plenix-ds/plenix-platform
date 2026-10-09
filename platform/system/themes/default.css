@@ -64,8 +64,10 @@
   --plx-sys-surface-inverse: var(--plx-ref-color-gray-800);
   --plx-sys-surface-dialog-chrome: var(--plx-ref-color-gray-200);
   --plx-sys-state-hover: var(--plx-ref-color-gray-100);
+  --plx-sys-state-pressed: var(--plx-ref-color-gray-200);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-300);
   --plx-sys-state-selected: var(--plx-ref-color-blue-100);
+  --plx-sys-state-selected-pressed: var(--plx-ref-color-blue-200);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-300);
   --plx-sys-state-selected-border: var(--plx-ref-color-blue-250);
   --plx-sys-content-default: var(--plx-ref-color-black);
@@ -79,6 +81,7 @@
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);
   --plx-sys-action-primary-background: var(--plx-ref-color-blue-400);
   --plx-sys-action-primary-background-hover: var(--plx-ref-color-blue-600);
+  --plx-sys-action-primary-background-pressed: var(--plx-ref-color-blue-700);
   --plx-sys-action-primary-content: var(--plx-ref-color-white);
   --plx-sys-action-danger-background: var(--plx-ref-color-red-500);
   --plx-sys-action-danger-content: var(--plx-ref-color-white);
@@ -126,6 +129,7 @@
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-100);
   --plx-sys-fill-neutral-hover: var(--plx-ref-color-gray-200);
+  --plx-sys-fill-neutral-pressed: var(--plx-ref-color-gray-300);
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-700);
   --plx-sys-border-divider: var(--plx-ref-color-gray-100);
   --plx-sys-control-background: var(--plx-ref-color-white);
@@ -144,6 +148,7 @@
   --plx-sys-selected-border: var(--plx-ref-color-blue-200);
   --plx-sys-selected-content: var(--plx-ref-color-blue-700);
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-700);
+  --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-700);
   --plx-sys-accent-field-background: var(--plx-ref-color-blue-600);
   --plx-sys-accent-field-border: var(--plx-ref-color-blue-350);
   --plx-sys-accent-field-placeholder: var(--plx-ref-color-blue-350);
@@ -176,6 +181,7 @@
   /* app header tones (batch 108) */
   --plx-sys-accent-edge: var(--plx-ref-color-blue-700);
   --plx-sys-accent-state-hover: var(--plx-ref-color-blue-600);
+  --plx-sys-accent-state-pressed: var(--plx-ref-color-blue-700);
   --plx-sys-frost-surface: var(--plx-ref-color-blue-100);
   --plx-sys-frost-border: var(--plx-ref-color-blue-250);
   --plx-sys-frost-field-background: var(--plx-ref-color-blue-50);
@@ -218,8 +224,10 @@
   --plx-sys-surface-inverse: var(--plx-ref-color-gray-200);
   --plx-sys-surface-dialog-chrome: var(--plx-ref-color-gray-200);   /* provisional: the dark value is deferred (D3); the light value stands in */
   --plx-sys-state-hover: var(--plx-ref-color-gray-700);
+  --plx-sys-state-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-600);
   --plx-sys-state-selected: var(--plx-ref-color-gray-700);
+  --plx-sys-state-selected-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-500);
   --plx-sys-state-selected-border: var(--plx-ref-color-gray-500);
   --plx-sys-content-default: var(--plx-ref-color-gray-200);
@@ -233,6 +241,7 @@
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);
   --plx-sys-action-primary-background: var(--plx-ref-color-blue-400);
   --plx-sys-action-primary-background-hover: var(--plx-ref-color-blue-600);
+  --plx-sys-action-primary-background-pressed: var(--plx-ref-color-blue-700);
   --plx-sys-action-primary-content: var(--plx-ref-color-white);
   --plx-sys-action-danger-background: var(--plx-ref-color-red-500);
   --plx-sys-action-danger-content: var(--plx-ref-color-white);
@@ -280,6 +289,7 @@
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-800);
   --plx-sys-fill-neutral-hover: var(--plx-ref-color-gray-700);
+  --plx-sys-fill-neutral-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-200);
   --plx-sys-border-divider: var(--plx-ref-color-gray-700);
   --plx-sys-control-background: var(--plx-ref-color-gray-800);
@@ -298,6 +308,7 @@
   --plx-sys-selected-border: var(--plx-ref-color-blue-400);
   --plx-sys-selected-content: var(--plx-ref-color-blue-200);
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-700);
+  --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-700);
   --plx-sys-accent-field-background: var(--plx-ref-color-gray-800);
   --plx-sys-accent-field-border: var(--plx-ref-color-gray-500);
   --plx-sys-accent-field-placeholder: var(--plx-ref-color-gray-300);
@@ -329,6 +340,7 @@
   /* app header tones (batch 108) */
   --plx-sys-accent-edge: var(--plx-ref-color-gray-700);
   --plx-sys-accent-state-hover: var(--plx-ref-color-gray-800);
+  --plx-sys-accent-state-pressed: var(--plx-ref-color-gray-700);
   --plx-sys-frost-surface: var(--plx-ref-color-gray-800);
   --plx-sys-frost-border: var(--plx-ref-color-gray-700);
   --plx-sys-frost-field-background: var(--plx-ref-color-black);

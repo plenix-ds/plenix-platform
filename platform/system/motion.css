@@ -28,14 +28,27 @@
 
 /* ── Feel (batch 236): every control answers at once ──
    Hover: colors and edges fade in over --plx-sys-motion-duration-instant (80ms) instead of switching.
-   Press: buttons, chips, tiles and small icon controls shrink a touch (--plx-sys-motion-press-scale) while held; rows,
-   tabs and menu items keep their hover fill (a whole row does not shrink).
+   Press: buttons, chips, tiles and small icon controls shrink a touch (--plx-sys-motion-press-scale) while held; rows
+   and menu items do not shrink, they take the pressed fill below (batch 238).
    Open: menus, lists and dialogs pop in (fade and grow from --plx-sys-motion-enter-scale) in 120ms; the modal backdrop
    fades in. Drawers and toasts keep their slides.
    All of it is written with :where(), so a component's own transition or transform still wins, and reduced motion (above)
    sets every duration to 0s. */
 :where(.plx-button,.plx-row-button,.plx-tabs__tab,.plx-nav-list__item,.plx-nav-list__entry,.plx-nav-list__pin,.plx-tree__row,.plx-menu__item,.plx-combobox__option,.plx-segmented__item,.plx-chip,.plx-chip__toggle,.plx-tag__remove,.plx-tag__rename,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-section-heading__toggle,.plx-panel__toggle,.plx-pagination__page,.plx-breadcrumbs__link,.plx-radio-tile,.plx-choice,.plx-event-chip--interactive,.plx-activity-list__item,.plx-media-card,.plx-media-viewer__control,.plx-preview--button,.plx-field__info,.plx-app-header__item,.plx-app-header__switch,.plx-app-switcher__tile,.plx-app-switcher__open,.plx-app-switcher__pin,.plx-input){transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
 :where(.plx-button,.plx-segmented__item,.plx-chip,.plx-chip__toggle,.plx-tag__remove,.plx-tool-rail__item,.plx-toast__close,.plx-search__clear,.plx-pagination__page,.plx-radio-tile,.plx-event-chip--interactive,.plx-media-viewer__control,.plx-app-switcher__tile,.plx-app-header__switch):active:not(:disabled):not([aria-disabled="true"]){transform:scale(var(--plx-sys-motion-press-scale));}
+/* Pressed fill (batch 238): rows, menu items and list items go a step darker than their hover while held (the
+   -pressed roles; Button has its own pressed tokens). Selected and current items keep their own fill. Written with
+   real specificity and loaded after the components, so it wins over their hover rules while the pointer is down. */
+.plx-menu__item:active:not([aria-disabled="true"]),
+.plx-tree__item:not(.is-selected)>.plx-tree__row:active,
+.plx-row-button--hover:active:not(.is-selected),
+.plx-activity-list__item.is-interactive:active:not(.is-selected),
+.plx-nav-list__item:active:not(.is-current):not(.plx-nav-list__entry--actions>.plx-nav-list__item),
+.plx-nav-list__entry--actions:active:not(:has(>.plx-nav-list__item.is-current)),
+.plx-tool-rail__item:active:not(:disabled):not(.is-pressed){background-color:var(--plx-sys-state-pressed);}
+.plx-pagination__page:active:not(:disabled):not([aria-current]){background-color:var(--plx-sys-state-selected-pressed);}
+.plx-chip:active:not(.plx-chip--selected){background-color:var(--plx-sys-fill-neutral-pressed);}
+.plx-chip.plx-chip--selected:active{background-color:var(--plx-sys-action-primary-background-pressed);}
 :where(.plx-menu,.plx-combobox__list,.plx-dialog){animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}
 :where(.plx-menu--bottom-start){transform-origin:top left;}
 :where(.plx-menu--bottom-end){transform-origin:top right;}

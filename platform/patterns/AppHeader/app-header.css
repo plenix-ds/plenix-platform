@@ -20,6 +20,9 @@
 .plx-app-header--accent .plx-button--secondary{background-color:var(--plx-sys-accent-field-background);border-bottom-color:var(--plx-sys-accent-border);border-left-color:var(--plx-sys-accent-border);border-right-color:var(--plx-sys-accent-border);border-top-color:var(--plx-sys-accent-border);color:var(--plx-sys-accent-content);}
 .plx-app-header--accent .plx-button--secondary:hover,
 .plx-app-header--accent .plx-button--secondary.is-hover{background-color:var(--plx-sys-accent-state-hover);}
+/* pressed on the accent header: a step past its hover (batch 238) */
+.plx-app-header--accent .plx-button--secondary:active:not(:disabled):not([aria-disabled="true"]),
+.plx-app-header--accent .plx-button--secondary.is-pointer-down{background-color:var(--plx-sys-accent-state-pressed);}
 .plx-app-header--frost .plx-search__input{background-color:var(--plx-sys-frost-field-background);border-bottom-color:var(--plx-sys-frost-border);border-left-color:var(--plx-sys-frost-border);border-right-color:var(--plx-sys-frost-border);border-top-color:var(--plx-sys-frost-border);}
 .plx-app-header__count{inset-block-start:calc(var(--plx-ref-space-4px) * -1);inset-inline-end:calc(var(--plx-ref-space-4px) * -1);pointer-events:none;position:absolute;}
 /* header name: Plenix over the application */

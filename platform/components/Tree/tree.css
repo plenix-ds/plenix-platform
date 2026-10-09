@@ -8,8 +8,10 @@
 .plx-tree__item.is-selected>.plx-tree__row{background-color:var(--plx-sys-state-selected);box-shadow:inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);color:var(--plx-sys-selected-content);font-weight:var(--plx-sys-font-weight-medium);}
 .plx-tree__item:focus-visible>.plx-tree__row,
 .plx-tree__item.is-focus-visible>.plx-tree__row{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-border-width-medium) * -1);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
-.plx-tree__toggle{-webkit-mask-image:var(--plx-comp-icon-glyph-expand-more);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-ref-size-12px);background-color:var(--plx-sys-content-muted);block-size:var(--plx-ref-size-16px);flex-shrink:0;inline-size:var(--plx-ref-size-16px);mask-image:var(--plx-comp-icon-glyph-expand-more);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-ref-size-12px);transform:rotate(-90deg);transition-duration:var(--plx-sys-motion-duration-fast);transition-property:transform;}
-.plx-tree__toggle.is-open{transform:none;}
+/* the open control (owner, batch 238): a + box on a closed row, a − box on an open one (Material Symbols add_box and
+   indeterminate_check_box, the whole 16px icon square, unedited) */
+.plx-tree__toggle{-webkit-mask-image:var(--plx-comp-icon-glyph-add-box);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-ref-size-16px);background-color:var(--plx-sys-content-muted);block-size:var(--plx-ref-size-16px);flex-shrink:0;inline-size:var(--plx-ref-size-16px);mask-image:var(--plx-comp-icon-glyph-add-box);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-ref-size-16px);}
+.plx-tree__toggle.is-open{-webkit-mask-image:var(--plx-comp-icon-glyph-indeterminate-check-box);mask-image:var(--plx-comp-icon-glyph-indeterminate-check-box);}
 .plx-tree__toggle.is-leaf{visibility:hidden;}
 .plx-tree__icon{display:inline-flex;flex-shrink:0;}
 .plx-tree__label{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}

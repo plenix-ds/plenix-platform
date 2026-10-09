@@ -1,7 +1,9 @@
 /* Plenix · Badge (platform/components/Badge/badge.css). Anatomy and API: Badge.jsx.
    .plx-badge                 a 20px label: bold 10px text, 8px inline padding, centered
    .plx-badge--sm             a 16px label for counts: 9px text, 4px inline padding
-   .plx-badge--{tone}         neutral, info, success, warning, danger (the semantic feedback label fills, feedback-{tone}-solid-label, so themes resolve them and white text passes AA) */
+   .plx-badge--{tone}         neutral, info, success, warning, danger (the semantic feedback label fills, feedback-{tone}-solid-label, so themes resolve them and white text passes AA)
+   .plx-badge--soft           with a tone: the tone's pale fill (feedback-{tone}-soft) and its text color (feedback-{tone}-content),
+                              the pair Notice uses; every tone passes AA in both themes (lowest: danger in dark, 4.58:1) */
 .plx-badge{align-items:center;border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);display:inline-flex;font-size:var(--plx-ref-font-size-10);font-weight:var(--plx-sys-font-weight-bold);line-height:var(--plx-ref-line-height-snug);min-height:var(--plx-sys-label-height-20px);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);white-space:nowrap;}
 .plx-badge--sm{font-size:var(--plx-ref-font-size-09);min-height:var(--plx-sys-label-height-16px);padding-inline-end:var(--plx-sys-space-inset-xs);padding-inline-start:var(--plx-sys-space-inset-xs);}
 .plx-badge--neutral{background-color:var(--plx-sys-feedback-neutral-solid-label);color:var(--plx-sys-feedback-neutral-on-solid);}
@@ -9,3 +11,8 @@
 .plx-badge--success{background-color:var(--plx-sys-feedback-success-solid-label);color:var(--plx-sys-feedback-success-on-solid);}
 .plx-badge--warning{background-color:var(--plx-sys-feedback-warning-solid-label);color:var(--plx-sys-feedback-warning-on-solid);}
 .plx-badge--danger{background-color:var(--plx-sys-feedback-danger-solid-label);color:var(--plx-sys-feedback-danger-on-solid);}
+.plx-badge--soft.plx-badge--neutral{background-color:var(--plx-sys-feedback-neutral-soft);color:var(--plx-sys-feedback-neutral-content);}
+.plx-badge--soft.plx-badge--info{background-color:var(--plx-sys-feedback-info-soft);color:var(--plx-sys-feedback-info-content);}
+.plx-badge--soft.plx-badge--success{background-color:var(--plx-sys-feedback-success-soft);color:var(--plx-sys-feedback-success-content);}
+.plx-badge--soft.plx-badge--warning{background-color:var(--plx-sys-feedback-warning-soft);color:var(--plx-sys-feedback-warning-content);}
+.plx-badge--soft.plx-badge--danger{background-color:var(--plx-sys-feedback-danger-soft);color:var(--plx-sys-feedback-danger-content);}

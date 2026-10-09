@@ -54,12 +54,20 @@
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
     },
+    "state-pressed": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
     "scrollbar-thumb": {
       "$value": "{plx-ref.color-gray-600}",
       "$type": "color"
     },
     "state-selected": {
       "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "state-selected-pressed": {
+      "$value": "{plx-ref.color-gray-600}",
       "$type": "color"
     },
     "state-hover-border": {
@@ -112,6 +120,10 @@
     },
     "action-primary-background-hover": {
       "$value": "{plx-ref.color-blue-600}",
+      "$type": "color"
+    },
+    "action-primary-background-pressed": {
+      "$value": "{plx-ref.color-blue-700}",
       "$type": "color"
     },
     "action-primary-content": {
@@ -310,6 +322,10 @@
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
     },
+    "fill-neutral-pressed": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
     "fill-neutral-content": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color"
@@ -379,6 +395,10 @@
       "$type": "color"
     },
     "action-danger-background-hover": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color"
+    },
+    "action-danger-background-pressed": {
       "$value": "{plx-ref.color-red-700}",
       "$type": "color"
     },
@@ -512,6 +532,10 @@
     },
     "accent-state-hover": {
       "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
+    "accent-state-pressed": {
+      "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
     },
     "frost-surface": {
