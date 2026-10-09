@@ -7,6 +7,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Added
+- Design system: the Checkbox, Radio group and Switch labs (batch 255). "All checkboxes" (unchecked, checked, partly checked
+  × default, focus, disabled), "All radio groups" (column, row) and "All switches" (off, on), and nine variant pages, each
+  with the lettered anatomy and the Edit dialog on the check, radio-group and switch tokens: the box, focus outline, label,
+  description and spacing; the legend; the track and its knob (.plx-switch__track::after, its travel when on). Mapping
+  proof: 120, 89 and 101 checks. The shared lab measures inner parts (p.part), draws its legend from a component's parts
+  (spec.anchors: each letter points at its part) and runs spec.after for what markup cannot say (indeterminate). The
+  "All" pages read "switches", "checkboxes".
+
+### Added
 - Design system: the Text area and Native select labs (batch 254). Each gets "All text areas" / "All native selects" and
   seven state pages (Empty, Filled, Focused, Read-only, Disabled, Invalid, Required) with the lettered anatomy and the Edit
   dialog: the input tokens plus the text area's own type, height and block padding, and the select's end padding, width
