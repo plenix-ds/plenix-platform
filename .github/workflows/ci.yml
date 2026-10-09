@@ -74,5 +74,5 @@ jobs:
       - name: Accessibility (axe-core)
         run: node tests/a11y.test.js
 
-      - name: Data tables (every DataTable view: built, axe, style audit, row height)
+      - name: "Data tables (every DataTable view: built, axe, style audit, row height, typography)"
         run: node tests/data-table.test.js
