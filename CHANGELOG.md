@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- Design system: the Text field lab (form-labs.js; batch 253). Text field · Base gains "All text fields" (every style in
+  every state, at each width) and 13 variant pages: XS, SM, MD and LG; Data and Emphasis; Empty, Filled, Focused, Read-only,
+  Disabled, Invalid and Required. Each lab page has the lettered anatomy, the attributes and the Edit dialog, one
+  --plx-comp-input-* token per field (the placeholder color too). Mapping proof: setting each token moves exactly its
+  property in every width, style, state and content (2,364 checks, 24 tokens). The shared lab reads pseudo-elements and
+  knows widths and line heights; the All page opens the page of the state clicked.
+
 ### Changed
 - Design system: the Button lab is now the shared component lab (component-lab.js; batch 252). A component registers a
   description of itself (sizes, variants, states, content, its property-to-token map, its markup) with DS.registerLab(id,
