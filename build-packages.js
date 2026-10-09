@@ -130,7 +130,10 @@ readme('styles', `
 const R = path.join(PKG, 'react');
 const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform',
   loader: { '.js': 'jsx', '.jsx': 'jsx' }, external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
-  banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' } };
+  banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' },
+  // a bundled app has no Plenix script to find the vendor folder from: the DataTable loads Tabulator from this release's
+  // CDN copy (versioned, never changes) unless the page sets window.PlenixVendorBase (batch 251)
+  define: { __PLENIX_VENDOR__: JSON.stringify('https://design-system.lighthouseway.org/cdn/' + VERSION + '/vendor/') } };
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(R, 'dist', 'index.js') }));
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));

@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-10-09
+
+### Fixed
+- @plenix-ds/react: a DataTable in an app built with a bundler (Vite, webpack) never drew: it looked for Tabulator next to a
+  Plenix script the page does not have (404 on /platform/vendor/). The npm build now falls back to the release's CDN copy,
+  https://design-system.lighthouseway.org/cdn/<version>/vendor/ (versioned, never changes); window.PlenixVendorBase still
+  overrides it. Found while building the starter template (plenix-ds/plenix-starter). (batch 251)
+
 ## [0.13.0] - 2026-10-09
 
 ### Added

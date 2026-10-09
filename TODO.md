@@ -32,7 +32,8 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [x] (batch 224) A compact Checkbox is 24px: no top and bottom padding in compact (owner chose A).
 - [ ] 5. Build the placeholders the next project needs (item 11): owner to name the project or the items.
 - [ ] Owner: check drive D: (chkdsk, SMART); create the DS_TOKEN secret so CI also tests the design system.
-- [ ] Claude (read-only): confirm Proxmox backups of container 104 (Authentik: accounts and groups).
+- [x] Claude (read-only, 2026-10-09): Proxmox backups checked. **Nothing is backed up**: /etc/pve/jobs.cfg has no backup job and no storage holds a backup (container 104 "infra", Authentik, included).
+- [ ] Owner: set up Proxmox backups (where to: local, the Storage pool or a Proxmox Backup Server; how many to keep; when). Container 104 (Authentik) first.
 - [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
 - [ ] To discuss first (owner, 2026-10-08): renaming to Lighthouse Design System (lighthouse-ds); the design system as its own source of truth that every app takes its UI from; themes (the current look as the default theme, more themes later).
 
@@ -55,7 +56,8 @@ Phase 3 · editable and governed
 
 Phase 4 · grow
 - [ ] 11. Build the placeholders the next projects need.
-- [ ] 12. Starter template: plenix-ds/plenix-starter with both a CDN (plain HTML) starter and a Vite + React + TypeScript starter (recommended; the owner was unsure, so this goes ahead unless they say otherwise).
+- [x] 12. (batch 251) Starter template: plenix-ds/plenix-starter, a CDN starter (plain HTML, no build) and a Vite + React + TypeScript starter on the npm packages; both draw the same shell, navigation, DataTable and ActionBar, tested in Chrome. Fixed on the way: the npm package's DataTable found no Tabulator in a bundled app; it now loads the release's CDN copy.
+- [x] (2026-10-09) CI ran nothing since batch 234: a colon in a step name broke ci.yml; fixed, and the tests now run with reduced motion (CI had read the start of batch 236's fades).
 
 ## Not urgent: own mirror of the Plenix packages and repos (added 2026-10-08)
 

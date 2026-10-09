@@ -4523,7 +4523,9 @@ exports.tablePx = tablePx;
      page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache.
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
-     build's plenix.js -> ./vendor/); window.PlenixVendorBase (a folder URL ending in /) overrides it.
+     build's plenix.js -> ./vendor/); in the npm package bundled into an app (no Plenix script on the page) it is the
+     release's CDN copy, https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
+     window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
      A failed load rejects; the DataTable shows the reason in place of the grid. */
 
@@ -4540,6 +4542,8 @@ function vendorBase() {
   if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
   const src = platformScript();
   if (src) return new URL(/\/dist\/[^/?]+(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
+  // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
+  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
   return 'platform/vendor/';
 }
 
