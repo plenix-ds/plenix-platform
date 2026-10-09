@@ -98,6 +98,14 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
           if (c.fontFamily.split(',')[0] !== fam || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + c.fontFamily.split(',')[0] + ' ' + c.fontSize + ', the table ' + fam + ' ' + size);
         }
       });
+      // header weights (owner, batch 248): every header row title is 600 and every row-label cell's text 500
+      grids.forEach((g) => {
+        g.querySelectorAll('.tabulator-header .tabulator-col-title').forEach((t) => { const w = getComputedStyle(t).fontWeight; if (t.textContent.trim() && w !== '600' && type.length < 3) type.push('header "' + t.textContent.trim().slice(0, 16) + '" is ' + w + ', not 600'); });
+        g.querySelectorAll('.tabulator-row [class*="__cell--row-label"]').forEach((c) => {
+          const w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT); let n;
+          while ((n = w.nextNode())) { const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .ds-vis')) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500' && type.length < 3) type.push('row label "' + n.textContent.trim().slice(0, 16) + '" is ' + fw + ', not 500'); }
+        });
+      });
       return { type, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
     }, TAGS);
     const bad = [];
