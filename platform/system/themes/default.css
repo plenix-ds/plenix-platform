@@ -112,7 +112,7 @@
   --plx-sys-shadow-underline-focus: 0 1px 0 var(--plx-ref-color-blue-400);
   --plx-sys-elevation-raised-shadow: var(--plx-sys-shadow-card);
   --plx-sys-elevation-overlay-shadow: var(--plx-sys-shadow-modal);
-  --plx-sys-elevation-menu: none;   /* D9: menus are border-only */
+  --plx-sys-elevation-menu: var(--plx-sys-shadow-menu);   /* D9: menus are border-only */
 
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-100);
@@ -254,7 +254,7 @@
   --plx-sys-shadow-underline-focus: 0 1px 0 var(--plx-ref-color-blue-400);
   --plx-sys-elevation-raised-shadow: var(--plx-sys-shadow-card);
   --plx-sys-elevation-overlay-shadow: var(--plx-sys-shadow-modal);
-  --plx-sys-elevation-menu: none;   /* D9: menus are border-only */
+  --plx-sys-elevation-menu: var(--plx-sys-shadow-menu);   /* D9: menus are border-only */
 
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-800);

@@ -260,7 +260,7 @@
       "$type": "shadow"
     },
     "elevation-menu": {
-      "$value": "none",
+      "$value": "{plx-sys.shadow-menu}",
       "$description": "D9: menus are border-only",
       "$extensions": {
         "com.plenix": {

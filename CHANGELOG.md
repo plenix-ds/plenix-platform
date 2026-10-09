@@ -77,6 +77,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   (#/data-display/data-grid): how to apply it, every part of its style with its tokens, one live grid. (batch 226)
 
 ### Changed (visual)
+- Menus have a shadow again (owner): --plx-sys-elevation-menu points to --plx-sys-shadow-menu (was none, decision D9), so
+  the Menu, the Combobox list and the app switcher float with the same soft shadow and border. Property table and
+  Comparison table now lead to the Data grid page. (batch 232)
 - Navigation rows (NavList, Tree): hover and the current row fill the whole row, pin included, with an inset border two
   shades darker in the same color family: new roles --plx-sys-state-hover-border (light gray-300, dark gray-850) and
   --plx-sys-state-selected-border (light blue-250, dark gray-850). The app switcher panel takes the Menu's real border
