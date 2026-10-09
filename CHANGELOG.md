@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-10-09
+
+### Changed
+- Design system: every variant card is a tabbed card (owner decision, "option D: tabs", with the Folder tabs). The
+  header keeps the variant's name and "Its page ›"; under it the Platform Tabs (variant="folder"): Preview (the live
+  sample alone, centered with generous padding on the plain surface, its edge a thin border-default line; no gray
+  stage, batch 156), Props and class (the prop that selects it, its class, the attributes the class sets) and Code (the
+  usage, colored, with Copy). "Show code" left the header. The per-variant pages show the same tabs. Examples that are
+  not variant cards and Base cards are unchanged. The old side-by-side layout (Split, .ds-split) is gone. The Preview
+  has no frame of its own: the card sits in its group's panel, so a frame would be a third container (the nesting
+  rule). (batch 265)
+- Design system: the States section draws the states side by side (owner: "side by side with vertical line divider in
+  between... autosize so it does not wrap"): each column as wide as its sample, a thin divider between columns,
+  continuing on the next line when the panel is full. Button keeps a card per state, as does any component with a
+  sample wider than the panel (tables, dialogs, headers). (batch 266)
+
 ## [0.18.0] - 2026-10-09
 
 ### Added

@@ -23,14 +23,15 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
     .reduce((n, d) => n + d.querySelectorAll('table').length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataTable'); };
   // containers nest two deep, never three (batch 250): a framed box is one larger than a control that draws a border on three
   // or more sides (inset shadows count as the sides they draw) or an outer shadow; a one-sided divider is not a frame.
-  // Specimens are the subject on show, not page structure: anything in a design-system sample stage or split sample, a whole
+  // Specimens are the subject on show, not page structure: anything in a design-system sample stage, a variant card's Preview
+  // or a drawn state (batch 265-266), a whole
   // app shell shown inside a panel, and the design system's illustration
   // boxes (wireframes, demo boxes, mini shells, motion cards).
   const nesting = async () => { const found = await page.evaluate(() => {
     const CONTROL = 'button, input, select, textarea, [role="tab"], [role="checkbox"], [role="switch"], .plx-tag, .plx-chip, .plx-badge, .plx-kbd, .plx-avatar, .plx-thumbnail, img, svg, .plx-icon';
     const SPECIMEN = /(^| )ds-(wire__|box( |$)|demo-box|shell-mini|mk-card|motion-card)/;
     const framed = (el) => {
-      if (el.matches(CONTROL) || el.closest('.plx-button') || el.closest('.ds-sample-stage, .ds-split__sample, .ds-wire__frame, .plx-panel .plx-app-shell') || SPECIMEN.test(typeof el.className === 'string' ? el.className : '')) return false;
+      if (el.matches(CONTROL) || el.closest('.plx-button') || el.closest('.ds-sample-stage, .ds-variant-preview, .ds-state-row__sample, .ds-wire__frame, .plx-panel .plx-app-shell') || SPECIMEN.test(typeof el.className === 'string' ? el.className : '')) return false;
       const r = el.getBoundingClientRect(); if (r.width < 48 || r.height < 32) return false;
       const c = getComputedStyle(el); if (c.display === 'none' || c.visibility === 'hidden') return false;
       const side = (x) => parseFloat(c['border' + x + 'Width']) > 0 && c['border' + x + 'Style'] !== 'none' && !/rgba\(\d+, \d+, \d+, 0\)|transparent/.test(c['border' + x + 'Color']);
