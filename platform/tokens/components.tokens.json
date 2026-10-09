@@ -335,7 +335,7 @@
       "$type": "color"
     },
     "button-primary-background": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.action-danger-background}",
       "$type": "color"
     },
     "button-primary-border": {

@@ -84,7 +84,7 @@
   --plx-comp-button-secondary-background: var(--plx-sys-control-background);
   --plx-comp-button-secondary-border: var(--plx-sys-control-border);
   --plx-comp-button-secondary-hover-text: var(--plx-sys-content-default);
-  --plx-comp-button-primary-background: var(--plx-sys-action-primary-background);
+  --plx-comp-button-primary-background: var(--plx-sys-action-danger-background);
   --plx-comp-button-primary-border: var(--plx-sys-action-primary-background);
   --plx-comp-button-primary-text: var(--plx-sys-action-primary-content);
   --plx-comp-button-primary-hover-background: var(--plx-sys-action-primary-background-hover);
