@@ -127,7 +127,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
           <div className="plx-field__head"><span className="plx-field__label" id={uid + 'color'}>Category color</span></div>
           <div className="plx-field__control">
             <Inline role="group" aria-labelledby={uid + 'color'} wrap className="plx-u-gap-y-stack-sm">
-              <div className="plx-layout--width-xs"><Input name="categoryColor" type="color" aria-label="Category color" value={color} onChange={(e) => pick(e.target.value)} /></div>
+              <Input name="categoryColor" type="color" aria-label="Category color" value={color} onChange={(e) => pick(e.target.value)} />
               <div className="plx-layout--width-md"><Input name="categoryColor2" aria-label="Category color" data value={hex} onChange={(e) => typeHex(e.target.value)} /></div>
               <Inline gap="xs" wrap>
                 {CATEGORY_COLORS.map((c) => (

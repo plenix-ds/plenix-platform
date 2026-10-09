@@ -9,8 +9,8 @@
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
      Input.data: the data font, for codes, hex values, links to copy (default false)
      Input.emphasis: semibold, for a record's title (default false)
-     Input.type: the input type (default "text"); "color" gives the native color well (a pointer cursor; size it with width
-       or a utility)
+     Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
+       (owner, batch 275); the system sizes it, so it takes no width or utility
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
      Textarea.rows: the visible lines (default 3)

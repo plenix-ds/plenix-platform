@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.3] - 2026-10-09
+
+### Changed
+- Input type="color" is a square swatch the field's height with the compact corners, no border, padding or frame around
+  the color (owner: "just a square swatch no outline container around it"); a focus ring on keyboard focus. The DAM's
+  color fields drop their size utilities. (batch 275)
+
 ## [0.22.2] - 2026-10-09
 
 ### Changed

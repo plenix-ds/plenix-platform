@@ -149,7 +149,7 @@ export function ImageEditorPage() {
         <SegmentedControl label="Font weight" value={text.weight} onChange={(w) => setText({ ...text, weight: w })} options={['Regular', 'Bold', 'Italic'].map((w) => ({ value: w, label: w }))} />
         <Field label="Color">
           <Inline>
-            <Input name="color" type="color" aria-label="Color" className="plx-u-w-40px plx-u-h-28px plx-u-p-0" value={text.color} onChange={(e) => setText({ ...text, color: e.target.value })} />
+            <Input name="color" type="color" aria-label="Color" value={text.color} onChange={(e) => setText({ ...text, color: e.target.value })} />
             <Text variant="data">{text.color.toUpperCase()}</Text>
           </Inline>
         </Field>

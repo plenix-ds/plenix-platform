@@ -287,7 +287,7 @@ function CategoriesPane() {
           <Textarea name="description" aria-label="Description" placeholder="Optional description..." value={cat.description} onChange={(e) => setCat({ ...cat, description: e.target.value })} />
           <Input name="tags" aria-label="Tags" placeholder="Tags" value={cat.tags} onChange={(e) => setCat({ ...cat, tags: e.target.value })} />
           <Inline wrap>
-            <Input name="categoryColor" type="color" aria-label="Category color" className="plx-u-w-36px plx-u-p-0" value={hex(cat.color)} onChange={(e) => setColor(e.target.value)} />
+            <Input name="categoryColor" type="color" aria-label="Category color" value={hex(cat.color)} onChange={(e) => setColor(e.target.value)} />
             <Input name="categoryColorHexValue" aria-label="Category color hex value" width="md" data
               value={cat.hexText} onChange={(e) => onHex(e.target.value)} />
             <Inline gap="xs" wrap role="group" aria-label="Category color swatches">

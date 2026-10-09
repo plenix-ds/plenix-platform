@@ -2298,8 +2298,7 @@ function CategoryInspector({
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
         name: "color",
         type: "color",
-        "aria-label": "Color",
-        className: "plx-u-w-40px plx-u-h-28px plx-u-p-0"
+        "aria-label": "Color"
       }, text('color'))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
         variant: "data",
         className: "plx-u-leading-16px"
@@ -2799,15 +2798,13 @@ function NewCatDialog({
     "aria-labelledby": uid + 'color',
     wrap: true,
     className: "plx-u-gap-y-stack-sm"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-layout--width-xs"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "categoryColor",
     type: "color",
     "aria-label": "Category color",
     value: color,
     onChange: e => pick(e.target.value)
-  })), /*#__PURE__*/_react.default.createElement("div", {
+  }), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-layout--width-md"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "categoryColor2",
@@ -4013,7 +4010,6 @@ function CategoriesPane() {
     name: "categoryColor",
     type: "color",
     "aria-label": "Category color",
-    className: "plx-u-w-36px plx-u-p-0",
     value: hex(cat.color),
     onChange: e => setColor(e.target.value)
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
@@ -7054,7 +7050,6 @@ function ImageEditorPage() {
       name: "color",
       type: "color",
       "aria-label": "Color",
-      className: "plx-u-w-40px plx-u-h-28px plx-u-p-0",
       value: text.color,
       onChange: e => setText({
         ...text,
