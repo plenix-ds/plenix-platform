@@ -27,7 +27,7 @@ Fix what was found (owner's choice, before items 8, 9, 11; batches 211–215, re
 Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [ ] 1. Release 0.4.0: the Asset Manager labels, the layout modes, the layout standard (settings follow it), accessibility 0.
 - [ ] 2. Save in the design system (item 8): Save opens a pull request; only Authentik Editors (and Admins) may save; a save service on the Plenix VM; the Authentik proxy provider and application (owner to approve Claude creating them through Authentik's admin shell).
-- [ ] 3. Starter template (item 12): plenix-ds/plenix-starter with a CDN (plain HTML) starter and a Vite + React + TypeScript starter, both on the shell, page kinds and tokens.
+- [x] 3. (batch 251) Starter template (item 12): plenix-ds/plenix-starter with a CDN (plain HTML) starter and a Vite + React + TypeScript starter, both on the shell, page kinds and tokens.
 - [ ] 4. Form controls on component tokens (item 9): Input, Select, Checkbox, Radio, Switch and Field get the Button treatment. Tokens done (batch 223: 149 tokens, zero visual change); variant pages and the Edit dialog next.
 - [x] (batch 224) A compact Checkbox is 24px: no top and bottom padding in compact (owner chose A).
 - [ ] 5. Build the placeholders the next project needs (item 11): owner to name the project or the items.
