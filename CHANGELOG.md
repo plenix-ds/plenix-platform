@@ -6,6 +6,8 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-09
+
 ### Changed (visual)
 - Tables (owner: "data grid should be merged into data table… Table should have the same UI as data table except it is purely
   static"): DataGrid is DataTable (components/DataTable, plx-data-table, --plx-sys-data-table-*, --plx-comp-data-table-*;
