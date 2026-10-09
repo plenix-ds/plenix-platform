@@ -4888,6 +4888,14 @@ function menuLabel(text, icon, danger) {
   item.appendChild(el('span', 'plx-data-grid__menu-label', text));
   return item;
 }
+// a copy of the rows as the page gave them (Tabulator writes into the row objects it is given: a field for every column)
+const snap = rows => (rows || []).map(r => {
+  const o = {
+    ...r
+  };
+  if (Array.isArray(r._children)) o._children = snap(r._children);
+  return o;
+});
 // two row lists with the same rows: same length, each row's fields the same values (children compared the same way)
 function sameRows(a, b) {
   if (a === b) return true;
@@ -5211,7 +5219,7 @@ function DataGrid(props) {
       };
       opts.columns = defsOf(p.columns, host);
       table = new Tabulator(host, opts);
-      shown.current = opts.data;
+      shown.current = snap(opts.data);
       tableRef.current = table;
 
       // the ARIA tree: Tabulator's scrolling body is a Tab stop (the keyboard scrolls it), and inside role="grid" a Tab stop
@@ -5228,6 +5236,9 @@ function DataGrid(props) {
         }
         if (body) body.setAttribute('role', 'presentation');
         host.querySelectorAll('.tabulator-group').forEach(g => g.setAttribute('role', 'row'));
+        // the selection kept by the page, once the rows are in (Tabulator builds before it loads them; nothing happens
+        // when it already matches)
+        if (table) syncSelection(table);
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => {
           if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', STRINGS.selectRow + ' ' + (n + 1));
         });
@@ -5321,8 +5332,11 @@ function DataGrid(props) {
     const table = tableRef.current;
     if (!table || !builtRef.current) return;
     if (sameRows(shown.current, data || [])) return;
-    shown.current = data || [];
+    shown.current = snap(data);
+    // new rows clear Tabulator's selection: that is not the person changing it; the page's selection is applied again
+    syncing.current = true;
     table.replaceData(data || []).then(() => {
+      syncing.current = false;
       syncSelection(table);
       const keep = new Set();
       (function walk(rows) {
@@ -5338,7 +5352,9 @@ function DataGrid(props) {
         gone = true;
       }
       if (gone) bump();
-    }).catch(() => {});
+    }).catch(() => {
+      syncing.current = false;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 

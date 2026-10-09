@@ -96,10 +96,15 @@
 
 /* row actions: shown while the row is hovered or selected */
 .plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions{justify-content:flex-end;}
-.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > *{opacity:0;transition-duration:var(--plx-comp-data-grid-duration);transition-property:opacity;}
-.plx-data-grid .tabulator-row:hover .tabulator-cell.plx-data-grid__cell--actions > *,
-.plx-data-grid .tabulator-row.tabulator-selected .tabulator-cell.plx-data-grid__cell--actions > *,
-.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > *:focus-within{opacity:1;}
+/* (a React cell's content sits in a display:contents portal, so the rule reaches through it) */
+.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > :not(.plx-data-grid__portal),
+.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > .plx-data-grid__portal > *{opacity:0;transition-duration:var(--plx-comp-data-grid-duration);transition-property:opacity;}
+.plx-data-grid .tabulator-row:hover .tabulator-cell.plx-data-grid__cell--actions > :not(.plx-data-grid__portal),
+.plx-data-grid .tabulator-row:hover .tabulator-cell.plx-data-grid__cell--actions > .plx-data-grid__portal > *,
+.plx-data-grid .tabulator-row.tabulator-selected .tabulator-cell.plx-data-grid__cell--actions > :not(.plx-data-grid__portal),
+.plx-data-grid .tabulator-row.tabulator-selected .tabulator-cell.plx-data-grid__cell--actions > .plx-data-grid__portal > *,
+.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > :focus-within,
+.plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > .plx-data-grid__portal > :focus-within{opacity:1;}
 
 /* the row header (the row's name as the first column): the header shade, pinned, a soft edge where the scrolling
    columns pass under it; the checkbox and icon columns before it shade with it */
@@ -156,5 +161,6 @@
 @media (prefers-reduced-motion: reduce){
   .plx-data-grid .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-sorter,
   .plx-data-grid .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button,
-  .plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > *{transition-property:none;}
+  .plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > *,
+  .plx-data-grid .tabulator-row .tabulator-cell.plx-data-grid__cell--actions > .plx-data-grid__portal > *{transition-property:none;}
 }
