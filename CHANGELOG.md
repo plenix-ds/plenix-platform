@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.21.2] - 2026-10-09
+
+### Added
+- Platforms in the design system (owner: "respect the platform native interactions"): Plenix runs on the web, iOS
+  and Android. The theme owns the look on every platform (color, DM Sans, radius, motion, the focus rule); each platform
+  owns sizes, targets and behavior from its published standard (Apple HIG, Material 3, WCAG 2.2), and platform minimums
+  beat theme and density. Every interactive component page has a Platforms section after Behavior; Button, Text field,
+  Switch and Side navigation are filled in, every value with its source type (rule, token, system, reference, Plenix)
+  and a link to its source. Device behavior, Control heights, Breakpoints, Bottom navigation and 14 › Mobile web,
+  Desktop, iOS and Android have a Platform specification: the model, how values are sourced, touch targets, spacing
+  between targets, the window classes Narrow (under 600), Medium (600–839) and Wide (840 and up), type, screen and
+  keyboard, navigation and back. Plenix decision 11 in STANDARD.md; check-spec.js checks the section order. (batch 273)
+
 ## [0.21.1] - 2026-10-09
 
 ### Fixed

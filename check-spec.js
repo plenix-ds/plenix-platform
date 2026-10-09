@@ -21,7 +21,7 @@ const SPEC = path.join(__dirname, 'platform', 'design-system');
 const PLATFORM = path.join(__dirname, 'platform');
 const PENDING = {};
 const ORDER = [['purpose', 'Overview and Purpose'], ['guide', 'Usage (When to use, When not to use)'], ['exh', 'Variants'], ['states', 'States'],
-  ['anat', 'Anatomy'], ['behavior', 'Behavior'], ['a11y', 'Accessibility'], ['content', 'Content guidance'], ['impl', 'Implementation'],
+  ['anat', 'Anatomy'], ['behavior', 'Behavior'], ['platforms', 'Platforms'], ['a11y', 'Accessibility'], ['content', 'Content guidance'], ['impl', 'Implementation'],
   ['assets', 'Design assets'], ['rel', 'Related items'], ['map', 'Source-system mappings'], ['details', 'Details and Lifecycle']];
 const INTERACTIVE = new Set(['Action', 'Input', 'Selection', 'Navigation', 'Search', 'Filter', 'Disclosure', 'Editing', 'Drag and drop']);
 
