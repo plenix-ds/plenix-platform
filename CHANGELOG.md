@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.16.1] - 2026-10-09
+
+### Fixed
+- The design-system spec failed to load in 0.16.0 (a quote in a variant card caption); 0.16.0 was never deployed. Same
+  changes as 0.16.0. (batch 261)
+
 ## [0.16.0] - 2026-10-09
 
 ### Added
