@@ -21,8 +21,8 @@ Fix what was found (owner's choice, before items 8, 9, 11; batches 211–215, re
 - [x] Accessibility: axe-core issues 418 → 3 (contrast per the owner's color decisions; ARIA; keyboard access to scroll areas).
 - [x] Documentation findings: keyboard and focus, right to left, translatable words (`strings`), image fallbacks, font sizes in rem, and more. The list is in Plenix - DAM/audit/findings-2026-10-08.md.
 - [ ] Owner: the 3 remaining target-size issues. These are the design system's stacked class-name links (14px). Fixing them means giving them taller lines on every design-system page.
-- [ ] Owner: the Asset Manager's Title Case labels ("Edit Status", "Import Date"…). Which are field names and which are actions?
-- [ ] Owner: the five layout modes on `data-plx-layout` are declared, but no CSS reads them. Implement them, or document them as a label only?
+- [x] (batch 257) Title Case labels: the Asset Manager's examples were already gone; across the suite, UI labels, actions and document headings are sentence case (the content standard); names stay (people, companies, products and apps, sample records, the product spec's entity, feature and module names).
+- [x] The five layout modes: done in batches 217-218 (system/layout-modes.css, generated from the layout standard, draws each mode).
 
 Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [x] 1. Releases: 0.4.0 through 0.13.1 are out; the Asset Manager labels and the layout modes wait on the owner (above).

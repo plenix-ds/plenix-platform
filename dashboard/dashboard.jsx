@@ -94,7 +94,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
   const max = parseInt(prefs?.taskMax || '7', 10);
   const pending = ALL_TASKS.filter((t) => !done[t.id]).slice(0, max);
   return (
-    <Panel title="To Do" actions={<Inline gap="xs"><Badge tone="warning" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
+    <Panel title="To do" actions={<Inline gap="xs"><Badge tone="warning" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{pending.map((t) => (
         <Inline key={t.id} gap="sm" justify="between">
           <Inline gap="xs">{showPri ? <PriDot pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
@@ -137,7 +137,7 @@ export function NotificationsWidget({ handle }) {
 
 /* ─── Dashboard: the widgets in a reorderable grid ─────────────── */
 const ORDER = [{ id: 'projects', title: 'Projects', span: '2' }, { id: 'notifications', title: 'Notifications' }, { id: 'emails', title: 'Emails', span: '2' },
-  { id: 'tasks', title: 'To Do' }, { id: 'notes', title: 'Notes' }, { id: 'calendar', title: 'Calendar' }, { id: 'contacts', title: 'Contacts' }];
+  { id: 'tasks', title: 'To do' }, { id: 'notes', title: 'Notes' }, { id: 'calendar', title: 'Calendar' }, { id: 'contacts', title: 'Contacts' }];
 
 export function Dashboard({ setSection, setProject, prefs }) {
   const [order, setOrder] = useState(ORDER);

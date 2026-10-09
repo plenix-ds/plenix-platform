@@ -47,7 +47,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
   const spec=cap.specification||{};
   const ui=cap.ui||{};
   const sections=[
-    {title:"Baseline Operations",content:(
+    {title:"Baseline operations",content:(
       facts("Baseline operations",Object.entries(cap.baselineOps||{}).map(e=>[e[0].charAt(0).toUpperCase()+e[0].slice(1),e[1]==="Not started"?<Text variant="danger">{e[1]}</Text>:e[1]]))
     )},
     {title:"Features",content:(
@@ -59,15 +59,15 @@ function CapDoc({cap,backLabel,onBack,crumb}){
         ))}
       </Stack>
     )},
-    {title:"Use Cases",content:(
+    {title:"Use cases",content:(
       <Stack gap="sm">
         {(cap.useCases||[]).map(uc=>(
           <Card key={uc.id} title={uc.title}>
             <PropertyList>
-              {[["Actor",uc.actor],["Goal",uc.goal],["System Response",uc.systemResponse],["Alternate Flow",uc.alternateFlow]].map(r=>(
+              {[["Actor",uc.actor],["Goal",uc.goal],["System response",uc.systemResponse],["Alternate flow",uc.alternateFlow]].map(r=>(
                 <PropertyList.Item key={r[0]} label={r[0]}>{r[1]}</PropertyList.Item>
               ))}
-              <PropertyList.Item label="Main Flow">
+              <PropertyList.Item label="Main flow">
                 <Stack as="ol" gap="xs">
                   {(uc.mainFlow||[]).map((step,i)=>(
                     <Inline as="li" key={i} gap="sm" align="baseline"><Text variant="accent">{i+1}.</Text><Text>{step}</Text></Inline>
@@ -158,11 +158,11 @@ function CapDoc({cap,backLabel,onBack,crumb}){
           <Text as="p">The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness.</Text>
           {facts("Why Plenix fits",(window.PV_FIT||[]).map(p=>[p.principle,p.meaning]))}
         </DocSection>
-        <DocSection title="Core Data Model">
+        <DocSection title="Core data model">
           {facts("Core data model",(window.PV_MODEL||[]).map(m=>[m.name,m.desc]))}
         </DocSection>
         <Metric.Group label="Documentation figures">
-          {[["Capabilities",74],["Features Documented",807],["PRDs with Content",50],["Project Types",(window.ALL_PROJ_TYPES||[]).length]].map(s=>(
+          {[["Capabilities",74],["Features documented",807],["PRDs with content",50],["Project types",(window.ALL_PROJ_TYPES||[]).length]].map(s=>(
             <Metric key={s[0]} value={s[1]} label={s[0]}/>
           ))}
         </Metric.Group>
@@ -171,8 +171,8 @@ function CapDoc({cap,backLabel,onBack,crumb}){
 
     if(docSection==="product-vision") return(
       <Stack gap="lg">
-        <RecordPage.Header title="Product Vision" description="The founding document. Why Plenix exists, what it solves, and how it works."/>
-        <DocSection title="The Problem">
+        <RecordPage.Header title="Product vision" description="The founding document. Why Plenix exists, what it solves, and how it works."/>
+        <DocSection title="The problem">
           <Text as="p">Modern digital life is fragmented. A single person may use 8-12+ separate tools daily just to stay organized. This creates three core pain points:</Text>
           <Stack gap="xs">
             {(window.PV_PROBLEMS||[]).map(p=>(
@@ -182,20 +182,20 @@ function CapDoc({cap,backLabel,onBack,crumb}){
         </DocSection>
         <Notice tone="info">
           <Stack gap="xs">
-            <Text variant="eyebrow">The Vision</Text>
+            <Text variant="eyebrow">The vision</Text>
             <Text as="p" variant="strong">A single, AI-powered ecosystem that unifies how a person captures, organizes, connects, communicates, retrieves, and acts on all forms of personal information -- without duplicating data or replacing the heavy-duty tools they already use.</Text>
           </Stack>
         </Notice>
-        <DocSection title="Core Philosophy">
+        <DocSection title="Core philosophy">
           {facts("Core philosophy",(window.PV_PHILOSOPHY||[]).map(ph=>[ph.p,ph.d]))}
         </DocSection>
-        <DocSection title="What the Platform Unifies">
-          <Table label="What the Platform Unifies" data={(window.PV_UNIFIES||[]).map((r,i)=>({id:i,silo:r[0],unified:r[1]}))} columns={[
-            {title:"Traditional Silo",field:"silo",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px"},
+        <DocSection title="What the platform unifies">
+          <Table label="What the platform unifies" data={(window.PV_UNIFIES||[]).map((r,i)=>({id:i,silo:r[0],unified:r[1]}))} columns={[
+            {title:"Traditional silo",field:"silo",kind:"wrap",rowLabel:true,width:"--plx-ref-size-240px"},
             {title:"Unified in Plenix",field:"unified",kind:"wrap"},
           ]}/>
         </DocSection>
-        <DocSection title="Unified Messaging Hub">
+        <DocSection title="Unified messaging hub">
           <Text as="p">A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure.</Text>
           {facts("Unified messaging hub",(window.PV_MESSAGING||[]).map(s=>[s.label,s.desc]))}
         </DocSection>
@@ -211,22 +211,22 @@ function CapDoc({cap,backLabel,onBack,crumb}){
             </Stack>
           </Panel>
         </DocSection>
-        <DocSection title="Project Home">
-          <TagList label="Project Home">
+        <DocSection title="Project home">
+          <TagList label="Project home">
             {["Linked files","Notes","Tasks & calendar events","Bookmarks & media","Contacts","Message threads","Virtual meeting launcher"].map(i=><Tag key={i}>{i}</Tag>)}
           </TagList>
           <Notice tone="info">
             <Stack gap="xs">
-              <Text variant="strong">The Presentation Use Case</Text>
+              <Text variant="strong">The presentation use case</Text>
               <Text as="p">Today a user presenting on Zoom alt-tabs frantically between PowerPoint, a spreadsheet, file explorer, and notes. With Project Home, all linked resources are accessible from one workspace. The project view becomes the cockpit for the meeting -- everything is one click away, not five windows deep.</Text>
             </Stack>
           </Notice>
         </DocSection>
-        <DocSection title="Key Use Cases">
+        <DocSection title="Key use cases">
           {facts("Key use cases",(window.PV_USECASES||[]).map((u,i)=>[(i+1)+". "+u.uc,u.d]))}
         </DocSection>
-        <DocSection title="What Plenix Is Not">
-          <List label="What Plenix Is Not" items={(window.PV_NOT||[]).map(n=>({icon:"close",tone:"danger",children:n}))}/>
+        <DocSection title="What Plenix is not">
+          <List label="What Plenix is not" items={(window.PV_NOT||[]).map(n=>({icon:"close",tone:"danger",children:n}))}/>
         </DocSection>
       </Stack>
     );
@@ -284,9 +284,9 @@ function CapDoc({cap,backLabel,onBack,crumb}){
         </Panel>
 
         {/* Fully mapped example */}
-        <Panel title="Fully Mapped Example">
+        <Panel title="Fully mapped example">
           {facts("Fully mapped example",window.TERM_EXAMPLE?Object.entries(window.TERM_EXAMPLE).map(entry=>{
-            const labels={capability:"Capability",feature:"Feature",useCase:"Use Case",functionality:"Functionality",scenario:"Scenario",specification:"Specification",enabler:"Enabler",ui:"UI",module:"Module",entity:"Entity",schema:"Schema"};
+            const labels={capability:"Capability",feature:"Feature",useCase:"Use case",functionality:"Functionality",scenario:"Scenario",specification:"Specification",enabler:"Enabler",ui:"UI",module:"Module",entity:"Entity",schema:"Schema"};
             const k=entry[0];const v=entry[1];
             const technical=v.includes("SCHEMA")||v.includes("Screen")||v.includes("Widget")||v.includes("Module");
             return [labels[k]||k,v,technical];
@@ -339,7 +339,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
       const types=schema.types||{};
       return(
         <Stack gap="lg">
-          <RecordPage.Header title="Data Model" description="Every item type in Plenix and the fields it carries. All types extend the 4 Anchor fields."/>
+          <RecordPage.Header title="Data model" description="Every item type in Plenix and the fields it carries. All types extend the 4 Anchor fields."/>
 
           {/* Anchors — the Classification Widget */}
           <Panel title="Anchors" description={'UI label: "Classification"'}>
@@ -361,7 +361,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
 
           {/* Capabilities with Anchors */}
           <DocSection title={"Anchors applied to "+(schema.anchorsApplied||[]).length+" capabilities"}>
-            <TagList label="Capabilities with Anchors">
+            <TagList label="Capabilities with anchors">
               {(schema.anchorsApplied||[]).map(c=><Tag key={c}>{c}</Tag>)}
             </TagList>
           </DocSection>
@@ -404,15 +404,15 @@ function CapDoc({cap,backLabel,onBack,crumb}){
       <Stack gap="lg">
         <RecordPage.Header title="Documentation" description="Living documentation for Plenix -- architecture, features, and design system. Auto-generated from the codebase. Select a section from the sidebar."/>
         <ContentGrid size="lg" label="Documentation">
-          <Card title="Style Guide" onOpen={()=>setDocSection("style-guide")}>
+          <Card title="Style guide" onOpen={()=>setDocSection("style-guide")}>
             <Text as="p" variant="secondary">Design tokens, typography, color palette, spacing, and component patterns: the Plenix design system.</Text>
           </Card>
-          <Card title="All Feature Areas" onOpen={()=>setDocSection("feat-"+window.FEATURES[0].area)}>
+          <Card title="All feature areas" onOpen={()=>setDocSection("feat-"+window.FEATURES[0].area)}>
             <Text as="p" variant="secondary">{window.FEATURES.length+" areas, "+window.FEATURES.reduce((s,a)=>s+a.items.length,0)+" features documented."}</Text>
           </Card>
         </ContentGrid>
-        <DocSection title="Feature Areas">
-          <ContentGrid size="md" label="Feature Areas">
+        <DocSection title="Feature areas">
+          <ContentGrid size="md" label="Feature areas">
             {window.FEATURES.map(area=>{
               const done=area.items.filter(i=>i.status==="done").length;
               const pct=Math.round(done/area.items.length*100);
@@ -426,7 +426,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
  /* Style Guide: the design system is the point of truth */
     if(docSection==="style-guide") return(
       <Stack gap="lg">
-        <RecordPage.Header title="Style Guide" description="Design tokens, typography, color, spacing and component patterns live in the Plenix design system."/>
+        <RecordPage.Header title="Style guide" description="Design tokens, typography, color, spacing and component patterns live in the Plenix design system."/>
         <Notice tone="info">The design system is the point of truth for every token and component in Plenix. This page no longer copies its values.</Notice>
         <Card title="Plenix Design System" href="../platform/design-system/" meta="../platform/design-system/">
           <Text as="p" variant="secondary">Tokens, typography, color palette, spacing, shadows and every Platform component, with their code.</Text>
@@ -457,7 +457,7 @@ function FeatureArea({area,stats}){
         <Metric.Group label={area.area+" figures"}>
           <Metric value={area.items.length} label="Total"/>
           <Metric value={done} label="Done"/>
-          <Metric value={inprog} label="In Progress"/>
+          <Metric value={inprog} label="In progress"/>
           <Metric value={planned} label="Planned"/>
           <Metric value={pct+"%"} label="Progress"/>
         </Metric.Group>
@@ -557,7 +557,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     {id:"general",    label:"General",      icon:"settings-general"},
     {id:"notes",      label:"Notes",        icon:"text-card"},
     {id:"projects",   label:"Projects",     icon:"briefcase"},
-    {id:"projtypes",  label:"Project Types",icon:"briefcase-plus"},
+    {id:"projtypes",  label:"Project types",icon:"briefcase-plus"},
     {id:"tags",       label:"Tags",         icon:"tags"},
     {id:"tasks",      label:"Tasks",        icon:"circle-check"},
   ];
@@ -590,7 +590,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     categories:(
       <Screen title="Categories" desc="Organize your projects, tasks, and content with custom categories and subcategories.">
         <Inline justify="end">
-          <Button variant="primary" icon="plus" onClick={()=>setCatEdit({type:"cat",isNew:true,name:"",color:"var(--plx-sys-action-primary-background)",icon:null})}>New Category</Button>
+          <Button variant="primary" icon="plus" onClick={()=>setCatEdit({type:"cat",isNew:true,name:"",color:"var(--plx-sys-action-primary-background)",icon:null})}>New category</Button>
         </Inline>
         <Stack gap="xs">
           {cats.map(cat=>(
@@ -622,7 +622,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
       <Screen title="Tags" desc="Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere.">
         <Inline gap="sm">
           <Stack grow><SearchField value={tagSearch} onChange={e=>setTagSearch(e.target.value)} onClear={()=>setTagSearch("")} placeholder="Search tags..." label="Search tags"/></Stack>
-          <Button variant="primary" icon="plus" onClick={()=>{setTagAdding(true);setTagEditVal("");}}>New Tag</Button>
+          <Button variant="primary" icon="plus" onClick={()=>{setTagAdding(true);setTagEditVal("");}}>New tag</Button>
         </Inline>
         <Text variant="secondary">{visibleTags.length} of {tags.length} tags</Text>
         {visibleTags.length>0?(
@@ -639,10 +639,10 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
       </Screen>
     ),
     projtypes:(
-      <Screen title="Project Types" desc="Define the types of projects in your workspace. Applied when creating a project.">
+      <Screen title="Project types" desc="Define the types of projects in your workspace. Applied when creating a project.">
         <Inline gap="sm">
           <Stack grow><SearchField value={ptSearch} onChange={e=>setPtSearch(e.target.value)} onClear={()=>setPtSearch("")} placeholder="Search project types..." label="Search project types"/></Stack>
-          <Button variant="primary" icon="plus" onClick={()=>{setPtAdding(true);setPtEditVal("");}}>New Type</Button>
+          <Button variant="primary" icon="plus" onClick={()=>{setPtAdding(true);setPtEditVal("");}}>New type</Button>
         </Inline>
         {(()=>{
           const filtered=projTypes.filter(t=>!ptSearch||t.name.toLowerCase().includes(ptSearch.toLowerCase()));
@@ -722,7 +722,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
         <SettingsSection title="Layout">
           <Row label="Default view"><Seg opts={[{v:"card",l:"Cards"},{v:"1",l:"List"}]} val={prefs.projDensity||"card"} onChange={v=>set("projDensity",v)}/></Row>
         </SettingsSection>
-        <SettingsSection title="Visible Fields">
+        <SettingsSection title="Visible fields">
           <Row label="Category"><Toggle val={prefs.projCategory!==false} onChange={v=>set("projCategory",v)}/></Row>
           <Row label="Status indicator"><Toggle val={prefs.projStatus!==false} onChange={v=>set("projStatus",v)}/></Row>
           <Row label="File count"><Toggle val={prefs.projFiles||false} onChange={v=>set("projFiles",v)}/></Row>
@@ -754,7 +754,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
           <Row label="Sort by"><Seg opts={[{v:"due",l:"Due date"},{v:"pri",l:"Priority"},{v:"proj",l:"Project"}]} val={prefs.taskSort||"due"} onChange={v=>set("taskSort",v)}/></Row>
           <Row label="Show completed tasks"><Toggle val={prefs.taskShowDone||false} onChange={v=>set("taskShowDone",v)}/></Row>
         </SettingsSection>
-        <SettingsSection title="Visible Fields">
+        <SettingsSection title="Visible fields">
           <Row label="Priority dot"><Toggle val={prefs.taskPri!==false} onChange={v=>set("taskPri",v)}/></Row>
           <Row label="Project label"><Toggle val={prefs.taskProj!==false} onChange={v=>set("taskProj",v)}/></Row>
           <Row label="Due date"><Toggle val={prefs.taskDue!==false} onChange={v=>set("taskDue",v)}/></Row>
@@ -785,7 +785,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
           <Row label="Show file size"><Toggle val={prefs.fileSize!==false} onChange={v=>set("fileSize",v)}/></Row>
           <Row label="Show folder column"><Toggle val={prefs.fileFolder!==false} onChange={v=>set("fileFolder",v)}/></Row>
         </SettingsSection>
-        <SettingsSection title="Cloud Storage">
+        <SettingsSection title="Cloud storage">
           <Row label="Storage provider">
             <Select defaultValue="onedrive" aria-label="Storage provider">
               <option value="onedrive">OneDrive</option><option value="gdrive">Google Drive</option><option value="dropbox">Dropbox</option><option value="icloud">iCloud</option>
@@ -819,7 +819,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
           <Row label="Show message icon"><Toggle val={prefs.contactMsg!==false} onChange={v=>set("contactMsg",v)}/></Row>
           <Row label="Show call icon"><Toggle val={prefs.contactCall!==false} onChange={v=>set("contactCall",v)}/></Row>
         </SettingsSection>
-        <SettingsSection title="List View">
+        <SettingsSection title="List view">
           <Row label="Show role"><Toggle val={prefs.contactRole!==false} onChange={v=>set("contactRole",v)}/></Row>
           <Row label="Show company"><Toggle val={prefs.contactCompany!==false} onChange={v=>set("contactCompany",v)}/></Row>
           <Row label="Show last message time"><Toggle val={prefs.contactTime||false} onChange={v=>set("contactTime",v)}/></Row>
@@ -864,7 +864,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
         })()
       : (
         <Stack gap="lg">
-          <RecordPage.Header title="Features to Build Progress" description="Every significant feature in Plenix -- what it does, how it works, and what's planned. Select an area from the sidebar to explore it."/>
+          <RecordPage.Header title="Features to build progress" description="Every significant feature in Plenix -- what it does, how it works, and what's planned. Select an area from the sidebar to explore it."/>
           <ContentGrid size="md" label="Feature areas">
             {window.FEATURES.map(area=>{
               const done=area.items.filter(i=>i.status==="done").length;
@@ -890,12 +890,12 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
   const docGroups=[
     {heading:null,items:[
       {id:"about",label:"About Plenix"},
-      {id:"product-vision",label:"Product Vision"},
+      {id:"product-vision",label:"Product vision"},
       {id:"terminology",label:"Terminology"},
-      {id:"data-model",label:"Data Model"},
+      {id:"data-model",label:"Data model"},
       {id:"capabilities",label:"Capabilities"},
-      {id:"overview",label:"All Feature Areas"},
-      {id:"style-guide",label:"Style Guide"},
+      {id:"overview",label:"All feature areas"},
+      {id:"style-guide",label:"Style guide"},
     ]},
     ...(window.CAP_LAYERS||[]).map(layer=>{
       const groups=(window.CAPABILITY_GROUPS||[]).filter(g=>g.layer===layer.id);
@@ -921,7 +921,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
           groups={[{heading:"Settings",items:SETTINGS_CATS.map(c=>({id:c.id,label:c.label,icon:c.icon}))}]}/>
         {/* Features and Documentation */}
         <CollapsibleSection headingLevel={null} expanded={featOpen} onToggle={()=>{setCat("features");setFeatArea(null);setFeatOpen(o=>!o);}}
-          icon="circle-check" title="Features to Build Progress" actions={<Count variant="pill" tone="info" value={window.FEATURES.length} label={window.FEATURES.length+" feature areas"}/>}>
+          icon="circle-check" title="Features to build progress" actions={<Count variant="pill" tone="info" value={window.FEATURES.length} label={window.FEATURES.length+" feature areas"}/>}>
           <NavList label="Feature areas" value={cat==="features"?featArea:null} onSelect={id=>{setCat("features");setFeatArea(id);}}
             items={window.FEATURES.map(area=>({id:area.area,label:area.area,icon:<ColorSwatch color={area.color} size="sm"/>,count:area.items.filter(i=>i.status==="done").length+"/"+area.items.length}))}/>
         </CollapsibleSection>

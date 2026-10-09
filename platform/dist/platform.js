@@ -6592,7 +6592,7 @@ AppHeader.Account = function AppHeaderAccount({
     href: myAccount.href,
     onSelect: myAccount.onSelect,
     "aria-current": current === 'account' ? 'page' : undefined
-  }, "My Account") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, "My account") : null, has(settings) ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     icon: "gear",
     href: settings.href,
     onSelect: settings.onSelect,

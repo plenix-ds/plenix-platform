@@ -26,7 +26,7 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
   const [newClient, setNewClient] = useState('__none__');
-  const [newBilling, setNewBilling] = useState('Time & Materials');
+  const [newBilling, setNewBilling] = useState('Time & materials');
   const [newCaps, setNewCaps] = useState(() => new Set(window.DEFAULT_CAPS));
   const labels = { personal: 'Personal', client: 'Client Work', research: 'Research', travel: 'Travel', finance: 'Finance', archive: 'Archive' };
   const allCats = [...new Set(projects.map((p) => p.tags[0]))];
@@ -49,7 +49,7 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
       rail={projects.map((p) => <ToolRail.Item key={p.id} label={p.name} pressed={!!(selected && selected.id === p.id)} icon="briefcase" onClick={() => onSelect(p)} />)}
       actions={<>
         <Button size="xs" iconOnly icon="filter" label="Filter & sort" pressed={showFilters} onClick={() => setShowFilters((f) => !f)} />
-        <Button size="xs" iconOnly icon="plus" label="New project" onClick={() => { setNewName(''); setNewClient('__none__'); setNewBilling('Time & Materials'); setNewCaps(new Set(window.DEFAULT_CAPS)); setShowNew(true); }} />
+        <Button size="xs" iconOnly icon="plus" label="New project" onClick={() => { setNewName(''); setNewClient('__none__'); setNewBilling('Time & materials'); setNewCaps(new Set(window.DEFAULT_CAPS)); setShowNew(true); }} />
       </>}>
       <SearchField value={search} onChange={(e) => setSearch(e.target.value)} onClear={() => setSearch('')} placeholder="Search projects..." label="Search projects" />
       {showFilters ? (
@@ -77,7 +77,7 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
 /* ── A project's capabilities: a SecondaryPane beside its content; it folds to a rail of its capabilities and resizes ── */
 export function ProjectNav({ proj, active, onNav, caps }) {
   const pCaps = caps || window.DEFAULT_CAPS;
-  const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project Home', icon: <ProjIco n="home" size={14} /> }] }]
+  const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project home', icon: <ProjIco n="home" size={14} /> }] }]
     .concat(window.CAPABILITY_GROUPS.map((grp) => ({ heading: grp.group, items: grp.items.filter((it) => pCaps.has(it.id)).map((it) => ({ id: it.id, label: it.label, icon: <ProjIco n={it.icon} size={13} /> })) })).filter((g) => g.items.length));
   return (
     <SecondaryPane title={proj.name} width="md" collapsible resizable
@@ -189,9 +189,9 @@ export function ProjectContent({ proj, panel }) {
     contacts: ['Contacts', 'People linked to this project with roles — Owner, Client, Consultant, Reviewer. Coming soon.', 'contacts'],
     bookmarks: ['Bookmarks', 'Save, organize, and retrieve links with folder hierarchy, smart rules, and sharing. Coming soon.', 'link'],
     images: ['Images', 'Image gallery — upload, paste URL, or search Unsplash. Source for mood boards. Coming soon.', 'images'],
-    mood_boards: ['Mood Boards', 'Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.', 'mood'],
-    time_tracking: ['Time Tracking', 'Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.', 'time'],
-    activity: ['Activity Feed', 'Every event logged — task changes, files, comments, status updates. Coming soon.', 'activity'],
+    mood_boards: ['Mood boards', 'Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.', 'mood'],
+    time_tracking: ['Time tracking', 'Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.', 'time'],
+    activity: ['Activity feed', 'Every event logged — task changes, files, comments, status updates. Coming soon.', 'activity'],
     bookkeeping: ['Financials', 'Budget tracking, milestone payments, invoices, and payment history. Coming soon.', 'finance'],
     risks: ['Risks', 'RIAC log — Risks, Issues, Assumptions, Constraints with owner and priority. Coming soon.', 'risks'],
     changes: ['Changes', 'Formal change request workflow with timeline and cost impact. Coming soon.', 'changes'],
@@ -205,31 +205,31 @@ export function ProjectContent({ proj, panel }) {
 
 export function NewProjectModal({ onClose, newName, setNewName, newClient, setNewClient, newBilling, setNewBilling, newCaps, toggleCap }) {
   return (
-    <Dialog open onClose={onClose} title="New Project"
-      footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" disabled={!newName.trim()} onClick={onClose}>Create Project</Button></>}>
+    <Dialog open onClose={onClose} title="New project"
+      footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" disabled={!newName.trim()} onClick={onClose}>Create project</Button></>}>
       <Stack gap="md">
-        <Field label="Project Title">
+        <Field label="Project title">
           <Input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Website Redesign" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} />
         </Field>
         <Field label="Client" description="optional">
           <Select value={newClient || '__none__'} onChange={(e) => setNewClient(e.target.value)}>
-            <option value="__none__">No client — Personal project</option>
-            <option value="__new__">+ New Client</option>
+            <option value="__none__">No client — personal project</option>
+            <option value="__new__">+ New client</option>
             {CONTACTS.slice(0, 6).map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
           </Select>
         </Field>
         {newClient === '__new__' ? (
           <Stack gap="sm">
-            <Field label="Company Name"><Input /></Field>
-            <Columns count={2} gap="md"><Field label="Contact Name"><Input /></Field><Field label="Email"><Input type="email" /></Field></Columns>
+            <Field label="Company name"><Input /></Field>
+            <Columns count={2} gap="md"><Field label="Contact name"><Input /></Field><Field label="Email"><Input type="email" /></Field></Columns>
           </Stack>
         ) : null}
         {newClient && newClient !== '__none__' && newClient !== '__new__' ? (
-          <Field label="Billing Type">
-            <SegmentedControl label="Billing Type" value={newBilling} onChange={setNewBilling} options={['Time & Materials', 'Fixed Fee', 'Retainer', 'Non-Billable'].map((bt) => ({ value: bt, label: bt }))} />
+          <Field label="Billing type">
+            <SegmentedControl label="Billing type" value={newBilling} onChange={setNewBilling} options={['Time & materials', 'Fixed fee', 'Retainer', 'Non-Billable'].map((bt) => ({ value: bt, label: bt }))} />
           </Field>
         ) : null}
-        <Fieldset legend="Project Team" gap="sm">
+        <Fieldset legend="Project team" gap="sm">
           <Inline gap="sm"><Avatar name="Philip Maher" size="sm" /><Text className="plx-u-flex-1">Philip Maher</Text><Tag>Owner</Tag></Inline>
           <Inline><Button variant="ghost" icon="plus">Add team member or external person…</Button></Inline>
         </Fieldset>

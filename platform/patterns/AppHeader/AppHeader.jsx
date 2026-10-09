@@ -185,7 +185,7 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
   return (
     <Menu label="Account" placement={inPane ? 'top-start' : 'bottom-end'} trigger={trigger}>
       <MenuGroup label={email ? <>{name}<br />{email}</> : name}>
-        {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>My Account</MenuItem> : null}
+        {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>My account</MenuItem> : null}
         {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>Settings</MenuItem> : null}
       </MenuGroup>
       {density ? <><MenuDivider /><MenuGroup label="Display density">

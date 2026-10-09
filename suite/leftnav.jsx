@@ -11,18 +11,18 @@ export function LeftNav({section,sub,setSub,onSettings}){
   const Mark=({color,square})=><span aria-hidden="true"    className={[[[["plx-u-inline-block plx-u-shrink-0", (square ? "plx-u-w-10px" : "plx-u-w-6px"), (square ? "plx-u-h-10px" : "plx-u-h-6px"), (square ? "plx-u-border-radius-detail-4px" : "plx-u-border-radius-pill"), "plx-u-bg-var"].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")} style={{ '--plx-comp-u-bg': color }}/>;
   const by=(list,key,count)=>[...new Set(list.map(x=>x[key]))].map(v=>({id:v,label:v,count:count(v)}));
   const nav={
-    projects:{label:"Projects",groups:[{heading:null,items:[{id:"all",label:"All Projects",count:PROJECTS.length}]}].concat(Object.entries(groups).map(([tag,projs])=>({heading:tagLabels[tag]||tag,
+    projects:{label:"Projects",groups:[{heading:null,items:[{id:"all",label:"All projects",count:PROJECTS.length}]}].concat(Object.entries(groups).map(([tag,projs])=>({heading:tagLabels[tag]||tag,
       items:projs.map(p=>({id:p.id,label:p.name,count:p.files,icon:<span className="plx-u-items-center plx-u-gap-x-4px plx-u-inline-flex"><Mark color={p.color}/>{p.status&&<ProjStatusDot s={p.status}/>}</span>}))})))},
-    messaging:{label:"Messages",groups:[{heading:null,items:[{id:"all",label:"All Messages"}]},{heading:"Channels",items:[{id:"sms",label:"SMS"},{id:"whatsapp",label:"WhatsApp"},{id:"email",label:"Email"}]},
+    messaging:{label:"Messages",groups:[{heading:null,items:[{id:"all",label:"All messages"}]},{heading:"Channels",items:[{id:"sms",label:"SMS"},{id:"whatsapp",label:"WhatsApp"},{id:"email",label:"Email"}]},
       {heading:"Threads",items:THREADS.map(t=>({id:`t-${t.id}`,label:t.name,count:t.unread>0?t.unread:undefined,icon:<Av name={t.name} avBg={t.avBg} avC={t.avC} size={22}/>}))}]},
-    contacts:{label:"Contacts",groups:[{heading:null,items:[{id:"all",label:"All Contacts",count:CONTACTS.length}]},{heading:"Groups",items:[{id:"clients",label:"Clients",count:2},{id:"contractors",label:"Contractors",count:2},{id:"professional",label:"Professional"},{id:"personal",label:"Personal"}]}]},
-    calendar:{label:"Calendars",groups:[{heading:"My Calendars",items:[{id:"all",label:"All Calendars",icon:<Mark square color="var(--plx-ref-color-gray-700)"/>}].concat(CALENDARS.map(c=>({id:c.id,label:c.label,icon:<Mark square color={c.color}/>})))}],
-      after:<div className="plx-u-border-t-border-divider plx-u-border-t-solid-2 plx-u-border-t-1px plx-u-mt-12px plx-u-pt-8px"><Button size="sm" variant="ghost" icon={<Ico n="up"/>}>Import Calendar</Button></div>},
-    tasks:{label:"Tasks",groups:[{heading:null,items:[{id:"all",label:"All Tasks",count:ALL_TASKS.filter(t=>!t.done).length},{id:"due",label:"Due soon",count:ALL_TASKS.filter(t=>!t.done&&["Mar 8","Mar 10"].includes(t.due)).length}]},
-      {heading:"By Project",items:by(ALL_TASKS,"proj",p=>ALL_TASKS.filter(t=>t.proj===p&&!t.done).length)}]},
-    notes:{label:"Notes",groups:[{heading:null,items:[{id:"all",label:"All Notes",count:ALL_NOTES.length}]},{heading:"Folders",items:by(ALL_NOTES,"folder",f=>ALL_NOTES.filter(n=>n.folder===f).length)}]},
-    bookmarks:{label:"Bookmarks",groups:[{heading:null,items:[{id:"all",label:"All Bookmarks",count:ALL_BOOKMARKS.length}]},{heading:"Collections",items:by(ALL_BOOKMARKS,"col",c=>ALL_BOOKMARKS.filter(b=>b.col===c).length)}]},
-    files:{label:"Files",groups:[{heading:null,items:[{id:"all",label:"All Files",count:ALL_FILES.length}]},{heading:"Folders",items:by(ALL_FILES,"folder",f=>ALL_FILES.filter(x=>x.folder===f).length)}]},
+    contacts:{label:"Contacts",groups:[{heading:null,items:[{id:"all",label:"All contacts",count:CONTACTS.length}]},{heading:"Groups",items:[{id:"clients",label:"Clients",count:2},{id:"contractors",label:"Contractors",count:2},{id:"professional",label:"Professional"},{id:"personal",label:"Personal"}]}]},
+    calendar:{label:"Calendars",groups:[{heading:"My calendars",items:[{id:"all",label:"All calendars",icon:<Mark square color="var(--plx-ref-color-gray-700)"/>}].concat(CALENDARS.map(c=>({id:c.id,label:c.label,icon:<Mark square color={c.color}/>})))}],
+      after:<div className="plx-u-border-t-border-divider plx-u-border-t-solid-2 plx-u-border-t-1px plx-u-mt-12px plx-u-pt-8px"><Button size="sm" variant="ghost" icon={<Ico n="up"/>}>Import calendar</Button></div>},
+    tasks:{label:"Tasks",groups:[{heading:null,items:[{id:"all",label:"All tasks",count:ALL_TASKS.filter(t=>!t.done).length},{id:"due",label:"Due soon",count:ALL_TASKS.filter(t=>!t.done&&["Mar 8","Mar 10"].includes(t.due)).length}]},
+      {heading:"By project",items:by(ALL_TASKS,"proj",p=>ALL_TASKS.filter(t=>t.proj===p&&!t.done).length)}]},
+    notes:{label:"Notes",groups:[{heading:null,items:[{id:"all",label:"All notes",count:ALL_NOTES.length}]},{heading:"Folders",items:by(ALL_NOTES,"folder",f=>ALL_NOTES.filter(n=>n.folder===f).length)}]},
+    bookmarks:{label:"Bookmarks",groups:[{heading:null,items:[{id:"all",label:"All bookmarks",count:ALL_BOOKMARKS.length}]},{heading:"Collections",items:by(ALL_BOOKMARKS,"col",c=>ALL_BOOKMARKS.filter(b=>b.col===c).length)}]},
+    files:{label:"Files",groups:[{heading:null,items:[{id:"all",label:"All files",count:ALL_FILES.length}]},{heading:"Folders",items:by(ALL_FILES,"folder",f=>ALL_FILES.filter(x=>x.folder===f).length)}]},
   };
   const content=Object.fromEntries(Object.entries(nav).map(([k,v])=>[k,<><NavList label={v.label} value={sub} onSelect={setSub} groups={v.groups}/>{v.after||null}</>]));
   if(!content[section])return null;

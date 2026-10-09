@@ -1080,7 +1080,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Projects",
+          label: "All projects",
           count: _shared.PROJECTS.length
         }]
       }].concat(Object.entries(groups).map(([tag, projs]) => ({
@@ -1105,7 +1105,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Messages"
+          label: "All messages"
         }]
       }, {
         heading: "Channels",
@@ -1140,7 +1140,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Contacts",
+          label: "All contacts",
           count: _shared.CONTACTS.length
         }]
       }, {
@@ -1165,10 +1165,10 @@ function LeftNav({
     calendar: {
       label: "Calendars",
       groups: [{
-        heading: "My Calendars",
+        heading: "My calendars",
         items: [{
           id: "all",
-          label: "All Calendars",
+          label: "All calendars",
           icon: /*#__PURE__*/React.createElement(Mark, {
             square: true,
             color: "var(--plx-ref-color-gray-700)"
@@ -1190,7 +1190,7 @@ function LeftNav({
         icon: /*#__PURE__*/React.createElement(_shared.Ico, {
           n: "up"
         })
-      }, "Import Calendar"))
+      }, "Import calendar"))
     },
     tasks: {
       label: "Tasks",
@@ -1198,7 +1198,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Tasks",
+          label: "All tasks",
           count: _shared.ALL_TASKS.filter(t => !t.done).length
         }, {
           id: "due",
@@ -1206,7 +1206,7 @@ function LeftNav({
           count: _shared.ALL_TASKS.filter(t => !t.done && ["Mar 8", "Mar 10"].includes(t.due)).length
         }]
       }, {
-        heading: "By Project",
+        heading: "By project",
         items: by(_shared.ALL_TASKS, "proj", p => _shared.ALL_TASKS.filter(t => t.proj === p && !t.done).length)
       }]
     },
@@ -1216,7 +1216,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Notes",
+          label: "All notes",
           count: _shared.ALL_NOTES.length
         }]
       }, {
@@ -1230,7 +1230,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Bookmarks",
+          label: "All bookmarks",
           count: _shared.ALL_BOOKMARKS.length
         }]
       }, {
@@ -1244,7 +1244,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Files",
+          label: "All files",
           count: _shared.ALL_FILES.length
         }]
       }, {
@@ -2463,7 +2463,7 @@ function CapDoc({
   const spec = cap.specification || {};
   const ui = cap.ui || {};
   const sections = [{
-    title: "Baseline Operations",
+    title: "Baseline operations",
     content: facts("Baseline operations", Object.entries(cap.baselineOps || {}).map(e => [e[0].charAt(0).toUpperCase() + e[0].slice(1), e[1] === "Not started" ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "danger"
     }, e[1]) : e[1]]))
@@ -2480,17 +2480,17 @@ function CapDoc({
       variant: "secondary"
     }, f.desc))))
   }, {
-    title: "Use Cases",
+    title: "Use cases",
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
     }, (cap.useCases || []).map(uc => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
       key: uc.id,
       title: uc.title
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, null, [["Actor", uc.actor], ["Goal", uc.goal], ["System Response", uc.systemResponse], ["Alternate Flow", uc.alternateFlow]].map(r => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, null, [["Actor", uc.actor], ["Goal", uc.goal], ["System response", uc.systemResponse], ["Alternate flow", uc.alternateFlow]].map(r => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
       key: r[0],
       label: r[0]
     }, r[1])), /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-      label: "Main Flow"
+      label: "Main flow"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       as: "ol",
       gap: "xs"
@@ -2670,10 +2670,10 @@ function DocsPanel({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
   }, "The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness."), facts("Why Plenix fits", (window.PV_FIT || []).map(p => [p.principle, p.meaning]))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Core Data Model"
+    title: "Core data model"
   }, facts("Core data model", (window.PV_MODEL || []).map(m => [m.name, m.desc]))), /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
     label: "Documentation figures"
-  }, [["Capabilities", 74], ["Features Documented", 807], ["PRDs with Content", 50], ["Project Types", (window.ALL_PROJ_TYPES || []).length]].map(s => /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
+  }, [["Capabilities", 74], ["Features documented", 807], ["PRDs with content", 50], ["Project types", (window.ALL_PROJ_TYPES || []).length]].map(s => /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
     key: s[0],
     value: s[1],
     label: s[0]
@@ -2681,10 +2681,10 @@ function DocsPanel({
   if (docSection === "product-vision") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "lg"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Product Vision",
+    title: "Product vision",
     description: "The founding document. Why Plenix exists, what it solves, and how it works."
   }), /*#__PURE__*/React.createElement(DocSection, {
-    title: "The Problem"
+    title: "The problem"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
   }, "Modern digital life is fragmented. A single person may use 8-12+ separate tools daily just to stay organized. This creates three core pain points:"), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -2701,22 +2701,22 @@ function DocsPanel({
     gap: "xs"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "eyebrow"
-  }, "The Vision"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+  }, "The vision"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "strong"
   }, "A single, AI-powered ecosystem that unifies how a person captures, organizes, connects, communicates, retrieves, and acts on all forms of personal information -- without duplicating data or replacing the heavy-duty tools they already use."))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Core Philosophy"
+    title: "Core philosophy"
   }, facts("Core philosophy", (window.PV_PHILOSOPHY || []).map(ph => [ph.p, ph.d]))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "What the Platform Unifies"
+    title: "What the platform unifies"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
-    label: "What the Platform Unifies",
+    label: "What the platform unifies",
     data: (window.PV_UNIFIES || []).map((r, i) => ({
       id: i,
       silo: r[0],
       unified: r[1]
     })),
     columns: [{
-      title: "Traditional Silo",
+      title: "Traditional silo",
       field: "silo",
       kind: "wrap",
       rowLabel: true,
@@ -2727,7 +2727,7 @@ function DocsPanel({
       kind: "wrap"
     }]
   })), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Unified Messaging Hub"
+    title: "Unified messaging hub"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
   }, "A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure."), facts("Unified messaging hub", (window.PV_MESSAGING || []).map(s => [s.label, s.desc]))), /*#__PURE__*/React.createElement(DocSection, {
@@ -2750,9 +2750,9 @@ function DocsPanel({
   }, "2025-03-02_KitchenReno_ContractorQuote_ABCPlumbing.png")), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "caption"
   }, "Derived from: date + linked project + OCR content + identified contact. User always has final say.")))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Project Home"
+    title: "Project home"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
-    label: "Project Home"
+    label: "Project home"
   }, ["Linked files", "Notes", "Tasks & calendar events", "Bookmarks & media", "Contacts", "Message threads", "Virtual meeting launcher"].map(i => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
     key: i
   }, i))), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
@@ -2761,14 +2761,14 @@ function DocsPanel({
     gap: "xs"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "strong"
-  }, "The Presentation Use Case"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+  }, "The presentation use case"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
   }, "Today a user presenting on Zoom alt-tabs frantically between PowerPoint, a spreadsheet, file explorer, and notes. With Project Home, all linked resources are accessible from one workspace. The project view becomes the cockpit for the meeting -- everything is one click away, not five windows deep.")))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Key Use Cases"
+    title: "Key use cases"
   }, facts("Key use cases", (window.PV_USECASES || []).map((u, i) => [i + 1 + ". " + u.uc, u.d]))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "What Plenix Is Not"
+    title: "What Plenix is not"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.List, {
-    label: "What Plenix Is Not",
+    label: "What Plenix is not",
     items: (window.PV_NOT || []).map(n => ({
       icon: "close",
       tone: "danger",
@@ -2841,12 +2841,12 @@ function DocsPanel({
   }, item.label), item.note && /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "caption"
   }, "\u2014 ", item.note))))))), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    title: "Fully Mapped Example"
+    title: "Fully mapped example"
   }, facts("Fully mapped example", window.TERM_EXAMPLE ? Object.entries(window.TERM_EXAMPLE).map(entry => {
     const labels = {
       capability: "Capability",
       feature: "Feature",
-      useCase: "Use Case",
+      useCase: "Use case",
       functionality: "Functionality",
       scenario: "Scenario",
       specification: "Specification",
@@ -2924,7 +2924,7 @@ function DocsPanel({
     return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "lg"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
-      title: "Data Model",
+      title: "Data model",
       description: "Every item type in Plenix and the fields it carries. All types extend the 4 Anchor fields."
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
       title: "Anchors",
@@ -2967,7 +2967,7 @@ function DocsPanel({
     }, "updatedAt")))), /*#__PURE__*/React.createElement(DocSection, {
       title: "Anchors applied to " + (schema.anchorsApplied || []).length + " capabilities"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
-      label: "Capabilities with Anchors"
+      label: "Capabilities with anchors"
     }, (schema.anchorsApplied || []).map(c => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
       key: c
     }, c)))), /*#__PURE__*/React.createElement(DocSection, {
@@ -3048,22 +3048,22 @@ function DocsPanel({
     size: "lg",
     label: "Documentation"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
-    title: "Style Guide",
+    title: "Style guide",
     onOpen: () => setDocSection("style-guide")
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
   }, "Design tokens, typography, color palette, spacing, and component patterns: the Plenix design system.")), /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
-    title: "All Feature Areas",
+    title: "All feature areas",
     onOpen: () => setDocSection("feat-" + window.FEATURES[0].area)
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
   }, window.FEATURES.length + " areas, " + window.FEATURES.reduce((s, a) => s + a.items.length, 0) + " features documented."))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Feature Areas"
+    title: "Feature areas"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "md",
-    label: "Feature Areas"
+    label: "Feature areas"
   }, window.FEATURES.map(area => {
     const done = area.items.filter(i => i.status === "done").length;
     const pct = Math.round(done / area.items.length * 100);
@@ -3080,7 +3080,7 @@ function DocsPanel({
   if (docSection === "style-guide") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "lg"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Style Guide",
+    title: "Style guide",
     description: "Design tokens, typography, color, spacing and component patterns live in the Plenix design system."
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
     tone: "info"
@@ -3132,7 +3132,7 @@ function FeatureArea({
     label: "Done"
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
     value: inprog,
-    label: "In Progress"
+    label: "In progress"
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
     value: planned,
     label: "Planned"
@@ -3452,7 +3452,7 @@ function Settings({
     icon: "briefcase"
   }, {
     id: "projtypes",
-    label: "Project Types",
+    label: "Project types",
     icon: "briefcase-plus"
   }, {
     id: "tags",
@@ -3579,7 +3579,7 @@ function Settings({
         color: "var(--plx-sys-action-primary-background)",
         icon: null
       })
-    }, "New Category")), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    }, "New category")), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "xs"
     }, cats.map(cat => /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
       key: cat.id,
@@ -3681,7 +3681,7 @@ function Settings({
         setTagAdding(true);
         setTagEditVal("");
       }
-    }, "New Tag")), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+    }, "New tag")), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
     }, visibleTags.length, " of ", tags.length, " tags"), visibleTags.length > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
       label: "Tags"
@@ -3706,7 +3706,7 @@ function Settings({
       variant: "strong"
     }, "How tags work:"), " Tags are flat keywords -- no hierarchy. Click any tag name to rename it inline. Tags apply to images, notes, contacts, bookmarks, tasks, files, and any other item. Use them to describe content: ", /*#__PURE__*/React.createElement("em", null, "mountain, snow, supplier, VIP, Q2, typography, inspiration"), ".")),
     projtypes: /*#__PURE__*/React.createElement(Screen, {
-      title: "Project Types",
+      title: "Project types",
       desc: "Define the types of projects in your workspace. Applied when creating a project."
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "sm"
@@ -3725,7 +3725,7 @@ function Settings({
         setPtAdding(true);
         setPtEditVal("");
       }
-    }, "New Type")), (() => {
+    }, "New type")), (() => {
       const filtered = projTypes.filter(t => !ptSearch || t.name.toLowerCase().includes(ptSearch.toLowerCase()));
       const groups = {};
       filtered.forEach(t => {
@@ -3956,7 +3956,7 @@ function Settings({
       val: prefs.projDensity || "card",
       onChange: v => set("projDensity", v)
     }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Visible Fields"
+      title: "Visible fields"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Category"
     }, /*#__PURE__*/React.createElement(Toggle, {
@@ -4072,7 +4072,7 @@ function Settings({
       val: prefs.taskShowDone || false,
       onChange: v => set("taskShowDone", v)
     }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Visible Fields"
+      title: "Visible fields"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Priority dot"
     }, /*#__PURE__*/React.createElement(Toggle, {
@@ -4187,7 +4187,7 @@ function Settings({
       val: prefs.fileFolder !== false,
       onChange: v => set("fileFolder", v)
     }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Cloud Storage"
+      title: "Cloud storage"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Storage provider"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
@@ -4277,7 +4277,7 @@ function Settings({
       val: prefs.contactCall !== false,
       onChange: v => set("contactCall", v)
     }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "List View"
+      title: "List view"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Show role"
     }, /*#__PURE__*/React.createElement(Toggle, {
@@ -4360,7 +4360,7 @@ function Settings({
   })() : /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "lg"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Features to Build Progress",
+    title: "Features to build progress",
     description: "Every significant feature in Plenix -- what it does, how it works, and what's planned. Select an area from the sidebar to explore it."
   }), /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "md",
@@ -4399,22 +4399,22 @@ function Settings({
       label: "About Plenix"
     }, {
       id: "product-vision",
-      label: "Product Vision"
+      label: "Product vision"
     }, {
       id: "terminology",
       label: "Terminology"
     }, {
       id: "data-model",
-      label: "Data Model"
+      label: "Data model"
     }, {
       id: "capabilities",
       label: "Capabilities"
     }, {
       id: "overview",
-      label: "All Feature Areas"
+      label: "All feature areas"
     }, {
       id: "style-guide",
-      label: "Style Guide"
+      label: "Style guide"
     }]
   }, ...(window.CAP_LAYERS || []).map(layer => {
     const groups = (window.CAPABILITY_GROUPS || []).filter(g => g.layer === layer.id);
@@ -4489,7 +4489,7 @@ function Settings({
       setFeatOpen(o => !o);
     },
     icon: "circle-check",
-    title: "Features to Build Progress",
+    title: "Features to build progress",
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Count, {
       variant: "pill",
       tone: "info",

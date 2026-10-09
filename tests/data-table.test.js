@@ -28,9 +28,9 @@ const STATES = [
   // a grid built while its section was hidden is drawn when the section is shown
   ['dam/settings-system.html#fields', ['#users'], 1],
   ['dam/settings-system.html#fields', ['#scheduler'], 1],
-  ['settings/index.html', ['Documentation', 'Product Vision'], 1],
+  ['settings/index.html', ['Documentation', 'Product vision'], 1],
   ['settings/index.html', ['Documentation', 'Terminology'], 3],
-  ['settings/index.html', ['Documentation', 'Data Model'], 2],
+  ['settings/index.html', ['Documentation', 'Data model'], 2],
   ['settings/index.html', ['Documentation', 'Capabilities', 'main:Notes'], 2],
   // the design system's reference tables (props, states, classes, tokens), where token and class names sit in cells
   ['platform/design-system/index.html#/data-display/data-table', [], 1],

@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.13.2] - 2026-10-09
+
+### Changed
+- Sentence case (owner, item 5; the design system's content standard): UI labels, actions and document headings across
+  the suite were Title Case ("All Tasks", "New Project", "Project Title", "My Account", "The Problem"). 82 strings now
+  read in sentence case ("All tasks", "New project", "Project title", "My account"). Names stay: people, companies,
+  products and apps (Google Drive, Asset Manager, Dashboard), sample records, and the product spec's entity, feature and
+  module names. AppHeader's account menu says "My account". (batch 257)
+
 ### Added
 - Design system: the Field lab (batch 256): "All fields" (stacked, inline, row × default, info hover, info focus, info open,
   invalid, required; the default or small label column) and five variant pages (Stacked, Inline, Row, a small label column,

@@ -1080,7 +1080,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Projects",
+          label: "All projects",
           count: _shared.PROJECTS.length
         }]
       }].concat(Object.entries(groups).map(([tag, projs]) => ({
@@ -1105,7 +1105,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Messages"
+          label: "All messages"
         }]
       }, {
         heading: "Channels",
@@ -1140,7 +1140,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Contacts",
+          label: "All contacts",
           count: _shared.CONTACTS.length
         }]
       }, {
@@ -1165,10 +1165,10 @@ function LeftNav({
     calendar: {
       label: "Calendars",
       groups: [{
-        heading: "My Calendars",
+        heading: "My calendars",
         items: [{
           id: "all",
-          label: "All Calendars",
+          label: "All calendars",
           icon: /*#__PURE__*/React.createElement(Mark, {
             square: true,
             color: "var(--plx-ref-color-gray-700)"
@@ -1190,7 +1190,7 @@ function LeftNav({
         icon: /*#__PURE__*/React.createElement(_shared.Ico, {
           n: "up"
         })
-      }, "Import Calendar"))
+      }, "Import calendar"))
     },
     tasks: {
       label: "Tasks",
@@ -1198,7 +1198,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Tasks",
+          label: "All tasks",
           count: _shared.ALL_TASKS.filter(t => !t.done).length
         }, {
           id: "due",
@@ -1206,7 +1206,7 @@ function LeftNav({
           count: _shared.ALL_TASKS.filter(t => !t.done && ["Mar 8", "Mar 10"].includes(t.due)).length
         }]
       }, {
-        heading: "By Project",
+        heading: "By project",
         items: by(_shared.ALL_TASKS, "proj", p => _shared.ALL_TASKS.filter(t => t.proj === p && !t.done).length)
       }]
     },
@@ -1216,7 +1216,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Notes",
+          label: "All notes",
           count: _shared.ALL_NOTES.length
         }]
       }, {
@@ -1230,7 +1230,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Bookmarks",
+          label: "All bookmarks",
           count: _shared.ALL_BOOKMARKS.length
         }]
       }, {
@@ -1244,7 +1244,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Files",
+          label: "All files",
           count: _shared.ALL_FILES.length
         }]
       }, {
@@ -2321,7 +2321,7 @@ function TasksWidget({
   const max = parseInt(prefs?.taskMax || '7', 10);
   const pending = _shared.ALL_TASKS.filter(t => !done[t.id]).slice(0, max);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    title: "To Do",
+    title: "To do",
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
@@ -2430,7 +2430,7 @@ const ORDER = [{
   span: '2'
 }, {
   id: 'tasks',
-  title: 'To Do'
+  title: 'To do'
 }, {
   id: 'notes',
   title: 'Notes'
@@ -2587,7 +2587,7 @@ function ProjectsSidebar({
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
   const [newClient, setNewClient] = useState('__none__');
-  const [newBilling, setNewBilling] = useState('Time & Materials');
+  const [newBilling, setNewBilling] = useState('Time & materials');
   const [newCaps, setNewCaps] = useState(() => new Set(window.DEFAULT_CAPS));
   const labels = {
     personal: 'Personal',
@@ -2655,7 +2655,7 @@ function ProjectsSidebar({
       onClick: () => {
         setNewName('');
         setNewClient('__none__');
-        setNewBilling('Time & Materials');
+        setNewBilling('Time & materials');
         setNewCaps(new Set(window.DEFAULT_CAPS));
         setShowNew(true);
       }
@@ -2731,7 +2731,7 @@ function ProjectNav({
     heading: null,
     items: [{
       id: 'home',
-      label: 'Project Home',
+      label: 'Project home',
       icon: /*#__PURE__*/React.createElement(ProjIco, {
         n: "home",
         size: 14
@@ -2985,9 +2985,9 @@ function ProjectContent({
     contacts: ['Contacts', 'People linked to this project with roles — Owner, Client, Consultant, Reviewer. Coming soon.', 'contacts'],
     bookmarks: ['Bookmarks', 'Save, organize, and retrieve links with folder hierarchy, smart rules, and sharing. Coming soon.', 'link'],
     images: ['Images', 'Image gallery — upload, paste URL, or search Unsplash. Source for mood boards. Coming soon.', 'images'],
-    mood_boards: ['Mood Boards', 'Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.', 'mood'],
-    time_tracking: ['Time Tracking', 'Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.', 'time'],
-    activity: ['Activity Feed', 'Every event logged — task changes, files, comments, status updates. Coming soon.', 'activity'],
+    mood_boards: ['Mood boards', 'Named visual collections in Grid or Masonry layout. Shareable read-only link. Coming soon.', 'mood'],
+    time_tracking: ['Time tracking', 'Log hours, mark billable time, and view weekly/monthly breakdowns. Coming soon.', 'time'],
+    activity: ['Activity feed', 'Every event logged — task changes, files, comments, status updates. Coming soon.', 'activity'],
     bookkeeping: ['Financials', 'Budget tracking, milestone payments, invoices, and payment history. Coming soon.', 'finance'],
     risks: ['Risks', 'RIAC log — Risks, Issues, Assumptions, Constraints with owner and priority. Coming soon.', 'risks'],
     changes: ['Changes', 'Formal change request workflow with timeline and cost impact. Coming soon.', 'changes']
@@ -3019,18 +3019,18 @@ function NewProjectModal({
   return /*#__PURE__*/React.createElement(_plenixPlatform.Dialog, {
     open: true,
     onClose: onClose,
-    title: "New Project",
+    title: "New project",
     footer: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       onClick: onClose
     }, "Cancel"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       variant: "primary",
       disabled: !newName.trim(),
       onClick: onClose
-    }, "Create Project"))
+    }, "Create project"))
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
-    label: "Project Title"
+    label: "Project title"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
     autoFocus: true,
     value: newName,
@@ -3047,36 +3047,36 @@ function NewProjectModal({
     onChange: e => setNewClient(e.target.value)
   }, /*#__PURE__*/React.createElement("option", {
     value: "__none__"
-  }, "No client \u2014 Personal project"), /*#__PURE__*/React.createElement("option", {
+  }, "No client \u2014 personal project"), /*#__PURE__*/React.createElement("option", {
     value: "__new__"
-  }, "+ New Client"), _shared.CONTACTS.slice(0, 6).map(c => /*#__PURE__*/React.createElement("option", {
+  }, "+ New client"), _shared.CONTACTS.slice(0, 6).map(c => /*#__PURE__*/React.createElement("option", {
     key: c.id,
     value: c.name
   }, c.name)))), newClient === '__new__' ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
-    label: "Company Name"
+    label: "Company name"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, null)), /*#__PURE__*/React.createElement(_plenixPlatform.Columns, {
     count: 2,
     gap: "md"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
-    label: "Contact Name"
+    label: "Contact name"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, null)), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
     label: "Email"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
     type: "email"
   })))) : null, newClient && newClient !== '__none__' && newClient !== '__new__' ? /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
-    label: "Billing Type"
+    label: "Billing type"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.SegmentedControl, {
-    label: "Billing Type",
+    label: "Billing type",
     value: newBilling,
     onChange: setNewBilling,
-    options: ['Time & Materials', 'Fixed Fee', 'Retainer', 'Non-Billable'].map(bt => ({
+    options: ['Time & materials', 'Fixed fee', 'Retainer', 'Non-Billable'].map(bt => ({
       value: bt,
       label: bt
     }))
   })) : null, /*#__PURE__*/React.createElement(_plenixPlatform.Fieldset, {
-    legend: "Project Team",
+    legend: "Project team",
     gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
     gap: "sm"
