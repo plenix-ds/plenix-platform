@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-10-09
+
+### Changed (visual)
+- Table and DataTable (owner: "compare the two… the tabular is accurate"): a row label (rowLabel, the shaded first column)
+  is the row's name, so it takes the name column's medium weight (--plx-comp-[data-]table-name-font-weight), also for links
+  and Text inside it. Reference tables (props, tokens, classes) now read like the DataTable. (batch 248)
+
 ## [0.11.0] - 2026-10-09
 
 ### Changed (visual)

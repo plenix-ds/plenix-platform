@@ -38,3 +38,6 @@
 /* one typography in a table (owner, batch 247): text placed in a cell (Text in any variant, code) takes the cell's font and
    size; its color and weight stay (a link stays a link, strong stays strong) */
 .plx-table .tabulator-cell .plx-text,.plx-table .tabulator-cell code,.plx-table .tabulator-cell .plx-list,.plx-table .tabulator-cell .plx-list__text,.plx-table .tabulator-cell .plx-list__item{font-family:inherit;font-size:inherit;}
+/* a row label is the row's name: the same medium weight as a name column, also for links and text inside it (owner, batch 248) */
+.plx-table .tabulator-row .tabulator-cell.plx-table__cell--row-label{font-weight:var(--plx-comp-table-name-font-weight);}
+.plx-table .tabulator-row .tabulator-cell.plx-table__cell--row-label .plx-text{font-weight:inherit;}
