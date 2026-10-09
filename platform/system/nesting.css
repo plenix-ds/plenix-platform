@@ -1,0 +1,9 @@
+/* Plenix · Container nesting (platform/system/nesting.css). The rule (owner, batch 250): containers nest two deep, never
+   three. A container is a box that draws a frame around content: Panel, Card, a contained Tabs panel, CodeBlock, Notice,
+   Fieldset, DropZone, Table and DataTable. One inside another is fine; a third one inside those two keeps its place and
+   its content but draws no frame: its border turns transparent (no size changes) and its shadow goes.
+   Loaded after every component, before the utilities. tests/pages.test.js fails on any page with three framed boxes
+   nested, whatever draws them. */
+:is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-table)
+:is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-table)
+:is(.plx-panel,.plx-card,.plx-tabs--contained>.plx-tabs__panel,.plx-code-block,.plx-notice,.plx-fieldset,.plx-drop-zone,.plx-table,.plx-data-table){border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-top-color:transparent;box-shadow:none;}

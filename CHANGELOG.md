@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-10-09
+
+### Added
+- Nesting rule (owner: "never 3 containers nested… 2 is okay but never 3"): platform/system/nesting.css. Panel, Card, a
+  contained Tabs panel, CodeBlock, Notice, Fieldset, DropZone, Table and DataTable nest two deep; a third inside those two
+  draws no frame (transparent border, no shadow; nothing moves). An audit found 55 triple nests (Panel > Panel > Table,
+  Panel > Tabs panel > Table, Panel > Panel > DataTable); none remain. tests/pages.test.js now fails any of its 631 pages
+  with three framed boxes nested (anything framed on three sides or by a shadow; design-system specimens exempt), and
+  STANDARD.md §02 states the rule. (batch 250)
+
 ## [0.12.1] - 2026-10-09
 
 ### Fixed
