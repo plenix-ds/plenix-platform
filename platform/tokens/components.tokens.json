@@ -1195,6 +1195,198 @@
     "field-inline-label-sm-grid-template-columns": {
       "$value": "{plx-sys.label-width-sm} minmax(0,1fr)",
       "$type": "dimension"
+    },
+    "data-grid-radius": {
+      "$value": "{plx-sys.shape-md}",
+      "$type": "dimension"
+    },
+    "data-grid-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "data-grid-font-family": {
+      "$value": "{plx-sys.typeface-sans}",
+      "$type": "fontFamily"
+    },
+    "data-grid-data-font-family": {
+      "$value": "{plx-sys.typeface-mono}",
+      "$type": "fontFamily"
+    },
+    "data-grid-font-size": {
+      "$value": "{plx-sys.grid-font-size}",
+      "$type": "dimension"
+    },
+    "data-grid-header-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "data-grid-header-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "data-grid-data-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "data-grid-name-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "data-grid-cell-padding-inline": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "data-grid-header-line-inset": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "data-grid-column-line-inset": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-line-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "data-grid-lead-column-width": {
+      "$value": "{plx-ref.size-36px}",
+      "$type": "dimension"
+    },
+    "data-grid-mark-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "data-grid-header-icon-size": {
+      "$value": "{plx-ref.glyph-size-14px}",
+      "$type": "dimension"
+    },
+    "data-grid-sorter-inset": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-popup-button-inset": {
+      "$value": "{plx-ref.space-20px}",
+      "$type": "dimension"
+    },
+    "data-grid-popup-button-radius": {
+      "$value": "{plx-sys.shape-xs}",
+      "$type": "dimension"
+    },
+    "data-grid-title-reserve": {
+      "$value": "{plx-ref.size-36px}",
+      "$type": "dimension"
+    },
+    "data-grid-resize-mark-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "data-grid-duration": {
+      "$value": "{plx-sys.motion-duration-quick}",
+      "$type": "duration"
+    },
+    "data-grid-editing-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "data-grid-tree-indent": {
+      "$value": "{plx-ref.size-18px}",
+      "$type": "dimension"
+    },
+    "data-grid-tree-control-size": {
+      "$value": "{plx-ref.glyph-size-14px}",
+      "$type": "dimension"
+    },
+    "data-grid-tree-control-radius": {
+      "$value": "{plx-sys.shape-xs}",
+      "$type": "dimension"
+    },
+    "data-grid-tree-control-gap": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-group-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "data-grid-group-count-gap": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-radius": {
+      "$value": "{plx-sys.shape-md}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-padding": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-item-radius": {
+      "$value": "{plx-sys.shape-xs}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-item-padding-block": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-item-padding-inline-start": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-item-padding-inline-end": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-item-gap": {
+      "$value": "{plx-ref.space-10px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-icon-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-separator-margin": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "data-grid-menu-disabled-opacity": {
+      "$value": "{plx-ref.opacity-45}",
+      "$type": "number"
+    },
+    "data-grid-placeholder-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension"
+    },
+    "data-grid-placeholder-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "data-grid-footer-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "data-grid-filter-gap": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-filter-padding": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension"
+    },
+    "data-grid-filter-min-width": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension"
+    },
+    "data-grid-filter-label-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "data-grid-filter-label-letter-spacing": {
+      "$value": "{plx-sys.letter-spacing-caps}",
+      "$type": "dimension"
     }
   }
 }

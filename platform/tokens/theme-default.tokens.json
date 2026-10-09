@@ -133,6 +133,10 @@
       "$value": "{plx-ref.border-style-dashed}",
       "$type": "strokeStyle"
     },
+    "motion-duration-quick": {
+      "$value": "{plx-ref.motion-duration-quick}",
+      "$type": "duration"
+    },
     "motion-duration-fast": {
       "$value": "{plx-ref.motion-duration-fast}",
       "$type": "duration",

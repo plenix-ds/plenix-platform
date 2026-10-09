@@ -63,6 +63,10 @@
     "table-row-height": {
       "$value": "{plx-ref.size-44px}",
       "$type": "dimension"
+    },
+    "grid-row-height": {
+      "$value": "{plx-ref.size-44px}",
+      "$type": "dimension"
     }
   }
 }

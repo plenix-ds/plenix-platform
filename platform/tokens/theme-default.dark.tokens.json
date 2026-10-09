@@ -536,6 +536,66 @@
     "status-bar-edge": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
+    },
+    "grid-surface": {
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color"
+    },
+    "grid-header-background": {
+      "$value": "{plx-ref.color-gray-925}",
+      "$type": "color"
+    },
+    "grid-header-line": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "grid-line": {
+      "$value": "{plx-ref.color-gray-900}",
+      "$type": "color"
+    },
+    "grid-border": {
+      "$value": "{plx-ref.color-gray-850}",
+      "$type": "color"
+    },
+    "grid-text": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color"
+    },
+    "grid-text-muted": {
+      "$value": "{plx-ref.color-gray-400}",
+      "$type": "color"
+    },
+    "grid-text-subtle": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color"
+    },
+    "grid-row-hover": {
+      "$value": "{plx-ref.color-gray-900}",
+      "$type": "color"
+    },
+    "grid-row-selected": {
+      "$value": "{plx-ref.color-blue-900}",
+      "$type": "color"
+    },
+    "grid-row-selected-hover": {
+      "$value": "{plx-ref.color-blue-850}",
+      "$type": "color"
+    },
+    "grid-row-selected-text": {
+      "$value": "{plx-ref.color-blue-350}",
+      "$type": "color"
+    },
+    "grid-accent": {
+      "$value": "{plx-ref.color-blue-350}",
+      "$type": "color"
+    },
+    "grid-danger": {
+      "$value": "{plx-ref.color-red-500}",
+      "$type": "color"
+    },
+    "grid-menu-shadow": {
+      "$value": "0 {plx-ref.space-8px} {plx-ref.space-24px} {plx-ref.color-black-alpha-50}",
+      "$type": "shadow"
     }
   }
 }

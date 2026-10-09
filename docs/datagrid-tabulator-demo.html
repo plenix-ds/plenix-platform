@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Tabulator in Plenix</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap">
@@ -8,24 +9,25 @@
 /* Layout: an app-like page; a toolbar over one Plenix-styled grid; notes beside what each hover/right-click does. Values mirror the plx tokens. */
 :root{
   --canvas:#f7f7f8; --surface:#ffffff; --head:#f3f3f3; --line:#e8e9ec; --head-line:#d0d0d0; --border:#d0d0d0;
-  --fg:#000000; --muted:#56585e; --subtle:#8e9094; --hover:#f7f7f8; --selected:#ebf0f7; --sel-fg:#1f5bb8;
+  --fg:#000000; --muted:#56585e; --subtle:#8e9094; --hover:#e8e9ec; --selected:#ebf0f7; --selected-hover:#c8dff7; --sel-fg:#1f5bb8;
   --accent:#2a6fdb; --accent-strong:#1f5bb8; --menu-shadow:0 8px 24px rgba(0,0,0,.14);
   --ok:#0e6b0e; --ok-bg:#dff6dd; --warn:#7d3c00; --warn-bg:#fef3e2; --neutral:#56585e; --neutral-bg:#f3f3f3;
   --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"DM Mono",ui-monospace,Consolas,monospace;
   --row-h:32px; --fs:13px;
-  /* the compact columns (checkbox, icon): the 16px mark plus the default 8px cell padding each side */
-  --mark:16px; --cell-pad:8px;
+  /* the leading columns (checkbox, icon): the Platform Table select column (--plx-ref-size-36px); a 16px mark centered in it; cell padding --plx-sys-space-inset-sm */
+  --mark:16px; --cell-pad:8px; --lead-col:36px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --canvas:#000000; --surface:#1e1f22; --head:#2a2b2f; --line:#34363b; --head-line:#56585e; --border:#3e4046;
-  --fg:#e8e9ec; --muted:#a3a6ad; --subtle:#8e9094; --hover:#26282c; --selected:#1f2a3a; --sel-fg:#8fb0d9;
+  --fg:#e8e9ec; --muted:#a3a6ad; --subtle:#8e9094; --hover:#34363b; --selected:#1f2a3a; --selected-hover:#26354a; --sel-fg:#8fb0d9;
   --accent:#8fb0d9; --accent-strong:#c8dff7; --menu-shadow:0 8px 24px rgba(0,0,0,.5);
   --ok:#bde8bd; --ok-bg:#1d3320; --warn:#eed2ba; --warn-bg:#3a2e22; --neutral:#c0c2c8; --neutral-bg:#2a2b2f; color-scheme:dark}}
 :root[data-theme="dark"]{
   --canvas:#000000; --surface:#1e1f22; --head:#2a2b2f; --line:#34363b; --head-line:#56585e; --border:#3e4046;
-  --fg:#e8e9ec; --muted:#a3a6ad; --subtle:#8e9094; --hover:#26282c; --selected:#1f2a3a; --sel-fg:#8fb0d9;
+  --fg:#e8e9ec; --muted:#a3a6ad; --subtle:#8e9094; --hover:#34363b; --selected:#1f2a3a; --selected-hover:#26354a; --sel-fg:#8fb0d9;
   --accent:#8fb0d9; --accent-strong:#c8dff7; --menu-shadow:0 8px 24px rgba(0,0,0,.5);
   --ok:#bde8bd; --ok-bg:#1d3320; --warn:#eed2ba; --warn-bg:#3a2e22; --neutral:#c0c2c8; --neutral-bg:#2a2b2f; color-scheme:dark}
+/* row heights = --plx-sys-table-row-height per density (28 / 32 / 40) */
 [data-density="compact"]{--row-h:28px;--fs:12px}
 [data-density="standard"]{--row-h:32px;--fs:13px}
 [data-density="comfortable"]{--row-h:40px;--fs:13px}
@@ -83,7 +85,8 @@ h1{font-size:22px;margin:0;font-weight:700}
 .tabulator .tabulator-row{background:var(--surface);border-bottom:1px solid var(--line);min-height:var(--row-h)}
 .tabulator .tabulator-row.tabulator-row-even{background:var(--surface)}
 .tabulator .tabulator-row.tabulator-selectable:hover{background:var(--hover);cursor:default}
-.tabulator .tabulator-row.tabulator-selected,.tabulator .tabulator-row.tabulator-selected:hover{background:var(--selected)}
+.tabulator .tabulator-row.tabulator-selected{background:var(--selected)}
+.tabulator .tabulator-row.tabulator-selected:hover{background:var(--selected-hover)}
 .tabulator .tabulator-row .tabulator-cell{border-right:0;padding:0 8px;height:var(--row-h);line-height:var(--row-h);position:relative}
 .tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--line)}
 .tabulator .tabulator-row .tabulator-cell.tabulator-editing{border:0;outline:2px solid var(--accent);outline-offset:-2px;padding:0 8px;background:var(--surface)}
@@ -97,9 +100,6 @@ h1{font-size:22px;margin:0;font-weight:700}
 /* the checkbox column: frozen, but drawn like any other column (the row line under it, no heavy edge) */
 .tabulator .tabulator-header .tabulator-col.tabulator-frozen.tabulator-frozen-left,.tabulator .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left{border-right:0}
 .tabulator .tabulator-row .tabulator-cell.tabulator-row-header{border-bottom:0;background:inherit}
-.tabulator .tabulator-row.tabulator-selected .tabulator-cell.tabulator-frozen{background:var(--selected)}
-.tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.tabulator-frozen{background:var(--hover)}
-.tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.tabulator-frozen{background:var(--selected)}
 /* the icon column: an attachment mark, like a mail list */
 .tabulator .tabulator-row .tabulator-cell.cell-icon,.tabulator .tabulator-header .tabulator-col.col-icon .tabulator-col-content{display:inline-flex;align-items:center;justify-content:center;line-height:normal;padding:0 var(--cell-pad);color:var(--muted)}
 .cell-icon .ico,.col-icon .ico{width:var(--mark);height:var(--mark)}
@@ -110,6 +110,15 @@ h1{font-size:22px;margin:0;font-weight:700}
 .tabulator-menu .tabulator-menu-item .mi{display:inline-flex;color:var(--muted)}
 .tabulator-menu .tabulator-menu-item .mi .ico{width:16px;height:16px}
 .tabulator-menu .tabulator-menu-item .danger{color:#c42b1c}
+/* the row header (Name as the first column): the header shade, pinned, a soft edge where the scrolling columns pass under it */
+.tabulator .tabulator-row .tabulator-cell.row-label,.rh-mode .tabulator .tabulator-row .tabulator-cell.tabulator-row-header{background:var(--head)}
+/* frozen and row-header cells follow the row: hover, selected, selected + hover (the row reads as one band) */
+.tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.tabulator-frozen,.tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.row-label{background:var(--hover)}
+.tabulator .tabulator-row.tabulator-selected .tabulator-cell.tabulator-frozen,.tabulator .tabulator-row.tabulator-selected .tabulator-cell.row-label{background:var(--selected)}
+.tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.tabulator-frozen,.tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.row-label{background:var(--selected-hover)}
+.tabulator .tabulator-row .tabulator-cell.row-label.tabulator-frozen-left,.tabulator .tabulator-header .tabulator-col.row-label.tabulator-frozen-left{border-right:1px solid var(--head-line)}
+.tabulator .tabulator-row.tabulator-selected .tabulator-cell.row-label .name{color:var(--sel-fg)}
+.tabulator .tabulator-row .tabulator-cell.tabulator-frozen{z-index:11}
 .mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .name{font-weight:500}
 input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(--mark);vertical-align:middle;margin:0;cursor:pointer}
@@ -165,6 +174,10 @@ input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(-
     <div class="seg" id="grp" role="group" aria-label="Group by">
       <button type="button" data-g="" aria-pressed="true">None</button><button type="button" data-g="type" aria-pressed="false">Type</button><button type="button" data-g="status" aria-pressed="false">Status</button>
     </div>
+    <label for="first">First column</label>
+    <div class="seg" id="first" role="group" aria-label="First column">
+      <button type="button" data-f="plain" aria-pressed="true">Plain</button><button type="button" data-f="rh" aria-pressed="false">Row header</button>
+    </div>
     <label for="den">Density</label>
     <div class="seg" id="den" role="group" aria-label="Density">
       <button type="button" data-d="compact" aria-pressed="false">Compact</button><button type="button" data-d="standard" aria-pressed="true">Standard</button><button type="button" data-d="comfortable" aria-pressed="false">Comfortable</button>
@@ -179,6 +192,7 @@ input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(-
     <div><b>Hover a header</b> to see its sort arrow and filter button. A filtered column keeps its button, in blue.</div>
     <div><b>Right-click a header</b> for sort, filter, group by, hide and fit. Drag a header to move it; drag its edge to resize.</div>
     <div><b>Right-click a row</b> for row actions; hover a row for its action buttons. Double-click Name or Status to edit.</div>
+    <div><b>First column: Row header</b> shades Name, and the checkbox and paperclip columns before it, like the header, and pins them; scroll sideways to see the other columns pass under it.</div>
     <div><b>The paperclip column</b> marks rows with attachments (hover for the count); click its header to sort them first.</div>
     <div><b>Collections</b> (Crosses, Feast banners) expand into their files. Checkboxes select; the header box selects all.</div>
   </div>
@@ -227,7 +241,10 @@ input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(-
     f('Volunteer list.xlsx', 'XLSX', 88, 'Review', 'A. Hanna', '2026-10-06')
   ];
   var ATT = { 'Letterhead.pdf': 1, 'Bulletin October.pdf': 3, 'Volunteer list.xlsx': 2, 'Nativity banner.jpg': 1, 'Choir rehearsal.mp4': 1, 'Logo primary.svg': 2 };
-  (function walk(rows){ rows.forEach(function (r) { r.attach = ATT[r.name] || 0; if (r._children) walk(r._children); }); })(data);
+  var DIM = { PNG: '2400 × 2400', JPG: '3000 × 1000', SVG: 'vector', MP4: '1920 × 1080' };
+  var LOC = { Collection: 'Library', PNG: 'Library / Crosses', SVG: 'Library / Brand', JPG: 'Library / Icons', PDF: 'Documents / Print', MP4: 'Media / Video', MP3: 'Media / Audio', XLSX: 'Documents / Admin' };
+  var TAG = { PNG: 'cross, symbol', JPG: 'icon, feast', SVG: 'logo, brand', PDF: 'print', MP4: 'choir, video', MP3: 'hymn, audio', XLSX: 'volunteers', Collection: 'set' };
+  (function walk(rows){ rows.forEach(function (r) { r.attach = ATT[r.name] || 0; r.dims = DIM[r.type] || ''; r.location = LOC[r.type] || 'Library'; r.tags = TAG[r.type] || ''; r.created = r.modified.slice(0, 8) + '01'; if (r._children) walk(r._children); }); })(data);
   var STATUS = { Active: 'b-ok', Review: 'b-warn', Draft: 'b-neutral', Archived: 'b-neutral' };
   function kb(v){ if (!v) return '—'; return v >= 1024 ? (v / 1024).toFixed(1) + ' MB' : v + ' KB'; }
 
@@ -286,22 +303,36 @@ input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(-
     dataTree: true, dataTreeElementColumn: 'name', dataTreeStartExpanded: [true, false], dataTreeChildIndent: 18,
     movableColumns: true, rowContextMenu: rowMenu, columnDefaults: { resizable: true, minWidth: 80 },
     selectableRows: true, selectableRowsRangeMode: 'click',
-    rowHeader: { formatter: 'rowSelection', titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true, width: 32, minWidth: 32, maxWidth: 32, hozAlign: 'center', headerHozAlign: 'center', cellClick: function (e, cell) { cell.getRow().toggleSelect(); } },
+    rowHeader: { formatter: 'rowSelection', titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true, width: 36, minWidth: 36, maxWidth: 36, hozAlign: 'center', headerHozAlign: 'center', cellClick: function (e, cell) { cell.getRow().toggleSelect(); } },
     placeholder: 'No assets match these filters',
-    columns: [
-      { title: 'Attachments', field: 'attach', width: 32, minWidth: 32, maxWidth: 32, resizable: false, sorter: 'number', headerSortStartingDir: 'desc', headerContextMenu: headerMenu,
+    columns: columns(false)
+  });
+
+  // the columns; rowHeader true: Name becomes the row header (shaded, pinned with the columns before it)
+  function columns(rh){
+    return [
+      Object.assign({ title: 'Attachments', field: 'attach', width: 36, minWidth: 36, maxWidth: 36, resizable: false, sorter: 'number', headerSortStartingDir: 'desc', headerContextMenu: headerMenu,
         titleFormatter: function () { return '<span title="Attachments">' + svg.clip + '</span>'; }, cssClass: 'cell-icon col-icon',
-        formatter: function (c) { var n = c.getValue(); return n ? '<span title="' + n + (n === 1 ? ' attachment' : ' attachments') + '" aria-label="' + n + (n === 1 ? ' attachment' : ' attachments') + '">' + svg.clip + '</span>' : ''; } },
-      textCol({ title: 'Name', field: 'name', minWidth: 220, widthGrow: 3, editor: 'input', validator: 'required', editTriggerEvent: 'dblclick', formatter: function (c) { return '<span class="name">' + c.getValue() + '</span>'; } }),
+        formatter: function (c) { var n = c.getValue(); return n ? '<span title="' + n + (n === 1 ? ' attachment' : ' attachments') + '" aria-label="' + n + (n === 1 ? ' attachment' : ' attachments') + '">' + svg.clip + '</span>' : ''; } }, rh ? { frozen: true, cssClass: 'cell-icon col-icon row-label' } : {}),
+      textCol(Object.assign({ title: 'Name', field: 'name', minWidth: 220, width: 240, editor: 'input', validator: 'required', editTriggerEvent: 'dblclick', formatter: function (c) { return '<span class="name">' + c.getValue() + '</span>'; } }, rh ? { frozen: true, cssClass: 'row-label' } : {})),
       textCol({ title: 'Type', field: 'type', width: 110, formatter: function (c) { return '<span class="mono">' + c.getValue() + '</span>'; } }),
       textCol({ title: 'Status', field: 'status', width: 120, cssClass: 'cell-center', editor: 'list', editorParams: { values: ['Active', 'Review', 'Draft', 'Archived'] }, editTriggerEvent: 'dblclick', formatter: function (c) { var v = c.getValue(); return '<span class="badge ' + STATUS[v] + '">' + v + '</span>'; } }),
       textCol({ title: 'Owner', field: 'owner', width: 130 }),
       { title: 'Size', field: 'size', width: 110, hozAlign: 'right', headerHozAlign: 'right', sorter: 'number', headerContextMenu: headerMenu, formatter: function (c) { return '<span class="mono">' + kb(c.getValue()) + '</span>'; } },
       { title: 'Modified', field: 'modified', width: 120, headerContextMenu: headerMenu, formatter: function (c) { return '<span class="mono">' + c.getValue() + '</span>'; } },
+      { title: 'Dimensions', field: 'dims', width: 120, headerContextMenu: headerMenu, formatter: function (c) { return '<span class="mono">' + (c.getValue() || '—') + '</span>'; } },
+      textCol({ title: 'Location', field: 'location', width: 170 }),
+      textCol({ title: 'Tags', field: 'tags', width: 200 }),
+      { title: 'Created', field: 'created', width: 120, headerContextMenu: headerMenu, formatter: function (c) { return '<span class="mono">' + c.getValue() + '</span>'; } },
       { title: '', field: '_act', width: 76, cssClass: 'cell-center', headerSort: false, resizable: false, hozAlign: 'right', formatter: function () { return '<div class="act"><button type="button" data-a="edit" aria-label="Rename" title="Rename">' + svg.edit + '</button><button type="button" data-a="more" aria-label="More actions" title="More">' + svg.more + '</button></div>'; },
         cellClick: function (e, cell) { var b = e.target.closest('button'); if (!b) return; e.stopPropagation(); if (b.dataset.a === 'edit') cell.getRow().getCell('name').edit(); else { var r = b.getBoundingClientRect(); b.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: r.left, clientY: r.bottom })); } } }
-    ]
-  });
+    ];
+  }
+  document.querySelectorAll('#first button').forEach(function (b) { b.onclick = function () {
+    table.setColumns(columns(b.dataset.f === 'rh'));
+    document.querySelector('.frame').classList.toggle('rh-mode', b.dataset.f === 'rh');
+    document.querySelectorAll('#first button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+  }; });
 
   function count(){ var n = table.getDataCount('active'), s = table.getSelectedRows().length; document.getElementById('count').textContent = n + ' rows' + (s ? ' · ' + s + ' selected' : ''); }
   table.on('dataFiltered', function () { setTimeout(count); });
@@ -327,3 +358,5 @@ input[type="checkbox"]{accent-color:var(--accent);width:var(--mark);height:var(-
   });
 })();
 </script>
+
+</body></html>

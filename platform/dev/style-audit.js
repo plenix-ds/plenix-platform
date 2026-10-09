@@ -5,6 +5,8 @@
         data knows, read by a Platform stylesheet; the design system page's own --ds-… names on that page);
      2. style element: a style block written into the page (styles come from platform.css and the page's own
         stylesheet files only).
+   Left alone: the geometry the DataGrid's engine (Tabulator) writes on its own elements while it lays out (inside a
+   .tabulator grid, its menus and popups): widths, heights, offsets, not colors or type (those come from data-grid.css).
    The source check (node check-system.js: inline-style, palette, raw-value) rejects the same things before a page runs;
    this audit catches what only appears at run time (a script or a component writing a style).
      PlenixStyleAudit.audit()   -> [{ kind, element, detail }] for the current document
@@ -24,7 +26,15 @@
     var cls = (typeof el.className === 'string' ? el.className : '').trim().split(/\s+/).filter(Boolean).slice(0, 3);
     return cls.length ? s + '.' + cls.join('.') : s;
   }
+  // the DataGrid's engine (Tabulator, platform/vendor/tabulator) writes widths, heights and offsets on its own elements while
+  // it lays out: its geometry, not styling. Its elements are inside a .tabulator grid, or are its menus and popups.
+  var ENGINE = '.tabulator, .tabulator-menu, .tabulator-popup-container, .tabulator-tooltip, .tabulator-alert, .tabulator-col-resize-guide, .tabulator-row-resize-guide';
+  function engine(el) {
+    if (typeof el.className === 'string' && /(^|\s)tabulator(-|\s|$)/.test(el.className)) return true;
+    return !!(el.closest && el.closest(ENGINE));
+  }
   function inlineFinding(el) {
+    if (engine(el)) return null;
     var st = el.style, bad = [];
     for (var i = 0; i < st.length; i++) if (!allowedVar(st[i])) bad.push(st[i] + ': ' + st.getPropertyValue(st[i]));
     return bad.length ? { kind: 'inline style', element: describe(el), detail: bad.join('; ') } : null;

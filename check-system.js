@@ -6,7 +6,8 @@
 //               file declares for itself (e.g. --ds-r on the spec page); no old names
 //   hex         no raw hex colors outside the reference token file and the themes (colors come from tokens)
 //   font-size   no font size written as a number: font sizes come from --plx-ref-font-size-* tokens
-//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted)
+//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
+//               stylesheet also restyles its engine's tabulator-… classes, there only)
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
@@ -215,6 +216,8 @@ for (const { file } of files) {
     const sel = css.replace(/\{[^{}]*\}/g, '{}');
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       if (/^(plx-|is-)/.test(m[1])) continue;
+      // the DataGrid's stylesheet restyles the classes its engine writes (Tabulator, platform/vendor/tabulator): there only
+      if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/]DataGrid[\\/]data-grid\.css$/.test(file)) continue;
       add('classes', file, 0, '.' + m[1] + ' is not a plx- class');
     }
   }

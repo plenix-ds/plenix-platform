@@ -13,6 +13,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   context. No app page used a density region, so nothing changed on screen; tests/density.test.js guards it. (batch 221)
 
 ### Added
+- DataGrid: every table in Plenix is a Tabulator grid (6.6.1, MIT, vendored in platform/vendor/tabulator, loaded the
+  first time a grid renders) in the owner's grid style (docs/datagrid-tabulator-demo.html), drawn with tokens only
+  (components/DataGrid/data-grid.css). Columns are Tabulator's own definitions plus Plenix kinds (name, data, icon,
+  center, actions), React cells (render), filters, a row header; header menu, row menu, filter popup, groups, tree rows,
+  editing, selection. New tokens: grid color roles (--plx-sys-grid-*, light and dark), --plx-sys-grid-row-height
+  (28 / 32 / 40; 44 on touch and mobile) and --plx-sys-grid-font-size (12 / 13 / 13), 48 --plx-comp-data-grid-*
+  tokens; palette colors for the grid's dark look (gray-350, -400, -850, -900, -925, -950, blue-850, -900, green-900,
+  brown-900, black-alpha-14, -50) and space-6px, space-10px, size-18px, motion-duration-quick (0.12s), opacity-45.
+  Icons added from Material Symbols (unedited): sort-ascending, sort-descending, filter-off, visibility, visibility-off,
+  attachment, more, open, select. tests/grid-reference.js compares every part of the grid with the reference: 180 of
+  180 match (light and dark, each density). The pages move to DataGrid next; Table stays until then. (batch 226)
 - Form controls on component tokens: Input, Textarea, Select, Checkbox, Radio group, Choice card, Switch and Field
   take their look from 149 new `--plx-comp-input-*`, `-select-*`, `-textarea-*`, `-check-*`, `-radio-group-*`,
   `-choice-*`, `-switch-*` and `-field-*` tokens in components.tokens.json, each pointing to the same role as before. A

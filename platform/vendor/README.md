@@ -2,6 +2,8 @@
 
 These files are copied into the project so both Plenix applications load React without network access and the dashboard still opens from `file://`. They are runtime files, not a package installation: nothing here is managed by npm.
 
+`tabulator/` holds the engine every Plenix table runs on (Tabulator 6.6.1, MIT, added 2026-10-08); the DataGrid component loads it the first time a grid renders. Its files, checksums, load order and update steps are in `tabulator/README.md`.
+
 | File | Package | Version | Build | License | Source | SHA-256 |
 |---|---|---|---|---|---|---|
 | `react.development.js` | react | 18.2.0 | UMD, development | MIT | https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js | `857364e2b982318417025fb9b4b8355c09f75fa46ba0be93f520f769f6757a78` |

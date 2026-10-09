@@ -164,6 +164,10 @@ copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
+// the DataGrid's engine (Tabulator, MIT): loaded by the DataGrid from ./vendor/tabulator/ next to plenix.js, and shipped in the
+// React package (dist/vendor/tabulator/) for pages that set window.PlenixVendorBase or load window.Tabulator themselves
+copyDir(path.join(P, 'vendor', 'tabulator'), path.join(CDN, 'vendor', 'tabulator'));
+copyDir(path.join(P, 'vendor', 'tabulator'), path.join(R, 'dist', 'vendor', 'tabulator'));
 copyDir(path.join(T, 'css'), path.join(CDN, 'tokens'));
 copy(path.join(T, 'tokens.json'), path.join(CDN, 'tokens', 'tokens.json'));
 copyDir(path.join(I, 'svg'), path.join(CDN, 'icons'));

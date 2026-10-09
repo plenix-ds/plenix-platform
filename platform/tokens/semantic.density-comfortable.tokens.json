@@ -139,6 +139,14 @@
     "space-region-space-lg": {
       "$value": "{plx-ref.space-64px}",
       "$type": "dimension"
+    },
+    "grid-row-height": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension"
+    },
+    "grid-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
     }
   }
 }

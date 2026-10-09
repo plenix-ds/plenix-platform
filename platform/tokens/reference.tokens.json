@@ -19,6 +19,30 @@
         }
       }
     },
+    "color-black-alpha-50": {
+      "$value": "#00000080",
+      "$type": "color"
+    },
+    "color-black-alpha-14": {
+      "$value": "#00000024",
+      "$type": "color"
+    },
+    "color-gray-950": {
+      "$value": "#1e1f22",
+      "$type": "color"
+    },
+    "color-gray-925": {
+      "$value": "#2a2b2f",
+      "$type": "color"
+    },
+    "color-gray-900": {
+      "$value": "#34363b",
+      "$type": "color"
+    },
+    "color-gray-850": {
+      "$value": "#3e4046",
+      "$type": "color"
+    },
     "color-gray-800": {
       "$value": "#444444",
       "$type": "color"
@@ -33,6 +57,14 @@
     },
     "color-gray-500": {
       "$value": "#8e9094",
+      "$type": "color"
+    },
+    "color-gray-400": {
+      "$value": "#a3a6ad",
+      "$type": "color"
+    },
+    "color-gray-350": {
+      "$value": "#c0c2c8",
       "$type": "color"
     },
     "color-gray-300": {
@@ -53,6 +85,14 @@
     },
     "color-white": {
       "$value": "#ffffff",
+      "$type": "color"
+    },
+    "color-blue-900": {
+      "$value": "#1f2a3a",
+      "$type": "color"
+    },
+    "color-blue-850": {
+      "$value": "#26354a",
       "$type": "color"
     },
     "color-blue-700": {
@@ -111,6 +151,10 @@
       "$value": "#fde7e7",
       "$type": "color"
     },
+    "color-brown-900": {
+      "$value": "#3a2e22",
+      "$type": "color"
+    },
     "color-brown-800": {
       "$value": "#7d3c00",
       "$type": "color"
@@ -125,6 +169,10 @@
     },
     "color-brown-100": {
       "$value": "#fef3e2",
+      "$type": "color"
+    },
+    "color-green-900": {
+      "$value": "#1d3320",
       "$type": "color"
     },
     "color-green-800": {
@@ -328,8 +376,16 @@
         }
       }
     },
+    "space-6px": {
+      "$value": "0.375rem",
+      "$type": "dimension"
+    },
     "space-8px": {
       "$value": "0.5rem",
+      "$type": "dimension"
+    },
+    "space-10px": {
+      "$value": "0.625rem",
       "$type": "dimension"
     },
     "space-12px": {
@@ -382,6 +438,10 @@
     },
     "size-16px": {
       "$value": "16px",
+      "$type": "dimension"
+    },
+    "size-18px": {
+      "$value": "18px",
       "$type": "dimension"
     },
     "size-20px": {
@@ -606,6 +666,10 @@
         }
       }
     },
+    "opacity-45": {
+      "$value": "0.45",
+      "$type": "number"
+    },
     "opacity-50": {
       "$value": "0.5",
       "$type": "number"
@@ -613,6 +677,10 @@
     "opacity-70": {
       "$value": "0.7",
       "$type": "number"
+    },
+    "motion-duration-quick": {
+      "$value": "0.12s",
+      "$type": "duration"
     },
     "motion-duration-fast": {
       "$value": "0.15s",

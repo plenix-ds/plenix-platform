@@ -36,6 +36,13 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
 - [ ] To discuss first (owner, 2026-10-08): renaming to Lighthouse Design System (lighthouse-ds); the design system as its own source of truth that every app takes its UI from; themes (the current look as the default theme, more themes later).
 
+Every table is a Tabulator DataGrid (owner, 2026-10-08: "every table rebuilt"; the style: docs/datagrid-tabulator-demo.html)
+- [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataGrid component (Tabulator's own column definitions), data-grid.css from the reference with tokens only, grid tokens, icons; 180/180 parts match the reference.
+- [ ] 2. The apps' tables (Settings, the Asset Manager's system settings and home, Files, Projects, Find) rewritten as DataGrids.
+- [ ] 3. The design system's own tables (token tables, labs, inventory docs) as DataGrids.
+- [ ] 4. Remove Table, system/table.css (.plx-data-table) and the 13 table-* tokens; ActivityList and PropertyList use the grid tokens; a check-system rule rejects any table that is not a DataGrid.
+- [ ] 5. The Data grid page of the design system: how to apply it, always Tabulator, every detail of the style and its tokens, one live grid.
+
 Themes and components (owner, 2026-10-08: "do the foundations and then the components")
 - [x] Themes defined in the design system (platform/standards/themes.json), the current look as the "default" theme, switching (batch 219).
 - [x] (batch 220) Foundations into themes: typography (families, weights, letter spacing), shape (radius, border widths and styles), motion (durations, easing), opacity and the focus ring become theme roles; components use only those roles. Shared, never per theme: spacing, control heights, density, grid, breakpoints, layers. The same palette color can serve many themes.
