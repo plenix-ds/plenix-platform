@@ -6092,10 +6092,12 @@ function HomePage() {
       onChange: setMode,
       options: [{
         value: 'grid',
-        label: 'Grid'
+        label: 'Grid',
+        icon: 'grid-3x2'
       }, {
         value: 'table',
-        label: 'Table'
+        label: 'Table',
+        icon: 'view-table'
       }]
     }), mode === 'grid' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.SegmentedControl, {
       label: "Card size",
@@ -6103,13 +6105,19 @@ function HomePage() {
       onChange: setSize,
       options: [{
         value: 'S',
-        label: 'S'
+        label: 'S',
+        icon: 'cards-small',
+        ariaLabel: 'Small cards'
       }, {
         value: 'M',
-        label: 'M'
+        label: 'M',
+        icon: 'cards-medium',
+        ariaLabel: 'Medium cards'
       }, {
         value: 'L',
-        label: 'L'
+        label: 'L',
+        icon: 'cards-large',
+        ariaLabel: 'Large cards'
       }]
     }) : null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       size: "sm",

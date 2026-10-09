@@ -13,6 +13,9 @@
     "briefcase-plus": "library_add",
     "button": "smart_button",
     "calendar": "calendar_month",
+    "cards-large": "crop_square",
+    "cards-medium": "grid_view",
+    "cards-small": "view_comfy",
     "caret": "arrow_drop_down",
     "check": "check_small",
     "chevron-down": "expand_more",
@@ -137,6 +140,7 @@
     "triangle-right": "arrow_right",
     "upload": "upload",
     "upload-2": "upload",
+    "view-table": "table_rows",
     "visibility": "visibility",
     "visibility-off": "visibility_off",
     "warning": "warning"

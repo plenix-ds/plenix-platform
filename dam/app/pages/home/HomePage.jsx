@@ -155,8 +155,8 @@ export function HomePage() {
         </Menu>
       </>}
       end={<>
-        <SegmentedControl label="View" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid' }, { value: 'table', label: 'Table' }]} />
-        {mode === 'grid' ? <SegmentedControl label="Card size" value={size} onChange={setSize} options={[{ value: 'S', label: 'S' }, { value: 'M', label: 'M' }, { value: 'L', label: 'L' }]} /> : null}
+        <SegmentedControl label="View" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'grid-3x2' }, { value: 'table', label: 'Table', icon: 'view-table' }]} />
+        {mode === 'grid' ? <SegmentedControl label="Card size" value={size} onChange={setSize} options={[{ value: 'S', label: 'S', icon: 'cards-small', ariaLabel: 'Small cards' }, { value: 'M', label: 'M', icon: 'cards-medium', ariaLabel: 'Medium cards' }, { value: 'L', label: 'L', icon: 'cards-large', ariaLabel: 'Large cards' }]} /> : null}
         <Button size="sm" iconOnly icon="close" label="Reset filters" onClick={() => { setFilters({}); setSortLabel('Sort'); toast.show('Reset filters', { tone: 'info' }); }} />
         <Button size="sm" iconOnly icon="save" label="Save current search" onClick={() => openDialog('saveSearchModal')} />
       </>} />

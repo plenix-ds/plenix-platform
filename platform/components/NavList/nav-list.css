@@ -3,11 +3,20 @@
 .plx-nav-list__heading{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-11);font-weight:var(--plx-sys-font-weight-bold);letter-spacing:var(--plx-sys-letter-spacing-widest);padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);text-transform:uppercase;}
 .plx-nav-list__items{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-ref-space-4px);}
 .plx-nav-list__item{align-items:center;background-color:transparent;border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:none;border-top-width:0;box-sizing:border-box;color:var(--plx-sys-content-default);column-gap:var(--plx-sys-space-inline-sm);cursor:pointer;display:flex;font-family:inherit;font-size:var(--plx-ref-font-size-13);inline-size:100%;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-sys-control-height-standard);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);text-align:start;text-decoration-line:none;}
+/* hover and current: the whole row, pin included, takes the state: its fill and an inset border two shades darker in
+   the same color family (the owner, batch 230); a row without actions is its item alone */
 .plx-nav-list__item:hover,
-.plx-nav-list__item.is-hover{background-color:var(--plx-sys-state-hover);}
+.plx-nav-list__item.is-hover{background-color:var(--plx-sys-state-hover);box-shadow:inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-hover-border);}
+.plx-nav-list__entry{border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);}
+.plx-nav-list__entry--actions:hover,
+.plx-nav-list__entry--actions.is-hover{background-color:var(--plx-sys-state-hover);box-shadow:inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-hover-border);}
+.plx-nav-list__entry--actions:has(>.plx-nav-list__item.is-current){background-color:var(--plx-sys-state-selected);box-shadow:inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);}
+.plx-nav-list__entry--actions>.plx-nav-list__item:hover,
+.plx-nav-list__entry--actions>.plx-nav-list__item.is-hover,
+.plx-nav-list__entry--actions>.plx-nav-list__item.is-current{background-color:transparent;box-shadow:none;}
 .plx-nav-list__item:focus-visible,
 .plx-nav-list__item.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-border-width-medium) * -1);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
-.plx-nav-list__item.is-current{background-color:var(--plx-sys-state-selected);color:var(--plx-sys-selected-content);font-weight:var(--plx-sys-font-weight-medium);}
+.plx-nav-list__item.is-current{background-color:var(--plx-sys-state-selected);box-shadow:inset 0 0 0 var(--plx-sys-border-width-thin) var(--plx-sys-state-selected-border);color:var(--plx-sys-selected-content);font-weight:var(--plx-sys-font-weight-medium);}
 .plx-nav-list__item:disabled{color:var(--plx-sys-content-disabled);cursor:default;}
 .plx-nav-list__label{align-items:baseline;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__entry--actions{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;}

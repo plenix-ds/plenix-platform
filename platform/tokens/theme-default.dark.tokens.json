@@ -62,6 +62,14 @@
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
     },
+    "state-hover-border": {
+      "$value": "{plx-ref.color-gray-850}",
+      "$type": "color"
+    },
+    "state-selected-border": {
+      "$value": "{plx-ref.color-gray-850}",
+      "$type": "color"
+    },
     "content-default": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color"

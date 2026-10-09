@@ -71,6 +71,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   (#/data-display/data-grid): how to apply it, every part of its style with its tokens, one live grid. (batch 226)
 
 ### Changed (visual)
+- Navigation rows (NavList, Tree): hover and the current row fill the whole row, pin included, with an inset border two
+  shades darker in the same color family: new roles --plx-sys-state-hover-border (light gray-300, dark gray-850) and
+  --plx-sys-state-selected-border (light blue-250, dark gray-850). The app switcher panel takes the Menu's real border
+  (its inset border was hidden under its tiles). The Asset Manager's View and Card size controls show icons (grid,
+  table rows; small, medium, large cards: Material Symbols added unedited). (batch 230)
 - Button labels no longer cut letters that reach below the line (the g in "Tagging"): the Button's line height is
   1.3 (--plx-comp-button-line-height = line-height-tight, was 1); button heights are unchanged. (batch 227)
 - Fonts are hosted with the Platform: DM Sans (variable 300–700, italic) and DM Mono (300, 400, 500, italic) in
