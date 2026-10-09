@@ -5613,6 +5613,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      label: the accessible name of the tree
      nodes: the top-level items: [{ id, label, icon, meta, children }]
      nodes[].icon: an icon name or element before the label
+     nodes[].openIcon: the icon while the item is open; default: "folder" opens as "folder-open", others stay
      nodes[].meta: extra content at the end of the row
      nodes[].children: the item's child items, in the same shape
      selected: the id of the selected item
@@ -5628,11 +5629,17 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Home and End go to the first and last visible item.
      Enter or Space selects.
      Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
+     An open folder shows the open-folder icon (batch 239).
 */
 
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
+// the icon an open item shows: its own openIcon, else an open folder for a folder
+const OPEN_ICONS = {
+  folder: 'folder-open'
+};
+const iconOf = (n, isOpen) => isOpen ? n.openIcon || typeof n.icon === 'string' && OPEN_ICONS[n.icon] || n.icon : n.icon;
 function visible(nodes, open, parent, out) {
   nodes.forEach(n => {
     out.push({
@@ -5731,7 +5738,7 @@ function Tree({
       } : undefined
     }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__icon"
-    }, asIcon(n.icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    }, asIcon(iconOf(n, isOpen))) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__label"
     }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-tree__meta"

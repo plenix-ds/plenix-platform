@@ -6,6 +6,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- Tree (owner: "use open folder in the tree when a folder is opened"): an open item shows its open icon: a "folder" item
+  opens as "folder-open" (Material Symbols folder_open, already in the set), and nodes[].openIcon names any other pair.
+  The Asset Manager's folder trees follow. (batch 239)
+
 ## [0.7.0] - 2026-10-09
 
 ### Added

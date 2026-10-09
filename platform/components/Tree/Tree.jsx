@@ -7,6 +7,7 @@
      label: the accessible name of the tree
      nodes: the top-level items: [{ id, label, icon, meta, children }]
      nodes[].icon: an icon name or element before the label
+     nodes[].openIcon: the icon while the item is open; default: "folder" opens as "folder-open", others stay
      nodes[].meta: extra content at the end of the row
      nodes[].children: the item's child items, in the same shape
      selected: the id of the selected item
@@ -22,6 +23,7 @@
      Home and End go to the first and last visible item.
      Enter or Space selects.
      Clicking the + box (a closed row) or the − box (an open row) opens or closes it; clicking the row selects.
+     An open folder shows the open-folder icon (batch 239).
 */
 import React from 'react';
 import { isRtl } from '../../utils/direction.js';
@@ -30,6 +32,9 @@ import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+// the icon an open item shows: its own openIcon, else an open folder for a folder
+const OPEN_ICONS = { folder: 'folder-open' };
+const iconOf = (n, isOpen) => (isOpen ? n.openIcon || (typeof n.icon === 'string' && OPEN_ICONS[n.icon]) || n.icon : n.icon);
 
 function visible(nodes, open, parent, out) {
   nodes.forEach((n) => {
@@ -77,7 +82,7 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
         <div className="plx-tree__row" style={{ '--plx-comp-tree-level': level - 1 }} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
             onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
-          {n.icon ? <span className="plx-tree__icon">{asIcon(n.icon)}</span> : null}
+          {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen))}</span> : null}
           <span className="plx-tree__label">{n.label}</span>
           {n.meta !== undefined ? <span className="plx-tree__meta">{n.meta}</span> : null}
         </div>
