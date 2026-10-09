@@ -132,6 +132,10 @@
       "$value": "{plx-ref.color-white}",
       "$type": "color"
     },
+    "feedback-neutral-solid-label": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color"
+    },
     "feedback-neutral-soft": {
       "$value": "{plx-ref.color-gray-100}",
       "$type": "color"
@@ -146,6 +150,10 @@
     },
     "feedback-info-on-solid": {
       "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-info-solid-label": {
+      "$value": "{plx-ref.color-blue-400}",
       "$type": "color"
     },
     "feedback-info-soft": {
@@ -164,6 +172,10 @@
       "$value": "{plx-ref.color-white}",
       "$type": "color"
     },
+    "feedback-success-solid-label": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color"
+    },
     "feedback-success-soft": {
       "$value": "{plx-ref.color-green-100}",
       "$type": "color"
@@ -180,6 +192,10 @@
       "$value": "{plx-ref.color-white}",
       "$type": "color"
     },
+    "feedback-warning-solid-label": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color"
+    },
     "feedback-warning-soft": {
       "$value": "{plx-ref.color-brown-100}",
       "$type": "color"
@@ -194,6 +210,10 @@
     },
     "feedback-danger-on-solid": {
       "$value": "{plx-ref.color-white}",
+      "$type": "color"
+    },
+    "feedback-danger-solid-label": {
+      "$value": "{plx-ref.color-red-500}",
       "$type": "color"
     },
     "feedback-danger-soft": {

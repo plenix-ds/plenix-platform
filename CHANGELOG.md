@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Badge and Count: the warning tone failed WCAG AA contrast (white text on brown-500, 4.46:1). New semantic roles
+  `--plx-sys-feedback-{tone}-solid-label` (light and dark) are the fill behind text: warning points to brown-800 (8.34:1),
+  the other tones to the same colors as `-solid`. Badge and Count's pill use them; StatusDot, ProgressBar and Toast keep
+  `-solid`. Warning badges and counts are darker brown; every tone and size passes in both modes. (batch 228)
+
 ## [0.6.0] - 2026-10-09
 
 ### Changed (visual)
