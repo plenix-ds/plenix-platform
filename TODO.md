@@ -2,6 +2,23 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Every Variant (the Button treatment for every component) (added 2026-10-09)
+
+Owner: "every variant for every component to have navigation and design specs just like we did for the buttons". Say
+"continue Every Variant" to pick it up. Each component gets: its values as component tokens, an "All" lab that draws
+every variant with each value's token and an Edit dialog, and its own page per variant in the navigation.
+- [x] Button, Field and the six form controls (batches 252-256)
+- [x] Badge (0.17.0); Counter, Status dot, Notice, Spinner, Progress bar (0.18.0): 37 of 192 variants
+- [ ] Overlays: Dialog, Confirmation dialog, Side drawer, Toast
+- [ ] Navigation: Tabs, Application header, Navigation rail, Product switcher, Action menu
+- [ ] Data display: Tag, Chip, Metric, Card, Media card, Interactive list, Activity stream, Radio tiles, Calendar view
+- [ ] Forms: Combobox, Search input, Color swatch, Drop zone, Rating
+- [ ] Content: Text, Heading, List, Code block, Keyboard hint, Avatar, Property list, Thumbnail, Icon
+- [ ] Layout: Stack, Divider, Columns, Responsive grid, Dashboard grid, Secondary pane, Inspector region, Record page
+- [ ] The rest: Empty state, Preview, Typing indicator
+Done = every record with variant cards has variant pages and a lab that passes tests/labs.test.js. The recipe is in
+the work log (batches 263-264): tokenize-component.js, a DS.registerLab spec, variantPages whose names match the cards.
+
 ## Sign-in email: SMTP for "Forgot username or password?" (added 2026-10-09)
 
 The sign-in page (auth.lighthouseway.org, Authentik) has the link and Authentik's reset flow (default-recovery-flow: your
