@@ -88,7 +88,7 @@
 
 /* the cell kinds: the row's name, technical values */
 .plx-data-table .plx-data-table__cell--name{font-weight:var(--plx-comp-data-table-name-font-weight);}
-.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--data{color:var(--plx-sys-data-table-text-muted);font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);}
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--data{font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);}
 
 /* long text: it wraps and the row grows; the first line sits where a one-line cell's text does (half the row height
    around one line) */

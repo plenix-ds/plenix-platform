@@ -18,7 +18,7 @@
      data: the rows: plain objects, Tabulator's data format (children in _children with options.dataTree)
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
        own terms, with these Plenix additions:
-     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: muted, in the table's own DM Sans and size so every cell shares a baseline; batch 245) |
+     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: the same DM Sans, size and color as the row, so every cell reads alike; batches 245–246) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
        selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does)
@@ -94,6 +94,19 @@ const sizeOf = (v, host) => (typeof v === 'string' && /^(var\()?--/.test(v) ? ta
 
 // the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
 // resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
+// the row checkbox (batch 246): a plain click toggles the row; Shift or Ctrl/Cmd use Tabulator's range and add selection
+function rowCheckbox(cell) {
+  const row = cell.getRow(), table = cell.getTable(), box = document.createElement('input');
+  box.type = 'checkbox';
+  box.checked = row.isSelected();
+  box.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (e.shiftKey || e.ctrlKey || e.metaKey) { e.preventDefault(); table.modules.selectRow.handleComplexRowClick(row._row, e); } else row.toggleSelect();
+  });
+  table.modules.selectRow.registerRowSelectCheckbox(row, box);   // Tabulator keeps it checked as the row is selected
+  return box;
+}
+
 export function TableEngine(props) {
   const isStatic = !!props.isStatic, B = isStatic ? 'plx-table' : 'plx-data-table';
   const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className } = props;
@@ -234,10 +247,13 @@ export function TableEngine(props) {
         editTriggerEvent: 'dblclick',
         dataTreeChildIndent: tablePx(INDENT, host),
         rowContextMenu,
-        rowHeader: p.selectable ? { formatter: 'rowSelection', titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
+        // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
+        // plain click mean "only this row", so a checked box could not be unchecked; Shift and Ctrl/Cmd keep their range
+        // and add meanings. The header checkbox stays Tabulator's (select all / none).
+        rowHeader: p.selectable ? { formatter: rowCheckbox, titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
           width: lead, minWidth: lead, maxWidth: lead, hozAlign: 'center', headerHozAlign: 'center',
           cssClass: cx('plx-data-table__cell--select', labelled && 'plx-data-table__cell--row-label'),
-          cellClick: (e, cell) => cell.getRow().toggleSelect() } : false,
+        } : false,
         selectableRows: p.selectable ? true : false,
         selectableRowsRangeMode: 'click',
         // with a rowClick handler, a row is a Tab stop and Enter does what a click does

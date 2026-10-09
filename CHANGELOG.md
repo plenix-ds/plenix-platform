@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-09
+
+### Fixed
+- DataTable (owner: "uncheckbox does not really work"): a checked row checkbox could not be unchecked: in the "click" range
+  mode the rows use, Tabulator's checkbox read a plain click as "only this row", and an extra cell handler toggled again.
+  The row checkbox now toggles its row (Shift and Ctrl/Cmd keep range and add); the cell around it acts as a row click.
+  (batch 246)
+
+### Changed (visual)
+- Table and DataTable (owner: "this typography is not consistent"): kind "data" cells no longer use the muted color; they
+  take the row's color (also a selected row's), so every cell reads alike: one font, size, color and baseline. (batch 246)
+
 ## [0.9.0] - 2026-10-09
 
 ### Changed (visual)
