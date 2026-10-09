@@ -1080,7 +1080,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Projects",
+          label: "All projects",
           count: _shared.PROJECTS.length
         }]
       }].concat(Object.entries(groups).map(([tag, projs]) => ({
@@ -1105,7 +1105,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Messages"
+          label: "All messages"
         }]
       }, {
         heading: "Channels",
@@ -1140,7 +1140,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Contacts",
+          label: "All contacts",
           count: _shared.CONTACTS.length
         }]
       }, {
@@ -1165,10 +1165,10 @@ function LeftNav({
     calendar: {
       label: "Calendars",
       groups: [{
-        heading: "My Calendars",
+        heading: "My calendars",
         items: [{
           id: "all",
-          label: "All Calendars",
+          label: "All calendars",
           icon: /*#__PURE__*/React.createElement(Mark, {
             square: true,
             color: "var(--plx-ref-color-gray-700)"
@@ -1190,7 +1190,7 @@ function LeftNav({
         icon: /*#__PURE__*/React.createElement(_shared.Ico, {
           n: "up"
         })
-      }, "Import Calendar"))
+      }, "Import calendar"))
     },
     tasks: {
       label: "Tasks",
@@ -1198,7 +1198,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Tasks",
+          label: "All tasks",
           count: _shared.ALL_TASKS.filter(t => !t.done).length
         }, {
           id: "due",
@@ -1206,7 +1206,7 @@ function LeftNav({
           count: _shared.ALL_TASKS.filter(t => !t.done && ["Mar 8", "Mar 10"].includes(t.due)).length
         }]
       }, {
-        heading: "By Project",
+        heading: "By project",
         items: by(_shared.ALL_TASKS, "proj", p => _shared.ALL_TASKS.filter(t => t.proj === p && !t.done).length)
       }]
     },
@@ -1216,7 +1216,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Notes",
+          label: "All notes",
           count: _shared.ALL_NOTES.length
         }]
       }, {
@@ -1230,7 +1230,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Bookmarks",
+          label: "All bookmarks",
           count: _shared.ALL_BOOKMARKS.length
         }]
       }, {
@@ -1244,7 +1244,7 @@ function LeftNav({
         heading: null,
         items: [{
           id: "all",
-          label: "All Files",
+          label: "All files",
           count: _shared.ALL_FILES.length
         }]
       }, {
