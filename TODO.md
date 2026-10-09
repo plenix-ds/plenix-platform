@@ -15,6 +15,10 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
 - [ ] 4. Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
 - [ ] 5. Image editor in steps: zoom, opacity, text on a 5% grid, palette text colors, filter presets, crop classes
 - [ ] 6. The design system's 15 sample styles: a generated class per token
+- [ ] 6b. Tabulator drawn by Plenix (prototype in batch 269 reached 0 inline styles with sorting, selection and class
+  widths): basic row renderer, column widths as size-token classes (cssClass), a sticky class instead of frozen,
+  Tabulator's own geometry writes switched off; then editing, menus and popups (Plenix menus instead of Tabulator's
+  positioned popups), tree, grouping, row moving, column resizing (snapping to width tokens), and paging for long lists
 - [ ] 7. check-system rejects every style attribute, custom properties included
 
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)
