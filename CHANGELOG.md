@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-09
+
+### Changed (visual)
+- Table and DataTable typography (owner: "if it's problematic, simply use DM Sans"): kind "data" cells were DM Mono at
+  12px beside DM Sans at the table size (13px at Standard), so a row's cells sat on different baselines and code-like
+  values looked smaller. They now use the table's DM Sans and size (--plx-comp-table-data-font-family and
+  --plx-comp-data-table-data-font-family -> typeface-sans; the data font sizes -> the table font size), still muted.
+  (batch 245)
+
 ## [0.8.5] - 2026-10-09
 
 ### Changed (visual)

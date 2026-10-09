@@ -18,7 +18,7 @@
      data: the rows: plain objects, Tabulator's data format (children in _children with options.dataTree)
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
        own terms, with these Plenix additions:
-     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: the data font, smaller, muted) |
+     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: muted, in the table's own DM Sans and size so every cell shares a baseline; batch 245) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
        selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does)

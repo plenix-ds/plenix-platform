@@ -1258,11 +1258,11 @@
       "$type": "fontFamily"
     },
     "data-table-data-font-family": {
-      "$value": "{plx-sys.typeface-mono}",
+      "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
     "table-data-font-family": {
-      "$value": "{plx-sys.typeface-mono}",
+      "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
     "data-table-font-size": {
@@ -1290,11 +1290,11 @@
       "$type": "fontWeight"
     },
     "data-table-data-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.data-table-font-size}",
       "$type": "dimension"
     },
     "table-data-font-size": {
-      "$value": "{plx-ref.font-size-12}",
+      "$value": "{plx-sys.table-font-size}",
       "$type": "dimension"
     },
     "data-table-name-font-weight": {
