@@ -76,3 +76,6 @@ jobs:
 
       - name: "Data tables (every DataTable view: built, axe, style audit, row height, typography)"
         run: node tests/data-table.test.js
+
+      - name: "Component labs (each Edit dialog field moves its own property)"
+        run: node tests/labs.test.js

@@ -7,6 +7,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Added
+- Design system: the Field lab (batch 256): "All fields" (stacked, inline, row × default, info hover, info focus, info open,
+  invalid, required; the default or small label column) and five variant pages (Stacked, Inline, Row, a small label column,
+  with an error), the anatomy and the Edit dialog on the field tokens: the label, required mark, description, error, the (i)
+  button and its hit area, the info text and every layout gap (888 checks, 43 tokens). DS.table takes a minimum column
+  width, so wide specimens scroll instead of overlapping. The form controls now have the Button treatment.
+- tests/labs.test.js (npm test, CI): every component lab, at every size, variant, state and content: each Edit dialog
+  field's token must move the property it names (3,910 checks over seven labs).
+
+### Added
 - Design system: the Checkbox, Radio group and Switch labs (batch 255). "All checkboxes" (unchecked, checked, partly checked
   × default, focus, disabled), "All radio groups" (column, row) and "All switches" (off, on), and nine variant pages, each
   with the lettered anatomy and the Edit dialog on the check, radio-group and switch tokens: the box, focus outline, label,
