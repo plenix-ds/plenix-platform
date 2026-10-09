@@ -10,7 +10,7 @@ Phase 1 · a trustworthy foundation
 - [x] 1. Button's look as component tokens (batch 207): 115 `--plx-comp-button-*` tokens; button.css uses only them; each Edit dialog field edits exactly one token and Save sends `{ file, changes: [{ token, from, to }] }`.
 - [x] 2. The 125 built items' written sections (batch 208): purpose, anatomy, behavior, accessibility, content guidance, related items, template references (from the apps' imports), Figma (none: code-first). "Not written yet" on built pages: 2,018 → 0. The code gaps found are in Plenix - DAM/audit/findings-2026-10-08.md (to fix).
 - [x] 3. The deployed apps run on the release (batch 208): deploy.sh points their pages at /cdn/<version>/ and reports unreleased Platform changes. All 11 apps pixel-identical on source and release.
-- [ ] 4. Owner: check drive D: (`chkdsk D: /scan`) and memory (Windows Memory Diagnostic): two corrupted writes on 2026-10-08.
+- [x] 4. (2026-10-09) The corrupted writes: the drives report healthy; the cause is the CPU (i9-13900KS, Raptor Lake degradation: 89 WHEA internal parity errors on P-cores 4 and 5, 3 fatal, crashes). Owner: Intel warranty RMA; meanwhile Intel Default Settings, RAM at 4800-5200, free space on D: (98% full).
 
 Phase 2 · safe to change
 - [x] 5. VERSIONING.md and CHANGELOG.md (batch 209); the Release workflow takes its notes from the changelog.
@@ -25,13 +25,13 @@ Fix what was found (owner's choice, before items 8, 9, 11; batches 211–215, re
 - [ ] Owner: the five layout modes on `data-plx-layout` are declared, but no CSS reads them. Implement them, or document them as a label only?
 
 Next, in order (agreed after the Authentik set-up, 2026-10-08)
-- [ ] 1. Release 0.4.0: the Asset Manager labels, the layout modes, the layout standard (settings follow it), accessibility 0.
+- [x] 1. Releases: 0.4.0 through 0.13.1 are out; the Asset Manager labels and the layout modes wait on the owner (above).
 - [ ] 2. Save in the design system (item 8): Save opens a pull request; only Authentik Editors (and Admins) may save; a save service on the Plenix VM; the Authentik proxy provider and application (owner to approve Claude creating them through Authentik's admin shell).
 - [x] 3. (batch 251) Starter template (item 12): plenix-ds/plenix-starter with a CDN (plain HTML) starter and a Vite + React + TypeScript starter, both on the shell, page kinds and tokens.
 - [x] 4. Form controls on component tokens (item 9): Input, Select, Checkbox, Radio, Switch and Field get the Button treatment. Tokens done (batch 223); the shared lab (batch 252) and the labs of Text field, Text area, Native select, Checkbox, Radio group, Switch and Field (batches 253-256): an All page, 41 variant pages, the anatomy and the Edit dialog each; tests/labs.test.js proves every field moves its own property.
 - [x] (batch 224) A compact Checkbox is 24px: no top and bottom padding in compact (owner chose A).
 - [ ] 5. Build the placeholders the next project needs (item 11): owner to name the project or the items.
-- [ ] Owner: check drive D: (chkdsk, SMART); create the DS_TOKEN secret so CI also tests the design system.
+- [ ] Owner: create the DS_TOKEN secret so CI also tests the design system.
 - [x] Claude (read-only, 2026-10-09): Proxmox backups checked. **Nothing is backed up**: /etc/pve/jobs.cfg has no backup job and no storage holds a backup (container 104 "infra", Authentik, included).
 - [ ] Owner: set up Proxmox backups (where to: local, the Storage pool or a Proxmox Backup Server; how many to keep; when). Container 104 (Authentik) first.
 - [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
@@ -94,5 +94,5 @@ The design system's Edit dialog saves token changes straight into the token JSON
 - [ ] Save endpoint: `POST /api/tokens`, body `{ file, changes: [{ token, from, to }] }`. It writes the token JSON, runs `node build-tokens.js` (and `node check-system.js`), and answers with the result. Read-only servers answer 404/405, and the dialog then says saving needs this server.
 - [ ] Access: only the owner can save (sign-in or a key on the server side, never in the page).
 - [ ] History: every save is logged (who, when, the change list), so a change can be undone.
-- [ ] DNS and HTTPS for design-system.lighthouseway.org.
+- [x] DNS and HTTPS for design-system.lighthouseway.org (live since 2026-10-08).
 - Done when: an edit made in the Edit dialog on design-system.lighthouseway.org changes the JSON, the token CSS is rebuilt, and the page shows the new value after reload.
