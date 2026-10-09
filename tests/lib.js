@@ -29,7 +29,14 @@ function chromePath() {
   for (const p of ['C:/Program Files/Google/Chrome/Application/chrome.exe', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium', '/usr/bin/chromium-browser']) if (fs.existsSync(p)) return p;
   throw new Error('No Chrome found: set CHROME_PATH');
 }
-const launch = () => puppeteer.launch({ executablePath: chromePath(), headless: true, protocolTimeout: 180000, args: ['--no-sandbox', '--allow-file-access-from-files'] });
+// every test page asks for reduced motion, so a state is measured settled, never mid-fade (batch 236 added 80ms hover and
+// color fades; a machine whose system already reduces motion passed while CI, without it, read the start of each fade)
+const launch = async () => {
+  const browser = await puppeteer.launch({ executablePath: chromePath(), headless: true, protocolTimeout: 180000, args: ['--no-sandbox', '--allow-file-access-from-files'] });
+  const newPage = browser.newPage.bind(browser);
+  browser.newPage = async (...a) => { const p = await newPage(...a); await p.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]); return p; };
+  return browser;
+};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'];
 
