@@ -22,8 +22,10 @@
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
    Notes:
-     "contained" is the standard everywhere: folder tabs joined to a bordered panel.
-     The other variants stay for compatibility only: "underline", "folder" (folder tabs over a baseline, the panel not boxed), "segmented" (a compact switch).
+     "contained" is the standard: folder tabs joined to a bordered panel.
+     "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
+     content below with no frame of its own; for tabs inside a pane or a card that is already framed.
+     "underline" and "segmented" (a compact switch) stay for compatibility.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */

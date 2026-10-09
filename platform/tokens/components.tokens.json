@@ -637,6 +637,14 @@
       "$value": "{plx-ref.size-400px}",
       "$type": "dimension"
     },
+    "side-panel-width-min": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension"
+    },
+    "side-panel-width-max": {
+      "$value": "{plx-ref.size-560px}",
+      "$type": "dimension"
+    },
     "input-background": {
       "$value": "{plx-sys.control-background}",
       "$type": "color"

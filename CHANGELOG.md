@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-10-09
+
+### Added
+- SidePanel `resizable` (owner: "the right pane also needs the ability to resize"): its start edge is dragged or moved with
+  the arrow keys between --plx-comp-side-panel-width-min (280px) and -max (560px); Home and End jump to them; the width is
+  remembered. The Asset Manager's details panel uses it. (batch 259)
+- SecondaryPane `onClose` (owner: "resize, expand/collapse and close… the close is based on the application"): a standard
+  Close button ends the header row, given only by an application whose pane can close. The Asset Manager's Files pane now
+  resizes, folds to a rail and closes. (batch 259)
+- Tabs `variant="folder"` is a documented variant, "Folder" (owner: "just the header part of the tabs… give it a name"):
+  the tab strip alone over a baseline, the open tab joined to it, the content unframed. (batch 259)
+
+### Fixed
+- Tabs, contained: the panel's side edges were inset shadows and its top and bottom real borders, which render differently
+  at fractional display scales (the left edge looked heavier). All four edges are drawn alike now, inside the panel.
+  (batch 259)
+
 ## [0.13.2] - 2026-10-09
 
 ### Changed

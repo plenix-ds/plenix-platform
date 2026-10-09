@@ -15,12 +15,14 @@
      collapsible: a Collapse button in the header folds the pane to a rail (an Expand button, then the rail items); default false
      collapsed / onCollapsedChange(next): the folded state, controlled; defaultCollapsed: its first state when not controlled
      rail: the items the folded rail shows under Expand (ToolRail.Item elements)
+     onClose(): a Close button ends the header row; given by the applications whose pane can be closed (the Asset Manager's
+       Files pane), left out where the pane is always there (batch 259)
      resizable: the pane's content edge can be dragged (or moved with the arrow keys) between its sm width and
        --plx-comp-secondary-pane-width-max; default false
      className: more classes
      children: the body
      strings: the words it announces, for other languages: { expand: "Expand {name}", collapse: "Collapse {name}", resize:
-       "Resize {name}" } ({name} is the label, or the title)
+       "Resize {name}", close: "Close {name}" } ({name} is the label, or the title)
    Behavior:
      The body scrolls on its own while the content scrolls beside it.
      The resize edge is a separator (role="separator", aria-valuenow); Arrow Left / Right move the edge, mirrored in a
@@ -38,10 +40,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 
-const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}' };
+const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}' };
 
 export function SecondaryPane({ title, label, icon, actions, side = 'start', width = 'md', collapsible = false, collapsed, defaultCollapsed = false,
-  onCollapsedChange, rail, resizable = false, strings, className, children, ...rest }) {
+  onCollapsedChange, rail, resizable = false, onClose, strings, className, children, ...rest }) {
   const t = Object.assign({}, STRINGS, strings);
   const [ownCollapsed, setOwnCollapsed] = React.useState(defaultCollapsed);
   const folded = collapsible && (collapsed !== undefined ? collapsed : ownCollapsed);
@@ -67,6 +69,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
         <span className="plx-secondary-pane__title">{title}</span>
         {actions}
         {collapsible ? <Button size="xs" variant="ghost" iconOnly icon={side === 'start' ? 'panel-left-close' : 'panel-right-close'} label={named(t.collapse)} onClick={() => setFolded(true)} /> : null}
+        {onClose ? <Button size="xs" variant="ghost" iconOnly icon="close" label={named(t.close)} onClick={onClose} /> : null}
       </div>
       <div className="plx-secondary-pane__body">{children}</div>
       {resizable ? (

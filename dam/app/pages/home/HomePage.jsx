@@ -47,10 +47,9 @@ function FilesPane({ onUpload, onClose }) {
     setNodes(put(nodes)); setOpen(open.indexOf(selected) < 0 ? open.concat(selected) : open); setName(''); setAdding(false);
   };
   return (
-    <SecondaryPane title="Files" icon="folder-open" actions={<>
-      <Button size="sm" variant="primary" icon="upload" onClick={onUpload}>Upload</Button>
-      <Button size="sm" variant="ghost" iconOnly icon="close" label="Close files pane" onClick={onClose} />
-    </>}>
+    // the Files pane: it resizes, folds to a rail and closes (the Asset Manager lets people close it; batch 259)
+    <SecondaryPane title="Files" icon="folder-open" collapsible resizable onClose={onClose} strings={{ close: 'Close files pane' }}
+      actions={<Button size="sm" variant="primary" icon="upload" onClick={onUpload}>Upload</Button>}>
       <Tree label="Folders" nodes={nodes} selected={selected} onSelect={setSelected} expanded={open} onExpandedChange={setOpen} />
       {adding ? (
         <input className="plx-input" autoFocus value={name} placeholder="Folder name..." aria-label="New folder name" onChange={(e) => setName(e.target.value)}
@@ -280,7 +279,7 @@ export function HomePage() {
 
   const Current = dialog && DIALOGS[dialog.id];
   const panel = <SidePanel title="Details" label={browse ? 'Details' : 'Asset details'} icon="circle-info" open={!right.collapsed}
-    onOpenChange={(o) => setRight({ ...right, collapsed: !o })} collapseLabel="Minimize panel" footer={<InspectorFooter act={act} />}>{details}</SidePanel>;
+    onOpenChange={(o) => setRight({ ...right, collapsed: !o })} collapseLabel="Minimize panel" resizable footer={<InspectorFooter act={act} />}>{details}</SidePanel>;
   return (
     <AssetPage title="Assets" query={view === 'find' ? find.query : query} onSearch={search} sideNav={sidebar} panel={panel} onUpload={() => openDialog('uploadModal')}>
       <Inline gap="none" align="stretch" grow>

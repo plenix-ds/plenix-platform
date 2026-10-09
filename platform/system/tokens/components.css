@@ -157,6 +157,8 @@
   --plx-comp-secondary-pane-width-md: var(--plx-ref-size-220px);
   --plx-comp-secondary-pane-width-lg: var(--plx-ref-size-280px);
   --plx-comp-secondary-pane-width-max: var(--plx-ref-size-400px);
+  --plx-comp-side-panel-width-min: var(--plx-ref-size-280px);
+  --plx-comp-side-panel-width-max: var(--plx-ref-size-560px);
   --plx-comp-input-background: var(--plx-sys-control-background);
   --plx-comp-input-border-color: var(--plx-sys-control-border);
   --plx-comp-input-radius: var(--plx-sys-radius-control);

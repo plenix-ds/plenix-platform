@@ -4150,8 +4150,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
    Notes:
-     "contained" is the standard everywhere: folder tabs joined to a bordered panel.
-     The other variants stay for compatibility only: "underline", "folder" (folder tabs over a baseline, the panel not boxed), "segmented" (a compact switch).
+     "contained" is the standard: folder tabs joined to a bordered panel.
+     "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
+     content below with no frame of its own; for tabs inside a pane or a card that is already framed.
+     "underline" and "segmented" (a compact switch) stay for compatibility.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */
@@ -8495,6 +8497,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      actions: controls at the end of the header row
      footer: a row pinned to the panel's bottom (its actions: Save, Cancel), --plx-comp-pane-footer-height, its divider drawn inside
      collapseLabel: the Collapse button's label (default "Collapse panel")
+     resizable: its start edge can be dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
+       -max; the width is remembered; Home and End jump to the smallest and largest (batch 259); default false
+     resizeLabel: the edge's accessible name (default "Resize panel")
      className: more classes
      children: the body
    Behavior:
@@ -8506,6 +8511,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Not every capability has one; it shows only where it is given.
 */
 
+const WIDTH_KEY = 'plenix.sidePanelWidth';
 function SidePanel({
   title,
   label,
@@ -8515,6 +8521,8 @@ function SidePanel({
   actions,
   footer,
   collapseLabel,
+  resizable = false,
+  resizeLabel,
   className,
   children
 }) {
@@ -8531,6 +8539,21 @@ function SidePanel({
     if (small && open) set(false);
   }, [small]);
   const name = label || title || 'Panel';
+  // the width dragged on its edge, remembered across visits (resizable, docked only)
+  const [size, setSize] = _react.default.useState(() => {
+    try {
+      return +localStorage.getItem(WIDTH_KEY) || null;
+    } catch (e) {
+      return null;
+    }
+  });
+  const resize = w => {
+    setSize(w);
+    try {
+      localStorage.setItem(WIDTH_KEY, String(w));
+    } catch (e) {/* this visit only */}
+  };
+  const docked = resizable && !small;
   const railEl = onOpenChange ? /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail, {
     label: name + ' pane',
     className: "plx-side-panel-rail"
@@ -8543,7 +8566,10 @@ function SidePanel({
   const pane = /*#__PURE__*/_react.default.createElement("aside", {
     ref: ref,
     "aria-label": name,
-    className: (0, _cx.cx)('plx-side-panel', small && 'plx-side-panel--overlay', className)
+    className: (0, _cx.cx)('plx-side-panel', small && 'plx-side-panel--overlay', docked && 'plx-side-panel--resizable', docked && size && 'plx-side-panel--resized', className),
+    style: {
+      '--plx-comp-side-panel-width': docked && size ? size + 'px' : undefined
+    }
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-side-panel__header"
   }, onOpenChange ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -8564,7 +8590,15 @@ function SidePanel({
     className: "plx-side-panel__body"
   }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-side-panel__footer"
-  }, footer) : null);
+  }, footer) : null, docked ? /*#__PURE__*/_react.default.createElement(_AppShell.PanelSplitter, {
+    label: resizeLabel || 'Resize panel',
+    edge: "start",
+    min: (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'),
+    max: () => (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-max'),
+    value: size || (0, _AppShell.tokenPx)('--plx-sys-panel-inspector-width'),
+    onChange: resize,
+    onCollapse: onOpenChange ? () => set(false) : undefined
+  }) : null);
   return small ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, railEl, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-shell__scrim",
     "aria-hidden": "true",
@@ -8603,12 +8637,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      collapsible: a Collapse button in the header folds the pane to a rail (an Expand button, then the rail items); default false
      collapsed / onCollapsedChange(next): the folded state, controlled; defaultCollapsed: its first state when not controlled
      rail: the items the folded rail shows under Expand (ToolRail.Item elements)
+     onClose(): a Close button ends the header row; given by the applications whose pane can be closed (the Asset Manager's
+       Files pane), left out where the pane is always there (batch 259)
      resizable: the pane's content edge can be dragged (or moved with the arrow keys) between its sm width and
        --plx-comp-secondary-pane-width-max; default false
      className: more classes
      children: the body
      strings: the words it announces, for other languages: { expand: "Expand {name}", collapse: "Collapse {name}", resize:
-       "Resize {name}" } ({name} is the label, or the title)
+       "Resize {name}", close: "Close {name}" } ({name} is the label, or the title)
    Behavior:
      The body scrolls on its own while the content scrolls beside it.
      The resize edge is a separator (role="separator", aria-valuenow); Arrow Left / Right move the edge, mirrored in a
@@ -8622,7 +8658,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const STRINGS = {
   expand: 'Expand {name}',
   collapse: 'Collapse {name}',
-  resize: 'Resize {name}'
+  resize: 'Resize {name}',
+  close: 'Close {name}'
 };
 function SecondaryPane({
   title,
@@ -8637,6 +8674,7 @@ function SecondaryPane({
   onCollapsedChange,
   rail,
   resizable = false,
+  onClose,
   strings,
   className,
   children,
@@ -8683,6 +8721,13 @@ function SecondaryPane({
     icon: side === 'start' ? 'panel-left-close' : 'panel-right-close',
     label: named(t.collapse),
     onClick: () => setFolded(true)
+  }) : null, onClose ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    iconOnly: true,
+    icon: "close",
+    label: named(t.close),
+    onClick: onClose
   }) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-secondary-pane__body"
   }, children), resizable ? /*#__PURE__*/_react.default.createElement(_AppShell.PanelSplitter, {

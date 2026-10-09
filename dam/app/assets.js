@@ -5815,52 +5815,55 @@ function FilesPane({
     setName('');
     setAdding(false);
   };
-  return /*#__PURE__*/_react.default.createElement(_plenixPlatform.SecondaryPane, {
-    title: "Files",
-    icon: "folder-open",
-    actions: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      variant: "primary",
-      icon: "upload",
-      onClick: onUpload
-    }, "Upload"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      variant: "ghost",
-      iconOnly: true,
-      icon: "close",
-      label: "Close files pane",
-      onClick: onClose
-    }))
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tree, {
-    label: "Folders",
-    nodes: nodes,
-    selected: selected,
-    onSelect: setSelected,
-    expanded: open,
-    onExpandedChange: setOpen
-  }), adding ? /*#__PURE__*/_react.default.createElement("input", {
-    className: "plx-input",
-    autoFocus: true,
-    value: name,
-    placeholder: "Folder name...",
-    "aria-label": "New folder name",
-    onChange: e => setName(e.target.value),
-    onKeyDown: e => {
-      if (e.key === 'Enter') add();
-      if (e.key === 'Escape') {
-        setName('');
-        setAdding(false);
+  return (
+    /*#__PURE__*/
+    // the Files pane: it resizes, folds to a rail and closes (the Asset Manager lets people close it; batch 259)
+    _react.default.createElement(_plenixPlatform.SecondaryPane, {
+      title: "Files",
+      icon: "folder-open",
+      collapsible: true,
+      resizable: true,
+      onClose: onClose,
+      strings: {
+        close: 'Close files pane'
+      },
+      actions: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+        size: "sm",
+        variant: "primary",
+        icon: "upload",
+        onClick: onUpload
+      }, "Upload")
+    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tree, {
+      label: "Folders",
+      nodes: nodes,
+      selected: selected,
+      onSelect: setSelected,
+      expanded: open,
+      onExpandedChange: setOpen
+    }), adding ? /*#__PURE__*/_react.default.createElement("input", {
+      className: "plx-input",
+      autoFocus: true,
+      value: name,
+      placeholder: "Folder name...",
+      "aria-label": "New folder name",
+      onChange: e => setName(e.target.value),
+      onKeyDown: e => {
+        if (e.key === 'Enter') add();
+        if (e.key === 'Escape') {
+          setName('');
+          setAdding(false);
+        }
+      },
+      onBlur: () => {
+        if (!name.trim()) setAdding(false);
       }
-    },
-    onBlur: () => {
-      if (!name.trim()) setAdding(false);
-    }
-  }) : /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    size: "xs",
-    variant: "ghost",
-    icon: "plus",
-    onClick: () => setAdding(true)
-  }, "New folder")));
+    }) : /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+      size: "xs",
+      variant: "ghost",
+      icon: "plus",
+      onClick: () => setAdding(true)
+    }, "New folder")))
+  );
 }
 
 // the Search workspace: which assets match a query and filters, and in which order
@@ -6587,6 +6590,7 @@ function HomePage() {
       collapsed: !o
     }),
     collapseLabel: "Minimize panel",
+    resizable: true,
     footer: /*#__PURE__*/_react.default.createElement(_Inspector.InspectorFooter, {
       act: act
     })
