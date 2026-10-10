@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.20] - 2026-10-10
+
+### Changed
+- The owner undid the blue merge for the dark tables. blue-850 (#26354a) is back for the selected-row hover, so a selected
+  row changes color on hover again. blue-350 (#8fb0d9) is back for the selected-row text and the table accent. Every other
+  role stays on blue-900 and blue-300.
+- Purple uses move to the corresponding blue shade, dark to dark and light to light. The purple data color is now
+  blue-650 (distinct from the blue data color, blue-400); its soft fill is blue-100 and its text on that fill blue-900.
+  Code attributes use blue-600 in light and blue-200 in dark. The purple reference colors (purple-800, -600, -500, -200,
+  -100) are removed. The category palette's own purple is unchanged. (batch 321)
+
 ## [0.31.19] - 2026-10-10
 
 ### Changed

@@ -526,7 +526,7 @@
       "$type": "color"
     },
     "code-attribute": {
-      "$value": "{plx-ref.color-purple-200}",
+      "$value": "{plx-ref.color-blue-200}",
       "$type": "color"
     },
     "code-variable": {
@@ -690,15 +690,15 @@
       "$type": "color"
     },
     "data-table-row-selected-hover": {
-      "$value": "{plx-ref.color-blue-900}",
+      "$value": "{plx-ref.color-blue-850}",
       "$type": "color"
     },
     "data-table-row-selected-text": {
-      "$value": "{plx-ref.color-blue-300}",
+      "$value": "{plx-ref.color-blue-350}",
       "$type": "color"
     },
     "data-table-accent": {
-      "$value": "{plx-ref.color-blue-300}",
+      "$value": "{plx-ref.color-blue-350}",
       "$type": "color"
     },
     "data-table-danger": {
@@ -740,17 +740,17 @@
       "$description": "A data color (batch 280): green, text on its soft fill."
     },
     "data-color-purple": {
-      "$value": "{plx-ref.color-purple-500}",
+      "$value": "{plx-ref.color-blue-650}",
       "$type": "color",
       "$description": "A data color (batch 280): purple, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"purple\"] applies it."
     },
     "data-color-purple-soft": {
-      "$value": "{plx-ref.color-purple-100}",
+      "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
       "$description": "A data color (batch 280): purple, a soft fill (an avatar)."
     },
     "data-color-purple-on-soft": {
-      "$value": "{plx-ref.color-purple-800}",
+      "$value": "{plx-ref.color-blue-900}",
       "$type": "color",
       "$description": "A data color (batch 280): purple, text on its soft fill."
     },

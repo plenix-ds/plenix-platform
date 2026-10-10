@@ -22,10 +22,12 @@
   --plx-ref-color-gray-75: #f7f7f8;
   --plx-ref-color-white: #ffffff;
   --plx-ref-color-blue-900: #1f2a3a;
+  --plx-ref-color-blue-850: #26354a;
   --plx-ref-color-blue-700: #005a9e;
   --plx-ref-color-blue-650: #3d5a80;
   --plx-ref-color-blue-600: #1f5bb8;
   --plx-ref-color-blue-400: #2a6fdb;
+  --plx-ref-color-blue-350: #8fb0d9;
   --plx-ref-color-blue-300: #a2c0e3;
   --plx-ref-color-blue-250: #c0ccda;
   --plx-ref-color-blue-200: #c8dff7;
@@ -49,11 +51,6 @@
   --plx-ref-color-green-300: #58ad58;
   --plx-ref-color-green-200: #9bd39b;
   --plx-ref-color-green-100: #dff6dd;
-  --plx-ref-color-purple-800: #3c3489;
-  --plx-ref-color-purple-600: #5e35b1;
-  --plx-ref-color-purple-500: #744da9;
-  --plx-ref-color-purple-200: #dacfe8;
-  --plx-ref-color-purple-100: #f3eef8;
   /* ── TYPOGRAPHY: sizes ── */
   --plx-ref-font-size-09: 0.5625rem;
   --plx-ref-font-size-10: 0.625rem;

@@ -42,7 +42,7 @@ const fails = (T) => { try { require(path.join(T, 'build-tokens.js'))(T); return
 (async () => {
   // 1. a good sample theme builds
   const good = stage('good', (T) => addSample(T, (j, mode) => {
-    j['plx-sys']['content-link'].$value = mode === 'light' ? '{plx-ref.color-purple-600}' : '{plx-ref.color-purple-200}';
+    j['plx-sys']['content-link'].$value = mode === 'light' ? '{plx-ref.color-green-700}' : '{plx-ref.color-green-200}';
     j['plx-sys']['surface-canvas'].$value = mode === 'light' ? '{plx-ref.color-blue-50}' : '{plx-ref.color-gray-800}';
   }, (f) => {
     // its own foundations: a softer shape and a heavier semibold
@@ -53,7 +53,7 @@ const fails = (T) => { try { require(path.join(T, 'build-tokens.js'))(T); return
   const css = fs.readFileSync(path.join(good, 'platform', 'system', 'themes', 'sample.css'), 'utf8');
   const index = fs.readFileSync(path.join(good, 'platform', 'system', 'themes', 'index.css'), 'utf8');
   const list = fs.readFileSync(path.join(good, 'platform', 'providers', 'themes.js'), 'utf8');
-  check('a new theme gets its own stylesheet', /\[data-plx-theme="sample"\]/.test(css) && /--plx-sys-content-link: var\(--plx-ref-color-purple-600\)/.test(css), css.slice(0, 200));
+  check('a new theme gets its own stylesheet', /\[data-plx-theme="sample"\]/.test(css) && /--plx-sys-content-link: var\(--plx-ref-color-green-700\)/.test(css), css.slice(0, 200));
   check('the new theme is loaded after the default theme', /default\.css[\s\S]*sample\.css/.test(index), index);
   check('the apps are offered the new theme', /name: "sample"/.test(list) && /label: "Sample"/.test(list), '');
 
