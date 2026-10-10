@@ -118,6 +118,10 @@
       "$value": "{plx-ref.color-blue-400}",
       "$type": "color"
     },
+    "action-primary-border": {
+      "$value": "{plx-ref.color-blue-600}",
+      "$type": "color"
+    },
     "action-primary-background-hover": {
       "$value": "{plx-ref.color-blue-600}",
       "$type": "color"
@@ -154,8 +158,16 @@
       "$value": "{plx-ref.color-gray-600}",
       "$type": "color"
     },
+    "feedback-neutral-solid-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color"
+    },
     "feedback-neutral-soft": {
       "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-neutral-soft-border": {
+      "$value": "{plx-ref.color-gray-850}",
       "$type": "color"
     },
     "feedback-neutral-content": {
@@ -174,8 +186,16 @@
       "$value": "{plx-ref.color-blue-400}",
       "$type": "color"
     },
+    "feedback-info-solid-border": {
+      "$value": "{plx-ref.color-blue-600}",
+      "$type": "color"
+    },
     "feedback-info-soft": {
       "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-info-soft-border": {
+      "$value": "{plx-ref.color-gray-850}",
       "$type": "color"
     },
     "feedback-info-content": {
@@ -194,8 +214,16 @@
       "$value": "{plx-ref.color-green-500}",
       "$type": "color"
     },
+    "feedback-success-solid-border": {
+      "$value": "{plx-ref.color-green-700}",
+      "$type": "color"
+    },
     "feedback-success-soft": {
       "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-success-soft-border": {
+      "$value": "{plx-ref.color-gray-850}",
       "$type": "color"
     },
     "feedback-success-content": {
@@ -214,8 +242,16 @@
       "$value": "{plx-ref.color-brown-800}",
       "$type": "color"
     },
+    "feedback-warning-solid-border": {
+      "$value": "{plx-ref.color-brown-900}",
+      "$type": "color"
+    },
     "feedback-warning-soft": {
       "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-warning-soft-border": {
+      "$value": "{plx-ref.color-gray-850}",
       "$type": "color"
     },
     "feedback-warning-content": {
@@ -234,8 +270,16 @@
       "$value": "{plx-ref.color-red-500}",
       "$type": "color"
     },
+    "feedback-danger-solid-border": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color"
+    },
     "feedback-danger-soft": {
       "$value": "{plx-ref.color-gray-700}",
+      "$type": "color"
+    },
+    "feedback-danger-soft-border": {
+      "$value": "{plx-ref.color-gray-850}",
       "$type": "color"
     },
     "feedback-danger-content": {

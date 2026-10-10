@@ -115,6 +115,10 @@
       "$value": "#8fb0d9",
       "$type": "color"
     },
+    "color-blue-300": {
+      "$value": "#a2c0e3",
+      "$type": "color"
+    },
     "color-blue-250": {
       "$value": "#c0ccda",
       "$type": "color"
@@ -163,6 +167,10 @@
       "$value": "#c05a00",
       "$type": "color"
     },
+    "color-brown-300": {
+      "$value": "#dfaa7c",
+      "$type": "color"
+    },
     "color-brown-200": {
       "$value": "#eed2ba",
       "$type": "color"
@@ -183,8 +191,16 @@
       "$value": "#0e6b0e",
       "$type": "color"
     },
+    "color-green-700": {
+      "$value": "#1b5e0c",
+      "$type": "color"
+    },
     "color-green-500": {
       "$value": "#107c10",
+      "$type": "color"
+    },
+    "color-green-300": {
+      "$value": "#83c483",
       "$type": "color"
     },
     "color-green-200": {

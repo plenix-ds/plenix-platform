@@ -1573,6 +1573,10 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
+    "badge-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
     "badge-sm-font-size": {
       "$value": "{plx-ref.font-size-09}",
       "$type": "dimension"
@@ -1593,12 +1597,20 @@
       "$value": "{plx-sys.feedback-neutral-on-solid}",
       "$type": "color"
     },
+    "badge-neutral-border": {
+      "$value": "{plx-sys.feedback-neutral-solid-border}",
+      "$type": "color"
+    },
     "badge-info-background": {
       "$value": "{plx-sys.feedback-info-solid-label}",
       "$type": "color"
     },
     "badge-info-text": {
       "$value": "{plx-sys.feedback-info-on-solid}",
+      "$type": "color"
+    },
+    "badge-info-border": {
+      "$value": "{plx-sys.feedback-info-solid-border}",
       "$type": "color"
     },
     "badge-success-background": {
@@ -1609,12 +1621,20 @@
       "$value": "{plx-sys.feedback-success-on-solid}",
       "$type": "color"
     },
+    "badge-success-border": {
+      "$value": "{plx-sys.feedback-success-solid-border}",
+      "$type": "color"
+    },
     "badge-warning-background": {
       "$value": "{plx-sys.feedback-warning-solid-label}",
       "$type": "color"
     },
     "badge-warning-text": {
       "$value": "{plx-sys.feedback-warning-on-solid}",
+      "$type": "color"
+    },
+    "badge-warning-border": {
+      "$value": "{plx-sys.feedback-warning-solid-border}",
       "$type": "color"
     },
     "badge-danger-background": {
@@ -1625,12 +1645,20 @@
       "$value": "{plx-sys.feedback-danger-on-solid}",
       "$type": "color"
     },
+    "badge-danger-border": {
+      "$value": "{plx-sys.feedback-danger-solid-border}",
+      "$type": "color"
+    },
     "badge-soft-neutral-background": {
       "$value": "{plx-sys.feedback-neutral-soft}",
       "$type": "color"
     },
     "badge-soft-neutral-text": {
       "$value": "{plx-sys.feedback-neutral-content}",
+      "$type": "color"
+    },
+    "badge-soft-neutral-border": {
+      "$value": "{plx-sys.feedback-neutral-soft-border}",
       "$type": "color"
     },
     "badge-soft-info-background": {
@@ -1641,12 +1669,20 @@
       "$value": "{plx-sys.feedback-info-content}",
       "$type": "color"
     },
+    "badge-soft-info-border": {
+      "$value": "{plx-sys.feedback-info-soft-border}",
+      "$type": "color"
+    },
     "badge-soft-success-background": {
       "$value": "{plx-sys.feedback-success-soft}",
       "$type": "color"
     },
     "badge-soft-success-text": {
       "$value": "{plx-sys.feedback-success-content}",
+      "$type": "color"
+    },
+    "badge-soft-success-border": {
+      "$value": "{plx-sys.feedback-success-soft-border}",
       "$type": "color"
     },
     "badge-soft-warning-background": {
@@ -1657,12 +1693,20 @@
       "$value": "{plx-sys.feedback-warning-content}",
       "$type": "color"
     },
+    "badge-soft-warning-border": {
+      "$value": "{plx-sys.feedback-warning-soft-border}",
+      "$type": "color"
+    },
     "badge-soft-danger-background": {
       "$value": "{plx-sys.feedback-danger-soft}",
       "$type": "color"
     },
     "badge-soft-danger-text": {
       "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color"
+    },
+    "badge-soft-danger-border": {
+      "$value": "{plx-sys.feedback-danger-soft-border}",
       "$type": "color"
     },
     "count-plain-text": {
@@ -1701,12 +1745,20 @@
       "$value": "{plx-sys.space-inset-xs}",
       "$type": "dimension"
     },
+    "count-pill-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
     "count-pill-neutral-background": {
       "$value": "{plx-sys.feedback-neutral-solid-label}",
       "$type": "color"
     },
     "count-pill-neutral-text": {
       "$value": "{plx-sys.feedback-neutral-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-neutral-border": {
+      "$value": "{plx-sys.feedback-neutral-solid-border}",
       "$type": "color"
     },
     "count-pill-info-background": {
@@ -1717,12 +1769,20 @@
       "$value": "{plx-sys.feedback-info-on-solid}",
       "$type": "color"
     },
+    "count-pill-info-border": {
+      "$value": "{plx-sys.feedback-info-solid-border}",
+      "$type": "color"
+    },
     "count-pill-success-background": {
       "$value": "{plx-sys.feedback-success-solid-label}",
       "$type": "color"
     },
     "count-pill-success-text": {
       "$value": "{plx-sys.feedback-success-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-success-border": {
+      "$value": "{plx-sys.feedback-success-solid-border}",
       "$type": "color"
     },
     "count-pill-warning-background": {
@@ -1733,12 +1793,20 @@
       "$value": "{plx-sys.feedback-warning-on-solid}",
       "$type": "color"
     },
+    "count-pill-warning-border": {
+      "$value": "{plx-sys.feedback-warning-solid-border}",
+      "$type": "color"
+    },
     "count-pill-danger-background": {
       "$value": "{plx-sys.feedback-danger-solid-label}",
       "$type": "color"
     },
     "count-pill-danger-text": {
       "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color"
+    },
+    "count-pill-danger-border": {
+      "$value": "{plx-sys.feedback-danger-solid-border}",
       "$type": "color"
     },
     "status-dot-height": {
@@ -2029,12 +2097,24 @@
       "$value": "{plx-sys.fill-neutral-hover}",
       "$type": "color"
     },
+    "chip-border-color": {
+      "$value": "{plx-sys.fill-neutral-border}",
+      "$type": "color"
+    },
+    "chip-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
     "chip-selected-background": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
     "chip-selected-text": {
       "$value": "{plx-sys.action-primary-content}",
+      "$type": "color"
+    },
+    "chip-selected-border-color": {
+      "$value": "{plx-sys.action-primary-border}",
       "$type": "color"
     },
     "tag-remove-height": {

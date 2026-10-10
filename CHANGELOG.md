@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-10-09
+
+### Added
+- Palette shades for pill borders (owner: "all pills must have a border that is 2 shades darker than the current color...
+  if these shades are not in the tokens... they need to be added"): --plx-ref-color-blue-300 #a2c0e3, green-300 #83c483,
+  brown-300 #dfaa7c (each between its hue's 200 and the next shade) and green-700 #1b5e0c (between green-600 and 800).
+- Token roles --plx-sys-feedback-<tone>-soft-border and -solid-border (neutral, info, success, warning, danger) and
+  --plx-sys-action-primary-border: two shades darker than the fill. Soft, light: gray-300, blue-300, green-300,
+  brown-300, red-300; dark: gray-850 (the soft fills are gray-700). Solid: gray-800, blue-600, green-700, brown-900 (the
+  darkest brown; the warning fill is brown-800), red-700. Primary: blue-600. (batch 292)
+
+### Changed
+- Every pill has a 1px border two shades darker than its fill, inside its height: Badge (solid and soft), the Count pill
+  and Chip (plain: fill-neutral-border, as Tag; selected: action-primary-border). Tag already had it (batch 260). (batch 292)
+
 ## [0.26.1] - 2026-10-09
 
 ### Changed
