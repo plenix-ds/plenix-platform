@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.23.2] - 2026-10-09
+
+### Changed
+- The image editor draws only from steps (Strict DS step 5): its presets, crop ratios, fonts, slider ranges, zoom steps
+  and overlay steps live in platform/patterns/ImageEditor/image-editor.steps.json; build-steps.js turns them into one
+  rule per step (system/steps.css) and a module the page reads (IMAGE_EDITOR_STEPS). The picture takes attributes:
+  zoom (1.25 to the step), brightness, contrast, saturation (with vibrance), hue and blur in their steps, the preset,
+  the crop ratio, rotation in quarter turns and flips; a text its font, its top on a 5% grid and a data color (the text
+  color is a ColorPicker); an overlay its opacity (5%) and scale (10%). No value is written in a style attribute.
+
 ## [0.23.1] - 2026-10-09
 
 ### Changed

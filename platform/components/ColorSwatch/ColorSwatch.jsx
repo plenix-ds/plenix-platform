@@ -37,7 +37,7 @@ export function ColorSwatch({ color, tone, size = 'md', shape = 'round', pressed
 }
 
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
-export function ColorPicker({ value, onChange, label = 'Color', size = 'md', className, ...rest }) {
+export function ColorPicker({ value, onChange, label = 'Color', size = 'md', invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
   return (
     <div role="group" aria-label={label} className={cx('plx-color-picker', className)} {...rest}>
       {DATA_COLORS.map((h) => <ColorSwatch key={h} color={h} size={size} label={nameOf(h)} pressed={value === h} onClick={() => { if (onChange) onChange(h); }} />)}

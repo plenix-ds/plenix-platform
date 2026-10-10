@@ -6626,41 +6626,24 @@ exports.ImageEditorPage = ImageEditorPage;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix asset app · image editor (app/pages/ImageEditorPage.jsx): a focus-mode page for one picture (a mockup).
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix asset app · image editor (app/pages/ImageEditorPage.jsx): a focus-mode page for one picture (a mockup).
    Replaces image-editor.html's markup, image-editor.js and image-editor.css (batch 112). Every control changes one
    description of the edit (the state); the picture is drawn from it, and each finished change is kept so Undo and Redo
    step through them. Sliders preview while dragging and record when let go. Nothing is uploaded or saved: Save, Copy,
    Download and Export only say what they would do, in the status line over the canvas. The page is dark
    (<html data-plx-mode="dark">). */
-
-const PRESETS = {
-  'Grayscale': 'grayscale(1)',
-  'Black&White': 'grayscale(1) contrast(1.6)',
-  'Sepia': 'sepia(1)',
-  'Vintage': 'sepia(0.5) contrast(0.9) brightness(1.05) saturate(0.85)',
-  'Polaroid': 'contrast(1.1) brightness(1.1) saturate(1.2) sepia(0.15)',
-  'Kodachrome': 'contrast(1.25) saturate(1.3) sepia(0.12)',
-  'Technicolor': 'saturate(1.8) contrast(1.15) hue-rotate(-10deg)',
-  'Brownie': 'sepia(0.6) contrast(1.1) brightness(0.95)',
-  'Lomo': 'contrast(1.3) saturate(1.2) brightness(0.95)',
-  'Invert': 'invert(1)'
+// the editor's choices come from the design system's steps file (batch 282): the picture is drawn only from them
+const PRESETS = _plenixPlatform.IMAGE_EDITOR_STEPS.presets,
+  RATIOS = _plenixPlatform.IMAGE_EDITOR_STEPS.ratios;
+const RATIO_CHOICES = ['Original', 'Free transform'].concat(RATIOS.map(r => r.label));
+const ratioId = label => {
+  const r = RATIOS.find(x => x.label === label);
+  return r ? r.id : '';
 };
-const PRESET_FILES = {
-  'Black&White': 'black-white'
-};
-const RATIOS = {
-  '1:1 (Square)': '1 / 1',
-  '16:9': '16 / 9',
-  '9:16': '9 / 16',
-  '4:3': '4 / 3',
-  '3:4': '3 / 4',
-  '2:1': '2 / 1',
-  '1:2': '1 / 2'
-};
-const RATIO_CHOICES = ['Original', 'Free transform'].concat(Object.keys(RATIOS));
-const FONTS = ['Lato', 'Arvo', 'Caveat', 'Corinthia', 'DancingScript', 'KodeMono', 'MadimiOne', 'MajorMonoDisplay', 'Montserrat', 'OpenSans'];
+const snap = (v, step) => Math.round(v / step) * step;
+const FONTS = _plenixPlatform.IMAGE_EDITOR_STEPS.fonts;
 const EXPORTS = ['PNG', 'JPEG', 'SVG', 'TIFF', 'PSD', 'EPS', 'GIF', 'BMP', 'WebP', 'PDF'];
-const SLIDERS = [['brightness', 'Brightness', -100, 100, '%'], ['contrast', 'Contrast', -100, 100, '%'], ['saturation', 'Saturation', -100, 100, '%'], ['hueRotation', 'Hue rotation', 0, 360, ''], ['vibrance', 'Vibrance', -100, 100, ''], ['blur', 'Blur', 0, 20, ''], ['noise', 'Noise', 0, 100, ''], ['pixelate', 'Pixelate', 0, 50, '']];
+const SLIDERS = _plenixPlatform.IMAGE_EDITOR_STEPS.sliders;
 const TOOLS = [['filters', 'Filters', 'ed-filters'], ['crop', 'Crop', 'ed-crop'], ['rotate', 'Rotate', 'ed-rotate-cw'], ['text', 'Text', 'ed-text'], ['image', 'Image', 'ed-image']];
 const START = {
   brightness: 0,
@@ -6698,7 +6681,7 @@ function ImageEditorPage() {
     list: [JSON.stringify(START)],
     at: 0
   });
-  const [zoom, setZoom] = _react.default.useState(1);
+  const [zoom, setZoom] = _react.default.useState(0); // a zoom step: the frame scales by STEPS.zoom.base to this power
   const [tool, setTool] = _react.default.useState('filters');
   const [open, setOpen] = _react.default.useState(() => !window.matchMedia((0, _plenixPlatform.below)('--plx-sys-shell-phone-below')).matches); // on a phone the canvas comes first
   const [pending, setPending] = _react.default.useState(null); // an overlay picture chosen, not yet composed
@@ -6710,9 +6693,9 @@ function ImageEditorPage() {
     text: '',
     font: 'Lato',
     weight: 'Regular',
-    color: '#' + 'd4af37',
+    color: 'brown',
     align: 'left'
-  }); // DATA: the default text color (the legacy editor's)
+  }); // a data color (the legacy editor's gold is brown)
   const [ratio, setRatio] = _react.default.useState('Original');
   const [dragOver, setDragOver] = _react.default.useState(false);
   const [msg, say] = useStatus();
@@ -6747,12 +6730,15 @@ function ImageEditorPage() {
     });
     setEdit(st);
     setPending(null);
-    setRatio(st.crop || 'Original');
+    setRatio((RATIOS.find(r => r.id === st.crop) || {
+      label: 'Original'
+    }).label);
     say(by < 0 ? 'Undone' : 'Redone');
   };
-  const zoomTo = z => {
+  const zoomTo = n => {
+    const z = Math.max(_plenixPlatform.IMAGE_EDITOR_STEPS.zoom.min, Math.min(_plenixPlatform.IMAGE_EDITOR_STEPS.zoom.max, n));
     setZoom(z);
-    say('Zoom ' + Math.round(z * 100) + '%');
+    say('Zoom ' + Math.round(Math.pow(_plenixPlatform.IMAGE_EDITOR_STEPS.zoom.base, z) * 100) + '%');
   };
   const chooseTool = id => {
     if (id === tool && open) {
@@ -6775,13 +6761,20 @@ function ImageEditorPage() {
   };
 
   /* drawing */
-  const f = [];
-  if (edit.preset) f.push(PRESETS[edit.preset]);
-  if (edit.brightness) f.push('brightness(' + (1 + edit.brightness / 100) + ')');
-  if (edit.contrast) f.push('contrast(' + (1 + edit.contrast / 100) + ')');
-  if (edit.saturation || edit.vibrance) f.push('saturate(' + Math.max(0, 1 + edit.saturation / 100 + edit.vibrance / 200) + ')'); // vibrance as a gentler saturation
-  if (edit.hueRotation) f.push('hue-rotate(' + edit.hueRotation + 'deg)');
-  if (edit.blur) f.push('blur(' + edit.blur / 4 + 'px)');
+  // the edit as attributes: each a step the design system draws (system/steps.css from image-editor.steps.json); vibrance is a gentler saturation
+  const sat = Math.max(_plenixPlatform.IMAGE_EDITOR_STEPS.saturate.min, Math.min(_plenixPlatform.IMAGE_EDITOR_STEPS.saturate.max, Math.round((edit.saturation / 100 + edit.vibrance / 200) * _plenixPlatform.IMAGE_EDITOR_STEPS.saturate.per)));
+  const look = {
+    'data-plx-brightness': snap(edit.brightness, _plenixPlatform.IMAGE_EDITOR_STEPS.step),
+    'data-plx-contrast': snap(edit.contrast, _plenixPlatform.IMAGE_EDITOR_STEPS.step),
+    'data-plx-saturate': sat,
+    'data-plx-hue': snap(edit.hueRotation, _plenixPlatform.IMAGE_EDITOR_STEPS.step),
+    'data-plx-blur': Math.round(edit.blur),
+    'data-plx-preset': edit.preset || undefined,
+    'data-plx-ratio': edit.crop || undefined,
+    'data-plx-rotate': (edit.rotate % 360 + 360) % 360,
+    'data-plx-flip-x': edit.flipX ? '' : undefined,
+    'data-plx-flip-y': edit.flipY ? '' : undefined
+  };
   const overlay = pending || edit.overlay;
   const header = /*#__PURE__*/_react.default.createElement("header", {
     className: "plx-image-editor__bar"
@@ -6831,26 +6824,34 @@ function ImageEditorPage() {
     iconOnly: true,
     icon: "ed-zoom-in",
     label: "Zoom in",
-    onClick: () => zoomTo(Math.min(4, zoom * 1.25))
+    onClick: () => zoomTo(zoom + 1)
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     variant: "ghost",
     iconOnly: true,
     icon: "ed-zoom-out",
     label: "Zoom out",
-    onClick: () => zoomTo(Math.max(0.25, zoom / 1.25))
+    onClick: () => zoomTo(zoom - 1)
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     variant: "ghost",
     iconOnly: true,
     icon: "ed-recenter",
     label: "Recenter",
-    onClick: () => zoomTo(1)
+    onClick: () => zoomTo(0)
   }))));
   const panels = {
-    filters: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, SLIDERS.map(([k, label, min, max, unit]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Slider, {
+    filters: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, SLIDERS.map(({
+      key: k,
+      label,
+      min,
+      max,
+      unit,
+      step: by
+    }) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Slider, {
       key: k,
       label: label,
       min: min,
       max: max,
+      step: by || _plenixPlatform.IMAGE_EDITOR_STEPS.step,
       unit: unit,
       value: edit[k],
       onChange: v => setEdit({
@@ -6877,20 +6878,20 @@ function ImageEditorPage() {
       className: "plx-image-editor__presets",
       role: "group",
       "aria-label": "Built-in filters"
-    }, Object.keys(PRESETS).map(name => /*#__PURE__*/_react.default.createElement("button", {
-      key: name,
+    }, PRESETS.map(p => /*#__PURE__*/_react.default.createElement("button", {
+      key: p.id,
       type: "button",
       className: "plx-image-editor__preset",
-      "aria-pressed": edit.preset === name,
+      "aria-pressed": edit.preset === p.id,
       onClick: () => change({
-        preset: edit.preset === name ? '' : name
+        preset: edit.preset === p.id ? '' : p.id
       })
     }, /*#__PURE__*/_react.default.createElement("img", {
-      src: 'assets/editor/filter-' + (PRESET_FILES[name] || name.toLowerCase()) + '.svg',
+      src: 'assets/editor/filter-' + p.id + '.svg',
       alt: "",
       width: "100",
       height: "56"
-    }), /*#__PURE__*/_react.default.createElement("span", null, name))))),
+    }), /*#__PURE__*/_react.default.createElement("span", null, p.label))))),
     crop: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
       label: "Aspect ratio"
     }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
@@ -6902,7 +6903,7 @@ function ImageEditorPage() {
     }, r)))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       variant: "primary",
       onClick: () => {
-        const c = RATIOS[ratio] ? ratio : '';
+        const c = ratioId(ratio);
         change({
           crop: c
         }, c ? 'Cropped to ' + ratio : 'Crop cleared');
@@ -6971,18 +6972,15 @@ function ImageEditorPage() {
       }))
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
       label: "Color"
-    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-      name: "color",
-      type: "color",
-      "aria-label": "Color",
+    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
+      label: "Text color",
+      size: "sm",
       value: text.color,
-      onChange: e => setText({
+      onChange: h => setText({
         ...text,
-        color: e.target.value
+        color: h
       })
-    }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-      variant: "data"
-    }, text.color.toUpperCase()))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+    })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
       label: "Align"
     }, [['left', 'ed-align-left'], ['center', 'ed-align-center'], ['right', 'ed-align-right']].map(([a, ic]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       key: a,
@@ -7051,8 +7049,9 @@ function ImageEditorPage() {
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Slider, {
       label: "Opacity",
       unit: "%",
-      min: 0,
-      max: 100,
+      min: _plenixPlatform.IMAGE_EDITOR_STEPS.overlay.opacity.min,
+      max: _plenixPlatform.IMAGE_EDITOR_STEPS.overlay.opacity.max,
+      step: _plenixPlatform.IMAGE_EDITOR_STEPS.step,
       value: overlayOpts.opacity,
       onChange: v => {
         setOverlayOpts({
@@ -7067,8 +7066,9 @@ function ImageEditorPage() {
     }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Slider, {
       label: "Scale",
       unit: "%",
-      min: 10,
-      max: 300,
+      min: _plenixPlatform.IMAGE_EDITOR_STEPS.overlay.scale.min,
+      max: _plenixPlatform.IMAGE_EDITOR_STEPS.overlay.scale.max,
+      step: _plenixPlatform.IMAGE_EDITOR_STEPS.overlay.scale.step,
       value: overlayOpts.scale,
       onChange: v => {
         setOverlayOpts({
@@ -7121,36 +7121,25 @@ function ImageEditorPage() {
     className: "plx-image-editor__canvas"
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-image-editor__frame",
-    style: {
-      '--plx-comp-image-editor-zoom': zoom
-    }
-  }, /*#__PURE__*/_react.default.createElement("img", {
+    "data-plx-zoom": zoom
+  }, /*#__PURE__*/_react.default.createElement("img", _extends({
     src: "assets/editor/artwork.svg",
     width: "420",
     height: "420",
     alt: "Image being edited: gold Coptic cross on a brown background",
-    className: 'plx-image-editor__image' + (edit.crop ? ' plx-image-editor__image--cropped' : ''),
-    style: {
-      '--plx-comp-image-editor-filter': f.join(' ') || 'none',
-      '--plx-comp-image-editor-ratio': edit.crop ? RATIOS[edit.crop] : 'auto',
-      '--plx-comp-image-editor-transform': 'rotate(' + edit.rotate + 'deg) scale(' + (edit.flipX ? -1 : 1) + ',' + (edit.flipY ? -1 : 1) + ')'
-    }
-  }), edit.texts.map((t, i) => /*#__PURE__*/_react.default.createElement("span", {
+    className: 'plx-image-editor__image' + (edit.crop ? ' plx-image-editor__image--cropped' : '')
+  }, look)), edit.texts.map((t, i) => /*#__PURE__*/_react.default.createElement("span", {
     key: i,
     className: 'plx-image-editor__text' + (t.weight === 'Bold' ? ' plx-image-editor__text--bold' : '') + (t.weight === 'Italic' ? ' plx-image-editor__text--italic' : '') + (t.align === 'center' ? ' plx-image-editor__text--center' : t.align === 'right' ? ' plx-image-editor__text--end' : ''),
-    style: {
-      '--plx-comp-image-editor-text-color': t.color,
-      '--plx-comp-image-editor-text-font': '"' + t.font + '", var(--plx-sys-font-body)',
-      '--plx-comp-image-editor-text-top': 40 + i * 12 + '%'
-    }
+    "data-plx-color": t.color,
+    "data-plx-font": t.font,
+    "data-plx-top": Math.min(_plenixPlatform.IMAGE_EDITOR_STEPS.textTop.max, snap(40 + i * 12, _plenixPlatform.IMAGE_EDITOR_STEPS.step))
   }, t.text)), overlay ? /*#__PURE__*/_react.default.createElement("img", {
     src: overlay.src,
     alt: "",
     className: "plx-image-editor__overlay",
-    style: {
-      '--plx-comp-image-editor-overlay-opacity': overlay.opacity / 100,
-      '--plx-comp-image-editor-overlay-scale': overlay.scale / 100
-    }
+    "data-plx-opacity": snap(overlay.opacity, _plenixPlatform.IMAGE_EDITOR_STEPS.step),
+    "data-plx-scale": snap(overlay.scale, _plenixPlatform.IMAGE_EDITOR_STEPS.overlay.scale.step)
   }) : null), /*#__PURE__*/_react.default.createElement("div", {
     role: "status",
     "aria-live": "polite",

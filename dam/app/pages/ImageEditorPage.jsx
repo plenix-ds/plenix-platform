@@ -5,21 +5,16 @@
    Download and Export only say what they would do, in the status line over the canvas. The page is dark
    (<html data-plx-mode="dark">). */
 import React from 'react';
-import { AppShell, Toolbar, ToolRail, Button, ButtonGroup, Menu, MenuItem, Slider, Checkbox, Select, Field, Input, SegmentedControl, Icon, below, Stack, Inline, Text, DropZone } from 'plenix-platform';
+import { AppShell, Toolbar, ToolRail, Button, ButtonGroup, Menu, MenuItem, Slider, Checkbox, Select, Field, Input, SegmentedControl, Icon, below, Stack, Inline, Text, DropZone, ColorPicker, IMAGE_EDITOR_STEPS as STEPS } from 'plenix-platform';
 
-const PRESETS = {
-  'Grayscale': 'grayscale(1)', 'Black&White': 'grayscale(1) contrast(1.6)', 'Sepia': 'sepia(1)',
-  'Vintage': 'sepia(0.5) contrast(0.9) brightness(1.05) saturate(0.85)', 'Polaroid': 'contrast(1.1) brightness(1.1) saturate(1.2) sepia(0.15)',
-  'Kodachrome': 'contrast(1.25) saturate(1.3) sepia(0.12)', 'Technicolor': 'saturate(1.8) contrast(1.15) hue-rotate(-10deg)',
-  'Brownie': 'sepia(0.6) contrast(1.1) brightness(0.95)', 'Lomo': 'contrast(1.3) saturate(1.2) brightness(0.95)', 'Invert': 'invert(1)',
-};
-const PRESET_FILES = { 'Black&White': 'black-white' };
-const RATIOS = { '1:1 (Square)': '1 / 1', '16:9': '16 / 9', '9:16': '9 / 16', '4:3': '4 / 3', '3:4': '3 / 4', '2:1': '2 / 1', '1:2': '1 / 2' };
-const RATIO_CHOICES = ['Original', 'Free transform'].concat(Object.keys(RATIOS));
-const FONTS = ['Lato', 'Arvo', 'Caveat', 'Corinthia', 'DancingScript', 'KodeMono', 'MadimiOne', 'MajorMonoDisplay', 'Montserrat', 'OpenSans'];
+// the editor's choices come from the design system's steps file (batch 282): the picture is drawn only from them
+const PRESETS = STEPS.presets, RATIOS = STEPS.ratios;
+const RATIO_CHOICES = ['Original', 'Free transform'].concat(RATIOS.map((r) => r.label));
+const ratioId = (label) => { const r = RATIOS.find((x) => x.label === label); return r ? r.id : ''; };
+const snap = (v, step) => Math.round(v / step) * step;
+const FONTS = STEPS.fonts;
 const EXPORTS = ['PNG', 'JPEG', 'SVG', 'TIFF', 'PSD', 'EPS', 'GIF', 'BMP', 'WebP', 'PDF'];
-const SLIDERS = [['brightness', 'Brightness', -100, 100, '%'], ['contrast', 'Contrast', -100, 100, '%'], ['saturation', 'Saturation', -100, 100, '%'], ['hueRotation', 'Hue rotation', 0, 360, ''],
-  ['vibrance', 'Vibrance', -100, 100, ''], ['blur', 'Blur', 0, 20, ''], ['noise', 'Noise', 0, 100, ''], ['pixelate', 'Pixelate', 0, 50, '']];
+const SLIDERS = STEPS.sliders;
 const TOOLS = [['filters', 'Filters', 'ed-filters'], ['crop', 'Crop', 'ed-crop'], ['rotate', 'Rotate', 'ed-rotate-cw'], ['text', 'Text', 'ed-text'], ['image', 'Image', 'ed-image']];
 const START = { brightness: 0, contrast: 0, saturation: 0, hueRotation: 0, vibrance: 0, blur: 0, noise: 0, pixelate: 0, sharpen: false, emboss: false, edge: false,
   preset: '', rotate: 0, flipX: false, flipY: false, crop: '', texts: [], overlay: null };
@@ -34,12 +29,12 @@ function useStatus() {
 export function ImageEditorPage() {
   const [edit, setEdit] = React.useState(START);           // what is drawn (also while a slider moves)
   const [history, setHistory] = React.useState({ list: [JSON.stringify(START)], at: 0 });
-  const [zoom, setZoom] = React.useState(1);
+  const [zoom, setZoom] = React.useState(0);               // a zoom step: the frame scales by STEPS.zoom.base to this power
   const [tool, setTool] = React.useState('filters');
   const [open, setOpen] = React.useState(() => !window.matchMedia(below('--plx-sys-shell-phone-below')).matches);   // on a phone the canvas comes first
   const [pending, setPending] = React.useState(null);      // an overlay picture chosen, not yet composed
   const [overlayOpts, setOverlayOpts] = React.useState({ opacity: 100, scale: 100 });
-  const [text, setText] = React.useState({ text: '', font: 'Lato', weight: 'Regular', color: '#' + 'd4af37', align: 'left' });   // DATA: the default text color (the legacy editor's)
+  const [text, setText] = React.useState({ text: '', font: 'Lato', weight: 'Regular', color: 'brown', align: 'left' });   // a data color (the legacy editor's gold is brown)
   const [ratio, setRatio] = React.useState('Original');
   const [dragOver, setDragOver] = React.useState(false);
   const [msg, say] = useStatus();
@@ -57,10 +52,10 @@ export function ImageEditorPage() {
     if (next < 0) { say('Nothing to undo'); return; }
     if (next >= history.list.length) { say('Nothing to redo'); return; }
     const st = JSON.parse(history.list[next]);
-    setHistory({ ...history, at: next }); setEdit(st); setPending(null); setRatio(st.crop || 'Original');
+    setHistory({ ...history, at: next }); setEdit(st); setPending(null); setRatio((RATIOS.find((r) => r.id === st.crop) || { label: 'Original' }).label);
     say(by < 0 ? 'Undone' : 'Redone');
   };
-  const zoomTo = (z) => { setZoom(z); say('Zoom ' + Math.round(z * 100) + '%'); };
+  const zoomTo = (n) => { const z = Math.max(STEPS.zoom.min, Math.min(STEPS.zoom.max, n)); setZoom(z); say('Zoom ' + Math.round(Math.pow(STEPS.zoom.base, z) * 100) + '%'); };
   const chooseTool = (id) => { if (id === tool && open) { setOpen(false); return; } setTool(id); setOpen(true); };
   const useFile = (f) => {
     if (!f || f.type.indexOf('image/') !== 0) { say('That file is not an image'); return; }
@@ -69,13 +64,11 @@ export function ImageEditorPage() {
   };
 
   /* drawing */
-  const f = [];
-  if (edit.preset) f.push(PRESETS[edit.preset]);
-  if (edit.brightness) f.push('brightness(' + (1 + edit.brightness / 100) + ')');
-  if (edit.contrast) f.push('contrast(' + (1 + edit.contrast / 100) + ')');
-  if (edit.saturation || edit.vibrance) f.push('saturate(' + Math.max(0, 1 + edit.saturation / 100 + edit.vibrance / 200) + ')');   // vibrance as a gentler saturation
-  if (edit.hueRotation) f.push('hue-rotate(' + edit.hueRotation + 'deg)');
-  if (edit.blur) f.push('blur(' + edit.blur / 4 + 'px)');
+  // the edit as attributes: each a step the design system draws (system/steps.css from image-editor.steps.json); vibrance is a gentler saturation
+  const sat = Math.max(STEPS.saturate.min, Math.min(STEPS.saturate.max, Math.round((edit.saturation / 100 + edit.vibrance / 200) * STEPS.saturate.per)));
+  const look = { 'data-plx-brightness': snap(edit.brightness, STEPS.step), 'data-plx-contrast': snap(edit.contrast, STEPS.step), 'data-plx-saturate': sat,
+    'data-plx-hue': snap(edit.hueRotation, STEPS.step), 'data-plx-blur': Math.round(edit.blur), 'data-plx-preset': edit.preset || undefined, 'data-plx-ratio': edit.crop || undefined,
+    'data-plx-rotate': ((edit.rotate % 360) + 360) % 360, 'data-plx-flip-x': edit.flipX ? '' : undefined, 'data-plx-flip-y': edit.flipY ? '' : undefined };
   const overlay = pending || edit.overlay;
 
   const header = (
@@ -97,9 +90,9 @@ export function ImageEditorPage() {
           <Button variant="ghost" iconOnly icon="ed-redo" label="Redo" disabled={history.at >= history.list.length - 1} onClick={() => step(1)} />
         </Toolbar.Group>
         <Toolbar.Group>
-          <Button variant="ghost" iconOnly icon="ed-zoom-in" label="Zoom in" onClick={() => zoomTo(Math.min(4, zoom * 1.25))} />
-          <Button variant="ghost" iconOnly icon="ed-zoom-out" label="Zoom out" onClick={() => zoomTo(Math.max(0.25, zoom / 1.25))} />
-          <Button variant="ghost" iconOnly icon="ed-recenter" label="Recenter" onClick={() => zoomTo(1)} />
+          <Button variant="ghost" iconOnly icon="ed-zoom-in" label="Zoom in" onClick={() => zoomTo(zoom + 1)} />
+          <Button variant="ghost" iconOnly icon="ed-zoom-out" label="Zoom out" onClick={() => zoomTo(zoom - 1)} />
+          <Button variant="ghost" iconOnly icon="ed-recenter" label="Recenter" onClick={() => zoomTo(0)} />
         </Toolbar.Group>
       </Toolbar>
     </header>
@@ -108,18 +101,18 @@ export function ImageEditorPage() {
   const panels = {
     filters: (
       <>
-        {SLIDERS.map(([k, label, min, max, unit]) => (
-          <Slider key={k} label={label} min={min} max={max} unit={unit} value={edit[k]} onChange={(v) => setEdit({ ...edit, [k]: v })} onCommit={(v) => change({ [k]: v })} />
+        {SLIDERS.map(({ key: k, label, min, max, unit, step: by }) => (
+          <Slider key={k} label={label} min={min} max={max} step={by || STEPS.step} unit={unit} value={edit[k]} onChange={(v) => setEdit({ ...edit, [k]: v })} onCommit={(v) => change({ [k]: v })} />
         ))}
         <Stack gap="sm">
           {[['sharpen', 'Sharpen'], ['emboss', 'Emboss'], ['edge', 'Edge']].map(([k, l]) => <Checkbox key={k} name={k} label={l} checked={edit[k]} onChange={(e) => change({ [k]: e.target.checked })} />)}
         </Stack>
         <Text as="h3" variant="eyebrow">Built-In Filters</Text>
         <div className="plx-image-editor__presets" role="group" aria-label="Built-in filters">
-          {Object.keys(PRESETS).map((name) => (
-            <button key={name} type="button" className="plx-image-editor__preset" aria-pressed={edit.preset === name} onClick={() => change({ preset: edit.preset === name ? '' : name })}>
-              <img src={'assets/editor/filter-' + (PRESET_FILES[name] || name.toLowerCase()) + '.svg'} alt="" width="100" height="56" />
-              <span>{name}</span>
+          {PRESETS.map((p) => (
+            <button key={p.id} type="button" className="plx-image-editor__preset" aria-pressed={edit.preset === p.id} onClick={() => change({ preset: edit.preset === p.id ? '' : p.id })}>
+              <img src={'assets/editor/filter-' + p.id + '.svg'} alt="" width="100" height="56" />
+              <span>{p.label}</span>
             </button>
           ))}
         </div>
@@ -129,7 +122,7 @@ export function ImageEditorPage() {
       <>
         <Field label="Aspect ratio"><Select name="aspectRatio" value={ratio} onChange={(e) => setRatio(e.target.value)}>{RATIO_CHOICES.map((r) => <option key={r}>{r}</option>)}</Select></Field>
         <Inline>
-          <Button variant="primary" onClick={() => { const c = RATIOS[ratio] ? ratio : ''; change({ crop: c }, c ? 'Cropped to ' + ratio : 'Crop cleared'); }}>Crop</Button>
+          <Button variant="primary" onClick={() => { const c = ratioId(ratio); change({ crop: c }, c ? 'Cropped to ' + ratio : 'Crop cleared'); }}>Crop</Button>
           <Button onClick={() => { setRatio('Original'); change({ crop: '' }, 'Crop cleared'); }}>Reset</Button>
         </Inline>
       </>
@@ -147,12 +140,7 @@ export function ImageEditorPage() {
         <Input name="text" placeholder="Enter text..." aria-label="Text" value={text.text} onChange={(e) => setText({ ...text, text: e.target.value })} />
         <Field label="Font family"><Select name="fontFamily" value={text.font} onChange={(e) => setText({ ...text, font: e.target.value })}>{FONTS.map((x) => <option key={x}>{x}</option>)}</Select></Field>
         <SegmentedControl label="Font weight" value={text.weight} onChange={(w) => setText({ ...text, weight: w })} options={['Regular', 'Bold', 'Italic'].map((w) => ({ value: w, label: w }))} />
-        <Field label="Color">
-          <Inline>
-            <Input name="color" type="color" aria-label="Color" value={text.color} onChange={(e) => setText({ ...text, color: e.target.value })} />
-            <Text variant="data">{text.color.toUpperCase()}</Text>
-          </Inline>
-        </Field>
+        <Field label="Color"><ColorPicker label="Text color" size="sm" value={text.color} onChange={(h) => setText({ ...text, color: h })} /></Field>
         <ButtonGroup label="Align">
           {[['left', 'ed-align-left'], ['center', 'ed-align-center'], ['right', 'ed-align-right']].map(([a, ic]) => (
             <Button key={a} size="sm" iconOnly icon={ic} label={'Align ' + a} pressed={text.align === a} onClick={() => setText({ ...text, align: a })} />
@@ -176,8 +164,8 @@ export function ImageEditorPage() {
         </DropZone>
         <input ref={file} type="file" name="overlayFile" accept="image/*" className="plx-visually-hidden" tabIndex={-1} aria-label="Overlay image file"
           onChange={(e) => { useFile(e.target.files[0]); e.target.value = ''; }} />
-        <Slider label="Opacity" unit="%" min={0} max={100} value={overlayOpts.opacity} onChange={(v) => { setOverlayOpts({ ...overlayOpts, opacity: v }); if (pending) setPending({ ...pending, opacity: v }); }} />
-        <Slider label="Scale" unit="%" min={10} max={300} value={overlayOpts.scale} onChange={(v) => { setOverlayOpts({ ...overlayOpts, scale: v }); if (pending) setPending({ ...pending, scale: v }); }} />
+        <Slider label="Opacity" unit="%" min={STEPS.overlay.opacity.min} max={STEPS.overlay.opacity.max} step={STEPS.step} value={overlayOpts.opacity} onChange={(v) => { setOverlayOpts({ ...overlayOpts, opacity: v }); if (pending) setPending({ ...pending, opacity: v }); }} />
+        <Slider label="Scale" unit="%" min={STEPS.overlay.scale.min} max={STEPS.overlay.scale.max} step={STEPS.overlay.scale.step} value={overlayOpts.scale} onChange={(v) => { setOverlayOpts({ ...overlayOpts, scale: v }); if (pending) setPending({ ...pending, scale: v }); }} />
         <div><Button variant="primary" onClick={() => { if (!pending) { say('Choose an image first'); return; } const p = pending; setPending(null); change({ overlay: p }, 'Image added'); }}>Compose</Button></div>
       </>
     ),
@@ -197,17 +185,15 @@ export function ImageEditorPage() {
         </aside>
       ) : null}
       <div className="plx-image-editor__canvas">
-        {/* the edit reaches the picture only as the editor's custom properties (platform/patterns/ImageEditor) */}
-        <div className="plx-image-editor__frame" style={{ '--plx-comp-image-editor-zoom': zoom }}>
+        {/* the edit reaches the picture only as attributes, each one step the design system draws (platform/patterns/ImageEditor) */}
+        <div className="plx-image-editor__frame" data-plx-zoom={zoom}>
           <img src="assets/editor/artwork.svg" width="420" height="420" alt="Image being edited: gold Coptic cross on a brown background"
-            className={'plx-image-editor__image' + (edit.crop ? ' plx-image-editor__image--cropped' : '')}
-            style={{ '--plx-comp-image-editor-filter': f.join(' ') || 'none', '--plx-comp-image-editor-ratio': edit.crop ? RATIOS[edit.crop] : 'auto',
-              '--plx-comp-image-editor-transform': 'rotate(' + edit.rotate + 'deg) scale(' + (edit.flipX ? -1 : 1) + ',' + (edit.flipY ? -1 : 1) + ')' }} />
+            className={'plx-image-editor__image' + (edit.crop ? ' plx-image-editor__image--cropped' : '')} {...look} />
           {edit.texts.map((t, i) => (
             <span key={i} className={'plx-image-editor__text' + (t.weight === 'Bold' ? ' plx-image-editor__text--bold' : '') + (t.weight === 'Italic' ? ' plx-image-editor__text--italic' : '') + (t.align === 'center' ? ' plx-image-editor__text--center' : t.align === 'right' ? ' plx-image-editor__text--end' : '')}
-              style={{ '--plx-comp-image-editor-text-color': t.color, '--plx-comp-image-editor-text-font': '"' + t.font + '", var(--plx-sys-font-body)', '--plx-comp-image-editor-text-top': (40 + i * 12) + '%' }}>{t.text}</span>
+              data-plx-color={t.color} data-plx-font={t.font} data-plx-top={Math.min(STEPS.textTop.max, snap(40 + i * 12, STEPS.step))}>{t.text}</span>
           ))}
-          {overlay ? <img src={overlay.src} alt="" className="plx-image-editor__overlay" style={{ '--plx-comp-image-editor-overlay-opacity': overlay.opacity / 100, '--plx-comp-image-editor-overlay-scale': overlay.scale / 100 }} /> : null}
+          {overlay ? <img src={overlay.src} alt="" className="plx-image-editor__overlay" data-plx-opacity={snap(overlay.opacity, STEPS.step)} data-plx-scale={snap(overlay.scale, STEPS.overlay.scale.step)} /> : null}
         </div>
         <div role="status" aria-live="polite" className="plx-image-editor__status">{msg}</div>
       </div>
