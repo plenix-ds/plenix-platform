@@ -136,24 +136,24 @@
       "$type": "color"
     },
     "color-red-700": {
-      "$value": "#9b3a5e",
+      "$value": "#cc0000",
       "$type": "color"
     },
     "color-red-800": {
-      "$value": "#8a1e13",
+      "$value": "#990000",
       "$type": "color",
       "$description": "Two shades darker than red-500, same hue (the danger solid border; owner, 2026-10-09). red-700 is plum."
     },
     "color-red-500": {
-      "$value": "#c42b1c",
+      "$value": "#d60000",
       "$type": "color"
     },
     "color-red-300": {
-      "$value": "#f07a70",
+      "$value": "#ff8585",
       "$type": "color"
     },
     "color-red-200": {
-      "$value": "#efc6c2",
+      "$value": "#ffc2c2",
       "$type": "color"
     },
     "color-red-100": {

@@ -2606,6 +2606,1002 @@
     "toast-close-focus-outline-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
+    },
+    "tabs-list-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "tabs-tab-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "tabs-tab-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "tabs-tab-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
+    },
+    "tabs-tab-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "tabs-tab-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension"
+    },
+    "tabs-tab-padding-inline": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "tabs-tab-hover-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "tabs-tab-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color"
+    },
+    "tabs-tab-selected-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "tabs-tab-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "tabs-segmented-list-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color"
+    },
+    "tabs-segmented-list-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-list-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-list-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-list-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-min-height": {
+      "$value": "calc({plx-sys.control-height-toolbar} - {plx-sys.space-inset-xs} * 2)",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-selected-background": {
+      "$value": "{plx-sys.surface-raised}",
+      "$type": "color"
+    },
+    "tabs-segmented-tab-selected-shadow": {
+      "$value": "{plx-sys.elevation-raised-shadow}",
+      "$type": "shadow"
+    },
+    "tabs-segmented-panel-padding-block-start": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension"
+    },
+    "tabs-folder-list-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "tabs-folder-list-z-index": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number"
+    },
+    "tabs-folder-list-background-image": {
+      "$value": "linear-gradient({plx-sys.border-default},{plx-sys.border-default})",
+      "$type": "color"
+    },
+    "tabs-folder-list-background-size": {
+      "$value": "100% {plx-sys.border-width-thin}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-border-left-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-border-right-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-border-top-left-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-border-top-right-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-border-top-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "tabs-folder-tab-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-padding-inline": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-hover-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-border-left-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-border-right-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-border-top-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "tabs-folder-panel-padding-block-start": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension"
+    },
+    "tabs-contained-panel-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "tabs-contained-panel-radius": {
+      "$value": "{plx-sys.radius-surface-4px}",
+      "$type": "dimension"
+    },
+    "tabs-contained-panel-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "tabs-contained-panel-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tabs-contained-panel-margin-block-start": {
+      "$value": "calc({plx-sys.border-width-thin} * -1)",
+      "$type": "dimension"
+    },
+    "tabs-contained-panel-padding-block": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "tabs-contained-panel-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "tabs-folder-list-margin-block-end": {
+      "$value": "calc({plx-sys.border-width-thin} * -1)",
+      "$type": "dimension"
+    },
+    "tabs-folder-list-padding-block-end": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-selected-after-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "tabs-folder-tab-selected-after-height": {
+      "$value": "calc({plx-sys.border-width-thin} * 2)",
+      "$type": "dimension"
+    },
+    "tabs-folder-tab-selected-after-inset-block-end": {
+      "$value": "calc({plx-sys.border-width-thin} * -1)",
+      "$type": "dimension"
+    },
+    "app-header-height": {
+      "$value": "{plx-sys.shell-header-height}",
+      "$type": "dimension"
+    },
+    "app-header-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension"
+    },
+    "app-header-padding-inline": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-header-z-index": {
+      "$value": "{plx-sys.layer-sticky}",
+      "$type": "number"
+    },
+    "app-header-start-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension"
+    },
+    "app-header-brand-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension"
+    },
+    "app-header-brand-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight"
+    },
+    "app-header-brand-letter-spacing": {
+      "$value": "{plx-sys.letter-spacing-tight}",
+      "$type": "dimension"
+    },
+    "app-header-brand-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-header-brand-padding-inline-start": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "app-header-nav-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension"
+    },
+    "app-header-item-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "app-header-item-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "app-header-item-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "app-header-item-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "app-header-accent-item-focus-outline-color": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color"
+    },
+    "app-header-divider-background-size": {
+      "$value": "{plx-sys.border-width-thin} 100%",
+      "$type": "color"
+    },
+    "app-header-divider-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "app-header-divider-width": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension"
+    },
+    "app-header-divider-margin-inline": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "app-header-accent-button-secondary-background": {
+      "$value": "{plx-sys.accent-field-background}",
+      "$type": "color"
+    },
+    "app-header-accent-button-secondary-border-color": {
+      "$value": "{plx-sys.accent-border}",
+      "$type": "color"
+    },
+    "app-header-accent-button-secondary-text": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color"
+    },
+    "app-header-accent-button-secondary-hover-background": {
+      "$value": "{plx-sys.accent-state-hover}",
+      "$type": "color"
+    },
+    "app-header-accent-button-secondary-pressed-background": {
+      "$value": "{plx-sys.accent-state-pressed}",
+      "$type": "color"
+    },
+    "app-header-frost-search-input-background": {
+      "$value": "{plx-sys.frost-field-background}",
+      "$type": "color"
+    },
+    "app-header-frost-search-input-border-color": {
+      "$value": "{plx-sys.frost-border}",
+      "$type": "color"
+    },
+    "app-header-count-inset-block-start": {
+      "$value": "calc({plx-ref.space-4px} * -1)",
+      "$type": "dimension"
+    },
+    "app-header-count-inset-inline-end": {
+      "$value": "calc({plx-ref.space-4px} * -1)",
+      "$type": "dimension"
+    },
+    "app-header-name-line-height": {
+      "$value": "{plx-ref.line-height-tight}",
+      "$type": "number"
+    },
+    "app-header-app-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "app-header-app-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "app-header-app-letter-spacing": {
+      "$value": "{plx-sys.letter-spacing-wide}",
+      "$type": "dimension"
+    },
+    "app-header-end-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension"
+    },
+    "app-header-search-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension"
+    },
+    "app-header-search-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    },
+    "app-header-search-z-index": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number"
+    },
+    "app-header-search-inset-inline-end": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-header-search-inset-inline-start": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color"
+    },
+    "app-switcher-panel-radius": {
+      "$value": "{plx-sys.radius-surface-4px}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "app-switcher-panel-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-shadow": {
+      "$value": "{plx-sys.elevation-menu}",
+      "$type": "shadow"
+    },
+    "app-switcher-panel-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "app-switcher-panel-width": {
+      "$value": "{plx-ref.size-600px}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-inset-block-start": {
+      "$value": "calc(100% + {plx-ref.space-8px})",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-padding-inline": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-row-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-z-index": {
+      "$value": "{plx-sys.layer-popover}",
+      "$type": "number"
+    },
+    "app-switcher-pinned-background": {
+      "$value": "{plx-sys.surface-sunken}",
+      "$type": "color"
+    },
+    "app-switcher-pinned-radius": {
+      "$value": "{plx-sys.radius-surface-8px}",
+      "$type": "dimension"
+    },
+    "app-switcher-pinned-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "app-switcher-heading-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension"
+    },
+    "app-switcher-heading-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "app-switcher-heading-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "app-switcher-heading-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "app-switcher-heading-margin-block-end": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension"
+    },
+    "app-switcher-heading-margin-inline-start": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "app-switcher-grid-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-height": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "app-switcher-open-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "app-switcher-open-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "app-switcher-tile-current-open-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color"
+    },
+    "app-switcher-open-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "app-switcher-open-focus-outline-offset": {
+      "$value": "calc({plx-sys.border-width-medium} * -1)",
+      "$type": "dimension"
+    },
+    "app-switcher-open-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "app-switcher-icon-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "app-switcher-label-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "number"
+    },
+    "app-switcher-pin-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension"
+    },
+    "app-switcher-pin-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "app-switcher-pin-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color"
+    },
+    "app-switcher-pin-width": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension"
+    },
+    "app-switcher-tile-pinned-pin-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color"
+    },
+    "app-switcher-pin-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "app-header-switch-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "app-header-switch-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension"
+    },
+    "app-header-switch-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "app-header-switch-focus-outline-offset": {
+      "$value": "calc({plx-sys.border-width-medium} * -1)",
+      "$type": "dimension"
+    },
+    "app-header-switch-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "app-header-account-row-button-label-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "app-switcher-panel-width-narrow": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension"
+    },
+    "app-header-brand-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension"
+    },
+    "app-header-product-line-height": {
+      "$value": "{plx-sys.label-height-20px}",
+      "$type": "number"
+    },
+    "app-header-app-line-height": {
+      "$value": "{plx-sys.label-height-16px}",
+      "$type": "number"
+    },
+    "tool-rail-background": {
+      "$value": "{plx-sys.surface-raised}",
+      "$type": "color"
+    },
+    "tool-rail-shadow": {
+      "$value": "inset calc({plx-sys.border-width-thin} * -1) 0 0 {plx-sys.border-default}",
+      "$type": "shadow"
+    },
+    "tool-rail-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "tool-rail-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "tool-rail-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "tool-rail-item-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension"
+    },
+    "tool-rail-item-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "tool-rail-item-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "tool-rail-item-width": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension"
+    },
+    "tool-rail-item-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "tool-rail-item-hover-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "tool-rail-item-pressed-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color"
+    },
+    "tool-rail-item-pressed-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color"
+    },
+    "tool-rail-item-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "tool-rail-item-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "tool-rail-item-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "tool-rail-item-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color"
+    },
+    "tool-rail-divider-background-image": {
+      "$value": "linear-gradient({plx-sys.border-divider},{plx-sys.border-divider})",
+      "$type": "color"
+    },
+    "tool-rail-divider-background-size": {
+      "$value": "100% {plx-sys.border-width-thin}",
+      "$type": "color"
+    },
+    "tool-rail-divider-height": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension"
+    },
+    "tool-rail-divider-width": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension"
+    },
+    "tool-rail-labels-item-width": {
+      "$value": "{plx-ref.size-52px}",
+      "$type": "dimension"
+    },
+    "tool-rail-labels-item-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "tool-rail-labels-item-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "tool-rail-label-font-size": {
+      "$value": "{plx-ref.font-size-10}",
+      "$type": "dimension"
+    },
+    "menu-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color"
+    },
+    "menu-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "menu-radius": {
+      "$value": "{plx-sys.radius-surface-4px}",
+      "$type": "dimension"
+    },
+    "menu-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "menu-shadow": {
+      "$value": "{plx-sys.elevation-menu}",
+      "$type": "shadow"
+    },
+    "menu-max-width": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension"
+    },
+    "menu-min-width": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension"
+    },
+    "menu-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "menu-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "menu-z-index": {
+      "$value": "{plx-sys.layer-menu}",
+      "$type": "number"
+    },
+    "menu-not-popover-bottom-start-inset-block-start": {
+      "$value": "calc(100% + {plx-sys.space-inset-xs})",
+      "$type": "dimension"
+    },
+    "menu-not-popover-bottom-end-inset-block-start": {
+      "$value": "calc(100% + {plx-sys.space-inset-xs})",
+      "$type": "dimension"
+    },
+    "menu-not-popover-top-start-inset-block-end": {
+      "$value": "calc(100% + {plx-sys.space-inset-xs})",
+      "$type": "dimension"
+    },
+    "menu-not-popover-top-end-inset-block-end": {
+      "$value": "calc(100% + {plx-sys.space-inset-xs})",
+      "$type": "dimension"
+    },
+    "menu-item-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "menu-item-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "menu-item-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
+    },
+    "menu-item-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension"
+    },
+    "menu-item-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "menu-item-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "menu-item-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "menu-item-focus-outline-offset": {
+      "$value": "calc({plx-sys.border-width-medium} * -1)",
+      "$type": "dimension"
+    },
+    "menu-item-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "menu-item--danger-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color"
+    },
+    "menu-item-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color"
+    },
+    "menu-check-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "menu-check-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "menu-divider-border-top-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color"
+    },
+    "menu-divider-border-top-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "menu-divider-margin-block": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "menu-group-label-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "menu-group-label-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "menu-group-label-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "menu-group-label-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "menu-group-label-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "menu-popover-bottom-start-margin-block-start": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "menu-popover-bottom-end-margin-block-start": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "menu-popover-top-start-margin-block-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "menu-popover-top-end-margin-block-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "app-header-accent-brand": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "The accent app header's brand"
+    },
+    "app-header-accent-content": {
+      "$value": "{plx-sys.accent-content-muted}",
+      "$type": "color",
+      "$description": "The accent app header's content"
+    },
+    "app-header-accent-divider": {
+      "$value": "{plx-sys.accent-border}",
+      "$type": "color",
+      "$description": "The accent app header's divider"
+    },
+    "app-header-accent-edge": {
+      "$value": "{plx-sys.accent-edge}",
+      "$type": "color",
+      "$description": "The accent app header's edge"
+    },
+    "app-header-accent-hover": {
+      "$value": "{plx-sys.accent-state-hover}",
+      "$type": "color",
+      "$description": "The accent app header's hover"
+    },
+    "app-header-accent-selected": {
+      "$value": "{plx-sys.accent-state-hover}",
+      "$type": "color",
+      "$description": "The accent app header's selected"
+    },
+    "app-header-accent-selected-content": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "The accent app header's selected content"
+    },
+    "app-header-accent-surface": {
+      "$value": "{plx-sys.accent-surface}",
+      "$type": "color",
+      "$description": "The accent app header's surface"
+    },
+    "app-header-frost-brand": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "The frost app header's brand"
+    },
+    "app-header-frost-content": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "The frost app header's content"
+    },
+    "app-header-frost-divider": {
+      "$value": "{plx-sys.frost-border}",
+      "$type": "color",
+      "$description": "The frost app header's divider"
+    },
+    "app-header-frost-edge": {
+      "$value": "{plx-sys.frost-border}",
+      "$type": "color",
+      "$description": "The frost app header's edge"
+    },
+    "app-header-frost-hover": {
+      "$value": "{plx-sys.frost-state-selected}",
+      "$type": "color",
+      "$description": "The frost app header's hover"
+    },
+    "app-header-frost-selected": {
+      "$value": "{plx-sys.frost-state-selected}",
+      "$type": "color",
+      "$description": "The frost app header's selected"
+    },
+    "app-header-frost-selected-content": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "The frost app header's selected content"
+    },
+    "app-header-frost-surface": {
+      "$value": "{plx-sys.frost-surface}",
+      "$type": "color",
+      "$description": "The frost app header's surface"
+    },
+    "app-header-plain-brand": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "The plain app header's brand"
+    },
+    "app-header-plain-content": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "The plain app header's content"
+    },
+    "app-header-plain-divider": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "The plain app header's divider"
+    },
+    "app-header-plain-edge": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "The plain app header's edge"
+    },
+    "app-header-plain-hover": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "The plain app header's hover"
+    },
+    "app-header-plain-selected": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "The plain app header's selected"
+    },
+    "app-header-plain-selected-content": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color",
+      "$description": "The plain app header's selected content"
+    },
+    "app-header-plain-surface": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "The plain app header's surface"
+    },
+    "app-header-action-width": {
+      "$value": "{plx-ref.size-112px}",
+      "$type": "dimension"
+    },
+    "app-header-action-height": {
+      "$value": "{plx-ref.control-size-32px}",
+      "$type": "dimension"
+    },
+    "app-header-action-icon-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "app-header-chevron-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "app-header-avatar-size": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension"
+    },
+    "app-header-icon-size": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension"
+    },
+    "app-header-item-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension"
+    },
+    "app-header-name-width": {
+      "$value": "{plx-ref.size-200px}",
+      "$type": "dimension"
     }
   }
 }

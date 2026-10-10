@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.17] - 2026-10-10
+
+### Added
+- Every Variant, Navigation: Tabs, Application header, Product switcher, Navigation rail and Action menu get the Button
+  treatment. Their values are component tokens: tabs.css 56, app-header.css 91 plus the header's three tones (24) and
+  its own sizes (8) as tokens, tool-rail.css 25, menu.css 39. Each has an "All" lab with each value's token. Each variant
+  has its own page: 14 pages (3 tab styles, 3 header tones, 2 switcher names, 2 rail label modes, 4 menu placements).
+
+### Changed
+- The reds, by the owner: red-800 #990000, red-700 #cc0000, red-500 #d60000, red-300 #ff8585, red-200 #ffc2c2. The owner
+  asked for #ff0000 for red-500, then chose to darken it to pass WCAG AA. #d60000 is the brightest red with 4.5:1 for white
+  text on it (5.4:1) and for red text on the soft danger fill (4.6:1). (batch 318)
+
 ## [0.31.16] - 2026-10-10
 
 ### Fixed
