@@ -45,6 +45,8 @@ function standardTaxonomy() {
       if (m[1].length === 0) sec.subs.push([m[2], []]);
       else sec.subs[sec.subs.length - 1][1].push(m[2]);
     }
+    // a section with no subcategories lists its leaves directly: one unnamed subcategory (batch 325)
+    if (sec.subs.length && sec.subs.every((x) => !x[1].length)) sec.subs = [['', sec.subs.map((x) => x[0])]];
     out.push(sec);
   }
   return out;
@@ -63,7 +65,7 @@ const tax = load(path.join(SPEC, 'inventory-taxonomy.js'), 'DSTaxonomy');
 const recs = load(path.join(SPEC, 'inventory.js'), 'DSInventory');
 
 // taxonomy
-if (std.length !== 42) add('taxonomy', 'STANDARD.md §3 has ' + std.length + ' sections (42 expected: 14 each for Web, iOS and Android)');
+if (std.length !== tax.length) add('taxonomy', 'STANDARD.md §3 has ' + std.length + ' sections, inventory-taxonomy.js ' + tax.length);
 std.forEach((s, i) => {
   const t = tax[i];
   if (!t) return add('taxonomy', s.n + ' ' + s.title + ': missing from inventory-taxonomy.js');

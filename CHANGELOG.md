@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.24] - 2026-10-10
+
+### Changed
+- The iOS view follows the Apple Human Interface Guidelines' navigation, as the owner asked. Getting started, Foundations,
+  Patterns, Inputs and Technologies list their pages directly, as the HIG does. Components has the HIG's eight groups:
+  Content; Layout and organization; Menus and actions; Navigation and search; Presentation; Selection and input; Status;
+  System experiences. The pages carry the HIG's names (Toggles, Sheets, Tab bars, Pop-up buttons, Virtual keyboards).
+  Only pages that apply to iPhone and iPad are listed. Plenix's own pages (how to build, token mapping, generated files,
+  sources and levels, conformance) are in Getting started. 134 pages; 62 show their parts of the Plenix Platforms
+  Standard, the rest are placeholders. Android keeps its Web-shaped hierarchy.
+- The design system's navigation supports a section whose pages sit directly under it; check-spec reads such sections
+  from STANDARD.md. (batch 325)
+
 ## [0.31.23] - 2026-10-10
 
 ### Changed
