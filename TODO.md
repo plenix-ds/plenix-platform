@@ -14,7 +14,7 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
 - [x] 3. (batch 280, 0.23.0) Progress bar: native <progress value> (the function reports the amount; the DS styles it); the spec says so
 - [x] 4. (batch 281, 0.23.1) Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
 - [x] 5. (batch 282, 0.23.2) Image editor in steps: zoom, opacity, text on a 5% grid, palette text colors, filter presets, crop classes
-- [ ] 6. The design system's 15 sample styles: a generated class per token
+- [x] 6. (batch 283, 0.24.0) The design system's sample styles: a generated class per token
 - [ ] 6b. Tabulator drawn by Plenix. PROVEN in the prototype (Plenix - DAM/audit/tabulator-prototype/, 2026-10-09):
   zero inline styles with every feature working: sorting, row selection, widths as size-token classes (cssClass), a
   sticky class instead of frozen, editing (a custom editor: Plenix input), tree rows (indent by tabulator-tree-level-N
@@ -26,7 +26,7 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
   Tabulator update writes a style again, then the real tables (25 data-table views, the reference test).
 - [ ] 6c. The design system lab builds its grid as table markup and hands it to DS.table() (component-lab.js: the
   matrix and the properties table; Codex M-03): hand the rows to the Platform Table directly, with no markup
-- [ ] 7. check-system rejects every style attribute, custom properties included; and a runtime test (Codex,
+- [x] 7. (batch 283, 0.24.0) check-system rejects every style attribute, custom properties included; and a runtime test (Codex,
   owner yes 2026-10-09) that fails any page rendering an element with a style attribute
 
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)

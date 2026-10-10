@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-10-09
+
+### Changed
+- No style attribute anywhere outside Tabulator (Strict DS steps 6 and 7; owner: "strictly follow the DS.. no
+  exceptions"). The design system's own samples (a token's swatch, radius, shadow, opacity, icon size, type, a demo box's
+  width, a wireframe's grid) take their value as a generated class: DS.varClass(doc, name, value) writes one rule per
+  property and value into the page's constructed sample sheet (document.adoptedStyleSheets: no element), DS.setVar and
+  DS.sample use it, React samples use DS.sampleClass. The sample properties are named --ds-sample-<property>.
+- check-system rejects every style object, style.setProperty and style write, custom properties included (until now an
+  object of --plx- custom properties was allowed).
+- tests/pages.test.js fails any page or frame with an element that has a style attribute (722 pages: none). Tabulator's
+  own writes (Strict DS 6b, next) are counted apart until DataTable draws without them.
+
 ## [0.23.2] - 2026-10-09
 
 ### Changed

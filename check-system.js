@@ -15,9 +15,10 @@
 //               control's grid icon (--plx-sys-control-icon-<role>) or a size token from CSS, so it sits on the 4px grid
 //   defined     every var(--plx-…) a file uses is declared somewhere (a renamed or removed token leaves no dangling use)
 //   inline-style every page draws itself only with Platform components and plx- classes: no style={…}, style: {…},
-//               el.style.x =, setAttribute('style'), style="…" or style block anywhere (the Platform, the design system, every
-//               application) except an object whose every key is a --plx- custom property (a
-//               value from the data, e.g. a category's color, read by the Platform's stylesheet). Applications not yet
+//               el.style.x =, style.setProperty(…), setAttribute('style'), style="…" or style block anywhere (the Platform,
+//               the design system, every application), custom properties included (Strict DS step 7, batch 283; owner: "no
+//               exceptions"): a value from the data reaches the stylesheet as an attribute with one generated rule per step
+//               (system/steps.css) or a class (the design system's samples: DS.varClass). Applications not yet
 //               converted are listed in INLINE_STYLE_PENDING with their count, until their batch removes them (batch 150).
 //   generated   the token stylesheets and the standards' code (build-standards.js: providers/pageLayouts.js, system/layout-modes.css)
 //               are exactly what is generated from their JSON (platform/tokens/*.tokens.json, platform/standards/*.json);
@@ -144,25 +145,17 @@ for (const { file } of files) {
   if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/fonts\.(googleapis|gstatic)\.com/g)) add('fonts', file, lineOf(m.index), 'a call to Google Fonts: ' + text.slice(Math.max(0, m.index - 20), m.index + 40).split('\n')[0]);
   }
-  // style: in h()/createElement props — allowed only as an object literal of custom properties
+  // style: in h()/createElement props: never, custom properties included (batch 283)
   for (const m of text.matchAll(/[{,]\s*style\s*:\s*/g)) {
     const at = m.index + m[0].length;
     if (/['"`]/.test(text[at])) continue;   // a data field named style (a string), not a style
-    if (text[at] === '{') {
-      let depth = 0, i = at;
-      for (; i < text.length; i++) { if (text[i] === '{') depth++; else if (text[i] === '}' && --depth === 0) break; }
-      const keys = [...text.slice(at + 1, i).matchAll(/(?:^|,)\s*(['"]?)([-\w$]+)\1\s*:/g)].map((k) => k[2]);
-      if (keys.length && keys.every((k) => runtimeVar(file, k))) continue;
-    }
     add('inline-style', file, lineOf(m.index), 'style: ' + text.slice(at, at + 80).split('\n')[0]);
   }
-  // writing to an element's style from script: only a custom property, through setProperty
+  // writing to an element's style from script: never, not even a custom property (batch 283)
   for (const m of text.matchAll(/\.style\s*(?:\.\s*([\w$]+)|\[)/g)) {
     const after = text.slice(m.index + m[0].length);
-    if (m[1] === 'setProperty') {
-      const arg = after.match(/^\(\s*['"](--[\w-]+)/);
-      if (arg && runtimeVar(file, arg[1])) continue;
-    } else if (!/^(?:[^\]\n]*\])?\s*=(?!=)/.test(after)) continue;   // reading a style (a rule's cssText, a value) is not styling
+    if (m[1] === 'setProperty' || m[1] === 'removeProperty') { /* a write */ }
+    else if (!/^(?:[^\]\n]*\])?\s*=(?!=)/.test(after)) continue;   // reading a style (a rule's cssText, a value) is not styling
     add('inline-style', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
   }
   for (const m of text.matchAll(/setAttribute\(\s*['"]style['"]|\.cssText\s*=(?!=)|\bstyle="[^"]|<style[\s>]/g)) add('inline-style', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
@@ -175,8 +168,7 @@ for (const { file, app } of files) {
     const body = o.body.trim();
     let flat = body.slice(1, -1).replace(/(['"])(--[\w-]+)\1\s*:/g, (all, q, k) => runtimeVar(file, k) ? ' PLXKEY:' : all).replace(/'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`/g, 'S');
     for (let k = 0; k < 5; k++) flat = flat.replace(/\([^()]*\)|\[[^[\]]*\]|\{[^{}]*\}/g, 'X');
-    const literal = /^\{[\s\S]*\}$/.test(body) && /PLXKEY:/.test(flat);
-    if (literal && !/(^|,)\s*(\.\.\.|(?!PLXKEY)[A-Za-z_$][\w$]*\s*:)/.test(flat)) continue;
+    void flat;   // until batch 283 an object of custom properties was allowed here; every style object is a finding now
     if (INLINE_STYLE_PENDING.includes(app)) { pendingStyles[app] = (pendingStyles[app] || 0) + 1; continue; }
     add('inline-style', file, text.slice(0, o.at).split('\n').length, 'style=' + o.body.slice(0, 100));
   }
