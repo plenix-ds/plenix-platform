@@ -19,7 +19,6 @@
      The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
      The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
        system adds none to make up for it.
-     Numbers (12 | 14 | 16 | 20 | 24) still render for old markup, but the system check rejects them: they skip the grid.
      Other props pass through to the <span>.
 */
 import React from 'react';

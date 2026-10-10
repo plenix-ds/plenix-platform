@@ -110,7 +110,7 @@ export function NotesWidget({ handle,  onViewAll, prefs }) {
   const showFolder = prefs?.noteFolder !== false;
   const max = parseInt(prefs?.noteMax || '6', 10);
   return (
-    <Panel icon="document" title="Notes" flush actions={<Inline gap="xs">{allLink('View all notes', onViewAll)}{handle}</Inline>}>
+    <Panel icon="doc-text" title="Notes" flush actions={<Inline gap="xs">{allLink('View all notes', onViewAll)}{handle}</Inline>}>
       <Stack gap="none">{ALL_NOTES.slice(0, max).map((n) => (
         <RowButton key={n.id} onClick={onViewAll}>
           <Inline gap="sm" inset="sm" justify="between">

@@ -2415,7 +2415,7 @@ function ProjectContent({
     }, open.slice(0, 4).map(taskRow)) : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
     }, "All tasks complete.")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-      icon: "document",
+      icon: "doc-text",
       title: "Recent notes",
       flush: true
     }, pNotes.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {

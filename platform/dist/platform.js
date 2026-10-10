@@ -429,7 +429,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
      The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
        system adds none to make up for it.
-     Numbers (12 | 14 | 16 | 20 | 24) still render for old markup, but the system check rejects them: they skip the grid.
      Other props pass through to the <span>.
 */
 function Icon({
@@ -1419,7 +1418,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis; "quiet", its old name, still works) | "danger" (filled red; destructive) | "danger-secondary"
+       hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
        (red outline, fills on hover) | "link" (looks like link text)
      size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
@@ -2622,7 +2621,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The chevron at the end points down while open.
      The body is removed from view, and from the accessibility tree, while collapsed.
    Notes:
-     It keeps the legacy section header: an accent uppercase title with an optional icon, a divider beneath it and a
+     It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
        chevron at the end.
 */
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -4537,7 +4536,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      "contained" is the standard: folder tabs joined to a bordered panel.
      "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
      content below with no frame of its own; for tabs inside a pane or a card that is already framed.
-     "segmented" (a compact switch) stays for compatibility. The "underline" variant was removed (owner, 2026-10-09).
+     "segmented" is a compact switch.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */
@@ -7017,7 +7016,7 @@ const PLENIX_APPS = exports.PLENIX_APPS = [{
 }, {
   id: 'notes',
   label: 'Notes',
-  icon: 'document',
+  icon: 'doc-text',
   path: 'notes/index.html'
 }, {
   id: 'bookmarks',
@@ -7280,8 +7279,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      On a phone the header links leave the header; the switcher in the header name still has them.
      The end is right-aligned: search always first and furthest left, then the application's action, then the utilities with no gaps.
      Search is an icon until asked for, then a field that opens to its left without moving any other icon.
-     Ctrl K (Cmd K) opens search from anywhere on the page; Escape or Close search closes it.
-     An empty search field closes when focus leaves it.
+     Ctrl K (Cmd K) opens search from anywhere on the page; Escape closes it.
+     An empty search field closes when focus leaves it. The field's own clear button is the only X (owner, 2026-10-10: a
+       separate Close button made two)
      The account menu shows the name, email and picture from the session.
    Notes:
      Settings is reached from the account menu, never from a separate button.
@@ -7420,14 +7420,7 @@ function AppHeader({
     className: "plx-app-header__search",
     role: "search",
     onBlur: onPanelBlur
-  }, search, /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-app-header__item plx-app-header__search-close",
-    "aria-label": "Close search",
-    onClick: close
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "close"
-  }))) : null) : null, action ? /*#__PURE__*/_react.default.createElement("div", {
+  }, search) : null) : null, action ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-header__action"
   }, action) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-header__utilities"
@@ -8676,7 +8669,7 @@ function EntityHeader({
     className: (0, _cx.cx)('plx-entity-header', className)
   }, /*#__PURE__*/_react.default.createElement(Media, {
     media: media || {
-      icon: 'document'
+      icon: 'doc-text'
     }
   }), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-entity-header__top"

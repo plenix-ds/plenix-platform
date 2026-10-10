@@ -2386,7 +2386,7 @@ function NotesScreen() {
     }))
   })) : /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
     size: "page",
-    icon: "document",
+    icon: "doc-text",
     title: "Select a note to read"
   })));
 }

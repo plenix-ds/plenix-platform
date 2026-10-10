@@ -2316,7 +2316,7 @@ function NotesWidget({
   const showFolder = prefs?.noteFolder !== false;
   const max = parseInt(prefs?.noteMax || '6', 10);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    icon: "document",
+    icon: "doc-text",
     title: "Notes",
     flush: true,
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
@@ -2826,7 +2826,7 @@ function ProjectContent({
     }, open.slice(0, 4).map(taskRow)) : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
     }, "All tasks complete.")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-      icon: "document",
+      icon: "doc-text",
       title: "Recent notes",
       flush: true
     }, pNotes.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {

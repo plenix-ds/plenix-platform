@@ -2540,7 +2540,7 @@ function AssetInspector({
 }) {
   if (!asset) return /*#__PURE__*/_react.default.createElement(_plenixPlatform.EmptyState, {
     size: "inline",
-    icon: "document"
+    icon: "doc-text"
   }, "Click an asset to see details");
   return /*#__PURE__*/_react.default.createElement(AssetDetail, {
     key: asset.id,

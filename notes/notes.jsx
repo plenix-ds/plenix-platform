@@ -36,7 +36,7 @@ export function NotesScreen() {
             <Textarea aria-label="Note text" rows={8} defaultValue={note.preview + ' Sed ut perspiciatis unde omnis iste natus error sit voluptatem.'} />
             <ClassificationWidget value={meta[note.id]} onChange={(m) => setMeta((prev) => ({ ...prev, [note.id]: m }))} />
           </Stack>
-        ) : <EmptyState size="page" icon="document" title="Select a note to read" />}
+        ) : <EmptyState size="page" icon="doc-text" title="Select a note to read" />}
       </PageContent>
     </div>
   );

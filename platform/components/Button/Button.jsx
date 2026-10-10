@@ -7,7 +7,7 @@
    Props:
      variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis; "quiet", its old name, still works) | "danger" (filled red; destructive) | "danger-secondary"
+       hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
        (red outline, fills on hover) | "link" (looks like link text)
      size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue

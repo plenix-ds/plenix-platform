@@ -159,6 +159,6 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
 }
 
 export function AssetInspector({ asset, act, onDialog, onPreview }) {
-  if (!asset) return <EmptyState size="inline" icon="document">Click an asset to see details</EmptyState>;
+  if (!asset) return <EmptyState size="inline" icon="doc-text">Click an asset to see details</EmptyState>;
   return <AssetDetail key={asset.id} asset={asset} act={act} onDialog={onDialog} onPreview={onPreview} />;
 }

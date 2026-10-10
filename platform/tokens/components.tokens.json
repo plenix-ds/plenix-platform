@@ -561,12 +561,14 @@
       "$type": "dimension"
     },
     "button-caret-width": {
-      "$value": "{plx-ref.glyph-size-10px}",
-      "$type": "dimension"
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension",
+      "$description": "The caret is the arrow_drop_down glyph in its whole square (the icon set includes its own padding), 12px like the Select and Combobox chevrons (owner, 2026-10-10: the caret was a dot in a 10x6 box)."
     },
     "button-caret-height": {
-      "$value": "{plx-ref.glyph-size-6px}",
-      "$type": "dimension"
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension",
+      "$description": "The caret is the arrow_drop_down glyph in its whole square (the icon set includes its own padding), 12px like the Select and Combobox chevrons (owner, 2026-10-10: the caret was a dot in a 10x6 box)."
     },
     "button-font-family": {
       "$value": "{plx-sys.font-label}",

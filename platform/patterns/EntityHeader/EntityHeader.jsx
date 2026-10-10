@@ -97,7 +97,7 @@ export function EntityHeader({ title, media, context, status, actions, moreActio
   const badge = status && !React.isValidElement(status) ? <Badge tone={status.tone} variant="soft">{status.label}</Badge> : status;
   return (
     <header className={cx('plx-entity-header', className)}>
-      <Media media={media || { icon: 'document' }} />
+      <Media media={media || { icon: 'doc-text' }} />
       <div className="plx-entity-header__top">
         {context ? <div className="plx-entity-header__context">{context}</div> : <span />}
         {badge ? <div className="plx-entity-header__status">{badge}</div> : null}

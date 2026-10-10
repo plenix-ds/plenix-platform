@@ -68,8 +68,9 @@
      On a phone the header links leave the header; the switcher in the header name still has them.
      The end is right-aligned: search always first and furthest left, then the application's action, then the utilities with no gaps.
      Search is an icon until asked for, then a field that opens to its left without moving any other icon.
-     Ctrl K (Cmd K) opens search from anywhere on the page; Escape or Close search closes it.
-     An empty search field closes when focus leaves it.
+     Ctrl K (Cmd K) opens search from anywhere on the page; Escape closes it.
+     An empty search field closes when focus leaves it. The field's own clear button is the only X (owner, 2026-10-10: a
+       separate Close button made two)
      The account menu shows the name, email and picture from the session.
    Notes:
      Settings is reached from the account menu, never from a separate button.
@@ -149,7 +150,6 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
               {searching ? (
                 <div ref={panel} id={searchId} className="plx-app-header__search" role="search" onBlur={onPanelBlur}>
                   {search}
-                  <button type="button" className="plx-app-header__item plx-app-header__search-close" aria-label="Close search" onClick={close}><Icon name="close" /></button>
                 </div>
               ) : null}
             </div>

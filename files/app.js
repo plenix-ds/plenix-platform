@@ -2374,7 +2374,7 @@ function FilesScreen() {
     }]
   }))), file ? /*#__PURE__*/React.createElement(_plenixPlatform.SidePanel, {
     title: file.name,
-    icon: "document",
+    icon: "doc-text",
     onOpenChange: o => {
       if (!o) setSel(null);
     }

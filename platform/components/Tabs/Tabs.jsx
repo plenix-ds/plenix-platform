@@ -27,7 +27,7 @@
      "contained" is the standard: folder tabs joined to a bordered panel.
      "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
      content below with no frame of its own; for tabs inside a pane or a card that is already framed.
-     "segmented" (a compact switch) stays for compatibility. The "underline" variant was removed (owner, 2026-10-09).
+     "segmented" is a compact switch.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */

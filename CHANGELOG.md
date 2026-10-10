@@ -6,6 +6,30 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.0] - 2026-10-10
+
+### Fixed
+- The dropdown arrow of every menu button (FilterBar filters, More menus, any Button with caret) was a dot (owner: "find the
+  root cause"): the caret is the arrow_drop_down glyph, whose square includes the icon set's own padding, drawn into a 10x6
+  box, so the whole 20px square shrank to 6px and the triangle to about 3x1.5px. The caret is now a 12px square, like the
+  Select and Combobox chevrons (--plx-comp-button-caret-width/-height). (batch 302)
+- Cards in the design system no longer scroll: the sample stages, variant previews, live samples and code set
+  overflow-x:auto, which also turned overflow-y to auto, so a tooltip below its button scrolled the card; they now grow
+  with their content. (batch 302)
+
+### Removed
+- The header search's separate Close button (owner: "why is there 2 x"): the field's own clear button is the only X;
+  Escape closes search, and an empty field closes when focus leaves it. It also wrapped out of place in a narrow header.
+  (batch 302)
+- The numeric icon sizes (plx-icon--size-12/14/16/20/24) and every legacy or compatibility mention in the design system
+  and the component docs (owner: "there should be no reference to the legacy at all"); Tabs' Segmented is "a compact
+  switch". (batch 302)
+
+### Changed
+- The document icon is reserved for what is not in Plenix yet (owner): Product icons, Dashboard grid, Action bar, Metric,
+  Selectable card, Calendar view, Table and Progress bar have their own icons (new names chart = bar_chart, progress =
+  linear_scale); the Notes application, notes panels, the file panel and empty states use doc-text. (batch 302)
+
 ## [0.30.0] - 2026-10-10
 
 ### Removed

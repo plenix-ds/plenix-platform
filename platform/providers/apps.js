@@ -10,7 +10,7 @@ export const PLENIX_APPS = [
   { id: 'contacts', label: 'Contacts', icon: 'settings-users', path: 'contacts/index.html' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar', path: 'calendar/index.html' },
   { id: 'tasks', label: 'Tasks', icon: 'circle-check', path: 'tasks/index.html' },
-  { id: 'notes', label: 'Notes', icon: 'document', path: 'notes/index.html' },
+  { id: 'notes', label: 'Notes', icon: 'doc-text', path: 'notes/index.html' },
   { id: 'bookmarks', label: 'Bookmarks', icon: 'bookmark', path: 'bookmarks/index.html' },
   { id: 'files', label: 'Files', icon: 'folder', path: 'files/index.html' },
   { id: 'assets', label: 'Asset Manager', icon: 'image-b', path: 'dam/index.html' },

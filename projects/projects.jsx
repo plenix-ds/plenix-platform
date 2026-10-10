@@ -125,7 +125,7 @@ export function ProjectContent({ proj, panel }) {
           <Columns count={2}>
             <Stack gap="md">
               <Panel icon="clock" title="Upcoming tasks">{open.length ? <Stack gap="sm">{open.slice(0, 4).map(taskRow)}</Stack> : <Text variant="secondary">All tasks complete.</Text>}</Panel>
-              <Panel icon="document" title="Recent notes" flush>{pNotes.length ? <Stack gap="none">{pNotes.slice(0, 3).map((n) => (
+              <Panel icon="doc-text" title="Recent notes" flush>{pNotes.length ? <Stack gap="none">{pNotes.slice(0, 3).map((n) => (
                 <RowButton key={n.id}><Stack inset="sm" gap="xs"><Text variant="strong">{n.title}</Text><Text variant="data">{n.date}</Text></Stack></RowButton>
               ))}</Stack> : <Stack inset="md"><Text variant="secondary">No notes yet.</Text></Stack>}</Panel>
             </Stack>

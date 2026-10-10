@@ -24,7 +24,7 @@
      The chevron at the end points down while open.
      The body is removed from view, and from the accessibility tree, while collapsed.
    Notes:
-     It keeps the legacy section header: an accent uppercase title with an optional icon, a divider beneath it and a
+     It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
        chevron at the end.
 */
 import React from 'react';

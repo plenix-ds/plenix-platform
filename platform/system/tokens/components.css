@@ -139,8 +139,8 @@
   /* shape */
   --plx-comp-button-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-button-radius: var(--plx-sys-radius-control);
-  --plx-comp-button-caret-width: var(--plx-ref-glyph-size-10px);
-  --plx-comp-button-caret-height: var(--plx-ref-glyph-size-6px);
+  --plx-comp-button-caret-width: var(--plx-ref-size-12px);
+  --plx-comp-button-caret-height: var(--plx-ref-size-12px);
   --plx-comp-button-font-family: var(--plx-sys-font-label);
   --plx-comp-button-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-button-caret-duration: var(--plx-sys-motion-duration-fast);

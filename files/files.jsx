@@ -29,7 +29,7 @@ export function FilesScreen() {
         </Stack>
       </PageContent>
       {file ? (
-        <SidePanel title={file.name} icon="document" onOpenChange={(o) => { if (!o) setSel(null); }}>
+        <SidePanel title={file.name} icon="doc-text" onOpenChange={(o) => { if (!o) setSel(null); }}>
           <Stack gap="md">
             <Inline gap="sm" wrap><Tag>{file.t}</Tag><Text variant="data">{file.s}</Text><Text variant="secondary">{file.d}</Text></Inline>
             <ClassificationWidget value={meta[sel]} onChange={(m) => setMeta((prev) => ({ ...prev, [sel]: m }))} />
