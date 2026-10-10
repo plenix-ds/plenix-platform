@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.3] - 2026-10-10
+
+### Fixed
+- Tabs' outer border is the same on every side (owner: "do a deep search why this is and fix it"). Root cause: the contained
+  panel and the open tab drew their edges as inset box-shadows, the only frame in the system to do so; shadows are not
+  snapped to device pixels, so at 150% a 1px line covered 1.5 device pixels, blurred over two and heavier than every
+  other frame, and at 125% the four sides differed by up to 20 shades. They now draw real borders like Panel and Card;
+  measured at 125% and 150% over ten sub-pixel positions, Tabs now render exactly as Panel does. (batch 305)
+
 ## [0.31.2] - 2026-10-10
 
 ### Fixed
