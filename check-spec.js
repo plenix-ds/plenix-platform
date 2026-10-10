@@ -63,7 +63,7 @@ const tax = load(path.join(SPEC, 'inventory-taxonomy.js'), 'DSTaxonomy');
 const recs = load(path.join(SPEC, 'inventory.js'), 'DSInventory');
 
 // taxonomy
-if (std.length !== 16) add('taxonomy', 'STANDARD.md §3 has ' + std.length + ' sections (16 expected: 14, and the native platforms 15 and 16)');
+if (std.length !== 42) add('taxonomy', 'STANDARD.md §3 has ' + std.length + ' sections (42 expected: 14 each for Web, iOS and Android)');
 std.forEach((s, i) => {
   const t = tax[i];
   if (!t) return add('taxonomy', s.n + ' ' + s.title + ': missing from inventory-taxonomy.js');

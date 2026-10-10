@@ -9,6 +9,7 @@ const ALLOWED_MISSING = /Plenix%20-%20DAM\/audit\/batches\//;
 const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html']);
 
+let current = '';   // the design-system page being checked
 (async () => {
   const server = await serve(PORT);
   const browser = await launch();
@@ -72,6 +73,7 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
     return [...out];
   });
   for (const r of routes) {
+    current = r;   // named in the error if this page hangs
     if (process.env.PAGES_TRACE) console.log('page ' + r);   // PAGES_TRACE=1: name each page as it loads (to find one that hangs)
     await page.evaluate((h) => { location.hash = h; }, r); await sleep(250);
     const blank = await page.evaluate(() => !document.querySelector('main') || document.querySelector('main').innerText.trim().length < 20);
@@ -84,4 +86,4 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
   failed.forEach(([name, e]) => { console.log('FAIL ' + name); e.forEach((x) => console.log('     ' + x)); });
   console.log((failed.length ? 'PAGES_FAIL ' : 'PAGES_OK ') + (n - failed.length) + '/' + n);
   process.exit(failed.length ? 1 : 0);
-})().catch((e) => { console.error(e); process.exit(1); });
+})().catch((e) => { console.error((current ? 'stopped on design system ' + current + ': ' : '') + e.message); process.exit(1); });

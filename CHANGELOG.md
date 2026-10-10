@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.23] - 2026-10-10
+
+### Changed
+- iOS and Android follow the Web design system's hierarchy, as the owner asked. Under level 0 (the Platform dropdown),
+  each platform has the same 14 sections as Web: Foundations, Layout & Composition, Content & Identity, Actions &
+  Commands, Forms & Data Entry, Navigation & Discovery, Data Display & Visualization, Feedback & System State, Overlays &
+  Disclosure, Patterns & Workflows, Screen Structures & Templates, Specialized Experiences, Interaction & Accessibility,
+  and Implementation & Governance. The groups inside follow purpose (Text fields & text areas; Sheets & bottom sheets;
+  Tab bars & navigation bars), and the pages are named as each platform names its controls: Toggle on iOS and Switch on
+  Android, Sheet with detents and ModalBottomSheet, TabView and NavigationBar, NavigationStack and Back stack.
+- 302 pages (151 per platform). 226 show their parts of the Plenix Platforms Standard for that platform: whole
+  subsections, the rows of a table that apply, or a 6.5 functional equivalent. The rest are placeholders, as on Web. The
+  old "15 Platform – iOS" and "16 Platform – Android" are gone; their pages are now 01 Foundations › Overview, 14
+  Implementation & Governance › How to build, Token mapping and Generated files, and the standard's sections in their
+  purpose groups. (batch 324)
+
 ## [0.31.22] - 2026-10-10
 
 ### Changed
