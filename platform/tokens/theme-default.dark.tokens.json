@@ -391,7 +391,7 @@
       "$type": "color"
     },
     "avatar-background": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "avatar-content": {
@@ -502,7 +502,7 @@
       "$type": "color"
     },
     "code-keyword": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "code-string": {
@@ -543,7 +543,7 @@
       "$description": "the warm end of the header card gradient: the hue opposite the brand blue"
     },
     "header-card-media-content": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
       "$description": "the header card icon"
     },
@@ -690,15 +690,15 @@
       "$type": "color"
     },
     "data-table-row-selected-hover": {
-      "$value": "{plx-ref.color-blue-850}",
+      "$value": "{plx-ref.color-blue-900}",
       "$type": "color"
     },
     "data-table-row-selected-text": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "data-table-accent": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "data-table-danger": {

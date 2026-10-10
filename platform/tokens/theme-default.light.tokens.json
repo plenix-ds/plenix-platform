@@ -401,7 +401,7 @@
       "$type": "color"
     },
     "accent-border": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "accent-content": {
@@ -449,11 +449,11 @@
       "$type": "color"
     },
     "accent-field-border": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "accent-field-placeholder": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "field-placeholder": {

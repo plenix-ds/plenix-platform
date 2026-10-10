@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.18] - 2026-10-10
+
+### Changed
+- The owner merged two blues: every role on blue-850 (#26354a) now uses blue-900 (#1f2a3a). That is the dark theme's
+  selected-row hover in tables. Every role on blue-350 (#8fb0d9) now uses blue-300 (#a2c0e3): the light theme's accent
+  border, accent field border and accent field placeholder; the dark theme's avatar background, code keyword, header
+  card media content, selected-row text and table accent. --plx-ref-color-blue-850 and --plx-ref-color-blue-350 are
+  removed; Blue has 10 shades.
+- The design system's color group "Other" is now "Alpha or transparent" (the two black alpha colors).
+- Purple is kept: it is in use (data color purple, the light theme's code attribute, category and project colors).
+  (batch 319)
+
 ## [0.31.17] - 2026-10-10
 
 ### Added

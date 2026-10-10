@@ -36,8 +36,8 @@ Owner: "every variant for every component to have navigation and design specs ju
 every variant with each value's token and an Edit dialog, and its own page per variant in the navigation.
 - [x] Button, Field and the six form controls (batches 252-256)
 - [x] Badge (0.17.0); Counter, Status dot, Notice, Spinner, Progress bar (0.18.0): 37 of 192 variants
-- [ ] Overlays: Dialog, Confirmation dialog, Side drawer, Toast
-- [ ] Navigation: Tabs, Application header, Navigation rail, Product switcher, Action menu
+- [x] Overlays: Dialog, Confirmation dialog, Side drawer, Toast (batch 316, 0.31.15)
+- [x] Navigation: Tabs, Application header, Navigation rail, Product switcher, Action menu (batch 318, 0.31.17)
 - [ ] Data display (Tag, Chip done in 0.25.2): Metric, Card, Media card, Interactive list, Activity stream, Radio tiles, Calendar view
 - [ ] Forms: Combobox, Search input, Color swatch, Drop zone, Rating
 - [ ] Content: Text, Heading, List, Code block, Keyboard hint, Avatar, Property list, Thumbnail, Icon

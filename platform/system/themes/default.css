@@ -150,7 +150,7 @@
   --plx-sys-avatar-content: var(--plx-ref-color-white);
   --plx-sys-accent-surface: var(--plx-ref-color-blue-400);
   --plx-sys-accent-surface-raised: var(--plx-ref-color-blue-400);
-  --plx-sys-accent-border: var(--plx-ref-color-blue-350);
+  --plx-sys-accent-border: var(--plx-ref-color-blue-300);
   --plx-sys-accent-content: var(--plx-ref-color-white);
   --plx-sys-accent-content-muted: var(--plx-ref-color-blue-200);
   --plx-sys-skeleton-base: var(--plx-ref-color-gray-300);
@@ -162,8 +162,8 @@
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-700);
   --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-700);
   --plx-sys-accent-field-background: var(--plx-ref-color-blue-600);
-  --plx-sys-accent-field-border: var(--plx-ref-color-blue-350);
-  --plx-sys-accent-field-placeholder: var(--plx-ref-color-blue-350);
+  --plx-sys-accent-field-border: var(--plx-ref-color-blue-300);
+  --plx-sys-accent-field-placeholder: var(--plx-ref-color-blue-300);
   --plx-sys-field-placeholder: var(--plx-ref-color-gray-600);
   --plx-sys-tooltip-background: var(--plx-ref-color-black);
   --plx-sys-tooltip-content: var(--plx-ref-color-white);
@@ -376,7 +376,7 @@
   --plx-sys-border-divider: var(--plx-ref-color-gray-700);
   --plx-sys-control-background: var(--plx-ref-color-gray-800);
   --plx-sys-control-border: var(--plx-ref-color-gray-700);
-  --plx-sys-avatar-background: var(--plx-ref-color-blue-350);
+  --plx-sys-avatar-background: var(--plx-ref-color-blue-300);
   --plx-sys-avatar-content: var(--plx-ref-color-black);
   --plx-sys-accent-surface: var(--plx-ref-color-black);
   --plx-sys-accent-surface-raised: var(--plx-ref-color-gray-800);
@@ -403,7 +403,7 @@
   --plx-sys-scrim: var(--plx-ref-color-black);
   --plx-sys-toast-background: var(--plx-ref-color-gray-700);
   --plx-sys-toast-content: var(--plx-ref-color-white);
-  --plx-sys-code-keyword: var(--plx-ref-color-blue-350);
+  --plx-sys-code-keyword: var(--plx-ref-color-blue-300);
   --plx-sys-code-string: var(--plx-ref-color-red-300);
   --plx-sys-code-comment: var(--plx-ref-color-green-200);
   --plx-sys-code-number: var(--plx-ref-color-green-100);
@@ -413,7 +413,7 @@
   --plx-sys-code-variable: var(--plx-ref-color-blue-200);
   --plx-sys-code-selector: var(--plx-ref-color-brown-200);
   --plx-sys-header-card-tint: var(--plx-ref-color-gray-700);
-  --plx-sys-header-card-media-content: var(--plx-ref-color-blue-350);
+  --plx-sys-header-card-media-content: var(--plx-ref-color-blue-300);
   --plx-sys-surface-media: var(--plx-ref-color-black);
   --plx-sys-surface-media-raised: var(--plx-ref-color-gray-700);
   --plx-sys-border-media: var(--plx-ref-color-gray-700);
@@ -448,9 +448,9 @@
   --plx-sys-data-table-text-subtle: var(--plx-ref-color-gray-500);
   --plx-sys-data-table-row-hover: var(--plx-ref-color-gray-900);
   --plx-sys-data-table-row-selected: var(--plx-ref-color-blue-900);
-  --plx-sys-data-table-row-selected-hover: var(--plx-ref-color-blue-850);
-  --plx-sys-data-table-row-selected-text: var(--plx-ref-color-blue-350);
-  --plx-sys-data-table-accent: var(--plx-ref-color-blue-350);
+  --plx-sys-data-table-row-selected-hover: var(--plx-ref-color-blue-900);
+  --plx-sys-data-table-row-selected-text: var(--plx-ref-color-blue-300);
+  --plx-sys-data-table-accent: var(--plx-ref-color-blue-300);
   --plx-sys-data-table-danger: var(--plx-ref-color-red-500);
   --plx-sys-data-table-menu-shadow: 0 var(--plx-ref-space-8px) var(--plx-ref-space-24px) var(--plx-ref-color-black-alpha-50);
   --plx-sys-data-color-blue: var(--plx-ref-color-blue-400);
