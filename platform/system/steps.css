@@ -330,3 +330,9 @@
 .plx-time-grid__event[data-plx-span="94"]{--plx-comp-time-grid-span:23.5;}
 .plx-time-grid__event[data-plx-span="95"]{--plx-comp-time-grid-span:23.75;}
 .plx-time-grid__event[data-plx-span="96"]{--plx-comp-time-grid-span:24;}
+[data-plx-color="blue"]{--plx-comp-data-color:var(--plx-sys-data-color-blue);--plx-comp-data-color-soft:var(--plx-sys-data-color-blue-soft);--plx-comp-data-color-on-soft:var(--plx-sys-data-color-blue-on-soft);}
+[data-plx-color="green"]{--plx-comp-data-color:var(--plx-sys-data-color-green);--plx-comp-data-color-soft:var(--plx-sys-data-color-green-soft);--plx-comp-data-color-on-soft:var(--plx-sys-data-color-green-on-soft);}
+[data-plx-color="purple"]{--plx-comp-data-color:var(--plx-sys-data-color-purple);--plx-comp-data-color-soft:var(--plx-sys-data-color-purple-soft);--plx-comp-data-color-on-soft:var(--plx-sys-data-color-purple-on-soft);}
+[data-plx-color="red"]{--plx-comp-data-color:var(--plx-sys-data-color-red);--plx-comp-data-color-soft:var(--plx-sys-data-color-red-soft);--plx-comp-data-color-on-soft:var(--plx-sys-data-color-red-on-soft);}
+[data-plx-color="brown"]{--plx-comp-data-color:var(--plx-sys-data-color-brown);--plx-comp-data-color-soft:var(--plx-sys-data-color-brown-soft);--plx-comp-data-color-on-soft:var(--plx-sys-data-color-brown-on-soft);}
+[data-plx-color="gray"]{--plx-comp-data-color:var(--plx-sys-data-color-gray);--plx-comp-data-color-soft:var(--plx-sys-data-color-gray-soft);--plx-comp-data-color-on-soft:var(--plx-sys-data-color-gray-on-soft);}

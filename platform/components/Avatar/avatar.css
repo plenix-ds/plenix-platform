@@ -8,3 +8,5 @@
 .plx-avatar--48{block-size:var(--plx-ref-size-48px);border-bottom-left-radius:var(--plx-sys-radius-avatar-8px);border-bottom-right-radius:var(--plx-sys-radius-avatar-8px);border-top-left-radius:var(--plx-sys-radius-avatar-8px);border-top-right-radius:var(--plx-sys-radius-avatar-8px);font-size:var(--plx-ref-font-size-18);inline-size:var(--plx-ref-size-48px);}
 .plx-avatar--64{block-size:var(--plx-ref-size-64px);border-bottom-left-radius:var(--plx-sys-radius-avatar-8px);border-bottom-right-radius:var(--plx-sys-radius-avatar-8px);border-top-left-radius:var(--plx-sys-radius-avatar-8px);border-top-right-radius:var(--plx-sys-radius-avatar-8px);font-size:var(--plx-ref-font-size-20);inline-size:var(--plx-ref-size-64px);}
 .plx-avatar__image{block-size:100%;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;border-top-left-radius:inherit;border-top-right-radius:inherit;display:block;inline-size:100%;object-fit:cover;}
+/* a data color (batch 280): the hue's soft fill and its text */
+.plx-avatar[data-plx-color]{--plx-comp-avatar-own-background:var(--plx-comp-data-color-soft);--plx-comp-avatar-own-content:var(--plx-comp-data-color-on-soft);}

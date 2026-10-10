@@ -2,8 +2,8 @@
    keyword), for what an application lays out that no component covers: plx-u-<property>-<token>, e.g. plx-u-gap-x-8px,
    plx-u-text-gray-700, plx-u-p-12px (all four paddings), plx-u-radius-card-6px (all four corners), plx-u-flex-1 (grow,
    shrink, basis 0). They win over component rules (as the inline styles they replaced did), so an application never sets
-   style itself. A value that comes from the data uses a -var class with its custom property, e.g. plx-u-bg-var with
-   style={{ '--plx-comp-u-bg': project.color }}. Generated in batch 151 from the suite applications; add a class here (sorted,
+   style itself. A color that comes from the data is a hue name on data-plx-color, read by plx-u-bg-data (batch 280: no
+   style attribute, ever). Generated in batch 151 from the suite applications; add a class here (sorted,
    token values only) when a layout needs one, never a style in an application. */
 .plx-u-absolute{position:absolute !important;}
 .plx-u-auto-rows-auto{grid-auto-rows:auto !important;}
@@ -349,6 +349,6 @@
 .plx-u-ws-nowrap{white-space:nowrap !important;}
 .plx-u-z-menu{z-index:var(--plx-sys-layer-menu) !important;}
 .plx-u-z-raised{z-index:var(--plx-sys-layer-raised) !important;}
-.plx-u-bg-var{background-color:var(--plx-comp-u-bg) !important;}
+.plx-u-bg-data{background-color:var(--plx-comp-data-color) !important;}
 /* an icon at its container's icon size (batch 267: replaces the -var pair, whose value came in a style attribute) */
 .plx-u-icon-box{block-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size)) !important;inline-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size)) !important;}

@@ -2,22 +2,6 @@
 import { Avatar, StatusDot } from 'plenix-platform';
 const {useState,useRef,useEffect,useCallback}=React;
 
-/* Solid tints for data colors (projects, layers, section labels): [fill, border].
-   Replaces the old color+"12" / color+"44" hex-alpha suffixes. */
-export const TINTS={
-  "var(--plx-ref-color-blue-400)":["var(--plx-ref-color-blue-100)","var(--plx-ref-color-blue-200)"],
-  "var(--plx-ref-color-blue-700)":["var(--plx-ref-color-blue-100)","var(--plx-ref-color-blue-200)"],
-  "var(--plx-ref-color-red-500)":["var(--plx-ref-color-red-100)","var(--plx-ref-color-red-200)"],
-  "var(--plx-ref-color-brown-500)":["var(--plx-ref-color-brown-100)","var(--plx-ref-color-brown-200)"],
-  "var(--plx-ref-color-green-500)":["var(--plx-ref-color-green-100)","var(--plx-ref-color-green-200)"],
-  "var(--plx-ref-color-green-800)":["var(--plx-ref-color-green-100)","var(--plx-ref-color-green-200)"],
-  "var(--plx-ref-color-purple-500)":["var(--plx-ref-color-purple-100)","var(--plx-ref-color-purple-200)"],
-  "var(--plx-ref-color-purple-800)":["var(--plx-ref-color-purple-100)","var(--plx-ref-color-purple-200)"],
-  "var(--plx-ref-color-gray-700)":["var(--plx-ref-color-gray-100)","var(--plx-ref-color-gray-200)"],
-};
-/* The hex behind a color token — the native color picker only accepts hex */
-export const hexOf=c=>{const m=/^var\((--[\w-]+)\)$/.exec(c||"");return m?getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim():c;};
-export const tint=(c,i)=>(TINTS[c]||["var(--plx-ref-color-gray-100)","var(--plx-ref-color-gray-100)"])[i];
 
 /* ─── Icons ─────────────────────────────────────────────────────── */
 export const P={
@@ -75,55 +59,54 @@ export const SolidIco=({n,size=20,color="currentColor"})=>(
 
 /* ─── Data ──────────────────────────────────────────────────────── */
 export const PROJECTS=[
-  {id:1,name:"Kitchen Renovation",      status:"active",   color:"var(--plx-ref-color-brown-500)",tags:["personal","home"],  files:14,desc:"Full kitchen remodel — cabinets, counters, plumbing. Target Q3 2026."},
-  {id:2,name:"Apex Co — Brand Refresh", status:"active",   color:"var(--plx-ref-color-blue-400)",tags:["client","design"],  files:31,desc:"Visual identity refresh: logo, color system, digital templates."},
-  {id:3,name:"AI Writing Tools",        status:"paused",   color:"var(--plx-ref-color-purple-500)",tags:["research","ai"],    files:8, desc:"Evaluating AI writing assistants for team adoption."},
-  {id:4,name:"Spain — June 2026",       status:"active",   color:"var(--plx-ref-color-green-500)",tags:["personal","travel"],files:9, desc:"Two weeks in Madrid and Seville. Flights booked."},
-  {id:5,name:"Tax & Finances 2026",     status:"active",   color:"var(--plx-ref-color-red-500)",tags:["personal","finance"],files:22,desc:"Annual tax prep, estimated payments, expense tracking."},
-  {id:6,name:"Home Purchase 2024",      status:"completed",color:"var(--plx-ref-color-gray-600)",tags:["archive","legal"],  files:67,desc:"Archive — all docs from 412 Birchwood Dr closing."},
+  {id:1,name:"Kitchen Renovation",      status:"active",   color:"brown",tags:["personal","home"],  files:14,desc:"Full kitchen remodel — cabinets, counters, plumbing. Target Q3 2026."},
+  {id:2,name:"Apex Co — Brand Refresh", status:"active",   color:"blue",tags:["client","design"],  files:31,desc:"Visual identity refresh: logo, color system, digital templates."},
+  {id:3,name:"AI Writing Tools",        status:"paused",   color:"purple",tags:["research","ai"],    files:8, desc:"Evaluating AI writing assistants for team adoption."},
+  {id:4,name:"Spain — June 2026",       status:"active",   color:"green",tags:["personal","travel"],files:9, desc:"Two weeks in Madrid and Seville. Flights booked."},
+  {id:5,name:"Tax & Finances 2026",     status:"active",   color:"red",tags:["personal","finance"],files:22,desc:"Annual tax prep, estimated payments, expense tracking."},
+  {id:6,name:"Home Purchase 2024",      status:"completed",color:"gray",tags:["archive","legal"],  files:67,desc:"Archive — all docs from 412 Birchwood Dr closing."},
 ];
-export const PROJ_COLORS={1:"var(--plx-ref-color-brown-500)",2:"var(--plx-ref-color-blue-400)",3:"var(--plx-ref-color-purple-500)",4:"var(--plx-ref-color-green-500)",5:"var(--plx-ref-color-red-500)",6:"var(--plx-ref-color-gray-600)"};
 export const EMAILS=[
-  {id:1,from:"Maya Chen",      subj:"Round 3 concepts — confirm Thursday?",prev:"Hey! Just want to confirm we're presenting the logo directions this Thursday…",time:"10:24 AM",unread:true, av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",proj:"Apex Co"},
-  {id:2,from:"ABC Plumbing",   subj:"Kitchen quote follow-up",             prev:"Hi, this is Jeff from ABC Plumbing. Following up on our estimate…",          time:"9:41 AM", unread:true, av:"A",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-800)",proj:"Kitchen Reno"},
-  {id:3,from:"Luis Herrera",   subj:"Q1 tax docs ready for review",        prev:"Your estimated Q1 tax documents are attached. Please review section 3…",      time:"Yesterday",unread:false,av:"L",avBg:"var(--plx-ref-color-purple-100)",avC:"var(--plx-ref-color-purple-500)",proj:"Tax"},
-  {id:4,from:"James Whitfield",subj:"RE: SOW — one small change",          prev:"Looks mostly good. I'd like to adjust the payment milestone on page 3…",      time:"Yesterday",unread:false,av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",proj:"Apex Co"},
-  {id:5,from:"Booking.com",    subj:"Your Madrid reservation is confirmed",prev:"Thank you for booking! Your reservation at Hotel Only YOU Atocha is confirmed.",time:"Mar 3",  unread:false,av:"B",avBg:"var(--plx-ref-color-green-100)",avC:"var(--plx-ref-color-green-500)",proj:"Spain"},
+  {id:1,from:"Maya Chen",      subj:"Round 3 concepts — confirm Thursday?",prev:"Hey! Just want to confirm we're presenting the logo directions this Thursday…",time:"10:24 AM",unread:true, av:"M",avColor:"blue",proj:"Apex Co"},
+  {id:2,from:"ABC Plumbing",   subj:"Kitchen quote follow-up",             prev:"Hi, this is Jeff from ABC Plumbing. Following up on our estimate…",          time:"9:41 AM", unread:true, av:"A",avColor:"brown",proj:"Kitchen Reno"},
+  {id:3,from:"Luis Herrera",   subj:"Q1 tax docs ready for review",        prev:"Your estimated Q1 tax documents are attached. Please review section 3…",      time:"Yesterday",unread:false,av:"L",avColor:"purple",proj:"Tax"},
+  {id:4,from:"James Whitfield",subj:"RE: SOW — one small change",          prev:"Looks mostly good. I'd like to adjust the payment milestone on page 3…",      time:"Yesterday",unread:false,av:"J",avColor:"blue",proj:"Apex Co"},
+  {id:5,from:"Booking.com",    subj:"Your Madrid reservation is confirmed",prev:"Thank you for booking! Your reservation at Hotel Only YOU Atocha is confirmed.",time:"Mar 3",  unread:false,av:"B",avColor:"green",proj:"Spain"},
 ];
 export const EVENTS=[
-  {id:1,time:"9:00 AM", title:"Standup — Apex team",    sub:"30 min", color:"var(--plx-ref-color-blue-400)",bg:"var(--plx-ref-color-blue-100)"},
-  {id:2,time:"2:00 PM", title:"Contractor call (ABC)",  sub:"1 hour", color:"var(--plx-ref-color-brown-500)",bg:"var(--plx-ref-color-brown-100)"},
-  {id:3,time:"4:30 PM", title:"Budget review — kitchen",sub:"30 min", color:"var(--plx-ref-color-brown-500)",bg:"var(--plx-ref-color-brown-100)"},
+  {id:1,time:"9:00 AM", title:"Standup — Apex team",    sub:"30 min", color:"blue"},
+  {id:2,time:"2:00 PM", title:"Contractor call (ABC)",  sub:"1 hour", color:"brown"},
+  {id:3,time:"4:30 PM", title:"Budget review — kitchen",sub:"30 min", color:"brown"},
 ];
 export const CALENDARS=[
-  {id:"work",   label:"Work",          color:"var(--plx-ref-color-blue-400)", on:true},
-  {id:"home",   label:"Personal",      color:"var(--plx-ref-color-green-500)", on:true},
-  {id:"apex",   label:"Apex Co",       color:"var(--plx-ref-color-brown-500)", on:true},
-  {id:"travel", label:"Travel",        color:"var(--plx-ref-color-purple-500)", on:true},
-  {id:"tax",    label:"Finance & Tax", color:"var(--plx-ref-color-red-500)", on:true},
+  {id:"work",   label:"Work",          color:"blue", on:true},
+  {id:"home",   label:"Personal",      color:"green", on:true},
+  {id:"apex",   label:"Apex Co",       color:"brown", on:true},
+  {id:"travel", label:"Travel",        color:"purple", on:true},
+  {id:"tax",    label:"Finance & Tax", color:"red", on:true},
 ];
 /* Tag each event to a calendar */
 export const CAL_EVENTS=[
-  {id:1,date:5, title:"Standup — Apex",       time:"9:00 AM", color:"var(--plx-ref-color-blue-400)",bg:"var(--plx-ref-color-blue-100)",cal:"work"},
-  {id:2,date:5, title:"Contractor call",       time:"2:00 PM", color:"var(--plx-ref-color-brown-500)",bg:"var(--plx-ref-color-brown-100)",cal:"apex"},
-  {id:3,date:8, title:"Logo review — Round 3", time:"10:00 AM",color:"var(--plx-ref-color-blue-400)",bg:"var(--plx-ref-color-blue-100)",cal:"work"},
-  {id:4,date:10,title:"Plumbing quote (2nd)",  time:"11:00 AM",color:"var(--plx-ref-color-brown-500)",bg:"var(--plx-ref-color-brown-100)",cal:"home"},
-  {id:5,date:15,title:"Q1 tax payment due",    time:"All day", color:"var(--plx-ref-color-red-500)",bg:"var(--plx-ref-color-red-100)",cal:"tax"},
-  {id:6,date:18,title:"Brand presentation",    time:"3:00 PM", color:"var(--plx-ref-color-blue-400)",bg:"var(--plx-ref-color-blue-100)",cal:"apex"},
-  {id:7,date:28,title:"Spain trip — depart",   time:"All day", color:"var(--plx-ref-color-green-500)",bg:"var(--plx-ref-color-green-100)",cal:"travel"},
+  {id:1,date:5, title:"Standup — Apex",       time:"9:00 AM", color:"blue",cal:"work"},
+  {id:2,date:5, title:"Contractor call",       time:"2:00 PM", color:"brown",cal:"apex"},
+  {id:3,date:8, title:"Logo review — Round 3", time:"10:00 AM",color:"blue",cal:"work"},
+  {id:4,date:10,title:"Plumbing quote (2nd)",  time:"11:00 AM",color:"brown",cal:"home"},
+  {id:5,date:15,title:"Q1 tax payment due",    time:"All day", color:"red",cal:"tax"},
+  {id:6,date:18,title:"Brand presentation",    time:"3:00 PM", color:"blue",cal:"apex"},
+  {id:7,date:28,title:"Spain trip — depart",   time:"All day", color:"green",cal:"travel"},
 ];
 export const CONTACTS=[
-  {id:1,name:"Maya Chen",       role:"Creative Director",co:"Apex Co",     av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",last:"10:24 AM",msg:"Sounds great — I'll have concepts by Friday."},
-  {id:2,name:"Jeff Torres",     role:"Plumber",          co:"ABC Plumbing",av:"J",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-800)",last:"9:41 AM", msg:"We can do Thursday the 12th at 2pm."},
-  {id:3,name:"Luis Herrera",    role:"CPA",              co:"Herrera Tax", av:"L",avBg:"var(--plx-ref-color-purple-100)",avC:"var(--plx-ref-color-purple-500)",last:"Yesterday",msg:"Your Q1 tax docs are attached."},
-  {id:4,name:"James Whitfield", role:"CEO",              co:"Apex Co",     av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",last:"Yesterday",msg:"RE: SOW — looks good, one small change."},
-  {id:5,name:"Sarah Morgan",    role:"Friend",           co:"",            av:"S",avBg:"var(--plx-ref-color-green-100)",avC:"var(--plx-ref-color-green-500)",last:"Mar 3",    msg:"Did you decide on the cabinet color?"},
+  {id:1,name:"Maya Chen",       role:"Creative Director",co:"Apex Co",     av:"M",avColor:"blue",last:"10:24 AM",msg:"Sounds great — I'll have concepts by Friday."},
+  {id:2,name:"Jeff Torres",     role:"Plumber",          co:"ABC Plumbing",av:"J",avColor:"brown",last:"9:41 AM", msg:"We can do Thursday the 12th at 2pm."},
+  {id:3,name:"Luis Herrera",    role:"CPA",              co:"Herrera Tax", av:"L",avColor:"purple",last:"Yesterday",msg:"Your Q1 tax docs are attached."},
+  {id:4,name:"James Whitfield", role:"CEO",              co:"Apex Co",     av:"J",avColor:"blue",last:"Yesterday",msg:"RE: SOW — looks good, one small change."},
+  {id:5,name:"Sarah Morgan",    role:"Friend",           co:"",            av:"S",avColor:"green",last:"Mar 3",    msg:"Did you decide on the cabinet color?"},
 ];
 export const THREADS=[
-  {id:1,name:"Maya Chen",       av:"M",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",ch:"WhatsApp",preview:"Sounds great — I'll have concepts by Friday.",time:"10:24 AM",unread:2},
-  {id:2,name:"ABC Plumbing",    av:"A",avBg:"var(--plx-ref-color-brown-100)",avC:"var(--plx-ref-color-brown-800)",ch:"SMS",      preview:"We can do Thursday the 12th at 2pm.",    time:"9:41 AM", unread:1},
-  {id:3,name:"James Whitfield", av:"J",avBg:"var(--plx-ref-color-blue-100)",avC:"var(--plx-ref-color-blue-700)",ch:"Email",    preview:"RE: SOW — looks good, one small change.", time:"Yesterday",unread:0},
-  {id:4,name:"Garret Builders", av:"G",avBg:"var(--plx-ref-color-gray-100)", avC:"var(--plx-ref-color-gray-600)",ch:"SMS",      preview:"Demo day confirmed. See you at 10am.",   time:"Yesterday",unread:0},
+  {id:1,name:"Maya Chen",       av:"M",avColor:"blue",ch:"WhatsApp",preview:"Sounds great — I'll have concepts by Friday.",time:"10:24 AM",unread:2},
+  {id:2,name:"ABC Plumbing",    av:"A",avColor:"brown",ch:"SMS",      preview:"We can do Thursday the 12th at 2pm.",    time:"9:41 AM", unread:1},
+  {id:3,name:"James Whitfield", av:"J",avColor:"blue",ch:"Email",    preview:"RE: SOW — looks good, one small change.", time:"Yesterday",unread:0},
+  {id:4,name:"Garret Builders", av:"G",avColor:"gray",ch:"SMS",      preview:"Demo day confirmed. See you at 10am.",   time:"Yesterday",unread:0},
 ];
 export const MSGS={
   1:[{from:"Maya",text:"Hey! Confirming — presenting round 3 on Thursday the 8th?",time:"9:55 AM",mine:false},{from:"me",text:"Yes, confirmed. I'll have the Figma file shared by Wednesday evening.",time:"10:01 AM",mine:true},{from:"Maya",text:"Perfect. And you're adding the dark mode variants too?",time:"10:18 AM",mine:false},{from:"me",text:"Absolutely — 3 full directions, light and dark each.",time:"10:21 AM",mine:true},{from:"Maya",text:"Sounds great — I'll have the revised concepts by Friday.",time:"10:24 AM",mine:false}],
@@ -199,7 +182,7 @@ export const CARD={backgroundColor:"var(--plx-sys-surface-raised)",borderRadius:
 /* ─── Shared atoms ──────────────────────────────────────────────── */
 /* avatars: the Platform Avatar (rounded squares; corner and text size follow the size). Sizes snap to the scale. */
 export const AV_SIZES=[24,28,32,40,48,64];
-export const Av=({name,av,avBg,avC,size=28})=>{const s=AV_SIZES.reduce((a,b)=>Math.abs(b-size)<Math.abs(a-size)?b:a);return <Avatar name={name} initials={av} size={s} background={avBg} color={avC}/>;};
+export const Av=({name,av,avColor,size=28})=>{const s=AV_SIZES.reduce((a,b)=>Math.abs(b-size)<Math.abs(a-size)?b:a);return <Avatar name={name} initials={av} size={s} color={avColor}/>;};
 export const PRI_TONE={high:"danger",med:"warning",low:"success"}, PRI_LABEL={high:"High priority",med:"Medium priority",low:"Low priority"};
 export const PriDot=({pri})=><StatusDot tone={PRI_TONE[pri]||"neutral"} label={PRI_LABEL[pri]}/>;
 export const STATUS_TONE={active:"success",paused:"warning",completed:"neutral"};

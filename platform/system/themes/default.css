@@ -213,6 +213,24 @@
   --plx-sys-data-table-accent: var(--plx-ref-color-blue-400);
   --plx-sys-data-table-danger: var(--plx-ref-color-red-500);
   --plx-sys-data-table-menu-shadow: 0 var(--plx-ref-space-8px) var(--plx-ref-space-24px) var(--plx-ref-color-black-alpha-14);
+  --plx-sys-data-color-blue: var(--plx-ref-color-blue-400);
+  --plx-sys-data-color-blue-soft: var(--plx-ref-color-blue-100);
+  --plx-sys-data-color-blue-on-soft: var(--plx-ref-color-blue-700);
+  --plx-sys-data-color-green: var(--plx-ref-color-green-500);
+  --plx-sys-data-color-green-soft: var(--plx-ref-color-green-100);
+  --plx-sys-data-color-green-on-soft: var(--plx-ref-color-green-800);
+  --plx-sys-data-color-purple: var(--plx-ref-color-purple-500);
+  --plx-sys-data-color-purple-soft: var(--plx-ref-color-purple-100);
+  --plx-sys-data-color-purple-on-soft: var(--plx-ref-color-purple-800);
+  --plx-sys-data-color-red: var(--plx-ref-color-red-500);
+  --plx-sys-data-color-red-soft: var(--plx-ref-color-red-100);
+  --plx-sys-data-color-red-on-soft: var(--plx-ref-color-red-700);
+  --plx-sys-data-color-brown: var(--plx-ref-color-brown-500);
+  --plx-sys-data-color-brown-soft: var(--plx-ref-color-brown-100);
+  --plx-sys-data-color-brown-on-soft: var(--plx-ref-color-brown-800);
+  --plx-sys-data-color-gray: var(--plx-ref-color-gray-700);
+  --plx-sys-data-color-gray-soft: var(--plx-ref-color-gray-100);
+  --plx-sys-data-color-gray-on-soft: var(--plx-ref-color-gray-800);
 }
 :root[data-plx-mode="dark"],[data-plx-theme="default"][data-plx-mode="dark"]{
   color-scheme: dark;
@@ -373,4 +391,22 @@
   --plx-sys-data-table-accent: var(--plx-ref-color-blue-350);
   --plx-sys-data-table-danger: var(--plx-ref-color-red-500);
   --plx-sys-data-table-menu-shadow: 0 var(--plx-ref-space-8px) var(--plx-ref-space-24px) var(--plx-ref-color-black-alpha-50);
+  --plx-sys-data-color-blue: var(--plx-ref-color-blue-400);
+  --plx-sys-data-color-blue-soft: var(--plx-ref-color-blue-100);
+  --plx-sys-data-color-blue-on-soft: var(--plx-ref-color-blue-700);
+  --plx-sys-data-color-green: var(--plx-ref-color-green-500);
+  --plx-sys-data-color-green-soft: var(--plx-ref-color-green-100);
+  --plx-sys-data-color-green-on-soft: var(--plx-ref-color-green-800);
+  --plx-sys-data-color-purple: var(--plx-ref-color-purple-500);
+  --plx-sys-data-color-purple-soft: var(--plx-ref-color-purple-100);
+  --plx-sys-data-color-purple-on-soft: var(--plx-ref-color-purple-800);
+  --plx-sys-data-color-red: var(--plx-ref-color-red-500);
+  --plx-sys-data-color-red-soft: var(--plx-ref-color-red-100);
+  --plx-sys-data-color-red-on-soft: var(--plx-ref-color-red-700);
+  --plx-sys-data-color-brown: var(--plx-ref-color-brown-500);
+  --plx-sys-data-color-brown-soft: var(--plx-ref-color-brown-100);
+  --plx-sys-data-color-brown-on-soft: var(--plx-ref-color-brown-800);
+  --plx-sys-data-color-gray: var(--plx-ref-color-gray-700);
+  --plx-sys-data-color-gray-soft: var(--plx-ref-color-gray-100);
+  --plx-sys-data-color-gray-on-soft: var(--plx-ref-color-gray-800);
 }

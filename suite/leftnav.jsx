@@ -8,15 +8,15 @@ export function LeftNav({section,sub,setSub,onSettings}){
   const groups={};PROJECTS.forEach(p=>{const t=p.tags[0];if(!groups[t])groups[t]=[];groups[t].push(p);});
   const tagLabels={personal:"Personal",client:"Client Work",research:"Research",travel:"Travel",finance:"Finance",archive:"Archive"};
  /* a colored mark before a row: a dot (a project's color) or a square (a calendar's color) */
-  const Mark=({color,square})=><span aria-hidden="true"    className={[[[["plx-u-inline-block plx-u-shrink-0", (square ? "plx-u-w-10px" : "plx-u-w-6px"), (square ? "plx-u-h-10px" : "plx-u-h-6px"), (square ? "plx-u-border-radius-detail-4px" : "plx-u-border-radius-pill"), "plx-u-bg-var"].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")} style={{ '--plx-comp-u-bg': color }}/>;
+  const Mark=({color,square})=><span aria-hidden="true"    className={[[[["plx-u-inline-block plx-u-shrink-0", (square ? "plx-u-w-10px" : "plx-u-w-6px"), (square ? "plx-u-h-10px" : "plx-u-h-6px"), (square ? "plx-u-border-radius-detail-4px" : "plx-u-border-radius-pill"), "plx-u-bg-data"].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")} data-plx-color={color}/>;
   const by=(list,key,count)=>[...new Set(list.map(x=>x[key]))].map(v=>({id:v,label:v,count:count(v)}));
   const nav={
     projects:{label:"Projects",groups:[{heading:null,items:[{id:"all",label:"All projects",count:PROJECTS.length}]}].concat(Object.entries(groups).map(([tag,projs])=>({heading:tagLabels[tag]||tag,
       items:projs.map(p=>({id:p.id,label:p.name,count:p.files,icon:<span className="plx-u-items-center plx-u-gap-x-4px plx-u-inline-flex"><Mark color={p.color}/>{p.status&&<ProjStatusDot s={p.status}/>}</span>}))})))},
     messaging:{label:"Messages",groups:[{heading:null,items:[{id:"all",label:"All messages"}]},{heading:"Channels",items:[{id:"sms",label:"SMS"},{id:"whatsapp",label:"WhatsApp"},{id:"email",label:"Email"}]},
-      {heading:"Threads",items:THREADS.map(t=>({id:`t-${t.id}`,label:t.name,count:t.unread>0?t.unread:undefined,icon:<Av name={t.name} avBg={t.avBg} avC={t.avC} size={22}/>}))}]},
+      {heading:"Threads",items:THREADS.map(t=>({id:`t-${t.id}`,label:t.name,count:t.unread>0?t.unread:undefined,icon:<Av name={t.name} avColor={t.avColor} size={22}/>}))}]},
     contacts:{label:"Contacts",groups:[{heading:null,items:[{id:"all",label:"All contacts",count:CONTACTS.length}]},{heading:"Groups",items:[{id:"clients",label:"Clients",count:2},{id:"contractors",label:"Contractors",count:2},{id:"professional",label:"Professional"},{id:"personal",label:"Personal"}]}]},
-    calendar:{label:"Calendars",groups:[{heading:"My calendars",items:[{id:"all",label:"All calendars",icon:<Mark square color="var(--plx-ref-color-gray-700)"/>}].concat(CALENDARS.map(c=>({id:c.id,label:c.label,icon:<Mark square color={c.color}/>})))}],
+    calendar:{label:"Calendars",groups:[{heading:"My calendars",items:[{id:"all",label:"All calendars",icon:<Mark square color="gray"/>}].concat(CALENDARS.map(c=>({id:c.id,label:c.label,icon:<Mark square color={c.color}/>})))}],
       after:<div className="plx-u-border-t-border-divider plx-u-border-t-solid-2 plx-u-border-t-1px plx-u-mt-12px plx-u-pt-8px"><Button size="sm" variant="ghost" icon={<Ico n="up"/>}>Import calendar</Button></div>},
     tasks:{label:"Tasks",groups:[{heading:null,items:[{id:"all",label:"All tasks",count:ALL_TASKS.filter(t=>!t.done).length},{id:"due",label:"Due soon",count:ALL_TASKS.filter(t=>!t.done&&["Mar 8","Mar 10"].includes(t.due)).length}]},
       {heading:"By project",items:by(ALL_TASKS,"proj",p=>ALL_TASKS.filter(t=>t.proj===p&&!t.done).length)}]},

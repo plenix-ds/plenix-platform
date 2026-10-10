@@ -9,11 +9,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TINTS = exports.THREADS = exports.SolidIco = exports.STATUS_TONE = exports.SOLID = exports.ProjStatusDot = exports.PriDot = exports.PROJ_COLORS = exports.PROJECTS = exports.PRI_TONE = exports.PRI_LABEL = exports.P = exports.MSGS = exports.Ico = exports.EVENTS = exports.EMAILS = exports.CONTACTS = exports.CARD = exports.CAPTURES = exports.CAL_EVENTS = exports.CALENDARS = exports.Av = exports.AV_SIZES = exports.ALL_TASKS = exports.ALL_NOTES = exports.ALL_FILES = exports.ALL_BOOKMARKS = void 0;
+exports.THREADS = exports.SolidIco = exports.STATUS_TONE = exports.SOLID = exports.ProjStatusDot = exports.PriDot = exports.PROJECTS = exports.PRI_TONE = exports.PRI_LABEL = exports.P = exports.MSGS = exports.Ico = exports.EVENTS = exports.EMAILS = exports.CONTACTS = exports.CARD = exports.CAPTURES = exports.CAL_EVENTS = exports.CALENDARS = exports.Av = exports.AV_SIZES = exports.ALL_TASKS = exports.ALL_NOTES = exports.ALL_FILES = exports.ALL_BOOKMARKS = void 0;
 exports.aiFileName = aiFileName;
 exports.aiSearch = aiSearch;
 exports.callClaude = callClaude;
-exports.tint = exports.hexOf = void 0;
 var _plenixPlatform = require("plenix-platform");
 /* Plenix suite · shared (suite/shared.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
 
@@ -24,29 +23,7 @@ const {
   useCallback
 } = React;
 
-/* Solid tints for data colors (projects, layers, section labels): [fill, border].
-   Replaces the old color+"12" / color+"44" hex-alpha suffixes. */
-const TINTS = exports.TINTS = {
-  "var(--plx-ref-color-blue-400)": ["var(--plx-ref-color-blue-100)", "var(--plx-ref-color-blue-200)"],
-  "var(--plx-ref-color-blue-700)": ["var(--plx-ref-color-blue-100)", "var(--plx-ref-color-blue-200)"],
-  "var(--plx-ref-color-red-500)": ["var(--plx-ref-color-red-100)", "var(--plx-ref-color-red-200)"],
-  "var(--plx-ref-color-brown-500)": ["var(--plx-ref-color-brown-100)", "var(--plx-ref-color-brown-200)"],
-  "var(--plx-ref-color-green-500)": ["var(--plx-ref-color-green-100)", "var(--plx-ref-color-green-200)"],
-  "var(--plx-ref-color-green-800)": ["var(--plx-ref-color-green-100)", "var(--plx-ref-color-green-200)"],
-  "var(--plx-ref-color-purple-500)": ["var(--plx-ref-color-purple-100)", "var(--plx-ref-color-purple-200)"],
-  "var(--plx-ref-color-purple-800)": ["var(--plx-ref-color-purple-100)", "var(--plx-ref-color-purple-200)"],
-  "var(--plx-ref-color-gray-700)": ["var(--plx-ref-color-gray-100)", "var(--plx-ref-color-gray-200)"]
-};
-/* The hex behind a color token — the native color picker only accepts hex */
-const hexOf = c => {
-  const m = /^var\((--[\w-]+)\)$/.exec(c || "");
-  return m ? getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() : c;
-};
-exports.hexOf = hexOf;
-const tint = (c, i) => (TINTS[c] || ["var(--plx-ref-color-gray-100)", "var(--plx-ref-color-gray-100)"])[i];
-
 /* ─── Icons ─────────────────────────────────────────────────────── */
-exports.tint = tint;
 const P = exports.P = {
   home: "M3 12L12 4l9 8M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9",
   proj: "M2 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z",
@@ -169,7 +146,7 @@ const PROJECTS = exports.PROJECTS = [{
   id: 1,
   name: "Kitchen Renovation",
   status: "active",
-  color: "var(--plx-ref-color-brown-500)",
+  color: "brown",
   tags: ["personal", "home"],
   files: 14,
   desc: "Full kitchen remodel — cabinets, counters, plumbing. Target Q3 2026."
@@ -177,7 +154,7 @@ const PROJECTS = exports.PROJECTS = [{
   id: 2,
   name: "Apex Co — Brand Refresh",
   status: "active",
-  color: "var(--plx-ref-color-blue-400)",
+  color: "blue",
   tags: ["client", "design"],
   files: 31,
   desc: "Visual identity refresh: logo, color system, digital templates."
@@ -185,7 +162,7 @@ const PROJECTS = exports.PROJECTS = [{
   id: 3,
   name: "AI Writing Tools",
   status: "paused",
-  color: "var(--plx-ref-color-purple-500)",
+  color: "purple",
   tags: ["research", "ai"],
   files: 8,
   desc: "Evaluating AI writing assistants for team adoption."
@@ -193,7 +170,7 @@ const PROJECTS = exports.PROJECTS = [{
   id: 4,
   name: "Spain — June 2026",
   status: "active",
-  color: "var(--plx-ref-color-green-500)",
+  color: "green",
   tags: ["personal", "travel"],
   files: 9,
   desc: "Two weeks in Madrid and Seville. Flights booked."
@@ -201,7 +178,7 @@ const PROJECTS = exports.PROJECTS = [{
   id: 5,
   name: "Tax & Finances 2026",
   status: "active",
-  color: "var(--plx-ref-color-red-500)",
+  color: "red",
   tags: ["personal", "finance"],
   files: 22,
   desc: "Annual tax prep, estimated payments, expense tracking."
@@ -209,19 +186,11 @@ const PROJECTS = exports.PROJECTS = [{
   id: 6,
   name: "Home Purchase 2024",
   status: "completed",
-  color: "var(--plx-ref-color-gray-600)",
+  color: "gray",
   tags: ["archive", "legal"],
   files: 67,
   desc: "Archive — all docs from 412 Birchwood Dr closing."
 }];
-const PROJ_COLORS = exports.PROJ_COLORS = {
-  1: "var(--plx-ref-color-brown-500)",
-  2: "var(--plx-ref-color-blue-400)",
-  3: "var(--plx-ref-color-purple-500)",
-  4: "var(--plx-ref-color-green-500)",
-  5: "var(--plx-ref-color-red-500)",
-  6: "var(--plx-ref-color-gray-600)"
-};
 const EMAILS = exports.EMAILS = [{
   id: 1,
   from: "Maya Chen",
@@ -230,8 +199,7 @@ const EMAILS = exports.EMAILS = [{
   time: "10:24 AM",
   unread: true,
   av: "M",
-  avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-700)",
+  avColor: "blue",
   proj: "Apex Co"
 }, {
   id: 2,
@@ -241,8 +209,7 @@ const EMAILS = exports.EMAILS = [{
   time: "9:41 AM",
   unread: true,
   av: "A",
-  avBg: "var(--plx-ref-color-brown-100)",
-  avC: "var(--plx-ref-color-brown-800)",
+  avColor: "brown",
   proj: "Kitchen Reno"
 }, {
   id: 3,
@@ -252,8 +219,7 @@ const EMAILS = exports.EMAILS = [{
   time: "Yesterday",
   unread: false,
   av: "L",
-  avBg: "var(--plx-ref-color-purple-100)",
-  avC: "var(--plx-ref-color-purple-500)",
+  avColor: "purple",
   proj: "Tax"
 }, {
   id: 4,
@@ -263,8 +229,7 @@ const EMAILS = exports.EMAILS = [{
   time: "Yesterday",
   unread: false,
   av: "J",
-  avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-700)",
+  avColor: "blue",
   proj: "Apex Co"
 }, {
   id: 5,
@@ -274,8 +239,7 @@ const EMAILS = exports.EMAILS = [{
   time: "Mar 3",
   unread: false,
   av: "B",
-  avBg: "var(--plx-ref-color-green-100)",
-  avC: "var(--plx-ref-color-green-500)",
+  avColor: "green",
   proj: "Spain"
 }];
 const EVENTS = exports.EVENTS = [{
@@ -283,47 +247,44 @@ const EVENTS = exports.EVENTS = [{
   time: "9:00 AM",
   title: "Standup — Apex team",
   sub: "30 min",
-  color: "var(--plx-ref-color-blue-400)",
-  bg: "var(--plx-ref-color-blue-100)"
+  color: "blue"
 }, {
   id: 2,
   time: "2:00 PM",
   title: "Contractor call (ABC)",
   sub: "1 hour",
-  color: "var(--plx-ref-color-brown-500)",
-  bg: "var(--plx-ref-color-brown-100)"
+  color: "brown"
 }, {
   id: 3,
   time: "4:30 PM",
   title: "Budget review — kitchen",
   sub: "30 min",
-  color: "var(--plx-ref-color-brown-500)",
-  bg: "var(--plx-ref-color-brown-100)"
+  color: "brown"
 }];
 const CALENDARS = exports.CALENDARS = [{
   id: "work",
   label: "Work",
-  color: "var(--plx-ref-color-blue-400)",
+  color: "blue",
   on: true
 }, {
   id: "home",
   label: "Personal",
-  color: "var(--plx-ref-color-green-500)",
+  color: "green",
   on: true
 }, {
   id: "apex",
   label: "Apex Co",
-  color: "var(--plx-ref-color-brown-500)",
+  color: "brown",
   on: true
 }, {
   id: "travel",
   label: "Travel",
-  color: "var(--plx-ref-color-purple-500)",
+  color: "purple",
   on: true
 }, {
   id: "tax",
   label: "Finance & Tax",
-  color: "var(--plx-ref-color-red-500)",
+  color: "red",
   on: true
 }];
 /* Tag each event to a calendar */
@@ -332,56 +293,49 @@ const CAL_EVENTS = exports.CAL_EVENTS = [{
   date: 5,
   title: "Standup — Apex",
   time: "9:00 AM",
-  color: "var(--plx-ref-color-blue-400)",
-  bg: "var(--plx-ref-color-blue-100)",
+  color: "blue",
   cal: "work"
 }, {
   id: 2,
   date: 5,
   title: "Contractor call",
   time: "2:00 PM",
-  color: "var(--plx-ref-color-brown-500)",
-  bg: "var(--plx-ref-color-brown-100)",
+  color: "brown",
   cal: "apex"
 }, {
   id: 3,
   date: 8,
   title: "Logo review — Round 3",
   time: "10:00 AM",
-  color: "var(--plx-ref-color-blue-400)",
-  bg: "var(--plx-ref-color-blue-100)",
+  color: "blue",
   cal: "work"
 }, {
   id: 4,
   date: 10,
   title: "Plumbing quote (2nd)",
   time: "11:00 AM",
-  color: "var(--plx-ref-color-brown-500)",
-  bg: "var(--plx-ref-color-brown-100)",
+  color: "brown",
   cal: "home"
 }, {
   id: 5,
   date: 15,
   title: "Q1 tax payment due",
   time: "All day",
-  color: "var(--plx-ref-color-red-500)",
-  bg: "var(--plx-ref-color-red-100)",
+  color: "red",
   cal: "tax"
 }, {
   id: 6,
   date: 18,
   title: "Brand presentation",
   time: "3:00 PM",
-  color: "var(--plx-ref-color-blue-400)",
-  bg: "var(--plx-ref-color-blue-100)",
+  color: "blue",
   cal: "apex"
 }, {
   id: 7,
   date: 28,
   title: "Spain trip — depart",
   time: "All day",
-  color: "var(--plx-ref-color-green-500)",
-  bg: "var(--plx-ref-color-green-100)",
+  color: "green",
   cal: "travel"
 }];
 const CONTACTS = exports.CONTACTS = [{
@@ -390,8 +344,7 @@ const CONTACTS = exports.CONTACTS = [{
   role: "Creative Director",
   co: "Apex Co",
   av: "M",
-  avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-700)",
+  avColor: "blue",
   last: "10:24 AM",
   msg: "Sounds great — I'll have concepts by Friday."
 }, {
@@ -400,8 +353,7 @@ const CONTACTS = exports.CONTACTS = [{
   role: "Plumber",
   co: "ABC Plumbing",
   av: "J",
-  avBg: "var(--plx-ref-color-brown-100)",
-  avC: "var(--plx-ref-color-brown-800)",
+  avColor: "brown",
   last: "9:41 AM",
   msg: "We can do Thursday the 12th at 2pm."
 }, {
@@ -410,8 +362,7 @@ const CONTACTS = exports.CONTACTS = [{
   role: "CPA",
   co: "Herrera Tax",
   av: "L",
-  avBg: "var(--plx-ref-color-purple-100)",
-  avC: "var(--plx-ref-color-purple-500)",
+  avColor: "purple",
   last: "Yesterday",
   msg: "Your Q1 tax docs are attached."
 }, {
@@ -420,8 +371,7 @@ const CONTACTS = exports.CONTACTS = [{
   role: "CEO",
   co: "Apex Co",
   av: "J",
-  avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-700)",
+  avColor: "blue",
   last: "Yesterday",
   msg: "RE: SOW — looks good, one small change."
 }, {
@@ -430,8 +380,7 @@ const CONTACTS = exports.CONTACTS = [{
   role: "Friend",
   co: "",
   av: "S",
-  avBg: "var(--plx-ref-color-green-100)",
-  avC: "var(--plx-ref-color-green-500)",
+  avColor: "green",
   last: "Mar 3",
   msg: "Did you decide on the cabinet color?"
 }];
@@ -439,8 +388,7 @@ const THREADS = exports.THREADS = [{
   id: 1,
   name: "Maya Chen",
   av: "M",
-  avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-700)",
+  avColor: "blue",
   ch: "WhatsApp",
   preview: "Sounds great — I'll have concepts by Friday.",
   time: "10:24 AM",
@@ -449,8 +397,7 @@ const THREADS = exports.THREADS = [{
   id: 2,
   name: "ABC Plumbing",
   av: "A",
-  avBg: "var(--plx-ref-color-brown-100)",
-  avC: "var(--plx-ref-color-brown-800)",
+  avColor: "brown",
   ch: "SMS",
   preview: "We can do Thursday the 12th at 2pm.",
   time: "9:41 AM",
@@ -459,8 +406,7 @@ const THREADS = exports.THREADS = [{
   id: 3,
   name: "James Whitfield",
   av: "J",
-  avBg: "var(--plx-ref-color-blue-100)",
-  avC: "var(--plx-ref-color-blue-700)",
+  avColor: "blue",
   ch: "Email",
   preview: "RE: SOW — looks good, one small change.",
   time: "Yesterday",
@@ -469,8 +415,7 @@ const THREADS = exports.THREADS = [{
   id: 4,
   name: "Garret Builders",
   av: "G",
-  avBg: "var(--plx-ref-color-gray-100)",
-  avC: "var(--plx-ref-color-gray-600)",
+  avColor: "gray",
   ch: "SMS",
   preview: "Demo day confirmed. See you at 10am.",
   time: "Yesterday",
@@ -817,8 +762,7 @@ const AV_SIZES = exports.AV_SIZES = [24, 28, 32, 40, 48, 64];
 const Av = ({
   name,
   av,
-  avBg,
-  avC,
+  avColor,
   size = 28
 }) => {
   const s = AV_SIZES.reduce((a, b) => Math.abs(b - size) < Math.abs(a - size) ? b : a);
@@ -826,8 +770,7 @@ const Av = ({
     name: name,
     initials: av,
     size: s,
-    background: avBg,
-    color: avC
+    color: avColor
   });
 };
 exports.Av = Av;
@@ -1057,10 +1000,8 @@ function LeftNav({
     square
   }) => /*#__PURE__*/React.createElement("span", {
     "aria-hidden": "true",
-    className: [[[["plx-u-inline-block plx-u-shrink-0", square ? "plx-u-w-10px" : "plx-u-w-6px", square ? "plx-u-h-10px" : "plx-u-h-6px", square ? "plx-u-border-radius-detail-4px" : "plx-u-border-radius-pill", "plx-u-bg-var"].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" "),
-    style: {
-      '--plx-comp-u-bg': color
-    }
+    className: [[[["plx-u-inline-block plx-u-shrink-0", square ? "plx-u-w-10px" : "plx-u-w-6px", square ? "plx-u-h-10px" : "plx-u-h-6px", square ? "plx-u-border-radius-detail-4px" : "plx-u-border-radius-pill", "plx-u-bg-data"].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" ")].filter(Boolean).join(" "),
+    "data-plx-color": color
   });
   const by = (list, key, count) => [...new Set(list.map(x => x[key]))].map(v => ({
     id: v,
@@ -1121,8 +1062,7 @@ function LeftNav({
           count: t.unread > 0 ? t.unread : undefined,
           icon: /*#__PURE__*/React.createElement(_shared.Av, {
             name: t.name,
-            avBg: t.avBg,
-            avC: t.avC,
+            avColor: t.avColor,
             size: 22
           })
         }))
@@ -1165,7 +1105,7 @@ function LeftNav({
           label: "All calendars",
           icon: /*#__PURE__*/React.createElement(Mark, {
             square: true,
-            color: "var(--plx-ref-color-gray-700)"
+            color: "gray"
           })
         }].concat(_shared.CALENDARS.map(c => ({
           id: c.id,
@@ -2264,7 +2204,7 @@ function CatEditModal({
   const nameRef = useRef(null);
   const fileRef = useRef(null);
   const title = catEdit.isNew ? catEdit.type === 'cat' ? 'New category' : 'New subcategory' : catEdit.type === 'cat' ? 'Edit category' : 'Edit subcategory';
-  const color = catEdit.color || 'var(--plx-sys-action-primary-background)';
+  const color = catEdit.color || 'blue';
   return /*#__PURE__*/React.createElement(_plenixPlatform.Dialog, {
     open: true,
     onClose: () => setCatEdit(null),
@@ -2296,21 +2236,14 @@ function CatEditModal({
   })), catEdit.type === 'cat' ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
     label: "Color",
     description: "Choose the category's color"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    gap: "sm"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-    color: color,
-    label: "Current color"
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
-    type: "color",
-    value: (0, _shared.hexOf)(color),
-    onChange: e => setCatEdit(x => ({
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorPicker, {
+    label: "Category color",
+    value: color,
+    onChange: h => setCatEdit(x => ({
       ...x,
-      color: e.target.value
+      color: h
     }))
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "data"
-  }, (0, _shared.hexOf)(color)))), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
+  })), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
     label: "Icon",
     description: "An optional image, sized to fit"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
@@ -2318,7 +2251,7 @@ function CatEditModal({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
     name: catEdit.name || '?',
     src: catEdit.icon || undefined,
-    background: color,
+    color: color,
     size: "lg"
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
     icon: "upload",
@@ -3203,7 +3136,7 @@ function Settings({
   const [cats, setCats] = useState([{
     id: 1,
     name: "Personal",
-    color: "var(--plx-ref-color-green-500)",
+    color: "green",
     icon: null,
     subs: [{
       id: 11,
@@ -3218,7 +3151,7 @@ function Settings({
   }, {
     id: 2,
     name: "Client Work",
-    color: "var(--plx-ref-color-blue-400)",
+    color: "blue",
     icon: null,
     subs: [{
       id: 21,
@@ -3233,7 +3166,7 @@ function Settings({
   }, {
     id: 3,
     name: "Research",
-    color: "var(--plx-ref-color-purple-500)",
+    color: "purple",
     icon: null,
     subs: [{
       id: 31,
@@ -3245,13 +3178,13 @@ function Settings({
   }, {
     id: 4,
     name: "Travel",
-    color: "var(--plx-ref-color-brown-500)",
+    color: "brown",
     icon: null,
     subs: []
   }, {
     id: 5,
     name: "Archive",
-    color: "var(--plx-ref-color-gray-600)",
+    color: "gray",
     icon: null,
     subs: []
   }]);
@@ -3263,7 +3196,7 @@ function Settings({
       if (catEdit.isNew) setCats(prev => [...prev, {
         id: Date.now(),
         name: catEdit.name.trim(),
-        color: catEdit.color || "var(--plx-sys-action-primary-background)",
+        color: catEdit.color || "blue",
         icon: catEdit.icon || null,
         subs: []
       }]);else setCats(prev => prev.map(c => c.id === catEdit.catId ? {
@@ -3570,8 +3503,8 @@ function Settings({
     size: "sm"
   }, "Cancel")));
   // the accent colors to choose from: data handed to ColorSwatch (prefs.accent keeps the chosen value)
-  const ACCENTS = [["var(--plx-ref-color-blue-400)", "Windows Blue"], ["var(--plx-ref-color-green-500)", "Green"], ["var(--plx-ref-color-purple-500)", "Purple"], ["var(--plx-ref-color-red-500)", "Red"], ["var(--plx-ref-color-brown-500)", "Amber"], ["var(--plx-ref-color-black)", "Midnight"]];
-  const accent = prefs.accent || ACCENTS[0][0];
+
+  const accent = _plenixPlatform.DATA_COLORS.indexOf(prefs.accent) >= 0 ? prefs.accent : _plenixPlatform.DATA_COLORS[0];
   const visibleTags = tags.filter(t => !tagSearch || t.name.includes(tagSearch.toLowerCase()));
   const panels = {
     categories: /*#__PURE__*/React.createElement(Screen, {
@@ -3586,7 +3519,7 @@ function Settings({
         type: "cat",
         isNew: true,
         name: "",
-        color: "var(--plx-sys-action-primary-background)",
+        color: "blue",
         icon: null
       })
     }, "New category")), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -3865,37 +3798,30 @@ function Settings({
         label: "Accent",
         preview: /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
           shape: "square",
-          color: "var(--plx-sys-accent-surface)"
+          tone: "accent"
         })
       }, {
         value: "white",
         label: "White",
         preview: /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
           shape: "square",
-          color: "var(--plx-sys-surface-default)"
+          tone: "surface"
         })
       }, {
         value: "frost",
         label: "Frost",
         preview: /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
           shape: "square",
-          color: "var(--plx-sys-frost-surface)"
+          tone: "frost"
         })
       }]
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Accent color"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-      role: "group",
-      "aria-label": "Accent color",
-      gap: "sm"
-    }, ACCENTS.map(([c, n]) => /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-      key: c,
-      color: c,
-      label: n,
-      title: n,
-      pressed: accent === c,
-      onClick: () => set("accent", c)
-    }))))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorPicker, {
+      label: "Accent color",
+      value: accent,
+      onChange: h => set("accent", h)
+    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
       title: "Typography"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Font size"

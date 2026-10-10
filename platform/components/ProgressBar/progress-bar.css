@@ -18,3 +18,10 @@
 /* right to left: the fill starts at the inline start (the right), so it runs toward the left (batch 213) */
 @keyframes plx-progress-bar-run-rtl{from{transform:translateX(100%);}to{transform:translateX(-300%);}}
 .plx-progress-bar.is-indeterminate .plx-progress-bar__fill:dir(rtl){animation-name:plx-progress-bar-run-rtl;}
+/* a known amount: the browser's own <progress> (batch 280), its track and value drawn from the same tokens */
+.plx-progress-bar__meter{appearance:none;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;display:block;inline-size:100%;}
+.plx-progress-bar__meter::-webkit-progress-bar{background-color:var(--plx-comp-progress-bar-track-background);border-bottom-left-radius:var(--plx-comp-progress-bar-track-radius);border-bottom-right-radius:var(--plx-comp-progress-bar-track-radius);border-top-left-radius:var(--plx-comp-progress-bar-track-radius);border-top-right-radius:var(--plx-comp-progress-bar-track-radius);}
+.plx-progress-bar__meter::-webkit-progress-value{background-color:var(--plx-comp-progress-bar-fill);border-bottom-left-radius:var(--plx-comp-progress-bar-fill-radius);border-bottom-right-radius:var(--plx-comp-progress-bar-fill-radius);border-top-left-radius:var(--plx-comp-progress-bar-fill-radius);border-top-right-radius:var(--plx-comp-progress-bar-fill-radius);transition-duration:var(--plx-comp-progress-bar-fill-duration);transition-property:inline-size;transition-timing-function:var(--plx-comp-progress-bar-fill-easing);}
+.plx-progress-bar__meter::-moz-progress-bar{background-color:var(--plx-comp-progress-bar-fill);border-bottom-left-radius:var(--plx-comp-progress-bar-fill-radius);border-bottom-right-radius:var(--plx-comp-progress-bar-fill-radius);border-top-left-radius:var(--plx-comp-progress-bar-fill-radius);border-top-right-radius:var(--plx-comp-progress-bar-fill-radius);}
+/* the data color (batch 280) */
+.plx-progress-bar--color[data-plx-color]{--plx-comp-progress-bar-color:var(--plx-comp-data-color);}

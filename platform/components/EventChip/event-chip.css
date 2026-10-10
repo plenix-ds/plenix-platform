@@ -8,3 +8,5 @@
 .plx-event-chip--interactive.is-hover{background-color:var(--plx-sys-state-hover);}
 .plx-event-chip--interactive:focus-visible,
 .plx-event-chip--interactive.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+/* the event's data color (batch 280) */
+.plx-event-chip[data-plx-color]{--plx-comp-event-chip-color:var(--plx-comp-data-color);}

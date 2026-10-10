@@ -664,6 +664,96 @@
     "data-table-menu-shadow": {
       "$value": "0 {plx-ref.space-8px} {plx-ref.space-24px} {plx-ref.color-black-alpha-50}",
       "$type": "shadow"
+    },
+    "data-color-blue": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color",
+      "$description": "A data color (batch 280): blue, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"blue\"] applies it."
+    },
+    "data-color-blue-soft": {
+      "$value": "{plx-ref.color-blue-100}",
+      "$type": "color",
+      "$description": "A data color (batch 280): blue, a soft fill (an avatar)."
+    },
+    "data-color-blue-on-soft": {
+      "$value": "{plx-ref.color-blue-700}",
+      "$type": "color",
+      "$description": "A data color (batch 280): blue, text on its soft fill."
+    },
+    "data-color-green": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color",
+      "$description": "A data color (batch 280): green, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"green\"] applies it."
+    },
+    "data-color-green-soft": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$description": "A data color (batch 280): green, a soft fill (an avatar)."
+    },
+    "data-color-green-on-soft": {
+      "$value": "{plx-ref.color-green-800}",
+      "$type": "color",
+      "$description": "A data color (batch 280): green, text on its soft fill."
+    },
+    "data-color-purple": {
+      "$value": "{plx-ref.color-purple-500}",
+      "$type": "color",
+      "$description": "A data color (batch 280): purple, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"purple\"] applies it."
+    },
+    "data-color-purple-soft": {
+      "$value": "{plx-ref.color-purple-100}",
+      "$type": "color",
+      "$description": "A data color (batch 280): purple, a soft fill (an avatar)."
+    },
+    "data-color-purple-on-soft": {
+      "$value": "{plx-ref.color-purple-800}",
+      "$type": "color",
+      "$description": "A data color (batch 280): purple, text on its soft fill."
+    },
+    "data-color-red": {
+      "$value": "{plx-ref.color-red-500}",
+      "$type": "color",
+      "$description": "A data color (batch 280): red, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"red\"] applies it."
+    },
+    "data-color-red-soft": {
+      "$value": "{plx-ref.color-red-100}",
+      "$type": "color",
+      "$description": "A data color (batch 280): red, a soft fill (an avatar)."
+    },
+    "data-color-red-on-soft": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color",
+      "$description": "A data color (batch 280): red, text on its soft fill."
+    },
+    "data-color-brown": {
+      "$value": "{plx-ref.color-brown-500}",
+      "$type": "color",
+      "$description": "A data color (batch 280): brown, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"brown\"] applies it."
+    },
+    "data-color-brown-soft": {
+      "$value": "{plx-ref.color-brown-100}",
+      "$type": "color",
+      "$description": "A data color (batch 280): brown, a soft fill (an avatar)."
+    },
+    "data-color-brown-on-soft": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$description": "A data color (batch 280): brown, text on its soft fill."
+    },
+    "data-color-gray": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "A data color (batch 280): gray, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"gray\"] applies it."
+    },
+    "data-color-gray-soft": {
+      "$value": "{plx-ref.color-gray-100}",
+      "$type": "color",
+      "$description": "A data color (batch 280): gray, a soft fill (an avatar)."
+    },
+    "data-color-gray-on-soft": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "A data color (batch 280): gray, text on its soft fill."
     }
   }
 }

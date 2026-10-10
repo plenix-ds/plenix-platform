@@ -20,12 +20,11 @@
 import React from 'react';
 import {
   Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataTable, Tag, TagList, TagInput, Button, Icon,
-  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorSwatch,
+  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorPicker, DATA_COLORS,
 } from 'plenix-platform';
 
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
-// Colors are stored without the leading # (a category color is a record value, not a style).
-const CATEGORY_COLORS = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
+// A category's color is a data color: a hue name from the design system (DATA_COLORS; batch 280).
 const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category path', 'File size', 'Dimensions', 'Date created',
   'Date modified', 'Camera model', 'Aperture', 'Color profile', 'GPS location', 'Edit status', 'Owner'];
 // DATA: [field, type, shown]
@@ -60,7 +59,6 @@ const DEFAULT_CATEGORIES = CATEGORIES.map((c) => c[0]);
 const DEFAULT_TYPES = ['PSD', 'PNG', 'JPG', 'AI', 'Videos'];
 const DEFAULT_TAGS = [];
 const EMPTY_TEXT = 'No data';
-const HASH = '#';
 
 /* ── small parts ── */
 const fmt = (n) => Number(n).toLocaleString('en-US');
@@ -91,13 +89,9 @@ export function NewCatDialog({ open, onClose, onSave }) {
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [form, setForm] = React.useState({ name: '', description: '' });
   const [tags, setTags] = React.useState([]);
-  const [color, setColor] = React.useState(HASH + CATEGORY_COLORS[0]);
-  const [hex, setHex] = React.useState(HASH + CATEGORY_COLORS[0]);
+  const [color, setColor] = React.useState(DATA_COLORS[0]);
   const [fieldsOpen, setFieldsOpen] = React.useState(false);
   const text = (k) => ({ value: form[k], onChange: (e) => setForm({ ...form, [k]: e.target.value }) });
-  const pick = (c) => { setColor(c); setHex(c); };
-  // The hex box moves the color well only once it holds a full #rrggbb value (syncColorPicker).
-  const typeHex = (v) => { setHex(v); if (/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v); };
   const addTag = (t) => { if (tags.indexOf(t) < 0) setTags(tags.concat(t)); };
   const save = (e) => {
     e.preventDefault();
@@ -126,15 +120,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
         <div className="plx-field plx-field--stacked">
           <div className="plx-field__head"><span className="plx-field__label" id={uid + 'color'}>Category color</span></div>
           <div className="plx-field__control">
-            <Inline role="group" aria-labelledby={uid + 'color'} wrap className="plx-u-gap-y-stack-sm">
-              <Input name="categoryColor" type="color" aria-label="Category color" value={color} onChange={(e) => pick(e.target.value)} />
-              <div className="plx-layout--width-md"><Input name="categoryColor2" aria-label="Category color" data value={hex} onChange={(e) => typeHex(e.target.value)} /></div>
-              <Inline gap="xs" wrap>
-                {CATEGORY_COLORS.map((c) => (
-                  <Button key={c} size="sm" aria-label={'Color ' + HASH + c} pressed={color.toLowerCase() === HASH + c} onClick={() => pick(HASH + c)}><ColorSwatch color={HASH + c} size="sm" shape="square" /></Button>
-                ))}
-              </Inline>
-            </Inline>
+            <ColorPicker aria-labelledby={uid + 'color'} label={null} value={color} onChange={setColor} />
           </div>
         </div>
       </Stack>

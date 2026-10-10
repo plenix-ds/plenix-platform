@@ -241,17 +241,17 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      labelHidden: the label is for assistive technology only (default false)
      showValue: shows the percent at the end of the label row, a whole percent in the locale's format ("42%") (default false)
      tone: "info" (default) | "success" | "warning" | "danger" | "neutral"
-     color: a color the data brings (a project's color); it fills the bar instead of the tone
+     color: a color the data brings (a project's color), a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it fills the bar instead of the tone
      size: "sm" (a 4px track) | "md" (default, an 8px track)
      className: more classes on the wrapper
      locale: the language the percent is formatted in (default: the page's language, document.documentElement.lang)
    Behavior:
-     The track is a progressbar (role="progressbar") with aria-valuenow, aria-valuemin and aria-valuemax; without a value it
-     has none and its fill runs from start to end again and again.
+     A known amount is the browser's own <progress value max> (batch 280: the function reports the amount, the design
+     system draws it, no width is written); without a value the track is a progressbar (role="progressbar") with no
+     value, its fill running from start to end again and again.
      People who ask their system for less motion see the indeterminate fill still.
    Notes:
-     The fill's width reaches the stylesheet as --plx-comp-progress-bar-value (a percent) and a data color as
-     --plx-comp-progress-bar-color: the only way a value or a color from the data enters (no style is written).
+     The amount reaches the page as the <progress> element's value and a data color as data-plx-color: no style is written.
      Other props pass through to the wrapper.
 */
 function ProgressBar({
@@ -274,10 +274,7 @@ function ProgressBar({
   const showLabel = label && !labelHidden;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-progress-bar', 'plx-progress-bar--' + size, color ? 'plx-progress-bar--color' : 'plx-progress-bar--' + tone, !known && 'is-indeterminate', className),
-    style: {
-      '--plx-comp-progress-bar-value': known ? pct + '%' : undefined,
-      '--plx-comp-progress-bar-color': color || undefined
-    }
+    "data-plx-color": color || undefined
   }, rest), showLabel || showValue && known ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-progress-bar__head"
   }, showLabel ? /*#__PURE__*/_react.default.createElement("span", {
@@ -288,14 +285,17 @@ function ProgressBar({
   }, new Intl.NumberFormat(loc, {
     style: 'percent',
     maximumFractionDigits: 0
-  }).format(pct / 100)) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }).format(pct / 100)) : null) : null, known ? /*#__PURE__*/_react.default.createElement("progress", {
+    className: "plx-progress-bar__track plx-progress-bar__meter",
+    value: Math.max(0, Math.min(value, max || 100)),
+    max: max || 100,
+    "aria-labelledby": showLabel ? id : undefined,
+    "aria-label": showLabel ? undefined : label
+  }) : /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-progress-bar__track",
     role: "progressbar",
     "aria-labelledby": showLabel ? id : undefined,
-    "aria-label": showLabel ? undefined : label,
-    "aria-valuemin": known ? 0 : undefined,
-    "aria-valuemax": known ? max : undefined,
-    "aria-valuenow": known ? value : undefined
+    "aria-label": showLabel ? undefined : label
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-progress-bar__fill"
   })));
@@ -366,14 +366,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      title: the event's name
      time: when, as shown
-     color: the event's or its calendar's color (from the data); it draws the start edge
+     color: the event's or its calendar's color, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it draws the start edge
      fill: the chip fills its box (an event placed in a time grid); default false
      onClick(event): makes the chip a button that opens the event
      className: more classes on the chip
    Behavior:
      With onClick it is a button (focus ring, Enter and Space); without, plain text.
    Notes:
-     The color reaches the stylesheet as --plx-comp-event-chip-color, the only way a data color enters (no style is written).
+     The hue reaches the stylesheet as the data-plx-color attribute, the only way a data color enters (no style is written).
      Other props pass through to the element.
 */
 function EventChip({
@@ -390,9 +390,7 @@ function EventChip({
     type: onClick ? 'button' : undefined,
     onClick: onClick,
     className: (0, _cx.cx)('plx-event-chip', fill && 'plx-event-chip--fill', onClick && 'plx-event-chip--interactive', className),
-    style: {
-      '--plx-comp-event-chip-color': color || undefined
-    }
+    "data-plx-color": color || undefined
   }, rest), time ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-event-chip__time"
   }, time) : null, /*#__PURE__*/_react.default.createElement("span", {
@@ -938,12 +936,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      initials: the text to show, only when there is no name to work from
      size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
        (the account row in a pane footer)
-     background: the person's own background color when the data has one (otherwise the theme's avatar colors)
-     color: the person's own text color when the data has one (otherwise the theme's avatar colors)
+     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
+       its text color (otherwise the theme's avatar colors)
      label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
        assistive technology
      className: more classes on the avatar
-     style: more inline styles on the avatar
    Behavior:
      A picture that fails to load falls back to the initials.
      The corner and the text size follow the size.
@@ -979,7 +976,6 @@ function Avatar({
   src,
   initials,
   size = 'sm',
-  background,
   color,
   label,
   className,
@@ -996,10 +992,7 @@ function Avatar({
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, className),
     "data-plx-avatar": "",
-    style: {
-      '--plx-comp-avatar-own-background': background || undefined,
-      '--plx-comp-avatar-own-content': color || undefined
-    },
+    "data-plx-color": color || undefined,
     role: label ? 'img' : undefined,
     "aria-label": label,
     "aria-hidden": label ? undefined : true
@@ -1305,15 +1298,34 @@ function BrandMark({
   }, rest));
 }
   } },
-  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ColorSwatch/dataColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.DATA_COLORS = void 0;
+/* Plenix · DATA_COLORS
+   Summary: The data colors by name, GENERATED by build-steps.js from the --plx-sys-data-color-<hue> theme tokens (do not edit).
+   Usage:
+     import { DATA_COLORS } from 'plenix-platform';   // ["blue","green","purple","red","brown","gray"]
+     <ColorSwatch color={DATA_COLORS[0]} />
+   Props:
+     none: a list of hue names, in the order the theme defines them
+*/
+const DATA_COLORS = exports.DATA_COLORS = ["blue", "green", "purple", "red", "brown", "gray"];
+  } },
+  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ColorPicker = ColorPicker;
 exports.ColorSwatch = ColorSwatch;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _dataColors = require("./dataColors.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ColorSwatch
    Summary: A color from the data shown as a small round chip (a category's color).
@@ -1321,21 +1333,30 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <ColorSwatch color={category.color} />
      <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
    Props:
-     color: the color value, from the data
+     color: a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
+     tone: instead of color, a surface of the system it previews: "accent" (the accent surface) | "surface" | "frost"
      size: "sm" (16px) | "md" (default; 20px)
      shape: "round" (default) | "square" (the compact corner: a swatch inside a button)
      pressed: marks the chosen color (aria-pressed), with onClick
      label: the accessible name of the color, with onClick
      onClick(event): makes the swatch a button that picks the color
      className: more classes on the swatch
+     ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
+       ColorPicker.value: the chosen hue
+       ColorPicker.onChange(hue): runs with the hue picked
+       ColorPicker.label: the group's accessible name (default "Color")
+       ColorPicker.size: the swatches' size (default "md")
+       ColorPicker.className: more classes on the group
    Behavior:
      With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
    Notes:
-     The color reaches the stylesheet as --plx-comp-color-swatch-value, the only way a data color enters a page.
+     The hue reaches the stylesheet as the data-plx-color attribute (system/steps.css), the only way a data color enters a page.
      Other props pass through to the <button> or <span>.
 */
+const nameOf = h => h.charAt(0).toUpperCase() + h.slice(1);
 function ColorSwatch({
   color,
+  tone,
   size = 'md',
   shape = 'round',
   pressed,
@@ -1344,23 +1365,44 @@ function ColorSwatch({
   className,
   ...rest
 }) {
-  const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'square' && 'plx-color-swatch--square', className);
+  const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'square' && 'plx-color-swatch--square', tone && 'plx-color-swatch--' + tone, className);
   return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
     type: "button",
     className: cls,
-    style: {
-      '--plx-comp-color-swatch-value': color
-    },
+    "data-plx-color": color || undefined,
     "aria-pressed": !!pressed,
     "aria-label": label,
     onClick: onClick
   }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
     className: cls,
-    style: {
-      '--plx-comp-color-swatch-value': color
-    },
+    "data-plx-color": color || undefined,
     "aria-hidden": "true"
   }, rest));
+}
+
+// the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
+function ColorPicker({
+  value,
+  onChange,
+  label = 'Color',
+  size = 'md',
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-color-picker', className)
+  }, rest), _dataColors.DATA_COLORS.map(h => /*#__PURE__*/_react.default.createElement(ColorSwatch, {
+    key: h,
+    color: h,
+    size: size,
+    label: nameOf(h),
+    pressed: value === h,
+    onClick: () => {
+      if (onChange) onChange(h);
+    }
+  })));
 }
   } },
   "platform/components/DropZone/DropZone.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -4521,7 +4563,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
        selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
    Props:
-     Card.accent: a color from the data (a project's color): a 3px start edge in it (it reaches the stylesheet as --plx-comp-card-accent)
+     Card.accent: a color from the data (a project's color): a 3px start edge in it; a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
      Panel.title: the heading; it also names the section landmark
      Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
        icon always sits on the left of its heading)
@@ -4688,9 +4730,7 @@ function Card({
   const interactive = !!(href || onOpen);
   return /*#__PURE__*/_react.default.createElement("article", _extends({
     className: (0, _cx.cx)('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', className),
-    style: {
-      '--plx-comp-card-accent': accent || undefined
-    }
+    "data-plx-color": accent || undefined
   }, rest), title ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__header"
   }, /*#__PURE__*/_react.default.createElement(H, {
@@ -9430,7 +9470,7 @@ function WidgetGrid({
   }, said));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9544,6 +9584,12 @@ Object.defineProperty(exports, "CollapsibleSection", {
     return _CollapsibleSection.CollapsibleSection;
   }
 });
+Object.defineProperty(exports, "ColorPicker", {
+  enumerable: true,
+  get: function () {
+    return _ColorSwatch.ColorPicker;
+  }
+});
 Object.defineProperty(exports, "ColorSwatch", {
   enumerable: true,
   get: function () {
@@ -9578,6 +9624,12 @@ Object.defineProperty(exports, "Count", {
   enumerable: true,
   get: function () {
     return _Count.Count;
+  }
+});
+Object.defineProperty(exports, "DATA_COLORS", {
+  enumerable: true,
+  get: function () {
+    return _dataColors.DATA_COLORS;
   }
 });
 Object.defineProperty(exports, "DEFAULT_THEME", {
@@ -10187,6 +10239,7 @@ var _Thumbnail = require("./components/Thumbnail/Thumbnail.jsx");
 var _Notice = require("./components/Notice/Notice.jsx");
 var _Brand = require("./components/Brand/Brand.jsx");
 var _ColorSwatch = require("./components/ColorSwatch/ColorSwatch.jsx");
+var _dataColors = require("./components/ColorSwatch/dataColors.js");
 var _DropZone = require("./components/DropZone/DropZone.jsx");
 var _Preview = require("./components/Preview/Preview.jsx");
 var _Fieldset = require("./components/Fieldset/Fieldset.jsx");

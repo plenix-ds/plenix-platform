@@ -7,7 +7,7 @@
      <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
        selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
    Props:
-     Card.accent: a color from the data (a project's color): a 3px start edge in it (it reaches the stylesheet as --plx-comp-card-accent)
+     Card.accent: a color from the data (a project's color): a 3px start edge in it; a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
      Panel.title: the heading; it also names the section landmark
      Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
        icon always sits on the left of its heading)
@@ -108,7 +108,7 @@ function Opener({ href, onOpen, current, className, children }) {
 export function Card({ title, meta, actions, selected = false, href, onOpen, headingLevel = 3, accent, className, children, ...rest }) {
   const interactive = !!(href || onOpen);
   return (
-    <article className={cx('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', className)} style={{ '--plx-comp-card-accent': accent || undefined }} {...rest}>
+    <article className={cx('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', className)} data-plx-color={accent || undefined} {...rest}>
       {title ? (
         <div className="plx-card__header">
           <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H>

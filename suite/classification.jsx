@@ -2,8 +2,8 @@
    tags) the applications share, and the category editor; moved out of the settings page in the suite split (batch 149).
    Rebuilt from Platform components in batch 199: each field is a Field; the lists are Comboboxes (several values, grouped
    options, and a new value created from the text typed); the category editor uses Field, ColorSwatch and Avatar. */
-import { Avatar, Badge, Button, ColorSwatch, Combobox, Dialog, Field, Inline, Input, RowButton, Select, Stack, Text } from 'plenix-platform';
-import { PROJECTS, hexOf } from './shared.jsx';
+import { Avatar, Badge, Button, ColorPicker, Combobox, Dialog, Field, Inline, Input, RowButton, Select, Stack, Text } from 'plenix-platform';
+import { PROJECTS } from './shared.jsx';
 const { useRef } = React;
 
 /* A whole row (or card) that acts as one control: the Platform RowButton with its content laid out by inner (a flex row
@@ -63,7 +63,7 @@ export function CatEditModal({ catEdit, setCatEdit, saveEdit }) {
   const nameRef = useRef(null);
   const fileRef = useRef(null);
   const title = catEdit.isNew ? (catEdit.type === 'cat' ? 'New category' : 'New subcategory') : (catEdit.type === 'cat' ? 'Edit category' : 'Edit subcategory');
-  const color = catEdit.color || 'var(--plx-sys-action-primary-background)';
+  const color = catEdit.color || 'blue';
   return (
     <Dialog open onClose={() => setCatEdit(null)} title={title} size="sm" initialFocus={nameRef}
       footer={<><Button onClick={() => setCatEdit(null)}>Cancel</Button><Button variant="primary" onClick={saveEdit} disabled={!catEdit.name.trim()}>{catEdit.isNew ? 'Create' : 'Save changes'}</Button></>}>
@@ -75,15 +75,11 @@ export function CatEditModal({ catEdit, setCatEdit, saveEdit }) {
         {catEdit.type === 'cat' ? (
           <>
             <Field label="Color" description="Choose the category's color">
-              <Inline gap="sm">
-                <ColorSwatch color={color} label="Current color" />
-                <Input type="color" value={hexOf(color)} onChange={(e) => setCatEdit((x) => ({ ...x, color: e.target.value }))} />
-                <Text variant="data">{hexOf(color)}</Text>
-              </Inline>
+              <ColorPicker label="Category color" value={color} onChange={(h) => setCatEdit((x) => ({ ...x, color: h }))} />
             </Field>
             <Field label="Icon" description="An optional image, sized to fit">
               <Inline gap="sm">
-                <Avatar name={catEdit.name || '?'} src={catEdit.icon || undefined} background={color} size="lg" />
+                <Avatar name={catEdit.name || '?'} src={catEdit.icon || undefined} color={color} size="lg" />
                 <Button icon="upload" onClick={() => { if (fileRef.current) fileRef.current.click(); }}>Upload image</Button>
                 <input ref={fileRef} type="file" accept="image/*" tabIndex={-1} aria-hidden="true" hidden onChange={(e) => {
                   const f = e.target.files[0]; if (!f) return;

@@ -7,14 +7,14 @@
    Props:
      title: the event's name
      time: when, as shown
-     color: the event's or its calendar's color (from the data); it draws the start edge
+     color: the event's or its calendar's color, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280); it draws the start edge
      fill: the chip fills its box (an event placed in a time grid); default false
      onClick(event): makes the chip a button that opens the event
      className: more classes on the chip
    Behavior:
      With onClick it is a button (focus ring, Enter and Space); without, plain text.
    Notes:
-     The color reaches the stylesheet as --plx-comp-event-chip-color, the only way a data color enters (no style is written).
+     The hue reaches the stylesheet as the data-plx-color attribute, the only way a data color enters (no style is written).
      Other props pass through to the element.
 */
 import React from 'react';
@@ -24,7 +24,7 @@ export function EventChip({ title, time, color, fill = false, onClick, className
   const Tag = onClick ? 'button' : 'span';
   return (
     <Tag type={onClick ? 'button' : undefined} onClick={onClick} className={cx('plx-event-chip', fill && 'plx-event-chip--fill', onClick && 'plx-event-chip--interactive', className)}
-      style={{ '--plx-comp-event-chip-color': color || undefined }} {...rest}>
+      data-plx-color={color || undefined} {...rest}>
       {time ? <span className="plx-event-chip__time">{time}</span> : null}
       <span className="plx-event-chip__title">{title}</span>
     </Tag>

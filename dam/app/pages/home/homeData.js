@@ -70,8 +70,7 @@ export const SORT_OPTIONS = ['Relevance', 'Newest', 'Oldest', 'Name A-Z', 'Name 
 // the details pane for a category (and the collection shown in the collections view)
 export const CATEGORY_DETAIL = {
   name: 'Cross - Traditional', count: '78 assets', parent: 'Categories (root)', parents: ['Categories (root)', 'Borders', 'Branding', 'Clergy', 'Crosses'],
-  // plx-allow-hex on the next line: the category color a person chose, a stored value
-  order: '8', color: '#d4a843' /* plx-allow-hex */, copyright: 'Coptic Orthodox Church', rights: 'Internal', rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
+  order: '8', color: 'brown' /* a data color: a hue name (batch 280) */, copyright: 'Coptic Orthodox Church', rights: 'Internal', rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
   rating: 0, description: 'Traditional Coptic cross designs and variations', tags: ['cross', 'traditional', 'coptic'],
   stats: [['Total assets', '78'], ['Storage used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
   permissions: [['Owner', 'raphael'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],

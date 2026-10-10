@@ -8,7 +8,7 @@
 import React from 'react';
 import {
   Tabs, CollapsibleSection, Field, Input, Textarea, Select, Rating, Tag, TagList, TagInput, Button, PropertyList, Icon, EmptyState, ActivityList, StatusDot,
-  Stack, Inline, Text, Preview,
+  Stack, Inline, Text, Preview, ColorPicker,
 } from 'plenix-platform';
 import * as D from './homeData.js';
 
@@ -84,12 +84,7 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
               <Row label="Name"><Input name="name" {...text('name')} /></Row>
               <Row label="Parent"><Select name="parent" {...text('parent')}>{c.parents.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Display order"><Input name="displayOrder" type="number" {...text('order')} /></Row>
-              <Row label="Color">
-                <Inline wrap>
-                  <Input name="color" type="color" aria-label="Color" {...text('color')} />
-                  <Text variant="data" className="plx-u-leading-16px">{f.color}</Text>
-                </Inline>
-              </Row>
+              <Row label="Color"><ColorPicker label="Color" size="sm" value={f.color} onChange={(h) => setF({ ...f, color: h })} /></Row>
               <Row label="Copyright"><Input name="copyright" placeholder="Copyright..." {...text('copyright')} /></Row>
               <Row label="Rights"><Select name="rights" {...text('rights')}>{c.rightsOptions.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Rating"><Rating value={f.rating} onChange={(v) => setF({ ...f, rating: v })} label="Rating" /></Row>

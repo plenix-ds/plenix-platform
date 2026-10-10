@@ -1815,9 +1815,8 @@ const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
   count: '78 assets',
   parent: 'Categories (root)',
   parents: ['Categories (root)', 'Borders', 'Branding', 'Clergy', 'Crosses'],
-  // plx-allow-hex on the next line: the category color a person chose, a stored value
   order: '8',
-  color: '#d4a843' /* plx-allow-hex */,
+  color: 'brown' /* a data color: a hue name (batch 280) */,
   copyright: 'Coptic Orthodox Church',
   rights: 'Internal',
   rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
@@ -2293,16 +2292,15 @@ function CategoryInspector({
         type: "number"
       }, text('order')))), /*#__PURE__*/_react.default.createElement(Row, {
         label: "Color"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-        wrap: true
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
-        name: "color",
-        type: "color",
-        "aria-label": "Color"
-      }, text('color'))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-        variant: "data",
-        className: "plx-u-leading-16px"
-      }, f.color))), /*#__PURE__*/_react.default.createElement(Row, {
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
+        label: "Color",
+        size: "sm",
+        value: f.color,
+        onChange: h => setF({
+          ...f,
+          color: h
+        })
+      })), /*#__PURE__*/_react.default.createElement(Row, {
         label: "Copyright"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
         name: "copyright",
@@ -2593,8 +2591,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    The filter and sort dialogs edit a copy of the selection: Apply reports it, Cancel drops it. Without value they keep
    their own selection, starting from the legacy defaults. Actions with no back end yet confirm with a toast. */
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
-// Colors are stored without the leading # (a category color is a record value, not a style).
-const CATEGORY_COLORS = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
+// A category's color is a data color: a hue name from the design system (DATA_COLORS; batch 280).
 const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category path', 'File size', 'Dimensions', 'Date created', 'Date modified', 'Camera model', 'Aperture', 'Color profile', 'GPS location', 'Edit status', 'Owner'];
 // DATA: [field, type, shown]
 const CATEGORY_FIELDS = [['name', 'text', true], ['description', 'textarea', true], ['categorypath', 'text', true], ['parentid', 'text', true], ['displayorder', 'number', true], ['color', 'text', true], ['owner', 'text', true], ['viewgroups', 'list', true], ['editgroups', 'list', false], ['visibility', 'list', true], ['defaultstatus', 'list', false], ['defaultcopyright', 'text', false], ['defaulttags', 'list', false], ['totalassets', 'number', true], ['storageused', 'number', false], ['datecreated', 'date', true], ['datemodified', 'date', true]];
@@ -2645,7 +2642,6 @@ const DEFAULT_CATEGORIES = CATEGORIES.map(c => c[0]);
 const DEFAULT_TYPES = ['PSD', 'PNG', 'JPG', 'AI', 'Videos'];
 const DEFAULT_TAGS = [];
 const EMPTY_TEXT = 'No data';
-const HASH = '#';
 
 /* ── small parts ── */
 const fmt = n => Number(n).toLocaleString('en-US');
@@ -2698,8 +2694,7 @@ function NewCatDialog({
     description: ''
   });
   const [tags, setTags] = _react.default.useState([]);
-  const [color, setColor] = _react.default.useState(HASH + CATEGORY_COLORS[0]);
-  const [hex, setHex] = _react.default.useState(HASH + CATEGORY_COLORS[0]);
+  const [color, setColor] = _react.default.useState(_plenixPlatform.DATA_COLORS[0]);
   const [fieldsOpen, setFieldsOpen] = _react.default.useState(false);
   const text = k => ({
     value: form[k],
@@ -2708,15 +2703,6 @@ function NewCatDialog({
       [k]: e.target.value
     })
   });
-  const pick = c => {
-    setColor(c);
-    setHex(c);
-  };
-  // The hex box moves the color well only once it holds a full #rrggbb value (syncColorPicker).
-  const typeHex = v => {
-    setHex(v);
-    if (/^#[0-9a-fA-F]{6}$/.test(v)) setColor(v);
-  };
   const addTag = t => {
     if (tags.indexOf(t) < 0) setTags(tags.concat(t));
   };
@@ -2793,39 +2779,12 @@ function NewCatDialog({
     id: uid + 'color'
   }, "Category color")), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__control"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    role: "group",
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
     "aria-labelledby": uid + 'color',
-    wrap: true,
-    className: "plx-u-gap-y-stack-sm"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-    name: "categoryColor",
-    type: "color",
-    "aria-label": "Category color",
+    label: null,
     value: color,
-    onChange: e => pick(e.target.value)
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-layout--width-md"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-    name: "categoryColor2",
-    "aria-label": "Category color",
-    data: true,
-    value: hex,
-    onChange: e => typeHex(e.target.value)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    gap: "xs",
-    wrap: true
-  }, CATEGORY_COLORS.map(c => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    key: c,
-    size: "sm",
-    "aria-label": 'Color ' + HASH + c,
-    pressed: color.toLowerCase() === HASH + c,
-    onClick: () => pick(HASH + c)
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorSwatch, {
-    color: HASH + c,
-    size: "sm",
-    shape: "square"
-  })))))))), /*#__PURE__*/_react.default.createElement(EditFieldsCatDialog, {
+    onChange: setColor
+  })))), /*#__PURE__*/_react.default.createElement(EditFieldsCatDialog, {
     open: fieldsOpen,
     onClose: () => setFieldsOpen(false)
   }));
@@ -3475,7 +3434,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      drop of files or whole folders, Browse Files and Browse Folder (real file inputs), import from URL. Chosen files go
      into a queue (name, folder path, size, type) where they can be removed.
    - Categories (required): search, pick one or more, "use folder names as categories", and a New Category form (name,
-     description, tags, color with picker, hex box and swatches kept in step).
+     description, tags, and a color from the data colors (ColorPicker).
    - Visible Metadata: search, a type filter (All, Image, Video, Audio, 3D, Doc) and collapsible field groups; groups start
      closed and a group shows its fields only while open and matching the search, as in plenix.js.
    There is no back end: Upload confirms with the toast the legacy drop handler used ("N file(s) ready to upload") and
@@ -3537,10 +3496,6 @@ const DEFAULT_FOLDER = 'digital-assets';
 
 // DATA: the categories to pick from come from the back end.
 const CATEGORIES = ['Banner icon', 'Bookshelf', 'Borders - Arch', 'Borders - Banner', 'Borders - Circular', 'Borders - Divider', 'Borders - Linear', 'Borders - Page', 'Branding - Churches', 'Branding - CYC', 'Branding - Diakonia', 'Certificates', 'Clergy', 'Covers', 'Cross - Traditional', 'Crosses', 'Dome', 'Embroideries', 'Fonts', 'Galloons', 'Korban Stamp', 'Ornamental Elements', 'Presentation Folders'];
-
-// DATA: the category color swatches (hex digits; "#" is added where the value is used).
-const SWATCHES = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
-const hex = digits => '#' + digits;
 const TYPE_FILTERS = [{
   value: 'all',
   label: 'All'
@@ -3904,22 +3859,10 @@ function CategoriesPane() {
     name: '',
     description: '',
     tags: '',
-    color: SWATCHES[0],
-    hexText: hex(SWATCHES[0])
+    color: _plenixPlatform.DATA_COLORS[0]
   });
   const shown = CATEGORIES.filter(c => !q.trim() || c.toLowerCase().includes(q.trim().toLowerCase()));
   const toggle = (c, on) => setPicked(on ? picked.concat(c) : picked.filter(p => p !== c));
-  const setColor = value => setCat({
-    ...cat,
-    color: value.slice(1).toLowerCase(),
-    hexText: value
-  });
-  // the hex box moves the picker only once it holds a full #rrggbb value, as syncColorPicker did
-  const onHex = value => setCat({
-    ...cat,
-    hexText: value,
-    color: /^#[0-9a-fA-F]{6}$/.test(value) ? value.slice(1).toLowerCase() : cat.color
-  });
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, {
     as: "section",
     gap: "sm",
@@ -4004,33 +3947,14 @@ function CategoriesPane() {
       ...cat,
       tags: e.target.value
     })
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    wrap: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-    name: "categoryColor",
-    type: "color",
-    "aria-label": "Category color",
-    value: hex(cat.color),
-    onChange: e => setColor(e.target.value)
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-    name: "categoryColorHexValue",
-    "aria-label": "Category color hex value",
-    width: "md",
-    data: true,
-    value: cat.hexText,
-    onChange: e => onHex(e.target.value)
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    gap: "xs",
-    wrap: true,
-    role: "group",
-    "aria-label": "Category color swatches"
-  }, SWATCHES.map(s => /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorSwatch, {
-    key: s,
-    color: hex(s),
-    label: 'Color ' + hex(s),
-    pressed: cat.color === s,
-    onClick: () => setColor(hex(s))
-  }))))) : null);
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
+    label: "Category color",
+    value: cat.color,
+    onChange: h => setCat({
+      ...cat,
+      color: h
+    })
+  })) : null);
 }
 
 /* ── pane 3: visible metadata ── */

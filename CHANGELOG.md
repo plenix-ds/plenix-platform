@@ -6,6 +6,28 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-10-09
+
+### Changed (breaking)
+- Data colors are hue names (Strict DS step 2; owner: "data colors from existing hues"): blue, green, purple, red, brown,
+  gray, each a solid, a soft fill and the text on it (--plx-sys-data-color-<hue>, -soft, -on-soft, pointing at the
+  palette colors the data already used; no new colors). A component sets data-plx-color and system/steps.css (generated
+  from the tokens) applies the hue: Avatar.color (its soft fill and text; Avatar.background is gone), Card.accent,
+  ColorSwatch.color, EventChip.color, ProgressBar.color. No color value is written in a style attribute any more.
+- ProgressBar draws a known amount on the browser's own <progress value max> (Strict DS step 3): the function reports
+  the amount and the design system styles it; no width is written. Unknown amounts keep the running fill.
+
+### Added
+- ColorPicker (with ColorSwatch): the data colors as swatch buttons, one pressed. DATA_COLORS lists the hues
+  (generated from the tokens). ColorSwatch.tone previews a system surface (accent, surface, frost).
+- The utility plx-u-bg-data (the data hue as a background); plx-u-bg-var (a style attribute) is gone.
+
+### Changed
+- The apps' data colors are hue names: projects, calendars, events, contacts and threads (avatars), categories, feature
+  areas. The category color fields (Settings' category editor, the Asset Manager's new category, upload and details pane)
+  and the accent choice are ColorPickers. Project color black became gray (no black data hue).
+- Dead color helpers removed from the suite (TINTS, tint, hexOf, PROJ_COLORS, unused bg fields).
+
 ## [0.22.7] - 2026-10-09
 
 ### Changed

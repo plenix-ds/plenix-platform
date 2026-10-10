@@ -4,7 +4,7 @@
    tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
    SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
    the design system (../platform/design-system/), the point of truth. */
-import { Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorSwatch, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
+import { Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -484,18 +484,18 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
 
  /* ── Categories state ── (each color is data the person chose; it reaches the page only through ColorSwatch) */
   const [cats,setCats]=useState([
-    {id:1,name:"Personal",color:"var(--plx-ref-color-green-500)",icon:null,subs:[{id:11,name:"Health"},{id:12,name:"Finance"},{id:13,name:"Family"}]},
-    {id:2,name:"Client Work",color:"var(--plx-ref-color-blue-400)",icon:null,subs:[{id:21,name:"Design"},{id:22,name:"Development"},{id:23,name:"Strategy"}]},
-    {id:3,name:"Research",color:"var(--plx-ref-color-purple-500)",icon:null,subs:[{id:31,name:"Market Research"},{id:32,name:"Competitive Analysis"}]},
-    {id:4,name:"Travel",color:"var(--plx-ref-color-brown-500)",icon:null,subs:[]},
-    {id:5,name:"Archive",color:"var(--plx-ref-color-gray-600)",icon:null,subs:[]},
+    {id:1,name:"Personal",color:"green",icon:null,subs:[{id:11,name:"Health"},{id:12,name:"Finance"},{id:13,name:"Family"}]},
+    {id:2,name:"Client Work",color:"blue",icon:null,subs:[{id:21,name:"Design"},{id:22,name:"Development"},{id:23,name:"Strategy"}]},
+    {id:3,name:"Research",color:"purple",icon:null,subs:[{id:31,name:"Market Research"},{id:32,name:"Competitive Analysis"}]},
+    {id:4,name:"Travel",color:"brown",icon:null,subs:[]},
+    {id:5,name:"Archive",color:"gray",icon:null,subs:[]},
   ]);
   const [catEdit,setCatEdit]=useState(null);
   const [expandedCats,setExpandedCats]=useState(new Set([1,2,3]));
   const saveEdit=()=>{
     if(!catEdit||!catEdit.name.trim()) return;
     if(catEdit.type==='cat'){
-      if(catEdit.isNew) setCats(prev=>[...prev,{id:Date.now(),name:catEdit.name.trim(),color:catEdit.color||"var(--plx-sys-action-primary-background)",icon:catEdit.icon||null,subs:[]}]);
+      if(catEdit.isNew) setCats(prev=>[...prev,{id:Date.now(),name:catEdit.name.trim(),color:catEdit.color||"blue",icon:catEdit.icon||null,subs:[]}]);
       else setCats(prev=>prev.map(c=>c.id===catEdit.catId?{...c,name:catEdit.name.trim(),color:catEdit.color,icon:catEdit.icon||null}:c));
     } else {
       if(catEdit.isNew) setCats(prev=>prev.map(c=>c.id===catEdit.catId?{...c,subs:[...c.subs,{id:Date.now(),name:catEdit.name.trim()}]}:c));
@@ -581,8 +581,8 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     </Panel>
   );
  // the accent colors to choose from: data handed to ColorSwatch (prefs.accent keeps the chosen value)
-  const ACCENTS=[["var(--plx-ref-color-blue-400)","Windows Blue"],["var(--plx-ref-color-green-500)","Green"],["var(--plx-ref-color-purple-500)","Purple"],["var(--plx-ref-color-red-500)","Red"],["var(--plx-ref-color-brown-500)","Amber"],["var(--plx-ref-color-black)","Midnight"]];
-  const accent=prefs.accent||ACCENTS[0][0];
+  
+  const accent=DATA_COLORS.indexOf(prefs.accent)>=0?prefs.accent:DATA_COLORS[0];
 
   const visibleTags=tags.filter(t=>!tagSearch||t.name.includes(tagSearch.toLowerCase()));
 
@@ -590,7 +590,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     categories:(
       <Screen title="Categories" desc="Organize your projects, tasks, and content with custom categories and subcategories.">
         <Inline justify="end">
-          <Button variant="primary" icon="plus" onClick={()=>setCatEdit({type:"cat",isNew:true,name:"",color:"var(--plx-sys-action-primary-background)",icon:null})}>New category</Button>
+          <Button variant="primary" icon="plus" onClick={()=>setCatEdit({type:"cat",isNew:true,name:"",color:"blue",icon:null})}>New category</Button>
         </Inline>
         <Stack gap="xs">
           {cats.map(cat=>(
@@ -690,15 +690,13 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
         <SettingsSection title="Header and accent">
           <Row label="Header bar style">
             <RadioTiles legend="Header bar style" legendHidden size="sm" value={prefs.headerBar||"blue"} onChange={v=>set("headerBar",v)} options={[
-              {value:"blue",label:"Accent",preview:<ColorSwatch shape="square" color="var(--plx-sys-accent-surface)"/>},
-              {value:"white",label:"White",preview:<ColorSwatch shape="square" color="var(--plx-sys-surface-default)"/>},
-              {value:"frost",label:"Frost",preview:<ColorSwatch shape="square" color="var(--plx-sys-frost-surface)"/>},
+              {value:"blue",label:"Accent",preview:<ColorSwatch shape="square" tone="accent"/>},
+              {value:"white",label:"White",preview:<ColorSwatch shape="square" tone="surface"/>},
+              {value:"frost",label:"Frost",preview:<ColorSwatch shape="square" tone="frost"/>},
             ]}/>
           </Row>
           <Row label="Accent color">
-            <Inline role="group" aria-label="Accent color" gap="sm">
-              {ACCENTS.map(([c,n])=><ColorSwatch key={c} color={c} label={n} title={n} pressed={accent===c} onClick={()=>set("accent",c)}/>)}
-            </Inline>
+            <ColorPicker label="Accent color" value={accent} onChange={h=>set("accent",h)}/>
           </Row>
         </SettingsSection>
         <SettingsSection title="Typography">

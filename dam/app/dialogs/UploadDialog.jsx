@@ -5,14 +5,14 @@
      drop of files or whole folders, Browse Files and Browse Folder (real file inputs), import from URL. Chosen files go
      into a queue (name, folder path, size, type) where they can be removed.
    - Categories (required): search, pick one or more, "use folder names as categories", and a New Category form (name,
-     description, tags, color with picker, hex box and swatches kept in step).
+     description, tags, and a color from the data colors (ColorPicker).
    - Visible Metadata: search, a type filter (All, Image, Video, Audio, 3D, Doc) and collapsible field groups; groups start
      closed and a group shows its fields only while open and matching the search, as in plenix.js.
    There is no back end: Upload confirms with the toast the legacy drop handler used ("N file(s) ready to upload") and
    closes, as the legacy Upload button did. Every state resets when the dialog closes. */
 import React from 'react';
 import {
-  Dialog, Button, Checkbox, RadioGroup, Input, Textarea, SearchField, Tree, Icon, Count, EmptyState, useToast, Stack, Inline, Text, Columns, DropZone, ColorSwatch } from 'plenix-platform';
+  Dialog, Button, Checkbox, RadioGroup, Input, Textarea, SearchField, Tree, Icon, Count, EmptyState, useToast, Stack, Inline, Text, Columns, DropZone, ColorPicker, DATA_COLORS } from 'plenix-platform';
 
 // DATA: the storage folders come from the back end; sample tree until then.
 const FOLDERS = [
@@ -34,9 +34,6 @@ const CATEGORIES = ['Banner icon', 'Bookshelf', 'Borders - Arch', 'Borders - Ban
   'Borders - Page', 'Branding - Churches', 'Branding - CYC', 'Branding - Diakonia', 'Certificates', 'Clergy', 'Covers', 'Cross - Traditional', 'Crosses',
   'Dome', 'Embroideries', 'Fonts', 'Galloons', 'Korban Stamp', 'Ornamental Elements', 'Presentation Folders'];
 
-// DATA: the category color swatches (hex digits; "#" is added where the value is used).
-const SWATCHES = ['2a6fdb', 'd93025', 'f59e0b', '5cc28f', '0078d4', 'ec4899', '14b8a6', 'f97316', '64748b'];
-const hex = (digits) => '#' + digits;
 
 const TYPE_FILTERS = [
   { value: 'all', label: 'All' }, { value: 'image', label: 'Image' }, { value: 'video', label: 'Video' },
@@ -257,12 +254,9 @@ function CategoriesPane() {
   const [q, setQ] = React.useState('');
   const [picked, setPicked] = React.useState([]);
   const [adding, setAdding] = React.useState(false);
-  const [cat, setCat] = React.useState({ name: '', description: '', tags: '', color: SWATCHES[0], hexText: hex(SWATCHES[0]) });
+  const [cat, setCat] = React.useState({ name: '', description: '', tags: '', color: DATA_COLORS[0] });
   const shown = CATEGORIES.filter((c) => !q.trim() || c.toLowerCase().includes(q.trim().toLowerCase()));
   const toggle = (c, on) => setPicked(on ? picked.concat(c) : picked.filter((p) => p !== c));
-  const setColor = (value) => setCat({ ...cat, color: value.slice(1).toLowerCase(), hexText: value });
-  // the hex box moves the picker only once it holds a full #rrggbb value, as syncColorPicker did
-  const onHex = (value) => setCat({ ...cat, hexText: value, color: /^#[0-9a-fA-F]{6}$/.test(value) ? value.slice(1).toLowerCase() : cat.color });
 
   return (
     <Stack as="section" gap="sm" aria-labelledby="upl-cats">
@@ -286,16 +280,7 @@ function CategoriesPane() {
           <Input name="categoryName" aria-label="Category name" placeholder="Enter category name..." value={cat.name} onChange={(e) => setCat({ ...cat, name: e.target.value })} />
           <Textarea name="description" aria-label="Description" placeholder="Optional description..." value={cat.description} onChange={(e) => setCat({ ...cat, description: e.target.value })} />
           <Input name="tags" aria-label="Tags" placeholder="Tags" value={cat.tags} onChange={(e) => setCat({ ...cat, tags: e.target.value })} />
-          <Inline wrap>
-            <Input name="categoryColor" type="color" aria-label="Category color" value={hex(cat.color)} onChange={(e) => setColor(e.target.value)} />
-            <Input name="categoryColorHexValue" aria-label="Category color hex value" width="md" data
-              value={cat.hexText} onChange={(e) => onHex(e.target.value)} />
-            <Inline gap="xs" wrap role="group" aria-label="Category color swatches">
-              {SWATCHES.map((s) => (
-                <ColorSwatch key={s} color={hex(s)} label={'Color ' + hex(s)} pressed={cat.color === s} onClick={() => setColor(hex(s))} />
-              ))}
-            </Inline>
-          </Inline>
+          <ColorPicker label="Category color" value={cat.color} onChange={(h) => setCat({ ...cat, color: h })} />
         </Stack>
       ) : null}
     </Stack>

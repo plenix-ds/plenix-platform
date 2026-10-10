@@ -9,12 +9,11 @@
      initials: the text to show, only when there is no name to work from
      size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
        (the account row in a pane footer)
-     background: the person's own background color when the data has one (otherwise the theme's avatar colors)
-     color: the person's own text color when the data has one (otherwise the theme's avatar colors)
+     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
+       its text color (otherwise the theme's avatar colors)
      label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
        assistive technology
      className: more classes on the avatar
-     style: more inline styles on the avatar
    Behavior:
      A picture that fails to load falls back to the initials.
      The corner and the text size follow the size.
@@ -40,7 +39,7 @@ export function initialsOf(name) {
   return (first + last).toUpperCase();
 }
 
-export function Avatar({ name, src, initials, size = 'sm', background, color, label, className, ...rest }) {
+export function Avatar({ name, src, initials, size = 'sm', color, label, className, ...rest }) {
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
@@ -48,7 +47,7 @@ export function Avatar({ name, src, initials, size = 'sm', background, color, la
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => { setFailed(false); }, [src]);
   return (
-    <span className={cx('plx-avatar', 'plx-avatar--' + s, className)} data-plx-avatar="" style={{ '--plx-comp-avatar-own-background': background || undefined, '--plx-comp-avatar-own-content': color || undefined }} role={label ? 'img' : undefined}
+    <span className={cx('plx-avatar', 'plx-avatar--' + s, className)} data-plx-avatar="" data-plx-color={color || undefined} role={label ? 'img' : undefined}
       aria-label={label} aria-hidden={label ? undefined : true} {...rest}>{src && !failed ? <img className="plx-avatar__image" src={src} alt="" onError={() => setFailed(true)} /> : text}</span>
   );
 }

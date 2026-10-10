@@ -55,3 +55,5 @@
    the title alone opens it (or a double-click) */
 .plx-media-card--selectable{cursor:pointer;}
 .plx-media-card--selectable .plx-card__opener::after{content:none;}
+/* the accent's data color (batch 280) */
+.plx-card--accent[data-plx-color]{--plx-comp-card-accent:var(--plx-comp-data-color);}
