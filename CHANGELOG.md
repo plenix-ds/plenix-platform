@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.7] - 2026-10-09
+
+### Changed
+- The header brand starts at the header's own inset, the same distance from the window's edge as the utilities at the
+  other end (owner: the distance from the page edge to the logo is universal); the switcher has no inset of its own.
+- The mark is as tall as the two rows beside it: "Plenix" on a 20px label line and the application on a 16px one, the
+  mark their sum (36px); the sign-in page's mark the same.
+- The application switcher has no hover fill: it opens on a click, its chevron marks it as a menu (focus ring kept).
+- Every card shows its icon before the heading in Tasks and Projects too (owner, batch 272).
+- The design system's spec shows the recent changes: the card's icon, the color field, the account menu with the
+  application's settings and Sign out. (batch 279)
+
 ## [0.22.6] - 2026-10-09
 
 ### Added

@@ -19,7 +19,7 @@ export function TasksScreen() {
             <Text as="h1" variant="title">Tasks</Text>
             <Button variant="primary" icon={<Icon name="plus" />}>Add task</Button>
           </Inline>
-          <Panel title="All tasks" flush>
+          <Panel icon="circle-check" title="All tasks" flush>
             <ActivityList label="Tasks">{ALL_TASKS.map((t) => (
               <ActivityList.Item key={t.id} selected={sel === t.id} onOpen={() => setSel(sel === t.id ? null : t.id)}
                 leading={<Inline gap="xs" className="plx-u-relative plx-u-z-raised"><Checkbox aria-label={'Done: ' + t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /><PriDot pri={t.pri} /></Inline>}

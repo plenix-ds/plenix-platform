@@ -2453,12 +2453,14 @@ function ProjectContent({
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "md"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      icon: "clock",
       title: "Upcoming tasks"
     }, open.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
     }, open.slice(0, 4).map(taskRow)) : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
     }, "All tasks complete.")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      icon: "document",
       title: "Recent notes",
       flush: true
     }, pNotes.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -2479,12 +2481,14 @@ function ProjectContent({
     }, "No notes yet.")))), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "md"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      icon: "alert",
       title: "Overdue"
     }, overdue.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
     }, overdue.slice(0, 4).map(taskRow)) : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
     }, "No overdue tasks.")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      icon: "folder",
       title: "Files"
     }, pFiles.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
@@ -2515,6 +2519,7 @@ function ProjectContent({
     label: doneT + '/' + pTasks.length + ' tasks',
     showValue: true
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "circle-check",
     title: "All tasks"
   }, pTasks.length ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "sm"

@@ -123,14 +123,14 @@ export function ProjectContent({ proj, panel }) {
           </Inline>
           <Columns count={2}>
             <Stack gap="md">
-              <Panel title="Upcoming tasks">{open.length ? <Stack gap="sm">{open.slice(0, 4).map(taskRow)}</Stack> : <Text variant="secondary">All tasks complete.</Text>}</Panel>
-              <Panel title="Recent notes" flush>{pNotes.length ? <Stack gap="none">{pNotes.slice(0, 3).map((n) => (
+              <Panel icon="clock" title="Upcoming tasks">{open.length ? <Stack gap="sm">{open.slice(0, 4).map(taskRow)}</Stack> : <Text variant="secondary">All tasks complete.</Text>}</Panel>
+              <Panel icon="document" title="Recent notes" flush>{pNotes.length ? <Stack gap="none">{pNotes.slice(0, 3).map((n) => (
                 <RowButton key={n.id}><Stack inset="sm" gap="xs"><Text variant="strong">{n.title}</Text><Text variant="data">{n.date}</Text></Stack></RowButton>
               ))}</Stack> : <Stack inset="md"><Text variant="secondary">No notes yet.</Text></Stack>}</Panel>
             </Stack>
             <Stack gap="md">
-              <Panel title="Overdue">{overdue.length ? <Stack gap="sm">{overdue.slice(0, 4).map(taskRow)}</Stack> : <Text variant="secondary">No overdue tasks.</Text>}</Panel>
-              <Panel title="Files">{pFiles.length ? <Stack gap="sm">{pFiles.slice(0, 4).map((f, i) => (
+              <Panel icon="alert" title="Overdue">{overdue.length ? <Stack gap="sm">{overdue.slice(0, 4).map(taskRow)}</Stack> : <Text variant="secondary">No overdue tasks.</Text>}</Panel>
+              <Panel icon="folder" title="Files">{pFiles.length ? <Stack gap="sm">{pFiles.slice(0, 4).map((f, i) => (
                 <Inline key={i} gap="sm" justify="between"><Inline gap="sm"><Tag>{f.t}</Tag><Text truncate>{f.name}</Text></Inline><Text variant="data">{f.d}</Text></Inline>
               ))}</Stack> : <Text variant="secondary">No files attached.</Text>}</Panel>
             </Stack>
@@ -146,7 +146,7 @@ export function ProjectContent({ proj, panel }) {
       <Stack gap="md">
         <Text as="h1" variant="title">Tasks</Text>
         <ProgressBar value={pct} color={proj.color} label={doneT + '/' + pTasks.length + ' tasks'} showValue />
-        <Panel title="All tasks">{pTasks.length ? <Stack gap="sm">{pTasks.map(taskRow)}</Stack> : <Text variant="secondary">No tasks for this project yet.</Text>}</Panel>
+        <Panel icon="circle-check" title="All tasks">{pTasks.length ? <Stack gap="sm">{pTasks.map(taskRow)}</Stack> : <Text variant="secondary">No tasks for this project yet.</Text>}</Panel>
       </Stack>
     </PageContent>
   );

@@ -67,8 +67,7 @@
 .plx-app-switcher__pin.is-hover{background-color:var(--plx-sys-state-hover);}
 /* the header name is the switcher: Plenix over the application, a chevron; the panel opens under it, from the start */
 .plx-app-header__switch{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-app-header-item-size);border-bottom-left-radius:var(--plx-sys-radius-control);border-bottom-right-radius:var(--plx-sys-radius-control);border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-left-radius:var(--plx-sys-radius-control);border-top-right-radius:var(--plx-sys-radius-control);border-top-style:none;border-top-width:0;column-gap:var(--plx-sys-space-inline-md);cursor:pointer;display:inline-flex;font-family:inherit;inline-size:var(--plx-comp-app-header-name-width);justify-content:space-between;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;text-align:start;}
-.plx-app-header__switch:hover,.plx-app-header__switch[aria-expanded="true"],
-.plx-app-header__switch.is-hover{background-color:var(--plx-comp-app-header-hover);}
+/* no hover fill: the switcher opens on a click; the chevron says it is a menu (owner, batch 279) */
 .plx-app-header__switch:focus-visible,
 .plx-app-header__switch.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-border-width-medium) * -1);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
 .plx-app-header__switch-chevron{--plx-comp-icon-size:var(--plx-comp-app-header-chevron-size);color:var(--plx-comp-app-header-content);flex-shrink:0;}
@@ -93,10 +92,14 @@
 }
 /* the account item is its picture alone: no fill grows around it on hover or while its menu is open (owner, batch 261) */
 .plx-app-header__item.plx-app-header__item--account:hover,.plx-app-header__item.plx-app-header__item--account.is-hover,.plx-app-header__item.plx-app-header__item--account.is-current,.plx-app-header__item.plx-app-header__item--account[aria-expanded="true"]{background-color:transparent;}
-/* the application switcher is a filled control: the same inset on both sides (owner, batch 277: the brand's 4px start
-   inset left its fill uneven) */
-.plx-app-header__brand.plx-app-header__switch{padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}
+/* the brand starts at the header's own inset, the same distance from the window's edge as the utilities at the other
+   end (owner, batch 279: "the distance from the page width to the logo" is universal): no inset of its own */
+.plx-app-header__brand,.plx-app-header__brand.plx-app-header__switch{padding-inline-end:0;padding-inline-start:0;}
 /* the brand mark before the name (batch 278): the header's icon size, in the brand color, the icon-label gap */
 .plx-app-header__brand{align-items:center;column-gap:var(--plx-sys-space-inline-md);display:flex;}
 .plx-app-header__switch .plx-app-header__name{flex-grow:1;}
-.plx-app-header__brand .plx-brand-mark{--plx-comp-icon-size:var(--plx-comp-app-header-icon-size);color:var(--plx-comp-app-header-brand);}
+/* the mark is as tall as the two rows beside it (owner, batch 279): "Plenix" on a 20px label line, the application on a
+   16px one; the mark is their sum */
+.plx-app-header__product{line-height:var(--plx-sys-label-height-20px);}
+.plx-app-header__app{line-height:var(--plx-sys-label-height-16px);}
+.plx-app-header__brand .plx-brand-mark{--plx-comp-icon-size:calc(var(--plx-sys-label-height-20px) + var(--plx-sys-label-height-16px));color:var(--plx-comp-app-header-brand);}

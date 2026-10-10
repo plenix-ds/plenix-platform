@@ -2388,6 +2388,7 @@ function TasksScreen() {
       name: "plus"
     })
   }, "Add task")), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    icon: "circle-check",
     title: "All tasks",
     flush: true
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList, {

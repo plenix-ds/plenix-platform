@@ -55,7 +55,8 @@ const BRAND_DIR = path.join(ROOT, 'platform', 'brand');
 const BRAND = JSON.parse(fs.readFileSync(path.join(BRAND_DIR, 'brand.json'), 'utf8'));
 const markOnAccent = 'url("data:image/svg+xml,' + fs.readFileSync(path.join(BRAND_DIR, BRAND.files.markOnAccent), 'utf8').replace(/\s+/g, ' ').trim()
   .replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, "'") + '")';
-fixed.markSize = v('--plx-comp-app-header-icon-size');
+// the mark is as tall as the header name's two rows (batch 279): the 20px and 16px label lines
+fixed.markSize = 'calc(' + v('--plx-sys-label-height-20px', 'light') + ' + ' + v('--plx-sys-label-height-16px', 'light') + ')';
 fixed.markGap = v('--plx-sys-space-inline-md');
 const vars = (r) => Object.keys(r).map((k) => '  --plenix-' + k + ': ' + r[k] + ';').join('\n');
 
