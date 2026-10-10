@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.1] - 2026-10-10
+
+### Changed
+- The design system has one look for each kind of information (owner: "there is many inconsistency in how things are
+  presented... i need a unified look"):
+  - every list of names (classes, tokens, states, ARIA attributes, aliases, "Also answers", a variant's class) is pills:
+    a name with a page is a chip that opens it, any other name a tag; an empty list or value is "—";
+  - every status is a soft badge whose tone says what it means;
+  - inline technical values are the data text; links are text links; sub-titles inside a card are labels;
+  - one icon per kind of section, none shared; a foundation's own parts (Typefaces, Typography: sizes, Color: Blue…)
+    carry the foundation's icon, and Typography's icon is the text "T". (batch 303)
+
 ## [0.31.0] - 2026-10-10
 
 ### Fixed
