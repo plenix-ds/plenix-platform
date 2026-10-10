@@ -8992,7 +8992,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PageContent.children: the page's parts
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
-       { mode, open, expanded, width, setWidth, toggle, close, small, hasSideNav, page, layout, claimPage(kind) }
+       { mode, open, expanded, width, setWidth, toggle, close, small, narrow, barEl, parentEl, hasSideNav, page, layout,
+         claimPage(kind) }; mode is "inline", "rail", "overlay" (Medium), "bar" or "screen" (Narrow) or "none"
    Behavior:
      The areas are the shell's immediate children.
      The header and the footer always span the full width, above and below both side areas.
@@ -9003,7 +9004,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Right move the edge the mirrored way (the key toward the outside widens the area).
      The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
        it again; this is remembered.
-     Below 768px the navigation is a rail; Expand opens it over the main region, and Escape or a click outside closes it.
+     The window classes (Platforms Standard 3.3) decide the navigation's form (4.1): Wide (840px and up, from
+       --plx-sys-shell-rail-below) the pane beside the main region; Medium (600-839px) a rail whose Expand opens the
+       expanded rail over the main region (Escape or a click outside closes it); Narrow (under 600px,
+       --plx-sys-shell-phone-below) never a drawer: the page's top-level destinations in a bottom navigation bar, always
+       visible and labeled, and the pane a screen of its own, opened from the bar's Browse destination or the parent row
+       at the top (NavPane).
+     The shell keeps the safe areas (viewport-fit=cover): the header below the top inset, the bottom bar or footer above
+       the bottom inset, both sides inside theirs.
      Inspector panel: see SidePanel (--plx-sys-panel-inspector-width by density; it collapses to a rail).
      The main region fills the rest and scrolls itself; the content grid lives in it.
      The layout mode is data-plx-layout on the shell and on the main region; app-shell.css draws each mode (batch 217).
@@ -9085,6 +9093,9 @@ function AppShell({
   const layout = (0, _pageLayouts.pageLayout)(claimed || page); // the design system's layout standard decides the mode
   const t = Object.assign({}, STRINGS, strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
+  const narrow = useMedia(below('--plx-sys-shell-phone-below'));
+  const [barEl, setBarEl] = _react.default.useState(null); // where NavPane puts the bottom navigation bar at Narrow
+  const [parentEl, setParentEl] = _react.default.useState(null); // where it puts the parent row (the way to the pane) at Narrow
   const [expanded, setExpanded] = _react.default.useState(() => readPref('plenix.sideNav.expanded', true));
   const [width, setWidthState] = _react.default.useState(() => readPref('plenix.sideNav.width', null));
   const [overlay, setOverlay] = _react.default.useState(false);
@@ -9107,7 +9118,7 @@ function AppShell({
   }, [small]);
   _react.default.useEffect(() => {
     setOverlay(false);
-  }, [small]);
+  }, [small, narrow]);
   // Ctrl+[ collapses and expands the navigation from anywhere on the page
   _react.default.useEffect(() => {
     if (!hasSide) return undefined;
@@ -9120,14 +9131,17 @@ function AppShell({
     document.addEventListener('keydown', key);
     return () => document.removeEventListener('keydown', key);
   }, [toggle, hasSide]);
-  const mode = !hasSide ? 'none' : small ? overlay ? 'overlay' : 'rail' : expanded ? 'inline' : 'rail';
+  const mode = !hasSide ? 'none' : narrow ? overlay ? 'screen' : 'bar' : small ? overlay ? 'overlay' : 'rail' : expanded ? 'inline' : 'rail';
   const ctx = _react.default.useMemo(() => ({
     hasSideNav: hasSide,
     slotEl,
     registerPortal,
     small,
+    narrow,
+    barEl,
+    parentEl,
     mode,
-    open: mode === 'inline' || mode === 'overlay',
+    open: mode === 'inline' || mode === 'overlay' || mode === 'screen',
     expanded: small ? overlay : expanded,
     width,
     setWidth,
@@ -9136,7 +9150,7 @@ function AppShell({
     page: claimed || page,
     layout,
     claimPage
-  }), [hasSide, slotEl, registerPortal, small, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
+  }), [hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
   return /*#__PURE__*/_react.default.createElement(LayoutContext.Provider, {
     value: ctx
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -9145,7 +9159,10 @@ function AppShell({
   }, /*#__PURE__*/_react.default.createElement("a", {
     className: "plx-app-shell__skip",
     href: '#' + mainId
-  }, t.skip), header, /*#__PURE__*/_react.default.createElement("div", {
+  }, t.skip), header, narrow && hasSide ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: setParentEl,
+    className: "plx-app-shell__parent-slot"
+  }) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-shell__body"
   }, sideNav || /*#__PURE__*/_react.default.createElement("div", {
     ref: setSlotEl,
@@ -9155,7 +9172,10 @@ function AppShell({
     tabIndex: -1,
     className: (0, _cx.cx)('plx-app-shell__main', mainClassName),
     "data-plx-layout": LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'
-  }, children), panel), footer));
+  }, children), panel), footer, narrow && hasSide ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: setBarEl,
+    className: "plx-app-shell__bar-slot"
+  }) : null));
 }
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
@@ -9249,6 +9269,7 @@ function PageContent({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.BarContext = void 0;
 exports.ToolRail = ToolRail;
 var _react = _interopRequireDefault(require("react"));
 var _roving = require("../../utils/roving.js");
@@ -9274,6 +9295,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      ToolRail.Item.disabled: default false; the arrow keys skip it
      ToolRail.Item.onClick: runs on click
      ToolRail.Item.className: more classes
+     ToolRailBar (NavPane at Narrow): the same items drawn as the destinations of the bottom navigation bar
    Behavior:
      It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
      enters and leaves the rail.
@@ -9283,6 +9305,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const LabelsContext = /*#__PURE__*/_react.default.createContext(false);
+// inside the bottom navigation bar (NavPane at Narrow; Platforms Standard 4.1, 6.4) an item is a destination: its icon with
+// its label under it, always shown, and aria-current for the current one
+const BarContext = exports.BarContext = /*#__PURE__*/_react.default.createContext(false);
 function ToolRail({
   label,
   showLabels = false,
@@ -9322,7 +9347,20 @@ ToolRail.Item = function ToolRailItem({
   onClick,
   className
 }) {
-  const labels = _react.default.useContext(LabelsContext);
+  const labels = _react.default.useContext(LabelsContext),
+    bar = _react.default.useContext(BarContext);
+  if (bar) return /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: (0, _cx.cx)('plx-nav-bar__item', pressed && 'is-current', className),
+    "aria-current": pressed ? 'page' : undefined,
+    disabled: disabled || undefined,
+    onClick: onClick
+  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    filled: !!pressed
+  }) : icon, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-nav-bar__label"
+  }, label));
   const button = /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: (0, _cx.cx)('plx-tool-rail__item', pressed && 'is-pressed', className),
@@ -9341,13 +9379,14 @@ ToolRail.Item = function ToolRailItem({
   }, button);
 };
 ToolRail.Divider = function ToolRailDivider() {
+  if (_react.default.useContext(BarContext)) return null; // the bar has no dividers
   return /*#__PURE__*/_react.default.createElement("span", {
     role: "separator",
     className: "plx-tool-rail__divider"
   });
 };
   } },
-  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9355,6 +9394,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NavPane = NavPane;
 var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../../components/Button/Button.jsx");
@@ -9376,9 +9416,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      header: a second row under the title row, for the pane's own shortcuts (the asset browser's Home and Files)
      footer: a row pinned to the bottom (--plx-comp-pane-footer-height, its divider drawn inside): the app's or section's
        settings, or the way back from a settings screen
-     rail: the page's rail items (<ToolRail.Item…/>), shown when the pane is collapsed
+     rail: the page's rail items (<ToolRail.Item…/>), shown when the pane is collapsed; at Narrow, the destinations of the
+       bottom navigation bar
      collapseAt: "end" (default; the row's end, facing the main region) | "start" (only for a pane on the right)
      width: its own width outside an AppShell (default: the shell navigation width)
+     strings: the words it shows, for other languages: { browse: "Browse" } (the bar's destination that opens the pane)
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
@@ -9386,15 +9428,38 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
        that faces the main region.
      Collapsed, it is a rail (ToolRail) of the page's rail items with Expand always first, at the top, then a divider.
-     Below 768px it is a rail whose Expand opens the pane over the main region; Escape or a click outside closes it.
+     The window class (Platforms Standard 3.3) decides its form (4.1, 6.4):
+       Wide (840px and up): beside the main region, as above.
+       Medium (600–839px): a rail whose Expand opens the expanded rail over the main region; Escape or a click outside
+         closes it.
+       Narrow (under 600px): never a drawer. With two or more rail items, the page's top-level destinations are a bottom
+         navigation bar: up to four of them, then Browse, which opens the pane as a screen of its own (every other
+         destination is in it). Without, the pane is the first screen of a stack, and a parent row at the top of the page
+         (the pane's title after a back arrow) opens it. Choosing a destination, a link or a list item in the pane shows the
+         main region again; Escape does too.
      The body scrolls; its bar shows on hover.
      Outside an AppShell it is a plain pane (width: its own, or the shell navigation width) with no Collapse button.
    Notes:
-     The shared first row dates from batch 153.
+     The shared first row dates from batch 153; the Narrow forms from batch 311.
      Every page's pane has a footer.
      The content is the page's.
 */
 
+const STRINGS = {
+  browse: 'Browse'
+};
+// the rail's items out of their fragments (the bar draws destinations, never dividers)
+const railItems = rail => {
+  const out = [];
+  const walk = c => _react.default.Children.forEach(c, el => {
+    if (! /*#__PURE__*/_react.default.isValidElement(el)) return;
+    if (el.type === _react.default.Fragment) walk(el.props.children);else if (el.type !== _ToolRail.ToolRail.Divider) out.push(el);
+  });
+  walk(rail);
+  return out;
+};
+// in the pane's screen (Narrow), choosing something to show takes the person to it
+const CHOOSES = 'a[href], .plx-nav-list__item:not(.plx-nav-list__item--group), [role="treeitem"]';
 function NavPane({
   label,
   title,
@@ -9405,15 +9470,18 @@ function NavPane({
   rail,
   collapseAt = 'end',
   width,
+  strings,
   className,
   children
 }) {
   const layout = (0, _AppShell.useAppLayout)();
   const ref = _react.default.useRef(null);
+  const t = Object.assign({}, STRINGS, strings);
   const Tag = as;
   const mode = layout && layout.hasSideNav ? layout.mode : 'static';
-  // the overlay is a layer: Escape closes it
-  (0, _layer.useLayer)(ref, mode === 'overlay', {
+  const narrow = mode === 'bar' || mode === 'screen';
+  // the overlay and the screen are layers: Escape closes them
+  (0, _layer.useLayer)(ref, mode === 'overlay' || mode === 'screen', {
     onEscape: layout ? layout.close : undefined
   });
   const expand = /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Item, {
@@ -9426,10 +9494,48 @@ function NavPane({
     className: "plx-nav-pane-rail"
   }, rail ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, expand, /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Divider, null), rail) : expand) : null;
   if (mode === 'rail') return railEl;
+
+  // Narrow: the bottom navigation bar (two or more destinations) or the parent row, put in the shell's slots
+  let narrowEl = null;
+  if (narrow) {
+    const items = railItems(rail);
+    const close = fn => e => {
+      layout.close();
+      if (fn) fn(e);
+    };
+    if (items.length >= 2) {
+      narrowEl = layout.barEl ? /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("nav", {
+        "aria-label": label || 'Navigation',
+        className: "plx-nav-bar"
+      }, /*#__PURE__*/_react.default.createElement(_ToolRail.BarContext.Provider, {
+        value: true
+      }, items.slice(0, 4).map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
+        key: el.key || i,
+        pressed: mode === 'screen' ? false : el.props.pressed,
+        onClick: close(el.props.onClick)
+      })), /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Item, {
+        icon: "menu-lines",
+        label: t.browse,
+        pressed: mode === 'screen',
+        onClick: layout.toggle
+      }))), layout.barEl) : null;
+    } else if (layout.parentEl && mode === 'bar') {
+      narrowEl = /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
+        className: "plx-nav-pane-parent"
+      }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "sm",
+        variant: "ghost",
+        icon: "arrow-left",
+        onClick: layout.toggle
+      }, title || label || t.browse)), layout.parentEl);
+    }
+    if (mode === 'bar') return narrowEl;
+  }
+
   // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width token
-  const w = mode === 'static' ? width : layout.width;
+  const w = mode === 'static' ? width : narrow ? null : layout.width;
   const paneWidth = w ? (0, _sizeSteps.snapSize)(parseInt(w, 10), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width')) + 'px' : undefined;
-  const collapse = mode === 'static' ? null : /*#__PURE__*/_react.default.createElement("span", {
+  const collapse = mode === 'static' || narrow ? null : /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
@@ -9439,6 +9545,9 @@ function NavPane({
     label: "Collapse sidebar",
     onClick: layout.toggle
   }));
+  const onChoose = narrow ? e => {
+    if (e.target.closest && e.target.closest(CHOOSES)) layout.close();
+  } : undefined;
   const pane = /*#__PURE__*/_react.default.createElement(Tag, {
     ref: ref,
     "aria-label": Tag === 'nav' ? label : undefined,
@@ -9453,7 +9562,8 @@ function NavPane({
   }, actions) : null, collapseAt !== 'start' ? collapse : null) : null, header ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-nav-pane__subheader"
   }, header) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-nav-pane__body"
+    className: "plx-nav-pane__body",
+    onClick: onChoose
   }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-nav-pane__footer"
   }, footer) : null, mode === 'inline' ? /*#__PURE__*/_react.default.createElement(_AppShell.PanelSplitter, {
@@ -9464,7 +9574,9 @@ function NavPane({
     onChange: layout.setWidth,
     edge: "end"
   }) : null);
-  // below 768px: the rail stays in place; the pane opens over the main region
+  // Narrow: the pane is a screen over the main region, with the bar still below it
+  if (mode === 'screen') return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, pane, narrowEl);
+  // Medium: the rail stays in place; the expanded rail opens over the main region
   return mode === 'overlay' ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, railEl, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-shell__scrim",
     "aria-hidden": "true",

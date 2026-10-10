@@ -119,6 +119,7 @@ const NOT_VARIANTS = {
   'plx-table--fill': 'a sizing state the height prop sets (height="100%"), not a look',
   'plx-nav-pane--inline': 'a responsive mode the shell sets (the pane opens over the main region on narrow windows)',
   'plx-nav-pane--overlay': 'a responsive mode the shell sets',
+  'plx-nav-pane--screen': 'a responsive mode the shell sets (Narrow windows: the pane is a screen of its own; Platforms Standard 4.1)',
   'plx-side-panel--overlay': 'a responsive mode the shell sets (the inspector opens over the main region)',
   'plx-app-header__item--account': 'AppHeader.Account sets it on its own item (no fill around the picture)',
   'plx-side-panel--resized': 'a state the panel sets once someone drags its edge (the resizable card shows it)',

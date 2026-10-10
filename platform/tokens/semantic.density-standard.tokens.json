@@ -97,12 +97,12 @@
       "$type": "dimension"
     },
     "shell-rail-below": {
-      "$value": "{plx-ref.breakpoint-768px}",
+      "$value": "{plx-ref.breakpoint-840px}",
       "$type": "dimension",
-      "$description": "the navigation is a rail below this width",
+      "$description": "Medium window: the navigation is a rail below this width (Wide from here)",
       "$extensions": {
         "com.plenix": {
-          "after": "      /* the navigation is a rail below this width */"
+          "after": "      /* Medium window: the navigation is a rail below this width (Wide from here) */"
         }
       }
     },

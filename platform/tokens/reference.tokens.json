@@ -816,6 +816,10 @@
       "$value": "768px",
       "$type": "dimension"
     },
+    "breakpoint-840px": {
+      "$value": "840px",
+      "$type": "dimension"
+    },
     "breakpoint-1024px": {
       "$value": "1024px",
       "$type": "dimension"

@@ -26,7 +26,8 @@
      PageContent.children: the page's parts
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
-       { mode, open, expanded, width, setWidth, toggle, close, small, hasSideNav, page, layout, claimPage(kind) }
+       { mode, open, expanded, width, setWidth, toggle, close, small, narrow, barEl, parentEl, hasSideNav, page, layout,
+         claimPage(kind) }; mode is "inline", "rail", "overlay" (Medium), "bar" or "screen" (Narrow) or "none"
    Behavior:
      The areas are the shell's immediate children.
      The header and the footer always span the full width, above and below both side areas.
@@ -37,7 +38,14 @@
        Right move the edge the mirrored way (the key toward the outside widens the area).
      The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
        it again; this is remembered.
-     Below 768px the navigation is a rail; Expand opens it over the main region, and Escape or a click outside closes it.
+     The window classes (Platforms Standard 3.3) decide the navigation's form (4.1): Wide (840px and up, from
+       --plx-sys-shell-rail-below) the pane beside the main region; Medium (600-839px) a rail whose Expand opens the
+       expanded rail over the main region (Escape or a click outside closes it); Narrow (under 600px,
+       --plx-sys-shell-phone-below) never a drawer: the page's top-level destinations in a bottom navigation bar, always
+       visible and labeled, and the pane a screen of its own, opened from the bar's Browse destination or the parent row
+       at the top (NavPane).
+     The shell keeps the safe areas (viewport-fit=cover): the header below the top inset, the bottom bar or footer above
+       the bottom inset, both sides inside theirs.
      Inspector panel: see SidePanel (--plx-sys-panel-inspector-width by density; it collapses to a rail).
      The main region fills the rest and scrolls itself; the content grid lives in it.
      The layout mode is data-plx-layout on the shell and on the main region; app-shell.css draws each mode (batch 217).
@@ -94,6 +102,9 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   const layout = pageLayout(claimed || page);   // the design system's layout standard decides the mode
   const t = Object.assign({}, STRINGS, strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
+  const narrow = useMedia(below('--plx-sys-shell-phone-below'));
+  const [barEl, setBarEl] = React.useState(null);         // where NavPane puts the bottom navigation bar at Narrow
+  const [parentEl, setParentEl] = React.useState(null);   // where it puts the parent row (the way to the pane) at Narrow
   const [expanded, setExpanded] = React.useState(() => readPref('plenix.sideNav.expanded', true));
   const [width, setWidthState] = React.useState(() => readPref('plenix.sideNav.width', null));
   const [overlay, setOverlay] = React.useState(false);
@@ -106,7 +117,7 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
     if (small) setOverlay((o) => !o);
     else setExpanded((e) => { writePref('plenix.sideNav.expanded', !e); return !e; });
   }, [small]);
-  React.useEffect(() => { setOverlay(false); }, [small]);
+  React.useEffect(() => { setOverlay(false); }, [small, narrow]);
   // Ctrl+[ collapses and expands the navigation from anywhere on the page
   React.useEffect(() => {
     if (!hasSide) return undefined;
@@ -114,21 +125,23 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
     document.addEventListener('keydown', key);
     return () => document.removeEventListener('keydown', key);
   }, [toggle, hasSide]);
-  const mode = !hasSide ? 'none' : small ? (overlay ? 'overlay' : 'rail') : expanded ? 'inline' : 'rail';
-  const ctx = React.useMemo(() => ({ hasSideNav: hasSide, slotEl, registerPortal, small, mode, open: mode === 'inline' || mode === 'overlay',
+  const mode = !hasSide ? 'none' : narrow ? (overlay ? 'screen' : 'bar') : small ? (overlay ? 'overlay' : 'rail') : expanded ? 'inline' : 'rail';
+  const ctx = React.useMemo(() => ({ hasSideNav: hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, open: mode === 'inline' || mode === 'overlay' || mode === 'screen',
     expanded: small ? overlay : expanded, width, setWidth, toggle, close: () => setOverlay(false), page: claimed || page, layout, claimPage }),
-  [hasSide, slotEl, registerPortal, small, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
+  [hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
   return (
     <LayoutContext.Provider value={ctx}>
       <div className={cx('plx-app-shell', className)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>
         <a className="plx-app-shell__skip" href={'#' + mainId}>{t.skip}</a>
         {header}
+        {narrow && hasSide ? <div ref={setParentEl} className="plx-app-shell__parent-slot" /> : null}
         <div className="plx-app-shell__body">
           {sideNav || <div ref={setSlotEl} className="plx-app-shell__slot" />}
           <main id={mainId} tabIndex={-1} className={cx('plx-app-shell__main', mainClassName)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>{children}</main>
           {panel}
         </div>
         {footer}
+        {narrow && hasSide ? <div ref={setBarEl} className="plx-app-shell__bar-slot" /> : null}
       </div>
     </LayoutContext.Provider>
   );

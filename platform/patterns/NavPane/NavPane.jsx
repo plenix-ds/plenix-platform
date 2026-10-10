@@ -12,9 +12,11 @@
      header: a second row under the title row, for the pane's own shortcuts (the asset browser's Home and Files)
      footer: a row pinned to the bottom (--plx-comp-pane-footer-height, its divider drawn inside): the app's or section's
        settings, or the way back from a settings screen
-     rail: the page's rail items (<ToolRail.Item…/>), shown when the pane is collapsed
+     rail: the page's rail items (<ToolRail.Item…/>), shown when the pane is collapsed; at Narrow, the destinations of the
+       bottom navigation bar
      collapseAt: "end" (default; the row's end, facing the main region) | "start" (only for a pane on the right)
      width: its own width outside an AppShell (default: the shell navigation width)
+     strings: the words it shows, for other languages: { browse: "Browse" } (the bar's destination that opens the pane)
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
@@ -22,42 +24,91 @@
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
        that faces the main region.
      Collapsed, it is a rail (ToolRail) of the page's rail items with Expand always first, at the top, then a divider.
-     Below 768px it is a rail whose Expand opens the pane over the main region; Escape or a click outside closes it.
+     The window class (Platforms Standard 3.3) decides its form (4.1, 6.4):
+       Wide (840px and up): beside the main region, as above.
+       Medium (600–839px): a rail whose Expand opens the expanded rail over the main region; Escape or a click outside
+         closes it.
+       Narrow (under 600px): never a drawer. With two or more rail items, the page's top-level destinations are a bottom
+         navigation bar: up to four of them, then Browse, which opens the pane as a screen of its own (every other
+         destination is in it). Without, the pane is the first screen of a stack, and a parent row at the top of the page
+         (the pane's title after a back arrow) opens it. Choosing a destination, a link or a list item in the pane shows the
+         main region again; Escape does too.
      The body scrolls; its bar shows on hover.
      Outside an AppShell it is a plain pane (width: its own, or the shell navigation width) with no Collapse button.
    Notes:
-     The shared first row dates from batch 153.
+     The shared first row dates from batch 153; the Narrow forms from batch 311.
      Every page's pane has a footer.
      The content is the page's.
 */
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { useLayer } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
-import { ToolRail } from '../ToolRail/ToolRail.jsx';
+import { ToolRail, BarContext } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { snapSize } from '../../utils/sizeSteps.js';
 
-export function NavPane({ label, title, actions, as = 'nav', header, footer, rail, collapseAt = 'end', width, className, children }) {
+const STRINGS = { browse: 'Browse' };
+// the rail's items out of their fragments (the bar draws destinations, never dividers)
+const railItems = (rail) => {
+  const out = [];
+  const walk = (c) => React.Children.forEach(c, (el) => {
+    if (!React.isValidElement(el)) return;
+    if (el.type === React.Fragment) walk(el.props.children); else if (el.type !== ToolRail.Divider) out.push(el);
+  });
+  walk(rail);
+  return out;
+};
+// in the pane's screen (Narrow), choosing something to show takes the person to it
+const CHOOSES = 'a[href], .plx-nav-list__item:not(.plx-nav-list__item--group), [role="treeitem"]';
+
+export function NavPane({ label, title, actions, as = 'nav', header, footer, rail, collapseAt = 'end', width, strings, className, children }) {
   const layout = useAppLayout();
   const ref = React.useRef(null);
+  const t = Object.assign({}, STRINGS, strings);
   const Tag = as;
   const mode = layout && layout.hasSideNav ? layout.mode : 'static';
-  // the overlay is a layer: Escape closes it
-  useLayer(ref, mode === 'overlay', { onEscape: layout ? layout.close : undefined });
+  const narrow = mode === 'bar' || mode === 'screen';
+  // the overlay and the screen are layers: Escape closes them
+  useLayer(ref, mode === 'overlay' || mode === 'screen', { onEscape: layout ? layout.close : undefined });
   const expand = <ToolRail.Item icon="panel-left-open" label="Expand sidebar" onClick={layout ? layout.toggle : undefined} />;
   const railEl = mode === 'rail' || mode === 'overlay' ? (
     <ToolRail label={label || 'Navigation'} className="plx-nav-pane-rail">{rail ? <>{expand}<ToolRail.Divider />{rail}</> : expand}</ToolRail>
   ) : null;
   if (mode === 'rail') return railEl;
+
+  // Narrow: the bottom navigation bar (two or more destinations) or the parent row, put in the shell's slots
+  let narrowEl = null;
+  if (narrow) {
+    const items = railItems(rail);
+    const close = (fn) => (e) => { layout.close(); if (fn) fn(e); };
+    if (items.length >= 2) {
+      narrowEl = layout.barEl ? createPortal(
+        <nav aria-label={label || 'Navigation'} className="plx-nav-bar">
+          <BarContext.Provider value>
+            {items.slice(0, 4).map((el, i) => React.cloneElement(el, { key: el.key || i, pressed: mode === 'screen' ? false : el.props.pressed, onClick: close(el.props.onClick) }))}
+            <ToolRail.Item icon="menu-lines" label={t.browse} pressed={mode === 'screen'} onClick={layout.toggle} />
+          </BarContext.Provider>
+        </nav>, layout.barEl) : null;
+    } else if (layout.parentEl && mode === 'bar') {
+      narrowEl = createPortal(
+        <div className="plx-nav-pane-parent">
+          <Button size="sm" variant="ghost" icon="arrow-left" onClick={layout.toggle}>{title || label || t.browse}</Button>
+        </div>, layout.parentEl);
+    }
+    if (mode === 'bar') return narrowEl;
+  }
+
   // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width token
-  const w = mode === 'static' ? width : layout.width;
+  const w = mode === 'static' ? width : narrow ? null : layout.width;
   const paneWidth = w ? snapSize(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), tokenPx('--plx-sys-shell-nav-max-width')) + 'px' : undefined;
-  const collapse = mode === 'static' ? null : (
+  const collapse = mode === 'static' || narrow ? null : (
     <span className={cx('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)}>
       <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label="Collapse sidebar" onClick={layout.toggle} />
     </span>
   );
+  const onChoose = narrow ? (e) => { if (e.target.closest && e.target.closest(CHOOSES)) layout.close(); } : undefined;
   const pane = (
     <Tag ref={ref} aria-label={Tag === 'nav' ? label : undefined} className={cx('plx-nav-pane', mode !== 'static' && 'plx-nav-pane--' + mode, className)} data-plx-width={paneWidth}>
       {title || actions || collapse ? (
@@ -68,12 +119,14 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
           {collapseAt !== 'start' ? collapse : null}
         </div>) : null}
       {header ? <div className="plx-nav-pane__subheader">{header}</div> : null}
-      <div className="plx-nav-pane__body">{children}</div>
+      <div className="plx-nav-pane__body" onClick={onChoose}>{children}</div>
       {footer ? <div className="plx-nav-pane__footer">{footer}</div> : null}
       {mode === 'inline' ? <PanelSplitter label={'Resize ' + (label || 'navigation')} value={layout.width || tokenPx('--plx-sys-shell-nav-width')}
         min={tokenPx('--plx-sys-shell-nav-min-width')} max={() => tokenPx('--plx-sys-shell-nav-max-width')} onChange={layout.setWidth} edge="end" /> : null}
     </Tag>
   );
-  // below 768px: the rail stays in place; the pane opens over the main region
+  // Narrow: the pane is a screen over the main region, with the bar still below it
+  if (mode === 'screen') return <>{pane}{narrowEl}</>;
+  // Medium: the rail stays in place; the expanded rail opens over the main region
   return mode === 'overlay' ? <>{railEl}<div className="plx-app-shell__scrim" aria-hidden="true" onMouseDown={layout.close} />{pane}</> : pane;
 }

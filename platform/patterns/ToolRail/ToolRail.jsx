@@ -16,6 +16,7 @@
      ToolRail.Item.disabled: default false; the arrow keys skip it
      ToolRail.Item.onClick: runs on click
      ToolRail.Item.className: more classes
+     ToolRailBar (NavPane at Narrow): the same items drawn as the destinations of the bottom navigation bar
    Behavior:
      It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
      enters and leaves the rail.
@@ -30,6 +31,9 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 
 const LabelsContext = React.createContext(false);
+// inside the bottom navigation bar (NavPane at Narrow; Platforms Standard 4.1, 6.4) an item is a destination: its icon with
+// its label under it, always shown, and aria-current for the current one
+export const BarContext = React.createContext(false);
 
 export function ToolRail({ label, showLabels = false, className, children }) {
   const ref = React.useRef(null);
@@ -53,7 +57,14 @@ export function ToolRail({ label, showLabels = false, className, children }) {
 }
 
 ToolRail.Item = function ToolRailItem({ icon, label, pressed, disabled = false, onClick, className }) {
-  const labels = React.useContext(LabelsContext);
+  const labels = React.useContext(LabelsContext), bar = React.useContext(BarContext);
+  if (bar) return (
+    <button type="button" className={cx('plx-nav-bar__item', pressed && 'is-current', className)} aria-current={pressed ? 'page' : undefined}
+      disabled={disabled || undefined} onClick={onClick}>
+      {typeof icon === 'string' ? <Icon name={icon} filled={!!pressed} /> : icon}
+      <span className="plx-nav-bar__label">{label}</span>
+    </button>
+  );
   const button = (
     <button type="button" className={cx('plx-tool-rail__item', pressed && 'is-pressed', className)} aria-label={labels ? undefined : label}
       aria-pressed={pressed === undefined ? undefined : !!pressed} disabled={disabled || undefined} onClick={onClick}>
@@ -65,5 +76,6 @@ ToolRail.Item = function ToolRailItem({ icon, label, pressed, disabled = false, 
 };
 
 ToolRail.Divider = function ToolRailDivider() {
+  if (React.useContext(BarContext)) return null;   // the bar has no dividers
   return <span role="separator" className="plx-tool-rail__divider" />;
 };

@@ -14,8 +14,15 @@
   --plx-sys-icon-size-md: var(--plx-ref-size-20px);
   --plx-sys-icon-size-lg: var(--plx-ref-size-24px);
   --plx-sys-icon-size-xl: var(--plx-ref-size-48px);
-  /* a phone: below this width a page puts its main content first */
+  /* the window classes (Platforms Standard 3.3): Narrow below 600px, Medium to 839px, Wide from 840px. Narrow: the
+     navigation is a bottom bar and the pane a screen of its own; a page puts its main content first */
   --plx-sys-shell-phone-below: var(--plx-ref-breakpoint-600px);
+  /* the safe areas (Platforms Standard 3.5): what the device keeps for itself at each edge; every page sets
+     viewport-fit=cover, so the shell keeps its content inside them. 0 where the device keeps nothing */
+  --plx-sys-safe-area-top: env(safe-area-inset-top, 0px);
+  --plx-sys-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --plx-sys-safe-area-start: env(safe-area-inset-left, 0px);
+  --plx-sys-safe-area-end: env(safe-area-inset-right, 0px);
   /* ── TYPOGRAPHY: font roles ── */
   --plx-sys-font-body: var(--plx-sys-typeface-sans);
   --plx-sys-font-heading: var(--plx-sys-typeface-sans);
@@ -118,7 +125,7 @@
   --plx-sys-shell-nav-min-width: var(--plx-ref-size-140px);
   --plx-sys-shell-nav-max-width: var(--plx-ref-size-320px);
   --plx-sys-shell-splitter-step: var(--plx-ref-size-16px);
-  --plx-sys-shell-rail-below: var(--plx-ref-breakpoint-768px);      /* the navigation is a rail below this width */
+  --plx-sys-shell-rail-below: var(--plx-ref-breakpoint-840px);      /* Medium window: the navigation is a rail below this width (Wide from here) */
   --plx-sys-shell-inspector-overlay-below: var(--plx-ref-breakpoint-1024px);   /* the inspector collapses and opens over the main region below this width */
   --plx-sys-space-component-gap-xs: var(--plx-ref-space-4px);
   --plx-sys-space-component-gap-sm: var(--plx-ref-space-8px);

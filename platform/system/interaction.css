@@ -1,6 +1,6 @@
 /* Plenix · Interaction and responsive system (platform/system/interaction.css). Layer 4 of 5 (see grid.css).
    Three environments, independent of density, set on <html data-plx-interaction="pointer | touch | mobile"> by
-   platform/providers/theme-boot.js (a coarse pointer is touch; a coarse pointer on a viewport under 768px is mobile):
+   platform/providers/theme-boot.js (a coarse pointer is touch; a coarse pointer in a Narrow window, under 600px, is mobile: Platforms Standard 1.1 and 3.3):
      pointer  mouse or trackpad with keyboard. Any density. Hover only enhances; nothing is found or operated by hover
               alone. Visible focus and keyboard shortcuts. 24px controls only for dense, repetitive, low-consequence
               actions, at least 24 × 24px and never overlapping.
@@ -16,8 +16,8 @@
 
 /* touch and mobile: anything that only appears on hover is shown */
 :root[data-plx-interaction="touch"] [data-plx-hover-reveal],:root[data-plx-interaction="mobile"] [data-plx-hover-reveal]{opacity:1;visibility:visible;}
-/* the viewport is phone-sized: the shell collapses; side regions become drawers or their own screens. Target size comes
+/* a Narrow window (under 600px, --plx-sys-shell-phone-below): the shell collapses; side regions become drawers or their own screens. Target size comes
    from the environment, so a narrow desktop window keeps its pointer-sized controls. */
-@media (max-width: 767px){
+@media (width < 600px){
   .plx-shell{grid-template-areas:"header" "main";grid-template-columns:minmax(0,1fr);}
 }

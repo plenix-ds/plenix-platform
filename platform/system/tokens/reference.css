@@ -196,6 +196,7 @@
   /* breakpoints: read by the shell's JavaScript (CSS media queries cannot read custom properties; grid.css repeats them) */
   --plx-ref-breakpoint-600px: 600px;
   --plx-ref-breakpoint-768px: 768px;
+  --plx-ref-breakpoint-840px: 840px;
   --plx-ref-breakpoint-1024px: 1024px;
   --plx-ref-breakpoint-1440px: 1440px;
   --plx-ref-breakpoint-1920px: 1920px;

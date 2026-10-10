@@ -616,6 +616,39 @@
         }
       }
     },
+    "nav-bar-height": {
+      "$value": "{plx-ref.size-56px}",
+      "$type": "dimension",
+      "$description": "The bottom navigation bar at Narrow (Platforms Standard 4.1, 6.4): a 44px target per destination with its label under the icon",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* the bottom navigation bar (NavBar; Narrow windows, Platforms Standard 4.1 and 6.4): 3-5 destinations, always labeled,",
+            "     each at least the 44px target; the bar sits above the bottom safe area */"
+          ]
+        }
+      }
+    },
+    "nav-bar-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "nav-bar-item-min-width": {
+      "$value": "{plx-ref.size-64px}",
+      "$type": "dimension"
+    },
+    "nav-bar-item-target": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension"
+    },
+    "nav-bar-icon-size": {
+      "$value": "{plx-sys.control-icon-inline}",
+      "$type": "dimension"
+    },
+    "nav-bar-label-gap": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension"
+    },
     "secondary-pane-width-sm": {
       "$value": "{plx-ref.size-180px}",
       "$type": "dimension",

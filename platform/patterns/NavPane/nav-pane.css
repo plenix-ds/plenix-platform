@@ -16,3 +16,18 @@
 .plx-nav-pane__title{color:var(--plx-sys-content-default);flex-basis:0%;flex-grow:1;font-family:var(--plx-sys-font-label);font-size:var(--plx-ref-font-size-13);font-weight:var(--plx-sys-font-weight-bold);min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-nav-pane__actions{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:inline-flex;flex-shrink:0;}
 .plx-nav-pane__subheader{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
+/* Narrow (Platforms Standard 4.1, 6.4; batch 311): the pane is a screen of its own over the main region, never a drawer:
+   the full width between the header (or the parent row) and the bottom bar, no scrim */
+.plx-nav-pane--screen{box-shadow:none;inline-size:100%;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;position:absolute;z-index:var(--plx-sys-layer-popover);}
+/* the parent row (a pane without destinations for the bar): the way to the pane, the first screen of the stack */
+.plx-nav-pane-parent{align-items:center;box-shadow:inset 0 calc(var(--plx-sys-border-width-thin) * -1) 0 var(--plx-sys-border-divider);display:flex;flex-shrink:0;padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);}
+/* the bottom navigation bar: always visible, every destination labeled under its icon, each at least the 44px target */
+.plx-nav-bar{align-items:stretch;background-color:var(--plx-comp-nav-bar-background);box-shadow:inset 0 var(--plx-sys-border-width-thin) 0 var(--plx-sys-border-divider);box-sizing:border-box;display:flex;flex-shrink:0;min-block-size:var(--plx-comp-nav-bar-height);}
+.plx-nav-bar__item{--plx-comp-icon-size:var(--plx-comp-nav-bar-icon-size);align-items:center;background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:var(--plx-sys-content-muted);cursor:pointer;display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;font-family:var(--plx-sys-font-label);justify-content:center;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-nav-bar-item-target);min-inline-size:var(--plx-comp-nav-bar-item-min-width);padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-xs);padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-nav-bar-label-gap);}
+.plx-nav-bar__item:hover,
+.plx-nav-bar__item.is-hover{color:var(--plx-sys-content-default);}
+.plx-nav-bar__item.is-current{color:var(--plx-sys-selected-content);}
+.plx-nav-bar__item:focus-visible,
+.plx-nav-bar__item.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:calc(var(--plx-sys-border-width-medium) * -1);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+.plx-nav-bar__item:disabled{color:var(--plx-sys-content-disabled);cursor:default;}
+.plx-nav-bar__label{font-size:var(--plx-ref-font-size-12);line-height:var(--plx-sys-label-height-16px);}

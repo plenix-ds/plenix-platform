@@ -54,10 +54,40 @@
       "$extensions": {
         "com.plenix": {
           "before": [
-            "  /* a phone: below this width a page puts its main content first */"
+            "  /* the window classes (Platforms Standard 3.3): Narrow below 600px, Medium to 839px, Wide from 840px. Narrow: the",
+            "     navigation is a bottom bar and the pane a screen of its own; a page puts its main content first */"
+          ]
+        }
+      },
+      "$description": "Narrow window (Platforms Standard 3.3): below this width the navigation is a bottom bar and the pane a screen of its own"
+    },
+    "safe-area-top": {
+      "$value": "env(safe-area-inset-top, 0px)",
+      "$type": "dimension",
+      "$description": "The top safe area (a notch, the status bar): the header stays below it (Platforms Standard 3.5)",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* the safe areas (Platforms Standard 3.5): what the device keeps for itself at each edge; every page sets",
+            "     viewport-fit=cover, so the shell keeps its content inside them. 0 where the device keeps nothing */"
           ]
         }
       }
+    },
+    "safe-area-bottom": {
+      "$value": "env(safe-area-inset-bottom, 0px)",
+      "$type": "dimension",
+      "$description": "The bottom safe area (the home indicator, gesture navigation): the bottom bar and the footer stay above it"
+    },
+    "safe-area-start": {
+      "$value": "env(safe-area-inset-left, 0px)",
+      "$type": "dimension",
+      "$description": "The left safe area (landscape with a notch)"
+    },
+    "safe-area-end": {
+      "$value": "env(safe-area-inset-right, 0px)",
+      "$type": "dimension",
+      "$description": "The right safe area (landscape with a notch)"
     },
     "font-body": {
       "$value": "{plx-sys.typeface-sans}",

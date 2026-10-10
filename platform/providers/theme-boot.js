@@ -22,8 +22,8 @@
      The scroll position is kept on the item at the top of each scrolled region, and transitions are off for that frame.
      The change is announced to assistive technology, and a "plenix:densitychange" event lets virtualized lists re-measure.
      On a phone (mobile) compact is not offered and resolves to standard.
-     Interaction (interaction.css): "pointer" (mouse, trackpad), "touch" (a coarse pointer) or "mobile" (a coarse pointer on a viewport under 768px); it follows the device live (a laptop folded into a tablet).
-     Every .plx-shell-main gets data-plx-main-size = mobile (< 600px) | tablet (< 1024px) | desktop (< 1440px) | wide (< 1920px) | ultraWide, from its own width, for behavior that needs it in script (an inspector docked or as an overlay).
+     Interaction (interaction.css): "pointer" (mouse, trackpad), "touch" (a coarse pointer) or "mobile" (a coarse pointer in a Narrow window, under 600px; Platforms Standard 1.1 and 3.3); it follows the device live (a laptop folded into a tablet).
+     Every .plx-shell-main gets data-plx-main-size = narrow (< 600px) | medium (< 840px) | wide, the window classes of the Platforms Standard (3.3), from its own width, for behavior that needs it in script (an inspector docked or as an overlay).
    Notes:
      Layout itself uses container queries in grid.css, not data-plx-main-size.
      It is a plain script (not React) so it runs before the page draws.
@@ -60,8 +60,11 @@
   var renamed = function (d) { return d === 'default' ? 'standard' : d; };
   var valid = function (d) { return DENSITIES.indexOf(d) >= 0; };
 
-  // touch: a coarse pointer; mobile: a coarse pointer on a phone-sized viewport (under 768px); otherwise pointer
-  var coarse = window.matchMedia ? window.matchMedia('(pointer: coarse)') : null, phone = window.matchMedia ? window.matchMedia('(max-width: 767px)') : null;
+  // touch: any coarse pointer (a device with any coarse pointer gets touch targets: Platforms Standard 1.1); mobile: a coarse
+  // pointer in a Narrow window (under --plx-sys-shell-phone-below, 600px: 3.3); otherwise pointer. The widths are the window
+  // class tokens' values: this runs before the stylesheets load
+  var NARROW = 600, MEDIUM = 840;
+  var coarse = window.matchMedia ? window.matchMedia('(any-pointer: coarse)') : null, phone = window.matchMedia ? window.matchMedia('(width < ' + NARROW + 'px)') : null;
   function interaction() { return coarse && coarse.matches ? (phone && phone.matches ? 'mobile' : 'touch') : 'pointer'; }
   var onMobile = function () { return root.getAttribute('data-plx-interaction') === 'mobile'; };
   var fit = function (d) { return d === 'compact' && onMobile() ? 'standard' : d; };
@@ -136,7 +139,7 @@
   var ready = function () { applyAll(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
 
-  function classify(w) { return w < 600 ? 'mobile' : w < 1024 ? 'tablet' : w < 1440 ? 'desktop' : w < 1920 ? 'wide' : 'ultraWide'; }
+  function classify(w) { return w < NARROW ? 'narrow' : w < MEDIUM ? 'medium' : 'wide'; }
   function watchMain() {
     if (!window.ResizeObserver) return;
     var ro = new ResizeObserver(function (entries) {

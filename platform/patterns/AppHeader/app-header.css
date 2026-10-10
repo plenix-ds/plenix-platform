@@ -36,8 +36,8 @@
 .plx-app-header__search-slot{display:flex;position:relative;}
 .plx-app-header__search{align-items:center;background-color:var(--plx-comp-app-header-surface);column-gap:var(--plx-sys-space-cluster-xs);display:flex;inline-size:var(--plx-ref-size-400px);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-sys-layer-raised);}
 .plx-app-header__search>.plx-search{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
-/* a phone: the pinned links leave the header (the switcher in the header name has them); search spans the bar */
-@media (max-width: 47.9375rem){
+/* below Wide (under 840px, --plx-sys-shell-rail-below): the pinned links leave the header (the switcher in the header name has them); search spans the bar */
+@media (width < 840px){
 .plx-app-header__nav,.plx-app-header__nav+.plx-app-header__divider,.plx-app-header__start>.plx-app-header__divider{display:none;}
 .plx-app-header__search-slot{position:static;}
 .plx-app-header__search{inline-size:auto;inset-inline-end:var(--plx-sys-space-inset-md);inset-inline-start:var(--plx-sys-space-inset-md);}
@@ -85,8 +85,8 @@
 .plx-app-header__action .plx-button{--plx-comp-button-height:var(--plx-comp-app-header-action-height);--plx-comp-button-icon:var(--plx-comp-app-header-action-icon-size);inline-size:var(--plx-comp-app-header-action-width);justify-content:flex-start;overflow-x:hidden;}
 /* the account row in a pane footer: the avatar (20px) and the name side by side in a small ghost button */
 .plx-app-header__account-row .plx-button__label{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:inline-flex;}
-/* a phone-sized viewport: the switcher keeps its narrow three-column panel (batch 243) */
-@media (max-width: 767px){
+/* below Wide (under 840px, --plx-sys-shell-rail-below): the switcher keeps its narrow three-column panel (batch 243) */
+@media (width < 840px){
   .plx-app-switcher__panel{inline-size:var(--plx-ref-size-320px);}
   .plx-app-switcher__grid{grid-template-columns:repeat(3,minmax(0,1fr));}
 }

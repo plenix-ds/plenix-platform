@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.9] - 2026-10-10
+
+### Changed
+- Window classes follow the Plenix Platforms Standard (3.3): Narrow under 600px, Medium 600–839px, Wide from 840px
+  (new --plx-ref-breakpoint-840px; --plx-sys-shell-rail-below is now 840px). data-plx-main-size reads narrow, medium
+  or wide. Interaction "mobile" means a coarse pointer in a Narrow window, and any coarse pointer counts as touch (1.1).
+- Navigation by window class (4.1, 6.4), never a drawer at Narrow. Wide keeps the pane, and Medium the rail with its
+  expanded rail over the main region. At Narrow, a page with two or more rail destinations gets a bottom navigation
+  bar: up to four destinations and Browse, always labeled, 44px targets. Browse opens the pane as a screen of its own.
+  A page without rail destinations gets a parent row ("<- title") that opens the pane as the first screen of the stack.
+  Choosing an item shows the main region again. New tokens: --plx-comp-nav-bar-*.
+- Safe areas (3.5): every app page sets viewport-fit=cover, and the shell keeps its content inside
+  --plx-sys-safe-area-top, -bottom, -start and -end (env(safe-area-inset-*)).
+- The header's links leave it below Wide (840px), not at 768px. (batch 311)
+
 ## [0.31.8] - 2026-10-10
 
 ### Added

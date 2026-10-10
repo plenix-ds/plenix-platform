@@ -30,3 +30,13 @@
 /* the layout modes (data-plx-layout, from the page's kind) are drawn by system/layout-modes.css, generated from the
    design system's layout standard (platform/standards/layout.json; batch 218) */
 
+/* the safe areas (Platforms Standard 3.5; every page sets viewport-fit=cover): the header below the top inset, the footer
+   or bottom bar above the bottom inset, both sides inside theirs. 0 on a device that keeps nothing (batch 311) */
+.plx-app-shell{box-sizing:border-box;padding-block-end:var(--plx-sys-safe-area-bottom);padding-block-start:var(--plx-sys-safe-area-top);padding-inline-end:var(--plx-sys-safe-area-end);padding-inline-start:var(--plx-sys-safe-area-start);}
+/* Narrow: the shell's slots for the parent row (above the body) and the bottom navigation bar (below the footer) */
+.plx-app-shell__parent-slot,.plx-app-shell__bar-slot{display:contents;}
+/* Narrow: the shell is clipped, never scrolled: a tooltip or menu reaching past the window's edge cannot shift the page
+   sideways when focus moves (hidden can still be scrolled by focus; clip cannot) */
+@media (width < 600px){
+  .plx-app-shell{overflow-x:clip;overflow-y:clip;}
+}
