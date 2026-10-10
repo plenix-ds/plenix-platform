@@ -451,7 +451,7 @@
       "$type": "color"
     },
     "button-danger-secondary-border": {
-      "$value": "{plx-sys.action-danger-background}",
+      "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
     },
     "button-danger-secondary-text": {
@@ -748,7 +748,7 @@
       "$type": "color"
     },
     "input-invalid-border-color": {
-      "$value": "{plx-sys.action-danger-background}",
+      "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
     },
     "input-disabled-background": {
@@ -1741,7 +1741,7 @@
       "$type": "color"
     },
     "badge-soft-danger-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
+      "$value": "{plx-sys.feedback-danger-soft-content}",
       "$type": "color"
     },
     "badge-soft-danger-border": {
@@ -1948,7 +1948,7 @@
       "$type": "color"
     },
     "notice-danger-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
+      "$value": "{plx-sys.feedback-danger-soft-content}",
       "$type": "color"
     },
     "notice-danger-border": {

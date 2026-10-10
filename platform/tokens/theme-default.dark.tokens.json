@@ -135,7 +135,7 @@
       "$type": "color"
     },
     "action-danger-background": {
-      "$value": "{plx-ref.color-red-500}",
+      "$value": "{plx-ref.color-red-700}",
       "$type": "color"
     },
     "action-danger-content": {
@@ -267,7 +267,7 @@
       "$type": "color"
     },
     "feedback-danger-solid-label": {
-      "$value": "{plx-ref.color-red-500}",
+      "$value": "{plx-ref.color-red-700}",
       "$type": "color"
     },
     "feedback-danger-solid-border": {
@@ -285,6 +285,11 @@
     "feedback-danger-content": {
       "$value": "{plx-ref.color-red-200}",
       "$type": "color"
+    },
+    "feedback-danger-soft-content": {
+      "$value": "{plx-ref.color-red-100}",
+      "$type": "color",
+      "$description": "Danger text on the soft danger fill (soft badges, danger notices): 4.5:1 against that fill in each theme (batch 322)"
     },
     "shadow-sm": {
       "$value": "0 0 2px {plx-ref.color-black}, 0 0 0 1px {plx-ref.color-gray-700}",
@@ -443,11 +448,11 @@
       "$type": "color"
     },
     "action-danger-background-hover": {
-      "$value": "{plx-ref.color-red-700}",
+      "$value": "{plx-ref.color-red-800}",
       "$type": "color"
     },
     "action-danger-background-pressed": {
-      "$value": "{plx-ref.color-red-700}",
+      "$value": "{plx-ref.color-red-800}",
       "$type": "color"
     },
     "accent-field-background": {
@@ -506,7 +511,7 @@
       "$type": "color"
     },
     "code-string": {
-      "$value": "{plx-ref.color-red-300}",
+      "$value": "{plx-ref.color-red-200}",
       "$type": "color"
     },
     "code-comment": {

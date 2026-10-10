@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.21] - 2026-10-10
+
+### Changed
+- The owner's approved reds, exactly: red-800 #990000, red-700 #b70000, red-500 #f60000, red-300 #e96060,
+  red-200 #f8aca2, red-100 #fde7e7.
+- Roles that carry text move off red-500 (#f60000 is 4.27:1 with white text, 3.61:1 on the soft fill). Danger buttons
+  and solid danger badges and counts use red-700 (6.97:1 with white text), with hover and pressed on red-800 (8.92:1).
+  Light-theme danger text, the table's danger icon and code strings use red-700 (6.97:1). red-500 stays for the data
+  color, status dots, progress fills and the toast edge.
+- Dark theme, checked separately. The danger borders (secondary danger button, invalid field) follow the danger text
+  color, red-200 (5.29:1); on red-700 they were 1.40:1. A new role, --plx-sys-feedback-danger-soft-content, holds danger
+  text on the soft danger fill: red-700 in light (5.89:1), red-100 in dark (6.01:1; red-200 was 3.86:1). Soft danger
+  badges and danger notices use it. Dark code strings use red-200 (5.29:1). Every text and border pairing passes in both
+  themes; the a11y test passes without new exceptions. (batch 322)
+
 ## [0.31.20] - 2026-10-10
 
 ### Changed

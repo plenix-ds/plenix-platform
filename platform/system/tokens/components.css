@@ -113,7 +113,7 @@
   --plx-comp-button-danger-hover-text: var(--plx-sys-action-danger-content);
   --plx-comp-button-danger-pressed-background: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-pressed-border: var(--plx-sys-action-danger-background-pressed);
-  --plx-comp-button-danger-secondary-border: var(--plx-sys-action-danger-background);
+  --plx-comp-button-danger-secondary-border: var(--plx-sys-feedback-danger-content);
   --plx-comp-button-danger-secondary-text: var(--plx-sys-feedback-danger-content);
   --plx-comp-button-danger-secondary-hover-background: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-secondary-hover-border: var(--plx-sys-action-danger-background);
@@ -183,7 +183,7 @@
   --plx-comp-input-placeholder-text: var(--plx-sys-field-placeholder);
   --plx-comp-input-hover-border-color: var(--plx-sys-border-strong);
   --plx-comp-input-focus-border-color: var(--plx-sys-focus-ring-color);
-  --plx-comp-input-invalid-border-color: var(--plx-sys-action-danger-background);
+  --plx-comp-input-invalid-border-color: var(--plx-sys-feedback-danger-content);
   --plx-comp-input-disabled-background: var(--plx-sys-fill-neutral);
   --plx-comp-input-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-input-readonly-background: var(--plx-sys-surface-sunken);
@@ -430,7 +430,7 @@
   --plx-comp-badge-soft-warning-text: var(--plx-sys-feedback-warning-content);
   --plx-comp-badge-soft-warning-border: var(--plx-sys-feedback-warning-soft-border);
   --plx-comp-badge-soft-danger-background: var(--plx-sys-feedback-danger-soft);
-  --plx-comp-badge-soft-danger-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-badge-soft-danger-text: var(--plx-sys-feedback-danger-soft-content);
   --plx-comp-badge-soft-danger-border: var(--plx-sys-feedback-danger-soft-border);
   --plx-comp-count-plain-text: var(--plx-sys-content-muted);
   --plx-comp-count-plain-font-size: var(--plx-ref-font-size-11);
@@ -481,7 +481,7 @@
   --plx-comp-notice-warning-text: var(--plx-sys-feedback-warning-content);
   --plx-comp-notice-warning-border: var(--plx-sys-feedback-warning-soft-border);
   --plx-comp-notice-danger-background: var(--plx-sys-feedback-danger-soft);
-  --plx-comp-notice-danger-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-notice-danger-text: var(--plx-sys-feedback-danger-soft-content);
   --plx-comp-notice-danger-border: var(--plx-sys-feedback-danger-soft-border);
   --plx-comp-skeleton-animation-duration: var(--plx-sys-motion-duration-loop-slow);
   --plx-comp-skeleton-animation-timing-function: var(--plx-sys-motion-ease-standard);
