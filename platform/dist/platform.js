@@ -1949,7 +1949,7 @@ var _Menu = require("../Menu/Menu.jsx");
 var _overflow = require("../../utils/overflow.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ColorSwatch
-   Summary: A color from the data shown as a small round chip (a category's color).
+   Summary: A color from the data shown as a small square chip (a category's color).
    Usage:
      <ColorSwatch color={category.color} />
      <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
@@ -1959,7 +1959,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        data-plx-category (batch 290)
      tone: instead of color, a surface of the system it previews: "accent" (the accent surface) | "surface" | "frost"
      size: "sm" (16px) | "md" (default; 20px)
-     shape: "round" (default) | "square" (the compact corner: a swatch inside a button)
+     shape: "square" (default: 2px corners, owner batch 291) | "round" (a circle)
      pressed: marks the chosen color (aria-pressed), with onClick
      label: the accessible name of the color, with onClick
      onClick(event): makes the swatch a button that picks the color
@@ -1985,14 +1985,14 @@ function ColorSwatch({
   category,
   tone,
   size = 'md',
-  shape = 'round',
+  shape = 'square',
   pressed,
   label,
   onClick,
   className,
   ...rest
 }) {
-  const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'square' && 'plx-color-swatch--square', tone && 'plx-color-swatch--' + tone, className);
+  const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
   return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
     type: "button",
     className: cls,

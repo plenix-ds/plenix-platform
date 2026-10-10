@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.26.1] - 2026-10-09
+
+### Changed
+- Color swatches are squares with 2px corners (--plx-sys-shape-2xs; owner: "use square with 2px radius for swatches"),
+  everywhere: pickers, category lists, previews. shape="round" keeps a circle; the old 4px borderless "square inside a
+  button" variant is gone (shape="square" is now the default).
+
 ## [0.26.0] - 2026-10-09
 
 ### Added

@@ -1,5 +1,5 @@
 /* Plenix · ColorSwatch
-   Summary: A color from the data shown as a small round chip (a category's color).
+   Summary: A color from the data shown as a small square chip (a category's color).
    Usage:
      <ColorSwatch color={category.color} />
      <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
@@ -9,7 +9,7 @@
        data-plx-category (batch 290)
      tone: instead of color, a surface of the system it previews: "accent" (the accent surface) | "surface" | "frost"
      size: "sm" (16px) | "md" (default; 20px)
-     shape: "round" (default) | "square" (the compact corner: a swatch inside a button)
+     shape: "square" (default: 2px corners, owner batch 291) | "round" (a circle)
      pressed: marks the chosen color (aria-pressed), with onClick
      label: the accessible name of the color, with onClick
      onClick(event): makes the swatch a button that picks the color
@@ -39,8 +39,8 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
-export function ColorSwatch({ color, category, tone, size = 'md', shape = 'round', pressed, label, onClick, className, ...rest }) {
-  const cls = cx('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'square' && 'plx-color-swatch--square', tone && 'plx-color-swatch--' + tone, className);
+export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, onClick, className, ...rest }) {
+  const cls = cx('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
   return onClick ? <button type="button" className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} aria-pressed={!!pressed} aria-label={label} onClick={onClick} {...rest} />
     : <span className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} aria-hidden="true" {...rest} />;
 }

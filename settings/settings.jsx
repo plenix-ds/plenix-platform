@@ -690,9 +690,9 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
         <SettingsSection title="Header and accent">
           <Row label="Header bar style">
             <RadioTiles legend="Header bar style" legendHidden size="sm" value={prefs.headerBar||"blue"} onChange={v=>set("headerBar",v)} options={[
-              {value:"blue",label:"Accent",preview:<ColorSwatch shape="square" tone="accent"/>},
-              {value:"white",label:"White",preview:<ColorSwatch shape="square" tone="surface"/>},
-              {value:"frost",label:"Frost",preview:<ColorSwatch shape="square" tone="frost"/>},
+              {value:"blue",label:"Accent",preview:<ColorSwatch tone="accent"/>},
+              {value:"white",label:"White",preview:<ColorSwatch tone="surface"/>},
+              {value:"frost",label:"Frost",preview:<ColorSwatch tone="frost"/>},
             ]}/>
           </Row>
           <Row label="Accent color">

@@ -3798,21 +3798,18 @@ function Settings({
         value: "blue",
         label: "Accent",
         preview: /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-          shape: "square",
           tone: "accent"
         })
       }, {
         value: "white",
         label: "White",
         preview: /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-          shape: "square",
           tone: "surface"
         })
       }, {
         value: "frost",
         label: "Frost",
         preview: /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-          shape: "square",
           tone: "frost"
         })
       }]
