@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.14] - 2026-10-10
+
+### Changed
+- Pages written by the Plenix Platforms Standard get their own header in place of the placeholder's "Not written
+  yet". This covers 15 Platform – iOS, 16 Platform – Android, and Platforms standard, Mobile web and Desktop under
+  14. The header shows the phone icon, the section and group, a "Platforms Standard" status and a one-line
+  description of the page. Their navigation rows are no longer muted. (batch 315)
+
 ## [0.31.13] - 2026-10-10
 
 ### Changed
