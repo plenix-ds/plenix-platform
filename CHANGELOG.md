@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-10-09
+
+### Changed
+- One table, one set of tokens (owner: "they should all be in" the Data table; "i need them to be using these tokens"):
+  the static Table is now the DataTable with its interaction off. It draws with the DataTable's classes (.plx-data-table)
+  and tokens (--plx-sys-data-table-*, --plx-comp-data-table-*), so every table in the Platform, the design system and the
+  applications shares one look from one source. table.css and the --plx-sys-table-* tokens no longer draw anything.
+  (batch 300)
+- Name/value lists of reference facts are tables again, now with a header row: the design system's details on every page
+  (Intent, the section pages' "Its own page / Answered on another page", Implementation, Design assets…), each component
+  lab's property details, and the Settings and Capture facts. This replaces 0.28.4's property lists. (batch 300)
+
 ## [0.28.4] - 2026-10-09
 
 ### Changed

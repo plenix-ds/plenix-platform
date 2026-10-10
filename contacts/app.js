@@ -816,14 +816,12 @@ var _shared = require("./shared.jsx");
 
 // a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
+// name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
 const facts = (label, rows) => {
   const list = rows.filter(Boolean);
   return /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
     label: label,
     headerMenu: false,
-    options: {
-      headerVisible: false
-    },
     data: list.map((r, i) => ({
       id: i,
       name: r[0],

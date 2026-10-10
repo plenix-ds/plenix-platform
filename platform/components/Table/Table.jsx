@@ -1,7 +1,7 @@
 /* Plenix · Table
-   Summary: A static table: information in rows and columns, read and nothing else. It looks like a DataTable (the same
-     header, lines, type and row heights, from its own tokens) and runs on the same Tabulator engine, with no sorting,
-     filters, menus, selection, resizing, moving, editing or row hover.
+   Summary: A static table: information in rows and columns, read and nothing else. It IS a DataTable (the same classes,
+     .plx-data-table, and the same tokens, --plx-sys-data-table-* and --plx-comp-data-table-*; owner, 2026-10-09) with the
+     interaction off: no sorting, filters, menus, selection, resizing, moving, editing or row hover.
    Usage:
      <Table label="Fields" data={fields} columns={[
        { title: 'Field', field: 'name', kind: 'name', rowLabel: true, width: '--plx-ref-size-240px' },
@@ -22,8 +22,8 @@
      Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
      in cells work as themselves. Row height and text size follow the density.
    Notes:
-     For records people work with (sort, filter, select, open, edit) use DataTable. Its look comes from --plx-sys-table-*
-     and --plx-comp-table-* tokens (table.css), separate from the DataTable's, with the same values by default.
+     For records people work with (sort, filter, select, open, edit) use DataTable. Every name/value list of reference facts
+     (the design system's details, Settings and Capture) is a Table with a header row.
 */
 import React from 'react';
 import { TableEngine } from '../DataTable/DataTable.jsx';

@@ -5496,8 +5496,10 @@ function rowCheckbox(cell) {
   return box;
 }
 function TableEngine(props) {
+  // one look from one set of tokens (owner, 2026-10-09): the static Table draws with the DataTable's classes and tokens
+  // (--plx-sys-data-table-*, --plx-comp-data-table-*); isStatic only switches the interaction off
   const isStatic = !!props.isStatic,
-    B = isStatic ? 'plx-table' : 'plx-data-table';
+    B = 'plx-data-table';
   const {
     label,
     data,
@@ -6148,9 +6150,9 @@ var _DataTable = require("../DataTable/DataTable.jsx");
 var _tabulator = require("../DataTable/tabulator.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Table
-   Summary: A static table: information in rows and columns, read and nothing else. It looks like a DataTable (the same
-     header, lines, type and row heights, from its own tokens) and runs on the same Tabulator engine, with no sorting,
-     filters, menus, selection, resizing, moving, editing or row hover.
+   Summary: A static table: information in rows and columns, read and nothing else. It IS a DataTable (the same classes,
+     .plx-data-table, and the same tokens, --plx-sys-data-table-* and --plx-comp-data-table-*; owner, 2026-10-09) with the
+     interaction off: no sorting, filters, menus, selection, resizing, moving, editing or row hover.
    Usage:
      <Table label="Fields" data={fields} columns={[
        { title: 'Field', field: 'name', kind: 'name', rowLabel: true, width: '--plx-ref-size-240px' },
@@ -6171,8 +6173,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
      in cells work as themselves. Row height and text size follow the density.
    Notes:
-     For records people work with (sort, filter, select, open, edit) use DataTable. Its look comes from --plx-sys-table-*
-     and --plx-comp-table-* tokens (table.css), separate from the DataTable's, with the same values by default.
+     For records people work with (sort, filter, select, open, edit) use DataTable. Every name/value list of reference facts
+     (the design system's details, Settings and Capture) is a Table with a header row.
 */
 function Table(props) {
   return /*#__PURE__*/_react.default.createElement(_DataTable.TableEngine, _extends({}, props, {
@@ -8355,8 +8357,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
-     Name/value pairs are always a PropertyList, never a two-column table (owner, batch 296, replacing batch 229's rule);
-     a table is for records compared across columns.
+     A list of name/value facts shown as reference (a component's details, a capability's facts) is the defined data table
+       with a header row (Table / DataTable), not a PropertyList (owner, 2026-10-09, replacing batch 296's rule); a
+       PropertyList is for an item's own details in a panel (an inspector, a form's summary).
      Other props (aria-label) reach the <dl>.
 */
 function PropertyList({

@@ -816,16 +816,37 @@ var _shared = require("./shared.jsx");
 
 // a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
-// name/value facts as a PropertyList (owner, batch 296: no name/value tables)
+// name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
 const facts = (label, rows) => {
   const list = rows.filter(Boolean);
-  return /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    "aria-label": label
-  }, list.map((r, i) => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: i,
-    label: r[0],
-    data: !!r[2]
-  }, r[1])));
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
+    label: label,
+    headerMenu: false,
+    data: list.map((r, i) => ({
+      id: i,
+      name: r[0],
+      value: typeof r[1] === "string" || typeof r[1] === "number" ? String(r[1]) : ""
+    })),
+    columns: [{
+      title: "Name",
+      field: "name",
+      kind: "wrap",
+      rowLabel: true,
+      width: "--plx-ref-size-240px",
+      headerSort: false
+    }, {
+      title: "Value",
+      field: "value",
+      kind: "wrap",
+      headerSort: false,
+      render: d => {
+        const r = list[d.id];
+        return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+          variant: "data"
+        }, r[1]) : r[1] : null;
+      }
+    }]
+  });
 };
 const {
   useState
@@ -2290,16 +2311,37 @@ const {
 } = React;
 // a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
-// name/value facts as a PropertyList (owner, batch 296: no name/value tables)
+// name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
 const facts = (label, rows) => {
   const list = rows.filter(Boolean);
-  return /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, {
-    "aria-label": label
-  }, list.map((r, i) => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: i,
-    label: r[0],
-    data: !!r[2]
-  }, r[1])));
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
+    label: label,
+    headerMenu: false,
+    data: list.map((r, i) => ({
+      id: i,
+      name: r[0],
+      value: typeof r[1] === "string" || typeof r[1] === "number" ? String(r[1]) : ""
+    })),
+    columns: [{
+      title: "Name",
+      field: "name",
+      kind: "wrap",
+      rowLabel: true,
+      width: "--plx-ref-size-240px",
+      headerSort: false
+    }, {
+      title: "Value",
+      field: "value",
+      kind: "wrap",
+      headerSort: false,
+      render: d => {
+        const r = list[d.id];
+        return r ? r[2] ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+          variant: "data"
+        }, r[1]) : r[1] : null;
+      }
+    }]
+  });
 };
 
 /* A feature's status as a Badge: [tone, label] */

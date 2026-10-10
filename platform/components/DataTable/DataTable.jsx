@@ -140,7 +140,9 @@ function rowCheckbox(cell) {
 }
 
 export function TableEngine(props) {
-  const isStatic = !!props.isStatic, B = isStatic ? 'plx-table' : 'plx-data-table';
+  // one look from one set of tokens (owner, 2026-10-09): the static Table draws with the DataTable's classes and tokens
+  // (--plx-sys-data-table-*, --plx-comp-data-table-*); isStatic only switches the interaction off
+  const isStatic = !!props.isStatic, B = 'plx-data-table';
   const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className } = props;
   const syncing = React.useRef(false);   // the selection is being set from the selected prop
   const frameRef = React.useRef(null);
