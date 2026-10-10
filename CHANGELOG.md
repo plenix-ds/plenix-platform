@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.27.2] - 2026-10-09
+
+### Changed
+- PropertyList data values (sizes, dates, counts beside a label) are DM Sans at the label's size with equal-width digits
+  (owner's choice, batch 294): measured, DM Mono matched DM Sans in x-height (0.50 em), cap height (0.70) and stroke
+  (8.4%) but read 30% wider, so it looked bigger than its label.
+
+### Note
+- 0.26.2 (batch 292, the property list wrap) was released after 0.27.0 and 0.27.1 from another session by mistake;
+  its content is included in every later release.
+
 ## [0.26.2] - 2026-10-09
 
 ### Fixed

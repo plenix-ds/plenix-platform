@@ -8349,7 +8349,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      PropertyList.Item.label: the label
      PropertyList.Item.htmlFor: the id of a control in the item, so the label names it
      PropertyList.Item.description: a line under the label
-     PropertyList.Item.data: the value is a technical value (the data font); default false
+     PropertyList.Item.data: the value is a technical value: DM Sans at the label's size with equal-width digits (batch 294;
+       DM Mono read 30% wider than its label); default false
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
