@@ -29,6 +29,9 @@ const TOKENS = buildTokens(ROOT);
 console.log('Built ' + TOKENS.files.length + ' token stylesheets from platform/tokens (' + TOKENS.count + ' tokens' + (TOKENS.stale.length ? ', ' + TOKENS.stale.length + ' changed' : '') + ')');
 // then the icon stylesheet (platform/icons/ -> components/Icon/icon.css): the bundles below do not read it, the pages do
 const ICONS = buildIcons(ROOT);
+// then the brand (platform/brand/ -> components/Brand/brand.css and brand/favicon.svg; batch 278)
+const BRAND = require('./build-brand.js')(ROOT);
+console.log('Built platform/components/Brand/brand.css and platform/brand/favicon.svg' + (BRAND.changed ? '' : ' (unchanged)'));
 // then the design system's standards (platform/standards/*.json) -> the code the apps run (build-standards.js)
 const STANDARDS = require('./build-standards.js')(ROOT);
 console.log('Built ' + STANDARDS.files.join(', ') + ' from platform/standards (' + STANDARDS.pages + ' kinds of page' + (STANDARDS.stale.length ? ', ' + STANDARDS.stale.length + ' changed' : '') + ')');

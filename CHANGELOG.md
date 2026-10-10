@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.6] - 2026-10-09
+
+### Added
+- The Plenix brand (owner's brand kit, unedited) in platform/brand/, with brand.json naming what each file is for
+  (mark, mark on a blue background, favicon, logos, spec). build-brand.js (run by build-app.js) generates the mark's
+  stylesheet (components/Brand/brand.css: a mask in the current text color) and brand/favicon.svg; nothing else names a
+  brand file, so updating the brand is replacing the files and building (owner: "easy to update.. nothing hard coded").
+  (batch 278)
+- BrandMark: the mark, colored by the tokens; spec record "Brand mark" (Iconography > Product icons). (batch 278)
+- The browser icon on every page (the apps, the asset manager pages, the design system). (batch 278)
+
+### Changed
+- The application switcher shows the mark before "Plenix" and the application's name; the header name is 200px
+  (--plx-ref-size-200px; was 160px) so the names keep their room. (batch 278)
+- The sign-in page's header shows the mark (brand.json markOnAccent) before the brand name, both read from
+  platform/brand by services/auth/brand-css.js. (batch 278)
+
 ## [0.22.5] - 2026-10-09
 
 ### Changed

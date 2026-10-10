@@ -1,0 +1,14 @@
+{
+  "_about": "The Plenix brand (batch 278): the owner's brand kit, unedited, and what each file is for. To update the brand, replace a file (or point an entry at a new file) and run node build-app.js: build-brand.js regenerates the mark's stylesheet (components/Brand/brand.css) and favicon.svg, and services/auth/brand-css.js the sign-in page.",
+  "name": "Plenix",
+  "tagline": "Where All Data Connects",
+  "files": {
+    "mark": "plenix-icon.svg",
+    "markOnAccent": "plenix-icon-white.svg",
+    "favicon": "plenix-icon.svg",
+    "logo": "plenix-logo-horizontal.svg",
+    "logoBlack": "plenix-logo-black.svg",
+    "logoStacked": "plenix-logo-stacked.svg",
+    "spec": "plenix-brand-spec.md"
+  }
+}

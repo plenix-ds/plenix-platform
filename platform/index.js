@@ -18,6 +18,7 @@ export { Stack, Inline } from './components/Stack/Stack.jsx';
 export { Text } from './components/Text/Text.jsx';
 export { Thumbnail } from './components/Thumbnail/Thumbnail.jsx';
 export { Notice } from './components/Notice/Notice.jsx';
+export { BrandMark } from './components/Brand/Brand.jsx';
 export { ColorSwatch } from './components/ColorSwatch/ColorSwatch.jsx';
 export { DropZone } from './components/DropZone/DropZone.jsx';
 export { Preview } from './components/Preview/Preview.jsx';

@@ -12,7 +12,7 @@
    Props:
      tone: "accent" (default) | "frost" | "plain"; sets the bar's colors and those of everything inside it
      appName: the application's name in the header name (default: the current application's name)
-     brand: replaces the header name's content (default: "Plenix" over the application's name)
+     brand: replaces the header name's content (default: the Plenix mark, then "Plenix" over the application's name)
      brandHref: makes the header name a link when there is no switcher
      currentApp: the open application's id (see PLENIX_APPS), or null on a screen that is not an application (Settings);
        when it is given (also null) the header name is the switcher and the pinned header links show
@@ -80,6 +80,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
+import { BrandMark } from '../../components/Brand/Brand.jsx';
 import { Count } from '../../components/Count/Count.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
@@ -127,7 +128,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   const inApps = currentApp !== undefined;   // the application said where it is (null: a screen that is not an application)
   const app = currentApp ? appById(currentApp) : null;
   const name = appName || (app ? app.label : null);
-  const brandEl = brand || (name ? <span className="plx-app-header__name"><span className="plx-app-header__product">Plenix</span><span className="plx-app-header__app">{name}</span></span> : 'Plenix');
+  const brandEl = brand || (name ? <><BrandMark /><span className="plx-app-header__name"><span className="plx-app-header__product">Plenix</span><span className="plx-app-header__app">{name}</span></span></> : <><BrandMark />Plenix</>);
   const open = (a) => (e) => { if (onOpenApp && onOpenApp(a) === true) e.preventDefault(); };
   const pinned = nav || (inApps ? PLENIX_APPS.filter((a) => pinnedApps.indexOf(a.id) >= 0).map((a) => (
     <AppHeader.Item key={a.id} icon={<Icon name={a.icon} />} label={a.label} current={a.id === currentApp} href={appHref(a, appsRoot)} onClick={open(a)} />
