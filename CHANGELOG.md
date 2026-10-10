@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.13] - 2026-10-10
+
+### Changed
+- The design system's navigation has a level 0: a Platform dropdown (Web, iOS, Android) at the very top of the
+  navigation pane switches the pane to that platform's sections. Web is 01–14, iOS is 15 Platform – iOS and Android is
+  16 Platform – Android. The pane follows the page you open, the choice is remembered, and the footer counts the
+  sections on the chosen platform.
+- iOS and Android left 14 › Platforms, which keeps Platforms standard, Web, Mobile web and Desktop. Each native section
+  has Build (How to build, Token mapping, Generated files) and Standard for iOS or Android, with Overview and one page
+  per section of the Platforms Standard for that platform. The standard's pages, guidance and checks follow
+  (888 leaves). (batch 314)
+
 ## [0.31.12] - 2026-10-10
 
 ### Added
