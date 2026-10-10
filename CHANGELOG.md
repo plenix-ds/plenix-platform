@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.15] - 2026-10-10
+
+### Added
+- Every Variant, Overlays: Dialog, Confirmation dialog, Side drawer and Toast get the Button treatment. Their values are
+  component tokens (dialog.css: 44 plus the two footer action heights; toast.css: 30). Each has an "All" lab that draws
+  every size, intent, side and tone in place, with each value's token. Each variant has its own page: 16 pages (dialog
+  SM to FULL, Confirm and Destructive, drawer SM, MD and LG at the end or the start, toast Info, Success, Warning and
+  Danger).
+
+### Changed
+- The dialog footer's gap between actions uses --plx-comp-dialog-action-gap, which is 12px on touch (Platforms Standard
+  3.2). (batch 316)
+
 ## [0.31.14] - 2026-10-10
 
 ### Changed

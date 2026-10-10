@@ -2300,6 +2300,312 @@
       "$value": "{plx-sys.data-color-blue-soft}",
       "$type": "color",
       "$description": "The entity header background tint (the user setting; default blue). Settings set data-plx-header-tint on the page root."
+    },
+    "modal-layer-padding-block": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "modal-layer-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "modal-layer-z-index": {
+      "$value": "{plx-sys.layer-modal}",
+      "$type": "number"
+    },
+    "modal-layer-before-background": {
+      "$value": "{plx-sys.scrim}",
+      "$type": "color"
+    },
+    "modal-layer-before-opacity": {
+      "$value": "{plx-sys.opacity-mid}",
+      "$type": "number"
+    },
+    "modal-layer-before-z-index": {
+      "$value": "{plx-sys.layer-behind}",
+      "$type": "number"
+    },
+    "dialog-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color"
+    },
+    "dialog-action-height": {
+      "$value": "{plx-sys.control-height-dialog}",
+      "$type": "dimension",
+      "$description": "The height of the buttons in a dialog footer"
+    },
+    "dialog-destructive-action-height": {
+      "$value": "{plx-sys.control-height-dialog-destructive}",
+      "$type": "dimension",
+      "$description": "The height of the buttons in a destructive confirmation dialog footer"
+    },
+    "dialog-radius": {
+      "$value": "{plx-sys.radius-dialog-8px}",
+      "$type": "dimension"
+    },
+    "dialog-shadow": {
+      "$value": "{plx-sys.elevation-overlay-shadow}",
+      "$type": "shadow"
+    },
+    "dialog-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "dialog-sm-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    },
+    "dialog-md-max-width": {
+      "$value": "{plx-ref.size-560px}",
+      "$type": "dimension"
+    },
+    "dialog-lg-max-width": {
+      "$value": "{plx-ref.size-720px}",
+      "$type": "dimension"
+    },
+    "dialog-xl-max-width": {
+      "$value": "{plx-ref.size-900px}",
+      "$type": "dimension"
+    },
+    "drawer-animation-duration": {
+      "$value": "{plx-sys.motion-duration-base}",
+      "$type": "duration"
+    },
+    "drawer-animation-timing-function": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "dimension"
+    },
+    "drawer-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension"
+    },
+    "drawer-sm-max-width": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension"
+    },
+    "drawer-md-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    },
+    "drawer-lg-max-width": {
+      "$value": "{plx-ref.size-560px}",
+      "$type": "dimension"
+    },
+    "dialog-header-background": {
+      "$value": "{plx-sys.surface-dialog-chrome}",
+      "$type": "color"
+    },
+    "dialog-header-border-bottom-color": {
+      "$value": "{plx-sys.border-dialog-chrome}",
+      "$type": "color"
+    },
+    "dialog-header-border-bottom-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "dialog-header-text": {
+      "$value": "{plx-sys.content-dialog-chrome}",
+      "$type": "color"
+    },
+    "dialog-header-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "dialog-header-min-height": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension"
+    },
+    "dialog-header-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "dialog-header-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "dialog-header-padding-inline-start": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "dialog-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily"
+    },
+    "dialog-title-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension"
+    },
+    "dialog-title-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight"
+    },
+    "dialog-close-text": {
+      "$value": "{plx-sys.content-dialog-chrome}",
+      "$type": "color"
+    },
+    "dialog-body-padding-block": {
+      "$value": "{plx-sys.space-inset-xl}",
+      "$type": "dimension"
+    },
+    "dialog-body-padding-inline": {
+      "$value": "{plx-sys.space-inset-xl}",
+      "$type": "dimension"
+    },
+    "dialog-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "dialog-description-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
+    },
+    "dialog-description-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number"
+    },
+    "dialog-description-margin-block-end": {
+      "$value": "{plx-sys.space-stack-lg}",
+      "$type": "dimension"
+    },
+    "dialog-footer-background": {
+      "$value": "{plx-sys.surface-dialog-chrome}",
+      "$type": "color"
+    },
+    "dialog-footer-border-top-color": {
+      "$value": "{plx-sys.border-dialog-chrome}",
+      "$type": "color"
+    },
+    "dialog-footer-border-top-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "dialog-footer-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "dialog-footer-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "toast-region-inset-block-end": {
+      "$value": "{plx-sys.space-layout-md}",
+      "$type": "dimension"
+    },
+    "toast-region-inset-inline-end": {
+      "$value": "{plx-sys.space-layout-md}",
+      "$type": "dimension"
+    },
+    "toast-region-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension"
+    },
+    "toast-region-z-index": {
+      "$value": "{plx-sys.layer-toast}",
+      "$type": "number"
+    },
+    "toast-animation-duration": {
+      "$value": "{plx-sys.motion-duration-slow}",
+      "$type": "duration"
+    },
+    "toast-animation-timing-function": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "dimension"
+    },
+    "toast-background": {
+      "$value": "{plx-sys.toast-background}",
+      "$type": "color"
+    },
+    "toast-radius": {
+      "$value": "{plx-sys.radius-surface-4px}",
+      "$type": "dimension"
+    },
+    "toast-border-inline-start-color": {
+      "$value": "{plx-sys.feedback-info-solid}",
+      "$type": "color"
+    },
+    "toast-border-inline-start-width": {
+      "$value": "{plx-sys.border-width-thick}",
+      "$type": "dimension"
+    },
+    "toast-shadow": {
+      "$value": "{plx-sys.elevation-raised-shadow}",
+      "$type": "shadow"
+    },
+    "toast-text": {
+      "$value": "{plx-sys.toast-content}",
+      "$type": "color"
+    },
+    "toast-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension"
+    },
+    "toast-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension"
+    },
+    "toast-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    },
+    "toast-min-width": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension"
+    },
+    "toast-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "toast-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "toast-padding-inline-start": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "toast-success-border-inline-start-color": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color"
+    },
+    "toast-warning-border-inline-start-color": {
+      "$value": "{plx-sys.feedback-warning-solid}",
+      "$type": "color"
+    },
+    "toast-danger-border-inline-start-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color"
+    },
+    "toast-message-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number"
+    },
+    "toast-close-height": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension"
+    },
+    "toast-close-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "toast-close-width": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension"
+    },
+    "toast-close-opacity": {
+      "$value": "{plx-sys.opacity-high}",
+      "$type": "number"
+    },
+    "toast-close-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "toast-close-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "toast-close-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
     }
   }
 }
