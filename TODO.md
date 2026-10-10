@@ -24,7 +24,7 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
   width/height, header vertical align, row height normalising, holder sizing, frozen-rows holder width) and the tree's
   row layout replaced by one without indent. To do: move this into DataTable and Table, a test that fails if a
   Tabulator update writes a style again, then the real tables (25 data-table views, the reference test).
-- [ ] 6c. The design system lab builds its grid as table markup and hands it to DS.table() (component-lab.js: the
+- [x] 6c. (batch 286, 0.25.1) The design system lab builds its grid as table markup and hands it to DS.table() (component-lab.js: the
   matrix and the properties table; Codex M-03): hand the rows to the Platform Table directly, with no markup
 - [x] 7. (batch 283, 0.24.0) check-system rejects every style attribute, custom properties included; and a runtime test (Codex,
   owner yes 2026-10-09) that fails any page rendering an element with a style attribute

@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.25.1] - 2026-10-09
+
+### Changed
+- The design system's tables are handed to the Platform Table as rows (Strict DS 6c): DS.grid(heads, rows, opts) draws
+  them (no <table> markup is built anywhere: the component labs' matrix, property and attributes tables, the token
+  family tables, the opacity, radius and layout tables). DS.table remains only for a table that arrives as markup.
+  Cells a builder fills in later stay live (opts.live): the radius roles' and layout offsets' "Used by" counts now show
+  (they were lost when the old markup was converted).
+
 ## [0.25.0] - 2026-10-09
 
 ### Changed (breaking)
