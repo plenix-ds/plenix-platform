@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.19] - 2026-10-10
+
+### Changed
+- Green is the owner's approved five-step scale: green-700 #1b5e0c, green-500 #107c10, green-300 #58ad58 (was #83c483),
+  green-200 #9bd39b (was #bde8bd), green-100 #dff6dd. green-900, green-800 and green-600 are removed. green-900 and
+  green-600 had no references. Every role on green-800 now uses green-700: light success text, light code numbers, and
+  the green data color's text on its soft fill (light and dark). That text has 7.9:1 contrast on white and 6.9:1 on
+  green-100.
+- Gray merges by the owner: gray-925 into gray-900 (#34363b), which is the dark table header background; gray-850 into
+  gray-800 (#444444), which is the dark soft-feedback borders and table borders. gray-925 and gray-850 are removed. No
+  references to the removed tokens remain, and no token is left unresolved. (batch 320)
+
 ## [0.31.18] - 2026-10-10
 
 ### Changed

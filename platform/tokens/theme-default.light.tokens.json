@@ -221,7 +221,7 @@
       "$type": "color"
     },
     "feedback-success-content": {
-      "$value": "{plx-ref.color-green-800}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color"
     },
     "feedback-warning-solid": {
@@ -515,7 +515,7 @@
       "$type": "color"
     },
     "code-number": {
-      "$value": "{plx-ref.color-green-800}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color"
     },
     "code-function": {
@@ -736,7 +736,7 @@
       "$description": "A data color (batch 280): green, a soft fill (an avatar)."
     },
     "data-color-green-on-soft": {
-      "$value": "{plx-ref.color-green-800}",
+      "$value": "{plx-ref.color-green-700}",
       "$type": "color",
       "$description": "A data color (batch 280): green, text on its soft fill."
     },
