@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.22] - 2026-10-10
+
+### Changed
+- Blue is consolidated as the owner asked: blue-850 is merged into blue-900 (#1f2a3a) and blue-350 into blue-300
+  (#a2c0e3); both are removed. The final scale is 900, 700, 650, 600, 400, 300, 250, 200, 100, 50. The dark table's
+  selected-row hover is now the selected-row color (blue-900), and the selected-row text and table accent use blue-300.
+  Contrast stays well above the minimums: text on the selected row 7.71:1, accent on the table 8.78:1, avatar 11.19:1,
+  code keyword 5.19:1.
+- The design system shows every component sample on a checkered background: variant previews, example and card stages,
+  and the labs' anatomy stage and matrix cells. It uses 8px squares of the hover state on the default surface, in light
+  and dark. The toast, confirmation dialog, side drawer and header labs get wider matrix columns, so their samples fit.
+  (batch 323)
+
 ## [0.31.21] - 2026-10-10
 
 ### Changed

@@ -83,10 +83,6 @@
       "$value": "#1f2a3a",
       "$type": "color"
     },
-    "color-blue-850": {
-      "$value": "#26354a",
-      "$type": "color"
-    },
     "color-blue-700": {
       "$value": "#005a9e",
       "$type": "color"
@@ -101,10 +97,6 @@
     },
     "color-blue-400": {
       "$value": "#2a6fdb",
-      "$type": "color"
-    },
-    "color-blue-350": {
-      "$value": "#8fb0d9",
       "$type": "color"
     },
     "color-blue-300": {

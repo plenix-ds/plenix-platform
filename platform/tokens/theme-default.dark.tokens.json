@@ -695,15 +695,15 @@
       "$type": "color"
     },
     "data-table-row-selected-hover": {
-      "$value": "{plx-ref.color-blue-850}",
+      "$value": "{plx-ref.color-blue-900}",
       "$type": "color"
     },
     "data-table-row-selected-text": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "data-table-accent": {
-      "$value": "{plx-ref.color-blue-350}",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color"
     },
     "data-table-danger": {
