@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.4] - 2026-10-10
+
+### Changed
+- The design system's Platforms pages follow the Plenix Platforms Standard (owner: "an authoritative document that
+  spells the details"): every value reads as a rule with its source, without decision labels. New Type roles table on
+  Mobile web, iOS and Android: each Plenix text role with its iOS text style at Apple's Dynamic Type size (title →
+  Large Title 34, body → Body 17, secondary → Footnote 13…) and its Material 3 type role (body → Body large 16sp…).
+  (batch 306)
+
 ## [0.31.3] - 2026-10-10
 
 ### Fixed
