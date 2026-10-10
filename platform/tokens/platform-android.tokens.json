@@ -1,0 +1,980 @@
+{
+  "$description": "Plenix · Android size and behavior tokens (Plenix Platforms Standard 7.1): sizes in dp, type in sp. Plenix-owned values come from the theme files. Each value names its source (2.1) and level (2.2); Material Web tokens and Compose Material 3 defaults are recorded separately.",
+  "plx-platform-android": {
+    "target-min": {
+      "$value": "48dp",
+      "$type": "dimension",
+      "$description": "The smallest touch target (3.1).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "rule",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material 3",
+            "name": "Target sizes (touch)",
+            "published": "48×48 dp",
+            "url": "https://m3.material.io/foundations/designing/structure",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "target-min-pointer": {
+      "$value": "44dp",
+      "$type": "dimension",
+      "$description": "The smallest pointer target (3.1).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "rule",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material 3",
+            "name": "Target sizes (pointer)",
+            "published": "44×44 dp",
+            "url": "https://m3.material.io/foundations/designing/structure",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "target-spacing": {
+      "$value": "8dp",
+      "$type": "dimension",
+      "$description": "The least space between targets (3.2).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "rule",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material 3",
+            "name": "Target spacing",
+            "published": "8 dp",
+            "url": "https://m3.material.io/foundations/designing/structure",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "window-medium": {
+      "$value": "600dp",
+      "$type": "dimension",
+      "$description": "Narrow below, Medium from here (3.3).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material 3",
+            "name": "Breakpoints: Medium",
+            "published": "600 dp",
+            "url": "https://m3.material.io/foundations/layout/breakpoints/overview",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "window-wide": {
+      "$value": "840dp",
+      "$type": "dimension",
+      "$description": "Wide from here (3.3).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material 3",
+            "name": "Breakpoints: Expanded",
+            "published": "840 dp",
+            "url": "https://m3.material.io/foundations/layout/breakpoints/overview",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "button": {
+      "xs": {
+        "height": {
+          "$value": "32dp",
+          "$type": "dimension",
+          "$description": "Button xs (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.xsmall.container.height",
+                "published": "32 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-xsmall.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "padding-inline": {
+          "$value": "12dp",
+          "$type": "dimension",
+          "$description": "Its horizontal padding (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.xsmall.leading-space",
+                "published": "12 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-xsmall.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        }
+      },
+      "small": {
+        "height": {
+          "$value": "40dp",
+          "$type": "dimension",
+          "$description": "Button small (the default) (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.small.container.height",
+                "published": "40 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-small.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "padding-inline": {
+          "$value": "16dp",
+          "$type": "dimension",
+          "$description": "Its horizontal padding (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.small.leading-space",
+                "published": "16 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-small.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        }
+      },
+      "medium": {
+        "height": {
+          "$value": "56dp",
+          "$type": "dimension",
+          "$description": "Button medium (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.medium.container.height",
+                "published": "56 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-medium.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "padding-inline": {
+          "$value": "24dp",
+          "$type": "dimension",
+          "$description": "Its horizontal padding (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.medium.leading-space",
+                "published": "24 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-medium.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        }
+      },
+      "large": {
+        "height": {
+          "$value": "96dp",
+          "$type": "dimension",
+          "$description": "Button large (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.large.container.height",
+                "published": "96 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-large.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "padding-inline": {
+          "$value": "48dp",
+          "$type": "dimension",
+          "$description": "Its horizontal padding (6.1).",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.comp.button.large.leading-space",
+                "published": "48 dp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-large.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        }
+      },
+      "icon": {
+        "$value": "20dp",
+        "$type": "dimension",
+        "$description": "The button icon (6.1).",
+        "$extensions": {
+          "plenix": {
+            "source": {
+              "type": "token",
+              "level": "recommended by the source",
+              "platform": "Android",
+              "framework": "Material Web",
+              "name": "md.comp.button.small.icon.size",
+              "published": "20 dp",
+              "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-small.scss",
+              "verified": "2026-10-10"
+            }
+          }
+        }
+      },
+      "icon-gap": {
+        "$value": "8dp",
+        "$type": "dimension",
+        "$description": "Between icon and label (6.1).",
+        "$extensions": {
+          "plenix": {
+            "source": {
+              "type": "token",
+              "level": "recommended by the source",
+              "platform": "Android",
+              "framework": "Material Web",
+              "name": "md.comp.button.small.icon-label-space",
+              "published": "8 dp",
+              "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-button-small.scss",
+              "verified": "2026-10-10"
+            }
+          }
+        }
+      }
+    },
+    "text-field-height": {
+      "$value": "56dp",
+      "$type": "dimension",
+      "$description": "The text field height (6.2).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.outlined-text-field.container.height",
+            "published": "56 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-outlined-text-field.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "text-field-icon": {
+      "$value": "24dp",
+      "$type": "dimension",
+      "$description": "Leading and trailing icons (6.2).",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.outlined-text-field.leading-icon.size",
+            "published": "24 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-outlined-text-field.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "switch-track-width": {
+      "$value": "52dp",
+      "$type": "dimension",
+      "$description": "(6.3)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.switch.track.width",
+            "published": "52 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-switch.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "switch-track-height": {
+      "$value": "32dp",
+      "$type": "dimension",
+      "$description": "(6.3)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.switch.track.height",
+            "published": "32 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-switch.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "switch-handle-off": {
+      "$value": "16dp",
+      "$type": "dimension",
+      "$description": "(6.3)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.switch.unselected.handle.width",
+            "published": "16 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-switch.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "switch-handle-on": {
+      "$value": "24dp",
+      "$type": "dimension",
+      "$description": "(6.3)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.switch.selected.handle.width",
+            "published": "24 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-switch.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "switch-handle-pressed": {
+      "$value": "28dp",
+      "$type": "dimension",
+      "$description": "(6.3)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.switch.pressed.handle.width",
+            "published": "28 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-switch.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "switch-state-layer": {
+      "$value": "40dp",
+      "$type": "dimension",
+      "$description": "(6.3)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.switch.state-layer.size",
+            "published": "40 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-switch.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "navigation-bar-height": {
+      "$value": "80dp",
+      "$type": "dimension",
+      "$description": "(6.4)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.navigation-bar.container.height",
+            "published": "80 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-navigation-bar.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "navigation-indicator-width": {
+      "$value": "64dp",
+      "$type": "dimension",
+      "$description": "(6.4)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.navigation-bar.active-indicator.width",
+            "published": "64 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-navigation-bar.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "navigation-indicator-height": {
+      "$value": "32dp",
+      "$type": "dimension",
+      "$description": "(6.4)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.navigation-bar.active-indicator.height",
+            "published": "32 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-navigation-bar.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "navigation-icon": {
+      "$value": "24dp",
+      "$type": "dimension",
+      "$description": "(6.4)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "type": "token",
+            "level": "recommended by the source",
+            "platform": "Android",
+            "framework": "Material Web",
+            "name": "md.comp.navigation-bar.icon.size",
+            "published": "24 dp",
+            "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-comp-navigation-bar.scss",
+            "verified": "2026-10-10"
+          }
+        }
+      }
+    },
+    "type": {
+      "title": {
+        "size": {
+          "$value": "22sp",
+          "$type": "dimension",
+          "$description": "The title role: Title large (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.title-large.size",
+                "published": "22 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "28sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.title-large.line-height",
+                "published": "28 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Title large",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "heading": {
+        "size": {
+          "$value": "16sp",
+          "$type": "dimension",
+          "$description": "The heading role: Title medium (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.title-medium.size",
+                "published": "16 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "24sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.title-medium.line-height",
+                "published": "24 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Title medium",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 500,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "body": {
+        "size": {
+          "$value": "16sp",
+          "$type": "dimension",
+          "$description": "The body role: Body large (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-large.size",
+                "published": "16 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "24sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-large.line-height",
+                "published": "24 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Body large",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "strong": {
+        "size": {
+          "$value": "16sp",
+          "$type": "dimension",
+          "$description": "The strong role: Body large (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-large.size",
+                "published": "16 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "24sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-large.line-height",
+                "published": "24 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Body large",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 600,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "label": {
+        "size": {
+          "$value": "14sp",
+          "$type": "dimension",
+          "$description": "The label role: Label large (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.label-large.size",
+                "published": "14 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "20sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.label-large.line-height",
+                "published": "20 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Label large",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 500,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "secondary": {
+        "size": {
+          "$value": "14sp",
+          "$type": "dimension",
+          "$description": "The secondary role: Body medium (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-medium.size",
+                "published": "14 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "20sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-medium.line-height",
+                "published": "20 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Body medium",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "caption": {
+        "size": {
+          "$value": "12sp",
+          "$type": "dimension",
+          "$description": "The caption role: Body small (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-small.size",
+                "published": "12 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "16sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-small.line-height",
+                "published": "16 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Body small",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "eyebrow": {
+        "size": {
+          "$value": "11sp",
+          "$type": "dimension",
+          "$description": "The eyebrow role: Label small (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.label-small.size",
+                "published": "11 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "16sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.label-small.line-height",
+                "published": "16 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Label small",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 500,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      },
+      "data": {
+        "size": {
+          "$value": "12sp",
+          "$type": "dimension",
+          "$description": "The data role: Body small (3.4); scales with the font scale.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-small.size",
+                "published": "12 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "line-height": {
+          "$value": "16sp",
+          "$type": "dimension",
+          "$description": "Its line height.",
+          "$extensions": {
+            "plenix": {
+              "source": {
+                "type": "token",
+                "level": "recommended by the source",
+                "platform": "Android",
+                "framework": "Material Web",
+                "name": "md.sys.typescale.body-small.line-height",
+                "published": "16 sp",
+                "url": "https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss",
+                "verified": "2026-10-10"
+              }
+            }
+          }
+        },
+        "type-role": {
+          "$value": "Body small",
+          "$type": "string",
+          "$description": "The Material type role."
+        },
+        "weight": {
+          "$value": 400,
+          "$type": "fontWeight",
+          "$description": "Its weight (Plenix role weight where it is semibold)."
+        }
+      }
+    }
+  }
+}

@@ -72,6 +72,7 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
     return [...out];
   });
   for (const r of routes) {
+    if (process.env.PAGES_TRACE) console.log('page ' + r);   // PAGES_TRACE=1: name each page as it loads (to find one that hangs)
     await page.evaluate((h) => { location.hash = h; }, r); await sleep(250);
     const blank = await page.evaluate(() => !document.querySelector('main') || document.querySelector('main').innerText.trim().length < 20);
     if (blank) errs.push('empty page');

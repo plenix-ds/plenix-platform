@@ -38,6 +38,12 @@ console.log('Built ' + STANDARDS.files.join(', ') + ' from platform/standards ('
 console.log('Built platform/components/Icon/icon.css (' + ICONS.names + ' icon names, ' + ICONS.symbols + ' symbols, ' + Math.round(ICONS.bytes / 1024) + ' KB)');
 // then the step rules (build-steps.js -> system/steps.css): values from the data arrive as attributes (batch 267)
 const STEPS = require('./build-steps.js')(ROOT);
+// the Platforms Standard (platform/standards/platforms.md) as the design system's data (batch 297)
+const PLAT = require('./build-platforms.js')(ROOT);
+// the native token outputs (Swift, Kotlin, Dart; Platforms Standard 7.2, batch 297)
+const MOB = require('./build-mobile.js')(ROOT);
+console.log('Built platform/mobile (' + MOB.files.length + ' files, ' + MOB.colors + ' colors' + (MOB.changed ? '' : ', unchanged') + ')');
+console.log('Built platform/design-system/platforms-standard.js (' + PLAT.sections + ' sections, ' + PLAT.tables + ' tables' + (PLAT.changed ? '' : ', unchanged') + ')');
 console.log('Built platform/system/steps.css (' + STEPS.rules + ' rules' + (STEPS.changed ? '' : ', unchanged') + ')');
 // the only files this build may write
 const ALLOWED_OUTPUTS = [

@@ -176,6 +176,9 @@ copyDir(path.join(P, 'vendor', 'tabulator'), path.join(CDN, 'vendor', 'tabulator
 copyDir(path.join(P, 'vendor', 'tabulator'), path.join(R, 'dist', 'vendor', 'tabulator'));
 copyDir(path.join(T, 'css'), path.join(CDN, 'tokens'));
 copy(path.join(T, 'tokens.json'), path.join(CDN, 'tokens', 'tokens.json'));
+// the native outputs (build-mobile.js) and the platform sets they come from (Platforms Standard 7.1 and 7.2, batch 297)
+for (const d of ['ios', 'android', 'flutter']) copyDir(path.join(P, 'mobile', d), path.join(CDN, 'mobile', d));
+for (const f of ['platform-ios.tokens.json', 'platform-android.tokens.json']) copy(path.join(P, 'tokens', f), path.join(CDN, 'tokens', f));
 copyDir(path.join(I, 'svg'), path.join(CDN, 'icons'));
 copy(path.join(I, 'icons.json'), path.join(CDN, 'icons', 'icons.json'));
 

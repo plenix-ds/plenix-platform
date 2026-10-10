@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.8] - 2026-10-10
+
+### Added
+- The Plenix Platforms Standard in full: platform/standards/platforms.md is the source, and build-platforms.js reads
+  every section, list and table of it into the design system with nothing lost. 14 › Platforms › Platforms standard
+  shows the whole standard. Web, Mobile web, Desktop, iOS and Android each show it for their platform, headed by
+  "How to build" (implementations, themes and the implementation section). Foundations, patterns and components show
+  the parts they follow.
+- Native token outputs (standard 7.1 and 7.2): platform-ios.tokens.json and platform-android.tokens.json, with every
+  value's source. build-mobile.js generates SwiftUI (PlenixTokens.swift), Jetpack Compose (PlenixTokens.kt) and
+  Flutter (plenix_tokens.dart) tokens from the theme and these sets. They are linked from the iOS and Android pages
+  and published on the CDN under mobile/. (batch 310)
+
 ## [0.31.7] - 2026-10-10
 
 ### Changed
