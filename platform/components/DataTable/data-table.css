@@ -177,3 +177,42 @@
    being moved (it follows the pointer) shows grabbing */
 .plx-data-table .tabulator-row-handle{cursor:grab;}
 .plx-data-table .tabulator-row.tabulator-moving,.plx-data-table .tabulator-row.tabulator-moving *{cursor:grabbing;}
+
+/* drawn by Plenix (Strict DS 6b, batch 285): Tabulator writes no style (strict.js). The header and every row are flex rows
+   of columns sized by their classes: __w-<size> a size token, __w-lead the checkbox and icon width, __w-fill a share of the
+   room left (never under its __min-<size> or 80px); cells keep their intrinsic width out of the sum (contain), so the
+   header and the rows always add up to the same width and stay aligned while the body scrolls sideways */
+.plx-data-table .tabulator .tabulator-header{overflow-x:hidden;}
+.plx-data-table .tabulator .tabulator-header .tabulator-headers{display:flex;inline-size:max-content;min-inline-size:100%;}
+.plx-data-table .tabulator .tabulator-tableholder .tabulator-table{display:block;inline-size:max-content;min-inline-size:100%;}
+.plx-data-table .tabulator .tabulator-row{display:flex;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col,.plx-data-table .tabulator .tabulator-row .tabulator-cell{box-sizing:border-box;contain:inline-size;}
+.plx-data-table .tabulator .plx-data-table__w-fill{flex-basis:var(--plx-ref-size-80px);flex-grow:1;flex-shrink:0;inline-size:var(--plx-ref-size-80px);min-inline-size:var(--plx-ref-size-80px);}
+.plx-data-table .tabulator .plx-data-table__w-lead{flex-grow:0;flex-shrink:0;flex-basis:var(--plx-comp-data-table-lead-column-width);inline-size:var(--plx-comp-data-table-lead-column-width);max-inline-size:var(--plx-comp-data-table-lead-column-width);min-inline-size:var(--plx-comp-data-table-lead-column-width);}
+.plx-data-table .tabulator .tabulator-cell.plx-data-table__cell--align-right{justify-content:flex-end;text-align:right;}
+.plx-data-table .tabulator .tabulator-cell.plx-data-table__cell--align-center{justify-content:center;text-align:center;}
+.plx-data-table .tabulator .tabulator-col.plx-data-table__head-align-right .tabulator-col-title{text-align:right;}
+.plx-data-table .tabulator .tabulator-col.plx-data-table__head-align-center .tabulator-col-title{text-align:center;}
+.plx-data-table .tabulator .tabulator-col.plx-data-table__head-align-center .tabulator-col-content{justify-content:center;}
+/* a pinned column: sticky at the start, at the widths of the pinned columns before it (data-plx-sticky, system/steps.css) */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-frozen,.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-frozen{inset-inline-start:0;position:sticky;}
+/* the frozen-rows holder Tabulator adds under the header, with the line break before it: nothing to show unless rows are frozen */
+.plx-data-table .tabulator .tabulator-header .tabulator-header-contents>br,.plx-data-table .tabulator .tabulator-header .tabulator-frozen-rows-holder:empty{display:none;}
+/* the grid fills its container (height="100%"): the body scrolls inside */
+.plx-data-table.plx-data-table--fill,.plx-data-table.plx-data-table--fill .plx-data-table__table{block-size:100%;}
+.plx-data-table.plx-data-table--fill .tabulator{display:flex;flex-direction:column;}
+.plx-data-table.plx-data-table--fill .tabulator .tabulator-tableholder{flex-basis:0%;flex-grow:1;min-block-size:0;}
+/* a column's resize handle (batch 285): at its end edge; dragging snaps the width to the size tokens */
+.plx-data-table .tabulator .tabulator-header .tabulator-col .plx-data-table__resize{cursor:col-resize;inline-size:var(--plx-ref-size-8px);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-sys-layer-raised);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .plx-data-table__resize:hover{background-image:linear-gradient(var(--plx-sys-data-table-accent),var(--plx-sys-data-table-accent));background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-line-width) 100%;}
+/* where a moved row or column lands: a line in the accent color at its start */
+.plx-data-table .tabulator .tabulator-row.plx-data-table__drop{box-shadow:inset 0 var(--plx-sys-border-width-medium) 0 0 var(--plx-sys-data-table-accent);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__drop{box-shadow:inset var(--plx-sys-border-width-medium) 0 0 0 var(--plx-sys-data-table-accent);}
+.plx-data-table .tabulator .plx-data-table__cell--handle{cursor:grab;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col[draggable="true"]{cursor:grab;}
+/* the cell editor: a plain input filling the cell (the editing cell draws the outline) */
+.plx-data-table__editor{appearance:none;background-color:transparent;block-size:100%;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;box-sizing:border-box;color:inherit;font:inherit;inline-size:100%;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-data-table__editor:focus-visible{outline-style:none;}
+/* menus and the filter popup: in the top layer, under (or above) what opened them by CSS anchor positioning (no coordinates) */
+.plx-data-table__popup-anchor{anchor-name:--plx-data-table-popup;}
+.tabulator-popup-container.plx-data-table__popup{inset:auto;margin:0;position:fixed;position-anchor:--plx-data-table-popup;position-area:block-end span-inline-end;position-try-fallbacks:flip-block,flip-inline;}

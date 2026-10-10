@@ -115,6 +115,8 @@ const blocksOf = (r) => r.blocks || (r.src && /^(components|patterns)\//.test(r.
 // classes that look like variants but are not chosen by whoever uses the component (each has its reason; they are
 // documented under the component's Behavior or Names)
 const NOT_VARIANTS = {
+  'plx-data-table--fill': 'a sizing state the height prop sets (height="100%": the grid fills its container), not a look',
+  'plx-table--fill': 'a sizing state the height prop sets (height="100%"), not a look',
   'plx-nav-pane--inline': 'a responsive mode the shell sets (the pane opens over the main region on narrow windows)',
   'plx-nav-pane--overlay': 'a responsive mode the shell sets',
   'plx-side-panel--overlay': 'a responsive mode the shell sets (the inspector opens over the main region)',

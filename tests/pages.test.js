@@ -50,14 +50,13 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
     return null;
   }); if (found) errs.push('three containers nested: ' + found); };
   // no element carries a style attribute (Strict DS step 7, batch 283; owner: "no exceptions"), in the page or its frames.
-  // Tabulator's own writes are Strict DS step 6b (being moved into DataTable): counted apart until then, never more
-  let tabulatorStyled = 0;
+  // Tabulator included: it runs in strict mode (components/DataTable/strict.js, Strict DS 6b, batch 285)
   const styles = async () => { const r = await page.evaluate(() => {
     const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
-    const out = { other: [], tab: 0 };
-    docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { if (el.closest('.tabulator')) out.tab++; else out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' style="' + el.getAttribute('style').slice(0, 60) + '"'); }));
+    const out = { other: [] };
+    docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' style="' + el.getAttribute('style').slice(0, 60) + '"'); }));
     return out; });
-    tabulatorStyled += r.tab; if (r.other.length) errs.push(r.other.length + ' element(s) with a style attribute: ' + r.other.slice(0, 2).join(' | ')); };
+    if (r.other.length) errs.push(r.other.length + ' element(s) with a style attribute: ' + r.other.slice(0, 2).join(' | ')); };
   const done = (name) => { n++; if (errs.length) failed.push([name, [...new Set(errs)].slice(0, 4)]); errs = []; };
 
   for (const a of APP_PAGES) { await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(600); await tables(); await nesting(); await styles(); done(a); }
@@ -82,7 +81,6 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
 
   await browser.close(); server.close();
   failed.forEach(([name, e]) => { console.log('FAIL ' + name); e.forEach((x) => console.log('     ' + x)); });
-  console.log('NOTE: Tabulator elements with a style attribute (Strict DS 6b, to remove): ' + tabulatorStyled);
   console.log((failed.length ? 'PAGES_FAIL ' : 'PAGES_OK ') + (n - failed.length) + '/' + n);
   process.exit(failed.length ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

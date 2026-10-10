@@ -41,3 +41,28 @@
 /* a row label is the row's name: the same medium weight as a name column, also for links and text inside it (owner, batch 248) */
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--row-label{font-weight:var(--plx-comp-table-name-font-weight);}
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--row-label .plx-text{font-weight:inherit;}
+
+/* drawn by Plenix (Strict DS 6b, batch 285): Tabulator writes no style (strict.js). The header and every row are flex rows
+   of columns sized by their classes: __w-<size> a size token, __w-lead the checkbox and icon width, __w-fill a share of the
+   room left (never under its __min-<size> or 80px); cells keep their intrinsic width out of the sum (contain), so the
+   header and the rows always add up to the same width and stay aligned while the body scrolls sideways */
+.plx-table .tabulator .tabulator-header{overflow-x:hidden;}
+.plx-table .tabulator .tabulator-header .tabulator-headers{display:flex;inline-size:max-content;min-inline-size:100%;}
+.plx-table .tabulator .tabulator-tableholder .tabulator-table{display:block;inline-size:max-content;min-inline-size:100%;}
+.plx-table .tabulator .tabulator-row{display:flex;}
+.plx-table .tabulator .tabulator-header .tabulator-col,.plx-table .tabulator .tabulator-row .tabulator-cell{box-sizing:border-box;contain:inline-size;}
+.plx-table .tabulator .plx-table__w-fill{flex-basis:var(--plx-ref-size-80px);flex-grow:1;flex-shrink:0;inline-size:var(--plx-ref-size-80px);min-inline-size:var(--plx-ref-size-80px);}
+.plx-table .tabulator .plx-table__w-lead{flex-grow:0;flex-shrink:0;flex-basis:var(--plx-comp-data-table-lead-column-width);inline-size:var(--plx-comp-data-table-lead-column-width);max-inline-size:var(--plx-comp-data-table-lead-column-width);min-inline-size:var(--plx-comp-data-table-lead-column-width);}
+.plx-table .tabulator .tabulator-cell.plx-table__cell--align-right{justify-content:flex-end;text-align:right;}
+.plx-table .tabulator .tabulator-cell.plx-table__cell--align-center{justify-content:center;text-align:center;}
+.plx-table .tabulator .tabulator-col.plx-table__head-align-right .tabulator-col-title{text-align:right;}
+.plx-table .tabulator .tabulator-col.plx-table__head-align-center .tabulator-col-title{text-align:center;}
+.plx-table .tabulator .tabulator-col.plx-table__head-align-center .tabulator-col-content{justify-content:center;}
+/* a pinned column: sticky at the start, at the widths of the pinned columns before it (data-plx-sticky, system/steps.css) */
+.plx-table .tabulator .tabulator-row .tabulator-cell.tabulator-frozen,.plx-table .tabulator .tabulator-header .tabulator-col.tabulator-frozen{inset-inline-start:0;position:sticky;}
+/* the frozen-rows holder Tabulator adds under the header, with the line break before it: nothing to show unless rows are frozen */
+.plx-table .tabulator .tabulator-header .tabulator-header-contents>br,.plx-table .tabulator .tabulator-header .tabulator-frozen-rows-holder:empty{display:none;}
+/* the grid fills its container (height="100%"): the body scrolls inside */
+.plx-table.plx-table--fill,.plx-table.plx-table--fill .plx-table__table{block-size:100%;}
+.plx-table.plx-table--fill .tabulator{display:flex;flex-direction:column;}
+.plx-table.plx-table--fill .tabulator .tabulator-tableholder{flex-basis:0%;flex-grow:1;min-block-size:0;}

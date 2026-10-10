@@ -27,7 +27,8 @@
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
      columns[].rowLabel: true: the row header: this column and the columns before it are pinned and shaded like the
        header row (and so is the checkbox column)
-     columns[].width, minWidth, maxWidth: a size token ("--plx-ref-size-240px"); a number is read as Tabulator's pixels
+     columns[].width: a size token ("--plx-ref-size-240px"; a number snaps to the nearest one); without it the column shares
+       the room left with the others. minWidth: the smallest such a sharing column gets (a size token; default 80px)
      index: the field that identifies a row; default "id"
      selectable: a checkbox column (select all in its header) and row selection; default false. Without it,
        options.selectableRows (Tabulator) selects rows by click (1: one row, as the open row of a list)
@@ -37,7 +38,7 @@
      rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
      empty: shown when no row matches; default "Nothing to show"
-     height: the grid's height (a size token, or a Tabulator height such as "100%"); with it, rows render as they scroll
+     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container)
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
      on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
        with rowClick, rows are focusable and Enter does what a click does
@@ -55,18 +56,22 @@
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
    Notes:
-     Nothing on the grid is styled inline by Plenix: Tabulator writes only its own geometry (widths, heights, offsets).
+     Nothing on the grid is styled inline (Strict DS 6b, batch 285): Tabulator runs in strict mode (strict.js) and the grid
+       is drawn from classes: a column's width is a size token class (__w-<size>, __w-lead, __w-fill), its alignment a class
+       (__cell--align-*), a pinned column sticky at the widths before it, a tree row indented by its level class, a menu
+       placed by CSS anchor positioning. Rows render all at once (no virtual scrolling). Moving rows (a rowHandle column
+       with options.movableRows) and columns (options.movableColumns) is native drag and drop; a column's resize handle
+       and Fit to content snap its width to the size tokens. Editors "input" and "number" are a Plenix input.
      The data changes in place (sort, filters, scroll and column widths stay); new columns rebuild the column set.
 */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { loadTabulator, tablePx } from './tabulator.js';
+import { snapSize, SIZE_STEPS } from '../../utils/sizeSteps.js';
 
 const SEP = '\u0000';
-const LEAD = '--plx-comp-data-table-lead-column-width';   // the checkbox and icon columns
-const MIN = '--plx-ref-size-80px';                      // a resizable column's smallest width
-const INDENT = '--plx-comp-data-table-tree-indent';      // a tree row's indent per level
+const MIN = '--plx-ref-size-80px';   // the narrowest a resized column gets
 const STRINGS = {
   empty: 'Nothing to show', sortUp: 'Sort A to Z', sortDown: 'Sort Z to A', clearSort: 'Clear sort', clearFilter: 'Clear filter',
   group: 'Group by this column', ungroup: 'Ungroup', fit: 'Fit to content', hide: 'Hide column', showAll: 'Show all columns',
@@ -93,6 +98,31 @@ function sameRows(a, b) {
     return ka.length === kb.length && ka.every((k) => (k === '_children' ? sameRows(r[k], s[k]) : r[k] === s[k])); });
 }
 const sizeOf = (v, host) => (typeof v === 'string' && /^(var\()?--/.test(v) ? tablePx(v, host) : v);
+// a width as a size token's name ("240px"): a token as given, a number snapped to the nearest token
+const sizeName = (v, host) => {
+  if (v == null || v === '' || v === true) return null;
+  const m = /--plx-ref-size-(\d+px)/.exec(String(v)); if (m) return m[1];
+  const px = typeof v === 'number' ? v : sizeOf(v, host);
+  return px ? snapSize(px, SIZE_STEPS[0], SIZE_STEPS[SIZE_STEPS.length - 1]) + 'px' : null;
+};
+// the editor for "input" and "number": a Plenix input (Tabulator's own writes its padding and width inline)
+const plenixEditor = (type) => (cell, onRendered, success, cancel) => {
+  const i = document.createElement('input'); i.type = type; i.className = 'plx-data-table__editor';
+  const v = cell.getValue(); i.value = v == null ? '' : v;
+  let finished = false; const ok = () => { if (!finished) { finished = true; success(type === 'number' && i.value !== '' ? Number(i.value) : i.value); } };
+  i.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ok(); } else if (e.key === 'Escape') { e.preventDefault(); finished = true; cancel(); } });
+  i.addEventListener('blur', ok);
+  onRendered(() => { i.focus(); i.select(); });
+  return i;
+};
+// a column's width class set again (the resize handle, Fit to content): its definition for new cells, its header and cells now
+function setWidthClass(column, size, B) {
+  const def = column.getDefinition(), next = B + '__w-' + size;
+  const swap = (el) => { if (!el) return; Array.from(el.classList).filter((c) => c.indexOf(B + '__w-') === 0).forEach((c) => el.classList.remove(c)); el.classList.add(next); };
+  def.cssClass = String(def.cssClass || '').split(/\s+/).filter((c) => c && c.indexOf(B + '__w-') !== 0).concat(next).join(' ');
+  if (column._column) column._column.definition.cssClass = def.cssClass;
+  swap(column.getElement()); column.getCells().forEach((c) => swap(c.getElement()));
+}
 
 // the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
 // resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
@@ -121,6 +151,7 @@ export function TableEngine(props) {
   const cells = React.useRef(new Map());   // React cell containers: row index + SEP + field
   const owners = React.useRef(new Map());  // the same keys: the cell each container belongs to (tree rows included)
   const pending = React.useRef(false);
+  const moving = React.useRef(null);   // the row being moved by its handle
   const [, bump] = React.useReducer((x) => x + 1, 0);
   const [error, setError] = React.useState(null);
 
@@ -141,7 +172,6 @@ export function TableEngine(props) {
   // Plenix columns -> Tabulator column definitions
   const defsOf = (cols, host) => {
     const T = () => tableRef.current;
-    const lead = tablePx(LEAD, host);
     const labelAt = cols.findIndex((c) => c.rowLabel);
     const filters = (field) => T().getFilters().filter((f) => f.field === field);
     const setFilter = (column, kind, value) => {
@@ -152,6 +182,11 @@ export function TableEngine(props) {
       column.getElement().classList.toggle('is-filtered', on);
     };
     const close = () => document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    const fitColumn = (col) => {
+      const els = [col.getElement()].concat(col.getCells().map((x) => x.getElement()));
+      const need = Math.max.apply(null, els.map((el) => el.scrollWidth));
+      setWidthClass(col, snapSize(SIZE_STEPS.find((z) => z >= need) || need, SIZE_STEPS[0], SIZE_STEPS[SIZE_STEPS.length - 1]) + 'px', B);
+    };
     const filterPopup = (c) => (e, column, onRendered) => {
       const field = column.getField(), active = filters(field)[0];
       const id = 'plx-data-table-filter-' + Math.random().toString(36).slice(2);
@@ -190,7 +225,7 @@ export function TableEngine(props) {
         if (T().options.groupBy) items.push({ label: menuLabel(STRINGS.ungroup, 'list-bullets'), action: () => T().setGroupBy(false) });
       }
       if (items.length && !items[items.length - 1].separator) items.push({ separator: true });
-      if (c.kind !== 'icon' && c.resizable !== false) items.push({ label: menuLabel(STRINGS.fit, 'expand'), action: (e, col) => col.setWidth(true) });
+      if (c.kind !== 'icon' && c.resizable !== false) items.push({ label: menuLabel(STRINGS.fit, 'expand'), action: (e, col) => fitColumn(col) });
       items.push({ label: menuLabel(STRINGS.hide, 'visibility-off'), action: (e, col) => col.hide() });
       items.push({ label: menuLabel(STRINGS.showAll, 'visibility'), action: () => T().getColumns().forEach((col) => col.show()) });
       return items;
@@ -200,15 +235,22 @@ export function TableEngine(props) {
       const { kind, icon, render, filter, rowLabel, ...rest } = c;
       const d = { ...rest };
       if (isStatic) { Object.assign(d, { headerSort: false, resizable: false }); delete d.editor; delete d.headerContextMenu; delete d.headerPopup; delete d.cellClick; delete d.rowHandle; }
-      ['width', 'minWidth', 'maxWidth'].forEach((k) => { if (d[k] != null) d[k] = sizeOf(d[k], host); });
-      d.cssClass = cx(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || (labelAt > i)) && B + '__cell--row-label') || undefined;
+      // the width: a size token class, the lead width (icon), or a share of the room left (with its smallest size)
+      const w = kind === 'icon' ? 'lead' : sizeName(d.width, host);
+      const min = sizeName(d.minWidth, host);
+      const hz = kind === 'icon' ? 'center' : d.hozAlign, hh = kind === 'icon' ? 'center' : d.headerHozAlign;
+      const align = hz && hz !== 'left' ? B + '__cell--align-' + hz : null;
+      const headAlign = hh && hh !== 'left' ? B + '__head-align-' + hh : null;
+      ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach((k) => { delete d[k]; });
+      d.cssClass = cx(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || (labelAt > i)) && B + '__cell--row-label',
+        w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle') || undefined;
+      if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
       if (kind === 'icon') {
-        Object.assign(d, { width: lead, minWidth: lead, maxWidth: lead, resizable: false, hozAlign: 'center', headerHozAlign: 'center' });
+        d.resizable = false;   // the lead width and centered (its classes)
         d.titleFormatter = () => { const s = el('span', B + '__header-icon'); s.title = c.title || c.field; s.setAttribute('role', 'img'); s.setAttribute('aria-label', s.title); s.appendChild(iconEl(icon || 'circle-info')); return s; };
       }
-      if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false, hozAlign: 'right' });
-      if (kind === 'wrap') d.variableHeight = true;
+      if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false });
       if (render) d.formatter = (cell) => { const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
       if (filter && !isStatic) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
       if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
@@ -228,7 +270,7 @@ export function TableEngine(props) {
     if (!win) return undefined;
     loadTabulator(win).then((Tabulator) => {
       if (!alive || !hostRef.current || !hostRef.current.ownerDocument.defaultView) return;
-      const host = hostRef.current, lead = tablePx(LEAD, host);
+      const host = hostRef.current;
       const p = latest.current;
       const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
       const rowContextMenu = p.rowMenu ? (e, row) => {
@@ -245,16 +287,15 @@ export function TableEngine(props) {
         layout: 'fitColumns',
         index: p.index || 'id',
         placeholder,
-        columnDefaults: { resizable: true, minWidth: tablePx(MIN, host) },
+        columnDefaults: { resizable: false },
+        renderVertical: 'basic',
         editTriggerEvent: 'dblclick',
-        dataTreeChildIndent: tablePx(INDENT, host),
         rowContextMenu,
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
         // plain click mean "only this row", so a checked box could not be unchecked; Shift and Ctrl/Cmd keep their range
         // and add meanings. The header checkbox stays Tabulator's (select all / none).
         rowHeader: p.selectable ? { formatter: rowCheckbox, titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
-          width: lead, minWidth: lead, maxWidth: lead, hozAlign: 'center', headerHozAlign: 'center',
-          cssClass: cx('plx-data-table__cell--select', labelled && 'plx-data-table__cell--row-label'),
+          cssClass: cx('plx-data-table__cell--select', B + '__w-lead', B + '__cell--align-center', B + '__head-align-center', labelled && 'plx-data-table__cell--row-label'),
         } : false,
         selectableRows: p.selectable ? true : false,
         selectableRowsRangeMode: 'click',
@@ -270,10 +311,9 @@ export function TableEngine(props) {
         },
         // a group row: its value and a count, one cell (Tabulator marks it a row group with no rows: axe aria-required-children)
         groupHeader: (value, count) => { const s = el('span', null, String(value)); s.setAttribute('role', 'gridcell'); s.appendChild(el('span', 'plx-data-table__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items))); return s; },
-        ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => k !== 'rowFormatter')),
+        ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => !['rowFormatter', 'movableRows', 'movableColumns', 'height', 'maxHeight', 'minHeight', 'renderVertical', 'renderHorizontal', 'dataTreeChildIndent', 'columnDefaults'].includes(k))),
         data: p.data || [],
 
-        height: p.height ? sizeOf(p.height, host) : (p.options && p.options.height)
       };
       if (isStatic) Object.assign(opts, { rowContextMenu: undefined, rowHeader: false, selectableRows: false, movableColumns: false, movableRows: false, groupBy: false });
       opts.columns = defsOf(p.columns, host);
@@ -303,6 +343,7 @@ export function TableEngine(props) {
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h) h(...a); }));
         table.on('rowSelectionChanged', () => { const q = latest.current; if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map((x) => x[q.index || 'id'])); });
         syncSelection(table);
+        if (!isStatic) { wireColumns(table); wireRows(table, host); }
         if (latest.current.onReady) latest.current.onReady(table);
         bump();
       });
@@ -331,6 +372,68 @@ export function TableEngine(props) {
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '']);
+
+  // moving rows (options.movableRows with a rowHandle column): native drag and drop from the handle, delegated on the grid;
+  // the row it is dropped on shows a line (a class) and the moved row lands before it
+  const wireRows = (table, host) => {
+    if (!(latest.current.options || {}).movableRows || host.hasAttribute('data-plx-move')) return;
+    host.setAttribute('data-plx-move', '');
+    const rowOf = (el) => { const r = el && el.closest('.tabulator-row'); return r ? table.getRows().find((x) => x.getElement() === r) : null; };
+    const clear = () => host.querySelectorAll('.' + B + '__drop').forEach((x) => x.classList.remove(B + '__drop'));
+    host.addEventListener('pointerdown', (ev) => { const h = ev.target.closest && ev.target.closest('.' + B + '__cell--handle'); if (h) h.draggable = true; });
+    host.addEventListener('dragstart', (ev) => {
+      const h = ev.target.closest && ev.target.closest('.' + B + '__cell--handle'); if (!h) return;
+      const r = rowOf(h); if (!r) return;
+      moving.current = r; r.getElement().classList.add('tabulator-moving');
+      ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', String(r.getIndex()));
+    });
+    host.addEventListener('dragover', (ev) => { const r = rowOf(ev.target); if (!moving.current || !r || r === moving.current) return; ev.preventDefault(); clear(); r.getElement().classList.add(B + '__drop'); });
+    host.addEventListener('dragleave', (ev) => { const r = ev.target.closest && ev.target.closest('.tabulator-row'); if (r && !r.contains(ev.relatedTarget)) r.classList.remove(B + '__drop'); });
+    host.addEventListener('drop', (ev) => {
+      const r = rowOf(ev.target), from = moving.current; clear(); moving.current = null;
+      if (!from || !r || r === from) return;
+      ev.preventDefault(); from.move(r, true);
+      const h = (latest.current.on || {}).rowMoved; if (h) h(from);
+    });
+    host.addEventListener('dragend', () => { clear(); host.querySelectorAll('.tabulator-moving').forEach((x) => x.classList.remove('tabulator-moving')); moving.current = null; });
+  };
+
+  // a header can be dragged onto another to move its column (options.movableColumns), and its edge resizes it: the width
+  // snaps to the size tokens (between 80px and the largest token), set as the column's width class
+  const wireColumns = (table) => {
+    const opt = latest.current.options || {};
+    let dragged = null;
+    table.getColumns().forEach((col) => {
+      const el = col.getElement(), def = col.getDefinition();
+      if (!el || el.hasAttribute('data-plx-wired')) return;
+      el.setAttribute('data-plx-wired', '');
+      if (opt.movableColumns && !def.frozen) {
+        el.draggable = true;
+        el.addEventListener('dragstart', (ev) => { if (ev.target.closest('.' + B + '__resize')) { ev.preventDefault(); return; } dragged = col; el.classList.add('tabulator-moving'); ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', col.getField() || ''); });
+        el.addEventListener('dragend', () => { el.classList.remove('tabulator-moving'); dragged = null; });
+        el.addEventListener('dragover', (ev) => { if (dragged && dragged !== col) { ev.preventDefault(); el.classList.add(B + '__drop'); } });
+        el.addEventListener('dragleave', () => el.classList.remove(B + '__drop'));
+        el.addEventListener('drop', (ev) => { ev.preventDefault(); el.classList.remove(B + '__drop'); if (dragged && dragged !== col) { const from = dragged; dragged = null; from.move(col, true); const h = (latest.current.on || {}).columnMoved; if (h) h(from, table.getColumns()); } });
+      }
+      // resizable unless the page's column says not (Tabulator's own resizing is off: its handles write styles)
+      const mine = (latest.current.columns || []).find((x) => x.field && x.field === col.getField());
+      const resizable = !!mine && mine.resizable !== false && !/__cell--(icon|actions|select)|__w-lead/.test(String(def.cssClass || ''));
+      if (resizable) {
+        const grip = el.ownerDocument.createElement('span'); grip.className = B + '__resize'; grip.setAttribute('aria-hidden', 'true');
+        grip.addEventListener('click', (ev) => ev.stopPropagation());
+        grip.addEventListener('pointerdown', (ev) => {
+          ev.preventDefault(); ev.stopPropagation();
+          const x0 = ev.clientX, w0 = el.getBoundingClientRect().width, rtl = getComputedStyle(el).direction === 'rtl' ? -1 : 1;
+          const lo = tablePx(MIN, el), hi = SIZE_STEPS[SIZE_STEPS.length - 1];
+          const doc = el.ownerDocument;
+          const move = (e2) => setWidthClass(col, snapSize(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px', B);
+          const up = () => { doc.removeEventListener('pointermove', move); doc.removeEventListener('pointerup', up); doc.documentElement.classList.remove('is-resizing-columns'); };
+          doc.addEventListener('pointermove', move); doc.addEventListener('pointerup', up); doc.documentElement.classList.add('is-resizing-columns');
+        });
+        el.appendChild(grip);
+      }
+    });
+  };
 
   // the selection kept by the page (the selected prop) onto the grid
   const syncSelection = (table) => {
@@ -379,7 +482,8 @@ export function TableEngine(props) {
   }
 
   return (
-    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', className)}>
+    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', className)}
+      data-plx-height={height && height !== '100%' ? (sizeName(height) || undefined) : undefined}>
       {error ? <div className={B + '__empty'} role="alert">{STRINGS.failed} {String(error.message || error)}</div> : null}
       <div ref={hostRef} className={B + '__table'} />
       {portals}

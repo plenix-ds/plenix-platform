@@ -15,7 +15,7 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
 - [x] 4. (batch 281, 0.23.1) Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
 - [x] 5. (batch 282, 0.23.2) Image editor in steps: zoom, opacity, text on a 5% grid, palette text colors, filter presets, crop classes
 - [x] 6. (batch 283, 0.24.0) The design system's sample styles: a generated class per token
-- [ ] 6b. Tabulator drawn by Plenix. PROVEN in the prototype (Plenix - DAM/audit/tabulator-prototype/, 2026-10-09):
+- [x] 6b. (batch 285, 0.25.0) Tabulator drawn by Plenix. PROVEN in the prototype (Plenix - DAM/audit/tabulator-prototype/, 2026-10-09):
   zero inline styles with every feature working: sorting, row selection, widths as size-token classes (cssClass), a
   sticky class instead of frozen, editing (a custom editor: Plenix input), tree rows (indent by tabulator-tree-level-N
   class; expand and collapse work), grouping, row moving by native drag and drop (drop line as a class, row.move),

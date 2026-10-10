@@ -22,6 +22,8 @@
    Notes:
      A failed load rejects; the DataTable shows the reason in place of the grid. */
 
+import { strictTabulator } from './strict.js';
+
 // the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
 const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
 
@@ -47,7 +49,9 @@ const loading = new WeakMap();
 export function loadTabulator(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);
   if (!w) return Promise.reject(new Error('Tabulator needs a browser'));
-  if (w.Tabulator) return Promise.resolve(w.Tabulator);
+  // every Tabulator is made strict before a grid is built (strict.js: it writes no style; Strict DS 6b, batch 285)
+  const strict = (T) => strictTabulator(T, w).then(() => T);
+  if (w.Tabulator) return strict(w.Tabulator);
   if (loading.has(w)) return loading.get(w);
   const doc = w.document, base = vendorBase() + 'tabulator/';
   const p = new Promise((resolve, reject) => {
@@ -59,7 +63,7 @@ export function loadTabulator(win) {
     }
     const script = doc.createElement('script');
     script.src = base + 'tabulator.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'tabulator');
-    script.onload = () => (w.Tabulator ? resolve(w.Tabulator) : reject(new Error('Tabulator did not load from ' + script.src)));
+    script.onload = () => (w.Tabulator ? resolve(strict(w.Tabulator)) : reject(new Error('Tabulator did not load from ' + script.src)));
     script.onerror = () => { loading.delete(w); reject(new Error('Tabulator could not be loaded from ' + script.src)); };
     doc.head.appendChild(script);
   });

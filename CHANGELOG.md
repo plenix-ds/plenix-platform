@@ -6,6 +6,26 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-10-09
+
+### Changed (breaking)
+- Tabulator is drawn by Plenix (Strict DS 6b): no style attribute anywhere, the tables included. Tabulator runs in
+  strict mode (components/DataTable/strict.js, applied once per window as it loads): its geometry writes are off (cell
+  and column widths, heights and alignment, row heights, header alignment, body sizing, virtual padding, the
+  frozen-rows holder), pinned columns are classes (sticky at the widths before them, data-plx-sticky), tree rows a
+  level class (the tree cell indented by the stylesheet) and popups (menus, the header filter) open in the top layer,
+  placed by CSS anchor positioning against what opened them.
+- DataTable and Table columns: width is a size token class (__w-<size>; a number snaps to the nearest token; the icon
+  and checkbox columns __w-lead); a column without one shares the room left (__w-fill, never under 80px or its
+  minWidth token). maxWidth is gone. hozAlign and headerHozAlign become classes. height is a size token (the body
+  scrolls inside it) or "100%" (fills its container). Rows render all at once (no virtual scrolling).
+- Moving rows (options.movableRows with a rowHandle column) and columns (options.movableColumns) is native drag and
+  drop with a drop line; a header's resize grip and Fit to content snap its width to the size tokens. The "input" and
+  "number" editors are a Plenix input. Events rowMoved and columnMoved reach on.
+- The header, rows and columns are flex rows (data-table.css, table.css); their per-size rules are generated beside
+  them (data-table-steps.css, table-steps.css, build-steps.js). tests/pages.test.js fails any style attribute, Tabulator
+  included (722 pages: none).
+
 ## [0.24.0] - 2026-10-09
 
 ### Changed

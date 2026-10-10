@@ -236,7 +236,7 @@ for (const { file } of files) {
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       if (/^(plx-|is-)/.test(m[1])) continue;
       // the DataTable's stylesheet restyles the classes its engine writes (Tabulator, platform/vendor/tabulator): there only
-      if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/](DataTable[\\/]data-table|Table[\\/]table)\.css$/.test(file)) continue;
+      if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/](DataTable[\\/]data-table|Table[\\/]table)(-steps)?\.css$/.test(file)) continue;
       add('classes', file, 0, '.' + m[1] + ' is not a plx- class');
     }
   }
