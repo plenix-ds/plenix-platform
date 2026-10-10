@@ -237,7 +237,7 @@
       "$type": "color"
     },
     "feedback-warning-solid-border": {
-      "$value": "{plx-ref.color-brown-900}",
+      "$value": "{plx-ref.color-brown-950}",
       "$type": "color"
     },
     "feedback-warning-soft": {
@@ -265,7 +265,7 @@
       "$type": "color"
     },
     "feedback-danger-solid-border": {
-      "$value": "{plx-ref.color-red-700}",
+      "$value": "{plx-ref.color-red-800}",
       "$type": "color"
     },
     "feedback-danger-soft": {

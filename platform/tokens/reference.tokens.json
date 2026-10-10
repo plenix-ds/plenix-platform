@@ -139,6 +139,11 @@
       "$value": "#9b3a5e",
       "$type": "color"
     },
+    "color-red-800": {
+      "$value": "#8a1e13",
+      "$type": "color",
+      "$description": "Two shades darker than red-500, same hue (the danger solid border; owner, 2026-10-09). red-700 is plum."
+    },
     "color-red-500": {
       "$value": "#c42b1c",
       "$type": "color"
@@ -158,6 +163,11 @@
     "color-brown-900": {
       "$value": "#3a2e22",
       "$type": "color"
+    },
+    "color-brown-950": {
+      "$value": "#4a2400",
+      "$type": "color",
+      "$description": "Two shades darker than brown-800, same hue (the warning solid border; owner, 2026-10-09)."
     },
     "color-brown-800": {
       "$value": "#7d3c00",

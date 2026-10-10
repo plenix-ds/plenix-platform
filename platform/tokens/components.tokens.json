@@ -1865,6 +1865,10 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
+    "notice-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
     "notice-info-background": {
       "$value": "{plx-sys.feedback-info-soft}",
       "$type": "color"
@@ -1872,6 +1876,11 @@
     "notice-info-text": {
       "$value": "{plx-sys.feedback-info-content}",
       "$type": "color"
+    },
+    "notice-info-border": {
+      "$value": "{plx-sys.feedback-info-soft-border}",
+      "$type": "color",
+      "$description": "Two shades darker than the notice fill (owner, 2026-10-09)."
     },
     "notice-success-background": {
       "$value": "{plx-sys.feedback-success-soft}",
@@ -1881,6 +1890,11 @@
       "$value": "{plx-sys.feedback-success-content}",
       "$type": "color"
     },
+    "notice-success-border": {
+      "$value": "{plx-sys.feedback-success-soft-border}",
+      "$type": "color",
+      "$description": "Two shades darker than the notice fill (owner, 2026-10-09)."
+    },
     "notice-warning-background": {
       "$value": "{plx-sys.feedback-warning-soft}",
       "$type": "color"
@@ -1889,6 +1903,11 @@
       "$value": "{plx-sys.feedback-warning-content}",
       "$type": "color"
     },
+    "notice-warning-border": {
+      "$value": "{plx-sys.feedback-warning-soft-border}",
+      "$type": "color",
+      "$description": "Two shades darker than the notice fill (owner, 2026-10-09)."
+    },
     "notice-danger-background": {
       "$value": "{plx-sys.feedback-danger-soft}",
       "$type": "color"
@@ -1896,6 +1915,11 @@
     "notice-danger-text": {
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
+    },
+    "notice-danger-border": {
+      "$value": "{plx-sys.feedback-danger-soft-border}",
+      "$type": "color",
+      "$description": "Two shades darker than the notice fill (owner, 2026-10-09)."
     },
     "skeleton-animation-duration": {
       "$value": "{plx-sys.motion-duration-loop-slow}",

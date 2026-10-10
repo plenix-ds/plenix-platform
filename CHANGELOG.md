@@ -6,6 +6,31 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-10-10
+
+### Removed
+- Tabs variant="underline" (owner: "this is wrong.. remove this variant"). (batch 301)
+- The tab focus outline (owner: "there is no blue focus on any tabs... remove"): arrow keys move and select and only the
+  selected tab is in the Tab order, so keyboard focus is always on the selected tab, which its own look marks. (batch 301)
+
+### Added
+- Palette shades --plx-ref-color-brown-950 (#4a2400) and --plx-ref-color-red-800 (#8a1e13): two shades darker than the
+  warning and danger fills in the same hue. Notice tokens notice-border-width and notice-<tone>-border. (batch 301)
+
+### Changed
+- Contained and folder tabs: the open tab's edges are drawn exactly like the panel's (inset lines, no border width), so
+  tab and panel meet in one line of one weight and color at any display scale (owner: "the border outline is not same
+  as the tab outlines"). Every Tabs in the design system and the applications. (batch 301)
+- Notices have an edge two shades darker than their fill (the feedback soft-border roles), drawn inside so the content
+  stays on the grid. Solid badges' warning and danger edges now use the new same-hue shades (were brown-900, one shade,
+  and the plum red-700). (batch 301)
+- NavList muted rows (incomplete places, such as the design system's entries not in Plenix yet and Settings' unstarted
+  capabilities) show their text in the danger content color (owner: "give the node text a red color"). (batch 301)
+- Design system: every table keeps its border (the Implementation tabs are the folder variant; variant groups and the
+  sub-sections inside Guidelines cards are unframed titled sections, so no table sits three frames deep: 148 pages,
+  1,440 tables, none borderless); each card shows its "On this page" icon before its title; the section pages' chips are
+  all plain (no selected look). (batch 301)
+
 ## [0.29.0] - 2026-10-09
 
 ### Changed

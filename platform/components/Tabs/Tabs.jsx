@@ -4,7 +4,7 @@
      <Tabs label="Asset details" value={tab} onChange={setTab}
        items={[{ value: 'info', label: 'Info', count: 3, content: <…/> }, …]} />
    Props:
-     variant: "contained" (default) | "underline" | "folder" | "segmented"
+     variant: "contained" (default) | "folder" | "segmented"
      items: the tabs, in order: [{ value, label, icon, count, content, disabled }]
      items[].icon: an icon name or element before the label
      items[].count: a count after the label
@@ -27,7 +27,7 @@
      "contained" is the standard: folder tabs joined to a bordered panel.
      "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
      content below with no frame of its own; for tabs inside a pane or a card that is already framed.
-     "underline" and "segmented" (a compact switch) stay for compatibility.
+     "segmented" (a compact switch) stays for compatibility. The "underline" variant was removed (owner, 2026-10-09).
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */
