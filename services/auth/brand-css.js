@@ -53,7 +53,7 @@ const fixed = {
 // the brand (platform/brand/brand.json, batch 278): its name and the kit's mark for a blue background, never named here
 const BRAND_DIR = path.join(ROOT, 'platform', 'brand');
 const BRAND = JSON.parse(fs.readFileSync(path.join(BRAND_DIR, 'brand.json'), 'utf8'));
-const markOnAccent = 'url("data:image/svg+xml,' + fs.readFileSync(path.join(BRAND_DIR, BRAND.files.markOnAccent), 'utf8').replace(/s+/g, ' ').trim()
+const markOnAccent = 'url("data:image/svg+xml,' + fs.readFileSync(path.join(BRAND_DIR, BRAND.files.markOnAccent), 'utf8').replace(/\s+/g, ' ').trim()
   .replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, "'") + '")';
 fixed.markSize = v('--plx-comp-app-header-icon-size');
 fixed.markGap = v('--plx-sys-space-inline-md');
