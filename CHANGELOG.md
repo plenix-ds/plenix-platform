@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.28.1] - 2026-10-09
+
+### Changed
+- The design system's own pages use EntityHeader (owner: "this needs to be updated to reflect the new headers"): every
+  item, variant, variants overview, token and section page and the UI Inventory home. The item's level is the context
+  line, its lifecycle status the status area, its icon the tinted media. (batch 297)
+- EntityHeader draws no action area when it has neither actions nor moreActions (no lone ⋯). (batch 297)
+
 ## [0.28.0] - 2026-10-09
 
 ### Added

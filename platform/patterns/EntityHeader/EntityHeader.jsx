@@ -18,6 +18,7 @@
      actions: the actions that act on this entity, as 16px icon buttons side by side: [{ icon, label, onClick, primary,
        disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
      moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
+     (with neither actions nor moreActions there is no action area, not even ⋯: a documentation page, an overview)
      live: the live state, the first fact, with a status dot: { tone, label }
      facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …
      description: a sentence instead of facts (never both)
@@ -102,7 +103,7 @@ export function EntityHeader({ title, media, context, status, actions, moreActio
         {badge ? <div className="plx-entity-header__status">{badge}</div> : null}
       </div>
       <H className="plx-entity-header__title">{title}</H>
-      <Actions actions={actions} moreActions={moreActions} strings={s} />
+      {(actions && actions.length) || (moreActions && moreActions.length) ? <Actions actions={actions} moreActions={moreActions} strings={s} /> : null}
       <Facts live={live} facts={facts} description={description} />
     </header>
   );
