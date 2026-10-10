@@ -93,3 +93,6 @@
 }
 /* the account item is its picture alone: no fill grows around it on hover or while its menu is open (owner, batch 261) */
 .plx-app-header__item.plx-app-header__item--account:hover,.plx-app-header__item.plx-app-header__item--account.is-hover,.plx-app-header__item.plx-app-header__item--account.is-current,.plx-app-header__item.plx-app-header__item--account[aria-expanded="true"]{background-color:transparent;}
+/* the application switcher is a filled control: the same inset on both sides (owner, batch 277: the brand's 4px start
+   inset left its fill uneven) */
+.plx-app-header__brand.plx-app-header__switch{padding-inline-end:var(--plx-sys-space-inset-md);padding-inline-start:var(--plx-sys-space-inset-md);}

@@ -6,3 +6,7 @@
 .plx-bulk-actions__divider{block-size:var(--plx-ref-size-20px);border-inline-start-color:var(--plx-sys-selected-border);border-inline-start-style:solid;border-inline-start-width:var(--plx-sys-border-width-thin);flex-shrink:0;inline-size:0;}
 .plx-bulk-actions__list{align-items:center;block-size:var(--plx-sys-control-height-toolbar);column-gap:var(--plx-sys-space-cluster-sm);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-ref-space-4px);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-ref-space-8px);}
 .plx-bulk-actions__slot{display:inline-flex;}
+/* nothing selected (batch 277): the bar stays, neutral, its actions disabled */
+.plx-bulk-actions.plx-bulk-actions--empty{background-color:var(--plx-sys-surface-sunken);border-bottom-color:var(--plx-sys-fill-neutral-border);border-left-color:var(--plx-sys-fill-neutral-border);border-right-color:var(--plx-sys-fill-neutral-border);border-top-color:var(--plx-sys-fill-neutral-border);}
+.plx-bulk-actions--empty .plx-bulk-actions__divider{border-inline-start-color:var(--plx-sys-fill-neutral-border);}
+.plx-bulk-actions--empty .plx-selection-summary__count{color:var(--plx-sys-content-muted);font-weight:var(--plx-sys-font-weight-regular);}

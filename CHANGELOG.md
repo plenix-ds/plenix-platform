@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.22.5] - 2026-10-09
+
+### Changed
+- BulkActions is always shown (owner: "make the menu always visible but grayed out until selection happens"): with
+  nothing selected the bar is neutral (sunken surface, neutral border), reads "No assets selected" (strings.none),
+  offers Select all, and every action, menu button and More is disabled; selecting enables them. (batch 277)
+- The application switcher's inset is the same on both sides (12px); the brand's 4px start inset left its fill uneven.
+  (batch 277)
+
 ## [0.22.4] - 2026-10-09
 
 ### Added

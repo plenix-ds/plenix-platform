@@ -7520,7 +7520,7 @@ var _Menu = require("../../components/Menu/Menu.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SelectionSummary, BulkActions
    Summary: What is selected, and what can be done with it. SelectionSummary counts the selection; BulkActions is the bar
-     shown while something is selected.
+     of actions on the selection, always shown: its actions are disabled until something is selected.
    Usage:
      <SelectionSummary count={3} total={120} noun="asset" plural="assets" onSelectAll={() => …} onClear={() => …} />
      <BulkActions count={3} total={120} noun="asset" onSelectAll={() => …} onClear={() => …}
@@ -7534,8 +7534,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      SelectionSummary.onClear(): runs from "Clear selection"; without it there is no Clear selection
      SelectionSummary.className: more classes
      SelectionSummary.strings: the words it shows, for other languages: { selected: (n, word) => n + " " + word + " selected",
+       none: (word) => "No " + word + " selected" (word is the plural),
        selectAll: (n) => "Select all " + n, clear: "Clear selection" } (word is the noun or plural, chosen by count)
-     BulkActions.count: how many are selected; nothing renders at 0
+     BulkActions.count: how many are selected; at 0 the bar stays, grayed, with its actions disabled (owner, batch 277:
+       "always visible but grayed out until selection happens")
      BulkActions.total: as for SelectionSummary
      BulkActions.noun: as for SelectionSummary
      BulkActions.plural: as for SelectionSummary
@@ -7552,11 +7554,14 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      SelectionSummary reads "3 assets selected", announced politely.
      "Select all 120" shows when more can be selected.
      BulkActions shows a SelectionSummary, then the actions.
+     With nothing selected the bar is neutral (no selection color), reads "No assets selected", offers Select all, and
+       every action (and More) is disabled; selecting enables them.
      Actions that do not fit move into a "More actions" menu; a menu button's items appear there as a group.
 */
-const off = (a, count) => !!(a.single && count > 1);
+const off = (a, count) => !count || !!(a.single && count > 1);
 const STRINGS = {
   selected: (n, word) => n + ' ' + word + ' selected',
+  none: word => 'No ' + word + ' selected',
   selectAll: n => 'Select all ' + n,
   clear: 'Clear selection',
   label: 'Selection actions',
@@ -7574,7 +7579,7 @@ function SelectionSummary({
   className
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const words = t.selected(count, count === 1 ? noun : plural || noun + 's');
+  const words = count ? t.selected(count, count === 1 ? noun : plural || noun + 's') : t.none(plural || noun + 's');
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-selection-summary', className)
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -7584,7 +7589,7 @@ function SelectionSummary({
     size: "sm",
     variant: "link",
     onClick: onSelectAll
-  }, t.selectAll(total)) : null, onClear ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+  }, t.selectAll(total)) : null, onClear && count ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     variant: "ghost",
     onClick: onClear
@@ -7605,12 +7610,11 @@ function BulkActions({
   const t = Object.assign({}, STRINGS, strings);
   const list = _react.default.useRef(null);
   const fit = (0, _overflow.useOverflow)(list, actions.length, actions.map(a => a.label).join('|') + (count ? '' : '0'));
-  if (!count) return null;
   const hidden = actions.slice(fit);
   return /*#__PURE__*/_react.default.createElement("div", {
     role: "toolbar",
     "aria-label": label || t.label,
-    className: (0, _cx.cx)('plx-bulk-actions', className)
+    className: (0, _cx.cx)('plx-bulk-actions', !count && 'plx-bulk-actions--empty', className)
   }, /*#__PURE__*/_react.default.createElement(SelectionSummary, {
     count: count,
     total: total,
@@ -7634,7 +7638,8 @@ function BulkActions({
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "sm",
       icon: a.icon,
-      caret: true
+      caret: true,
+      disabled: !count
     }, a.label)
   }, a.items.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: it.id,
@@ -7656,7 +7661,8 @@ function BulkActions({
     placement: "bottom-end",
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "sm",
-      caret: true
+      caret: true,
+      disabled: !count
     }, t.more)
   }, hidden.map(a => a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
     key: a.id,
