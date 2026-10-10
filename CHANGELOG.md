@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.7] - 2026-10-10
+
+### Changed
+- Platforms pages, second review pass: platform interaction now ranks above the Plenix look in the precedence; field
+  focus also needs 3:1 contrast against the unfocused border, in light and dark; the web's header control is the
+  parent control, a separate operation from Back; Android 16 rules added (no edge-to-edge opt-out for apps targeting
+  API 36; onBackPressed and KEYCODE_BACK no longer delivered) and Google Play's API 36 target requirement from August
+  31, 2026. (batch 309)
+
 ## [0.31.6] - 2026-10-10
 
 ### Changed
