@@ -1984,6 +1984,174 @@
     "progress-bar-neutral-fill": {
       "$value": "{plx-sys.feedback-neutral-solid}",
       "$type": "color"
+    },
+    "tag-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color"
+    },
+    "tag-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension"
+    },
+    "tag-text": {
+      "$value": "{plx-sys.fill-neutral-content}",
+      "$type": "color"
+    },
+    "tag-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "tag-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily"
+    },
+    "tag-font-size": {
+      "$value": "{plx-ref.font-size-10}",
+      "$type": "dimension"
+    },
+    "tag-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight"
+    },
+    "tag-line-height": {
+      "$value": "{plx-ref.line-height-tight}",
+      "$type": "number"
+    },
+    "tag-min-height": {
+      "$value": "{plx-sys.label-height-20px}",
+      "$type": "dimension"
+    },
+    "tag-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "chip-hover-background": {
+      "$value": "{plx-sys.fill-neutral-hover}",
+      "$type": "color"
+    },
+    "chip-selected-background": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "chip-selected-text": {
+      "$value": "{plx-sys.action-primary-content}",
+      "$type": "color"
+    },
+    "tag-remove-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "tag-remove-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color"
+    },
+    "tag-remove-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "tag-remove-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "tag-remove-line-height": {
+      "$value": "{plx-ref.line-height-none}",
+      "$type": "number"
+    },
+    "tag-remove-before-inset-block-end": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-block-start": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-inline-end": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-inline-start": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-remove-hover-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color"
+    },
+    "chip-selected-tag-remove-opacity": {
+      "$value": "{plx-sys.opacity-high}",
+      "$type": "number"
+    },
+    "tag-list-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension"
+    },
+    "tag-list-row-gap": {
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension"
+    },
+    "tag-input-flex-basis": {
+      "$value": "{plx-sys.field-width-lg}",
+      "$type": "dimension"
+    },
+    "tag-input-min-width": {
+      "$value": "{plx-sys.field-width-md}",
+      "$type": "dimension"
+    },
+    "tag-rename-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "tag-rename-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "tag-rename-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "tag-input-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "tag-input-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension"
+    },
+    "tag-not-plx-chip-border-color": {
+      "$value": "{plx-sys.fill-neutral-border}",
+      "$type": "color"
+    },
+    "tag-not-plx-chip-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tag-tag-input-add-border-color": {
+      "$value": "{plx-sys.fill-neutral-border}",
+      "$type": "color"
+    },
+    "tag-tag-input-add-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "tag-tag-input-add-width": {
+      "$value": "{plx-sys.label-height-20px}",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-block-end": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-block-start": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-inline-end": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-inline-start": {
+      "$value": "calc({plx-sys.space-inset-xs} * -1)",
+      "$type": "dimension"
     }
   }
 }

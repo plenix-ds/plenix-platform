@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.25.2] - 2026-10-09
+
+### Added
+- Every Variant: Tag and Chip get the Button treatment: their values as component tokens (tag.css, 42 tokens, same
+  values), a lab each ("All tags": plain, removable, renamable in every state; "All chips": selected or not, plain or
+  removable, in every state) with each value's token and the Edit dialog, and a page per variant in the navigation.
+  15 labs pass tests/labs.test.js.
+
 ## [0.25.1] - 2026-10-09
 
 ### Changed
