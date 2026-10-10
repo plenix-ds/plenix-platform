@@ -1960,6 +1960,12 @@ function Suite({
     frost: 'frost',
     white: 'plain'
   }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -2340,16 +2346,33 @@ function ContactsScreen() {
     variant: "caption"
   }, c.co))))))), /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, contact ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
     title: contact.name,
-    description: contact.role + ' · ' + contact.co,
-    meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "data"
-    }, "Last message ", contact.last),
-    media: /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
-      name: contact.name,
-      size: "2xl"
-    })
+    media: {
+      person: contact.name,
+      color: contact.avColor
+    },
+    facts: [contact.role, contact.co, 'Last message ' + contact.last],
+    actions: [{
+      icon: 'phone',
+      label: 'Call'
+    }, {
+      icon: 'mail',
+      label: 'Email'
+    }, {
+      icon: 'message',
+      label: 'Message',
+      primary: true
+    }, {
+      icon: 'pencil',
+      label: 'Edit'
+    }, {
+      icon: 'trash',
+      label: 'Delete'
+    }, {
+      icon: 'share',
+      label: 'Share'
+    }]
   }), /*#__PURE__*/React.createElement(_classification.ClassificationWidget, {
     value: meta[contact.id],
     onChange: m => setMeta(prev => ({

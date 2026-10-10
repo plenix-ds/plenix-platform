@@ -1960,6 +1960,12 @@ function Suite({
     frost: 'frost',
     white: 'plain'
   }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -2315,12 +2321,20 @@ function BookmarksScreen() {
     className: "plx-motion-enter"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    justify: "between"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "h1",
-    variant: "title"
-  }, "Bookmarks"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
+    title: "Bookmarks",
+    media: {
+      icon: 'bookmark',
+      hue: 'green'
+    },
+    facts: [filtered.length + ' bookmarks', col === 'all' ? 'All collections' : col],
+    actions: [{
+      icon: 'share',
+      label: 'Share'
+    }]
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+    justify: "end"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
     variant: "primary",
     icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
       name: "plus"

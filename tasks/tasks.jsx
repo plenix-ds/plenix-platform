@@ -1,6 +1,6 @@
 /* Plenix · tasks (tasks/tasks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
    the tasks in a Panel as an ActivityList, the open task in a SidePanel. */
-import { ActivityList, Button, Checkbox, Icon, Inline, PageContent, Panel, SidePanel, Stack, Text } from 'plenix-platform';
+import { EntityHeader, ActivityList, Button, Checkbox, Icon, Inline, PageContent, Panel, SidePanel, Stack, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_TASKS, PriDot } from '../suite/shared.jsx';
 const { useState } = React;
@@ -15,10 +15,9 @@ export function TasksScreen() {
     <div className="plx-page-panes">
       <PageContent>
         <Stack gap="md">
-          <Inline justify="between">
-            <Text as="h1" variant="title">Tasks</Text>
-            <Button variant="primary" icon={<Icon name="plus" />}>Add task</Button>
-          </Inline>
+          <EntityHeader title="Tasks" media={{ icon: 'circle-check', hue: 'blue' }} facts={[ALL_TASKS.length + ' tasks', ALL_TASKS.filter((t) => !t.done).length + ' open']} actions={[{ icon: 'share', label: 'Share' }]} />
+          {/* the capability's own action stays out of the header (the capability menu is still to be decided) */}
+          <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Add task</Button></Inline>
           <Panel icon="circle-check" title="All tasks" flush>
             <ActivityList label="Tasks">{ALL_TASKS.map((t) => (
               <ActivityList.Item key={t.id} selected={sel === t.id} onOpen={() => setSel(sel === t.id ? null : t.id)}

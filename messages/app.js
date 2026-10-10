@@ -1960,6 +1960,12 @@ function Suite({
     frost: 'frost',
     white: 'plain'
   }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -2137,14 +2143,33 @@ function MessagingScreen({
   }) : null)))))))), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "none",
     grow: true
-  }, thd ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Header, {
+  }, thd ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    inset: "md"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
     title: thd.name,
-    meta: thd.ch,
-    avatar: /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
-      name: thd.name,
-      size: "sm"
-    })
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Thread, {
+    media: {
+      person: thd.name,
+      color: thd.avColor
+    },
+    context: thd.ch,
+    facts: [mList.length + ' messages', 'Last ' + thd.time],
+    actions: [{
+      icon: 'phone',
+      label: 'Call'
+    }, {
+      icon: 'archive',
+      label: 'Archive'
+    }, {
+      icon: 'mark-unread',
+      label: 'Mark as unread'
+    }, {
+      icon: 'snooze',
+      label: 'Snooze'
+    }, {
+      icon: 'trash',
+      label: 'Delete'
+    }]
+  })), /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Thread, {
     label: 'Conversation with ' + thd.name
   }, mList.map((m, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Message, {
     key: i,

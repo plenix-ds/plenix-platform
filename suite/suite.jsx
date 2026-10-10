@@ -49,6 +49,12 @@ function Suite({ app, render, page = 'workspace' }) {
   const label = (SUITE.find((x) => x.id === app) || { label: 'Settings' }).label;
   const openResult = (r, a) => { location.href = appPage(a, a === 'messaging' && r.id ? 't-' + r.id : ''); };
   const tone = { blue: 'accent', frost: 'frost', white: 'plain' }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? <SearchScreen key={ai} initialQuery={ai} />
     : find ? <FindWorkspace key={find.app} app={find.app} query={find.query} onQuery={(q) => { setFind({ ...find, query: q }); setHq(q); }} onOpen={openResult} onAskAI={(q) => { setFind(null); setAi(q); }} />

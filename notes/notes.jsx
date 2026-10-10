@@ -1,6 +1,6 @@
 /* Plenix · notes (notes/notes.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
    the list in a SecondaryPane, the open note as its title, details, tags, text and classification. */
-import { Button, Divider, EmptyState, Icon, PageContent, RowButton, SecondaryPane, Stack, Tag, TagList, Text, Textarea } from 'plenix-platform';
+import { Button, Divider, EmptyState, EntityHeader, Icon, PageContent, RowButton, SecondaryPane, Stack, Tag, TagList, Text, Textarea } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_NOTES } from '../suite/shared.jsx';
 const { useState } = React;
@@ -28,10 +28,9 @@ export function NotesScreen() {
       <PageContent>
         {note ? (
           <Stack gap="md" className="plx-motion-enter">
-            <Stack gap="xs">
-              <Text as="h1" variant="title">{note.title}</Text>
-              <Text variant="data">Edited {note.date} · {note.folder}</Text>
-            </Stack>
+            <EntityHeader title={note.title} media={{ icon: 'doc-text', hue: 'brown' }} context={note.folder}
+              live={{ tone: 'success', label: 'Saved' }} facts={['Edited ' + note.date]}
+              actions={[{ icon: 'circle-plus', label: 'Create tasks', primary: true }, { icon: 'pencil', label: 'Edit' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
             <TagList label="Tags">{note.tags.map((t) => <Tag key={t}>{t}</Tag>)}</TagList>
             <Divider />
             <Textarea aria-label="Note text" rows={8} defaultValue={note.preview + ' Sed ut perspiciatis unde omnis iste natus error sit voluptatem.'} />

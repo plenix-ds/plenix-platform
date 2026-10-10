@@ -695,6 +695,8 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
               {value:"frost",label:"Frost",preview:<ColorSwatch tone="frost"/>},
             ]}/>
           </Row>
+          <Row label="Page header background" desc="The soft tint behind the header of an open item (a contact, a project, a note)"><Seg opts={[{v:"none",l:"None"},{v:"gray",l:"Gray"},{v:"blue",l:"Blue"},{v:"warm",l:"Warm"},{v:"green",l:"Green"},{v:"purple",l:"Purple"},{v:"red",l:"Red"}]} val={prefs.headerTint||"blue"} onChange={v=>set("headerTint",v)}/></Row>
+          <Row label="Page header tint" desc="Fade runs from the tint at the top to white; Flat fills the header"><Seg opts={[{v:"fade",l:"Fade"},{v:"flat",l:"Flat"}]} val={prefs.headerTintStyle||"fade"} onChange={v=>set("headerTintStyle",v)}/></Row>
           <Row label="Accent color">
             <ColorPicker label="Accent color" value={accent} onChange={h=>set("accent",h)}/>
           </Row>

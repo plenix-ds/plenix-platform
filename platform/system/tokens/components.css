@@ -555,6 +555,7 @@
   --plx-comp-tag-input-add-before-inset-block-start: calc(var(--plx-sys-space-inset-xs) * -1);
   --plx-comp-tag-input-add-before-inset-inline-end: calc(var(--plx-sys-space-inset-xs) * -1);
   --plx-comp-tag-input-add-before-inset-inline-start: calc(var(--plx-sys-space-inset-xs) * -1);
+  --plx-comp-entity-header-tint: var(--plx-sys-data-color-blue-soft);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);

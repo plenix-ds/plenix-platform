@@ -1960,6 +1960,12 @@ function Suite({
     frost: 'frost',
     white: 'plain'
   }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -3813,6 +3819,47 @@ function Settings({
           tone: "frost"
         })
       }]
+    })), /*#__PURE__*/React.createElement(Row, {
+      label: "Page header background",
+      desc: "The soft tint behind the header of an open item (a contact, a project, a note)"
+    }, /*#__PURE__*/React.createElement(Seg, {
+      opts: [{
+        v: "none",
+        l: "None"
+      }, {
+        v: "gray",
+        l: "Gray"
+      }, {
+        v: "blue",
+        l: "Blue"
+      }, {
+        v: "warm",
+        l: "Warm"
+      }, {
+        v: "green",
+        l: "Green"
+      }, {
+        v: "purple",
+        l: "Purple"
+      }, {
+        v: "red",
+        l: "Red"
+      }],
+      val: prefs.headerTint || "blue",
+      onChange: v => set("headerTint", v)
+    })), /*#__PURE__*/React.createElement(Row, {
+      label: "Page header tint",
+      desc: "Fade runs from the tint at the top to white; Flat fills the header"
+    }, /*#__PURE__*/React.createElement(Seg, {
+      opts: [{
+        v: "fade",
+        l: "Fade"
+      }, {
+        v: "flat",
+        l: "Flat"
+      }],
+      val: prefs.headerTintStyle || "fade",
+      onChange: v => set("headerTintStyle", v)
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Accent color"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorPicker, {

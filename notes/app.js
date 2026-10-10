@@ -1960,6 +1960,12 @@ function Suite({
     frost: 'frost',
     white: 'plain'
   }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -2340,14 +2346,33 @@ function NotesScreen() {
   }, n.date, " \xB7 ", n.folder)))))), /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, note ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md",
     className: "plx-motion-enter"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "xs"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "h1",
-    variant: "title"
-  }, note.title), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "data"
-  }, "Edited ", note.date, " \xB7 ", note.folder)), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
+    title: note.title,
+    media: {
+      icon: 'doc-text',
+      hue: 'brown'
+    },
+    context: note.folder,
+    live: {
+      tone: 'success',
+      label: 'Saved'
+    },
+    facts: ['Edited ' + note.date],
+    actions: [{
+      icon: 'circle-plus',
+      label: 'Create tasks',
+      primary: true
+    }, {
+      icon: 'pencil',
+      label: 'Edit'
+    }, {
+      icon: 'trash',
+      label: 'Delete'
+    }, {
+      icon: 'share',
+      label: 'Share'
+    }]
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
     label: "Tags"
   }, note.tags.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
     key: t

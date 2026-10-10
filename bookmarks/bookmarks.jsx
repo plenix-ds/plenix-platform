@@ -1,6 +1,6 @@
 /* Plenix · bookmarks (bookmarks/bookmarks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: collection chips, the bookmarks as Cards in a ContentGrid, the open one in a SidePanel. */
-import { Button, Card, Chip, ContentGrid, Icon, Inline, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
+import { EntityHeader, Button, Card, Chip, ContentGrid, Icon, Inline, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_BOOKMARKS } from '../suite/shared.jsx';
 const { useState } = React;
@@ -17,10 +17,9 @@ export function BookmarksScreen() {
     <div className="plx-page-panes">
       <PageContent className="plx-motion-enter">
         <Stack gap="md">
-          <Inline justify="between">
-            <Text as="h1" variant="title">Bookmarks</Text>
-            <Button variant="primary" icon={<Icon name="plus" />}>Add</Button>
-          </Inline>
+          <EntityHeader title="Bookmarks" media={{ icon: 'bookmark', hue: 'green' }} facts={[filtered.length + ' bookmarks', col === 'all' ? 'All collections' : col]} actions={[{ icon: 'share', label: 'Share' }]} />
+          {/* the capability's own action stays out of the header (the capability menu is still to be decided) */}
+          <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Add</Button></Inline>
           <Inline wrap gap="xs">{cols.map((c) => <Chip key={c} selected={col === c} onClick={() => setCol(c)}>{c === 'all' ? 'All' : c}</Chip>)}</Inline>
           <ContentGrid size="lg" label="Bookmarks">
             {filtered.map((b) => (

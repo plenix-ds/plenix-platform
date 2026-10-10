@@ -2232,6 +2232,11 @@
     "tag-input-add-before-inset-inline-start": {
       "$value": "calc({plx-sys.space-inset-xs} * -1)",
       "$type": "dimension"
+    },
+    "entity-header-tint": {
+      "$value": "{plx-sys.data-color-blue-soft}",
+      "$type": "color",
+      "$description": "The entity header background tint (the user setting; default blue). Settings set data-plx-header-tint on the page root."
     }
   }
 }

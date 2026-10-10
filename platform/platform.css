@@ -68,6 +68,7 @@
 @import url("patterns/ContentGrid/content-grid.css");
 @import url("patterns/PropertyList/property-list.css");
 @import url("patterns/RecordPage/record-page.css");
+@import url("patterns/EntityHeader/entity-header.css");
 @import url("patterns/ActivityList/activity-list.css");
 @import url("patterns/NotificationList/notification-list.css");
 @import url("patterns/SettingsLayout/settings-layout.css");

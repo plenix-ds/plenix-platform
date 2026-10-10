@@ -2,7 +2,7 @@
    batch 201: the projects in the shell's NavPane, a project's capabilities in a SecondaryPane, its home as a record page
    header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a DataTable, the
    capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes. */
-import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RecordPage, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail } from 'plenix-platform';
+import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -15,6 +15,7 @@ export const ProjIco = ({ n, size = 15 }) => {
 
 /* ── Status badge ── */
 const STATUS = { active: ['success', 'Active'], paused: ['warning', 'Paused'], completed: ['info', 'Completed'], archived: ['neutral', 'Archived'] };
+const statusOf = (s) => { const v = STATUS[s] || STATUS.active; return { tone: v[0], label: v[1] }; };
 export const ProjStatus = ({ s }) => { const v = STATUS[s] || STATUS.active; return <Badge tone={v[0]}>{v[1]}</Badge>; };
 
 /* ── The projects list: the shell's side navigation ── */
@@ -111,8 +112,8 @@ export function ProjectContent({ proj, panel }) {
     return (
       <PageContent>
         <Stack gap="lg">
-          <RecordPage.Header title={proj.name} description={proj.desc} meta={<Inline gap="sm"><ProjStatus s={proj.status} /><Text variant="eyebrow">{proj.tags[0]}</Text></Inline>}
-            actions={<Button variant="primary">Share</Button>} />
+          <EntityHeader title={proj.name} media={{ icon: 'briefcase', hue: proj.color }} context={proj.tags[0]} status={statusOf(proj.status)} description={proj.desc}
+            actions={[{ icon: 'flag', label: 'Update status', primary: true }, { icon: 'share', label: 'Share' }]} />
           <Inline gap="lg" wrap align="end">
             <Stack grow><ProgressBar value={pct} color={proj.color} label="Progress" showValue /></Stack>
             <Metric.Group label="Project figures">
@@ -144,7 +145,7 @@ export function ProjectContent({ proj, panel }) {
   if (panel === 'tasks') return (
     <PageContent>
       <Stack gap="md">
-        <Text as="h1" variant="title">Tasks</Text>
+        <EntityHeader title="Tasks" media={{ icon: 'circle-check', hue: proj.color }} context={proj.name} facts={[pTasks.length + ' tasks', doneT + ' done']} actions={[{ icon: 'share', label: 'Share' }]} />
         <ProgressBar value={pct} color={proj.color} label={doneT + '/' + pTasks.length + ' tasks'} showValue />
         <Panel icon="circle-check" title="All tasks">{pTasks.length ? <Stack gap="sm">{pTasks.map(taskRow)}</Stack> : <Text variant="secondary">No tasks for this project yet.</Text>}</Panel>
       </Stack>
@@ -155,7 +156,7 @@ export function ProjectContent({ proj, panel }) {
   if (panel === 'notes') return (
     <PageContent>
       <Stack gap="md">
-        <Text as="h1" variant="title">Notes</Text>
+        <EntityHeader title="Notes" media={{ icon: 'doc-text', hue: proj.color }} context={proj.name} facts={[pNotes.length + ' notes']} actions={[{ icon: 'share', label: 'Share' }]} />
         {pNotes.length ? (
           <ContentGrid size="lg" label="Notes">{pNotes.map((n, i) => (
             <Card key={i} title={n.title} meta={n.date} accent={proj.color} onOpen={() => {}}>
@@ -172,7 +173,7 @@ export function ProjectContent({ proj, panel }) {
   if (panel === 'files') return (
     <PageContent>
       <Stack gap="md">
-        <Text as="h1" variant="title">Files</Text>
+        <EntityHeader title="Files" media={{ icon: 'folder', hue: proj.color }} context={proj.name} facts={[pFiles.length + ' files']} actions={[{ icon: 'share', label: 'Share' }]} />
         <DataTable label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
           { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-320px' },
           { title: 'Type', field: 't', kind: 'data', filter: 'list' },

@@ -1960,6 +1960,12 @@ function Suite({
     frost: 'frost',
     white: 'plain'
   }[prefs.headerBar || 'blue'] || 'accent';
+  // the page header background (Settings › Appearance): read by EntityHeader from the page root
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
+    root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
+  }, [prefs.headerTint, prefs.headerTintStyle]);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -2107,6 +2113,13 @@ const STATUS = {
   paused: ['warning', 'Paused'],
   completed: ['info', 'Completed'],
   archived: ['neutral', 'Archived']
+};
+const statusOf = s => {
+  const v = STATUS[s] || STATUS.active;
+  return {
+    tone: v[0],
+    label: v[1]
+  };
 };
 const ProjStatus = ({
   s
@@ -2353,19 +2366,23 @@ function ProjectContent({
     const overdue = open.filter(t => t.due === 'Overdue');
     return /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "lg"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
       title: proj.name,
+      media: {
+        icon: 'briefcase',
+        hue: proj.color
+      },
+      context: proj.tags[0],
+      status: statusOf(proj.status),
       description: proj.desc,
-      meta: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-        gap: "sm"
-      }, /*#__PURE__*/React.createElement(ProjStatus, {
-        s: proj.status
-      }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-        variant: "eyebrow"
-      }, proj.tags[0])),
-      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-        variant: "primary"
-      }, "Share")
+      actions: [{
+        icon: 'flag',
+        label: 'Update status',
+        primary: true
+      }, {
+        icon: 'share',
+        label: 'Share'
+      }]
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "lg",
       wrap: true,
@@ -2450,10 +2467,19 @@ function ProjectContent({
   /* ── TASKS ── */
   if (panel === 'tasks') return /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "h1",
-    variant: "title"
-  }, "Tasks"), /*#__PURE__*/React.createElement(_plenixPlatform.ProgressBar, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
+    title: "Tasks",
+    media: {
+      icon: 'circle-check',
+      hue: proj.color
+    },
+    context: proj.name,
+    facts: [pTasks.length + ' tasks', doneT + ' done'],
+    actions: [{
+      icon: 'share',
+      label: 'Share'
+    }]
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.ProgressBar, {
     value: pct,
     color: proj.color,
     label: doneT + '/' + pTasks.length + ' tasks',
@@ -2470,10 +2496,19 @@ function ProjectContent({
   /* ── NOTES ── */
   if (panel === 'notes') return /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "h1",
-    variant: "title"
-  }, "Notes"), pNotes.length ? /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
+    title: "Notes",
+    media: {
+      icon: 'doc-text',
+      hue: proj.color
+    },
+    context: proj.name,
+    facts: [pNotes.length + ' notes'],
+    actions: [{
+      icon: 'share',
+      label: 'Share'
+    }]
+  }), pNotes.length ? /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "lg",
     label: "Notes"
   }, pNotes.map((n, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
@@ -2495,10 +2530,19 @@ function ProjectContent({
   /* ── FILES ── */
   if (panel === 'files') return /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "h1",
-    variant: "title"
-  }, "Files"), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EntityHeader, {
+    title: "Files",
+    media: {
+      icon: 'folder',
+      hue: proj.color
+    },
+    context: proj.name,
+    facts: [pFiles.length + ' files'],
+    actions: [{
+      icon: 'share',
+      label: 'Share'
+    }]
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
     label: "Files",
     data: pFiles.map((f, i) => ({
       ...f,

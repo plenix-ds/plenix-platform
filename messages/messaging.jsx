@@ -1,6 +1,6 @@
 /* Plenix · messaging (messages/messaging.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the conversations in a SecondaryPane, the open one as Chat (header, thread, composer). */
-import { Avatar, Chat, Count, EmptyState, Inline, RowButton, SecondaryPane, Stack, Tag, Text } from 'plenix-platform';
+import { Avatar, Chat, Count, EmptyState, EntityHeader, Inline, RowButton, SecondaryPane, Stack, Tag, Text } from 'plenix-platform';
 import { MSGS, THREADS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -40,7 +40,12 @@ export function MessagingScreen({ thread, setThread }) {
       <Stack gap="none" grow>
         {thd ? (
           <>
-            <Chat.Header title={thd.name} meta={thd.ch} avatar={<Avatar name={thd.name} size="sm" />} />
+            <Stack inset="md">
+              <EntityHeader title={thd.name} media={{ person: thd.name, color: thd.avColor }} context={thd.ch}
+                facts={[mList.length + ' messages', 'Last ' + thd.time]}
+                actions={[{ icon: 'phone', label: 'Call' }, { icon: 'archive', label: 'Archive' }, { icon: 'mark-unread', label: 'Mark as unread' },
+                  { icon: 'snooze', label: 'Snooze' }, { icon: 'trash', label: 'Delete' }]} />
+            </Stack>
             <Chat.Thread label={'Conversation with ' + thd.name}>
               {mList.map((m, i) => <Chat.Message key={i} mine={m.mine} author={m.mine ? undefined : thd.name} time={m.time}>{m.text}</Chat.Message>)}
             </Chat.Thread>

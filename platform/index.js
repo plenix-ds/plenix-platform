@@ -67,6 +67,7 @@ export { BulkActions, SelectionSummary } from './patterns/BulkActions/BulkAction
 export { ContentGrid } from './patterns/ContentGrid/ContentGrid.jsx';
 export { PropertyList } from './patterns/PropertyList/PropertyList.jsx';
 export { RecordPage } from './patterns/RecordPage/RecordPage.jsx';
+export { EntityHeader } from './patterns/EntityHeader/EntityHeader.jsx';
 export { ActivityList } from './patterns/ActivityList/ActivityList.jsx';
 export { NotificationList } from './patterns/NotificationList/NotificationList.jsx';
 export { SettingsLayout, SettingsSection, SettingsRow } from './patterns/SettingsLayout/SettingsLayout.jsx';

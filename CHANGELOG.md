@@ -6,6 +6,26 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-10-09
+
+### Added
+- EntityHeader (patterns/EntityHeader), the header of a page that shows one entity, as decided with the owner in the page
+  header study (docs/page-header-study.html): a card; 48px media with a 1px border (an Avatar, or a generic icon for the
+  entity's kind tinted in a data color); an optional context line (a placeholder such as the category, not a breadcrumb)
+  and the status area (a soft Badge) on the top line; the title, 18px bold, wrapping; the entity's own actions as 16px
+  icon buttons (Compact) side by side with the ⋯ menu last, folding from the end when the row is narrow; one line of
+  facts under a full-width line, every item in the same font, size, weight and color (live state first, with its dot).
+  Token --plx-comp-entity-header-tint. (batch 296)
+- Settings › Appearance: "Page header background" (None, Gray, Blue, Warm, Green, Purple, Red; default Blue) and "Page
+  header tint" (Fade, Flat; default Fade), applied as data-plx-header-tint and data-plx-header-tint-style on the page
+  root. (batch 296)
+
+### Changed
+- Every application's entity pages use EntityHeader: Contacts (Call, Email, Message, Edit, Delete, Share), a project's
+  home, Tasks, Notes and Files views, Messages (the open conversation), Notes, and the Tasks, Files and Bookmarks
+  screens; their "Add" buttons sit under the header (capability actions stay out of it). The spec documents it under
+  Object / record page. (batch 296)
+
 ## [0.27.3] - 2026-10-09
 
 ### Fixed

@@ -1,6 +1,6 @@
 /* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
    the files in a DataTable (batch 226), the open one in a SidePanel. */
-import { Button, DataTable, Icon, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
+import { EntityHeader, Button, DataTable, Icon, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
 const { useState } = React;
@@ -16,10 +16,9 @@ export function FilesScreen() {
     <div className="plx-page-panes">
       <PageContent>
         <Stack gap="md">
-          <Inline justify="between">
-            <Text as="h1" variant="title">Files</Text>
-            <Button variant="primary" icon={<Icon name="plus" />}>Upload</Button>
-          </Inline>
+          <EntityHeader title="Files" media={{ icon: 'folder', hue: 'gray' }} facts={[ALL_FILES.length + ' files']} actions={[{ icon: 'share', label: 'Share' }]} />
+          {/* the capability's own action stays out of the header (the capability menu is still to be decided) */}
+          <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Upload</Button></Inline>
           <DataTable label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }}
             on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[
               { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-320px' },
