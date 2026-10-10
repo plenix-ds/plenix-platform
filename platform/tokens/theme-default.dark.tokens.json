@@ -754,6 +754,206 @@
       "$value": "{plx-ref.color-gray-800}",
       "$type": "color",
       "$description": "A data color (batch 280): gray, text on its soft fill."
+    },
+    "category-red": {
+      "$value": "{plx-ref.color-category-red}",
+      "$type": "color",
+      "$description": "A category color (batch 290): red. The same in every theme, so a category is always recognized. [data-plx-category=\"red\"] applies it."
+    },
+    "category-red-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the red category color (black: the stronger contrast)."
+    },
+    "category-green": {
+      "$value": "{plx-ref.color-category-green}",
+      "$type": "color",
+      "$description": "A category color (batch 290): green. The same in every theme, so a category is always recognized. [data-plx-category=\"green\"] applies it."
+    },
+    "category-green-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the green category color (black: the stronger contrast)."
+    },
+    "category-yellow": {
+      "$value": "{plx-ref.color-category-yellow}",
+      "$type": "color",
+      "$description": "A category color (batch 290): yellow. The same in every theme, so a category is always recognized. [data-plx-category=\"yellow\"] applies it."
+    },
+    "category-yellow-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the yellow category color (black: the stronger contrast)."
+    },
+    "category-blue": {
+      "$value": "{plx-ref.color-category-blue}",
+      "$type": "color",
+      "$description": "A category color (batch 290): blue. The same in every theme, so a category is always recognized. [data-plx-category=\"blue\"] applies it."
+    },
+    "category-blue-on": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color",
+      "$description": "Text on the blue category color (white: the stronger contrast)."
+    },
+    "category-orange": {
+      "$value": "{plx-ref.color-category-orange}",
+      "$type": "color",
+      "$description": "A category color (batch 290): orange. The same in every theme, so a category is always recognized. [data-plx-category=\"orange\"] applies it."
+    },
+    "category-orange-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the orange category color (black: the stronger contrast)."
+    },
+    "category-purple": {
+      "$value": "{plx-ref.color-category-purple}",
+      "$type": "color",
+      "$description": "A category color (batch 290): purple. The same in every theme, so a category is always recognized. [data-plx-category=\"purple\"] applies it."
+    },
+    "category-purple-on": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color",
+      "$description": "Text on the purple category color (white: the stronger contrast)."
+    },
+    "category-cyan": {
+      "$value": "{plx-ref.color-category-cyan}",
+      "$type": "color",
+      "$description": "A category color (batch 290): cyan. The same in every theme, so a category is always recognized. [data-plx-category=\"cyan\"] applies it."
+    },
+    "category-cyan-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the cyan category color (black: the stronger contrast)."
+    },
+    "category-magenta": {
+      "$value": "{plx-ref.color-category-magenta}",
+      "$type": "color",
+      "$description": "A category color (batch 290): magenta. The same in every theme, so a category is always recognized. [data-plx-category=\"magenta\"] applies it."
+    },
+    "category-magenta-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the magenta category color (black: the stronger contrast)."
+    },
+    "category-lime": {
+      "$value": "{plx-ref.color-category-lime}",
+      "$type": "color",
+      "$description": "A category color (batch 290): lime. The same in every theme, so a category is always recognized. [data-plx-category=\"lime\"] applies it."
+    },
+    "category-lime-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the lime category color (black: the stronger contrast)."
+    },
+    "category-pink": {
+      "$value": "{plx-ref.color-category-pink}",
+      "$type": "color",
+      "$description": "A category color (batch 290): pink. The same in every theme, so a category is always recognized. [data-plx-category=\"pink\"] applies it."
+    },
+    "category-pink-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the pink category color (black: the stronger contrast)."
+    },
+    "category-teal": {
+      "$value": "{plx-ref.color-category-teal}",
+      "$type": "color",
+      "$description": "A category color (batch 290): teal. The same in every theme, so a category is always recognized. [data-plx-category=\"teal\"] applies it."
+    },
+    "category-teal-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the teal category color (black: the stronger contrast)."
+    },
+    "category-lavender": {
+      "$value": "{plx-ref.color-category-lavender}",
+      "$type": "color",
+      "$description": "A category color (batch 290): lavender. The same in every theme, so a category is always recognized. [data-plx-category=\"lavender\"] applies it."
+    },
+    "category-lavender-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the lavender category color (black: the stronger contrast)."
+    },
+    "category-brown": {
+      "$value": "{plx-ref.color-category-brown}",
+      "$type": "color",
+      "$description": "A category color (batch 290): brown. The same in every theme, so a category is always recognized. [data-plx-category=\"brown\"] applies it."
+    },
+    "category-brown-on": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color",
+      "$description": "Text on the brown category color (white: the stronger contrast)."
+    },
+    "category-beige": {
+      "$value": "{plx-ref.color-category-beige}",
+      "$type": "color",
+      "$description": "A category color (batch 290): beige. The same in every theme, so a category is always recognized. [data-plx-category=\"beige\"] applies it."
+    },
+    "category-beige-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the beige category color (black: the stronger contrast)."
+    },
+    "category-maroon": {
+      "$value": "{plx-ref.color-category-maroon}",
+      "$type": "color",
+      "$description": "A category color (batch 290): maroon. The same in every theme, so a category is always recognized. [data-plx-category=\"maroon\"] applies it."
+    },
+    "category-maroon-on": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color",
+      "$description": "Text on the maroon category color (white: the stronger contrast)."
+    },
+    "category-mint": {
+      "$value": "{plx-ref.color-category-mint}",
+      "$type": "color",
+      "$description": "A category color (batch 290): mint. The same in every theme, so a category is always recognized. [data-plx-category=\"mint\"] applies it."
+    },
+    "category-mint-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the mint category color (black: the stronger contrast)."
+    },
+    "category-olive": {
+      "$value": "{plx-ref.color-category-olive}",
+      "$type": "color",
+      "$description": "A category color (batch 290): olive. The same in every theme, so a category is always recognized. [data-plx-category=\"olive\"] applies it."
+    },
+    "category-olive-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the olive category color (black: the stronger contrast)."
+    },
+    "category-apricot": {
+      "$value": "{plx-ref.color-category-apricot}",
+      "$type": "color",
+      "$description": "A category color (batch 290): apricot. The same in every theme, so a category is always recognized. [data-plx-category=\"apricot\"] applies it."
+    },
+    "category-apricot-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the apricot category color (black: the stronger contrast)."
+    },
+    "category-navy": {
+      "$value": "{plx-ref.color-category-navy}",
+      "$type": "color",
+      "$description": "A category color (batch 290): navy. The same in every theme, so a category is always recognized. [data-plx-category=\"navy\"] applies it."
+    },
+    "category-navy-on": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color",
+      "$description": "Text on the navy category color (white: the stronger contrast)."
+    },
+    "category-grey": {
+      "$value": "{plx-ref.color-category-grey}",
+      "$type": "color",
+      "$description": "A category color (batch 290): grey. The same in every theme, so a category is always recognized. [data-plx-category=\"grey\"] applies it."
+    },
+    "category-grey-on": {
+      "$value": "{plx-ref.color-black}",
+      "$type": "color",
+      "$description": "Text on the grey category color (black: the stronger contrast)."
     }
   }
 }

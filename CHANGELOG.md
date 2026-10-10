@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-10-09
+
+### Added
+- Category colors, their own palette (owner: "use sashamaps.net/resources/20-colors"): Trubetskoy's 20 simple,
+  distinct colors with his exact values, in his convenient order (take the first n for n categories). Their own tokens,
+  separate from the theme and the same in every theme: --plx-ref-color-category-<name>, --plx-sys-category-<name> and
+  -<name>-on (black or white text, the stronger contrast; every one at least 4.5:1). CATEGORY_COLORS lists them
+  (generated); [data-plx-category] applies one. ColorSwatch.category, Avatar.category, ColorPicker palette="category".
+- Categories use it: Settings' categories and their editor, the Asset Manager's category color (details pane, new
+  category, upload). Archive's gray is the palette's grey.
+
+### Changed
+- ColorPicker is one row: the colors that do not fit are in a More menu at its end ("+n", or the chosen color when it is
+  one of them), each with its swatch and name.
+
 ## [0.25.3] - 2026-10-09
 
 ### Changed

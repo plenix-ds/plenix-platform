@@ -2237,6 +2237,7 @@ function CatEditModal({
     label: "Color",
     description: "Choose the category's color"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorPicker, {
+    palette: "category",
     label: "Category color",
     value: color,
     onChange: h => setCatEdit(x => ({
@@ -2251,7 +2252,7 @@ function CatEditModal({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
     name: catEdit.name || '?',
     src: catEdit.icon || undefined,
-    color: color,
+    category: color,
     size: "lg"
   }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
     icon: "upload",
@@ -3184,7 +3185,7 @@ function Settings({
   }, {
     id: 5,
     name: "Archive",
-    color: "gray",
+    color: "grey",
     icon: null,
     subs: []
   }]);
@@ -3534,7 +3535,7 @@ function Settings({
       actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
         gap: "xs"
       }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-        color: cat.color,
+        category: cat.color,
         size: "sm"
       }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
         variant: "secondary"

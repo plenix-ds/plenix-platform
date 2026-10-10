@@ -75,11 +75,11 @@ export function CatEditModal({ catEdit, setCatEdit, saveEdit }) {
         {catEdit.type === 'cat' ? (
           <>
             <Field label="Color" description="Choose the category's color">
-              <ColorPicker label="Category color" value={color} onChange={(h) => setCatEdit((x) => ({ ...x, color: h }))} />
+              <ColorPicker palette="category" label="Category color" value={color} onChange={(h) => setCatEdit((x) => ({ ...x, color: h }))} />
             </Field>
             <Field label="Icon" description="An optional image, sized to fit">
               <Inline gap="sm">
-                <Avatar name={catEdit.name || '?'} src={catEdit.icon || undefined} color={color} size="lg" />
+                <Avatar name={catEdit.name || '?'} src={catEdit.icon || undefined} category={color} size="lg" />
                 <Button icon="upload" onClick={() => { if (fileRef.current) fileRef.current.click(); }}>Upload image</Button>
                 <input ref={fileRef} type="file" accept="image/*" tabIndex={-1} aria-hidden="true" hidden onChange={(e) => {
                   const f = e.target.files[0]; if (!f) return;

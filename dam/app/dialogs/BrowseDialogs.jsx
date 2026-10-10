@@ -20,11 +20,11 @@
 import React from 'react';
 import {
   Dialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, Switch, Tabs, DataTable, Tag, TagList, TagInput, Button, Icon,
-  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorPicker, DATA_COLORS,
+  Count, Kbd, SearchField, EmptyState, useToast, Stack, Inline, Text, ColorPicker, CATEGORY_COLORS,
 } from 'plenix-platform';
 
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
-// A category's color is a data color: a hue name from the design system (DATA_COLORS; batch 280).
+// A category's color is a category color: a name from the category palette (CATEGORY_COLORS; batch 290).
 const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category path', 'File size', 'Dimensions', 'Date created',
   'Date modified', 'Camera model', 'Aperture', 'Color profile', 'GPS location', 'Edit status', 'Owner'];
 // DATA: [field, type, shown]
@@ -89,7 +89,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [form, setForm] = React.useState({ name: '', description: '' });
   const [tags, setTags] = React.useState([]);
-  const [color, setColor] = React.useState(DATA_COLORS[0]);
+  const [color, setColor] = React.useState(CATEGORY_COLORS[0]);
   const [fieldsOpen, setFieldsOpen] = React.useState(false);
   const text = (k) => ({ value: form[k], onChange: (e) => setForm({ ...form, [k]: e.target.value }) });
   const addTag = (t) => { if (tags.indexOf(t) < 0) setTags(tags.concat(t)); };
@@ -120,7 +120,7 @@ export function NewCatDialog({ open, onClose, onSave }) {
         <div className="plx-field plx-field--stacked">
           <div className="plx-field__head"><span className="plx-field__label" id={uid + 'color'}>Category color</span></div>
           <div className="plx-field__control">
-            <ColorPicker aria-labelledby={uid + 'color'} label={null} value={color} onChange={setColor} />
+            <ColorPicker palette="category" aria-labelledby={uid + 'color'} label={null} value={color} onChange={setColor} />
           </div>
         </div>
       </Stack>

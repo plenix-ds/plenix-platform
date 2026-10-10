@@ -84,7 +84,7 @@ export function CategoryInspector({ collection = false, act, onDialog }) {
               <Row label="Name"><Input name="name" {...text('name')} /></Row>
               <Row label="Parent"><Select name="parent" {...text('parent')}>{c.parents.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Display order"><Input name="displayOrder" type="number" {...text('order')} /></Row>
-              <Row label="Color"><ColorPicker label="Color" size="sm" value={f.color} onChange={(h) => setF({ ...f, color: h })} /></Row>
+              <Row label="Color"><ColorPicker palette="category" label="Color" size="sm" value={f.color} onChange={(h) => setF({ ...f, color: h })} /></Row>
               <Row label="Copyright"><Input name="copyright" placeholder="Copyright..." {...text('copyright')} /></Row>
               <Row label="Rights"><Select name="rights" {...text('rights')}>{c.rightsOptions.map((p) => <option key={p}>{p}</option>)}</Select></Row>
               <Row label="Rating"><Rating value={f.rating} onChange={(v) => setF({ ...f, rating: v })} label="Rating" /></Row>

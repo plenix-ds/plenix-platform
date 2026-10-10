@@ -228,4 +228,24 @@
   --plx-ref-content-max-1200px: 1200px;
   --plx-ref-content-max-1600px: 1600px;
   --plx-ref-content-max-2600px: 2600px;
+  --plx-ref-color-category-red: #e6194b;
+  --plx-ref-color-category-green: #3cb44b;
+  --plx-ref-color-category-yellow: #ffe119;
+  --plx-ref-color-category-blue: #4363d8;
+  --plx-ref-color-category-orange: #f58231;
+  --plx-ref-color-category-purple: #911eb4;
+  --plx-ref-color-category-cyan: #42d4f4;
+  --plx-ref-color-category-magenta: #f032e6;
+  --plx-ref-color-category-lime: #bfef45;
+  --plx-ref-color-category-pink: #fabed4;
+  --plx-ref-color-category-teal: #469990;
+  --plx-ref-color-category-lavender: #dcbeff;
+  --plx-ref-color-category-brown: #9a6324;
+  --plx-ref-color-category-beige: #fffac8;
+  --plx-ref-color-category-maroon: #800000;
+  --plx-ref-color-category-mint: #aaffc3;
+  --plx-ref-color-category-olive: #808000;
+  --plx-ref-color-category-apricot: #ffd8b1;
+  --plx-ref-color-category-navy: #000075;
+  --plx-ref-color-category-grey: #a9a9a9;
 }

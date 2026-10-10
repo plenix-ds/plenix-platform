@@ -21,6 +21,7 @@ export { Notice } from './components/Notice/Notice.jsx';
 export { BrandMark } from './components/Brand/Brand.jsx';
 export { ColorSwatch, ColorPicker } from './components/ColorSwatch/ColorSwatch.jsx';
 export { DATA_COLORS } from './components/ColorSwatch/dataColors.js';
+export { CATEGORY_COLORS } from './components/ColorSwatch/categoryColors.js';
 export { DropZone } from './components/DropZone/DropZone.jsx';
 export { Preview } from './components/Preview/Preview.jsx';
 export { Fieldset } from './components/Fieldset/Fieldset.jsx';

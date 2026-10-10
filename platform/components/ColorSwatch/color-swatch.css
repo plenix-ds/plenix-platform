@@ -8,9 +8,11 @@ button.plx-color-swatch:focus-visible,
 button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
 .plx-color-swatch--square{border-bottom-left-radius:var(--plx-sys-radius-compact-4px);border-bottom-right-radius:var(--plx-sys-radius-compact-4px);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-sys-radius-compact-4px);border-top-right-radius:var(--plx-sys-radius-compact-4px);border-top-style:none;}
 /* a data color (batch 280), or a system surface it previews */
-.plx-color-swatch[data-plx-color]{--plx-comp-color-swatch-value:var(--plx-comp-data-color);}
+.plx-color-swatch[data-plx-color],.plx-color-swatch[data-plx-category]{--plx-comp-color-swatch-value:var(--plx-comp-data-color);}
 .plx-color-swatch--accent{--plx-comp-color-swatch-value:var(--plx-sys-accent-surface);}
 .plx-color-swatch--surface{--plx-comp-color-swatch-value:var(--plx-sys-surface-default);}
 .plx-color-swatch--frost{--plx-comp-color-swatch-value:var(--plx-sys-frost-surface);}
 /* ColorPicker: the swatches in a wrapping row (batch 280) */
-.plx-color-picker{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:flex;flex-wrap:wrap;row-gap:var(--plx-sys-space-inline-sm);}
+/* one row (batch 290): the row is as tall as the More button and clips what wraps; useOverflow moves those into the menu */
+.plx-color-picker{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);column-gap:var(--plx-sys-space-inline-sm);display:flex;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-ref-space-4px);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-ref-space-8px);}
+.plx-color-picker__more,.plx-color-picker__slot{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);display:inline-flex;}

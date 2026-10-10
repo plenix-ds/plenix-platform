@@ -1816,7 +1816,7 @@ const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
   parent: 'Categories (root)',
   parents: ['Categories (root)', 'Borders', 'Branding', 'Clergy', 'Crosses'],
   order: '8',
-  color: 'brown' /* a data color: a hue name (batch 280) */,
+  color: 'brown' /* a category color (CATEGORY_COLORS, batch 290) */,
   copyright: 'Coptic Orthodox Church',
   rights: 'Internal',
   rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
@@ -2293,6 +2293,7 @@ function CategoryInspector({
       }, text('order')))), /*#__PURE__*/_react.default.createElement(Row, {
         label: "Color"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
+        palette: "category",
         label: "Color",
         size: "sm",
         value: f.color,
@@ -2591,7 +2592,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    The filter and sort dialogs edit a copy of the selection: Apply reports it, Cancel drops it. Without value they keep
    their own selection, starting from the legacy defaults. Actions with no back end yet confirm with a toast. */
 // DATA: category colors, sort fields, field lists and filter values come from the back end; sample values until then.
-// A category's color is a data color: a hue name from the design system (DATA_COLORS; batch 280).
+// A category's color is a category color: a name from the category palette (CATEGORY_COLORS; batch 290).
 const SORT_FIELDS = ['Name', 'Description', 'Tags', 'Rating', 'Keywords', 'Category path', 'File size', 'Dimensions', 'Date created', 'Date modified', 'Camera model', 'Aperture', 'Color profile', 'GPS location', 'Edit status', 'Owner'];
 // DATA: [field, type, shown]
 const CATEGORY_FIELDS = [['name', 'text', true], ['description', 'textarea', true], ['categorypath', 'text', true], ['parentid', 'text', true], ['displayorder', 'number', true], ['color', 'text', true], ['owner', 'text', true], ['viewgroups', 'list', true], ['editgroups', 'list', false], ['visibility', 'list', true], ['defaultstatus', 'list', false], ['defaultcopyright', 'text', false], ['defaulttags', 'list', false], ['totalassets', 'number', true], ['storageused', 'number', false], ['datecreated', 'date', true], ['datemodified', 'date', true]];
@@ -2694,7 +2695,7 @@ function NewCatDialog({
     description: ''
   });
   const [tags, setTags] = _react.default.useState([]);
-  const [color, setColor] = _react.default.useState(_plenixPlatform.DATA_COLORS[0]);
+  const [color, setColor] = _react.default.useState(_plenixPlatform.CATEGORY_COLORS[0]);
   const [fieldsOpen, setFieldsOpen] = _react.default.useState(false);
   const text = k => ({
     value: form[k],
@@ -2780,6 +2781,7 @@ function NewCatDialog({
   }, "Category color")), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__control"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
+    palette: "category",
     "aria-labelledby": uid + 'color',
     label: null,
     value: color,
@@ -3859,7 +3861,7 @@ function CategoriesPane() {
     name: '',
     description: '',
     tags: '',
-    color: _plenixPlatform.DATA_COLORS[0]
+    color: _plenixPlatform.CATEGORY_COLORS[0]
   });
   const shown = CATEGORIES.filter(c => !q.trim() || c.toLowerCase().includes(q.trim().toLowerCase()));
   const toggle = (c, on) => setPicked(on ? picked.concat(c) : picked.filter(p => p !== c));
@@ -3948,6 +3950,7 @@ function CategoriesPane() {
       tags: e.target.value
     })
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColorPicker, {
+    palette: "category",
     label: "Category color",
     value: cat.color,
     onChange: h => setCat({

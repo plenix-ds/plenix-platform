@@ -953,6 +953,106 @@
     "content-max-2600px": {
       "$value": "2600px",
       "$type": "dimension"
+    },
+    "color-category-red": {
+      "$value": "#e6194b",
+      "$type": "color",
+      "$description": "Category color 1 of 20: red (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-green": {
+      "$value": "#3cb44b",
+      "$type": "color",
+      "$description": "Category color 2 of 20: green (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-yellow": {
+      "$value": "#ffe119",
+      "$type": "color",
+      "$description": "Category color 3 of 20: yellow (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-blue": {
+      "$value": "#4363d8",
+      "$type": "color",
+      "$description": "Category color 4 of 20: blue (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-orange": {
+      "$value": "#f58231",
+      "$type": "color",
+      "$description": "Category color 5 of 20: orange (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-purple": {
+      "$value": "#911eb4",
+      "$type": "color",
+      "$description": "Category color 6 of 20: purple (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-cyan": {
+      "$value": "#42d4f4",
+      "$type": "color",
+      "$description": "Category color 7 of 20: cyan (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-magenta": {
+      "$value": "#f032e6",
+      "$type": "color",
+      "$description": "Category color 8 of 20: magenta (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-lime": {
+      "$value": "#bfef45",
+      "$type": "color",
+      "$description": "Category color 9 of 20: lime (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-pink": {
+      "$value": "#fabed4",
+      "$type": "color",
+      "$description": "Category color 10 of 20: pink (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-teal": {
+      "$value": "#469990",
+      "$type": "color",
+      "$description": "Category color 11 of 20: teal (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-lavender": {
+      "$value": "#dcbeff",
+      "$type": "color",
+      "$description": "Category color 12 of 20: lavender (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-brown": {
+      "$value": "#9a6324",
+      "$type": "color",
+      "$description": "Category color 13 of 20: brown (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-beige": {
+      "$value": "#fffac8",
+      "$type": "color",
+      "$description": "Category color 14 of 20: beige (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-maroon": {
+      "$value": "#800000",
+      "$type": "color",
+      "$description": "Category color 15 of 20: maroon (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-mint": {
+      "$value": "#aaffc3",
+      "$type": "color",
+      "$description": "Category color 16 of 20: mint (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-olive": {
+      "$value": "#808000",
+      "$type": "color",
+      "$description": "Category color 17 of 20: olive (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-apricot": {
+      "$value": "#ffd8b1",
+      "$type": "color",
+      "$description": "Category color 18 of 20: apricot (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-navy": {
+      "$value": "#000075",
+      "$type": "color",
+      "$description": "Category color 19 of 20: navy (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-grey": {
+      "$value": "#a9a9a9",
+      "$type": "color",
+      "$description": "Category color 20 of 20: grey (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     }
   }
 }

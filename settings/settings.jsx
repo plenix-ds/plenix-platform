@@ -488,7 +488,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     {id:2,name:"Client Work",color:"blue",icon:null,subs:[{id:21,name:"Design"},{id:22,name:"Development"},{id:23,name:"Strategy"}]},
     {id:3,name:"Research",color:"purple",icon:null,subs:[{id:31,name:"Market Research"},{id:32,name:"Competitive Analysis"}]},
     {id:4,name:"Travel",color:"brown",icon:null,subs:[]},
-    {id:5,name:"Archive",color:"gray",icon:null,subs:[]},
+    {id:5,name:"Archive",color:"grey",icon:null,subs:[]},
   ]);
   const [catEdit,setCatEdit]=useState(null);
   const [expandedCats,setExpandedCats]=useState(new Set([1,2,3]));
@@ -596,7 +596,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
           {cats.map(cat=>(
             <Panel key={cat.id} collapsible headingLevel={2} title={cat.name} expanded={expandedCats.has(cat.id)} onToggle={()=>toggleExpand(cat.id)}
               actions={<Inline gap="xs">
-                <ColorSwatch color={cat.color} size="sm"/>
+                <ColorSwatch category={cat.color} size="sm"/>
                 <Text variant="secondary">{cat.subs.length} sub</Text>
                 <Button size="xs" iconOnly icon="pencil" label={"Edit "+cat.name} onClick={()=>setCatEdit({type:"cat",catId:cat.id,isNew:false,name:cat.name,color:cat.color,icon:cat.icon||null})}/>
                 <Button size="xs" iconOnly icon="trash" label={"Delete "+cat.name} onClick={()=>{if(window.confirm('Delete "'+cat.name+'"?'))deleteCat(cat.id);}}/>

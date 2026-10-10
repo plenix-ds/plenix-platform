@@ -12,7 +12,7 @@
    closes, as the legacy Upload button did. Every state resets when the dialog closes. */
 import React from 'react';
 import {
-  Dialog, Button, Checkbox, RadioGroup, Input, Textarea, SearchField, Tree, Icon, Count, EmptyState, useToast, Stack, Inline, Text, Columns, DropZone, ColorPicker, DATA_COLORS } from 'plenix-platform';
+  Dialog, Button, Checkbox, RadioGroup, Input, Textarea, SearchField, Tree, Icon, Count, EmptyState, useToast, Stack, Inline, Text, Columns, DropZone, ColorPicker, CATEGORY_COLORS } from 'plenix-platform';
 
 // DATA: the storage folders come from the back end; sample tree until then.
 const FOLDERS = [
@@ -254,7 +254,7 @@ function CategoriesPane() {
   const [q, setQ] = React.useState('');
   const [picked, setPicked] = React.useState([]);
   const [adding, setAdding] = React.useState(false);
-  const [cat, setCat] = React.useState({ name: '', description: '', tags: '', color: DATA_COLORS[0] });
+  const [cat, setCat] = React.useState({ name: '', description: '', tags: '', color: CATEGORY_COLORS[0] });
   const shown = CATEGORIES.filter((c) => !q.trim() || c.toLowerCase().includes(q.trim().toLowerCase()));
   const toggle = (c, on) => setPicked(on ? picked.concat(c) : picked.filter((p) => p !== c));
 
@@ -280,7 +280,7 @@ function CategoriesPane() {
           <Input name="categoryName" aria-label="Category name" placeholder="Enter category name..." value={cat.name} onChange={(e) => setCat({ ...cat, name: e.target.value })} />
           <Textarea name="description" aria-label="Description" placeholder="Optional description..." value={cat.description} onChange={(e) => setCat({ ...cat, description: e.target.value })} />
           <Input name="tags" aria-label="Tags" placeholder="Tags" value={cat.tags} onChange={(e) => setCat({ ...cat, tags: e.target.value })} />
-          <ColorPicker label="Category color" value={cat.color} onChange={(h) => setCat({ ...cat, color: h })} />
+          <ColorPicker palette="category" label="Category color" value={cat.color} onChange={(h) => setCat({ ...cat, color: h })} />
         </Stack>
       ) : null}
     </Stack>
