@@ -60,8 +60,10 @@ copyDir(path.join(P, 'system', 'tokens'), path.join(T, 'css'));
 copy(path.join(P, 'system', 'themes', 'default.css'), path.join(T, 'css', 'theme-default.css'));   // the default theme (renamed in batch 219)
 // the module: every token with its tier, type and value per selector (theme, density, interaction)
 const tokens = index.tokens.map((t) => ({ name: t.name, tier: t.tier, type: t.type, description: t.description || '',
-  values: t.sets.map((s) => ({ selector: s.selector, value: s.value, file: s.file })), refs: t.refs || [] }));
-json(path.join(T, 'tokens.json'), { version: VERSION, count: tokens.length, tokens });
+  values: t.sets.map((s) => ({ selector: s.selector, value: s.value, file: s.file })), refs: t.refs || [],
+  ...(t.platforms ? { platforms: t.platforms } : {}) }));   // its iOS and Android values (Platforms Standard 7.1)
+const platformOnly = index.platformOnly || [];
+json(path.join(T, 'tokens.json'), { version: VERSION, count: tokens.length, tokens, platformOnly });
 write(path.join(T, 'index.js'), '/* ' + SCOPE + '/tokens ' + VERSION + ' (generated) */\nexport const version = ' + JSON.stringify(VERSION) + ';\nexport const tokens = ' + JSON.stringify(tokens) + ';\n' +
   'const byName = new Map(tokens.map((t) => [t.name, t]));\n/** The token record by its CSS name, e.g. "--plx-sys-surface-canvas". */\nexport function token(name) { return byName.get(name); }\n' +
   '/** Its value for one selector (":root" when left out). */\nexport function value(name, selector = ":root") { const t = byName.get(name); const s = t && (t.values.find((v) => v.selector === selector) || t.values[0]); return s ? s.value : undefined; }\n' +
@@ -202,11 +204,21 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
     description: 'The Plenix design system as read-only JSON. Every file is also published at ' + SITE + '/api/v1/<name>.',
     endpoints: {
       tokens: SITE + '/api/v1/tokens', components: SITE + '/api/v1/components', exports: SITE + '/api/v1/exports',
-      taxonomy: SITE + '/api/v1/taxonomy', guidance: SITE + '/api/v1/guidance', icons: SITE + '/api/v1/icons', cdn: SITE + '/cdn/' + VERSION + '/',
+      taxonomy: SITE + '/api/v1/taxonomy', guidance: SITE + '/api/v1/guidance', platforms: SITE + '/api/v1/platforms', icons: SITE + '/api/v1/icons', cdn: SITE + '/cdn/' + VERSION + '/',
     },
     packages: ['tokens', 'icons', 'styles', 'react'].map((n) => SCOPE + '/' + n + '@' + VERSION),
   }));
-  json(path.join(API, 'tokens.json'), Object.assign({}, meta, { count: tokens.length, tokens }));
+  json(path.join(API, 'tokens.json'), Object.assign({}, meta, { count: tokens.length, tokens, platformOnly }));
+  // the Platforms Standard (platform/standards/platforms.md) and its token mapping: every native value by name, with the web
+  // token it maps to and its source on each platform
+  {
+    const sctx = vm.createContext({ window: {} });
+    const std = path.join(DS, 'platforms-standard.js');
+    if (fs.existsSync(std)) vm.runInContext(fs.readFileSync(std, 'utf8'), sctx, { filename: 'platforms-standard.js' });
+    const S = sctx.window.DSStandard || {};
+    json(path.join(API, 'platforms.json'), Object.assign({}, meta, { title: S.title || '', source: 'platform/standards/platforms.md',
+      platforms: ['web', 'ios', 'android'], count: (S.tokenMap || []).length, tokenMap: S.tokenMap || [], sections: S.sections || [] }));
+  }
   json(path.join(API, 'components.json'), Object.assign({}, meta, { count: components.length, components }));
   json(path.join(API, 'exports.json'), Object.assign({}, meta, { package: SCOPE + '/react', count: exportsList.length, exports: exportsList }));
   json(path.join(API, 'taxonomy.json'), Object.assign({}, meta, { count: sections.length, sections, placementRules: win.DSPlacementRules || [] }));

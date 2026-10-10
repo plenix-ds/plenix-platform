@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.12] - 2026-10-10
+
+### Added
+- The token data holds the native values. In tokens.index.json, the @plenix-ds/tokens tokens.json and the API
+  (/api/v1/tokens), each web token carries its iOS and Android values under platforms.ios and platforms.android,
+  with their sources (26 tokens). platformOnly lists the native values with no web token (59).
+- A new endpoint, /api/v1/platforms, serves the Plenix Platforms Standard (every section) and its token mapping
+  (80 names). (batch 313)
+
 ## [0.31.11] - 2026-10-10
 
 ### Fixed
