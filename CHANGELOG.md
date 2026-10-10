@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.26.2] - 2026-10-09
+
+### Fixed
+- PropertyList (columns): the value column shrinks with its pane instead of keeping a field-width minimum, so in a
+  narrow pane values wrap and are never cut off at the pane's edge ("Jul 3, 202").
+
 ## [0.27.1] - 2026-10-09
 
 ### Added
