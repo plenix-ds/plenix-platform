@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.28.3] - 2026-10-09
+
+### Fixed
+- Tables with wrapping text (owner: "whats wrong with this table?!"): when one cell wraps onto more lines, every other
+  cell in its row now grows with it, so the row label's shade, the cell fills and the column lines run the full row
+  height. Cells keep the row height as their minimum (Table and DataTable). (batch 299)
+
 ## [0.28.2] - 2026-10-09
 
 ### Changed

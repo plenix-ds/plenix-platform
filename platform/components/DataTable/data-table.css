@@ -51,7 +51,8 @@
 .plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover{background-color:var(--plx-sys-data-table-row-hover);cursor:default;}
 .plx-data-table .tabulator .tabulator-row.tabulator-selected{background-color:var(--plx-sys-data-table-row-selected);}
 .plx-data-table .tabulator .tabulator-row.tabulator-selected:hover{background-color:var(--plx-sys-data-table-row-selected-hover);}
-.plx-data-table .tabulator .tabulator-row .tabulator-cell{border-right-style:none;height:var(--plx-sys-data-table-row-height);line-height:var(--plx-sys-data-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;position:relative;}
+/* every cell stretches to its row: when one cell wraps onto more lines, the others (their fill, the row label's shade, the column line) grow with it (owner, 2026-10-09) */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell{align-self:stretch;border-right-style:none;height:auto;min-height:var(--plx-sys-data-table-row-height);line-height:var(--plx-sys-data-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;position:relative;}
 .plx-data-table .tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{background-color:var(--plx-sys-data-table-line);bottom:var(--plx-comp-data-table-column-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-data-table-column-line-inset);width:var(--plx-comp-data-table-line-width);}
 
 /* editing in place */
