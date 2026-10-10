@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.2] - 2026-10-10
+
+### Fixed
+- Top-level navigation on phones (decision N1, owner: "just fix n1"): a narrow window always uses a bottom bar with 3–5
+  destinations and never a drawer, because Material 3 no longer recommends the navigation drawer (May 2025) and says
+  compact windows always use a navigation bar, and Apple advises against overflow tabs. Areas beyond 5 go on a
+  destination that lists them or in the top bar's menu; Medium windows use a navigation rail (3–7); other apps are
+  reached through the header's app switcher. Updated in the design system's Platforms data and STANDARD.md decision 11.
+  (batch 304)
+
 ## [0.31.1] - 2026-10-10
 
 ### Changed
