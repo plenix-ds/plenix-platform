@@ -40,7 +40,7 @@
 @media (max-width: 47.9375rem){
 .plx-app-header__nav,.plx-app-header__nav+.plx-app-header__divider,.plx-app-header__start>.plx-app-header__divider{display:none;}
 .plx-app-header__search-slot{position:static;}
-.plx-app-header__search{inline-size:auto;inset-inline-start:var(--plx-sys-space-inset-md);}
+.plx-app-header__search{inline-size:auto;inset-inline-end:var(--plx-sys-space-inset-md);inset-inline-start:var(--plx-sys-space-inset-md);}
 }
 /* the switcher: every application, pinned first; a grid of icons and names */
 .plx-app-switcher{display:flex;position:relative;}

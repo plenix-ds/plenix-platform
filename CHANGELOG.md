@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.5] - 2026-10-10
+
+### Fixed
+- The search field's clear button no longer drops out of the field when pressed (owner: "this is still not fixed"). Root
+  cause: it was centered with transform: translateY(-50%), and the press feedback (motion.css) sets transform: scale(…)
+  while it is held, replacing the translate, so the X fell by half its height. It is now centered by its insets and
+  auto margins. The narrow header's search keeps the same margin on its right as on its left. (batch 307)
+
 ## [0.31.4] - 2026-10-10
 
 ### Changed
