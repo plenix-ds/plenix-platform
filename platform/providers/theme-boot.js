@@ -14,7 +14,7 @@
      PlenixWorkspace.setViewDensity(view, d): a saved density for one workspace or view
      PlenixWorkspace.clearDensity(): forget the user's choice (back to view, policy, standard)
      PlenixWorkspace.densities(): the choices to offer (compact is left out on a phone); the ChoiceList with useDensity draws the "Display density" control
-     PlenixWorkspace.setPanelWidth(panel, px): keeps a resized panel's width ("inspector" | "filter"; 4px steps, within the panel's limits) and remembers it
+     PlenixWorkspace.setPanelWidth(panel, px): keeps a resized panel's width ("inspector" | "filter"; the nearest size token, within the panel's limits) and remembers it
    Behavior:
      Density (density.css), the first that applies: the user's explicit choice; the saved density of this workspace or view; the page or region policy; the system default (standard).
      Touch and mobile override target sizes in CSS whatever the density.
@@ -153,10 +153,13 @@
   if (document.body) watchMain(); else document.addEventListener('DOMContentLoaded', watchMain);
 
   var LIMITS = { inspector: [320, 480], filter: [280, 400] };
+  // the size tokens a panel snaps to (written by build-steps.js between the markers; do not edit by hand)
+  var SIZES = /* plx-size-steps */[4,8,12,16,18,20,24,28,32,36,40,44,48,52,56,60,64,68,72,80,92,96,100,112,120,132,140,152,160,180,200,220,240,280,300,320,360,400,500,560,600,720,900]/* /plx-size-steps */;
   function setPanelWidth(panel, px) {
     var l = LIMITS[panel]; if (!l) return;
-    var w = Math.min(l[1], Math.max(l[0], Math.round(px / 4) * 4));
-    root.style.setProperty('--plx-sys-panel-' + panel + '-width', w + 'px'); store.set('plenix.panel.' + panel, String(w));
+    // the nearest size token within the panel's limits (batch 281: no style is written; system/steps.css has a rule per size)
+    var w = l[0]; SIZES.forEach(function (s) { if (s >= l[0] && s <= l[1] && Math.abs(s - px) < Math.abs(w - px)) w = s; });
+    root.setAttribute('data-plx-panel-' + panel + '-width', w + 'px'); store.set('plenix.panel.' + panel, String(w));
   }
   Object.keys(LIMITS).forEach(function (p) { var v = parseInt(store.get('plenix.panel.' + p), 10); if (v) setPanelWidth(p, v); });
 

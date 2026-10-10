@@ -36,6 +36,7 @@ import { useLayer } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
+import { snapSize } from '../../utils/sizeSteps.js';
 
 export function NavPane({ label, title, actions, as = 'nav', header, footer, rail, collapseAt = 'end', width, className, children }) {
   const layout = useAppLayout();
@@ -51,14 +52,14 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   if (mode === 'rail') return railEl;
   // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width token
   const w = mode === 'static' ? width : layout.width;
-  const paneWidth = typeof w === 'number' ? w + 'px' : (w || undefined);
+  const paneWidth = w ? snapSize(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), tokenPx('--plx-sys-shell-nav-max-width')) + 'px' : undefined;
   const collapse = mode === 'static' ? null : (
     <span className={cx('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)}>
       <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label="Collapse sidebar" onClick={layout.toggle} />
     </span>
   );
   const pane = (
-    <Tag ref={ref} aria-label={Tag === 'nav' ? label : undefined} className={cx('plx-nav-pane', mode !== 'static' && 'plx-nav-pane--' + mode, className)} style={{ '--plx-comp-nav-pane-width': paneWidth }}>
+    <Tag ref={ref} aria-label={Tag === 'nav' ? label : undefined} className={cx('plx-nav-pane', mode !== 'static' && 'plx-nav-pane--' + mode, className)} data-plx-width={paneWidth}>
       {title || actions || collapse ? (
         <div className="plx-nav-pane__header">
           {collapseAt === 'start' ? collapse : null}

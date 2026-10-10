@@ -12,7 +12,7 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
 - [x] 2. (batch 280, 0.23.0) Data colors: a --plx-sys-data-* palette from existing hues; Avatar, Card accent, Color swatch, Event chip,
   project dots, Progress bar color as palette classes; app data from hex to palette names
 - [x] 3. (batch 280, 0.23.0) Progress bar: native <progress value> (the function reports the amount; the DS styles it); the spec says so
-- [ ] 4. Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
+- [x] 4. (batch 281, 0.23.1) Panes: dragging snaps to width tokens (nav pane, Files pane, Details panel)
 - [ ] 5. Image editor in steps: zoom, opacity, text on a 5% grid, palette text colors, filter presets, crop classes
 - [ ] 6. The design system's 15 sample styles: a generated class per token
 - [ ] 6b. Tabulator drawn by Plenix. PROVEN in the prototype (Plenix - DAM/audit/tabulator-prototype/, 2026-10-09):

@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.23.1] - 2026-10-09
+
+### Changed
+- Panes snap to the size tokens (Strict DS step 4): dragging the navigation pane, a secondary pane (Files) or the side
+  panel (Details) snaps to the nearest --plx-ref-size-* token within its limits, and the arrow keys step to the next
+  one. The width reaches the stylesheet as data-plx-width (one generated rule per size); no width is written in a style
+  attribute. PlenixWorkspace.setPanelWidth keeps a panel's width as an attribute on the page root, snapped the same way.
+- SIZE_STEPS, snapSize and stepSize (utils/sizeSteps.js) are generated from the tokens by build-steps.js.
+
 ## [0.23.0] - 2026-10-09
 
 ### Changed (breaking)

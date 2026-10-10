@@ -32,6 +32,7 @@
      The header and the footer always span the full width, above and below both side areas.
      The side areas live between the header and the footer, also when they open as overlays.
      Navigation: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge; the width is remembered.
+     A dragged width snaps to the size tokens (--plx-ref-size-*) and the arrow keys step through them (batch 281).
      The splitters follow the writing direction: in a right-to-left page the edges are mirrored, so dragging and Arrow Left /
        Right move the edge the mirrored way (the key toward the outside widens the area).
      The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
@@ -55,6 +56,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
+import { snapSize, stepSize } from '../../utils/sizeSteps.js';
 import { pageLayout } from '../../providers/pageLayouts.js';
 
 const STRINGS = { skip: 'Skip to main content' };
@@ -138,7 +140,8 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
    are mirrored (arrowStep gives the step in reading order). */
 export function PanelSplitter({ label, value, min, max, onChange, onCollapse, edge = 'end' }) {
   const dir = edge === 'end' ? 1 : -1;
-  const clamp = (w) => Math.round(Math.max(min, Math.min(max(), w)));
+  // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
+  const clamp = (w) => snapSize(w, min, max());
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -148,9 +151,8 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
     document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.documentElement.classList.add('is-resizing-columns');
   };
   const onKeyDown = (e) => {
-    const s = tokenPx('--plx-sys-shell-splitter-step');
-    const step = arrowStep(e, e.currentTarget, { vertical: false }) * s * dir;
-    if (step) { e.preventDefault(); onChange(clamp(value + step)); }
+    const step = arrowStep(e, e.currentTarget, { vertical: false }) * dir;
+    if (step) { e.preventDefault(); onChange(stepSize(value, step, min, max())); }
     else if (e.key === 'Home') { e.preventDefault(); onChange(clamp(min)); }
     else if (e.key === 'End') { e.preventDefault(); onChange(clamp(max())); }
     else if (e.key === 'Enter' && onCollapse) { e.preventDefault(); onCollapse(); }

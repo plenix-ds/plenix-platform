@@ -39,6 +39,7 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
+import { snapSize } from '../../utils/sizeSteps.js';
 
 const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}' };
 
@@ -63,7 +64,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
   const max = () => tokenPx('--plx-comp-secondary-pane-width-max');
   return (
     <aside aria-label={name} className={cx('plx-secondary-pane', 'plx-secondary-pane--' + side, 'plx-secondary-pane--' + width, size && 'plx-secondary-pane--resized', className)}
-      style={{ '--plx-comp-secondary-pane-width': size ? size + 'px' : undefined }} {...rest}>
+      data-plx-width={size ? snapSize(size, min(), max()) + 'px' : undefined} {...rest}>
       <div className="plx-secondary-pane__header">
         {icon ? (typeof icon === 'string' ? <Icon name={icon} /> : icon) : null}
         <span className="plx-secondary-pane__title">{title}</span>
