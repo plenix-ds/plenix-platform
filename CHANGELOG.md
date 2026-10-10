@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.27.1] - 2026-10-09
+
+### Added
+- Icons for entity actions (owner: "include the common email actions, forward, reply, delete"; contacts need Email):
+  archive, flag, forward, mail, mark-unread, reply, reply-all, snooze, stop. Material Symbols Sharp from the vendored
+  library, unedited. (batch 293)
+
 ## [0.27.0] - 2026-10-09
 
 ### Added
