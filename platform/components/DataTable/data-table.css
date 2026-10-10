@@ -117,7 +117,7 @@
 .plx-data-table .tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.plx-data-table__cell--row-label{background-color:var(--plx-sys-data-table-row-selected-hover);}
 .plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--row-label.tabulator-frozen-left,
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--row-label.tabulator-frozen-left{border-right-color:var(--plx-sys-data-table-header-line);border-right-style:solid;border-right-width:var(--plx-comp-data-table-line-width);}
-/* the next column's short line gives way to the row header's solid one (batch 244) */
+/* the next column's line gives way to the row header's solid one (batch 244); every column line runs the full height (owner, 2026-10-09) */
 .plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--row-label+.tabulator-cell:not(.plx-data-table__cell--row-label)::before,
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--row-label+.tabulator-col:not(.plx-data-table__cell--row-label)::before{content:none;}
 .plx-data-table .tabulator .tabulator-row.tabulator-selected .tabulator-cell.plx-data-table__cell--row-label.plx-data-table__cell--name{color:var(--plx-sys-data-table-row-selected-text);}

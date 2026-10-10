@@ -332,10 +332,10 @@
   --plx-comp-table-wrap-line-height: var(--plx-ref-line-height-snug);
   --plx-comp-data-table-cell-padding-inline: var(--plx-ref-space-8px);
   --plx-comp-table-cell-padding-inline: var(--plx-ref-space-8px);
-  --plx-comp-data-table-header-line-inset: var(--plx-ref-space-8px);
-  --plx-comp-table-header-line-inset: var(--plx-ref-space-8px);
-  --plx-comp-data-table-column-line-inset: var(--plx-ref-space-6px);
-  --plx-comp-table-column-line-inset: var(--plx-ref-space-6px);
+  --plx-comp-data-table-header-line-inset: 0;
+  --plx-comp-table-header-line-inset: 0;
+  --plx-comp-data-table-column-line-inset: 0;
+  --plx-comp-table-column-line-inset: 0;
   --plx-comp-data-table-line-width: var(--plx-sys-border-width-thin);
   --plx-comp-table-line-width: var(--plx-sys-border-width-thin);
   --plx-comp-data-table-lead-column-width: var(--plx-ref-size-36px);

@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.28.2] - 2026-10-09
+
+### Changed
+- Every table, DataTable and data grid has full inside borders (owner: "for inside borders i want you to use full
+  borders... update everywhere"): the column lines run the full height of each cell and of the header, in the Platform,
+  the design system and every application. --plx-comp-data-table-column-line-inset, -header-line-inset and the Table's
+  two are 0 (were 6px and 8px). The reference page (docs/data-table-reference.html) follows. (batch 298)
+
 ## [0.28.1] - 2026-10-09
 
 ### Changed

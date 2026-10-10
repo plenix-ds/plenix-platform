@@ -58,7 +58,7 @@ h1{font-size:22px;margin:0;font-weight:700}
 /* header: shaded, heavier weight, soft line under it */
 .tabulator .tabulator-header{background:var(--head);border-bottom:1px solid var(--head-line);color:var(--muted);font-weight:600}
 .tabulator .tabulator-header .tabulator-col{background:var(--head);border-right:0;position:relative}
-.tabulator .tabulator-header .tabulator-col:not(:first-child)::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:1px;background:var(--head-line);z-index:1}
+.tabulator .tabulator-header .tabulator-col:not(:first-child)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--head-line);z-index:1}
 .tabulator .tabulator-header .tabulator-col .tabulator-col-content{padding:0 8px;height:var(--row-h);display:flex;align-items:center}
 .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title-holder{flex:1;min-width:0}
 .tabulator .tabulator-header .tabulator-col .tabulator-col-title{font-size:12px;font-weight:600;color:var(--fg);padding-right:0}
@@ -88,7 +88,7 @@ h1{font-size:22px;margin:0;font-weight:700}
 .tabulator .tabulator-row.tabulator-selected{background:var(--selected)}
 .tabulator .tabulator-row.tabulator-selected:hover{background:var(--selected-hover)}
 .tabulator .tabulator-row .tabulator-cell{border-right:0;padding:0 8px;height:var(--row-h);line-height:var(--row-h);position:relative}
-.tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--line)}
+.tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--line)}
 .tabulator .tabulator-row .tabulator-cell.tabulator-editing{border:0;outline:2px solid var(--accent);outline-offset:-2px;padding:0 8px;background:var(--surface)}
 .tabulator .tabulator-row .tabulator-cell.tabulator-editing input,.tabulator .tabulator-row .tabulator-cell.tabulator-editing select{font:inherit;color:var(--fg);background:transparent;padding:0!important}
 .tabulator .tabulator-row .tabulator-cell.tabulator-validation-fail{outline:2px solid #c42b1c;outline-offset:-2px}

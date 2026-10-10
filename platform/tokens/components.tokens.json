@@ -1341,20 +1341,24 @@
       "$type": "dimension"
     },
     "data-table-header-line-inset": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
     "table-header-line-inset": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
     "data-table-column-line-inset": {
-      "$value": "{plx-ref.space-6px}",
-      "$type": "dimension"
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
     "table-column-line-inset": {
-      "$value": "{plx-ref.space-6px}",
-      "$type": "dimension"
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
     "data-table-line-width": {
       "$value": "{plx-sys.border-width-thin}",
