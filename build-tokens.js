@@ -204,7 +204,9 @@ function build(root = ROOT, { check = false } = {}) {
     if (now !== text) { stale.push(rel); if (!check) fs.writeFileSync(p, text); }
   }
   if (!check) fs.writeFileSync(path.join(SRC, 'tokens.index.json'), JSON.stringify(index(manifest, written)) + '\n');
-  return { files: Object.keys(files), stale, count: written.length };
+  // the native outputs from the same tokens (Platforms Standard 7.2): Swift, Kotlin and Dart in platform/mobile (build-mobile.js)
+  const mobile = check ? null : require('./build-mobile.js')(root);
+  return { files: Object.keys(files), stale, count: written.length, mobile };
 }
 
 module.exports = build;

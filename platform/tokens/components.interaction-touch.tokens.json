@@ -14,11 +14,41 @@
     },
     "button-cluster-gap": {
       "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "plenix",
+            "level": "Plenix requirement",
+            "framework": "Plenix",
+            "version": "Platforms Standard 3.2",
+            "name": "Spacing between targets, coarse pointer",
+            "published": "12px (matches the Apple HIG figure of about 12 pt)",
+            "url": "platform/standards/platforms.md#32-spacing-between-targets"
+          }
+        }
+      }
     },
     "dialog-action-gap": {
       "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "plenix",
+            "level": "Plenix requirement",
+            "framework": "Plenix",
+            "version": "Platforms Standard 3.2",
+            "name": "Spacing between targets, coarse pointer",
+            "published": "12px (matches the Apple HIG figure of about 12 pt)",
+            "url": "platform/standards/platforms.md#32-spacing-between-targets"
+          }
+        }
+      }
     },
     "card-padding": {
       "$value": "{plx-ref.space-16px}",

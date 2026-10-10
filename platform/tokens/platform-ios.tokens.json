@@ -1,194 +1,266 @@
 {
-  "$description": "Plenix · iOS size and behavior tokens (Plenix Platforms Standard 7.1): sizes in pt. Plenix-owned values (color, type family, radius, focus) come from the theme files, never from here. Each value names its source (2.1) and level (2.2).",
+  "$description": "Plenix · iOS size and behavior tokens (Plenix Platforms Standard 7.1): sizes in pt. The names are the web token names for the same role (plx-sys, plx-comp: the interaction sets) and the Plenix text roles (plx-text--<role>), so $extensions.plenix.web names the web token each value maps to; platformOnly marks a value the web has no role for. Plenix-owned values (color, type family, radius, focus) come from the theme files, never from here. Each value names its source (2.1) and level (2.2); Material Web tokens and Compose Material 3 defaults are recorded separately.",
   "plx-platform-ios": {
-    "target-min": {
-      "$value": "44pt",
-      "$type": "dimension",
-      "$description": "The smallest touch target (3.1).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "rule",
-            "level": "recommended by the source",
-            "platform": "iOS",
-            "framework": "Apple HIG",
-            "name": "Accessibility: default control size",
-            "published": "44×44 pt",
-            "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
-            "verified": "2026-10-10"
+    "plx-sys": {
+      "control-target-min": {
+        "$value": "44pt",
+        "$type": "dimension",
+        "$description": "The smallest touch target (3.1).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-sys-control-target-min",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Accessibility: default control size",
+              "published": "44×44 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+            }
+          }
+        }
+      },
+      "control-target-min-tight": {
+        "$value": "28pt",
+        "$type": "dimension",
+        "$description": "Only where 44 cannot fit and the HIG minimum applies (3.1).",
+        "$extensions": {
+          "plenix": {
+            "web": null,
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Accessibility: minimum control size",
+              "published": "28×28 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+            },
+            "platformOnly": true
+          }
+        }
+      },
+      "control-spacing-plain": {
+        "$value": "24pt",
+        "$type": "dimension",
+        "$description": "Space around a control without a visible background (3.2).",
+        "$extensions": {
+          "plenix": {
+            "web": null,
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Accessibility: padding around a control without a background",
+              "published": "about 24 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+            },
+            "platformOnly": true
+          }
+        }
+      },
+      "shell-header-height": {
+        "$value": "44pt",
+        "$type": "dimension",
+        "$description": "Reference only: the navigation bar sets its own height (5.4).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-sys-shell-header-height",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "reference",
+              "level": "reference",
+              "platform": "iOS",
+              "framework": "Flutter",
+              "version": "master",
+              "name": "CupertinoNavigationBar height",
+              "published": "44",
+              "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/nav_bar.dart"
+            }
+          }
+        }
+      },
+      "type-min": {
+        "$value": "11pt",
+        "$type": "dimension",
+        "$description": "The smallest text size (3.4).",
+        "$extensions": {
+          "plenix": {
+            "web": null,
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Typography: minimum size",
+              "published": "11 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+            },
+            "platformOnly": true
           }
         }
       }
     },
-    "target-min-tight": {
-      "$value": "28pt",
-      "$type": "dimension",
-      "$description": "Only where 44 cannot fit and the HIG minimum applies (3.1).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "rule",
-            "level": "recommended by the source",
-            "platform": "iOS",
-            "framework": "Apple HIG",
-            "name": "Accessibility: minimum control size",
-            "published": "28×28 pt",
-            "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
-            "verified": "2026-10-10"
+    "plx-comp": {
+      "button-cluster-gap": {
+        "$value": "12pt",
+        "$type": "dimension",
+        "$description": "Space around a bezeled button, between buttons (3.2, 6.1).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-comp-button-cluster-gap",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Accessibility: padding around a control with a background",
+              "published": "about 12 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+            }
+          }
+        }
+      },
+      "dialog-action-gap": {
+        "$value": "12pt",
+        "$type": "dimension",
+        "$description": "Between dialog actions (3.2).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-comp-dialog-action-gap",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Accessibility: padding around a control with a background",
+              "published": "about 12 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+            }
+          }
+        }
+      },
+      "switch-track-width": {
+        "$value": "51pt",
+        "$type": "dimension",
+        "$description": "Reference only: the system Toggle sets its own size (6.3).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-comp-switch-track-width",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "reference",
+              "level": "reference",
+              "platform": "iOS",
+              "framework": "Flutter",
+              "version": "master",
+              "name": "CupertinoSwitch track width",
+              "published": "51",
+              "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart"
+            }
+          }
+        }
+      },
+      "switch-track-height": {
+        "$value": "31pt",
+        "$type": "dimension",
+        "$description": "Reference only (6.3).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-comp-switch-track-height",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "reference",
+              "level": "reference",
+              "platform": "iOS",
+              "framework": "Flutter",
+              "version": "master",
+              "name": "CupertinoSwitch track height",
+              "published": "31",
+              "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart"
+            }
+          }
+        }
+      },
+      "switch-min-height": {
+        "$value": "44pt",
+        "$type": "dimension",
+        "$description": "The switch row: the target (6.3).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-comp-switch-min-height",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "rule",
+              "level": "recommended by the source",
+              "platform": "iOS",
+              "framework": "Apple HIG",
+              "version": "unversioned (living guidelines)",
+              "name": "Accessibility: default control size",
+              "published": "44 pt",
+              "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"
+            }
+          }
+        }
+      },
+      "nav-bar-height": {
+        "$value": "50pt",
+        "$type": "dimension",
+        "$description": "Reference only; in iOS 26 the tab bar floats over the content (6.4).",
+        "$extensions": {
+          "plenix": {
+            "web": "--plx-comp-nav-bar-height",
+            "source": {
+              "verified": "2026-10-10",
+              "type": "reference",
+              "level": "reference",
+              "platform": "iOS",
+              "framework": "Flutter",
+              "version": "master",
+              "name": "CupertinoTabBar height",
+              "published": "50",
+              "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/bottom_tab_bar.dart"
+            }
           }
         }
       }
     },
-    "target-spacing-bezeled": {
-      "$value": "12pt",
-      "$type": "dimension",
-      "$description": "Space around a control with a visible background (3.2).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "rule",
-            "level": "recommended by the source",
-            "platform": "iOS",
-            "framework": "Apple HIG",
-            "name": "Accessibility: padding around a control with a background",
-            "published": "about 12 pt",
-            "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "target-spacing-plain": {
-      "$value": "24pt",
-      "$type": "dimension",
-      "$description": "Space around a control without a background (3.2).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "rule",
-            "level": "recommended by the source",
-            "platform": "iOS",
-            "framework": "Apple HIG",
-            "name": "Accessibility: padding around a control without a background",
-            "published": "about 24 pt",
-            "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "type-min": {
-      "$value": "11pt",
-      "$type": "dimension",
-      "$description": "The smallest text size (3.4).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "rule",
-            "level": "recommended by the source",
-            "platform": "iOS",
-            "framework": "Apple HIG",
-            "name": "Typography: minimum size",
-            "published": "11 pt",
-            "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "switch-track-width": {
-      "$value": "51pt",
-      "$type": "dimension",
-      "$description": "Reference only: the system Toggle sets its own size (6.3).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "reference",
-            "level": "reference",
-            "platform": "iOS",
-            "framework": "Flutter",
-            "name": "CupertinoSwitch track width",
-            "published": "51",
-            "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "switch-track-height": {
-      "$value": "31pt",
-      "$type": "dimension",
-      "$description": "Reference only (6.3).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "reference",
-            "level": "reference",
-            "platform": "iOS",
-            "framework": "Flutter",
-            "name": "CupertinoSwitch track height",
-            "published": "31",
-            "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "tab-bar-height": {
-      "$value": "50pt",
-      "$type": "dimension",
-      "$description": "Reference only; in iOS 26 the tab bar floats over the content (6.4).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "reference",
-            "level": "reference",
-            "platform": "iOS",
-            "framework": "Flutter",
-            "name": "CupertinoTabBar height",
-            "published": "50",
-            "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/bottom_tab_bar.dart",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "navigation-bar-height": {
-      "$value": "44pt",
-      "$type": "dimension",
-      "$description": "Reference only (5.4).",
-      "$extensions": {
-        "plenix": {
-          "source": {
-            "type": "reference",
-            "level": "reference",
-            "platform": "iOS",
-            "framework": "Flutter",
-            "name": "CupertinoNavigationBar height",
-            "published": "44",
-            "url": "https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/nav_bar.dart",
-            "verified": "2026-10-10"
-          }
-        }
-      }
-    },
-    "type": {
+    "text": {
       "title": {
         "size": {
           "$value": "34pt",
           "$type": "dimension",
-          "$description": "The title role: Large Title (3.4); scales with Dynamic Type.",
+          "$description": "The title role: Large Title (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--title",
+                "token": "--plx-ref-font-size-20"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Large Title at Large",
-                "published": "34 / 41 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Large Title size at Large",
+                "published": "34 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -196,49 +268,81 @@
         "line-height": {
           "$value": "41pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Large Title leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Large Title line height at Large",
                 "published": "41 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Large Title",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 700,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--title",
+                "token": "--plx-sys-font-weight-bold"
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Large Title weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
+                "plenix": "700"
+              }
+            }
+          }
         }
       },
       "heading": {
         "size": {
           "$value": "17pt",
           "$type": "dimension",
-          "$description": "The heading role: Headline (3.4); scales with Dynamic Type.",
+          "$description": "The heading role: Headline (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--heading",
+                "token": "--plx-ref-font-size-13"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Headline at Large",
-                "published": "17 / 22 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Headline size at Large",
+                "published": "17 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -246,49 +350,80 @@
         "line-height": {
           "$value": "22pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Headline leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Headline line height at Large",
                 "published": "22 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Headline",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 600,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--heading",
+                "token": "--plx-sys-font-weight-semibold"
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Headline weight at Large",
+                "published": "600",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              }
+            }
+          }
         }
       },
       "body": {
         "size": {
           "$value": "17pt",
           "$type": "dimension",
-          "$description": "The body role: Body (3.4); scales with Dynamic Type.",
+          "$description": "The body role: Body (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--body",
+                "token": "--plx-ref-font-size-13"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Body at Large",
-                "published": "17 / 22 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Body size at Large",
+                "published": "17 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -296,49 +431,80 @@
         "line-height": {
           "$value": "22pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Body leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Body line height at Large",
                 "published": "22 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Body",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 400,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--body",
+                "token": null
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Body weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              }
+            }
+          }
         }
       },
       "strong": {
         "size": {
           "$value": "17pt",
           "$type": "dimension",
-          "$description": "The strong role: Body (3.4); scales with Dynamic Type.",
+          "$description": "The strong role: Body (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--strong",
+                "token": "--plx-ref-font-size-13"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Body at Large",
-                "published": "17 / 22 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Body size at Large",
+                "published": "17 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -346,49 +512,81 @@
         "line-height": {
           "$value": "22pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Body leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Body line height at Large",
                 "published": "22 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Body",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 600,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--strong",
+                "token": "--plx-sys-font-weight-semibold"
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Body weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
+                "plenix": "600"
+              }
+            }
+          }
         }
       },
       "label": {
         "size": {
           "$value": "15pt",
           "$type": "dimension",
-          "$description": "The label role: Subheadline (3.4); scales with Dynamic Type.",
+          "$description": "The label role: Subheadline (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--label",
+                "token": "--plx-ref-font-size-12"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Subheadline at Large",
-                "published": "15 / 20 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Subheadline size at Large",
+                "published": "15 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -396,49 +594,81 @@
         "line-height": {
           "$value": "20pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Subheadline leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Subheadline line height at Large",
                 "published": "20 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Subheadline",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 600,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--label",
+                "token": "--plx-sys-font-weight-semibold"
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Subheadline weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
+                "plenix": "600"
+              }
+            }
+          }
         }
       },
       "secondary": {
         "size": {
           "$value": "13pt",
           "$type": "dimension",
-          "$description": "The secondary role: Footnote (3.4); scales with Dynamic Type.",
+          "$description": "The secondary role: Footnote (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--secondary",
+                "token": "--plx-ref-font-size-12"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Footnote at Large",
-                "published": "13 / 18 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Footnote size at Large",
+                "published": "13 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -446,49 +676,80 @@
         "line-height": {
           "$value": "18pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Footnote leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Footnote line height at Large",
                 "published": "18 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Footnote",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 400,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--secondary",
+                "token": null
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Footnote weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              }
+            }
+          }
         }
       },
       "caption": {
         "size": {
           "$value": "12pt",
           "$type": "dimension",
-          "$description": "The caption role: Caption 1 (3.4); scales with Dynamic Type.",
+          "$description": "The caption role: Caption 1 (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--caption",
+                "token": "--plx-ref-font-size-11"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Caption 1 at Large",
-                "published": "12 / 16 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Caption 1 size at Large",
+                "published": "12 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -496,49 +757,80 @@
         "line-height": {
           "$value": "16pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Caption 1 leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Caption 1 line height at Large",
                 "published": "16 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Caption 1",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 400,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--caption",
+                "token": null
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Caption 1 weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              }
+            }
+          }
         }
       },
       "eyebrow": {
         "size": {
           "$value": "12pt",
           "$type": "dimension",
-          "$description": "The eyebrow role: Caption 1 (3.4); scales with Dynamic Type.",
+          "$description": "The eyebrow role: Caption 1 (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--eyebrow",
+                "token": "--plx-ref-font-size-11"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Caption 1 at Large",
-                "published": "12 / 16 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Caption 1 size at Large",
+                "published": "12 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -546,49 +838,81 @@
         "line-height": {
           "$value": "16pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Caption 1 leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Caption 1 line height at Large",
                 "published": "16 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Caption 1",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 600,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--eyebrow",
+                "token": "--plx-sys-font-weight-bold"
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Caption 1 weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
+                "plenix": "600"
+              }
+            }
+          }
         }
       },
       "data": {
         "size": {
           "$value": "13pt",
           "$type": "dimension",
-          "$description": "The data role: Footnote (3.4); scales with Dynamic Type.",
+          "$description": "The data role: Footnote (3.4).",
           "$extensions": {
             "plenix": {
+              "web": {
+                "class": "plx-text--data",
+                "token": "--plx-ref-font-size-11"
+              },
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Dynamic Type Footnote at Large",
-                "published": "13 / 18 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Footnote size at Large",
+                "published": "13 pt",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
               }
             }
           }
@@ -596,31 +920,57 @@
         "line-height": {
           "$value": "18pt",
           "$type": "dimension",
-          "$description": "Its leading.",
+          "$description": "Its line height.",
           "$extensions": {
             "plenix": {
               "source": {
+                "verified": "2026-10-10",
                 "type": "rule",
                 "level": "recommended by the source",
                 "platform": "iOS",
                 "framework": "Apple HIG",
-                "name": "Typography: Footnote leading",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Footnote line height at Large",
                 "published": "18 pt",
-                "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
-                "verified": "2026-10-10"
-              }
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              },
+              "platformOnly": true
             }
           }
         },
         "text-style": {
           "$value": "Footnote",
           "$type": "string",
-          "$description": "The iOS text style it scales with (relativeTo:)."
+          "$description": "The style it scales with.",
+          "$extensions": {
+            "plenix": {
+              "platformOnly": true
+            }
+          }
         },
         "weight": {
           "$value": 400,
           "$type": "fontWeight",
-          "$description": "Its weight."
+          "$description": "Its weight.",
+          "$extensions": {
+            "plenix": {
+              "web": {
+                "class": "plx-text--data",
+                "token": null
+              },
+              "source": {
+                "verified": "2026-10-10",
+                "type": "rule",
+                "level": "recommended by the source",
+                "platform": "iOS",
+                "framework": "Apple HIG",
+                "version": "unversioned (living guidelines)",
+                "name": "Typography: Dynamic Type Footnote weight at Large",
+                "published": "400",
+                "url": "https://developer.apple.com/design/human-interface-guidelines/typography"
+              }
+            }
+          }
         }
       }
     }

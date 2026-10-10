@@ -57,6 +57,19 @@
             "  /* the window classes (Platforms Standard 3.3): Narrow below 600px, Medium to 839px, Wide from 840px. Narrow: the",
             "     navigation is a bottom bar and the pane a screen of its own; a page puts its main content first */"
           ]
+        },
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "token",
+            "level": "recommended by the source",
+            "framework": "Material 3",
+            "version": "unversioned (living guidelines)",
+            "name": "Breakpoints: Medium (Narrow below)",
+            "published": "600 dp",
+            "url": "https://m3.material.io/foundations/layout/breakpoints/overview"
+          }
         }
       },
       "$description": "Narrow window (Platforms Standard 3.3): below this width the navigation is a bottom bar and the pane a screen of its own"
@@ -71,23 +84,81 @@
             "  /* the safe areas (Platforms Standard 3.5): what the device keeps for itself at each edge; every page sets",
             "     viewport-fit=cover, so the shell keeps its content inside them. 0 where the device keeps nothing */"
           ]
+        },
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "rule",
+            "level": "required by the source",
+            "framework": "CSS Environment Variables",
+            "version": "Editor's Draft",
+            "name": "safe-area-inset-*",
+            "published": "env(safe-area-inset-*) with viewport-fit=cover",
+            "url": "https://drafts.csswg.org/css-env-1/#safe-area-insets"
+          }
         }
       }
     },
     "safe-area-bottom": {
       "$value": "env(safe-area-inset-bottom, 0px)",
       "$type": "dimension",
-      "$description": "The bottom safe area (the home indicator, gesture navigation): the bottom bar and the footer stay above it"
+      "$description": "The bottom safe area (the home indicator, gesture navigation): the bottom bar and the footer stay above it",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "rule",
+            "level": "required by the source",
+            "framework": "CSS Environment Variables",
+            "version": "Editor's Draft",
+            "name": "safe-area-inset-*",
+            "published": "env(safe-area-inset-*) with viewport-fit=cover",
+            "url": "https://drafts.csswg.org/css-env-1/#safe-area-insets"
+          }
+        }
+      }
     },
     "safe-area-start": {
       "$value": "env(safe-area-inset-left, 0px)",
       "$type": "dimension",
-      "$description": "The left safe area (landscape with a notch)"
+      "$description": "The left safe area (landscape with a notch)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "rule",
+            "level": "required by the source",
+            "framework": "CSS Environment Variables",
+            "version": "Editor's Draft",
+            "name": "safe-area-inset-*",
+            "published": "env(safe-area-inset-*) with viewport-fit=cover",
+            "url": "https://drafts.csswg.org/css-env-1/#safe-area-insets"
+          }
+        }
+      }
     },
     "safe-area-end": {
       "$value": "env(safe-area-inset-right, 0px)",
       "$type": "dimension",
-      "$description": "The right safe area (landscape with a notch)"
+      "$description": "The right safe area (landscape with a notch)",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "rule",
+            "level": "required by the source",
+            "framework": "CSS Environment Variables",
+            "version": "Editor's Draft",
+            "name": "safe-area-inset-*",
+            "published": "env(safe-area-inset-*) with viewport-fit=cover",
+            "url": "https://drafts.csswg.org/css-env-1/#safe-area-insets"
+          }
+        }
+      }
     },
     "font-body": {
       "$value": "{plx-sys.typeface-sans}",

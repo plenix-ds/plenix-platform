@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.10] - 2026-10-10
+
+### Changed
+- The iOS and Android token sets now use the existing web token names (Platforms Standard 7.1: "one set of token
+  names, with values per platform"). For example: control-target-min, button-cluster-gap, dialog-action-gap,
+  button-height, button-icon, button-icon-label-gap, input-min-height, switch-track-width and -height,
+  switch-min-height, shell-header-height, shell-phone-below, shell-rail-below, nav-bar-height and nav-bar-icon-size.
+  Text roles keep the web role names (title, heading, body and the others). Every value records the web token it maps
+  to in $extensions.plenix.web, or platformOnly when the web has no such role. Its source now also names the version
+  and the Plenix value where Plenix differs.
+- The build stops if a platform value maps to a token that does not exist. build-tokens.js now writes the Swift,
+  Kotlin and Dart outputs (7.2). Their constants carry the web names (controlTargetMin, textTitleSize, ...) and a
+  comment naming the web token. The typefaces come from --plx-sys-typeface-sans and -mono.
+- The web values the standard cites carry their source: the target minimums (WCAG 2.2 SC 2.5.8 and 2.5.5), the 12px
+  coarse-pointer gaps, the 600 and 840 window classes, and the safe areas.
+- The iOS and Android pages show the token mapping (80 names: 38 map to web tokens, 42 are platform only). (batch 312)
+
 ## [0.31.9] - 2026-10-10
 
 ### Changed

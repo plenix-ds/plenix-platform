@@ -103,6 +103,19 @@
       "$extensions": {
         "com.plenix": {
           "after": "      /* Medium window: the navigation is a rail below this width (Wide from here) */"
+        },
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "token",
+            "level": "recommended by the source",
+            "framework": "Material 3",
+            "version": "unversioned (living guidelines)",
+            "name": "Breakpoints: Expanded (Wide from)",
+            "published": "840 dp",
+            "url": "https://m3.material.io/foundations/layout/breakpoints/overview"
+          }
         }
       }
     },

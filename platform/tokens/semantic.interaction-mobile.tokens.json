@@ -10,7 +10,22 @@
   "plx-sys": {
     "control-target-min": {
       "$value": "{plx-ref.control-size-44px}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$extensions": {
+        "plenix": {
+          "source": {
+            "platform": "Web",
+            "verified": "2026-10-10",
+            "type": "rule",
+            "level": "recommended by the source",
+            "framework": "WCAG 2.2",
+            "version": "2.2 (W3C Recommendation)",
+            "name": "SC 2.5.5 Target Size (Enhanced), AAA",
+            "published": "44×44 CSS px",
+            "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html"
+          }
+        }
+      }
     },
     "control-height-inline": {
       "$value": "{plx-ref.control-size-44px}",

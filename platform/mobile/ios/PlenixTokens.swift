@@ -9,8 +9,8 @@ public enum Plenix {
     }
     /// DM Sans and DM Mono, scaled with Dynamic Type through the text style they are relative to (3.4).
     public enum Font {
-        public static let sans = "DM Sans"
-        public static let mono = "DM Mono"
+        public static let sans = "DM Sans" // web --plx-sys-typeface-sans
+        public static let mono = "DM Mono" // web --plx-sys-typeface-mono
         public static func sans(_ size: CGFloat, relativeTo style: SwiftUI.Font.TextStyle) -> SwiftUI.Font { .custom(sans, size: size, relativeTo: style) }
         public static func mono(_ size: CGFloat, relativeTo style: SwiftUI.Font.TextStyle) -> SwiftUI.Font { .custom(mono, size: size, relativeTo: style) }
     }
@@ -283,51 +283,53 @@ public enum Plenix {
     }
     /// The iOS size and behavior set (platform-ios.tokens.json), in points.
     public enum Platform {
-        public static let -PlxXTargetMin: CGFloat = 44 // rule: Accessibility: default control size (https://developer.apple.com/design/human-interface-guidelines/accessibility)
-        public static let -PlxXTargetMinTight: CGFloat = 28 // rule: Accessibility: minimum control size (https://developer.apple.com/design/human-interface-guidelines/accessibility)
-        public static let -PlxXTargetSpacingBezeled: CGFloat = 12 // rule: Accessibility: padding around a control with a background (https://developer.apple.com/design/human-interface-guidelines/accessibility)
-        public static let -PlxXTargetSpacingPlain: CGFloat = 24 // rule: Accessibility: padding around a control without a background (https://developer.apple.com/design/human-interface-guidelines/accessibility)
-        public static let -PlxXTypeMin: CGFloat = 11 // rule: Typography: minimum size (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXSwitchTrackWidth: CGFloat = 51 // reference: CupertinoSwitch track width (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart)
-        public static let -PlxXSwitchTrackHeight: CGFloat = 31 // reference: CupertinoSwitch track height (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart)
-        public static let -PlxXTabBarHeight: CGFloat = 50 // reference: CupertinoTabBar height (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/bottom_tab_bar.dart)
-        public static let -PlxXNavigationBarHeight: CGFloat = 44 // reference: CupertinoNavigationBar height (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/nav_bar.dart)
-        public static let -PlxXTypeTitleSize: CGFloat = 34 // rule: Typography: Dynamic Type Large Title at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeTitleLineHeight: CGFloat = 41 // rule: Typography: Large Title leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeTitleTextStyle = "Large Title"
-        public static let -PlxXTypeTitleWeight: CGFloat = 700 // weight
-        public static let -PlxXTypeHeadingSize: CGFloat = 17 // rule: Typography: Dynamic Type Headline at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeHeadingLineHeight: CGFloat = 22 // rule: Typography: Headline leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeHeadingTextStyle = "Headline"
-        public static let -PlxXTypeHeadingWeight: CGFloat = 600 // weight
-        public static let -PlxXTypeBodySize: CGFloat = 17 // rule: Typography: Dynamic Type Body at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeBodyLineHeight: CGFloat = 22 // rule: Typography: Body leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeBodyTextStyle = "Body"
-        public static let -PlxXTypeBodyWeight: CGFloat = 400 // weight
-        public static let -PlxXTypeStrongSize: CGFloat = 17 // rule: Typography: Dynamic Type Body at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeStrongLineHeight: CGFloat = 22 // rule: Typography: Body leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeStrongTextStyle = "Body"
-        public static let -PlxXTypeStrongWeight: CGFloat = 600 // weight
-        public static let -PlxXTypeLabelSize: CGFloat = 15 // rule: Typography: Dynamic Type Subheadline at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeLabelLineHeight: CGFloat = 20 // rule: Typography: Subheadline leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeLabelTextStyle = "Subheadline"
-        public static let -PlxXTypeLabelWeight: CGFloat = 600 // weight
-        public static let -PlxXTypeSecondarySize: CGFloat = 13 // rule: Typography: Dynamic Type Footnote at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeSecondaryLineHeight: CGFloat = 18 // rule: Typography: Footnote leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeSecondaryTextStyle = "Footnote"
-        public static let -PlxXTypeSecondaryWeight: CGFloat = 400 // weight
-        public static let -PlxXTypeCaptionSize: CGFloat = 12 // rule: Typography: Dynamic Type Caption 1 at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeCaptionLineHeight: CGFloat = 16 // rule: Typography: Caption 1 leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeCaptionTextStyle = "Caption 1"
-        public static let -PlxXTypeCaptionWeight: CGFloat = 400 // weight
-        public static let -PlxXTypeEyebrowSize: CGFloat = 12 // rule: Typography: Dynamic Type Caption 1 at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeEyebrowLineHeight: CGFloat = 16 // rule: Typography: Caption 1 leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeEyebrowTextStyle = "Caption 1"
-        public static let -PlxXTypeEyebrowWeight: CGFloat = 600 // weight
-        public static let -PlxXTypeDataSize: CGFloat = 13 // rule: Typography: Dynamic Type Footnote at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeDataLineHeight: CGFloat = 18 // rule: Typography: Footnote leading (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let -PlxXTypeDataTextStyle = "Footnote"
-        public static let -PlxXTypeDataWeight: CGFloat = 400 // weight
+        public static let controlTargetMin: CGFloat = 44 // web --plx-sys-control-target-min; rule: Accessibility: default control size (https://developer.apple.com/design/human-interface-guidelines/accessibility)
+        public static let controlTargetMinTight: CGFloat = 28 // platform only; rule: Accessibility: minimum control size (https://developer.apple.com/design/human-interface-guidelines/accessibility)
+        public static let controlSpacingPlain: CGFloat = 24 // platform only; rule: Accessibility: padding around a control without a background (https://developer.apple.com/design/human-interface-guidelines/accessibility)
+        public static let shellHeaderHeight: CGFloat = 44 // web --plx-sys-shell-header-height; reference: CupertinoNavigationBar height (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/nav_bar.dart)
+        public static let typeMin: CGFloat = 11 // platform only; rule: Typography: minimum size (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let buttonClusterGap: CGFloat = 12 // web --plx-comp-button-cluster-gap; rule: Accessibility: padding around a control with a background (https://developer.apple.com/design/human-interface-guidelines/accessibility)
+        public static let dialogActionGap: CGFloat = 12 // web --plx-comp-dialog-action-gap; rule: Accessibility: padding around a control with a background (https://developer.apple.com/design/human-interface-guidelines/accessibility)
+        public static let switchTrackWidth: CGFloat = 51 // web --plx-comp-switch-track-width; reference: CupertinoSwitch track width (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart)
+        public static let switchTrackHeight: CGFloat = 31 // web --plx-comp-switch-track-height; reference: CupertinoSwitch track height (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/switch.dart)
+        public static let switchMinHeight: CGFloat = 44 // web --plx-comp-switch-min-height; rule: Accessibility: default control size (https://developer.apple.com/design/human-interface-guidelines/accessibility)
+        public static let navBarHeight: CGFloat = 50 // web --plx-comp-nav-bar-height; reference: CupertinoTabBar height (https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/cupertino/bottom_tab_bar.dart)
+        public static let textTitleSize: CGFloat = 34 // web .plx-text--title --plx-ref-font-size-20; rule: Typography: Dynamic Type Large Title size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textTitleLineHeight: CGFloat = 41 // platform only; rule: Typography: Dynamic Type Large Title line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textTitleTextStyle = "Large Title" // platform only; The style it scales with.
+        public static let textTitleWeight: CGFloat = 700 // web .plx-text--title --plx-sys-font-weight-bold; rule: Typography: Dynamic Type Large Title weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textHeadingSize: CGFloat = 17 // web .plx-text--heading --plx-ref-font-size-13; rule: Typography: Dynamic Type Headline size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textHeadingLineHeight: CGFloat = 22 // platform only; rule: Typography: Dynamic Type Headline line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textHeadingTextStyle = "Headline" // platform only; The style it scales with.
+        public static let textHeadingWeight: CGFloat = 600 // web .plx-text--heading --plx-sys-font-weight-semibold; rule: Typography: Dynamic Type Headline weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textBodySize: CGFloat = 17 // web .plx-text--body --plx-ref-font-size-13; rule: Typography: Dynamic Type Body size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textBodyLineHeight: CGFloat = 22 // platform only; rule: Typography: Dynamic Type Body line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textBodyTextStyle = "Body" // platform only; The style it scales with.
+        public static let textBodyWeight: CGFloat = 400 // web .plx-text--body; rule: Typography: Dynamic Type Body weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textStrongSize: CGFloat = 17 // web .plx-text--strong --plx-ref-font-size-13; rule: Typography: Dynamic Type Body size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textStrongLineHeight: CGFloat = 22 // platform only; rule: Typography: Dynamic Type Body line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textStrongTextStyle = "Body" // platform only; The style it scales with.
+        public static let textStrongWeight: CGFloat = 600 // web .plx-text--strong --plx-sys-font-weight-semibold; rule: Typography: Dynamic Type Body weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textLabelSize: CGFloat = 15 // web .plx-text--label --plx-ref-font-size-12; rule: Typography: Dynamic Type Subheadline size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textLabelLineHeight: CGFloat = 20 // platform only; rule: Typography: Dynamic Type Subheadline line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textLabelTextStyle = "Subheadline" // platform only; The style it scales with.
+        public static let textLabelWeight: CGFloat = 600 // web .plx-text--label --plx-sys-font-weight-semibold; rule: Typography: Dynamic Type Subheadline weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textSecondarySize: CGFloat = 13 // web .plx-text--secondary --plx-ref-font-size-12; rule: Typography: Dynamic Type Footnote size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textSecondaryLineHeight: CGFloat = 18 // platform only; rule: Typography: Dynamic Type Footnote line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textSecondaryTextStyle = "Footnote" // platform only; The style it scales with.
+        public static let textSecondaryWeight: CGFloat = 400 // web .plx-text--secondary; rule: Typography: Dynamic Type Footnote weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textCaptionSize: CGFloat = 12 // web .plx-text--caption --plx-ref-font-size-11; rule: Typography: Dynamic Type Caption 1 size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textCaptionLineHeight: CGFloat = 16 // platform only; rule: Typography: Dynamic Type Caption 1 line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textCaptionTextStyle = "Caption 1" // platform only; The style it scales with.
+        public static let textCaptionWeight: CGFloat = 400 // web .plx-text--caption; rule: Typography: Dynamic Type Caption 1 weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textEyebrowSize: CGFloat = 12 // web .plx-text--eyebrow --plx-ref-font-size-11; rule: Typography: Dynamic Type Caption 1 size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textEyebrowLineHeight: CGFloat = 16 // platform only; rule: Typography: Dynamic Type Caption 1 line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textEyebrowTextStyle = "Caption 1" // platform only; The style it scales with.
+        public static let textEyebrowWeight: CGFloat = 600 // web .plx-text--eyebrow --plx-sys-font-weight-bold; rule: Typography: Dynamic Type Caption 1 weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textDataSize: CGFloat = 13 // web .plx-text--data --plx-ref-font-size-11; rule: Typography: Dynamic Type Footnote size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textDataLineHeight: CGFloat = 18 // platform only; rule: Typography: Dynamic Type Footnote line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textDataTextStyle = "Footnote" // platform only; The style it scales with.
+        public static let textDataWeight: CGFloat = 400 // web .plx-text--data; rule: Typography: Dynamic Type Footnote weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
     }
 }
 
