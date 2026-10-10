@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.6] - 2026-10-10
+
+### Changed
+- Platforms pages corrected against their sources after an outside review: accessibility requirements and
+  OS-enforced behavior come first in the precedence; SwiftUI and Compose rows name native controls, while Flutter rows
+  say Flutter draws its own Cupertino and Material widgets; field focus keeps the border-color rule with a 3:1 contrast
+  requirement, errors carry text as well as color, and focus indicators the OS draws are never suppressed; Reflow
+  states the 400% zoom and two-dimensional exemptions; Android edge-to-edge is an OS requirement (SDK 35 on Android
+  15); back follows the real history, and the parent control, deep links and guards are separate rules. (batch 308)
+
 ## [0.31.5] - 2026-10-10
 
 ### Fixed
