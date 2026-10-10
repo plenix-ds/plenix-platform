@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.11] - 2026-10-10
+
+### Fixed
+- build-tokens.js writes the native outputs only from the whole token set (component tokens included); the theme
+  test's partial copy builds the stylesheets alone, so CI passes again. (batch 312)
+
 ## [0.31.10] - 2026-10-10
 
 ### Changed

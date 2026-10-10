@@ -204,8 +204,11 @@ function build(root = ROOT, { check = false } = {}) {
     if (now !== text) { stale.push(rel); if (!check) fs.writeFileSync(p, text); }
   }
   if (!check) fs.writeFileSync(path.join(SRC, 'tokens.index.json'), JSON.stringify(index(manifest, written)) + '\n');
-  // the native outputs from the same tokens (Platforms Standard 7.2): Swift, Kotlin and Dart in platform/mobile (build-mobile.js)
-  const mobile = check ? null : require('./build-mobile.js')(root);
+  // the native outputs from the same tokens (Platforms Standard 7.2): Swift, Kotlin and Dart in platform/mobile (build-mobile.js).
+  // They need the whole token set, the component tokens kept beside their components included (a partial copy, such as the
+  // theme test's, builds only the stylesheets)
+  const whole = fs.existsSync(path.join(root, 'platform', 'components')) && fs.existsSync(path.join(root, 'build-mobile.js'));
+  const mobile = check || !whole ? null : require('./build-mobile.js')(root);
   return { files: Object.keys(files), stale, count: written.length, mobile };
 }
 
