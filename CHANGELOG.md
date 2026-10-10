@@ -6,6 +6,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.25.3] - 2026-10-09
+
+### Changed
+- The application switcher has no motion: no hover fade and no press shrink (owner: "remove the motion from this").
+
 ## [0.25.2] - 2026-10-09
 
 ### Added
