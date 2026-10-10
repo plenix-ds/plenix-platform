@@ -17,16 +17,17 @@
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
-     A name/value table (reference data, a component's details) is a DataTable, not a PropertyList: every table is a
-     Tabulator grid (batch 229).
+     Name/value pairs are always a PropertyList, never a two-column table (owner, batch 296, replacing batch 229's rule);
+     a table is for records compared across columns.
+     Other props (aria-label) reach the <dl>.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useTruncated } from '../../utils/overflow.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 
-export function PropertyList({ layout = 'columns', className, children }) {
-  return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, className)}>{children}</dl>;
+export function PropertyList({ layout = 'columns', className, children, ...rest }) {
+  return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, className)} {...rest}>{children}</dl>;
 }
 
 PropertyList.Item = function PropertyListItem({ label, htmlFor, description, data = false, className, children }) {

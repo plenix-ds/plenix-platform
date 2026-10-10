@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.28.4] - 2026-10-09
+
+### Changed
+- Name/value pairs are never a two-column table (owner: "get rid of old legacy tables like this"): the design system's
+  details on every page (Implementation, Design assets and every other key/value list), each component lab's property
+  details, and the Settings and Capture facts are PropertyLists (label beside value, no grid frame or shaded column).
+  Tables stay for records compared across columns. PropertyList passes other props (aria-label) to its list.
+
 ## [0.28.3] - 2026-10-09
 
 ### Fixed

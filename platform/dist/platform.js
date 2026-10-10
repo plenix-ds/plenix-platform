@@ -8336,7 +8336,7 @@ var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · PropertyList
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PropertyList
    Summary: Label and value pairs (metadata, details, settings summaries), as a description list.
    Usage:
      <PropertyList layout="columns">
@@ -8355,18 +8355,19 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      PropertyList.Item.children: the value
    Notes:
      For an editable value put the control in the item and pass htmlFor (its id) so the label names it.
-     A name/value table (reference data, a component's details) is a DataTable, not a PropertyList: every table is a
-     Tabulator grid (batch 229).
+     Name/value pairs are always a PropertyList, never a two-column table (owner, batch 296, replacing batch 229's rule);
+     a table is for records compared across columns.
+     Other props (aria-label) reach the <dl>.
 */
-
 function PropertyList({
   layout = 'columns',
   className,
-  children
+  children,
+  ...rest
 }) {
-  return /*#__PURE__*/_react.default.createElement("dl", {
+  return /*#__PURE__*/_react.default.createElement("dl", _extends({
     className: (0, _cx.cx)('plx-property-list', 'plx-property-list--' + layout, className)
-  }, children);
+  }, rest), children);
 }
 PropertyList.Item = function PropertyListItem({
   label,
