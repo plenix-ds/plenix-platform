@@ -6,6 +6,21 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.25] - 2026-10-10
+
+### Added
+- The iOS pages carry Apple's references, as the owner asked ("all the details" of developer.apple.com/documentation/swiftui
+  and developer.apple.com/documentation). Apple's documentation text is Apple's, so it is linked, never copied. Each
+  page has:
+  - its Human Interface Guidelines page: 129 pages, each checked to exist;
+  - a SwiftUI panel: every symbol of the SwiftUI topics that build it, by name, kind and link, under Apple's own topic
+    groups (for example, Controls and indicators › Choosing from a set of options). That is 276 topics and 1,409
+    symbols across the pages;
+  - the Apple frameworks it uses (HealthKit, MapKit, WidgetKit, StoreKit, PencilKit and others), linked to their
+    documentation.
+  A page not yet in the Plenix Platforms Standard is no longer a placeholder: it shows these references under the
+  status "Apple references". (batch 326)
+
 ## [0.31.24] - 2026-10-10
 
 ### Changed
