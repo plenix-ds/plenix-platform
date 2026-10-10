@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.27.3] - 2026-10-09
+
+### Fixed
+- CI (Checks and Release) failed on every push since 0.23.0: progress-bar.css still read --plx-comp-progress-bar-value,
+  which nothing in the Platform sets since a known amount is drawn on <progress>. The fill (only the unknown-amount
+  state uses it now) has no width variable; the design system's progress lab sets its sample width itself.
+
 ## [0.27.2] - 2026-10-09
 
 ### Changed

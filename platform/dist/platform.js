@@ -8480,6 +8480,217 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
+  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EntityHeader = EntityHeader;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _overflow = require("../../utils/overflow.js");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _StatusDot = require("../../components/StatusDot/StatusDot.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · EntityHeader
+   Summary: The header of a page that shows one entity (a contact, a project, an email, a note, a task list): its picture,
+     its name, the actions that act on it, and one line of facts about it. Decided with the owner on 2026-10-09 (the page
+     header study, docs/page-header-study.html).
+   Usage:
+     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'warning', label: 'Reconnect due' }}
+       title="Maya Chen" facts={['Creative Director', 'Apex Co', 'Last message 10:24 AM']}
+       actions={[{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }]} />
+     <EntityHeader media={{ icon: 'briefcase', hue: 'blue' }} title="AI Writing Tools" description="Evaluating AI writing assistants" />
+   Props:
+     title: the entity's name; 18px bold; a long name wraps, never cut off
+     media: the entity's picture, always shown: { person, src, color } draws an Avatar (48px); { icon, hue } a generic icon for
+       the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray); or an element
+     context: the line above the title (optional; not a breadcrumb): a placeholder such as the item's category, or a control
+       that places the entity (a period navigator); what it holds is still to be defined per capability
+     status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: neutral, info, success,
+       warning, danger) or an element
+     actions: the actions that act on this entity, as 16px icon buttons side by side: [{ icon, label, onClick, primary,
+       disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
+     moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
+     live: the live state, the first fact, with a status dot: { tone, label }
+     facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …
+     description: a sentence instead of facts (never both)
+     headingLevel: the title's heading level (default 1)
+     className: more classes on the header
+     strings: the words it shows and announces, for other languages: { more: "More actions" }
+   Behavior:
+     A card on the page (the shell floats its content as cards). Its background follows the user's settings on the page root:
+       data-plx-header-tint none | gray | blue (default) | warm | green | purple | red, and data-plx-header-tint-style fade
+       (default; the tint at the top fading to the surface) | flat.
+     The media spans the three lines; nothing sits above it. The context line and the status area share the top line.
+     Actions sit at the right, level with the title; the ⋯ menu is always last. When the row is too narrow the actions at
+       the end fold into the ⋯ menu first; the title keeps at least half the width.
+     A full-width line (border-subtle) runs above the facts, across the text column.
+     Every fact is in the same font, size, weight and color; only the separators are muted.
+   Notes:
+     Not for settings screens or section titles: use RecordPage.Header.
+*/
+
+const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
+function Media({
+  media
+}) {
+  if (/*#__PURE__*/_react.default.isValidElement(media)) return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__media"
+  }, media);
+  if (media.person || media.src) return /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    className: "plx-entity-header__media plx-entity-header__avatar",
+    name: media.person,
+    src: media.src,
+    color: media.color,
+    size: "xl"
+  });
+  const hue = HUES.indexOf(media.hue) >= 0 ? media.hue : 'gray';
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__media plx-entity-header__tile",
+    "data-plx-media-hue": hue,
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: media.icon,
+    size: "lg"
+  }));
+}
+function Facts({
+  live,
+  facts,
+  description
+}) {
+  const items = [];
+  if (live) items.push(/*#__PURE__*/_react.default.createElement("span", {
+    key: "live",
+    className: "plx-entity-header__live"
+  }, /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
+    tone: live.tone
+  }), live.label));
+  if (description) items.push(/*#__PURE__*/_react.default.createElement("span", {
+    key: "d"
+  }, description));else (facts || []).filter(Boolean).forEach((f, i) => items.push(/*#__PURE__*/_react.default.createElement("span", {
+    key: 'f' + i
+  }, f)));
+  if (!items.length) return null;
+  return /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__facts"
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+    key: i
+  }, i ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__sep",
+    "aria-hidden": "true"
+  }, "\xB7") : null, it)));
+}
+function Actions({
+  actions,
+  moreActions,
+  strings
+}) {
+  const ref = _react.default.useRef(null);
+  const list = actions || [];
+  const fit = (0, _overflow.useOverflow)(ref, list.length, list.map(a => a.label).join('|'));
+  const items = list.map(a => /*#__PURE__*/_react.default.createElement("span", {
+    key: a.label,
+    "data-plx-overflow-item": "",
+    className: "plx-entity-header__action"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    iconOnly: true,
+    icon: a.icon,
+    label: a.label,
+    title: a.label,
+    variant: a.primary ? 'primary' : 'ghost',
+    disabled: a.disabled,
+    onClick: a.onClick
+  })));
+  const hidden = list.slice(fit);
+  const extra = moreActions || [];
+  const more = /*#__PURE__*/_react.default.createElement("span", {
+    key: "plx-more",
+    "data-plx-overflow-more": "",
+    className: "plx-entity-header__action"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: strings.more,
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      iconOnly: true,
+      icon: "more",
+      label: strings.more,
+      title: strings.more,
+      variant: "ghost"
+    })
+  }, hidden.map(a => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: a.label,
+    icon: a.icon,
+    disabled: a.disabled,
+    onSelect: a.onClick
+  }, a.label)), extra.map(a => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: a.label,
+    icon: a.icon,
+    danger: a.danger,
+    onSelect: a.onSelect
+  }, a.label))));
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: ref,
+    className: "plx-entity-header__actions",
+    "data-plx-density": "compact"
+  }, (0, _overflow.splitAt)(items, fit, more));
+}
+function EntityHeader({
+  title,
+  media,
+  context,
+  status,
+  actions,
+  moreActions,
+  live,
+  facts,
+  description,
+  headingLevel = 1,
+  className,
+  strings
+}) {
+  const H = 'h' + headingLevel;
+  const s = {
+    more: 'More actions',
+    ...strings
+  };
+  const badge = status && ! /*#__PURE__*/_react.default.isValidElement(status) ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: status.tone,
+    variant: "soft"
+  }, status.label) : status;
+  return /*#__PURE__*/_react.default.createElement("header", {
+    className: (0, _cx.cx)('plx-entity-header', className)
+  }, /*#__PURE__*/_react.default.createElement(Media, {
+    media: media || {
+      icon: 'document'
+    }
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__top"
+  }, context ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__context"
+  }, context) : /*#__PURE__*/_react.default.createElement("span", null), badge ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__status"
+  }, badge) : null), /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-entity-header__title"
+  }, title), /*#__PURE__*/_react.default.createElement(Actions, {
+    actions: actions,
+    moreActions: moreActions,
+    strings: s
+  }), /*#__PURE__*/_react.default.createElement(Facts, {
+    live: live,
+    facts: facts,
+    description: description
+  }));
+}
+  } },
   "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -10160,7 +10371,7 @@ const IMAGE_EDITOR_STEPS = exports.IMAGE_EDITOR_STEPS = {
   }
 };
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10386,6 +10597,12 @@ Object.defineProperty(exports, "EmptyState", {
   enumerable: true,
   get: function () {
     return _EmptyState.EmptyState;
+  }
+});
+Object.defineProperty(exports, "EntityHeader", {
+  enumerable: true,
+  get: function () {
+    return _EntityHeader.EntityHeader;
   }
 });
 Object.defineProperty(exports, "EventChip", {
@@ -10988,6 +11205,7 @@ var _BulkActions = require("./patterns/BulkActions/BulkActions.jsx");
 var _ContentGrid = require("./patterns/ContentGrid/ContentGrid.jsx");
 var _PropertyList = require("./patterns/PropertyList/PropertyList.jsx");
 var _RecordPage = require("./patterns/RecordPage/RecordPage.jsx");
+var _EntityHeader = require("./patterns/EntityHeader/EntityHeader.jsx");
 var _ActivityList = require("./patterns/ActivityList/ActivityList.jsx");
 var _NotificationList = require("./patterns/NotificationList/NotificationList.jsx");
 var _SettingsLayout = require("./patterns/SettingsLayout/SettingsLayout.jsx");
