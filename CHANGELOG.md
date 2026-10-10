@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.16] - 2026-10-10
+
+### Fixed
+- The design system's token tables show their colors again. In the Rendering column, a token's sample now fills its
+  table cell; the cell is a flex row, so a color swatch with no width of its own had collapsed to its border. The swatch
+  is 24px tall in the 44px row. (batch 317)
+
 ## [0.31.15] - 2026-10-10
 
 ### Added
