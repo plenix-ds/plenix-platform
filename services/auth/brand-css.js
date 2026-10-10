@@ -55,6 +55,9 @@ const BRAND_DIR = path.join(ROOT, 'platform', 'brand');
 const BRAND = JSON.parse(fs.readFileSync(path.join(BRAND_DIR, 'brand.json'), 'utf8'));
 const markOnAccent = 'url("data:image/svg+xml,' + fs.readFileSync(path.join(BRAND_DIR, BRAND.files.markOnAccent), 'utf8').replace(/\s+/g, ' ').trim()
   .replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, "'") + '")';
+// the kit's mark for a light background (brand.json files.mark): the card's own header (batch 284)
+const mark = 'url("data:image/svg+xml,' + fs.readFileSync(path.join(BRAND_DIR, BRAND.files.mark), 'utf8').replace(/\s+/g, ' ').trim()
+  .replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/"/g, "'") + '")';
 // the mark is as tall as the header name's two rows (batch 279): the 20px and 16px label lines
 fixed.markSize = 'calc(' + v('--plx-sys-label-height-20px', 'light') + ' + ' + v('--plx-sys-label-height-16px', 'light') + ')';
 fixed.markGap = v('--plx-sys-space-inline-md');
@@ -79,7 +82,12 @@ ${vars(roles('dark')).replace(/^/gm, '  ')}
   }
 }
 /* the page: the canvas, no photo, no authentik logo or footer */
-.pf-c-background-image, .pf-c-login__main-header.pf-c-brand, .ak-brand, ak-brand-links, .pf-c-login__footer { display: none !important; }
+.pf-c-background-image, ak-brand-links, .pf-c-login__footer, .pf-c-login__main-header.pf-c-brand img { display: none !important; }
+/* the card's header (owner, batch 284: "put the Plenix logo and name here"): the kit's mark and the brand name, at the start, in
+   the brand size; Authentik's logo image is hidden */
+.pf-c-login__main-header.pf-c-brand { display: flex !important; align-items: center !important; justify-content: flex-start !important; column-gap: var(--plenix-mark-gap); }
+.pf-c-login__main-header.pf-c-brand::before { content: ""; flex-shrink: 0; inline-size: var(--plenix-mark-size); block-size: var(--plenix-mark-size); background-image: ${mark}; background-repeat: no-repeat; background-size: contain; }
+.pf-c-login__main-header.pf-c-brand::after { content: ${JSON.stringify(BRAND.name)}; color: var(--plenix-text); font-family: var(--plenix-font); font-size: var(--plenix-brand-size); font-weight: var(--plenix-bold); }
 html, body, .pf-c-login, .pf-c-page, .pf-c-drawer__body, .pf-c-drawer__content, .pf-c-drawer__main { background: var(--plenix-canvas) !important; }
 :host, body { font-family: var(--plenix-font) !important; color: var(--plenix-text); }
 /* the Plenix header: the application header's blue bar with the brand in the largest type size */
