@@ -4,7 +4,7 @@
    tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
    SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
    the design system (../platform/design-system/), the point of truth. */
-import { Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme } from 'plenix-platform';
+import { Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, List, Metric, NavList, NavPane, Notice, PageContent, Panel, ProgressBar, PropertyList, RadioTiles, RecordPage, SearchField, SectionHeading, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme, useUnsavedGuard } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -474,14 +474,23 @@ function FeatureArea({area,stats}){
 // the theme: the themes the design system defines (THEMES); the choice is kept for every page (batch 219)
 function ThemeChoice(){const {theme,setTheme,themes}=useTheme();return <Select aria-label="Theme" value={theme} onChange={(e)=>setTheme(e.target.value)} options={themes.map(t=>({value:t.name,label:t.label}))}/>;}
 
-export function Settings({prefs,setPrefs,startCat="general",onBack}){
-  const [cat,setCat]=useState(startCat);
+export function Settings({prefs,setPrefs,screen,onBack}){
+ /* ── the screen (Platforms Standard 4.3): #/<category>, #/features/<area>, #/docs/<section>; each a history entry ── */
+  const cat=screen.parts[0]||"general";
+  const featArea=cat==="features"?screen.parts[1]||null:null;
+  const docSection=cat==="docs"?screen.parts[1]||null:null;
+  const go=(c,sub)=>screen.open(sub?[c,sub]:[c]);
+  const setFeatArea=(a)=>go("features",a);
+  const setDocSection=(d)=>go("docs",d);
   const {account,setPicture}=useSession(); // who is signed in (the Platform session)
-  const [featArea,setFeatArea]=useState(null);
-  const [featOpen,setFeatOpen]=useState(false);
-  const [docOpen,setDocOpen]=useState(false);
-  const [docSection,setDocSection]=useState(null);
+  const [featOpen,setFeatOpen]=useState(cat==="features");
+  const [docOpen,setDocOpen]=useState(cat==="docs");
   const set=(k,v)=>setPrefs(p=>({...p,[k]:v}));
+ /* ── the account fields: unsaved until Save; leaving the page or the Account screen asks (useUnsavedGuard) ── */
+  const [acct,setAcct]=useState(()=>({name:account.name||"",email:account.email||""}));
+  const [acctSaved,setAcctSaved]=useState(acct);
+  const acctDirty=acct.name!==acctSaved.name||acct.email!==acctSaved.email;
+  useUnsavedGuard(acctDirty,"Your account changes have not been saved.",{keeps:(next)=>next.parts[0]==="account"});
 
  /* ── Categories state ── (each color is data the person chose; it reaches the page only through ColorSwatch) */
   const [cats,setCats]=useState([
@@ -829,10 +838,10 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
     ),
     account:(
       <Screen title="Account" desc="Profile, integrations and connected services.">
-        <SettingsSection title="Profile">
+        <SettingsSection title="Profile" actions={acctDirty?<><Button onClick={()=>setAcct(acctSaved)}>Discard</Button><Button variant="primary" onClick={()=>setAcctSaved(acct)}>Save</Button></>:null}>
           <Row label="Picture"><Inline gap="sm" align="center"><Avatar name={account.name} src={account.src} size="md"/><Button size="sm" icon="settings-camera" onClick={()=>choosePicture().then(p=>{if(p)setPicture(p);})}>Change picture</Button>{account.src?<Button size="sm" variant="ghost" onClick={()=>setPicture(null)}>Remove</Button>:null}</Inline></Row>
-          <Row label="Name"><Stack width="sm"><Input defaultValue={account.name} aria-label="Name" autoComplete="name" autoCapitalize="words" enterKeyHint="next"/></Stack></Row>
-          <Row label="Email"><Stack width="md"><Input type="email" defaultValue={account.email} aria-label="Email" autoComplete="email" enterKeyHint="done"/></Stack></Row>
+          <Row label="Name"><Stack width="sm"><Input value={acct.name} onChange={e=>setAcct({...acct,name:e.target.value})} aria-label="Name" autoComplete="name" autoCapitalize="words" enterKeyHint="next"/></Stack></Row>
+          <Row label="Email"><Stack width="md"><Input type="email" value={acct.email} onChange={e=>setAcct({...acct,email:e.target.value})} aria-label="Email" autoComplete="email" enterKeyHint="done"/></Stack></Row>
         </SettingsSection>
         <SettingsSection title="Integrations">
           <Row label="Calendar source">
@@ -919,18 +928,18 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
 
       {/* ── Left sidebar ── */}
       <SideNavPortal><NavPane label="Settings" title="Settings" footer={onBack?<Button size="sm" variant="ghost" icon="arrow-left" onClick={onBack}>Back to Dashboard</Button>:null}>
-        <NavList label="Settings sections" value={cat!=="features"&&cat!=="docs"?cat:null} onSelect={id=>{setCat(id);setFeatArea(null);setDocSection(null);}}
+        <NavList label="Settings sections" value={cat!=="features"&&cat!=="docs"?cat:null} onSelect={id=>go(id)}
           groups={[{heading:"Settings",items:SETTINGS_CATS.map(c=>({id:c.id,label:c.label,icon:c.icon}))}]}/>
         {/* Features and Documentation */}
-        <CollapsibleSection headingLevel={null} expanded={featOpen} onToggle={()=>{setCat("features");setFeatArea(null);setFeatOpen(o=>!o);}}
+        <CollapsibleSection headingLevel={null} expanded={featOpen} onToggle={()=>{go("features");setFeatOpen(o=>!o);}}
           icon="circle-check" title="Features to build progress" actions={<Count variant="pill" tone="info" value={window.FEATURES.length} label={window.FEATURES.length+" feature areas"}/>}>
-          <NavList label="Feature areas" value={cat==="features"?featArea:null} onSelect={id=>{setCat("features");setFeatArea(id);}}
+          <NavList label="Feature areas" value={cat==="features"?featArea:null} onSelect={id=>go("features",id)}
             items={window.FEATURES.map(area=>({id:area.area,label:area.area,icon:<ColorSwatch color={area.color} size="sm"/>,count:area.items.filter(i=>i.status==="done").length+"/"+area.items.length}))}/>
         </CollapsibleSection>
 
-        <CollapsibleSection headingLevel={null} expanded={docOpen} onToggle={()=>{setCat("docs");setDocSection("about");setDocOpen(o=>!o);}}
+        <CollapsibleSection headingLevel={null} expanded={docOpen} onToggle={()=>{go("docs","about");setDocOpen(o=>!o);}}
           icon="doc-text" title="Documentation">
-          <NavList label="Documentation" value={cat==="docs"?docSection:null} onSelect={id=>{setCat("docs");setDocSection(id);}} groups={docGroups}/>
+          <NavList label="Documentation" value={cat==="docs"?docSection:null} onSelect={id=>go("docs",id)} groups={docGroups}/>
         </CollapsibleSection>
       </NavPane></SideNavPortal>
 

@@ -17,3 +17,9 @@ button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-comp-color-swat
 /* one row (batch 290): the row is as tall as the More button and clips what wraps; useOverflow moves those into the menu */
 .plx-color-picker{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);column-gap:var(--plx-comp-color-picker-gap);display:flex;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-comp-color-picker-overflow-clip-margin);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-comp-color-picker-row-gap);}
 .plx-color-picker__more,.plx-color-picker__slot{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);display:inline-flex;}
+/* a swatch button's target (Platforms Standard 3.1): an invisible layer that grows it to the minimum target (24px with a
+   fine pointer, 44px with touch) without changing the swatch; with touch each swatch's slot in the picker is the minimum
+   target wide, so the targets do not overlap */
+button.plx-color-swatch{position:relative;}
+button.plx-color-swatch::before{content:"";inset-block-end:var(--plx-comp-color-swatch-target-inset);inset-block-start:var(--plx-comp-color-swatch-target-inset);inset-inline-end:var(--plx-comp-color-swatch-target-inset);inset-inline-start:var(--plx-comp-color-swatch-target-inset);position:absolute;}
+.plx-color-picker__slot{justify-content:center;min-inline-size:var(--plx-comp-color-picker-slot-min-width);}

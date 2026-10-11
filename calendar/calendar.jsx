@@ -1,16 +1,18 @@
 /* Plenix · calendar (calendar/calendar.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: the month as RowButton day cells with EventChips, the chosen day's events as Cards (accent: the calendar's
-   color), the week and the day as TimeGrid. */
+   color), the week and the day as TimeGrid. An event opened from its card or the grid is a screen (#/event/<id>, a history
+   entry: Back closes it; a search result opens it on its day; Platforms Standard 4.3). */
 import { Button, Card, Chip, DateBadge, EventChip, Icon, Inline, SegmentedControl, Stack, Tag, TagList, Text, TimeGrid, RowButton } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { CALENDARS, CAL_EVENTS } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Calendar ──────────────────────────────────────────────────── */
-export function CalendarScreen() {
+export function CalendarScreen({ screen }) {
   const TODAY = 5;
-  const [selDay, setSelDay] = useState(TODAY);
-  const [selEv, setSelEv] = useState(null);
+  const selEv = screen.parts[0] === 'event' ? +screen.parts[1] : null;
+  const setSelEv = (id) => (id === null ? screen.parent('/') : screen.open(['event', id]));
+  const [selDay, setSelDay] = useState(() => { const e = CAL_EVENTS.find((x) => x.id === selEv); return e ? e.date : TODAY; });
   const [evMeta, setEvMeta] = useState({});
   const [view, setView] = useState('month');
   const [activeCals] = useState(() => Object.fromEntries(CALENDARS.map((c) => [c.id, true])));

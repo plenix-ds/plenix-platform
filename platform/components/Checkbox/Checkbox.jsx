@@ -36,6 +36,8 @@
      Switch.onChange(event): runs when the switch changes (passed to the <input>)
    Behavior:
      The whole row (control and label) is the target, at least the inline-action height.
+     A Checkbox without label or description (a row's selection box) still has a 24px target (44px with touch): it extends
+       invisibly past the 16px box (Platforms Standard 3.1).
      Switch is a checkbox with role="switch".
      The selected ChoiceList card shows the selected state.
    Notes:

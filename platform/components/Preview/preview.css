@@ -4,8 +4,8 @@
 .plx-preview--button:focus-visible,
 .plx-preview--button.is-focus-visible{outline-color:var(--plx-comp-preview-button-focus-outline-color);outline-offset:var(--plx-comp-preview-button-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-preview-button-focus-outline-width);}
 .plx-preview__corner{display:inline-flex;position:absolute;}
-.plx-preview__corner--top-start{inset-block-start:var(--plx-comp-preview-corner--top-start-inset-block-start);inset-inline-start:var(--plx-comp-preview-corner--top-start-inset-inline-start);}
-.plx-preview__corner--bottom-end{inset-block-end:var(--plx-comp-preview-corner--bottom-end-inset-block-end);inset-inline-end:var(--plx-comp-preview-corner--bottom-end-inset-inline-end);}
+.plx-preview__corner--top-start{inset-block-start:var(--plx-comp-preview-corner-top-start-inset-block-start);inset-inline-start:var(--plx-comp-preview-corner-top-start-inset-inline-start);}
+.plx-preview__corner--bottom-end{inset-block-end:var(--plx-comp-preview-corner-bottom-end-inset-block-end);inset-inline-end:var(--plx-comp-preview-corner-bottom-end-inset-inline-end);}
 /* a picture inside the preview (the asset’s thumbnail) */
 .plx-preview__media{block-size:var(--plx-comp-preview-media-height);inline-size:var(--plx-comp-preview-media-width);object-fit:contain;}
 /* as a button it shows the pointer can open it: the hover fill of the neutral controls (batch 215) */

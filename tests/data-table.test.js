@@ -53,7 +53,10 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
     if (ONLY && !ONLY.test(url)) continue;   // DT_ONLY=<pattern>: only the views whose address matches
     if (!HAS_DS && url.indexOf('platform/design-system/') === 0) continue;
     const name = url + (steps.length ? ' › ' + steps.join(' › ') : '');
-    await page.goto('about:blank'); await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await sleep(400);
+    // each view from a fresh start: the apps restore their last screen (plenix.<app>.view), which would change the steps
+    await page.goto('about:blank'); await page.goto(BASE + url, { waitUntil: 'networkidle0' });
+    await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
+    await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await sleep(400);
     let missing = null;
     for (const text of steps) {
       // "enter:words": the words typed in the header search, then Enter (the Search workspace)

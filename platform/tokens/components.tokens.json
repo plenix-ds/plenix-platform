@@ -851,6 +851,11 @@
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
+    "check-target-inset": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "The invisible target layer around a checkbox without a visible label: it grows the target to the minimum target (Platforms Standard 3.1) without changing the box"
+    },
     "check-input-width": {
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
@@ -2229,6 +2234,11 @@
       "$value": "{plx-sys.opacity-high}",
       "$type": "number"
     },
+    "chip-target-inset": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "The invisible target layer around a chip and its toggle: it grows the target to the minimum target (Platforms Standard 3.1) without changing the 20px look; 0 where the chip already meets it"
+    },
     "tag-list-gap": {
       "$value": "{plx-sys.space-cluster-xs}",
       "$type": "dimension"
@@ -2265,11 +2275,11 @@
       "$value": "{plx-sys.radius-compact-4px}",
       "$type": "dimension"
     },
-    "tag-not-plx-chip-border-color": {
+    "tag-border-color": {
       "$value": "{plx-sys.fill-neutral-border}",
       "$type": "color"
     },
-    "tag-not-plx-chip-border-width": {
+    "tag-border-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
@@ -2394,6 +2404,157 @@
     },
     "drawer-lg-max-width": {
       "$value": "{plx-ref.size-560px}",
+      "$type": "dimension"
+    },
+    "sheet-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color"
+    },
+    "sheet-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "sheet-radius": {
+      "$value": "{plx-sys.radius-dialog-8px}",
+      "$type": "dimension",
+      "$description": "The top corners of the bottom sheet (the dialog radius)"
+    },
+    "sheet-shadow": {
+      "$value": "{plx-sys.elevation-overlay-shadow}",
+      "$type": "shadow"
+    },
+    "sheet-medium-height": {
+      "$value": "50dvh",
+      "$type": "dimension",
+      "$description": "The medium height of the bottom sheet: about half the window (Platforms Standard 5.3; HIG › Sheets, medium detent)"
+    },
+    "sheet-large-height": {
+      "$value": "calc(100dvh - {plx-sys.space-layout-xl})",
+      "$type": "dimension",
+      "$description": "The large height of the bottom sheet: the window, less a strip of the screen behind it at the top (HIG › Sheets, large detent)"
+    },
+    "sheet-padding-block-end": {
+      "$value": "{plx-sys.safe-area-bottom}",
+      "$type": "dimension",
+      "$description": "The bottom sheet keeps clear of the bottom safe area (Platforms Standard 3.5)"
+    },
+    "sheet-animation-duration": {
+      "$value": "{plx-sys.motion-duration-base}",
+      "$type": "duration"
+    },
+    "sheet-animation-timing-function": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "dimension"
+    },
+    "sheet-band-height": {
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension",
+      "$description": "The band at the top of the bottom sheet that holds the grabber's bar"
+    },
+    "sheet-grabber-width": {
+      "$value": "{plx-ref.size-36px}",
+      "$type": "dimension"
+    },
+    "sheet-grabber-height": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension"
+    },
+    "sheet-grabber-inset-block-start": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "The bar's place in the band: (band - bar) / 2"
+    },
+    "sheet-grabber-color": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color"
+    },
+    "sheet-grabber-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension"
+    },
+    "sheet-grabber-target-height": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension",
+      "$description": "The grabber's target: the minimum target tall (Platforms Standard 3.1), over the band and the header's middle"
+    },
+    "sheet-grabber-target-width": {
+      "$value": "calc({plx-sys.control-target-min} * 2)",
+      "$type": "dimension"
+    },
+    "sheet-grabber-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "sheet-grabber-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "sheet-grabber-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "sheet-header-min-height": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension"
+    },
+    "sheet-header-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "sheet-header-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "sheet-header-border-bottom-color": {
+      "$value": "{plx-sys.border-dialog-chrome}",
+      "$type": "color"
+    },
+    "sheet-header-border-bottom-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "sheet-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily"
+    },
+    "sheet-title-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension"
+    },
+    "sheet-title-font-weight": {
+      "$value": "{plx-sys.font-weight-bold}",
+      "$type": "fontWeight"
+    },
+    "sheet-body-padding-block": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "sheet-body-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "sheet-footer-border-top-color": {
+      "$value": "{plx-sys.border-dialog-chrome}",
+      "$type": "color"
+    },
+    "sheet-footer-border-top-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "sheet-footer-gap": {
+      "$value": "{plx-comp.dialog-action-gap}",
+      "$type": "dimension"
+    },
+    "sheet-footer-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "sheet-footer-padding-inline": {
+      "$value": "{plx-sys.space-inset-lg}",
+      "$type": "dimension"
+    },
+    "sheet-actions-margin-block-end": {
+      "$value": "{plx-sys.space-stack-md}",
       "$type": "dimension"
     },
     "dialog-header-background": {
@@ -2851,6 +3012,77 @@
     },
     "app-header-padding-inline": {
       "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-header-utilities-gap": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "The space between the utilities: none with a fine pointer; 4px with touch, so their 44px targets do not overlap"
+    },
+    "app-header-item-target-inset": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "The invisible target layer around a header item and the header name: it grows the target to the minimum target (Platforms Standard 3.1); 0 when the item already meets it"
+    },
+    "app-header-search-view-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "app-header-search-view-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "app-header-search-view-z-index": {
+      "$value": "{plx-sys.layer-modal}",
+      "$type": "number"
+    },
+    "app-header-search-view-safe-area-top": {
+      "$value": "{plx-sys.safe-area-top}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-safe-area-bottom": {
+      "$value": "{plx-sys.safe-area-bottom}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-safe-area-start": {
+      "$value": "{plx-sys.safe-area-start}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-safe-area-end": {
+      "$value": "{plx-sys.safe-area-end}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-bar-min-height": {
+      "$value": "{plx-comp.app-header-height}",
+      "$type": "dimension",
+      "$description": "The search view's top row: the header's height"
+    },
+    "app-header-search-view-bar-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-bar-border-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color"
+    },
+    "app-header-search-view-bar-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-padding-inline": {
+      "$value": "{plx-comp.app-header-padding-inline}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-scope-padding-block-start": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-content-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension"
+    },
+    "app-header-search-view-content-gap": {
+      "$value": "{plx-sys.space-stack-md}",
       "$type": "dimension"
     },
     "app-header-z-index": {
@@ -3345,19 +3577,19 @@
       "$value": "{plx-sys.layer-menu}",
       "$type": "number"
     },
-    "menu-not-popover-bottom-start-inset-block-start": {
+    "menu-fallback-bottom-start-inset-block-start": {
       "$value": "calc(100% + {plx-sys.space-inset-xs})",
       "$type": "dimension"
     },
-    "menu-not-popover-bottom-end-inset-block-start": {
+    "menu-fallback-bottom-end-inset-block-start": {
       "$value": "calc(100% + {plx-sys.space-inset-xs})",
       "$type": "dimension"
     },
-    "menu-not-popover-top-start-inset-block-end": {
+    "menu-fallback-top-start-inset-block-end": {
       "$value": "calc(100% + {plx-sys.space-inset-xs})",
       "$type": "dimension"
     },
-    "menu-not-popover-top-end-inset-block-end": {
+    "menu-fallback-top-end-inset-block-end": {
       "$value": "calc(100% + {plx-sys.space-inset-xs})",
       "$type": "dimension"
     },
@@ -3397,7 +3629,7 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "menu-item--danger-text": {
+    "menu-item-danger-text": {
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
     },
@@ -3897,6 +4129,16 @@
       "$value": "{plx-sys.space-inset-md}",
       "$type": "dimension"
     },
+    "card-opener-target-padding-block": {
+      "$value": "max(0px, calc(({plx-sys.control-target-min} - 1lh) / 2))",
+      "$type": "dimension",
+      "$description": "A selectable media card's title grows to the minimum target (Platforms Standard 3.1): (target - its line) / 2 above and below, 0 when the line already meets it"
+    },
+    "card-opener-target-margin-block": {
+      "$value": "min(0px, calc((1lh - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "The negative margin that takes the title's target padding back, so the card's layout does not move"
+    },
     "card-padding-inline": {
       "$value": "{plx-sys.space-inset-lg}",
       "$type": "dimension"
@@ -4129,7 +4371,7 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "panel-title--icon-gap": {
+    "panel-title-icon-gap": {
       "$value": "{plx-sys.space-inline-sm}",
       "$type": "dimension"
     },
@@ -4137,31 +4379,31 @@
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
     },
-    "chat-typing-aria-hidden-animation-duration": {
+    "chat-typing-dot-animation-duration": {
       "$value": "{plx-sys.motion-duration-loop-base}",
       "$type": "duration"
     },
-    "chat-typing-aria-hidden-background": {
+    "chat-typing-dot-background": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
-    "chat-typing-aria-hidden-height": {
+    "chat-typing-dot-height": {
       "$value": "{plx-ref.size-4px}",
       "$type": "dimension"
     },
-    "chat-typing-aria-hidden-radius": {
+    "chat-typing-dot-radius": {
       "$value": "{plx-sys.shape-pill}",
       "$type": "dimension"
     },
-    "chat-typing-aria-hidden-width": {
+    "chat-typing-dot-width": {
       "$value": "{plx-ref.size-4px}",
       "$type": "dimension"
     },
-    "chat-typing-aria-hidden-nth-child-animation-delay": {
+    "chat-typing-second-dot-delay": {
       "$value": "{plx-sys.motion-delay-stagger}",
       "$type": "duration"
     },
-    "chat-typing-aria-hidden-nth-child-animation-delay-2": {
+    "chat-typing-third-dot-delay": {
       "$value": "calc({plx-sys.motion-delay-stagger} * 2)",
       "$type": "duration"
     },
@@ -4269,15 +4511,15 @@
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension"
     },
-    "chat-message--mine-bubble-background": {
+    "chat-message-mine-bubble-background": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
-    "chat-message--mine-bubble-border-color": {
+    "chat-message-mine-bubble-border-color": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
-    "chat-message--mine-bubble-text": {
+    "chat-message-mine-bubble-text": {
       "$value": "{plx-sys.action-primary-content}",
       "$type": "color"
     },
@@ -4297,7 +4539,7 @@
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily"
     },
-    "chat-message-not-plx-chatmessage--mine-time-opacity": {
+    "chat-message-others-time-opacity": {
       "$value": "{plx-sys.opacity-high}",
       "$type": "number"
     },
@@ -4429,39 +4671,39 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "code-block-tok--keyword-text": {
+    "code-block-tok-keyword-text": {
       "$value": "{plx-sys.code-keyword}",
       "$type": "color"
     },
-    "code-block-tok--string-text": {
+    "code-block-tok-string-text": {
       "$value": "{plx-sys.code-string}",
       "$type": "color"
     },
-    "code-block-tok--comment-text": {
+    "code-block-tok-comment-text": {
       "$value": "{plx-sys.code-comment}",
       "$type": "color"
     },
-    "code-block-tok--number-text": {
+    "code-block-tok-number-text": {
       "$value": "{plx-sys.code-number}",
       "$type": "color"
     },
-    "code-block-tok--function-text": {
+    "code-block-tok-function-text": {
       "$value": "{plx-sys.code-function}",
       "$type": "color"
     },
-    "code-block-tok--tag-text": {
+    "code-block-tok-tag-text": {
       "$value": "{plx-sys.code-tag}",
       "$type": "color"
     },
-    "code-block-tok--attribute-text": {
+    "code-block-tok-attribute-text": {
       "$value": "{plx-sys.code-attribute}",
       "$type": "color"
     },
-    "code-block-tok--variable-text": {
+    "code-block-tok-variable-text": {
       "$value": "{plx-sys.code-variable}",
       "$type": "color"
     },
-    "code-block-tok--selector-text": {
+    "code-block-tok-selector-text": {
       "$value": "{plx-sys.code-selector}",
       "$type": "color"
     },
@@ -4537,7 +4779,7 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "collapsible-section-chevron-icon--webkit-mask-size": {
+    "collapsible-section-chevron-size": {
       "$value": "{plx-sys.icon-size-sm}",
       "$type": "dimension"
     },
@@ -4605,6 +4847,16 @@
       "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
+    "color-swatch-target-inset": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "The invisible target layer around a swatch button: it grows the target to the minimum target (Platforms Standard 3.1) without changing the swatch"
+    },
+    "color-picker-slot-min-width": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "The least width of a swatch's slot in the picker: none with a fine pointer; the minimum target with touch, so the swatch targets do not overlap"
+    },
     "columns-gap-md-gap": {
       "$value": "{plx-sys.space-layout-sm}",
       "$type": "dimension"
@@ -4653,7 +4905,7 @@
       "$value": "{plx-sys.space-inset-xs}",
       "$type": "dimension"
     },
-    "combobox-field-focus-within-border-color": {
+    "combobox-field-focus-border-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color"
     },
@@ -4837,7 +5089,7 @@
       "$value": "{plx-sys.data-table-accent}",
       "$type": "color"
     },
-    "data-table-background-2": {
+    "data-table-header-background": {
       "$value": "{plx-sys.data-table-header-background}",
       "$type": "color"
     },
@@ -4845,11 +5097,11 @@
       "$value": "{plx-sys.data-table-header-line}",
       "$type": "color"
     },
-    "data-table-text-2": {
+    "data-table-header-text": {
       "$value": "{plx-sys.data-table-text-muted}",
       "$type": "color"
     },
-    "data-table-not-first-child-before-background": {
+    "data-table-header-column-line": {
       "$value": "{plx-sys.data-table-header-line}",
       "$type": "color"
     },
@@ -4861,19 +5113,19 @@
       "$value": "{plx-sys.data-table-line}",
       "$type": "color"
     },
-    "data-table-border-bottom-color-2": {
+    "data-table-sort-arrow-color": {
       "$value": "{plx-sys.data-table-text-subtle}",
       "$type": "color"
     },
-    "data-table-aria-sort-border-bottom-color": {
+    "data-table-sort-arrow-ascending-color": {
       "$value": "{plx-sys.data-table-accent}",
       "$type": "color"
     },
-    "data-table-aria-sort-border-top-color": {
+    "data-table-sort-arrow-descending-color": {
       "$value": "{plx-sys.data-table-accent}",
       "$type": "color"
     },
-    "data-table-text-3": {
+    "data-table-header-popup-button-text": {
       "$value": "{plx-sys.data-table-text-subtle}",
       "$type": "color"
     },
@@ -4889,7 +5141,7 @@
       "$value": "linear-gradient({plx-sys.data-table-accent},{plx-sys.data-table-accent})",
       "$type": "color"
     },
-    "data-table-border-bottom-color-3": {
+    "data-table-row-line": {
       "$value": "{plx-sys.data-table-line}",
       "$type": "color"
     },
@@ -4897,15 +5149,15 @@
       "$value": "{plx-sys.data-table-row-height}",
       "$type": "dimension"
     },
-    "data-table-hover-background-2": {
+    "data-table-row-hover-background": {
       "$value": "{plx-sys.data-table-row-hover}",
       "$type": "color"
     },
-    "data-table-background-3": {
+    "data-table-row-selected-background": {
       "$value": "{plx-sys.data-table-row-selected}",
       "$type": "color"
     },
-    "data-table-hover-background-3": {
+    "data-table-row-selected-hover-background": {
       "$value": "{plx-sys.data-table-row-selected-hover}",
       "$type": "color"
     },
@@ -4913,7 +5165,7 @@
       "$value": "{plx-sys.data-table-row-height}",
       "$type": "number"
     },
-    "data-table-not-first-child-before-background-2": {
+    "data-table-column-line": {
       "$value": "{plx-sys.data-table-line}",
       "$type": "color"
     },
@@ -4921,7 +5173,7 @@
       "$value": "{plx-sys.data-table-accent}",
       "$type": "color"
     },
-    "data-table-outline-color-2": {
+    "data-table-invalid-outline-color": {
       "$value": "{plx-sys.data-table-danger}",
       "$type": "color"
     },
@@ -4929,39 +5181,39 @@
       "$value": "{plx-sys.data-table-accent}",
       "$type": "color"
     },
-    "data-table-cell--icon-text": {
+    "data-table-cell-icon-text": {
       "$value": "{plx-sys.data-table-text-muted}",
       "$type": "color"
     },
-    "data-table-cell--icon-hover-background": {
+    "data-table-cell-icon-hover-background": {
       "$value": "{plx-sys.data-table-line}",
       "$type": "color"
     },
-    "data-table-cell--wrap-padding-bottom": {
+    "data-table-cell-wrap-padding-bottom": {
       "$value": "calc(({plx-sys.data-table-row-height} - 1lh) / 2)",
       "$type": "dimension"
     },
-    "data-table-cell--wrap-padding-top": {
+    "data-table-cell-wrap-padding-top": {
       "$value": "calc(({plx-sys.data-table-row-height} - 1lh) / 2)",
       "$type": "dimension"
     },
-    "data-table-cell--row-label-background": {
+    "data-table-row-label-background": {
       "$value": "{plx-sys.data-table-header-background}",
       "$type": "color"
     },
-    "data-table-cell--row-label-border-right-color": {
+    "data-table-row-label-border-right-color": {
       "$value": "{plx-sys.data-table-header-line}",
       "$type": "color"
     },
-    "data-table-cell--row-label-cell--name-text": {
+    "data-table-row-label-name-text": {
       "$value": "{plx-sys.data-table-row-selected-text}",
       "$type": "color"
     },
-    "data-table-background-4": {
+    "data-table-tree-control-mark": {
       "$value": "{plx-sys.data-table-text-muted}",
       "$type": "color"
     },
-    "data-table-border-color-2": {
+    "data-table-tree-branch-color": {
       "$value": "{plx-sys.data-table-header-line}",
       "$type": "color"
     },
@@ -4981,11 +5233,11 @@
       "$value": "{plx-sys.data-table-text-muted}",
       "$type": "color"
     },
-    "data-table-border-top-color-2": {
+    "data-table-footer-line": {
       "$value": "{plx-sys.data-table-line}",
       "$type": "color"
     },
-    "data-table-border-color-3": {
+    "data-table-moving-row-border-color": {
       "$value": "{plx-sys.data-table-accent}",
       "$type": "color"
     },
@@ -4997,7 +5249,7 @@
       "$value": "{plx-sys.data-table-text-muted}",
       "$type": "color"
     },
-    "data-table-menu-item--danger-text": {
+    "data-table-menu-item-danger-text": {
       "$value": "{plx-sys.data-table-danger}",
       "$type": "color"
     },
@@ -5033,7 +5285,7 @@
       "$value": "inset 0 {plx-sys.border-width-medium} 0 0 {plx-sys.data-table-accent}",
       "$type": "shadow"
     },
-    "data-table-drop-shadow-2": {
+    "data-table-column-drop-shadow": {
       "$value": "inset {plx-sys.border-width-medium} 0 0 0 {plx-sys.data-table-accent}",
       "$type": "shadow"
     },
@@ -5464,23 +5716,23 @@
       "$value": "{plx-ref.size-20px}",
       "$type": "dimension"
     },
-    "list-item--neutral-icon-text": {
+    "list-item-neutral-icon-text": {
       "$value": "{plx-sys.content-muted}",
       "$type": "color"
     },
-    "list-item--success-icon-text": {
+    "list-item-success-icon-text": {
       "$value": "{plx-sys.feedback-success-content}",
       "$type": "color"
     },
-    "list-item--danger-icon-text": {
+    "list-item-danger-icon-text": {
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
     },
-    "list-item--info-icon-text": {
+    "list-item-info-icon-text": {
       "$value": "{plx-sys.feedback-info-content}",
       "$type": "color"
     },
-    "list-item--warning-icon-text": {
+    "list-item-warning-icon-text": {
       "$value": "{plx-sys.feedback-warning-content}",
       "$type": "color"
     },
@@ -5600,11 +5852,11 @@
       "$value": "{plx-ref.size-44px}",
       "$type": "dimension"
     },
-    "media-viewer-nav--previous-inset-inline-start": {
+    "media-viewer-nav-previous-inset-inline-start": {
       "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
-    "media-viewer-nav--next-inset-inline-end": {
+    "media-viewer-nav-next-inset-inline-end": {
       "$value": "{plx-ref.space-20px}",
       "$type": "dimension"
     },
@@ -5700,15 +5952,15 @@
       "$value": "{plx-ref.font-size-11}",
       "$type": "dimension"
     },
-    "metric-change--neutral-text": {
+    "metric-change-neutral-text": {
       "$value": "{plx-sys.content-muted}",
       "$type": "color"
     },
-    "metric-change--success-text": {
+    "metric-change-success-text": {
       "$value": "{plx-sys.feedback-success-content}",
       "$type": "color"
     },
-    "metric-change--danger-text": {
+    "metric-change-danger-text": {
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
     },
@@ -5812,19 +6064,19 @@
       "$value": "{plx-sys.radius-control}",
       "$type": "dimension"
     },
-    "nav-list-entry--actions-hover-background": {
+    "nav-list-entry-actions-hover-background": {
       "$value": "{plx-sys.state-hover}",
       "$type": "color"
     },
-    "nav-list-entry--actions-hover-shadow": {
+    "nav-list-entry-actions-hover-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-hover-border}",
       "$type": "shadow"
     },
-    "nav-list-entry--actions-item-current-background": {
+    "nav-list-entry-actions-item-current-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color"
     },
-    "nav-list-entry--actions-item-current-shadow": {
+    "nav-list-entry-actions-item-current-shadow": {
       "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
       "$type": "shadow"
     },
@@ -5864,7 +6116,7 @@
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
     },
-    "nav-list-entry--actions-gap": {
+    "nav-list-entry-actions-gap": {
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
     },
@@ -5928,27 +6180,27 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "nav-list-item--muted-not-is-current-text": {
+    "nav-list-item-muted-text": {
       "$value": "{plx-sys.feedback-danger-content}",
       "$type": "color"
     },
-    "nav-list-item--muted-not-is-current-icon-text": {
+    "nav-list-item-muted-icon-text": {
       "$value": "{plx-sys.content-subtle}",
       "$type": "color"
     },
-    "nav-list-item--group-font-weight": {
+    "nav-list-item-group-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "nav-list-item--group-icon-text": {
+    "nav-list-item-group-icon-text": {
       "$value": "{plx-sys.content-muted}",
       "$type": "color"
     },
-    "nav-list-item--group-current-parent-text": {
+    "nav-list-item-group-current-parent-text": {
       "$value": "{plx-sys.selected-content}",
       "$type": "color"
     },
-    "nav-list-items--nested-padding-inline-start": {
+    "nav-list-items-nested-padding-inline-start": {
       "$value": "calc({plx-sys.control-icon-standard} + {plx-sys.space-inline-sm})",
       "$type": "dimension"
     },
@@ -6024,15 +6276,15 @@
       "$value": "{plx-ref.line-height-none}",
       "$type": "number"
     },
-    "pagination-page-hover-not-disabled-not-aria-current-background": {
+    "pagination-page-hover-background": {
       "$value": "{plx-sys.state-selected}",
       "$type": "color"
     },
-    "pagination-page-hover-not-disabled-not-aria-current-border-color": {
+    "pagination-page-hover-border-color": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
-    "pagination-page-hover-not-disabled-not-aria-current-text": {
+    "pagination-page-hover-text": {
       "$value": "{plx-sys.content-link}",
       "$type": "color"
     },
@@ -6144,19 +6396,19 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "preview-corner--top-start-inset-block-start": {
+    "preview-corner-top-start-inset-block-start": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "preview-corner--top-start-inset-inline-start": {
+    "preview-corner-top-start-inset-inline-start": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "preview-corner--bottom-end-inset-block-end": {
+    "preview-corner-bottom-end-inset-block-end": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "preview-corner--bottom-end-inset-inline-end": {
+    "preview-corner-bottom-end-inset-inline-end": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
@@ -6316,7 +6568,7 @@
       "$value": "{plx-sys.control-height-inline}",
       "$type": "dimension"
     },
-    "rating-star--on-text": {
+    "rating-star-on-text": {
       "$value": "{plx-sys.rating-active}",
       "$type": "color"
     },
@@ -6828,7 +7080,7 @@
       "$value": "{plx-sys.table-text}",
       "$type": "color"
     },
-    "table-background-2": {
+    "table-header-background": {
       "$value": "{plx-sys.table-header-background}",
       "$type": "color"
     },
@@ -6836,11 +7088,11 @@
       "$value": "{plx-sys.table-header-line}",
       "$type": "color"
     },
-    "table-text-2": {
+    "table-header-text": {
       "$value": "{plx-sys.table-text-muted}",
       "$type": "color"
     },
-    "table-not-first-child-before-background": {
+    "table-header-column-line": {
       "$value": "{plx-sys.table-header-line}",
       "$type": "color"
     },
@@ -6848,7 +7100,7 @@
       "$value": "{plx-sys.table-row-height}",
       "$type": "dimension"
     },
-    "table-border-bottom-color-2": {
+    "table-row-line": {
       "$value": "{plx-sys.table-line}",
       "$type": "color"
     },
@@ -6860,27 +7112,27 @@
       "$value": "{plx-sys.table-row-height}",
       "$type": "number"
     },
-    "table-not-first-child-before-background-2": {
+    "table-column-line": {
       "$value": "{plx-sys.table-line}",
       "$type": "color"
     },
-    "table-cell--icon-text": {
+    "table-cell-icon-text": {
       "$value": "{plx-sys.table-text-muted}",
       "$type": "color"
     },
-    "table-cell--wrap-padding-bottom": {
+    "table-cell-wrap-padding-bottom": {
       "$value": "calc(({plx-sys.table-row-height} - 1lh) / 2)",
       "$type": "dimension"
     },
-    "table-cell--wrap-padding-top": {
+    "table-cell-wrap-padding-top": {
       "$value": "calc(({plx-sys.table-row-height} - 1lh) / 2)",
       "$type": "dimension"
     },
-    "table-cell--row-label-background": {
+    "table-row-label-background": {
       "$value": "{plx-sys.table-header-background}",
       "$type": "color"
     },
-    "table-cell--row-label-border-right-color": {
+    "table-row-label-border-right-color": {
       "$value": "{plx-sys.table-header-line}",
       "$type": "color"
     },
@@ -7110,11 +7362,11 @@
       "$value": "{plx-sys.layer-popover}",
       "$type": "number"
     },
-    "tooltip-bubble--bottom-inset-block-start": {
+    "tooltip-bubble-bottom-inset-block-start": {
       "$value": "calc(100% + {plx-sys.space-stack-sm})",
       "$type": "dimension"
     },
-    "tooltip-bubble--top-inset-block-end": {
+    "tooltip-bubble-top-inset-block-end": {
       "$value": "calc(100% + {plx-sys.space-stack-sm})",
       "$type": "dimension"
     },
@@ -7122,19 +7374,19 @@
       "$value": "{plx-sys.border-width-heavy}",
       "$type": "dimension"
     },
-    "tooltip-bubble--bottom-before-border-bottom-color": {
+    "tooltip-bubble-bottom-arrow-color": {
       "$value": "{plx-sys.tooltip-background}",
       "$type": "color"
     },
-    "tooltip-bubble--top-before-border-top-color": {
+    "tooltip-bubble-top-arrow-color": {
       "$value": "{plx-sys.tooltip-background}",
       "$type": "color"
     },
-    "tooltip-bubble--end-inset-inline-start": {
+    "tooltip-bubble-end-inset-inline-start": {
       "$value": "calc(100% + {plx-sys.space-stack-sm})",
       "$type": "dimension"
     },
-    "tooltip-bubble--end-before-border-inline-end-color": {
+    "tooltip-bubble-end-arrow-color": {
       "$value": "{plx-sys.tooltip-background}",
       "$type": "color"
     },
@@ -7198,7 +7450,7 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "tree-toggle--webkit-mask-size": {
+    "tree-toggle-size": {
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
@@ -7644,51 +7896,51 @@
       "$value": "{plx-sys.icon-size-xl}",
       "$type": "dimension"
     },
-    "entity-header-tile-data-plx-media-hue-background": {
+    "entity-header-tile-blue-background": {
       "$value": "{plx-sys.data-color-blue-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-text": {
+    "entity-header-tile-blue-text": {
       "$value": "{plx-sys.data-color-blue-on-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-background-2": {
+    "entity-header-tile-green-background": {
       "$value": "{plx-sys.data-color-green-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-text-2": {
+    "entity-header-tile-green-text": {
       "$value": "{plx-sys.data-color-green-on-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-background-3": {
+    "entity-header-tile-purple-background": {
       "$value": "{plx-sys.data-color-purple-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-text-3": {
+    "entity-header-tile-purple-text": {
       "$value": "{plx-sys.data-color-purple-on-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-background-4": {
+    "entity-header-tile-red-background": {
       "$value": "{plx-sys.data-color-red-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-text-4": {
+    "entity-header-tile-red-text": {
       "$value": "{plx-sys.data-color-red-on-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-background-5": {
+    "entity-header-tile-brown-background": {
       "$value": "{plx-sys.data-color-brown-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-text-5": {
+    "entity-header-tile-brown-text": {
       "$value": "{plx-sys.data-color-brown-on-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-background-6": {
+    "entity-header-tile-gray-background": {
       "$value": "{plx-sys.data-color-gray-soft}",
       "$type": "color"
     },
-    "entity-header-tile-data-plx-media-hue-text-6": {
+    "entity-header-tile-gray-text": {
       "$value": "{plx-sys.data-color-gray-on-soft}",
       "$type": "color"
     },
@@ -7908,7 +8160,7 @@
       "$value": "{plx-sys.space-inset-lg}",
       "$type": "dimension"
     },
-    "image-editor-text--bold-font-weight": {
+    "image-editor-text-bold-font-weight": {
       "$value": "{plx-sys.font-weight-bold}",
       "$type": "fontWeight"
     },
@@ -8208,11 +8460,11 @@
       "$value": "{plx-ref.font-size-13}",
       "$type": "dimension"
     },
-    "property-list-value--data-font-family": {
+    "property-list-value-data-font-family": {
       "$value": "{plx-sys.font-body}",
       "$type": "fontFamily"
     },
-    "property-list-value--data-font-size": {
+    "property-list-value-data-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
@@ -8236,7 +8488,7 @@
       "$value": "{plx-sys.space-stack-xl}",
       "$type": "dimension"
     },
-    "record-page-header--md-margin-block-end": {
+    "record-page-header-md-margin-block-end": {
       "$value": "{plx-sys.space-stack-lg}",
       "$type": "dimension"
     },
@@ -8260,7 +8512,7 @@
       "$value": "{plx-sys.font-weight-bold}",
       "$type": "fontWeight"
     },
-    "record-page-header--md-title-font-size": {
+    "record-page-header-md-title-font-size": {
       "$value": "{plx-ref.font-size-15}",
       "$type": "dimension"
     },
@@ -8288,43 +8540,43 @@
       "$value": "{plx-sys.space-cluster-sm}",
       "$type": "dimension"
     },
-    "record-page-header--card-background": {
+    "record-page-header-card-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color"
     },
-    "record-page-header--card-background-image": {
+    "record-page-header-card-background-image": {
       "$value": "linear-gradient(to bottom,{plx-sys.header-card-tint} 0%,{plx-sys.surface-default} 100%)",
       "$type": "color"
     },
-    "record-page-header--card-border-color": {
+    "record-page-header-card-border-color": {
       "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
-    "record-page-header--card-radius": {
+    "record-page-header-card-radius": {
       "$value": "{plx-sys.radius-surface-8px}",
       "$type": "dimension"
     },
-    "record-page-header--card-border-width": {
+    "record-page-header-card-border-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "record-page-header--card-gap": {
+    "record-page-header-card-gap": {
       "$value": "{plx-sys.space-inline-lg}",
       "$type": "dimension"
     },
-    "record-page-header--card-padding-block": {
+    "record-page-header-card-padding-block": {
       "$value": "{plx-sys.space-inset-lg}",
       "$type": "dimension"
     },
-    "record-page-header--card-padding-inline-end": {
+    "record-page-header-card-padding-inline-end": {
       "$value": "{plx-sys.space-inset-xl}",
       "$type": "dimension"
     },
-    "record-page-header--card-padding-inline-start": {
+    "record-page-header-card-padding-inline-start": {
       "$value": "{plx-sys.space-inset-lg}",
       "$type": "dimension"
     },
-    "record-page-header--card-media-text": {
+    "record-page-header-card-media-text": {
       "$value": "{plx-sys.header-card-media-content}",
       "$type": "color"
     },
@@ -8484,6 +8736,36 @@
       "$value": "inset {plx-sys.border-width-thin} 0 0 {plx-sys.border-default}",
       "$type": "shadow"
     },
+    "secondary-pane-back-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "The Back bar that leads a list-detail pane's detail at Narrow: the pane surface."
+    },
+    "secondary-pane-back-border-block-end-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "The Back bar's divider under it, as the pane's divider on its content side."
+    },
+    "secondary-pane-back-border-block-end-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "The Back bar's divider width."
+    },
+    "secondary-pane-back-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "The Back bar's height: the pane header's row height."
+    },
+    "secondary-pane-back-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Space above and below the Back control."
+    },
+    "secondary-pane-back-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Space before and after the Back control."
+    },
     "settings-content-padding-block": {
       "$value": "{plx-sys.space-layout-md}",
       "$type": "dimension"
@@ -8496,27 +8778,27 @@
       "$value": "{plx-sys.space-stack-xl}",
       "$type": "dimension"
     },
-    "settings-section--card-background": {
+    "settings-section-card-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color"
     },
-    "settings-section--card-border-color": {
+    "settings-section-card-border-color": {
       "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
-    "settings-section--card-radius": {
+    "settings-section-card-radius": {
       "$value": "{plx-sys.radius-surface-8px}",
       "$type": "dimension"
     },
-    "settings-section--card-border-width": {
+    "settings-section-card-border-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "settings-section--card-padding-block": {
+    "settings-section-card-padding-block": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "settings-section--card-padding-inline": {
+    "settings-section-card-padding-inline": {
       "$value": "{plx-sys.space-inset-xl}",
       "$type": "dimension"
     },
@@ -8616,7 +8898,7 @@
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "settings-content-padding-inline-2": {
+    "settings-content-narrow-padding-inline": {
       "$value": "{plx-sys.space-layout-sm}",
       "$type": "dimension"
     },
@@ -8624,7 +8906,7 @@
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension"
     },
-    "settings-section--card-action-bar-background": {
+    "settings-section-card-action-bar-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color"
     },

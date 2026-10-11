@@ -72,7 +72,7 @@ function AssetHeader({
         href: 'settings-myaccount.html'
       },
       settings: {
-        href: '../settings/index.html#general'
+        href: '../settings/index.html#/general'
       },
       appSettings: {
         app: 'Asset Manager',
@@ -128,9 +128,9 @@ var _plenixPlatform = require("plenix-platform");
 var _AssetShell = require("../shell/AssetShell.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix asset app · My Account (app/pages/MyAccountPage.jsx): profile and personal preferences.
-   Replaces the HTML of settings-myaccount.html (batch 109). Sections: Profile, Preferences; the address hash
-   (#profile, #preferences) opens one directly and follows the navigation. Both stay mounted, so unsaved edits survive
-   switching. */
+   Replaces the HTML of settings-myaccount.html (batch 109). Sections: Profile, Preferences; each is a screen with its
+   address (#/profile, #/preferences; the older #preferences opens the same) and a history entry (Platforms Standard 4.3).
+   Both stay mounted, so unsaved edits survive switching; leaving the page with unsaved edits asks (useUnsavedGuard). */
 // DATA: the saved preferences and the page-size choices come from the back end; sample values until then. The profile is
 // the signed-in person, from the Platform session.
 const PAGE_SIZES = ['6', '8', '12', '15', '20', '30', '36', '50', '100', '200'];
@@ -147,21 +147,23 @@ const SECTIONS = [{
     icon: 'settings-preferences'
   }]
 }];
+
+// the section is the screen: choosing one pushes a history entry, Back and Forward follow
+const legacy = hash => hash === '#profile' || hash === '#preferences' ? '/' + hash.slice(1) : null;
 function useSection() {
-  const read = () => location.hash === '#preferences' ? 'preferences' : 'profile';
-  const [section, setSection] = _react.default.useState(read);
-  _react.default.useEffect(() => {
-    const on = () => setSection(read());
-    window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
-  }, []);
+  const loc = (0, _plenixPlatform.useScreenLocation)({
+    app: 'assets-account',
+    legacy
+  });
+  const section = loc.parts[0] === 'preferences' ? 'preferences' : 'profile';
   const go = id => {
     if (id === 'home') return;
-    history.replaceState(null, '', '#' + id);
-    setSection(id);
+    loc.navigate([id]);
   };
   return [section, go];
 }
+// both sections stay mounted, so only leaving the page loses an edit
+const keeps = () => true;
 function Profile() {
   const toast = (0, _plenixPlatform.useToast)();
   const {
@@ -172,6 +174,10 @@ function Profile() {
     lastName: account.lastName || '',
     email: account.email || ''
   }));
+  const [saved, setSaved] = _react.default.useState(p);
+  (0, _plenixPlatform.useUnsavedGuard)(Object.keys(p).some(k => p[k] !== saved[k]), 'Your profile changes have not been saved.', {
+    keeps
+  });
   const field = k => ({
     value: p[k],
     onChange: e => setP({
@@ -183,6 +189,7 @@ function Profile() {
     noValidate: true,
     onSubmit: e => {
       e.preventDefault();
+      setSaved(p);
       toast.show('Profile saved', {
         tone: 'success'
       });
@@ -244,6 +251,10 @@ function Preferences() {
     approval: false,
     dateFormat: ''
   });
+  const [saved, setSaved] = _react.default.useState(prefs);
+  (0, _plenixPlatform.useUnsavedGuard)(Object.keys(prefs).some(k => prefs[k] !== saved[k]), 'Your preferences have not been saved.', {
+    keeps
+  });
   const [sizes, setSizes] = _react.default.useState(PAGE_SIZES.map(v => ({
     value: v,
     label: v
@@ -265,6 +276,7 @@ function Preferences() {
     noValidate: true,
     onSubmit: e => {
       e.preventDefault();
+      setSaved(prefs);
       toast.show('Preferences saved', {
         tone: 'success'
       });
@@ -484,9 +496,10 @@ var D = _interopRequireWildcard(require("./systemSettingsData.js"));
 function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix asset app · System Settings (app/pages/SystemSettingsPage.jsx): catalog-wide configuration in 14 sections.
-   Replaces the HTML of settings-system.html (batch 110). The address hash (#properties, #users, …) opens a section and
-   follows the navigation; every section stays mounted, so unsaved edits survive switching. Actions that have no back end
-   yet confirm with a toast, as the HTML page did. */
+   Replaces the HTML of settings-system.html (batch 110). Each section is a screen with its address (#/properties,
+   #/users, …; the older #users opens the same) and a history entry (Platforms Standard 4.3); every section stays mounted,
+   so unsaved edits survive switching, and leaving the page while a form has unsaved edits asks (useUnsavedGuard). Actions
+   that have no back end yet confirm with a toast, as the HTML page did. */
 const NAV = [{
   heading: 'Content',
   collapsible: true,
@@ -664,17 +677,30 @@ const Actions = ({
   type: "submit",
   variant: "primary"
 }, save));
+// a form is edited from its first change (a search field is not an edit) until it is saved
+const Edited = /*#__PURE__*/_react.default.createContext(() => {});
 const Form = ({
   act,
   saved,
   children
-}) => /*#__PURE__*/_react.default.createElement("form", {
-  noValidate: true,
-  onSubmit: e => {
-    e.preventDefault();
-    act(saved, 'success')();
-  }
-}, children);
+}) => {
+  const mark = _react.default.useContext(Edited),
+    id = _react.default.useId();
+  const onChange = e => {
+    const t = e.target;
+    if (t && (t.type === 'search' || t.closest && t.closest('[role="search"]'))) return;
+    mark(id, true);
+  };
+  return /*#__PURE__*/_react.default.createElement("form", {
+    noValidate: true,
+    onChange: onChange,
+    onSubmit: e => {
+      e.preventDefault();
+      mark(id, false);
+      act(saved, 'success')();
+    }
+  }, children);
+};
 
 /* ── Content ── */
 function Properties({
@@ -1703,21 +1729,18 @@ const SECTIONS = {
   customizations: Customizations,
   scheduler: Scheduler
 };
+
+// the section is the screen: choosing one pushes a history entry, Back and Forward follow
+const legacy = hash => IDS.indexOf(hash.slice(1)) >= 0 ? '/' + hash.slice(1) : null;
 function useSection() {
-  const read = () => {
-    const h = location.hash.slice(1);
-    return IDS.indexOf(h) >= 0 ? h : 'properties';
-  };
-  const [section, setSection] = _react.default.useState(read);
-  _react.default.useEffect(() => {
-    const on = () => setSection(read());
-    window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
-  }, []);
+  const loc = (0, _plenixPlatform.useScreenLocation)({
+    app: 'assets-system',
+    legacy
+  });
+  const section = IDS.indexOf(loc.parts[0]) >= 0 ? loc.parts[0] : 'properties';
   const go = id => {
     if (IDS.indexOf(id) < 0) return;
-    history.replaceState(null, '', '#' + id);
-    setSection(id);
+    loc.navigate([id]);
   };
   return [section, go];
 }
@@ -1725,7 +1748,18 @@ function Content({
   section
 }) {
   const act = useAct();
-  return /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsLayout, null, IDS.map(id => {
+  // the forms with unsaved edits; every section stays mounted, so only leaving the page asks
+  const [edited, setEdited] = _react.default.useState({});
+  const mark = _react.default.useCallback((id, on) => setEdited(d => !!d[id] === on ? d : {
+    ...d,
+    [id]: on
+  }), []);
+  (0, _plenixPlatform.useUnsavedGuard)(Object.keys(edited).some(k => edited[k]), 'Your settings changes have not been saved.', {
+    keeps: () => true
+  });
+  return /*#__PURE__*/_react.default.createElement(Edited.Provider, {
+    value: mark
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsLayout, null, IDS.map(id => {
     const S = SECTIONS[id];
     return /*#__PURE__*/_react.default.createElement("div", {
       key: id,
@@ -1733,7 +1767,7 @@ function Content({
     }, /*#__PURE__*/_react.default.createElement(S, {
       act: act
     }));
-  }));
+  })));
 }
 function SystemSettingsPage() {
   const [section, go] = useSection();
@@ -3488,7 +3522,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    - Visible Metadata: search, a type filter (All, Image, Video, Audio, 3D, Doc) and collapsible field groups; groups start
      closed and a group shows its fields only while open and matching the search, as in plenix.js.
    There is no back end: Upload confirms with the toast the legacy drop handler used ("N file(s) ready to upload") and
-   closes, as the legacy Upload button did. Every state resets when the dialog closes. */
+   closes, as the legacy Upload button did. Every state resets when the dialog closes. While files are queued, Cancel,
+   Close, Escape and leaving the page ask first (useUnsavedGuard). */
 
 // DATA: the storage folders come from the back end; sample tree until then.
 const FOLDERS = [{
@@ -4109,15 +4144,16 @@ function UploadFlow({
     });
     onClose();
   };
+  const cancel = (0, _plenixPlatform.useUnsavedGuard)(queue.length > 0, 'The files you chose have not been uploaded.')(onClose);
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
     open: true,
-    onClose: onClose,
+    onClose: cancel,
     title: "Upload assets",
     icon: "upload",
     size: "xl",
     flush: true,
     footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      onClick: onClose
+      onClick: cancel
     }, "Cancel"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       variant: "primary",
       onClick: upload
@@ -4388,6 +4424,9 @@ function MetadataFilterDialog({
     ...s,
     [i]: !s[i]
   }));
+  // filters changed and not applied: Cancel, Close and Escape ask first, and so does leaving the page
+  const guard = (0, _plenixPlatform.useUnsavedGuard)(!!open && JSON.stringify(draft) !== JSON.stringify(current), 'The filters you changed have not been applied.');
+  const cancel = guard(onClose);
   const apply = e => {
     if (e) e.preventDefault();
     if (!value) setApplied(draft);
@@ -4396,12 +4435,12 @@ function MetadataFilterDialog({
   };
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
     open: open,
-    onClose: onClose,
+    onClose: cancel,
     title: "Advanced Filters \u2014 Metadata Fields",
     icon: "filter",
     size: "lg",
     footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      onClick: onClose
+      onClick: cancel
     }, "Cancel"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       variant: "primary",
       onClick: apply
@@ -5699,8 +5738,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    cards or a table; the chosen asset's details on the right). Panes: Files (the folder tree), the sidebar, the content,
    the details pane. The sidebar is the shell's side navigation and the details pane its panel: the AppShell collapses,
    resizes and (below 1024px) overlays them.
-   The address: ?q=text opens the search results for it; ?upload=1 opens the upload dialog (the header on other pages
-   links here). Dialogs are opened by their legacy ids from app/dialogs (one host renders the open one). */
+   The address (Platforms Standard 4.3): each view is a screen with a history entry: #/ (categories), #/collections,
+   #/category/<name>, #/search?q=<text>, #/saved/<name>, and ?asset=<id> on any of them for the open asset; the last
+   screen is restored on load (plenix.assets.view). ?q=text (the header on other pages links here) names the search
+   screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
+   the open one). */
 const DIALOGS = {
   ..._BrowseDialogs.DIALOGS,
   ..._UploadDialog.DIALOGS,
@@ -5867,7 +5909,19 @@ const opts = values => Array.from(new Set(values)).sort().map(x => ({
   label: x,
   count: values.filter(y => y === x).length
 }));
+
+// ?q=text from another page names the search screen (in place: it is where the person arrived, not a move)
+function nameSearchScreen() {
+  const q = new URLSearchParams(location.search).get('q');
+  if (q !== null && !location.hash) history.replaceState(history.state, '', location.pathname + location.search + (0, _plenixPlatform.screenHref)(['search'], {
+    q
+  }));
+}
 function HomePage() {
+  nameSearchScreen();
+  const loc = (0, _plenixPlatform.useScreenLocation)({
+    app: 'assets'
+  });
   const toast = (0, _plenixPlatform.useToast)();
   const act = (msg, tone = 'info') => () => toast.show(msg, {
     tone
@@ -5907,48 +5961,76 @@ function HomePage() {
   });
   const browse = view === 'categories' || view === 'collections';
   const collections = view === 'collections';
-  const showView = v => {
-    setView(v);
+
+  // the screen named by the address: the view (with its category, search or saved search), then the open asset
+  const viewKey = loc.parts.join('/') + '?' + (loc.params.q || '');
+  _react.default.useLayoutEffect(() => {
+    const [top, name] = loc.parts;
     setFiles(false);
     setSelCats([]);
-  };
-  const openCategory = name => {
-    setView('search');
-    setHeading(name);
-    setQuery('');
     setSelAssets([]);
-    setActive(name);
-  };
-  // the Search workspace: opened from the header search (Enter) with the query, or from a saved search with its criteria
-  const openFind = f => {
-    setFind({
-      ...FIND_EMPTY,
-      ...f
-    });
-    setView('find');
-    setFiles(false);
-    setSelAssets([]);
-  };
-  const onSidebar = (kind, name) => {
-    setActive(name);
-    if (kind === 'saved') {
+    if (top === 'collections') {
+      setView('collections');
+      setActive('All collections');
+    } else if (top === 'category' && name) {
+      setView('search');
+      setHeading(name);
+      setQuery('');
+      setActive(name);
+    } else if (top === 'search') {
+      const q = loc.params.q || '';
+      setQuery(q);
+      setActive(null);
+      setFind({
+        ...FIND_EMPTY,
+        query: q
+      });
+      setView('find');
+    } else if (top === 'saved' && name) {
       const s = saved.find(x => x.name === name);
-      openFind({
+      setActive(name);
+      setFind({
+        ...FIND_EMPTY,
         query: s ? s.query : '',
         filters: s ? s.filters : {},
+        saved: name
+      });
+      setView('find');
+    } else {
+      setView('categories');
+      setActive('All categories');
+    }
+  }, [viewKey]);
+  _react.default.useLayoutEffect(() => {
+    const a = loc.params.asset;
+    setAsset(a === undefined ? null : +a);
+    if (a !== undefined) setRight(r => ({
+      ...r,
+      collapsed: false
+    }));
+  }, [loc.params.asset]);
+  // each is a new screen (a history entry)
+  const showView = v => loc.navigate(v === 'collections' ? ['collections'] : '/');
+  const openCategory = name => loc.navigate(['category', name]);
+  // the Search workspace: opened from the header search (Enter) with the query, or from a saved search with its criteria
+  const openFind = f => f.saved ? loc.navigate(['saved', f.saved]) : loc.navigate(['search'], {
+    q: f.query || ''
+  });
+  const openAsset = id => loc.navigate(loc.parts, Object.assign({}, loc.params, {
+    asset: id
+  }));
+  const onSidebar = (kind, name) => {
+    if (kind === 'saved') {
+      openFind({
         saved: name
       });
       return;
     }
     if (kind === 'categories' && name === 'All categories') showView('categories');else if (kind === 'collections' && name === 'All collections') showView('collections');else openCategory(name);
   };
-  const search = q => {
-    setQuery(q);
-    setActive(null);
-    openFind({
-      query: q
-    });
-  };
+  const search = q => openFind({
+    query: q
+  });
   const bulk = action => {
     const d = (0, _BulkDialogs.bulkDialogFor)(action);
     if (!d) {
@@ -6407,13 +6489,7 @@ function HomePage() {
       selecting: selAssets.length > 0,
       onSelectChange: () => toggle(selAssets, setSelAssets, a.id),
       selectLabel: 'Select ' + a.name,
-      onOpen: () => {
-        setAsset(a.id);
-        setRight(r => ({
-          ...r,
-          collapsed: false
-        }));
-      },
+      onOpen: () => openAsset(a.id),
       "aria-current": asset === a.id ? 'true' : undefined
     }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
       label: "Search results",
@@ -6422,7 +6498,7 @@ function HomePage() {
       selected: selAssets,
       onSelectionChange: setSelAssets,
       on: {
-        rowClick: (e, row) => setAsset(row.getData().id)
+        rowClick: (e, row) => openAsset(row.getData().id)
       },
       columns: [{
         title: 'Name',
@@ -6682,7 +6758,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    description of the edit (the state); the picture is drawn from it, and each finished change is kept so Undo and Redo
    step through them. Sliders preview while dragging and record when let go. Nothing is uploaded or saved: Save, Copy,
    Download and Export only say what they would do, in the status line over the canvas. The page is dark
-   (<html data-plx-mode="dark">). */
+   (<html data-plx-mode="dark">). Until Save (or Save as), an edit is unsaved work: closing or leaving the page asks
+   (useUnsavedGuard; Platforms Standard 4.3). */
 // the editor's choices come from the design system's steps file (batch 282): the picture is drawn only from them
 const PRESETS = _plenixPlatform.IMAGE_EDITOR_STEPS.presets,
   RATIOS = _plenixPlatform.IMAGE_EDITOR_STEPS.ratios;
@@ -6751,6 +6828,13 @@ function ImageEditorPage() {
   const [dragOver, setDragOver] = _react.default.useState(false);
   const [msg, say] = useStatus();
   const file = _react.default.useRef(null);
+  // the edit last saved: anything else (or an overlay chosen and not composed) is unsaved
+  const [saved, setSaved] = _react.default.useState(() => JSON.stringify(START));
+  (0, _plenixPlatform.useUnsavedGuard)(JSON.stringify(edit) !== saved || !!pending, 'Your edits to this image have not been saved.');
+  const save = message => {
+    setSaved(JSON.stringify(edit));
+    say(message);
+  };
   const commit = (next, message) => {
     setEdit(next);
     const snap = JSON.stringify(next);
@@ -6833,9 +6917,9 @@ function ImageEditorPage() {
     label: "Editor"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Toolbar.Group, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     variant: "primary",
-    onClick: () => say('Saved')
+    onClick: () => save('Saved')
   }, "Save"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    onClick: () => say('Saved as a copy')
+    onClick: () => save('Saved as a copy')
   }, "Save as"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
     label: "Export as",
     trigger: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {

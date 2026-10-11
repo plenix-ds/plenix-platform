@@ -2,4 +2,4 @@
 import { mountSuite } from '../suite/suite.jsx';
 import { NotesScreen } from './notes.jsx';
 
-mountSuite('notes', () => <NotesScreen />);
+mountSuite('notes', ({ screen }) => <NotesScreen screen={screen} />);

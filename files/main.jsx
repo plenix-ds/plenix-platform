@@ -6,4 +6,4 @@ import { FilesScreen } from './files.jsx';
 // the file list is a table: start loading its engine while the page draws (batch 237)
 DataTable.preload();
 
-mountSuite('files', () => <FilesScreen />);
+mountSuite('files', ({ screen }) => <FilesScreen screen={screen} />);

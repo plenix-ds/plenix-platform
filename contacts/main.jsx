@@ -2,4 +2,4 @@
 import { mountSuite } from '../suite/suite.jsx';
 import { ContactsScreen } from './contacts.jsx';
 
-mountSuite('contacts', () => <ContactsScreen />);
+mountSuite('contacts', ({ screen }) => <ContactsScreen screen={screen} />);

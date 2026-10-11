@@ -181,6 +181,7 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, de
     <>
       <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={min} aria-valuemax={top} tabIndex={0}
         className={cx('plx-panel-splitter', 'plx-panel-splitter--' + edge)} onPointerDown={onPointerDown} onKeyDown={onKeyDown}
+        data-plx-target-equivalent="the width menu beside it (WCAG 2.5.8 Equivalent)"
         onDoubleClick={onCollapse || undefined} />
       <Menu label={label} placement={edge === 'end' ? 'bottom-end' : 'bottom-start'} className={cx('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge)}
         trigger={<Button size="xs" iconOnly icon="more" label={SPLITTER.options.replace('{label}', label || '')} />}>

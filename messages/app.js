@@ -866,6 +866,8 @@ function CaptureUI({
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState(null);
   const [saved, setSaved] = useState(false);
+  // a proposed name not yet accepted is unsaved: closing the dialog or leaving the page asks first
+  const close = (0, _plenixPlatform.useUnsavedGuard)(!!(sel && res && !saved), 'The proposed file name has not been saved.')(onClose);
   const pick = async f => {
     setSel(f);
     setRes(null);
@@ -878,7 +880,7 @@ function CaptureUI({
   };
   return /*#__PURE__*/React.createElement(_plenixPlatform.Dialog, {
     open: true,
-    onClose: onClose,
+    onClose: close,
     title: "AI File Naming",
     description: "Select a file \u2014 AI reads the content and proposes a structured name."
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -1838,8 +1840,13 @@ var _findSources = require("./findSources.jsx");
    - search: Enter in the header searches this application (the dashboard: everything); a result opens its application's
      page; Ask AI opens the AI search in this page;
    - the status bar and the capture overlay.
-   render({ prefs }) draws the application's main area. Preferences (Settings) are kept in localStorage (plenix.prefs) so
-   every page reads the same ones. */
+   render({ prefs, setPrefs, screen }) draws the application's main area. Preferences (Settings) are kept in localStorage
+   (plenix.prefs) so every page reads the same ones.
+   Screens (Platforms Standard 4.3): every screen has an address in the hash (useScreenLocation): #/search?q=… (the Search
+   workspace), #/ask?q=… (the AI search), the application's own screens (#/note/42, #/thread/3, #/project/3/tasks) and,
+   on any of them, ?in=<item> for the item chosen in the navigation pane. screen is the location with open(path, params)
+   and parent(path, params), which keep the navigation pane's item. The last screen is restored on load (plenix.<app>.view).
+   A search result opens its screen: in this page as a new history entry, on another application's page as its address. */
 
 const {
   useState
@@ -1884,14 +1891,26 @@ const SUITE = exports.SUITE = [{
   label: 'Files'
 }];
 // the page of an application, from another application's page (every application folder sits beside the others)
-const appPage = (id, hash) => {
+// path: a screen of that application ("/note/42"), its address in the hash
+const appPage = (id, path) => {
   const a = SUITE.find(x => x.id === id);
-  return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (hash ? '#' + hash : '');
+  return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (path ? '#' + path : '');
 };
 exports.appPage = appPage;
-const settingsPage = cat => '../settings/index.html' + (cat ? '#' + cat : '');
-// each application's own settings category in Settings (none yet for Bookmarks)
+const settingsPage = cat => '../settings/index.html' + (cat ? '#/' + cat : '');
+// the screen a search result opens in its application (FIND_SOURCES keys: a letter for the kind, then the id)
 exports.settingsPage = settingsPage;
+const RESULT_SCREEN = {
+  p: 'project',
+  t: 'thread',
+  c: 'contact',
+  e: 'event',
+  k: 'task',
+  n: 'note',
+  b: 'bookmark',
+  f: 'file'
+};
+// each application's own settings category in Settings (none yet for Bookmarks)
 const APP_SETTINGS = {
   home: 'dashboard',
   projects: 'projects',
@@ -1933,7 +1952,8 @@ function writePrefs(p) {
 function Suite({
   app,
   render,
-  page = 'workspace'
+  page = 'workspace',
+  legacy
 }) {
   const [prefs, setPrefsState] = useState(readPrefs);
   const setPrefs = next => setPrefsState(cur => {
@@ -1941,17 +1961,44 @@ function Suite({
     writePrefs(v);
     return v;
   });
-  const [sub, setSub] = useState(FIRST_SUB[app] || null);
-  const [capture, setCapture] = useState(false);
-  const [find, setFind] = useState(null); // the search workspace in the main area: { app, query } (app "home": everything)
-  const [ai, setAi] = useState(null); // a query handed to the AI search
-  const [hq, setHq] = useState(''); // the header search field
+  const loc = (0, _plenixPlatform.useScreenLocation)({
+    app,
+    legacy
+  });
+  const top = loc.parts[0];
   const inSuite = SUITE.some(x => x.id === app);
+  const scope = inSuite && app !== 'home' ? app : 'home';
+  // the navigation pane's item: ?in=<id> on any screen (Messages: the open conversation is its item)
+  const sub = app === 'messaging' && top === 'thread' ? 't-' + loc.parts[1] : loc.params.in || FIRST_SUB[app] || null;
+  const setSub = id => {
+    const t = app === 'messaging' && /^t-(\d+)$/.exec(id);
+    if (t) loc.navigate(['thread', t[1]]);else loc.navigate('/', {
+      in: id
+    });
+  };
+  const screen = React.useMemo(() => Object.assign({}, loc, {
+    open: (path, params) => loc.navigate(path, Object.assign({
+      in: loc.params.in
+    }, params)),
+    parent: (path, params) => loc.parent(path || '/', Object.assign({
+      in: loc.params.in
+    }, params))
+  }), [loc]);
+  const [capture, setCapture] = useState(false);
+  const find = top === 'search' ? {
+    app: scope,
+    query: loc.params.q || ''
+  } : null; // the search workspace in the main area (app "home": everything)
+  const ai = top === 'ask' ? loc.params.q || '' : null; // a query handed to the AI search
+  const [hq, setHq] = useState(() => find ? find.query : ''); // the header search field
   const label = (SUITE.find(x => x.id === app) || {
     label: 'Settings'
   }).label;
   const openResult = (r, a) => {
-    location.href = appPage(a, a === 'messaging' && r.id ? 't-' + r.id : '');
+    const kind = RESULT_SCREEN[String(r.key || '').charAt(0)],
+      id = String(r.key || '').slice(1);
+    const path = kind && id ? kind === 'project' ? ['project', id, 'home'] : [kind, id] : null;
+    if (a === app && path) loc.navigate(path);else (0, _plenixPlatform.leavePage)(appPage(a, path ? '/' + path.join('/') : ''));
   };
   const tone = {
     blue: 'accent',
@@ -1990,6 +2037,7 @@ function Suite({
     return () => window.removeEventListener('plenix:modechange', follow);
   }, []);
   const onAccent = tone === 'accent';
+  // refining the query keeps the same screen (its entry is corrected in place); a new search from the header is a new screen
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
     initialQuery: ai
@@ -1998,20 +2046,21 @@ function Suite({
     app: find.app,
     query: find.query,
     onQuery: q => {
-      setFind({
-        ...find,
-        query: q
+      loc.navigate(['search'], {
+        q
+      }, {
+        replace: true
       });
       setHq(q);
     },
     onOpen: openResult,
-    onAskAI: q => {
-      setFind(null);
-      setAi(q);
-    }
+    onAskAI: q => loc.navigate(['ask'], {
+      q
+    })
   }) : render({
     prefs,
-    setPrefs
+    setPrefs,
+    screen
   });
   return /*#__PURE__*/React.createElement(_plenixPlatform.AppShell, {
     page: page,
@@ -2024,9 +2073,7 @@ function Suite({
       section: app,
       sub: sub,
       setSub: setSub,
-      onSettings: () => {
-        location.href = settingsPage(SETTINGS_FOR[app] || 'general');
-      }
+      onSettings: () => (0, _plenixPlatform.leavePage)(settingsPage(SETTINGS_FOR[app] || 'general'))
     }) : null,
     header: /*#__PURE__*/React.createElement(_plenixPlatform.AppHeader, {
       tone: tone,
@@ -2047,17 +2094,13 @@ function Suite({
         onChange: e => setHq(e.target.value),
         onClear: () => setHq(''),
         onKeyDown: e => {
-          if (e.key === 'Enter') {
-            setAi(null);
-            setFind({
-              app: inSuite && app !== 'home' ? app : 'home',
-              query: hq.trim()
-            });
-          }
+          if (e.key === 'Enter') loc.navigate(['search'], {
+            q: hq.trim()
+          });
         }
       }),
       account: /*#__PURE__*/React.createElement(_plenixPlatform.AppHeader.Account, {
-        current: app === 'settings' ? location.hash === '#account' ? 'account' : 'settings' : undefined,
+        current: app === 'settings' ? top === 'account' ? 'account' : 'settings' : undefined,
         myAccount: {
           href: settingsPage('account')
         },
@@ -2079,11 +2122,13 @@ function Suite({
 
 // mounts an application page: mountSuite('notes', () => <NotesScreen/>)
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
+// opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 function mountSuite(app, render, opts) {
   ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, null, /*#__PURE__*/React.createElement(Suite, {
     app: app,
     render: render,
-    page: opts && opts.page || 'workspace'
+    page: opts && opts.page || 'workspace',
+    legacy: opts && opts.legacy
   })));
 }
   } },
@@ -2095,7 +2140,11 @@ exports.MessagingScreen = MessagingScreen;
 var _plenixPlatform = require("plenix-platform");
 var _shared = require("../suite/shared.jsx");
 /* Plenix · messaging (messages/messaging.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
-   batch 199: the conversations in a SecondaryPane, the open one as Chat (header, thread, composer). */
+   batch 199: the conversations in a SecondaryPane, the open one as Chat (header, thread, composer).
+   Screens (Platforms Standard 4.3, 5.2): the list (#/) and a conversation (#/thread/<id>), a history entry each. Wide and
+   Medium open the first conversation when none is named; at Narrow one pane at a time (SecondaryPane detailOpen): the
+   list first, a conversation with Back to the list. A reply being written is unsaved work: leaving asks. The list's
+   scroll position is kept (plenix.messaging.view). */
 
 const {
   useState
@@ -2103,10 +2152,19 @@ const {
 
 /* ─── Messaging ─────────────────────────────────────────────────── */
 function MessagingScreen({
-  thread,
-  setThread
+  screen
 }) {
+  const layout = (0, _plenixPlatform.useAppLayout)();
+  const narrow = !!(layout && layout.narrow);
+  const [view, updateView] = (0, _plenixPlatform.useViewState)('messaging');
+  const named = screen.parts[0] === 'thread' ? +screen.parts[1] : null;
+  const thread = named !== null ? named : narrow ? null : 1; // the first conversation where the panes sit side by side
+  const setThread = id => screen.open(['thread', id]);
   const [input, setInput] = useState('');
+  (0, _plenixPlatform.useUnsavedGuard)(input.trim() !== '', 'Your reply has not been sent.');
+  React.useEffect(() => {
+    setInput('');
+  }, [thread]);
   const [msgs, setMsgs] = useState(_shared.MSGS);
   const thd = _shared.THREADS.find(t => t.id === thread);
   const mList = msgs[thread] || [];
@@ -2126,12 +2184,18 @@ function MessagingScreen({
     className: "plx-page-panes"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.SecondaryPane, {
     title: "Messages",
-    width: "lg"
+    width: "lg",
+    scrollTop: view.scroll,
+    onScrollChange: top => updateView({
+      scroll: top
+    }),
+    detailOpen: named !== null,
+    onBack: () => screen.parent('/')
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "none"
   }, _shared.THREADS.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.RowButton, {
     key: t.id,
-    selected: thread === t.id,
+    selected: !narrow && thread === t.id,
     onClick: () => setThread(t.id)
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     inset: "sm",
@@ -2217,22 +2281,18 @@ var _suite = require("../suite/suite.jsx");
 var _messaging = require("./messaging.jsx");
 /* Plenix · Messages (messages/main.jsx): the application's page entry; build-app.js compiles it to messages/app.js. */
 
-const {
-  useState
-} = React;
-
-// the conversation: #t-<id> opens one (a search result links here)
-function Messages() {
-  const [thread, setThread] = useState(() => {
-    const m = /^#t-(\d+)$/.exec(location.hash);
-    return m ? +m[1] : 1;
-  });
-  return /*#__PURE__*/React.createElement(_messaging.MessagingScreen, {
-    thread: thread,
-    setThread: setThread
-  });
-}
-(0, _suite.mountSuite)('messaging', () => /*#__PURE__*/React.createElement(Messages, null));
+// the conversation: #/thread/<id> opens one (a search result links here); the older #t-<id> opens the same screen
+const legacy = hash => {
+  const m = /^#t-(\d+)$/.exec(hash);
+  return m ? '/thread/' + m[1] : null;
+};
+(0, _suite.mountSuite)('messaging', ({
+  screen
+}) => /*#__PURE__*/React.createElement(_messaging.MessagingScreen, {
+  screen: screen
+}), {
+  legacy
+});
   } }
   };
   var cache = {};

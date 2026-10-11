@@ -2,4 +2,4 @@
 import { mountSuite } from '../suite/suite.jsx';
 import { CalendarScreen } from './calendar.jsx';
 
-mountSuite('calendar', () => <CalendarScreen />);
+mountSuite('calendar', ({ screen }) => <CalendarScreen screen={screen} />);

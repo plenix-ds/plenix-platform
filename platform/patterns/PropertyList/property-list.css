@@ -9,7 +9,7 @@
 /* the value column shrinks with its pane (batch 292): a value wraps, it is never cut by the pane's edge */
 /* a technical value (a size, a date, a count) beside its label (owner, batch 294): the label's DM Sans and size, with
    equal-width digits so numbers still line up; DM Mono matched it in height and stroke but read 30% wider */
-.plx-property-list__value--data{font-family:var(--plx-comp-property-list-value--data-font-family);font-size:var(--plx-comp-property-list-value--data-font-size);font-variant-numeric:tabular-nums;}
+.plx-property-list__value--data{font-family:var(--plx-comp-property-list-value-data-font-family);font-size:var(--plx-comp-property-list-value-data-font-size);font-variant-numeric:tabular-nums;}
 /* columns (batches 269-270): every item shares one label column as wide as the longest label (a label is at most
    --plx-ref-size-160px), the values take the rest and wrap between words only. When the list is narrow the label column
    gives way: a label cut short ends in an ellipsis and shows in full in a Tooltip. Only below 180px (the value of

@@ -866,6 +866,8 @@ function CaptureUI({
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState(null);
   const [saved, setSaved] = useState(false);
+  // a proposed name not yet accepted is unsaved: closing the dialog or leaving the page asks first
+  const close = (0, _plenixPlatform.useUnsavedGuard)(!!(sel && res && !saved), 'The proposed file name has not been saved.')(onClose);
   const pick = async f => {
     setSel(f);
     setRes(null);
@@ -878,7 +880,7 @@ function CaptureUI({
   };
   return /*#__PURE__*/React.createElement(_plenixPlatform.Dialog, {
     open: true,
-    onClose: onClose,
+    onClose: close,
     title: "AI File Naming",
     description: "Select a file \u2014 AI reads the content and proposes a structured name."
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -1838,8 +1840,13 @@ var _findSources = require("./findSources.jsx");
    - search: Enter in the header searches this application (the dashboard: everything); a result opens its application's
      page; Ask AI opens the AI search in this page;
    - the status bar and the capture overlay.
-   render({ prefs }) draws the application's main area. Preferences (Settings) are kept in localStorage (plenix.prefs) so
-   every page reads the same ones. */
+   render({ prefs, setPrefs, screen }) draws the application's main area. Preferences (Settings) are kept in localStorage
+   (plenix.prefs) so every page reads the same ones.
+   Screens (Platforms Standard 4.3): every screen has an address in the hash (useScreenLocation): #/search?q=… (the Search
+   workspace), #/ask?q=… (the AI search), the application's own screens (#/note/42, #/thread/3, #/project/3/tasks) and,
+   on any of them, ?in=<item> for the item chosen in the navigation pane. screen is the location with open(path, params)
+   and parent(path, params), which keep the navigation pane's item. The last screen is restored on load (plenix.<app>.view).
+   A search result opens its screen: in this page as a new history entry, on another application's page as its address. */
 
 const {
   useState
@@ -1884,14 +1891,26 @@ const SUITE = exports.SUITE = [{
   label: 'Files'
 }];
 // the page of an application, from another application's page (every application folder sits beside the others)
-const appPage = (id, hash) => {
+// path: a screen of that application ("/note/42"), its address in the hash
+const appPage = (id, path) => {
   const a = SUITE.find(x => x.id === id);
-  return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (hash ? '#' + hash : '');
+  return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (path ? '#' + path : '');
 };
 exports.appPage = appPage;
-const settingsPage = cat => '../settings/index.html' + (cat ? '#' + cat : '');
-// each application's own settings category in Settings (none yet for Bookmarks)
+const settingsPage = cat => '../settings/index.html' + (cat ? '#/' + cat : '');
+// the screen a search result opens in its application (FIND_SOURCES keys: a letter for the kind, then the id)
 exports.settingsPage = settingsPage;
+const RESULT_SCREEN = {
+  p: 'project',
+  t: 'thread',
+  c: 'contact',
+  e: 'event',
+  k: 'task',
+  n: 'note',
+  b: 'bookmark',
+  f: 'file'
+};
+// each application's own settings category in Settings (none yet for Bookmarks)
 const APP_SETTINGS = {
   home: 'dashboard',
   projects: 'projects',
@@ -1933,7 +1952,8 @@ function writePrefs(p) {
 function Suite({
   app,
   render,
-  page = 'workspace'
+  page = 'workspace',
+  legacy
 }) {
   const [prefs, setPrefsState] = useState(readPrefs);
   const setPrefs = next => setPrefsState(cur => {
@@ -1941,17 +1961,44 @@ function Suite({
     writePrefs(v);
     return v;
   });
-  const [sub, setSub] = useState(FIRST_SUB[app] || null);
-  const [capture, setCapture] = useState(false);
-  const [find, setFind] = useState(null); // the search workspace in the main area: { app, query } (app "home": everything)
-  const [ai, setAi] = useState(null); // a query handed to the AI search
-  const [hq, setHq] = useState(''); // the header search field
+  const loc = (0, _plenixPlatform.useScreenLocation)({
+    app,
+    legacy
+  });
+  const top = loc.parts[0];
   const inSuite = SUITE.some(x => x.id === app);
+  const scope = inSuite && app !== 'home' ? app : 'home';
+  // the navigation pane's item: ?in=<id> on any screen (Messages: the open conversation is its item)
+  const sub = app === 'messaging' && top === 'thread' ? 't-' + loc.parts[1] : loc.params.in || FIRST_SUB[app] || null;
+  const setSub = id => {
+    const t = app === 'messaging' && /^t-(\d+)$/.exec(id);
+    if (t) loc.navigate(['thread', t[1]]);else loc.navigate('/', {
+      in: id
+    });
+  };
+  const screen = React.useMemo(() => Object.assign({}, loc, {
+    open: (path, params) => loc.navigate(path, Object.assign({
+      in: loc.params.in
+    }, params)),
+    parent: (path, params) => loc.parent(path || '/', Object.assign({
+      in: loc.params.in
+    }, params))
+  }), [loc]);
+  const [capture, setCapture] = useState(false);
+  const find = top === 'search' ? {
+    app: scope,
+    query: loc.params.q || ''
+  } : null; // the search workspace in the main area (app "home": everything)
+  const ai = top === 'ask' ? loc.params.q || '' : null; // a query handed to the AI search
+  const [hq, setHq] = useState(() => find ? find.query : ''); // the header search field
   const label = (SUITE.find(x => x.id === app) || {
     label: 'Settings'
   }).label;
   const openResult = (r, a) => {
-    location.href = appPage(a, a === 'messaging' && r.id ? 't-' + r.id : '');
+    const kind = RESULT_SCREEN[String(r.key || '').charAt(0)],
+      id = String(r.key || '').slice(1);
+    const path = kind && id ? kind === 'project' ? ['project', id, 'home'] : [kind, id] : null;
+    if (a === app && path) loc.navigate(path);else (0, _plenixPlatform.leavePage)(appPage(a, path ? '/' + path.join('/') : ''));
   };
   const tone = {
     blue: 'accent',
@@ -1990,6 +2037,7 @@ function Suite({
     return () => window.removeEventListener('plenix:modechange', follow);
   }, []);
   const onAccent = tone === 'accent';
+  // refining the query keeps the same screen (its entry is corrected in place); a new search from the header is a new screen
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
     initialQuery: ai
@@ -1998,20 +2046,21 @@ function Suite({
     app: find.app,
     query: find.query,
     onQuery: q => {
-      setFind({
-        ...find,
-        query: q
+      loc.navigate(['search'], {
+        q
+      }, {
+        replace: true
       });
       setHq(q);
     },
     onOpen: openResult,
-    onAskAI: q => {
-      setFind(null);
-      setAi(q);
-    }
+    onAskAI: q => loc.navigate(['ask'], {
+      q
+    })
   }) : render({
     prefs,
-    setPrefs
+    setPrefs,
+    screen
   });
   return /*#__PURE__*/React.createElement(_plenixPlatform.AppShell, {
     page: page,
@@ -2024,9 +2073,7 @@ function Suite({
       section: app,
       sub: sub,
       setSub: setSub,
-      onSettings: () => {
-        location.href = settingsPage(SETTINGS_FOR[app] || 'general');
-      }
+      onSettings: () => (0, _plenixPlatform.leavePage)(settingsPage(SETTINGS_FOR[app] || 'general'))
     }) : null,
     header: /*#__PURE__*/React.createElement(_plenixPlatform.AppHeader, {
       tone: tone,
@@ -2047,17 +2094,13 @@ function Suite({
         onChange: e => setHq(e.target.value),
         onClear: () => setHq(''),
         onKeyDown: e => {
-          if (e.key === 'Enter') {
-            setAi(null);
-            setFind({
-              app: inSuite && app !== 'home' ? app : 'home',
-              query: hq.trim()
-            });
-          }
+          if (e.key === 'Enter') loc.navigate(['search'], {
+            q: hq.trim()
+          });
         }
       }),
       account: /*#__PURE__*/React.createElement(_plenixPlatform.AppHeader.Account, {
-        current: app === 'settings' ? location.hash === '#account' ? 'account' : 'settings' : undefined,
+        current: app === 'settings' ? top === 'account' ? 'account' : 'settings' : undefined,
         myAccount: {
           href: settingsPage('account')
         },
@@ -2079,11 +2122,13 @@ function Suite({
 
 // mounts an application page: mountSuite('notes', () => <NotesScreen/>)
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
+// opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 function mountSuite(app, render, opts) {
   ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, null, /*#__PURE__*/React.createElement(Suite, {
     app: app,
     render: render,
-    page: opts && opts.page || 'workspace'
+    page: opts && opts.page || 'workspace',
+    legacy: opts && opts.legacy
   })));
 }
   } },
@@ -2324,16 +2369,20 @@ var _plenixPlatform = require("plenix-platform");
 var _classification = require("../suite/classification.jsx");
 var _shared = require("../suite/shared.jsx");
 /* Plenix · tasks (tasks/tasks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the tasks in a Panel as an ActivityList, the open task in a SidePanel. */
+   the tasks in a Panel as an ActivityList, the open task in a SidePanel. The open task is a screen (#/task/<id>, a history
+   entry: Back closes it; Platforms Standard 4.3). */
 
 const {
   useState
 } = React;
 
 /* ─── Tasks ─────────────────────────────────────────────────────── */
-function TasksScreen() {
+function TasksScreen({
+  screen
+}) {
   const [done, setDone] = useState(() => Object.fromEntries(_shared.ALL_TASKS.map(t => [t.id, t.done])));
-  const [sel, setSel] = useState(null);
+  const sel = screen.parts[0] === 'task' ? +screen.parts[1] : null;
+  const setSel = id => id === null ? screen.parent('/') : screen.open(['task', id]);
   const [meta, setMeta] = useState({});
   const task = _shared.ALL_TASKS.find(t => t.id === sel);
   return /*#__PURE__*/React.createElement("div", {
@@ -2410,7 +2459,11 @@ var _suite = require("../suite/suite.jsx");
 var _tasks = require("./tasks.jsx");
 /* Plenix · Tasks (tasks/main.jsx): the application's page entry; build-app.js compiles it to tasks/app.js. */
 
-(0, _suite.mountSuite)('tasks', () => /*#__PURE__*/React.createElement(_tasks.TasksScreen, null));
+(0, _suite.mountSuite)('tasks', ({
+  screen
+}) => /*#__PURE__*/React.createElement(_tasks.TasksScreen, {
+  screen: screen
+}));
   } }
   };
   var cache = {};

@@ -11,9 +11,9 @@
 .plx-media-viewer__control.is-focus-visible{outline-color:var(--plx-comp-media-viewer-control-focus-outline-color);outline-offset:var(--plx-comp-media-viewer-control-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-media-viewer-control-focus-outline-width);}
 .plx-media-viewer__close{inset-block-start:var(--plx-comp-media-viewer-close-inset-block-start);inset-inline-end:var(--plx-comp-media-viewer-close-inset-inline-end);position:absolute;}
 .plx-media-viewer__nav{border-bottom-left-radius:var(--plx-comp-media-viewer-nav-radius);border-bottom-right-radius:var(--plx-comp-media-viewer-nav-radius);border-top-left-radius:var(--plx-comp-media-viewer-nav-radius);border-top-right-radius:var(--plx-comp-media-viewer-nav-radius);inset-block-start:50%;min-block-size:var(--plx-comp-media-viewer-nav-min-height);min-inline-size:var(--plx-comp-media-viewer-nav-min-width);position:absolute;translate:0 -50%;}
-.plx-media-viewer__nav--previous{inset-inline-start:var(--plx-comp-media-viewer-nav--previous-inset-inline-start);}
+.plx-media-viewer__nav--previous{inset-inline-start:var(--plx-comp-media-viewer-nav-previous-inset-inline-start);}
 .plx-media-viewer__nav--previous .plx-icon{transform:rotate(90deg);}
-.plx-media-viewer__nav--next{inset-inline-end:var(--plx-comp-media-viewer-nav--next-inset-inline-end);}
+.plx-media-viewer__nav--next{inset-inline-end:var(--plx-comp-media-viewer-nav-next-inset-inline-end);}
 .plx-media-viewer__nav--next .plx-icon{transform:rotate(-90deg);}
 .plx-media-viewer__figure{align-items:center;display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;max-block-size:100%;max-inline-size:100%;min-block-size:0;row-gap:var(--plx-comp-media-viewer-figure-row-gap);}
 .plx-media-viewer__stage{align-items:center;background-color:var(--plx-comp-media-viewer-stage-background);border-bottom-left-radius:var(--plx-comp-media-viewer-stage-radius);border-bottom-right-radius:var(--plx-comp-media-viewer-stage-radius);border-top-left-radius:var(--plx-comp-media-viewer-stage-radius);border-top-right-radius:var(--plx-comp-media-viewer-stage-radius);display:flex;justify-content:center;min-block-size:0;overflow-x:hidden;overflow-y:hidden;}

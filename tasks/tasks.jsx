@@ -1,14 +1,16 @@
 /* Plenix · tasks (tasks/tasks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the tasks in a Panel as an ActivityList, the open task in a SidePanel. */
+   the tasks in a Panel as an ActivityList, the open task in a SidePanel. The open task is a screen (#/task/<id>, a history
+   entry: Back closes it; Platforms Standard 4.3). */
 import { EntityHeader, ActivityList, Button, Checkbox, Icon, Inline, PageContent, Panel, SidePanel, Stack, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_TASKS, PriDot } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Tasks ─────────────────────────────────────────────────────── */
-export function TasksScreen() {
+export function TasksScreen({ screen }) {
   const [done, setDone] = useState(() => Object.fromEntries(ALL_TASKS.map((t) => [t.id, t.done])));
-  const [sel, setSel] = useState(null);
+  const sel = screen.parts[0] === 'task' ? +screen.parts[1] : null;
+  const setSel = (id) => (id === null ? screen.parent('/') : screen.open(['task', id]));
   const [meta, setMeta] = useState({});
   const task = ALL_TASKS.find((t) => t.id === sel);
   return (

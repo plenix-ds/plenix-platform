@@ -57,6 +57,56 @@
     "panel-padding": {
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"
+    },
+    "app-header-utilities-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-block-end": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-block-start": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-inline-end": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-remove-before-inset-inline-start": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-block-end": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-block-start": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-inline-end": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-input-add-before-inset-inline-start": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "tag-list-gap": {
+      "$value": "calc({plx-sys.control-target-min} - {plx-comp.tag-remove-width})",
+      "$type": "dimension",
+      "$description": "With touch the tags part by the minimum target less the × box (28px), so the × target of a tag (44px around its 16px box) and the next target (a chip, the +) do not overlap"
+    },
+    "tag-list-row-gap": {
+      "$value": "{plx-ref.space-24px}",
+      "$type": "dimension",
+      "$description": "With touch the rows part by the minimum target less the 20px tag (24px), so the 44px targets of one row do not cover the next"
+    },
+    "color-picker-slot-min-width": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension"
     }
   }
 }

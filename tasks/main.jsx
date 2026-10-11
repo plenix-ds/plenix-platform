@@ -2,4 +2,4 @@
 import { mountSuite } from '../suite/suite.jsx';
 import { TasksScreen } from './tasks.jsx';
 
-mountSuite('tasks', () => <TasksScreen />);
+mountSuite('tasks', ({ screen }) => <TasksScreen screen={screen} />);

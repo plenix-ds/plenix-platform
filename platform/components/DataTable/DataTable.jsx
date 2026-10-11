@@ -571,6 +571,7 @@ export function TableEngine(props) {
         const [lo, hi] = widthLimits(el);
         const grip = el.ownerDocument.createElement('span'); grip.className = B + '__resize';
         grip.setAttribute('role', 'separator'); grip.setAttribute('aria-orientation', 'vertical'); grip.tabIndex = 0;
+        grip.setAttribute('data-plx-target-equivalent', 'the header menu: Narrower, Wider, Fit to content (WCAG 2.5.8 Equivalent)');
         grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
         grip.setAttribute('aria-valuemin', String(lo)); grip.setAttribute('aria-valuemax', String(hi));
         grip.setAttribute('aria-valuenow', String(Math.round(el.getBoundingClientRect().width) || lo));

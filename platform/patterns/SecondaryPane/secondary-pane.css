@@ -13,3 +13,10 @@
 /* folded to a rail (collapsible): the divider on its content side, as the pane had */
 .plx-secondary-pane-rail--start{box-shadow:var(--plx-comp-secondary-pane-rail-start-shadow);}
 .plx-secondary-pane-rail--end{box-shadow:var(--plx-comp-secondary-pane-rail-end-shadow);}
+/* list-detail at Narrow (detailOpen; Platforms Standard 5.2): one pane at a time. The list fills the main region and the
+   panes beside it are hidden; with the detail open the list steps aside (mounted, hidden) and the Back bar leads it */
+.plx-secondary-pane--list{border-inline-end-width:0;border-inline-start-width:0;flex-basis:0%;flex-grow:1;inline-size:auto;min-inline-size:0;}
+.plx-secondary-pane--aside{display:none;}
+.plx-page-panes:has(> .plx-secondary-pane--list) > :not(.plx-secondary-pane){display:none;}
+.plx-page-panes:has(> .plx-secondary-pane-back){flex-direction:column;}
+.plx-secondary-pane-back{align-items:center;background-color:var(--plx-comp-secondary-pane-back-background);border-block-end-color:var(--plx-comp-secondary-pane-back-border-block-end-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-secondary-pane-back-border-block-end-width);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-secondary-pane-back-min-height);padding-block-end:var(--plx-comp-secondary-pane-back-padding-block);padding-block-start:var(--plx-comp-secondary-pane-back-padding-block);padding-inline-end:var(--plx-comp-secondary-pane-back-padding-inline);padding-inline-start:var(--plx-comp-secondary-pane-back-padding-inline);}

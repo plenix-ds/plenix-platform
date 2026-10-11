@@ -31,7 +31,7 @@
 .plx-app-header__app{font-size:var(--plx-comp-app-header-app-font-size);font-weight:var(--plx-comp-app-header-app-font-weight);letter-spacing:var(--plx-comp-app-header-app-letter-spacing);}
 /* the end: the application's action, then the utilities with no gaps (search, other, notifications, account) */
 .plx-app-header__end{align-items:center;column-gap:var(--plx-comp-app-header-end-gap);display:flex;flex-shrink:0;}
-.plx-app-header__utilities{align-items:center;column-gap:0;display:flex;}
+.plx-app-header__utilities{align-items:center;column-gap:var(--plx-comp-app-header-utilities-gap);display:flex;}
 /* search: furthest left; the field opens over the space to its left, so no other icon moves */
 .plx-app-header__search-slot{display:flex;position:relative;}
 .plx-app-header__search{align-items:center;background-color:var(--plx-comp-app-header-surface);column-gap:var(--plx-comp-app-header-search-gap);display:flex;inline-size:var(--plx-comp-app-header-search-width);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-comp-app-header-search-z-index);}
@@ -103,3 +103,16 @@
 .plx-app-header__product{line-height:var(--plx-comp-app-header-product-line-height);}
 .plx-app-header__app{line-height:var(--plx-comp-app-header-app-line-height);}
 .plx-app-header__brand .plx-brand-mark{--plx-comp-icon-size:calc(var(--plx-sys-label-height-20px) + var(--plx-sys-label-height-16px));color:var(--plx-comp-app-header-brand);}
+/* the targets (Platforms Standard 3.1): every item and the header name reach the minimum target (44 × 44px with touch)
+   through an invisible layer past their 40px box; with a fine pointer the box already meets it and the layer adds nothing */
+.plx-app-header__switch,a.plx-app-header__brand{position:relative;}
+.plx-app-header__item::before,.plx-app-header__switch::before,a.plx-app-header__brand::before{content:"";inset-block-end:var(--plx-comp-app-header-item-target-inset);inset-block-start:var(--plx-comp-app-header-item-target-inset);inset-inline-end:var(--plx-comp-app-header-item-target-inset);inset-inline-start:var(--plx-comp-app-header-item-target-inset);position:absolute;}
+/* the full-screen search view (Narrow, Platforms Standard 5.3 Search): the field and Cancel on top, the scope, then the
+   suggestions and the results; it fills the window inside the safe areas */
+.plx-search-view{background-color:var(--plx-comp-app-header-search-view-background);box-sizing:border-box;color:var(--plx-comp-app-header-search-view-text);display:flex;flex-direction:column;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;padding-block-end:var(--plx-comp-app-header-search-view-safe-area-bottom);padding-block-start:var(--plx-comp-app-header-search-view-safe-area-top);padding-inline-end:var(--plx-comp-app-header-search-view-safe-area-end);padding-inline-start:var(--plx-comp-app-header-search-view-safe-area-start);position:fixed;z-index:var(--plx-comp-app-header-search-view-z-index);}
+.plx-search-view__bar{align-items:center;border-bottom-color:var(--plx-comp-app-header-search-view-bar-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-app-header-search-view-bar-border-width);box-sizing:border-box;column-gap:var(--plx-comp-app-header-search-view-bar-gap);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-app-header-search-view-bar-min-height);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);}
+.plx-search-view__field{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+.plx-search-view__field>.plx-search{inline-size:100%;}
+.plx-search-view__cancel{flex-shrink:0;}
+.plx-search-view__scope{flex-shrink:0;padding-block-start:var(--plx-comp-app-header-search-view-scope-padding-block-start);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);}
+.plx-search-view__content{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-block-size:0;overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-comp-app-header-search-view-content-padding-block);padding-block-start:var(--plx-comp-app-header-search-view-content-padding-block);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);row-gap:var(--plx-comp-app-header-search-view-content-gap);}

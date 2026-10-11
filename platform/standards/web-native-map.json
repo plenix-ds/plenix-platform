@@ -607,6 +607,23 @@
       "android": [
         "android-interaction|TalkBack"
       ]
+    },
+    "navigation|Drilldown navigation": {
+      "ios": [
+        "ios-layout|Split views"
+      ],
+      "android": [
+        "android-navigation|Back stack",
+        "android-navigation|Deep links"
+      ]
+    },
+    "interaction|Scroll restoration": {
+      "ios": [
+        "ios-patterns|Launching"
+      ],
+      "android": [
+        "android-navigation|State restoration"
+      ]
     }
   }
 }

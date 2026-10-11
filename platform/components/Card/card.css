@@ -48,7 +48,7 @@
 /* the collapse toggle shows the focus ring, as every control (batch 213) */
 .plx-panel__toggle:focus-visible{outline-color:var(--plx-comp-panel-toggle-focus-outline-color);outline-offset:var(--plx-comp-panel-toggle-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-panel-toggle-focus-outline-width);}
 /* a card's icon (owner, batch 272): before the heading, at the control icon size, in the heading's color */
-.plx-panel__title--icon{align-items:center;column-gap:var(--plx-comp-panel-title--icon-gap);display:flex;}
+.plx-panel__title--icon{align-items:center;column-gap:var(--plx-comp-panel-title-icon-gap);display:flex;}
 .plx-panel__icon{display:inline-flex;flex-shrink:0;}
 .plx-panel__icon .plx-icon{--plx-comp-icon-size:var(--plx-sys-control-icon-standard);}
 /* a selectable media card (owner, batch 272): a click on the card selects it, so the title's link no longer covers the card;
@@ -57,3 +57,8 @@
 .plx-media-card--selectable .plx-card__opener::after{content:none;}
 /* the accent's data color (batch 280) */
 .plx-card--accent[data-plx-color]{--plx-comp-card-accent:var(--plx-comp-data-color);}
+/* a selectable media card's title opens it (its card-wide layer is off): it grows to the minimum target (Platforms Standard
+   3.1), 44px tall with touch, through padding that a negative margin of the same size takes back, so the text and the card
+   do not move (the title clips its overflow, so a layer inside it could not reach past it); positioned, so the meta line
+   under it does not paint over its target */
+.plx-media-card--selectable .plx-card__opener{margin-block-end:var(--plx-comp-card-opener-target-margin-block);margin-block-start:var(--plx-comp-card-opener-target-margin-block);padding-block-end:var(--plx-comp-card-opener-target-padding-block);padding-block-start:var(--plx-comp-card-opener-target-padding-block);position:relative;}

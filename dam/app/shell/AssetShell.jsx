@@ -27,7 +27,7 @@ export function AssetHeader({ current, query = '', onSearch, onUpload }) {
       action={<AppHeader.Action icon="hdr-upload" onClick={() => { if (onUpload) onUpload(); else location.href = 'index.html?upload=1'; }}>Upload</AppHeader.Action>}
       search={<SearchField value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} onKeyDown={onSearchKey}
         label="Search assets" placeholder="Search assets by name, tag, or keyword..." shortcut="Ctrl K" onAccent />}
-      account={<AppHeader.Account current={current === 'system' ? 'app-settings' : current} myAccount={{ href: 'settings-myaccount.html' }} settings={{ href: '../settings/index.html#general' }} appSettings={{ app: 'Asset Manager', href: 'settings-system.html' }} />} />
+      account={<AppHeader.Account current={current === 'system' ? 'app-settings' : current} myAccount={{ href: 'settings-myaccount.html' }} settings={{ href: '../settings/index.html#/general' }} appSettings={{ app: 'Asset Manager', href: 'settings-system.html' }} />} />
   );
 }
 

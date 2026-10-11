@@ -14,4 +14,4 @@
 .plx-collapsible-section__body{padding-block-end:var(--plx-comp-collapsible-section-body-padding-block-end);padding-block-start:var(--plx-comp-collapsible-section-body-padding-block-start);}
 .plx-collapsible-section__body[hidden]{display:none;}
 /* the chevron keeps its icon slot (on the 4px grid, the same box as the section icon) and draws the arrow at 16px inside it (the set’s own padding makes it read about 13px): quieter than the title it belongs to */
-.plx-collapsible-section__chevron .plx-icon{-webkit-mask-size:var(--plx-comp-collapsible-section-chevron-icon--webkit-mask-size);mask-size:var(--plx-comp-collapsible-section-chevron-icon-mask-size);}
+.plx-collapsible-section__chevron .plx-icon{-webkit-mask-size:var(--plx-comp-collapsible-section-chevron-size);mask-size:var(--plx-comp-collapsible-section-chevron-icon-mask-size);}

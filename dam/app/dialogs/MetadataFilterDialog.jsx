@@ -15,7 +15,7 @@
    - Each group collapses from its heading (toggleMetaSection) and shows its extra fields with "Show more (+N)" /
      "Show less" (toggleShowMore). */
 import React from 'react';
-import { Dialog, Field, Input, Checkbox, CollapsibleSection, ShowMore, Button, Stack, Inline } from 'plenix-platform';
+import { Dialog, Field, Input, Checkbox, CollapsibleSection, ShowMore, Button, Stack, Inline, useUnsavedGuard } from 'plenix-platform';
 
 // DATA: the asset type choices and the metadata field groups come from the back end; the legacy markup until then.
 // A field is [label, name, back-end field key]; the first `shown` fields are always visible, the rest sit behind
@@ -208,6 +208,9 @@ export function MetadataFilterDialog({ open, onClose, value, onApply }) {
     return { ...d, fields };
   });
   const flip = (setter, i) => setter((s) => ({ ...s, [i]: !s[i] }));
+  // filters changed and not applied: Cancel, Close and Escape ask first, and so does leaving the page
+  const guard = useUnsavedGuard(!!open && JSON.stringify(draft) !== JSON.stringify(current), 'The filters you changed have not been applied.');
+  const cancel = guard(onClose);
 
   const apply = (e) => {
     if (e) e.preventDefault();
@@ -217,8 +220,8 @@ export function MetadataFilterDialog({ open, onClose, value, onApply }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} title="Advanced Filters — Metadata Fields" icon="filter" size="lg"
-      footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" onClick={apply}>Apply</Button></>}>
+    <Dialog open={open} onClose={cancel} title="Advanced Filters — Metadata Fields" icon="filter" size="lg"
+      footer={<><Button onClick={cancel}>Cancel</Button><Button variant="primary" onClick={apply}>Apply</Button></>}>
       <Stack as="form" noValidate onSubmit={apply} className="plx-u-gap-y-pattern-stack-md">
         <Inline role="group" aria-label="Asset type" gap="lg" wrap className="plx-u-gap-y-inline-sm">
           {TYPE_OPTIONS.map((o) => (

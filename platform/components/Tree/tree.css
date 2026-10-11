@@ -10,7 +10,7 @@
 .plx-tree__item.is-focus-visible>.plx-tree__row{outline-color:var(--plx-comp-tree-item-focus-row-outline-color);outline-offset:var(--plx-comp-tree-item-focus-row-outline-offset);outline-style:solid;outline-width:var(--plx-comp-tree-item-focus-row-outline-width);}
 /* the open control (owner, batch 238): a + box on a closed row, a − box on an open one (Material Symbols add_box and
    indeterminate_check_box, the whole 16px icon square, unedited) */
-.plx-tree__toggle{-webkit-mask-image:var(--plx-comp-icon-glyph-add-box);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-comp-tree-toggle--webkit-mask-size);background-color:var(--plx-comp-tree-toggle-background);block-size:var(--plx-comp-tree-toggle-height);flex-shrink:0;inline-size:var(--plx-comp-tree-toggle-width);mask-image:var(--plx-comp-icon-glyph-add-box);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-comp-tree-toggle-mask-size);}
+.plx-tree__toggle{-webkit-mask-image:var(--plx-comp-icon-glyph-add-box);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-comp-tree-toggle-size);background-color:var(--plx-comp-tree-toggle-background);block-size:var(--plx-comp-tree-toggle-height);flex-shrink:0;inline-size:var(--plx-comp-tree-toggle-width);mask-image:var(--plx-comp-icon-glyph-add-box);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-comp-tree-toggle-mask-size);}
 .plx-tree__toggle.is-open{-webkit-mask-image:var(--plx-comp-icon-glyph-indeterminate-check-box);mask-image:var(--plx-comp-icon-glyph-indeterminate-check-box);}
 .plx-tree__toggle.is-leaf{visibility:hidden;}
 .plx-tree__icon{display:inline-flex;flex-shrink:0;}

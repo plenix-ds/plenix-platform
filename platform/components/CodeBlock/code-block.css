@@ -9,12 +9,12 @@
 .plx-code-block__pre.is-focus-visible{outline-color:var(--plx-comp-code-block-pre-focus-outline-color);outline-offset:var(--plx-comp-code-block-pre-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-code-block-pre-focus-outline-width);}
 .plx-code-block__pre code{background-color:transparent;font-family:inherit;font-size:inherit;}
 /* syntax colors: one role per kind of token (--plx-sys-code-*) */
-.plx-code-block__tok--keyword{color:var(--plx-comp-code-block-tok--keyword-text);}
-.plx-code-block__tok--string{color:var(--plx-comp-code-block-tok--string-text);}
-.plx-code-block__tok--comment{color:var(--plx-comp-code-block-tok--comment-text);font-style:italic;}
-.plx-code-block__tok--number{color:var(--plx-comp-code-block-tok--number-text);}
-.plx-code-block__tok--function{color:var(--plx-comp-code-block-tok--function-text);}
-.plx-code-block__tok--tag{color:var(--plx-comp-code-block-tok--tag-text);}
-.plx-code-block__tok--attribute{color:var(--plx-comp-code-block-tok--attribute-text);}
-.plx-code-block__tok--variable{color:var(--plx-comp-code-block-tok--variable-text);}
-.plx-code-block__tok--selector{color:var(--plx-comp-code-block-tok--selector-text);}
+.plx-code-block__tok--keyword{color:var(--plx-comp-code-block-tok-keyword-text);}
+.plx-code-block__tok--string{color:var(--plx-comp-code-block-tok-string-text);}
+.plx-code-block__tok--comment{color:var(--plx-comp-code-block-tok-comment-text);font-style:italic;}
+.plx-code-block__tok--number{color:var(--plx-comp-code-block-tok-number-text);}
+.plx-code-block__tok--function{color:var(--plx-comp-code-block-tok-function-text);}
+.plx-code-block__tok--tag{color:var(--plx-comp-code-block-tok-tag-text);}
+.plx-code-block__tok--attribute{color:var(--plx-comp-code-block-tok-attribute-text);}
+.plx-code-block__tok--variable{color:var(--plx-comp-code-block-tok-variable-text);}
+.plx-code-block__tok--selector{color:var(--plx-comp-code-block-tok-selector-text);}

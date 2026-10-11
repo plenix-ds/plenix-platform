@@ -22,6 +22,10 @@
      navLabel: the header links' accessible name (default "Pinned applications")
      action: the application's action (AppHeader.Action), an icon item with its label as tooltip, between search and the utilities
      search: the search field (a SearchField onAccent), shown when search is asked for; without it there is no search
+     searchSuggestions: at Narrow, the recent searches and suggestions shown under the field of the full-screen search view
+     searchResults: at Narrow, the results shown in the full-screen search view (after the suggestions); without them,
+       Enter in the field closes the view so the page shows its own results
+     searchScope: at Narrow, what the search covers, shown under the field ("In Notes"); default the application's name
      actions: other utilities, before the account
      account: the account menu (AppHeader.Account), last in the utilities
      switcher: true or false overrides whether the header name is the application switcher (default: when currentApp is given)
@@ -71,6 +75,12 @@
      Ctrl K (Cmd K) opens search from anywhere on the page; Escape closes it.
      An empty search field closes when focus leaves it. The field's own clear button is the only X (owner, 2026-10-10: a
        separate Close button made two)
+     At Narrow (under 600px, --plx-sys-shell-phone-below) search opens a full-screen search view (Platforms Standard 4.2
+       row 7, 5.3 Search): the field on top with Cancel, the scope, the recent searches and suggestions, then the results.
+       Opening it adds a history entry, so the browser's Back closes it as Cancel and Escape do; focus stays inside it and
+       returns to the search button.
+     With a touch pointer every header item and the header name has a 44 × 44px target (Platforms Standard 3.1): the
+       target extends invisibly past the 40px item, and the utilities part 4px so the targets do not overlap.
      The account menu shows the name, email and picture from the session.
    Notes:
      Settings is reached from the account menu, never from a separate button.
@@ -78,6 +88,7 @@
      Other props go on the header element (AppHeader) or the button (AppHeader.Item, AppHeader.Action).
 */
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
@@ -86,19 +97,33 @@ import { Count } from '../../components/Count/Count.jsx';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
+import { Text } from '../../components/Text/Text.jsx';
 import { useSession } from '../../providers/SessionProvider.jsx';
 import { PLENIX_APPS, appById, appHref } from '../../providers/apps.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
+import { useMedia, below } from '../AppShell/AppShell.jsx';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel = 'Pinned applications',
-  action, search, actions, account, switcher, className, ...rest }) {
+  action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, className, ...rest }) {
   const { pinnedApps } = useSession();
   const [searching, setSearching] = React.useState(false);
-  const panel = React.useRef(null), toggle = React.useRef(null);
+  const panel = React.useRef(null), toggle = React.useRef(null), view = React.useRef(null);
   const refocus = React.useRef(false);
   const searchId = useUid('plx-header-search');
+  const narrow = useMedia(below('--plx-sys-shell-phone-below'));
+  const fullScreen = narrow && searching;   // at Narrow the search view fills the screen
   const close = () => { refocus.current = true; setSearching(false); };
+  // the full-screen view is a history entry: the browser's Back closes it; Cancel and Escape go back along it
+  React.useEffect(() => {
+    if (!fullScreen) return undefined;
+    window.history.pushState({ plxSearch: searchId }, '');
+    const pop = () => close();
+    window.addEventListener('popstate', pop);
+    return () => window.removeEventListener('popstate', pop);
+  }, [fullScreen]);
+  const cancel = () => { if (window.history.state && window.history.state.plxSearch === searchId) window.history.back(); else close(); };
+  useLayer(view, fullScreen, { modal: true, onEscape: cancel, initialFocus: () => view.current && view.current.querySelector('input') });
   React.useEffect(() => {
     if (!searching) {
       // the search button is hidden while the field is open; give it focus back once it shows again
@@ -107,12 +132,13 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
       refocus.current = false;
       return undefined;
     }
+    if (narrow) return undefined;   // the full-screen view is a modal layer: it takes focus and Escape itself
     const input = panel.current && panel.current.querySelector('input');
     if (input) input.focus();
     const esc = (e) => { if (e.key === 'Escape') close(); };
     document.addEventListener('keydown', esc);
     return () => document.removeEventListener('keydown', esc);
-  }, [searching]);
+  }, [searching, narrow]);
   // Ctrl K (Cmd K) opens search from anywhere on the page
   React.useEffect(() => {
     if (!search) return undefined;
@@ -135,6 +161,24 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
     <AppHeader.Item key={a.id} icon={<Icon name={a.icon} />} label={a.label} current={a.id === currentApp} href={appHref(a, appsRoot)} onClick={open(a)} />
   )) : null);
   const showSwitcher = switcher !== undefined ? switcher : inApps;
+  // Enter in the view's field: without results of its own the view closes, so the page's results show
+  const onViewKey = (e) => { if (e.key === 'Enter' && !searchResults && !e.defaultPrevented && e.target.tagName === 'INPUT') cancel(); };
+  const scope = searchScope !== undefined ? searchScope : name;
+  const searchView = fullScreen ? createPortal(
+    <div ref={view} id={searchId} className="plx-search-view" role="dialog" aria-modal="true" aria-label="Search" onKeyDown={onViewKey}>
+      <div className="plx-search-view__bar">
+        <div className="plx-search-view__field">{React.isValidElement(search) ? React.cloneElement(search, { onAccent: false }) : search}</div>
+        <Button variant="ghost" className="plx-search-view__cancel" onClick={cancel}>Cancel</Button>
+      </div>
+      {scope ? <Text variant="secondary" as="p" className="plx-search-view__scope">{'In ' + scope}</Text> : null}
+      <div className="plx-search-view__content">
+        {searchSuggestions ? <div className="plx-search-view__suggestions">{searchSuggestions}</div> : null}
+        {searchResults ? <div className="plx-search-view__results">{searchResults}</div> : null}
+        {!searchSuggestions && !searchResults ? <Text variant="secondary" as="p">Type what you are looking for, then press Enter.</Text> : null}
+      </div>
+    </div>,
+    document.body,
+  ) : null;
   return (
     <header className={cx('plx-app-header', 'plx-app-header--' + tone, searching && 'is-searching', className)} {...rest}>
       <div className="plx-app-header__start">
@@ -147,7 +191,8 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
             <div className="plx-app-header__search-slot">
               <button ref={toggle} type="button" className="plx-app-header__item plx-app-header__search-toggle" aria-label="Search" aria-expanded={searching} aria-controls={searchId}
                 aria-keyshortcuts="Control+K Meta+K" onClick={() => setSearching(true)}><Icon name="hdr-search" /></button>
-              {searching ? (
+              {searchView}
+              {searching && !narrow ? (
                 <div ref={panel} id={searchId} className="plx-app-header__search" role="search" onBlur={onPanelBlur}>
                   {search}
                 </div>

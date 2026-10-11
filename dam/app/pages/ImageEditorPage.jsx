@@ -3,9 +3,10 @@
    description of the edit (the state); the picture is drawn from it, and each finished change is kept so Undo and Redo
    step through them. Sliders preview while dragging and record when let go. Nothing is uploaded or saved: Save, Copy,
    Download and Export only say what they would do, in the status line over the canvas. The page is dark
-   (<html data-plx-mode="dark">). */
+   (<html data-plx-mode="dark">). Until Save (or Save as), an edit is unsaved work: closing or leaving the page asks
+   (useUnsavedGuard; Platforms Standard 4.3). */
 import React from 'react';
-import { AppShell, Toolbar, ToolRail, Button, ButtonGroup, Menu, MenuItem, Slider, Checkbox, Select, Field, Input, SegmentedControl, Icon, below, Stack, Inline, Text, DropZone, ColorPicker, IMAGE_EDITOR_STEPS as STEPS } from 'plenix-platform';
+import { AppShell, Toolbar, ToolRail, Button, ButtonGroup, Menu, MenuItem, Slider, Checkbox, Select, Field, Input, SegmentedControl, Icon, below, Stack, Inline, Text, DropZone, ColorPicker, IMAGE_EDITOR_STEPS as STEPS, useUnsavedGuard } from 'plenix-platform';
 
 // the editor's choices come from the design system's steps file (batch 282): the picture is drawn only from them
 const PRESETS = STEPS.presets, RATIOS = STEPS.ratios;
@@ -39,6 +40,10 @@ export function ImageEditorPage() {
   const [dragOver, setDragOver] = React.useState(false);
   const [msg, say] = useStatus();
   const file = React.useRef(null);
+  // the edit last saved: anything else (or an overlay chosen and not composed) is unsaved
+  const [saved, setSaved] = React.useState(() => JSON.stringify(START));
+  useUnsavedGuard(JSON.stringify(edit) !== saved || !!pending, 'Your edits to this image have not been saved.');
+  const save = (message) => { setSaved(JSON.stringify(edit)); say(message); };
 
   const commit = (next, message) => {
     setEdit(next);
@@ -75,8 +80,8 @@ export function ImageEditorPage() {
     <header className="plx-image-editor__bar">
       <Toolbar label="Editor">
         <Toolbar.Group>
-          <Button variant="primary" onClick={() => say('Saved')}>Save</Button>
-          <Button onClick={() => say('Saved as a copy')}>Save as</Button>
+          <Button variant="primary" onClick={() => save('Saved')}>Save</Button>
+          <Button onClick={() => save('Saved as a copy')}>Save as</Button>
           <Menu label="Export as" trigger={<Button caret>Export as</Button>}>
             {EXPORTS.map((x) => <MenuItem key={x} onSelect={() => say('Exported as ' + x)}>{x}</MenuItem>)}
           </Menu>

@@ -6,7 +6,8 @@
 //            at least 44x44
 //   fine     a mouse: at least 24x24, or the spacing rule: a 24px circle centered on the undersized target touches no
 //            other target and no other undersized target's circle
-// Exceptions (WCAG): a link inside a sentence (inline); a disabled control; a control whose label is an equivalent target
+// Exceptions (WCAG): a link inside a sentence (inline); a disabled control; a drag handle marked
+// data-plx-target-equivalent, whose job a full-size control does (the "Equivalent" exception); a control whose label is an equivalent target
 // that meets the size (a checkbox and its label: the larger counts); and an element whose center another element covers
 // (it is not a target where it stands; counted as "covered" only).
 // Known findings are kept in tests/baselines/targets.json (page -> mode -> number of elements); the test fails only on a
@@ -33,7 +34,9 @@ function measure(min, spacing) {
   const out = { fail: [], covered: 0, n: 0 };
   const targets = [];
   for (const el of document.querySelectorAll(SEL)) {
-    if (!shown(el) || el.disabled || el.getAttribute('aria-disabled') === 'true' || inline(el)) continue;
+    // WCAG 2.5.8 "Equivalent": a drag handle whose job another control on the page does at full size (the splitter's
+    // width menu, the header menu's width items) is marked data-plx-target-equivalent and is not a finding
+    if (!shown(el) || el.disabled || el.getAttribute('aria-disabled') === 'true' || inline(el) || el.hasAttribute('data-plx-target-equivalent')) continue;
     let t = el;
     const r0 = el.getBoundingClientRect();
     const tiny = r0.width <= 2 || r0.height <= 2 || getComputedStyle(el).opacity === '0';

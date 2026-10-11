@@ -6,9 +6,14 @@
    - search: Enter in the header searches this application (the dashboard: everything); a result opens its application's
      page; Ask AI opens the AI search in this page;
    - the status bar and the capture overlay.
-   render({ prefs }) draws the application's main area. Preferences (Settings) are kept in localStorage (plenix.prefs) so
-   every page reads the same ones. */
-import { AppHeader, AppShell, SearchField, SessionProvider, StatusBar, PLENIX_APPS } from 'plenix-platform';
+   render({ prefs, setPrefs, screen }) draws the application's main area. Preferences (Settings) are kept in localStorage
+   (plenix.prefs) so every page reads the same ones.
+   Screens (Platforms Standard 4.3): every screen has an address in the hash (useScreenLocation): #/search?q=… (the Search
+   workspace), #/ask?q=… (the AI search), the application's own screens (#/note/42, #/thread/3, #/project/3/tasks) and,
+   on any of them, ?in=<item> for the item chosen in the navigation pane. screen is the location with open(path, params)
+   and parent(path, params), which keep the navigation pane's item. The last screen is restored on load (plenix.<app>.view).
+   A search result opens its screen: in this page as a new history entry, on another application's page as its address. */
+import { AppHeader, AppShell, SearchField, SessionProvider, StatusBar, PLENIX_APPS, useScreenLocation, leavePage } from 'plenix-platform';
 import { CaptureUI } from './capture.jsx';
 import { LeftNav } from './leftnav.jsx';
 import { SearchScreen } from './search.jsx';
@@ -24,8 +29,11 @@ export const SUITE = [
   { id: 'files', folder: 'files', label: 'Files' },
 ];
 // the page of an application, from another application's page (every application folder sits beside the others)
-export const appPage = (id, hash) => { const a = SUITE.find((x) => x.id === id); return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (hash ? '#' + hash : ''); };
-export const settingsPage = (cat) => '../settings/index.html' + (cat ? '#' + cat : '');
+// path: a screen of that application ("/note/42"), its address in the hash
+export const appPage = (id, path) => { const a = SUITE.find((x) => x.id === id); return '../' + (a ? a.folder : 'dashboard') + '/index.html' + (path ? '#' + path : ''); };
+export const settingsPage = (cat) => '../settings/index.html' + (cat ? '#/' + cat : '');
+// the screen a search result opens in its application (FIND_SOURCES keys: a letter for the kind, then the id)
+const RESULT_SCREEN = { p: 'project', t: 'thread', c: 'contact', e: 'event', k: 'task', n: 'note', b: 'bookmark', f: 'file' };
 // each application's own settings category in Settings (none yet for Bookmarks)
 const APP_SETTINGS = { home: 'dashboard', projects: 'projects', messaging: 'email', contacts: 'contacts', calendar: 'calendar', tasks: 'tasks', notes: 'notes', files: 'files' };
 // the settings page each application's navigation footer opens
@@ -37,17 +45,30 @@ const FIRST_SUB = { messaging: 't-1', calendar: 'month' };
 export function readPrefs() { try { return JSON.parse(localStorage.getItem('plenix.prefs')) || {}; } catch (e) { return {}; } }
 export function writePrefs(p) { try { localStorage.setItem('plenix.prefs', JSON.stringify(p)); } catch (e) { /* this visit only */ } }
 
-function Suite({ app, render, page = 'workspace' }) {
+function Suite({ app, render, page = 'workspace', legacy }) {
   const [prefs, setPrefsState] = useState(readPrefs);
   const setPrefs = (next) => setPrefsState((cur) => { const v = typeof next === 'function' ? next(cur) : next; writePrefs(v); return v; });
-  const [sub, setSub] = useState(FIRST_SUB[app] || null);
-  const [capture, setCapture] = useState(false);
-  const [find, setFind] = useState(null);      // the search workspace in the main area: { app, query } (app "home": everything)
-  const [ai, setAi] = useState(null);          // a query handed to the AI search
-  const [hq, setHq] = useState('');            // the header search field
+  const loc = useScreenLocation({ app, legacy });
+  const top = loc.parts[0];
   const inSuite = SUITE.some((x) => x.id === app);
+  const scope = inSuite && app !== 'home' ? app : 'home';
+  // the navigation pane's item: ?in=<id> on any screen (Messages: the open conversation is its item)
+  const sub = app === 'messaging' && top === 'thread' ? 't-' + loc.parts[1] : (loc.params.in || FIRST_SUB[app] || null);
+  const setSub = (id) => { const t = app === 'messaging' && /^t-(\d+)$/.exec(id); if (t) loc.navigate(['thread', t[1]]); else loc.navigate('/', { in: id }); };
+  const screen = React.useMemo(() => Object.assign({}, loc, {
+    open: (path, params) => loc.navigate(path, Object.assign({ in: loc.params.in }, params)),
+    parent: (path, params) => loc.parent(path || '/', Object.assign({ in: loc.params.in }, params)),
+  }), [loc]);
+  const [capture, setCapture] = useState(false);
+  const find = top === 'search' ? { app: scope, query: loc.params.q || '' } : null;   // the search workspace in the main area (app "home": everything)
+  const ai = top === 'ask' ? loc.params.q || '' : null;                               // a query handed to the AI search
+  const [hq, setHq] = useState(() => (find ? find.query : ''));                       // the header search field
   const label = (SUITE.find((x) => x.id === app) || { label: 'Settings' }).label;
-  const openResult = (r, a) => { location.href = appPage(a, a === 'messaging' && r.id ? 't-' + r.id : ''); };
+  const openResult = (r, a) => {
+    const kind = RESULT_SCREEN[String(r.key || '').charAt(0)], id = String(r.key || '').slice(1);
+    const path = kind && id ? (kind === 'project' ? ['project', id, 'home'] : [kind, id]) : null;
+    if (a === app && path) loc.navigate(path); else leavePage(appPage(a, path ? '/' + path.join('/') : ''));
+  };
   const tone = { blue: 'accent', frost: 'frost', white: 'plain' }[prefs.headerBar || 'blue'] || 'accent';
   // the page header background (Settings › Appearance): read by EntityHeader from the page root
   React.useEffect(() => {
@@ -70,18 +91,19 @@ function Suite({ app, render, page = 'workspace' }) {
     return () => window.removeEventListener('plenix:modechange', follow);
   }, []);
   const onAccent = tone === 'accent';
+  // refining the query keeps the same screen (its entry is corrected in place); a new search from the header is a new screen
   const main = ai !== null ? <SearchScreen key={ai} initialQuery={ai} />
-    : find ? <FindWorkspace key={find.app} app={find.app} query={find.query} onQuery={(q) => { setFind({ ...find, query: q }); setHq(q); }} onOpen={openResult} onAskAI={(q) => { setFind(null); setAi(q); }} />
-    : render({ prefs, setPrefs });
+    : find ? <FindWorkspace key={find.app} app={find.app} query={find.query} onQuery={(q) => { loc.navigate(['search'], { q }, { replace: true }); setHq(q); }} onOpen={openResult} onAskAI={(q) => loc.navigate(['ask'], { q })} />
+    : render({ prefs, setPrefs, screen });
   return (
     <AppShell page={page} mainClassName="plx-shell-main"
       footer={<StatusBar start={<span>{SUITE.length - 1} applications · Lighthouse Way</span>} end={<span>Synced just now</span>} />}
-      sideNav={HAS_NAV.includes(app) ? <LeftNav section={app} sub={sub} setSub={setSub} onSettings={() => { location.href = settingsPage(SETTINGS_FOR[app] || 'general'); }} /> : null}
+      sideNav={HAS_NAV.includes(app) ? <LeftNav section={app} sub={sub} setSub={setSub} onSettings={() => leavePage(settingsPage(SETTINGS_FOR[app] || 'general'))} /> : null}
       header={<AppHeader tone={tone} currentApp={inSuite ? app : null} appsRoot="../" appName={inSuite ? undefined : label}
         action={<AppHeader.Action variant={onAccent ? 'secondary' : 'primary'} icon="snapshot" onClick={() => setCapture(true)}>Capture</AppHeader.Action>}
         search={<SearchField placeholder={inSuite && app !== 'home' ? 'Search ' + label.toLowerCase() + '…' : 'Search files, notes, contacts…'} label="Search" shortcut="Ctrl K" onAccent={onAccent}
-          value={hq} onChange={(e) => setHq(e.target.value)} onClear={() => setHq('')} onKeyDown={(e) => { if (e.key === 'Enter') { setAi(null); setFind({ app: inSuite && app !== 'home' ? app : 'home', query: hq.trim() }); } }} />}
-        account={<AppHeader.Account current={app === 'settings' ? (location.hash === '#account' ? 'account' : 'settings') : undefined}
+          value={hq} onChange={(e) => setHq(e.target.value)} onClear={() => setHq('')} onKeyDown={(e) => { if (e.key === 'Enter') loc.navigate(['search'], { q: hq.trim() }); }} />}
+        account={<AppHeader.Account current={app === 'settings' ? (top === 'account' ? 'account' : 'settings') : undefined}
           myAccount={{ href: settingsPage('account') }} settings={{ href: settingsPage('general') }}
           appSettings={APP_SETTINGS[app] ? { app: label, href: settingsPage(APP_SETTINGS[app]) } : {}} />} />}>
       <div className="plx-app-shell__page">{main}</div>
@@ -92,6 +114,7 @@ function Suite({ app, render, page = 'workspace' }) {
 
 // mounts an application page: mountSuite('notes', () => <NotesScreen/>)
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
+// opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 export function mountSuite(app, render, opts) {
-  ReactDOM.createRoot(document.getElementById('root')).render(<SessionProvider><Suite app={app} render={render} page={(opts && opts.page) || 'workspace'} /></SessionProvider>);
+  ReactDOM.createRoot(document.getElementById('root')).render(<SessionProvider><Suite app={app} render={render} page={(opts && opts.page) || 'workspace'} legacy={opts && opts.legacy} /></SessionProvider>);
 }

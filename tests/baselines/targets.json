@@ -1,103 +1,66 @@
 {
  "dashboard/index.html": {
-  "coarse": 20
- },
- "projects/index.html": {
-  "coarse": 15,
-  "fine": 1
- },
- "messages/index.html": {
-  "coarse": 15
- },
- "contacts/index.html": {
-  "coarse": 15
+  "coarse": 6
  },
  "calendar/index.html": {
-  "coarse": 24
- },
- "tasks/index.html": {
-  "coarse": 24
- },
- "notes/index.html": {
-  "coarse": 15,
-  "fine": 1
+  "coarse": 1
  },
  "bookmarks/index.html": {
-  "coarse": 20
- },
- "files/index.html": {
-  "coarse": 19
+  "coarse": 1
  },
  "settings/index.html": {
-  "coarse": 16,
-  "fine": 1
+  "coarse": 1
  },
  "dam/index.html": {
-  "coarse": 43
+  "coarse": 6
  },
  "dam/settings-system.html": {
-  "coarse": 21,
-  "fine": 1
- },
- "dam/settings-myaccount.html": {
-  "coarse": 15
+  "coarse": 6
  },
  "design-system home": {
-  "coarse": 138,
+  "coarse": 132,
   "fine": 13
  },
  "design-system #/foundations/design-tokens": {
-  "coarse": 12,
-  "fine": 1
+  "coarse": 3
  },
  "design-system #/layout/grid": {
-  "coarse": 10,
-  "fine": 1
+  "coarse": 3
  },
  "design-system #/content/text": {
-  "coarse": 26,
-  "fine": 1
+  "coarse": 4
  },
  "design-system #/actions/button": {
-  "coarse": 32
+  "coarse": 10
  },
  "design-system #/forms/fieldset": {
-  "coarse": 12
+  "coarse": 4
  },
  "design-system #/navigation/application-header": {
-  "coarse": 144,
-  "fine": 1
+  "coarse": 17
  },
  "design-system #/data-display/badge": {
-  "coarse": 20,
-  "fine": 1
+  "coarse": 5
  },
  "design-system #/specialized/preview": {
-  "coarse": 17,
-  "fine": 1
+  "coarse": 4
  },
  "design-system #/feedback/notice": {
-  "coarse": 16,
-  "fine": 1
+  "coarse": 4
  },
  "design-system #/overlays/dialog": {
-  "coarse": 29,
-  "fine": 1
+  "coarse": 4
  },
  "design-system #/patterns/bulk-selection": {
-  "coarse": 31,
-  "fine": 1
+  "coarse": 18
  },
  "design-system #/page-structures/application-shell": {
-  "coarse": 26,
-  "fine": 1
+  "coarse": 8
  },
  "design-system #/interaction/focus-ring": {
-  "coarse": 10,
-  "fine": 1
+  "coarse": 3
  },
  "design-system #/implementation/react": {
-  "coarse": 121,
-  "fine": 1
+  "coarse": 126
  }
 }

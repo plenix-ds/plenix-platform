@@ -25,6 +25,8 @@
        ColorPicker.className: more classes on the group
    Behavior:
      With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
+     A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
+       (Platforms Standard 3.1); with touch each swatch of a ColorPicker gets a slot that wide.
    Notes:
      The hue reaches the stylesheet as the data-plx-color attribute (system/steps.css), the only way a data color enters a page.
      Other props pass through to the <button> or <span>.

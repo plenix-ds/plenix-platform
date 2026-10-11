@@ -2,6 +2,31 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Native designs and the Plenix Platforms Standard on the web (added 2026-10-11)
+
+Owner: every iOS and Android component gets the Plenix design (the Apple or Material default beside the Plenix control,
+its anatomy, every attribute from token to code) and the web meets the Plenix Platforms Standard.
+- [x] (0.31.34–0.31.37) The design of 25 iOS and 24 Android components (platform/standards/native-design.json); the native
+  token files name every value (Border, Icon, Shape, Shell, Opacity, Motion, Component; Android dimens.xml).
+- [ ] The Figma drawings of the 24 iOS components after Buttons: the Figma Starter plan's MCP tool-call limit stopped them.
+  The scripts are ready (scratchpad native/*figma*.js, build-*.js); run them when the limit resets or on a higher plan,
+  then add figma and images to each entry.
+- [ ] Owner: data values in DM Mono (slider and progress values, times, counts): the Platforms Standard 3.4 says DM Mono for
+  technical values outside tables; the font-roles rule says Mono only for code. Which one?
+- [ ] Owner: the iOS alert width now uses the Plenix dialog width (400) instead of Apple's narrower alert; keep?
+- [x] (0.31.36) Web wave A: drag alternatives, error states, the narrow DataTable, its kept view, focus not obscured, touch
+  tooltips, system appearance, input hints, reflow and target tests.
+- [x] (0.31.38) Web wave B: a URL and history entry per screen, the unsaved-changes guard, list-detail at Narrow, view
+  restoration, the Sheet, the inspector and search at Narrow; touch targets 907 → 366 under 44px, fine pointer 29 → 13.
+- [ ] At Narrow, Messages shows two back rows (the shell's parent row and the list-detail Back bar): make them one.
+- [ ] Apps pass suggestions and results to the full-screen search (AppHeader searchSuggestions, searchResults).
+- [ ] Tab lists scroll sideways at 320px (dam/settings-system, design-system pages): wrap or an overflow menu.
+- [ ] Remaining reflow and target findings in tests/baselines (reflow 15; targets: text links in the design system's tables,
+  breadcrumbs, the dashboard stack, the DAM More button).
+- [ ] The calendar's view (month, week, day) and the DAM search refinements in the address.
+- [x] (0.31.38) The token rename: 137 component tokens named from selector fragments (data-table-background-2,
+  pagination-page-hover-not-disabled-not-aria-current-…) now say what they style; values unchanged (visual test OK).
+
 ## Strict DS: no inline styles, no exceptions (added 2026-10-09)
 
 Owner: "i want this to strictly follow the DS.. no exceptions": not even a custom-property value in a style attribute.
@@ -36,8 +61,12 @@ plenix.lighthouseway.org (Authentik forward auth today) and design-system.lighth
 private, but on 2026-10-10 its pages, /cdn/ and apple-api.json answered 200 with no sign-in.
 - [x] (2026-10-11) The design system host is private: Authentik forward auth on every page (NPM host 28, application
   "plenix-design-system"); only /cdn/ stays open for the apps. Database backup database.sqlite.bak-20261010-ds-private.
-- [ ] Choose the login: the owner's accounts, sessions, sign-in page in the Plenix brand kit.
-- [ ] Replace Authentik on plenix.lighthouseway.org; keep the switch-account and recovery needs (see below).
+- [x] (0.31.36) The login is built: services/login (accounts with scrypt hashes, signed session cookies, the sign-in page in
+  the Plenix design system, an accounts command, Nginx auth_request; tests/login.test.js). Save accepts its headers.
+- [ ] Owner: the cutover from Authentik (services/login/README.md lists each step and the rollback): deploy, create your
+  account at the hidden prompt, merge the Nginx config, remove the Authentik config from NPM hosts 27 and 28.
+- [ ] Owner: one sign-in for both hosts (a cookie for lighthouseway.org) or one per host (today).
+- [ ] Later: self-service password reset (needs SMTP), passkeys, the apps' account menu on /auth/session.
 
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)
 
@@ -84,7 +113,7 @@ Phase 2 · safe to change
 Fix what was found (owner's choice, before items 8, 9, 11; batches 211–215, released in 0.3.0)
 - [x] Accessibility: axe-core issues 418 → 3 (contrast per the owner's color decisions; ARIA; keyboard access to scroll areas).
 - [x] Documentation findings: keyboard and focus, right to left, translatable words (`strings`), image fallbacks, font sizes in rem, and more. The list is in Plenix - DAM/audit/findings-2026-10-08.md.
-- [ ] Owner: the 3 remaining target-size issues. These are the design system's stacked class-name links (14px). Fixing them means giving them taller lines on every design-system page.
+- [x] The 3 target-size issues are gone: the accessibility baseline has been empty since batch 218 (0 known issues on 143 pages, 2026-10-11).
 - [x] (batch 257) Title Case labels: the Asset Manager's examples were already gone; across the suite, UI labels, actions and document headings are sentence case (the content standard); names stay (people, companies, products and apps, sample records, the product spec's entity, feature and module names).
 - [x] The five layout modes: done in batches 217-218 (system/layout-modes.css, generated from the layout standard, draws each mode).
 
@@ -111,11 +140,11 @@ Every table is a Tabulator DataTable (owner, 2026-10-08: "every table rebuilt"; 
 Themes and components (owner, 2026-10-08: "do the foundations and then the components")
 - [x] Themes defined in the design system (platform/standards/themes.json), the current look as the "default" theme, switching (batch 219).
 - [x] (batch 220) Foundations into themes: typography (families, weights, letter spacing), shape (radius, border widths and styles), motion (durations, easing), opacity and the focus ring become theme roles; components use only those roles. Shared, never per theme: spacing, control heights, density, grid, breakpoints, layers. The same palette color can serve many themes.
-- [ ] Every component gets the Button treatment (its own tokens for every variant, size and state; variant pages; the token Edit dialog; zero-visual-change and mapping proofs), in groups: form controls, actions, navigation, data display, feedback, overlays, layout.
+- [x] Every component gets the Button treatment: done in Every Variant (batch 333, 58 components with tokens, labs with the Edit dialog, variant pages).
 
 Phase 3 · editable and governed
 - [ ] 8. The save server. Decided: Save opens a pull request on GitHub (a save service on the Plenix VM applies the change, rebuilds, runs the checks, opens the PR); sign-in through the owner's Authentik (auth.lighthouseway.org), a "Plenix editors" group. Owner step: a proxy provider and application in Authentik (steps to follow).
-- [ ] 9. Variant pages and the token Edit dialog for every component (the Button pattern).
+- [x] 9. Variant pages and the token Edit dialog for every component: done (Every Variant, batch 333).
 - [x] 10. Contribution model (batch 210): CONTRIBUTING.md (stages, who decides, the rules, the review checklist), a Component proposal issue form and a pull request checklist on GitHub.
 
 Phase 4 · grow

@@ -1,9 +1,10 @@
 /* Plenix asset app · System Settings (app/pages/SystemSettingsPage.jsx): catalog-wide configuration in 14 sections.
-   Replaces the HTML of settings-system.html (batch 110). The address hash (#properties, #users, …) opens a section and
-   follows the navigation; every section stays mounted, so unsaved edits survive switching. Actions that have no back end
-   yet confirm with a toast, as the HTML page did. */
+   Replaces the HTML of settings-system.html (batch 110). Each section is a screen with its address (#/properties,
+   #/users, …; the older #users opens the same) and a history entry (Platforms Standard 4.3); every section stays mounted,
+   so unsaved edits survive switching, and leaving the page while a form has unsaved edits asks (useUnsavedGuard). Actions
+   that have no back end yet confirm with a toast, as the HTML page did. */
 import React from 'react';
-import { SettingsLayout, SettingsSection, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, Tabs, DataTable, Badge, Card, Icon, Menu, MenuItem, PropertyList, SearchField, Dialog, Toolbar, useToast, NavPane, Stack, Inline, Text, CodeBlock } from 'plenix-platform';
+import { SettingsLayout, SettingsSection, NavList, RecordPage, Field, Input, Textarea, Select, Combobox, Switch, Checkbox, ActionBar, Button, ButtonGroup, Tabs, DataTable, Badge, Card, Icon, Menu, MenuItem, PropertyList, SearchField, Dialog, Toolbar, useToast, NavPane, Stack, Inline, Text, CodeBlock, useScreenLocation, useUnsavedGuard } from 'plenix-platform';
 import { AssetPage } from '../shell/AssetShell.jsx';
 import * as D from './systemSettingsData.js';
 
@@ -50,7 +51,13 @@ function useToggles(list) {
 const Actions = ({ act, save = 'Save', del = 'Delete' }) => (
   <ActionBar label="Form actions">{del ? <Button variant="danger-secondary" onClick={act(del, 'warning')}>{del}</Button> : null}<Button type="submit" variant="primary">{save}</Button></ActionBar>
 );
-const Form = ({ act, saved, children }) => <form noValidate onSubmit={(e) => { e.preventDefault(); act(saved, 'success')(); }}>{children}</form>;
+// a form is edited from its first change (a search field is not an edit) until it is saved
+const Edited = React.createContext(() => {});
+const Form = ({ act, saved, children }) => {
+  const mark = React.useContext(Edited), id = React.useId();
+  const onChange = (e) => { const t = e.target; if (t && (t.type === 'search' || (t.closest && t.closest('[role="search"]')))) return; mark(id, true); };
+  return <form noValidate onChange={onChange} onSubmit={(e) => { e.preventDefault(); mark(id, false); act(saved, 'success')(); }}>{children}</form>;
+};
 
 /* ── Content ── */
 function Properties({ act }) {
@@ -394,24 +401,27 @@ const SECTIONS = {
   'email-templates': EmailTemplates, 'catalog-parameters': CatalogParameters, server: Server, database: Database, customizations: Customizations, scheduler: Scheduler,
 };
 
+// the section is the screen: choosing one pushes a history entry, Back and Forward follow
+const legacy = (hash) => (IDS.indexOf(hash.slice(1)) >= 0 ? '/' + hash.slice(1) : null);
 function useSection() {
-  const read = () => { const h = location.hash.slice(1); return IDS.indexOf(h) >= 0 ? h : 'properties'; };
-  const [section, setSection] = React.useState(read);
-  React.useEffect(() => {
-    const on = () => setSection(read());
-    window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
-  }, []);
-  const go = (id) => { if (IDS.indexOf(id) < 0) return; history.replaceState(null, '', '#' + id); setSection(id); };
+  const loc = useScreenLocation({ app: 'assets-system', legacy });
+  const section = IDS.indexOf(loc.parts[0]) >= 0 ? loc.parts[0] : 'properties';
+  const go = (id) => { if (IDS.indexOf(id) < 0) return; loc.navigate([id]); };
   return [section, go];
 }
 
 function Content({ section }) {
   const act = useAct();
+  // the forms with unsaved edits; every section stays mounted, so only leaving the page asks
+  const [edited, setEdited] = React.useState({});
+  const mark = React.useCallback((id, on) => setEdited((d) => (!!d[id] === on ? d : { ...d, [id]: on })), []);
+  useUnsavedGuard(Object.keys(edited).some((k) => edited[k]), 'Your settings changes have not been saved.', { keeps: () => true });
   return (
-    <SettingsLayout>
-      {IDS.map((id) => { const S = SECTIONS[id]; return <div key={id} hidden={section !== id}><S act={act} /></div>; })}
-    </SettingsLayout>
+    <Edited.Provider value={mark}>
+      <SettingsLayout>
+        {IDS.map((id) => { const S = SECTIONS[id]; return <div key={id} hidden={section !== id}><S act={act} /></div>; })}
+      </SettingsLayout>
+    </Edited.Provider>
   );
 }
 

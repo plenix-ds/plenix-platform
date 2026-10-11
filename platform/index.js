@@ -50,6 +50,7 @@ export { Slider } from './components/Slider/Slider.jsx';
 export { Toolbar } from './components/Toolbar/Toolbar.jsx';
 export { Menu, MenuItem, MenuDivider, MenuGroup } from './components/Menu/Menu.jsx';
 export { Dialog, ConfirmDialog, Drawer } from './components/Dialog/Dialog.jsx';
+export { Sheet } from './components/Sheet/Sheet.jsx';
 export { ToastProvider, useToast } from './components/Toast/Toast.jsx';
 export { Tabs, tabsPanelId } from './components/Tabs/Tabs.jsx';
 export { Panel, Card, MediaCard } from './components/Card/Card.jsx';
@@ -84,6 +85,8 @@ export { PLENIX_APPS, appById, appHref } from './providers/apps.js';
 export { PAGE_LAYOUTS, pageLayout } from './providers/pageLayouts.js';
 export { useDensity } from './hooks/useDensity.js';
 export { useInteraction } from './hooks/useInteraction.js';
+export { useScreenLocation, navigate, goToParent, screenHref, parseScreen, useViewState } from './providers/ScreenLocation.js';
+export { useUnsavedGuard, confirmLeave, hasUnsaved, leavePage } from './providers/UnsavedGuard.jsx';
 export { TimeGrid } from './patterns/TimeGrid/TimeGrid.jsx';
 // not exported: runs once on every page (the next page is prerendered on hover; batch 237)
 import './utils/prefetch.js';

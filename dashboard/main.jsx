@@ -1,13 +1,14 @@
 /* Plenix · Dashboard (dashboard/main.jsx): the application's page entry; build-app.js compiles it to dashboard/app.js. */
 import { appPage, mountSuite } from '../suite/suite.jsx';
+import { leavePage } from 'plenix-platform';
 import { Dashboard } from './dashboard.jsx';
-import { ProjectDetail } from '../projects/projects.jsx';
-const { useState } = React;
+import { ProjectDetail, projectScreen } from '../projects/projects.jsx';
 
-// the home page: the widgets; a project opens here; every other application opens its page
-function Home({ prefs }) {
-  const [project, setProject] = useState(null);
-  if (project) return <ProjectDetail proj={project} />;
-  return <Dashboard prefs={prefs} setProject={setProject} setSection={(s) => { if (s !== 'project-detail') location.href = appPage(s); }} />;
+// the home page: the widgets; a project opens here (#/project/<id>/<capability>, a history entry); every other
+// application opens its page
+function Home({ prefs, screen }) {
+  const { proj } = projectScreen(screen);
+  if (proj) return <ProjectDetail key={proj.id} proj={proj} screen={screen} />;
+  return <Dashboard prefs={prefs} setProject={(p) => screen.open(['project', p.id, 'home'])} setSection={(s) => { if (s !== 'project-detail') leavePage(appPage(s)); }} />;
 }
-mountSuite('home', ({ prefs }) => <Home prefs={prefs} />, { page: 'dashboard' });
+mountSuite('home', ({ prefs, screen }) => <Home prefs={prefs} screen={screen} />, { page: 'dashboard' });

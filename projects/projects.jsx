@@ -1,8 +1,11 @@
 /* Plenix · projects (projects/projects.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: the projects in the shell's NavPane, a project's capabilities in a SecondaryPane, its home as a record page
    header with a ProgressBar and Metrics over Panels, its tasks, notes and files as Checkboxes, Cards and a DataTable, the
-   capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes. */
-import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail } from 'plenix-platform';
+   capabilities to come as EmptyStates, and the new-project dialog from Fields, Fieldsets and Checkboxes.
+   Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
+   history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
+   unsaved entries (useUnsavedGuard). */
+import { Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SearchField, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataTable, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -70,18 +73,20 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
         ? <NavList label="Projects" value={selected ? selected.id : undefined} onSelect={pick} groups={Object.entries(groups).map(([tag, projs]) => ({ heading: labels[tag] || tag, items: projs.map(navItem) }))} />
         : visible.length > 0 ? <NavList label="Projects" value={selected ? selected.id : undefined} onSelect={pick} items={visible.map(navItem)} /> : <EmptyState title="No projects match." />}
       {showNew ? <NewProjectModal onClose={() => setShowNew(false)} newName={newName} setNewName={setNewName} newClient={newClient} setNewClient={setNewClient}
-        newBilling={newBilling} setNewBilling={setNewBilling} newCaps={newCaps} toggleCap={toggleCap} /> : null}
+        newBilling={newBilling} setNewBilling={setNewBilling} newCaps={newCaps} toggleCap={toggleCap}
+        dirty={newName.trim() !== '' || newClient !== '__none__' || newBilling !== 'Time & materials' || [...newCaps].sort().join() !== [...window.DEFAULT_CAPS].sort().join()} /> : null}
     </NavPane></SideNavPortal>
   );
 }
 
 /* ── A project's capabilities: a SecondaryPane beside its content; it folds to a rail of its capabilities and resizes ── */
 export function ProjectNav({ proj, active, onNav, caps }) {
+  const [view, updateView] = useViewState('projects');
   const pCaps = caps || window.DEFAULT_CAPS;
   const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project home', icon: <ProjIco n="home" size={14} /> }] }]
     .concat(window.CAPABILITY_GROUPS.map((grp) => ({ heading: grp.group, items: grp.items.filter((it) => pCaps.has(it.id)).map((it) => ({ id: it.id, label: it.label, icon: <ProjIco n={it.icon} size={13} /> })) })).filter((g) => g.items.length));
   return (
-    <SecondaryPane title={proj.name} width="md" collapsible resizable
+    <SecondaryPane title={proj.name} width="md" collapsible resizable size={view.paneWidth} onSizeChange={(w) => updateView({ paneWidth: w })}
       actions={<Button size="xs" variant="ghost" iconOnly icon="gear" label="Project settings" onClick={() => onNav('settings')} />}
       rail={navGroups.reduce((all, g) => all.concat(g.items), []).map((it) => <ToolRail.Item key={it.id} label={it.label} icon={it.icon} pressed={active === it.id} onClick={() => onNav(it.id)} />)}>
       <NavList label={proj.name} value={active} onSelect={onNav} groups={navGroups} />
@@ -204,13 +209,16 @@ export function ProjectContent({ proj, panel }) {
   return null;
 }
 
-export function NewProjectModal({ onClose, newName, setNewName, newClient, setNewClient, newBilling, setNewBilling, newCaps, toggleCap }) {
+export function NewProjectModal({ onClose, newName, setNewName, newClient, setNewClient, newBilling, setNewBilling, newCaps, toggleCap, dirty }) {
+  // Cancel, Close and Escape ask while something has been entered (Create project keeps it)
+  const guard = useUnsavedGuard(dirty, 'The new project has not been created.');
+  const cancel = guard(onClose);
   return (
-    <Dialog open onClose={onClose} title="New project"
-      footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" disabled={!newName.trim()} onClick={onClose}>Create project</Button></>}>
+    <Dialog open onClose={cancel} title="New project"
+      footer={<><Button onClick={cancel}>Cancel</Button><Button variant="primary" disabled={!newName.trim()} onClick={onClose}>Create project</Button></>}>
       <Stack gap="md">
         <Field label="Project title">
-          <Input autoFocus autoComplete="off" autoCapitalize="words" enterKeyHint="done" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Website Redesign" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} />
+          <Input autoFocus autoComplete="off" autoCapitalize="words" enterKeyHint="done" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Website Redesign" onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); cancel(); } }} />
         </Field>
         <Field label="Client" description="optional">
           <Select value={newClient || '__none__'} onChange={(e) => setNewClient(e.target.value)}>
@@ -251,11 +259,17 @@ export function NewProjectModal({ onClose, newName, setNewName, newClient, setNe
   );
 }
 
-export function ProjectsScreen({ onSettings }) {
-  const [selected, setSelected] = useState(null);
-  const [panel, setPanel] = useState('home');
+// the project screen: #/project/<id>/<capability> → { proj, panel }
+export const projectScreen = (screen) => {
+  const proj = screen.parts[0] === 'project' ? PROJECTS.find((p) => p.id === +screen.parts[1]) || null : null;
+  return { proj, panel: (proj && screen.parts[2]) || 'home' };
+};
+
+export function ProjectsScreen({ onSettings, screen }) {
+  const { proj: selected, panel } = projectScreen(screen);
+  const setPanel = (p) => screen.open(['project', selected.id, p]);
   const [projCaps] = useState({});
-  const handleSelect = (p) => { setSelected(p); setPanel('home'); };
+  const handleSelect = (p) => screen.open(['project', p.id, 'home']);
   const getCaps = (p) => (p && projCaps[p.id] ? projCaps[p.id] : window.DEFAULT_CAPS);
   return (
     <div className="plx-page-panes">
@@ -271,8 +285,9 @@ export function ProjectsScreen({ onSettings }) {
 }
 
 /* ── A project opened from the dashboard ── */
-export function ProjectDetail({ proj }) {
-  const [panel, setPanel] = useState('home');
+export function ProjectDetail({ proj, screen }) {
+  const panel = (screen && screen.parts[2]) || 'home';
+  const setPanel = (p) => screen.open(['project', proj.id, p]);
   return (
     <div className="plx-page-panes">
       <ProjectNav proj={proj} active={panel} onNav={setPanel} />

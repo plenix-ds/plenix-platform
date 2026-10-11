@@ -4,10 +4,13 @@
    cards or a table; the chosen asset's details on the right). Panes: Files (the folder tree), the sidebar, the content,
    the details pane. The sidebar is the shell's side navigation and the details pane its panel: the AppShell collapses,
    resizes and (below 1024px) overlays them.
-   The address: ?q=text opens the search results for it; ?upload=1 opens the upload dialog (the header on other pages
-   links here). Dialogs are opened by their legacy ids from app/dialogs (one host renders the open one). */
+   The address (Platforms Standard 4.3): each view is a screen with a history entry: #/ (categories), #/collections,
+   #/category/<name>, #/search?q=<text>, #/saved/<name>, and ?asset=<id> on any of them for the open asset; the last
+   screen is restored on load (plenix.assets.view). ?q=text (the header on other pages links here) names the search
+   screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
+   the open one). */
 import React from 'react';
-import { DataToolbar, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone } from 'plenix-platform';
+import { DataToolbar, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -82,7 +85,15 @@ function findAssets(f) {
 }
 const opts = (values) => Array.from(new Set(values)).sort().map((x) => ({ value: x, label: x, count: values.filter((y) => y === x).length }));
 
+// ?q=text from another page names the search screen (in place: it is where the person arrived, not a move)
+function nameSearchScreen() {
+  const q = new URLSearchParams(location.search).get('q');
+  if (q !== null && !location.hash) history.replaceState(history.state, '', location.pathname + location.search + screenHref(['search'], { q }));
+}
+
 export function HomePage() {
+  nameSearchScreen();
+  const loc = useScreenLocation({ app: 'assets' });
   const toast = useToast();
   const act = (msg, tone = 'info') => () => toast.show(msg, { tone });
   const narrow = useNarrow();
@@ -111,18 +122,35 @@ export function HomePage() {
   const browse = view === 'categories' || view === 'collections';
   const collections = view === 'collections';
 
-  const showView = (v) => { setView(v); setFiles(false); setSelCats([]); };
-  const openCategory = (name) => { setView('search'); setHeading(name); setQuery(''); setSelAssets([]); setActive(name); };
+  // the screen named by the address: the view (with its category, search or saved search), then the open asset
+  const viewKey = loc.parts.join('/') + '?' + (loc.params.q || '');
+  React.useLayoutEffect(() => {
+    const [top, name] = loc.parts;
+    setFiles(false); setSelCats([]); setSelAssets([]);
+    if (top === 'collections') { setView('collections'); setActive('All collections'); }
+    else if (top === 'category' && name) { setView('search'); setHeading(name); setQuery(''); setActive(name); }
+    else if (top === 'search') { const q = loc.params.q || ''; setQuery(q); setActive(null); setFind({ ...FIND_EMPTY, query: q }); setView('find'); }
+    else if (top === 'saved' && name) { const s = saved.find((x) => x.name === name); setActive(name); setFind({ ...FIND_EMPTY, query: s ? s.query : '', filters: s ? s.filters : {}, saved: name }); setView('find'); }
+    else { setView('categories'); setActive('All categories'); }
+  }, [viewKey]);
+  React.useLayoutEffect(() => {
+    const a = loc.params.asset;
+    setAsset(a === undefined ? null : +a);
+    if (a !== undefined) setRight((r) => ({ ...r, collapsed: false }));
+  }, [loc.params.asset]);
+  // each is a new screen (a history entry)
+  const showView = (v) => loc.navigate(v === 'collections' ? ['collections'] : '/');
+  const openCategory = (name) => loc.navigate(['category', name]);
   // the Search workspace: opened from the header search (Enter) with the query, or from a saved search with its criteria
-  const openFind = (f) => { setFind({ ...FIND_EMPTY, ...f }); setView('find'); setFiles(false); setSelAssets([]); };
+  const openFind = (f) => (f.saved ? loc.navigate(['saved', f.saved]) : loc.navigate(['search'], { q: f.query || '' }));
+  const openAsset = (id) => loc.navigate(loc.parts, Object.assign({}, loc.params, { asset: id }));
   const onSidebar = (kind, name) => {
-    setActive(name);
-    if (kind === 'saved') { const s = saved.find((x) => x.name === name); openFind({ query: s ? s.query : '', filters: s ? s.filters : {}, saved: name }); return; }
+    if (kind === 'saved') { openFind({ saved: name }); return; }
     if (kind === 'categories' && name === 'All categories') showView('categories');
     else if (kind === 'collections' && name === 'All collections') showView('collections');
     else openCategory(name);
   };
-  const search = (q) => { setQuery(q); setActive(null); openFind({ query: q }); };
+  const search = (q) => openFind({ query: q });
   const bulk = (action) => {
     const d = bulkDialogFor(action);
     if (!d) { toast.show(bulkComingSoon(action), { tone: 'info' }); return; }
@@ -242,11 +270,11 @@ export function HomePage() {
         {list.map((a) => (
           <MediaCard key={a.id} src={a.thumb} title={a.name} meta={a.cat} badge={<Icon name={a.typeIcon} size="md" label={a.badge} />}
             selected={selAssets.indexOf(a.id) >= 0} selecting={selAssets.length > 0} onSelectChange={() => toggle(selAssets, setSelAssets, a.id)} selectLabel={'Select ' + a.name}
-            onOpen={() => { setAsset(a.id); setRight((r) => ({ ...r, collapsed: false })); }} aria-current={asset === a.id ? 'true' : undefined} />
+            onOpen={() => openAsset(a.id)} aria-current={asset === a.id ? 'true' : undefined} />
         ))}
       </ContentGrid>
     ) : (
-      <DataTable label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => setAsset(row.getData().id) }} columns={[
+      <DataTable label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => openAsset(row.getData().id) }} columns={[
         { title: 'Name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Category', field: 'cat', kind: 'center', filter: 'list', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
         { title: 'Format', field: 'badge', kind: 'data', filter: 'list' }, { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: bySize },

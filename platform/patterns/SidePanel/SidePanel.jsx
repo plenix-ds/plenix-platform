@@ -22,15 +22,20 @@
      Width: --plx-sys-panel-inspector-width (by density: 320 / 360 / 400px), docked.
      Its own Collapse button starts its header row; collapsed, it is a rail with Expand.
      Below 1024px Expand opens it over the main region, between the header and the footer; Escape or a click outside closes it.
+     At Narrow (under 600px, --plx-sys-shell-phone-below) Expand opens it as a bottom sheet (Sheet, form="bottom"): its title,
+       icon and actions in the sheet's header with Close, its body, its footer pinned below (Platforms Standard 5.2
+       Supporting pane, 6.5 Sheet and inspector); Escape, Close or a click on the scrim closes it.
      When the window becomes that small, an open docked panel collapses to its rail.
    Notes:
      Not every capability has one; it shows only where it is given.
+     Without onOpenChange it cannot close, so at Narrow it stays the overlay rather than a sheet nobody can dismiss.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useLayer } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
+import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { snapSize } from '../../utils/sizeSteps.js';
@@ -39,11 +44,16 @@ const WIDTH_KEY = 'plenix.sidePanelWidth';
 
 export function SidePanel({ title, label, icon, open = true, onOpenChange, actions, footer, collapseLabel, resizable = false, resizeLabel, className, children }) {
   const small = useMedia(below('--plx-sys-shell-inspector-overlay-below'));
+  const narrow = useMedia(below('--plx-sys-shell-phone-below'));
   const ref = React.useRef(null);
   const set = (next) => { if (onOpenChange) onOpenChange(next); };
-  useLayer(ref, open && small, { onEscape: () => set(false) });
+  // at Narrow the panel is a bottom sheet (when it can be closed): the Sheet is the layer then
+  const sheet = narrow && !!onOpenChange;
+  useLayer(ref, open && small && !sheet, { onEscape: () => set(false) });
   // entering a small window: the docked panel would cover the main region, so it collapses to its rail
-  React.useEffect(() => { if (small && open) set(false); }, [small]);
+  // (only on the change: a panel opened in a small window, a file chosen on a phone, stays open)
+  const wasSmall = React.useRef(small);
+  React.useEffect(() => { if (small && !wasSmall.current && open) set(false); wasSmall.current = small; }, [small]);
   const name = label || title || 'Panel';
   // the width dragged on its edge, remembered across visits (resizable, docked only)
   const [size, setSize] = React.useState(() => { try { return +localStorage.getItem(WIDTH_KEY) || null; } catch (e) { return null; } });
@@ -53,6 +63,15 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
     <ToolRail label={name + ' pane'} className="plx-side-panel-rail"><ToolRail.Item icon="panel-right-open" label="Expand panel" onClick={() => set(true)} /></ToolRail>
   ) : null;
   if (!open) return railEl;
+  if (sheet) {
+    return (
+      <>
+        {railEl}
+        <Sheet open form="bottom" title={title} icon={icon} actions={actions} footer={footer} closeLabel={collapseLabel || 'Close panel'}
+          onClose={() => set(false)} className={className}>{children}</Sheet>
+      </>
+    );
+  }
   const pane = (
     <aside ref={ref} aria-label={name} className={cx('plx-side-panel', small && 'plx-side-panel--overlay', docked && 'plx-side-panel--resizable', docked && size && 'plx-side-panel--resized', className)}
       data-plx-width={docked && size ? snapSize(size, tokenPx('--plx-comp-side-panel-width-min'), tokenPx('--plx-comp-side-panel-width-max')) + 'px' : undefined}>

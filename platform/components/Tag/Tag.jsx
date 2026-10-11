@@ -28,7 +28,8 @@
      TagInput.collapsible: true (default): a + button that reveals the field; false: the field is always shown
      TagInput.className: more classes on the input
    Behavior:
-     The × button is a 24px target in a 16px box.
+     The × button is a 24px target in a 16px box, 44px with touch (Platforms Standard 3.1); a chip's target grows the same
+       way past its 20px look. With touch, TagList parts its tags and rows so the targets do not overlap.
      Selected chips are filled.
      TagInput is a + at the end of the tag list, drawn as a Chip (the tag look as a button: its height, corners, fill and
        border; owner, batch 272), its target 24px like the tag's × (owner, batch 271: "it should be a + and clicking that plus

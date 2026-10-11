@@ -9,10 +9,11 @@
    - Visible Metadata: search, a type filter (All, Image, Video, Audio, 3D, Doc) and collapsible field groups; groups start
      closed and a group shows its fields only while open and matching the search, as in plenix.js.
    There is no back end: Upload confirms with the toast the legacy drop handler used ("N file(s) ready to upload") and
-   closes, as the legacy Upload button did. Every state resets when the dialog closes. */
+   closes, as the legacy Upload button did. Every state resets when the dialog closes. While files are queued, Cancel,
+   Close, Escape and leaving the page ask first (useUnsavedGuard). */
 import React from 'react';
 import {
-  Dialog, Button, Checkbox, RadioGroup, Input, Textarea, SearchField, Tree, Icon, Count, EmptyState, useToast, Stack, Inline, Text, Columns, DropZone, ColorPicker, CATEGORY_COLORS } from 'plenix-platform';
+  Dialog, Button, Checkbox, RadioGroup, Input, Textarea, SearchField, Tree, Icon, Count, EmptyState, useToast, Stack, Inline, Text, Columns, DropZone, ColorPicker, CATEGORY_COLORS, useUnsavedGuard } from 'plenix-platform';
 
 // DATA: the storage folders come from the back end; sample tree until then.
 const FOLDERS = [
@@ -345,9 +346,10 @@ function UploadFlow({ onClose }) {
     if (queue.length) toast.show(queue.length + ' file(s) ready to upload', { tone: 'success' });
     onClose();
   };
+  const cancel = useUnsavedGuard(queue.length > 0, 'The files you chose have not been uploaded.')(onClose);
   return (
-    <Dialog open onClose={onClose} title="Upload assets" icon="upload" size="xl" flush
-      footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" onClick={upload}>Upload</Button></>}>
+    <Dialog open onClose={cancel} title="Upload assets" icon="upload" size="xl" flush
+      footer={<><Button onClick={cancel}>Cancel</Button><Button variant="primary" onClick={upload}>Upload</Button></>}>
       <Columns count={3} divided>
         <FilesPane queue={queue} addFiles={addFiles} removeFile={(id) => setQueue((cur) => cur.filter((q) => q.id !== id))} clearQueue={() => setQueue([])} />
         <CategoriesPane />

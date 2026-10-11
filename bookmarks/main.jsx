@@ -2,4 +2,4 @@
 import { mountSuite } from '../suite/suite.jsx';
 import { BookmarksScreen } from './bookmarks.jsx';
 
-mountSuite('bookmarks', () => <BookmarksScreen />);
+mountSuite('bookmarks', ({ screen }) => <BookmarksScreen screen={screen} />);

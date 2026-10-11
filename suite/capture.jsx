@@ -1,6 +1,6 @@
 /* Plenix suite · capture (suite/capture.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: the files as RadioTiles, the chosen one as a PropertyList, the proposal as a CodeBlock with its parts as Tags. */
-import { Button, Chat, CodeBlock, Table, Dialog, Inline, Notice, PropertyList, RadioTiles, Skeleton, Stack, Tag, TagList, Text } from 'plenix-platform';
+import { Button, Chat, CodeBlock, Table, Dialog, Inline, Notice, PropertyList, RadioTiles, Skeleton, Stack, Tag, TagList, Text, useUnsavedGuard } from 'plenix-platform';
 // a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
 // name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
@@ -16,9 +16,11 @@ const PART = { date: 'Date', project: 'Project', type: 'Type', description: 'Des
 /* ─── Capture UI ────────────────────────────────────────────────── */
 export function CaptureUI({ onClose }) {
   const [sel, setSel] = useState(null); const [loading, setLoading] = useState(false); const [res, setRes] = useState(null); const [saved, setSaved] = useState(false);
+  // a proposed name not yet accepted is unsaved: closing the dialog or leaving the page asks first
+  const close = useUnsavedGuard(!!(sel && res && !saved), 'The proposed file name has not been saved.')(onClose);
   const pick = async (f) => { setSel(f); setRes(null); setSaved(false); setLoading(true); try { setRes(await aiFileName(f.context)); } catch { /* no proposal */ } setLoading(false); };
   return (
-    <Dialog open onClose={onClose} title="AI File Naming" description="Select a file — AI reads the content and proposes a structured name.">
+    <Dialog open onClose={close} title="AI File Naming" description="Select a file — AI reads the content and proposes a structured name.">
       <Stack gap="md">
         <RadioTiles legend="File" legendHidden size="lg" value={sel ? sel.fileName : undefined} onChange={(v) => pick(CAPTURES.find((f) => f.fileName === v))}
           options={CAPTURES.map((f) => ({ value: f.fileName, label: f.emoji + ' ' + f.label, description: f.fileName }))} />

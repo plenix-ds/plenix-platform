@@ -5,6 +5,10 @@
    Usage:
      <SecondaryPane title="Files" icon="folder-open" actions={…} side="start" width="md">…</SecondaryPane>
      <SecondaryPane title="Kitchen Renovation" collapsible resizable rail={<><ToolRail.Item … /></>}>…</SecondaryPane>
+     <div className="plx-page-panes">
+       <SecondaryPane title="Notes" detailOpen={!!note} onBack={() => loc.parent('/')}>{the list}</SecondaryPane>
+       <PageContent>{the open note}</PageContent>
+     </div>
    Props:
      title: the title in the header row
      label: its landmark name (default: the title)
@@ -19,15 +23,29 @@
        Files pane), left out where the pane is always there (batch 259)
      resizable: the pane's content edge can be dragged (or moved with the arrow keys) between its sm width and
        --plx-comp-secondary-pane-width-max; default false
+     size / onSizeChange(px): the dragged width, controlled (an application keeps it between visits, useViewState);
+       defaultSize: the first dragged width when not controlled
+     detailOpen: the pane is the list of a list-detail screen (Platforms Standard 5.2): true while an item's detail shows
+       beside it. At Narrow (under 600px, --plx-sys-shell-phone-below) one pane shows at a time: the list fills the
+       width while detailOpen is false; while it is true the list steps aside and a Back control leads the detail
+     onBack(): the Back control's action at Narrow (the detail's parent, the list: useScreenLocation's parent('/'))
+     scrollTop / onScrollChange(top): the body's scroll position, to restore it (on load and when the list comes back
+       at Narrow) and to keep it
      className: more classes
      children: the body
      strings: the words it announces, for other languages: { expand: "Expand {name}", collapse: "Collapse {name}", resize:
-       "Resize {name}", close: "Close {name}" } ({name} is the label, or the title)
+       "Resize {name}", close: "Close {name}", back: "Back to {name}" } ({name} is the label, or the title)
    Behavior:
      The body scrolls on its own while the content scrolls beside it.
      The resize edge is a separator (role="separator", aria-valuenow); Arrow Left / Right move the edge, mirrored in a
      right-to-left page (as is dragging); Home and End jump to the smallest and largest width;
      Enter or a double click folds the pane when it is collapsible.
+     List-detail at Narrow (with detailOpen): the list fills the main region and the panes beside it are hidden; choosing
+       an item opens its detail (the application gives it an address and a history entry, so the browser's Back returns
+       to the list), the list steps aside (it stays mounted: its state and scroll position are kept) and a bar with
+       "Back to {name}" leads the detail; focus moves to it. Back brings the list back with focus on the item that was
+       chosen. The application shows no selection in the list at Narrow (useAppLayout().narrow). The pane does not fold
+       or resize at Narrow.
    Notes:
      It has the page surface, a divider on its content side, a header row (icon, title, actions) and a body.
      A dragged width reaches the stylesheet as --plx-comp-secondary-pane-width (no style is written).
@@ -38,20 +56,53 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
-import { PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
+import { PanelSplitter, tokenPx, below, useMedia } from '../AppShell/AppShell.jsx';
+import { focusables } from '../../utils/layer.js';
 import { snapSize } from '../../utils/sizeSteps.js';
 
-const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}' };
+const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}', back: 'Back to {name}' };
 
 export function SecondaryPane({ title, label, icon, actions, side = 'start', width = 'md', collapsible = false, collapsed, defaultCollapsed = false,
-  onCollapsedChange, rail, resizable = false, onClose, strings, className, children, ...rest }) {
+  onCollapsedChange, rail, resizable = false, size: sizeProp, defaultSize = null, onSizeChange, detailOpen, onBack, scrollTop, onScrollChange,
+  onClose, strings, className, children, ...rest }) {
   const t = Object.assign({}, STRINGS, strings);
   const [ownCollapsed, setOwnCollapsed] = React.useState(defaultCollapsed);
-  const folded = collapsible && (collapsed !== undefined ? collapsed : ownCollapsed);
+  const narrow = useMedia(below('--plx-sys-shell-phone-below'));
+  const listDetail = detailOpen !== undefined;
+  const stepAside = narrow && listDetail && !!detailOpen;   // at Narrow the detail shows alone, led by the Back bar
+  const folded = collapsible && !(narrow && listDetail) && (collapsed !== undefined ? collapsed : ownCollapsed);
   const setFolded = (next) => { if (collapsed === undefined) setOwnCollapsed(next); if (onCollapsedChange) onCollapsedChange(next); };
-  const [size, setSize] = React.useState(null);
+  const [ownSize, setOwnSize] = React.useState(defaultSize);
+  const size = sizeProp !== undefined ? sizeProp : ownSize;
+  const setSize = (w) => { if (sizeProp === undefined) setOwnSize(w); if (onSizeChange) onSizeChange(w); };
   const name = label || title;
   const named = (s) => s.split('{name}').join(name);
+  // the body's scroll position: restored when the body appears (on load, and when the list comes back at Narrow)
+  const body = React.useRef(null);
+  const top = React.useRef(scrollTop || 0);
+  const frame = React.useRef(0);
+  const onScroll = (e) => {
+    top.current = e.currentTarget.scrollTop;
+    if (onScrollChange && !frame.current) frame.current = requestAnimationFrame(() => { frame.current = 0; onScrollChange(top.current); });
+  };
+  React.useLayoutEffect(() => { if (body.current && !stepAside && top.current) body.current.scrollTop = top.current; }, [stepAside, folded]);
+  // focus: to the Back control when the detail opens at Narrow; back to the chosen item when the list returns
+  const back = React.useRef(null);
+  const chosen = React.useRef(-1);
+  const was = React.useRef(stepAside);
+  React.useEffect(() => {
+    if (was.current === stepAside) return;
+    was.current = stepAside;
+    if (stepAside) { if (back.current) back.current.focus(); return; }
+    const items = body.current ? focusables(body.current) : [];
+    const item = items[chosen.current] || items[0];
+    const lost = !document.activeElement || document.activeElement === document.body;   // the Back control took focus with it
+    if (item && lost) item.focus();
+  }, [stepAside]);
+  const onBodyClick = (e) => {
+    const items = body.current ? focusables(body.current) : [];
+    chosen.current = items.findIndex((x) => x === e.target || x.contains(e.target));
+  };
   if (folded) {
     return (
       <ToolRail label={name} className={cx('plx-secondary-pane-rail', 'plx-secondary-pane-rail--' + side, className)}>
@@ -62,9 +113,11 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
   }
   const min = () => tokenPx('--plx-comp-secondary-pane-width-sm');
   const max = () => tokenPx('--plx-comp-secondary-pane-width-max');
-  return (
-    <aside aria-label={name} className={cx('plx-secondary-pane', 'plx-secondary-pane--' + side, 'plx-secondary-pane--' + width, size && 'plx-secondary-pane--resized', className)}
-      data-plx-width={size ? snapSize(size, min(), max()) + 'px' : undefined} {...rest}>
+  const sized = size && !(narrow && listDetail);
+  const pane = (
+    <aside aria-label={name} className={cx('plx-secondary-pane', 'plx-secondary-pane--' + side, 'plx-secondary-pane--' + width, sized && 'plx-secondary-pane--resized',
+      narrow && listDetail && (stepAside ? 'plx-secondary-pane--aside' : 'plx-secondary-pane--list'), className)}
+      data-plx-width={sized ? snapSize(size, min(), max()) + 'px' : undefined} {...rest}>
       <div className="plx-secondary-pane__header">
         {icon ? (typeof icon === 'string' ? <Icon name={icon} /> : icon) : null}
         <span className="plx-secondary-pane__title">{title}</span>
@@ -72,12 +125,21 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
         {collapsible ? <Button size="xs" variant="ghost" iconOnly icon={side === 'start' ? 'panel-left-close' : 'panel-right-close'} label={named(t.collapse)} onClick={() => setFolded(true)} /> : null}
         {onClose ? <Button size="xs" variant="ghost" iconOnly icon="close" label={named(t.close)} onClick={onClose} /> : null}
       </div>
-      <div className="plx-secondary-pane__body">{children}</div>
-      {resizable ? (
+      <div ref={body} className="plx-secondary-pane__body" onScroll={onScroll} onClick={listDetail ? onBodyClick : undefined}>{children}</div>
+      {resizable && !(narrow && listDetail) ? (
         <PanelSplitter label={named(t.resize)} edge={side === 'start' ? 'end' : 'start'} min={min()} max={max}
           value={size || (tokenPx('--plx-comp-secondary-pane-width-' + width) || min())} onChange={setSize}
           onCollapse={collapsible ? () => setFolded(true) : undefined} />
       ) : null}
     </aside>
   );
+  // at Narrow with the detail open: the list stays mounted (hidden) and the Back bar leads the detail
+  return stepAside ? (
+    <>
+      {pane}
+      <div className="plx-secondary-pane-back">
+        <Button ref={back} size="sm" variant="ghost" icon="arrow-left" onClick={onBack}>{named(t.back)}</Button>
+      </div>
+    </>
+  ) : pane;
 }

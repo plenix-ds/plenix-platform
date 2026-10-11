@@ -1,5 +1,7 @@
 /* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the files in a DataTable (batch 226), the open one in a SidePanel. */
+   the files in a DataTable (batch 226), the open one in a SidePanel.
+   Screens (Platforms Standard 4.3): the list (#/) and an open file (#/file/<n>), a history entry each: Back closes the
+   file; closing the panel goes to the list. */
 import { EntityHeader, Button, DataTable, Icon, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
@@ -8,8 +10,10 @@ const { useState } = React;
 const ROWS = ALL_FILES.map((f, i) => ({ ...f, id: i }));
 
 /* ─── Files ─────────────────────────────────────────────────────── */
-export function FilesScreen() {
-  const [sel, setSel] = useState(null);
+export function FilesScreen({ screen }) {
+  const named = screen.parts[0] === 'file' ? +screen.parts[1] : null;
+  const sel = named !== null && ALL_FILES[named] ? named : null;
+  const setSel = (i) => (i === null ? screen.parent('/') : screen.open(['file', i]));
   const file = sel !== null ? ALL_FILES[sel] : null;
   const [meta, setMeta] = useState({});
   return (

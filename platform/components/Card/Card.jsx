@@ -57,6 +57,8 @@
      With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
      The MediaCard selection box appears on hover, focus and selection, and always while anything is selected (selecting).
      MediaCard images load lazily.
+     A selectable MediaCard's title is at least 24px tall (44px with touch): its target extends invisibly above and below the
+       text (Platforms Standard 3.1).
    Notes:
      MediaCard meta is technical data and uses the data font.
      Other props pass through to the outer element.

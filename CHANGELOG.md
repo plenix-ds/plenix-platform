@@ -6,6 +6,29 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.38] - 2026-10-11
+
+### Added
+- Every screen in the apps has its own address and history entry (Platforms Standard 4.3): a note, a thread, a
+  contact, a file, a task, a bookmark, an event, a project, a settings section, a search. Back and Forward work, deep
+  links open the screen, and the parent control goes to the parent (useScreenLocation, navigate, goToParent).
+- An unsaved-changes guard (useUnsavedGuard) asks with the Platform's dialog before leaving a screen, a dialog or the
+  page with unsaved work. It is wired into the image editor, the account and system settings, notes, messages, the
+  new-project dialog, uploads, metadata and capture.
+- List-detail at Narrow: Notes, Messages and Contacts show one pane at a time, with a Back bar that returns to the list.
+- View restoration: each app reopens its last screen and list position (useViewState).
+- Sheet: a bottom sheet at Narrow (medium and large heights, grabber, Cancel and Done), a drawer at Medium and a dialog
+  at Wide; one at a time. The inspector (SidePanel) opens as a sheet at Narrow.
+- Full-screen search at Narrow in the application header, closed by Cancel, Escape or Back.
+- Touch targets reach 44 by 44 without changing the look: header items, tag and chip buttons, color swatches, card
+  titles and checkboxes. Undersized targets with touch fell from 907 to 366, and with a mouse from 29 to 13.
+### Changed
+- 137 component tokens named from selector fragments now say what they style, for example data-table-background-2 is
+  data-table-header-background and pagination-page-hover-not-disabled-not-aria-current-background is
+  pagination-page-hover-background. Values are unchanged.
+- The target test honors WCAG's "Equivalent" exception: the pane splitters and the table's resize grips have
+  full-size menu equivalents.
+
 ## [0.31.37] - 2026-10-11
 
 ### Fixed

@@ -1,14 +1,16 @@
 /* Plenix · bookmarks (bookmarks/bookmarks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
-   batch 199: collection chips, the bookmarks as Cards in a ContentGrid, the open one in a SidePanel. */
+   batch 199: collection chips, the bookmarks as Cards in a ContentGrid, the open one in a SidePanel. The open bookmark is a
+   screen (#/bookmark/<id>, a history entry: Back closes it; Platforms Standard 4.3). */
 import { EntityHeader, Button, Card, Chip, ContentGrid, Icon, Inline, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_BOOKMARKS } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Bookmarks ─────────────────────────────────────────────────── */
-export function BookmarksScreen() {
+export function BookmarksScreen({ screen }) {
   const [col, setCol] = useState('all');
-  const [sel, setSel] = useState(null);
+  const sel = screen.parts[0] === 'bookmark' ? +screen.parts[1] : null;
+  const setSel = (id) => (id === null ? screen.parent('/') : screen.open(['bookmark', id]));
   const [meta, setMeta] = useState({});
   const cols = ['all', ...new Set(ALL_BOOKMARKS.map((b) => b.col))];
   const filtered = col === 'all' ? ALL_BOOKMARKS : ALL_BOOKMARKS.filter((b) => b.col === col);
