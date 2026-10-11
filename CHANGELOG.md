@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.27] - 2026-10-11
+
+### Changed
+- Every iOS page gathers Apple's references in one References panel, as the owner asked. It holds the Human Interface
+  Guidelines page with its outline and resources; the developer documentation; the SwiftUI topics; and the frameworks.
+- The developer documentation now covers UIKit and AppKit as well as SwiftUI. For each page, the types and classes that
+  build it (for example TextField, SecureField, UITextField, NSTextField and NSSecureTextField for Text fields) show with
+  their availability and every attribute, grouped by Apple's topics, each linked: 241 types and classes, 6,156
+  attributes, across 91 pages. The page reads them from apple-api.json when it opens. (batch 328)
+
 ## [0.31.26] - 2026-10-11
 
 ### Changed
