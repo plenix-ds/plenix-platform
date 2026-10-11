@@ -27,14 +27,14 @@
    When the group is narrow the control keeps its minimum and the label column gives way: a label cut short ends in an
    ellipsis and shows in full in a Tooltip (Field). Only below 180px (the value of --plx-ref-size-180px; a container
    condition cannot read a custom property), when a panel is dragged that narrow, does each label move above its control. */
-.plx-stack:has(>.plx-field--inline){column-gap:var(--plx-comp-field-inline-gap);container-type:inline-size;display:grid;grid-template-columns:minmax(0,max-content) minmax(var(--plx-sys-field-width-md),var(--plx-sys-field-width-lg));justify-content:start;}
+.plx-stack:has(>.plx-field--inline){column-gap:var(--plx-comp-field-inline-gap);container-type:inline-size;display:grid;grid-template-columns:var(--plx-comp-stack-field-inline-grid-template-columns);justify-content:start;}
 .plx-stack:has(>.plx-field--inline)>*{grid-column:1 / -1;min-inline-size:0;}
 .plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:subgrid;}
 .plx-stack:has(>.plx-field--inline)>.plx-field--inline>.plx-field__head{flex-wrap:nowrap;}
 .plx-field__label-tip{max-inline-size:100%;min-inline-size:0;}
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label-tip{max-inline-size:var(--plx-ref-size-160px);}
+.plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label-tip{max-inline-size:var(--plx-comp-stack-field-inline-label-tip-max-width);}
 .plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label{display:block;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 @container (max-width: 180px){
-.plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-sys-space-stack-xs);}
+.plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-stack-field-inline-row-gap);}
 .plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label{white-space:normal;}
 }

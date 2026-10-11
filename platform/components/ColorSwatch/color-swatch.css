@@ -1,13 +1,13 @@
 /* Plenix · ColorSwatch (platform/components/ColorSwatch). */
-.plx-color-swatch{background-color:var(--plx-comp-color-swatch-value);border-bottom-color:var(--plx-sys-border-default);border-bottom-left-radius:var(--plx-sys-shape-2xs);border-bottom-right-radius:var(--plx-sys-shape-2xs);border-bottom-style:solid;border-bottom-width:var(--plx-sys-border-width-thin);border-left-color:var(--plx-sys-border-default);border-left-style:solid;border-left-width:var(--plx-sys-border-width-thin);border-right-color:var(--plx-sys-border-default);border-right-style:solid;border-right-width:var(--plx-sys-border-width-thin);border-top-color:var(--plx-sys-border-default);border-top-left-radius:var(--plx-sys-shape-2xs);border-top-right-radius:var(--plx-sys-shape-2xs);border-top-style:solid;border-top-width:var(--plx-sys-border-width-thin);box-sizing:border-box;display:inline-block;flex-shrink:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
-.plx-color-swatch--sm{block-size:var(--plx-ref-size-16px);inline-size:var(--plx-ref-size-16px);}
-.plx-color-swatch--md{block-size:var(--plx-ref-size-20px);inline-size:var(--plx-ref-size-20px);}
+.plx-color-swatch{background-color:var(--plx-comp-color-swatch-value);border-bottom-color:var(--plx-comp-color-swatch-border-color);border-bottom-left-radius:var(--plx-comp-color-swatch-radius);border-bottom-right-radius:var(--plx-comp-color-swatch-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-color-swatch-border-width);border-left-color:var(--plx-comp-color-swatch-border-color);border-left-style:solid;border-left-width:var(--plx-comp-color-swatch-border-width);border-right-color:var(--plx-comp-color-swatch-border-color);border-right-style:solid;border-right-width:var(--plx-comp-color-swatch-border-width);border-top-color:var(--plx-comp-color-swatch-border-color);border-top-left-radius:var(--plx-comp-color-swatch-radius);border-top-right-radius:var(--plx-comp-color-swatch-radius);border-top-style:solid;border-top-width:var(--plx-comp-color-swatch-border-width);box-sizing:border-box;display:inline-block;flex-shrink:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-color-swatch--sm{block-size:var(--plx-comp-color-swatch-sm-height);inline-size:var(--plx-comp-color-swatch-sm-width);}
+.plx-color-swatch--md{block-size:var(--plx-comp-color-swatch-md-height);inline-size:var(--plx-comp-color-swatch-md-width);}
 button.plx-color-swatch{cursor:pointer;}
-.plx-color-swatch[aria-pressed="true"]{box-shadow:0 0 0 var(--plx-sys-border-width-medium) var(--plx-sys-content-default);}
+.plx-color-swatch[aria-pressed="true"]{box-shadow:var(--plx-comp-color-swatch-pressed-shadow);}
 button.plx-color-swatch:focus-visible,
-button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-comp-color-swatch-focus-outline-color);outline-offset:var(--plx-comp-color-swatch-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-color-swatch-focus-outline-width);}
 /* round (shape="round"): a circle */
-.plx-color-swatch--round{border-bottom-left-radius:var(--plx-sys-shape-pill);border-bottom-right-radius:var(--plx-sys-shape-pill);border-top-left-radius:var(--plx-sys-shape-pill);border-top-right-radius:var(--plx-sys-shape-pill);}
+.plx-color-swatch--round{border-bottom-left-radius:var(--plx-comp-color-swatch-round-radius);border-bottom-right-radius:var(--plx-comp-color-swatch-round-radius);border-top-left-radius:var(--plx-comp-color-swatch-round-radius);border-top-right-radius:var(--plx-comp-color-swatch-round-radius);}
 /* a data color (batch 280), or a system surface it previews */
 .plx-color-swatch[data-plx-color],.plx-color-swatch[data-plx-category]{--plx-comp-color-swatch-value:var(--plx-comp-data-color);}
 .plx-color-swatch--accent{--plx-comp-color-swatch-value:var(--plx-sys-accent-surface);}
@@ -15,5 +15,5 @@ button.plx-color-swatch.is-focus-visible{outline-color:var(--plx-sys-focus-ring-
 .plx-color-swatch--frost{--plx-comp-color-swatch-value:var(--plx-sys-frost-surface);}
 /* ColorPicker: the swatches in a wrapping row (batch 280) */
 /* one row (batch 290): the row is as tall as the More button and clips what wraps; useOverflow moves those into the menu */
-.plx-color-picker{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);column-gap:var(--plx-sys-space-inline-sm);display:flex;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-ref-space-4px);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-ref-space-8px);}
+.plx-color-picker{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);column-gap:var(--plx-comp-color-picker-gap);display:flex;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-comp-color-picker-overflow-clip-margin);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-comp-color-picker-row-gap);}
 .plx-color-picker__more,.plx-color-picker__slot{align-items:center;block-size:var(--plx-comp-button-size-2xs-height);display:inline-flex;}

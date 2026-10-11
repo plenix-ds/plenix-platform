@@ -2,40 +2,40 @@
    docs/data-table-reference.html) without anything interactive, from its own tokens (--plx-sys-table-*,
    --plx-comp-table-*), which have the DataTable's values by default. Tabulator's core stylesheet keeps the structure.
    Generated from data-table.css in batch 234; edit it here from now on. */
-.plx-table{background-color:var(--plx-sys-table-surface);border-color:var(--plx-sys-table-border);border-radius:var(--plx-comp-table-radius);border-style:solid;border-width:var(--plx-comp-table-border-width);min-inline-size:0;overflow:hidden;}
-.plx-table__empty{color:var(--plx-sys-table-text-muted);font-family:var(--plx-comp-table-font-family);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
+.plx-table{background-color:var(--plx-comp-table-background);border-color:var(--plx-comp-table-border-color);border-radius:var(--plx-comp-table-radius);border-style:solid;border-width:var(--plx-comp-table-border-width);min-inline-size:0;overflow:hidden;}
+.plx-table__empty{color:var(--plx-comp-table-empty-text);font-family:var(--plx-comp-table-font-family);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
 .plx-table__portal{display:contents;}
-.plx-table .tabulator{background-color:var(--plx-sys-table-surface);border-style:none;color:var(--plx-sys-table-text);font-family:var(--plx-comp-table-font-family);font-size:var(--plx-comp-table-font-size);}
-.plx-table .tabulator .tabulator-tableholder{background-color:var(--plx-sys-table-surface);}
-.plx-table .tabulator .tabulator-tableholder .tabulator-table{background-color:var(--plx-sys-table-surface);color:var(--plx-sys-table-text);}
-.plx-table .tabulator .tabulator-header{background-color:var(--plx-sys-table-header-background);border-bottom-color:var(--plx-sys-table-header-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-table-line-width);color:var(--plx-sys-table-text-muted);font-weight:var(--plx-comp-table-header-font-weight);}
-.plx-table .tabulator .tabulator-header .tabulator-col{background-color:var(--plx-sys-table-header-background);border-right-style:none;position:relative;}
-.plx-table .tabulator .tabulator-header .tabulator-col:not(:first-child)::before{background-color:var(--plx-sys-table-header-line);bottom:var(--plx-comp-table-header-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-table-header-line-inset);width:var(--plx-comp-table-line-width);z-index:1;}
-.plx-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content{align-items:center;display:flex;height:var(--plx-sys-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-table-cell-padding-inline);padding-right:var(--plx-comp-table-cell-padding-inline);padding-top:0;}
+.plx-table .tabulator{background-color:var(--plx-comp-table-background);border-style:none;color:var(--plx-comp-table-text);font-family:var(--plx-comp-table-font-family);font-size:var(--plx-comp-table-font-size);}
+.plx-table .tabulator .tabulator-tableholder{background-color:var(--plx-comp-table-background);}
+.plx-table .tabulator .tabulator-tableholder .tabulator-table{background-color:var(--plx-comp-table-background);color:var(--plx-comp-table-text);}
+.plx-table .tabulator .tabulator-header{background-color:var(--plx-comp-table-background-2);border-bottom-color:var(--plx-comp-table-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-table-line-width);color:var(--plx-comp-table-text-2);font-weight:var(--plx-comp-table-header-font-weight);}
+.plx-table .tabulator .tabulator-header .tabulator-col{background-color:var(--plx-comp-table-background-2);border-right-style:none;position:relative;}
+.plx-table .tabulator .tabulator-header .tabulator-col:not(:first-child)::before{background-color:var(--plx-comp-table-not-first-child-before-background);bottom:var(--plx-comp-table-header-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-table-header-line-inset);width:var(--plx-comp-table-line-width);z-index:1;}
+.plx-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content{align-items:center;display:flex;height:var(--plx-comp-table-height);padding-bottom:0;padding-left:var(--plx-comp-table-cell-padding-inline);padding-right:var(--plx-comp-table-cell-padding-inline);padding-top:0;}
 .plx-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title-holder{flex:1;min-width:0;}
-.plx-table .tabulator .tabulator-header .tabulator-col .tabulator-col-title{color:var(--plx-sys-table-text);font-size:var(--plx-comp-table-header-font-size);font-weight:var(--plx-comp-table-header-font-weight);padding-right:0;}
-.plx-table .tabulator .tabulator-row{background-color:var(--plx-sys-table-surface);border-bottom-color:var(--plx-sys-table-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-table-line-width);min-height:var(--plx-sys-table-row-height);}
-.plx-table .tabulator .tabulator-row.tabulator-row-even{background-color:var(--plx-sys-table-surface);}
+.plx-table .tabulator .tabulator-header .tabulator-col .tabulator-col-title{color:var(--plx-comp-table-text);font-size:var(--plx-comp-table-header-font-size);font-weight:var(--plx-comp-table-header-font-weight);padding-right:0;}
+.plx-table .tabulator .tabulator-row{background-color:var(--plx-comp-table-background);border-bottom-color:var(--plx-comp-table-border-bottom-color-2);border-bottom-style:solid;border-bottom-width:var(--plx-comp-table-line-width);min-height:var(--plx-comp-table-min-height);}
+.plx-table .tabulator .tabulator-row.tabulator-row-even{background-color:var(--plx-comp-table-background);}
 /* every cell stretches to its row: when one cell wraps onto more lines, the others (their fill, the row label's shade, the column line) grow with it (owner, 2026-10-09) */
-.plx-table .tabulator .tabulator-row .tabulator-cell{align-self:stretch;border-right-style:none;height:auto;min-height:var(--plx-sys-table-row-height);line-height:var(--plx-sys-table-row-height);padding-bottom:0;padding-left:var(--plx-comp-table-cell-padding-inline);padding-right:var(--plx-comp-table-cell-padding-inline);padding-top:0;position:relative;}
-.plx-table .tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{background-color:var(--plx-sys-table-line);bottom:var(--plx-comp-table-column-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-table-column-line-inset);width:var(--plx-comp-table-line-width);}
+.plx-table .tabulator .tabulator-row .tabulator-cell{align-self:stretch;border-right-style:none;height:auto;min-height:var(--plx-comp-table-min-height);line-height:var(--plx-comp-table-line-height);padding-bottom:0;padding-left:var(--plx-comp-table-cell-padding-inline);padding-right:var(--plx-comp-table-cell-padding-inline);padding-top:0;position:relative;}
+.plx-table .tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{background-color:var(--plx-comp-table-not-first-child-before-background-2);bottom:var(--plx-comp-table-column-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-table-column-line-inset);width:var(--plx-comp-table-line-width);}
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--center{align-items:center;display:inline-flex;line-height:normal;}
 .plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--icon .tabulator-col-content{padding-bottom:0;padding-left:var(--plx-comp-table-cell-padding-inline);padding-right:var(--plx-comp-table-cell-padding-inline);padding-top:0;}
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--icon,
-.plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--icon .tabulator-col-content{align-items:center;color:var(--plx-sys-table-text-muted);display:inline-flex;justify-content:center;line-height:normal;}
+.plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--icon .tabulator-col-content{align-items:center;color:var(--plx-comp-table-cell--icon-text);display:inline-flex;justify-content:center;line-height:normal;}
 .plx-table .plx-table__cell--icon .plx-icon{block-size:var(--plx-comp-table-mark-size);inline-size:var(--plx-comp-table-mark-size);}
 .plx-table__header-icon{display:flex;}
 .plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--icon .tabulator-col-title{display:flex;padding-right:0;}
 .plx-table .plx-table__cell--name{font-weight:var(--plx-comp-table-name-font-weight);}
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--data{font-family:var(--plx-comp-table-data-font-family);font-size:var(--plx-comp-table-data-font-size);}
-.plx-table .tabulator-row .tabulator-cell.plx-table__cell--wrap{height:auto;line-height:var(--plx-comp-table-wrap-line-height);padding-bottom:calc((var(--plx-sys-table-row-height) - 1lh) / 2);padding-top:calc((var(--plx-sys-table-row-height) - 1lh) / 2);white-space:normal;}
-.plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label{background-color:var(--plx-sys-table-header-background);}
+.plx-table .tabulator-row .tabulator-cell.plx-table__cell--wrap{height:auto;line-height:var(--plx-comp-table-wrap-line-height);padding-bottom:var(--plx-comp-table-cell--wrap-padding-bottom);padding-top:var(--plx-comp-table-cell--wrap-padding-top);white-space:normal;}
+.plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label{background-color:var(--plx-comp-table-cell--row-label-background);}
 /* the row header ends in one solid line, top to bottom of each row (owner, batch 244): the next column's short line gives way */
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label.tabulator-frozen-left,
-.plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label.tabulator-frozen-left{border-right-color:var(--plx-sys-table-header-line);border-right-style:solid;border-right-width:var(--plx-comp-table-line-width);}
+.plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label.tabulator-frozen-left{border-right-color:var(--plx-comp-table-cell--row-label-border-right-color);border-right-style:solid;border-right-width:var(--plx-comp-table-line-width);}
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label+.tabulator-cell:not(.plx-table__cell--row-label)::before,
 .plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label+.tabulator-col:not(.plx-table__cell--row-label)::before{content:none;}
-.plx-table .tabulator .tabulator-placeholder .tabulator-placeholder-contents{color:var(--plx-sys-table-text-muted);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
+.plx-table .tabulator .tabulator-placeholder .tabulator-placeholder-contents{color:var(--plx-comp-table-text-2);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
 /* one typography in a table (owner, batch 247): text placed in a cell (Text in any variant, code) takes the cell's font and
    size; its color and weight stay (a link stays a link, strong stays strong) */
 .plx-table .tabulator-cell .plx-text,.plx-table .tabulator-cell code,.plx-table .tabulator-cell .plx-list,.plx-table .tabulator-cell .plx-list__text,.plx-table .tabulator-cell .plx-list__item{font-family:inherit;font-size:inherit;}
@@ -52,7 +52,7 @@
 .plx-table .tabulator .tabulator-tableholder .tabulator-table{display:block;inline-size:max-content;min-inline-size:100%;}
 .plx-table .tabulator .tabulator-row{display:flex;}
 .plx-table .tabulator .tabulator-header .tabulator-col,.plx-table .tabulator .tabulator-row .tabulator-cell{box-sizing:border-box;contain:inline-size;}
-.plx-table .tabulator .plx-table__w-fill{flex-basis:var(--plx-ref-size-80px);flex-grow:1;flex-shrink:0;inline-size:var(--plx-ref-size-80px);min-inline-size:var(--plx-ref-size-80px);}
+.plx-table .tabulator .plx-table__w-fill{flex-basis:var(--plx-comp-table-w-fill-flex-basis);flex-grow:1;flex-shrink:0;inline-size:var(--plx-comp-table-w-fill-width);min-inline-size:var(--plx-comp-table-w-fill-min-width);}
 .plx-table .tabulator .plx-table__w-lead{flex-grow:0;flex-shrink:0;flex-basis:var(--plx-comp-data-table-lead-column-width);inline-size:var(--plx-comp-data-table-lead-column-width);max-inline-size:var(--plx-comp-data-table-lead-column-width);min-inline-size:var(--plx-comp-data-table-lead-column-width);}
 .plx-table .tabulator .tabulator-cell.plx-table__cell--align-right{justify-content:flex-end;text-align:right;}
 .plx-table .tabulator .tabulator-cell.plx-table__cell--align-center{justify-content:center;text-align:center;}

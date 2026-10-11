@@ -1,9 +1,9 @@
 /* Plenix · Slider. */
-.plx-slider{display:flex;flex-direction:column;row-gap:var(--plx-sys-space-stack-xs);}
-.plx-slider__head{align-items:baseline;column-gap:var(--plx-sys-space-inline-sm);display:flex;justify-content:space-between;}
-.plx-slider__label{color:var(--plx-sys-content-default);font-size:var(--plx-ref-font-size-12);}
-.plx-slider__value{color:var(--plx-sys-content-muted);font-family:var(--plx-sys-font-data);font-size:var(--plx-ref-font-size-11);}
-.plx-slider__input{accent-color:var(--plx-sys-action-primary-background);block-size:var(--plx-sys-control-height-inline);cursor:pointer;inline-size:100%;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+.plx-slider{display:flex;flex-direction:column;row-gap:var(--plx-comp-slider-row-gap);}
+.plx-slider__head{align-items:baseline;column-gap:var(--plx-comp-slider-head-gap);display:flex;justify-content:space-between;}
+.plx-slider__label{color:var(--plx-comp-slider-label-text);font-size:var(--plx-comp-slider-label-font-size);}
+.plx-slider__value{color:var(--plx-comp-slider-value-text);font-family:var(--plx-comp-slider-value-font-family);font-size:var(--plx-comp-slider-value-font-size);}
+.plx-slider__input{accent-color:var(--plx-comp-slider-input-accent-color);block-size:var(--plx-comp-slider-input-height);cursor:pointer;inline-size:100%;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
 .plx-slider__input:focus-visible,
-.plx-slider__input.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
-.plx-slider__input:disabled{cursor:default;opacity:var(--plx-sys-opacity-mid);}
+.plx-slider__input.is-focus-visible{outline-color:var(--plx-comp-slider-input-focus-outline-color);outline-offset:var(--plx-comp-slider-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-slider-input-focus-outline-width);}
+.plx-slider__input:disabled{cursor:default;opacity:var(--plx-comp-slider-input-disabled-opacity);}

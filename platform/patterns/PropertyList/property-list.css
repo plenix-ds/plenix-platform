@@ -1,25 +1,25 @@
 /* Plenix · PropertyList. */
-.plx-property-list{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;row-gap:var(--plx-sys-space-stack-sm);}
-.plx-property-list__item{align-items:baseline;column-gap:var(--plx-sys-space-inline-md);display:grid;min-inline-size:0;}
-.plx-property-list--columns .plx-property-list__item{grid-template-columns:minmax(0, var(--plx-ref-size-160px)) minmax(0, 1fr);}
-.plx-property-list--stacked .plx-property-list__item{grid-template-columns:minmax(0, 1fr);row-gap:var(--plx-sys-space-stack-xs);}
-.plx-property-list__label{color:var(--plx-sys-content-muted);display:flex;flex-direction:column;font-size:var(--plx-ref-font-size-12);row-gap:var(--plx-sys-space-stack-xs);}
-.plx-property-list__description{color:var(--plx-sys-content-subtle);font-size:var(--plx-ref-font-size-11);}
-.plx-property-list__value{color:var(--plx-sys-content-default);font-size:var(--plx-ref-font-size-13);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;overflow-wrap:break-word;}
+.plx-property-list{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;row-gap:var(--plx-comp-property-list-row-gap);}
+.plx-property-list__item{align-items:baseline;column-gap:var(--plx-comp-property-list-item-gap);display:grid;min-inline-size:0;}
+.plx-property-list--columns .plx-property-list__item{grid-template-columns:var(--plx-comp-property-list-columns-item-grid-template-columns);}
+.plx-property-list--stacked .plx-property-list__item{grid-template-columns:minmax(0, 1fr);row-gap:var(--plx-comp-property-list-stacked-item-row-gap);}
+.plx-property-list__label{color:var(--plx-comp-property-list-label-text);display:flex;flex-direction:column;font-size:var(--plx-comp-property-list-label-font-size);row-gap:var(--plx-comp-property-list-label-row-gap);}
+.plx-property-list__description{color:var(--plx-comp-property-list-description-text);font-size:var(--plx-comp-property-list-description-font-size);}
+.plx-property-list__value{color:var(--plx-comp-property-list-value-text);font-size:var(--plx-comp-property-list-value-font-size);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;overflow-wrap:break-word;}
 /* the value column shrinks with its pane (batch 292): a value wraps, it is never cut by the pane's edge */
 /* a technical value (a size, a date, a count) beside its label (owner, batch 294): the label's DM Sans and size, with
    equal-width digits so numbers still line up; DM Mono matched it in height and stroke but read 30% wider */
-.plx-property-list__value--data{font-family:var(--plx-sys-font-body);font-size:var(--plx-ref-font-size-12);font-variant-numeric:tabular-nums;}
+.plx-property-list__value--data{font-family:var(--plx-comp-property-list-value--data-font-family);font-size:var(--plx-comp-property-list-value--data-font-size);font-variant-numeric:tabular-nums;}
 /* columns (batches 269-270): every item shares one label column as wide as the longest label (a label is at most
    --plx-ref-size-160px), the values take the rest and wrap between words only. When the list is narrow the label column
    gives way: a label cut short ends in an ellipsis and shows in full in a Tooltip. Only below 180px (the value of
    --plx-ref-size-180px) does each label move above its value. */
-.plx-property-list--columns{column-gap:var(--plx-sys-space-inline-md);container-type:inline-size;display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);}
+.plx-property-list--columns{column-gap:var(--plx-comp-property-list-columns-gap);container-type:inline-size;display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);}
 .plx-property-list--columns .plx-property-list__item{grid-column:1 / -1;grid-template-columns:subgrid;}
 .plx-property-list__label-tip{max-inline-size:100%;min-inline-size:0;}
-.plx-property-list--columns .plx-property-list__label-tip{max-inline-size:var(--plx-ref-size-160px);}
+.plx-property-list--columns .plx-property-list__label-tip{max-inline-size:var(--plx-comp-property-list-columns-label-tip-max-width);}
 .plx-property-list--columns .plx-property-list__label-text{display:block;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 @container (max-width: 180px){
-.plx-property-list--columns .plx-property-list__item{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-sys-space-stack-xs);}
+.plx-property-list--columns .plx-property-list__item{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-property-list-columns-item-row-gap);}
 .plx-property-list--columns .plx-property-list__label-text{white-space:normal;}
 }

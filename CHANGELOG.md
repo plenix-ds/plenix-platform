@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.29] - 2026-10-11
+
+### Changed
+- Every Web component and pattern stylesheet now takes its values from Plenix component tokens, as the owner asked:
+  58 stylesheets, 1,311 new component tokens (3,202 tokens in all), each pointing to the same theme or reference token
+  as before, so nothing changes on screen (the visual, theme, density and layout tests are unchanged). No stylesheet
+  is left that uses a theme value directly, except the generated step rules.
+- The data table reference demo (docs/data-table-reference.html) takes the owner's merged dark colors (gray-900 and
+  gray-800 for the header and borders, blue-900 for the selected-row hover, blue-300 for the accent); the reference test
+  matches again (186/186). (batch 331)
+
 ## [0.31.28] - 2026-10-11
 
 ### Added

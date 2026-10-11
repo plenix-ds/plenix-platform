@@ -3,4 +3,4 @@
 .plx-toolbar__group{align-items:center;column-gap:var(--plx-comp-toolbar-control-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-toolbar-control-gap);}
 .plx-toolbar__spacer{flex-grow:1;}
 .plx-toolbar .plx-button{--plx-comp-button-height:var(--plx-sys-control-height-toolbar);}
-.plx-toolbar .plx-input,.plx-toolbar .plx-search__input{min-block-size:var(--plx-sys-control-height-toolbar);}
+.plx-toolbar .plx-input,.plx-toolbar .plx-search__input{min-block-size:var(--plx-comp-toolbar-input-min-height);}

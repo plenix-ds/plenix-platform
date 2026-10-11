@@ -1,12 +1,12 @@
 /* Plenix · Preview (platform/components/Preview). */
-.plx-preview{align-items:center;aspect-ratio:var(--plx-comp-preview-aspect);background-color:var(--plx-sys-surface-sunken);border-bottom-left-radius:var(--plx-sys-radius-surface-8px);border-bottom-right-radius:var(--plx-sys-radius-surface-8px);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-sys-radius-surface-8px);border-top-right-radius:var(--plx-sys-radius-surface-8px);border-top-style:none;box-sizing:border-box;color:var(--plx-sys-content-subtle);display:flex;flex-direction:column;font:inherit;inline-size:100%;justify-content:center;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;row-gap:var(--plx-sys-space-stack-xs);}
+.plx-preview{align-items:center;aspect-ratio:var(--plx-comp-preview-aspect);background-color:var(--plx-comp-preview-background);border-bottom-left-radius:var(--plx-comp-preview-radius);border-bottom-right-radius:var(--plx-comp-preview-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-preview-radius);border-top-right-radius:var(--plx-comp-preview-radius);border-top-style:none;box-sizing:border-box;color:var(--plx-comp-preview-text);display:flex;flex-direction:column;font:inherit;inline-size:100%;justify-content:center;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;row-gap:var(--plx-comp-preview-row-gap);}
 .plx-preview--button{cursor:zoom-in;}
 .plx-preview--button:focus-visible,
-.plx-preview--button.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+.plx-preview--button.is-focus-visible{outline-color:var(--plx-comp-preview-button-focus-outline-color);outline-offset:var(--plx-comp-preview-button-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-preview-button-focus-outline-width);}
 .plx-preview__corner{display:inline-flex;position:absolute;}
-.plx-preview__corner--top-start{inset-block-start:var(--plx-sys-space-inset-sm);inset-inline-start:var(--plx-sys-space-inset-sm);}
-.plx-preview__corner--bottom-end{inset-block-end:var(--plx-sys-space-inset-sm);inset-inline-end:var(--plx-sys-space-inset-sm);}
+.plx-preview__corner--top-start{inset-block-start:var(--plx-comp-preview-corner--top-start-inset-block-start);inset-inline-start:var(--plx-comp-preview-corner--top-start-inset-inline-start);}
+.plx-preview__corner--bottom-end{inset-block-end:var(--plx-comp-preview-corner--bottom-end-inset-block-end);inset-inline-end:var(--plx-comp-preview-corner--bottom-end-inset-inline-end);}
 /* a picture inside the preview (the asset’s thumbnail) */
-.plx-preview__media{block-size:var(--plx-ref-size-48px);inline-size:var(--plx-ref-size-48px);object-fit:contain;}
+.plx-preview__media{block-size:var(--plx-comp-preview-media-height);inline-size:var(--plx-comp-preview-media-width);object-fit:contain;}
 /* as a button it shows the pointer can open it: the hover fill of the neutral controls (batch 215) */
-.plx-preview--button:hover{background-color:var(--plx-sys-fill-neutral-hover);}
+.plx-preview--button:hover{background-color:var(--plx-comp-preview-button-hover-background);}

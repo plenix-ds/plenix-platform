@@ -1,4 +1,4 @@
 /* Plenix · Divider (platform/components/Divider). */
 .plx-divider{border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;flex-shrink:0;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
-.plx-divider--horizontal{block-size:0;border-block-start-color:var(--plx-sys-border-divider);border-block-start-style:solid;border-block-start-width:var(--plx-sys-border-width-thin);inline-size:100%;}
-.plx-divider--vertical{align-self:stretch;border-inline-start-color:var(--plx-sys-border-divider);border-inline-start-style:solid;border-inline-start-width:var(--plx-sys-border-width-thin);inline-size:0;}
+.plx-divider--horizontal{block-size:0;border-block-start-color:var(--plx-comp-divider-horizontal-border-block-start-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-divider-horizontal-border-block-start-width);inline-size:100%;}
+.plx-divider--vertical{align-self:stretch;border-inline-start-color:var(--plx-comp-divider-vertical-border-inline-start-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-divider-vertical-border-inline-start-width);inline-size:0;}

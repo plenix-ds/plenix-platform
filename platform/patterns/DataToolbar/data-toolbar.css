@@ -1,3 +1,3 @@
 /* Plenix · DataToolbar. */
-.plx-data-toolbar{inline-size:100%;margin-block-end:var(--plx-sys-space-stack-lg);}
-.plx-data-toolbar__group{align-items:center;column-gap:var(--plx-sys-space-cluster-sm);display:flex;}
+.plx-data-toolbar{inline-size:100%;margin-block-end:var(--plx-comp-data-toolbar-margin-block-end);}
+.plx-data-toolbar__group{align-items:center;column-gap:var(--plx-comp-data-toolbar-group-gap);display:flex;}

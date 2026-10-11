@@ -1,15 +1,15 @@
 /* Plenix · SecondaryPane (platform/patterns/SecondaryPane): a narrow pane beside the main content. */
-.plx-secondary-pane{background-color:var(--plx-sys-surface-default);border-inline-end-color:var(--plx-sys-border-default);border-inline-end-style:solid;border-inline-end-width:0;border-inline-start-color:var(--plx-sys-border-default);border-inline-start-style:solid;border-inline-start-width:0;box-sizing:border-box;display:flex;flex-direction:column;flex-shrink:0;min-block-size:0;position:relative;}
-.plx-secondary-pane--start{border-inline-end-width:var(--plx-sys-border-width-thin);}
-.plx-secondary-pane--end{border-inline-start-width:var(--plx-sys-border-width-thin);}
+.plx-secondary-pane{background-color:var(--plx-comp-secondary-pane-background);border-inline-end-color:var(--plx-comp-secondary-pane-border-inline-end-color);border-inline-end-style:solid;border-inline-end-width:0;border-inline-start-color:var(--plx-comp-secondary-pane-border-inline-start-color);border-inline-start-style:solid;border-inline-start-width:0;box-sizing:border-box;display:flex;flex-direction:column;flex-shrink:0;min-block-size:0;position:relative;}
+.plx-secondary-pane--start{border-inline-end-width:var(--plx-comp-secondary-pane-start-border-inline-end-width);}
+.plx-secondary-pane--end{border-inline-start-width:var(--plx-comp-secondary-pane-end-border-inline-start-width);}
 .plx-secondary-pane--sm{inline-size:var(--plx-comp-secondary-pane-width-sm);}
 .plx-secondary-pane--md{inline-size:var(--plx-comp-secondary-pane-width-md);}
 .plx-secondary-pane--lg{inline-size:var(--plx-comp-secondary-pane-width-lg);}
 /* a width dragged on its edge (resizable) */
 .plx-secondary-pane--resized{inline-size:var(--plx-comp-secondary-pane-width);}
-.plx-secondary-pane__header{align-items:center;column-gap:var(--plx-sys-space-inline-xs);display:flex;flex-shrink:0;font-size:var(--plx-ref-font-size-12);font-weight:var(--plx-sys-font-weight-semibold);min-block-size:var(--plx-sys-control-height-toolbar);padding-block-end:var(--plx-sys-space-inset-xs);padding-block-start:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-md);}
+.plx-secondary-pane__header{align-items:center;column-gap:var(--plx-comp-secondary-pane-header-gap);display:flex;flex-shrink:0;font-size:var(--plx-comp-secondary-pane-header-font-size);font-weight:var(--plx-comp-secondary-pane-header-font-weight);min-block-size:var(--plx-comp-secondary-pane-header-min-height);padding-block-end:var(--plx-comp-secondary-pane-header-padding-block-end);padding-block-start:var(--plx-comp-secondary-pane-header-padding-block-start);padding-inline-end:var(--plx-comp-secondary-pane-header-padding-inline-end);padding-inline-start:var(--plx-comp-secondary-pane-header-padding-inline-start);}
 .plx-secondary-pane__title{flex-grow:1;min-inline-size:0;}
-.plx-secondary-pane__body{display:flex;flex-direction:column;flex-grow:1;min-block-size:0;overflow-y:auto;padding-block-end:var(--plx-sys-space-inset-sm);padding-inline-end:var(--plx-sys-space-inset-sm);padding-inline-start:var(--plx-sys-space-inset-sm);row-gap:var(--plx-sys-space-stack-sm);}
+.plx-secondary-pane__body{display:flex;flex-direction:column;flex-grow:1;min-block-size:0;overflow-y:auto;padding-block-end:var(--plx-comp-secondary-pane-body-padding-block-end);padding-inline-end:var(--plx-comp-secondary-pane-body-padding-inline);padding-inline-start:var(--plx-comp-secondary-pane-body-padding-inline);row-gap:var(--plx-comp-secondary-pane-body-row-gap);}
 /* folded to a rail (collapsible): the divider on its content side, as the pane had */
-.plx-secondary-pane-rail--start{box-shadow:inset calc(var(--plx-sys-border-width-thin) * -1) 0 0 var(--plx-sys-border-default);}
-.plx-secondary-pane-rail--end{box-shadow:inset var(--plx-sys-border-width-thin) 0 0 var(--plx-sys-border-default);}
+.plx-secondary-pane-rail--start{box-shadow:var(--plx-comp-secondary-pane-rail-start-shadow);}
+.plx-secondary-pane-rail--end{box-shadow:var(--plx-comp-secondary-pane-rail-end-shadow);}

@@ -1,12 +1,12 @@
 /* Plenix · Breadcrumbs: one row that wraps; a › between items (drawn by CSS, not read aloud); the current page in the
    default content color, the others as links. */
-.plx-breadcrumbs__list{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:flex;flex-wrap:wrap;font-size:var(--plx-ref-font-size-12);list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-sys-space-stack-xs);}
-.plx-breadcrumbs__item{align-items:center;column-gap:var(--plx-sys-space-inline-sm);display:inline-flex;}
-.plx-breadcrumbs__item+.plx-breadcrumbs__item::before{color:var(--plx-sys-content-subtle);content:"›";}
-.plx-breadcrumbs__link{color:var(--plx-sys-content-link);text-decoration-line:none;}
+.plx-breadcrumbs__list{align-items:center;column-gap:var(--plx-comp-breadcrumbs-list-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-breadcrumbs-list-font-size);list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-breadcrumbs-list-row-gap);}
+.plx-breadcrumbs__item{align-items:center;column-gap:var(--plx-comp-breadcrumbs-item-gap);display:inline-flex;}
+.plx-breadcrumbs__item+.plx-breadcrumbs__item::before{color:var(--plx-comp-breadcrumbs-item-before-text);content:"›";}
+.plx-breadcrumbs__link{color:var(--plx-comp-breadcrumbs-link-text);text-decoration-line:none;}
 .plx-breadcrumbs__link:hover,
 .plx-breadcrumbs__link.is-hover{text-decoration-line:underline;}
 .plx-breadcrumbs__link:focus-visible,
-.plx-breadcrumbs__link.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
-.plx-breadcrumbs__text{color:var(--plx-sys-content-muted);}
-.plx-breadcrumbs__current{color:var(--plx-sys-content-default);}
+.plx-breadcrumbs__link.is-focus-visible{outline-color:var(--plx-comp-breadcrumbs-link-focus-outline-color);outline-offset:var(--plx-comp-breadcrumbs-link-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-breadcrumbs-link-focus-outline-width);}
+.plx-breadcrumbs__text{color:var(--plx-comp-breadcrumbs-text-text);}
+.plx-breadcrumbs__current{color:var(--plx-comp-breadcrumbs-current-text);}
