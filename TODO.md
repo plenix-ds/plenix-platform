@@ -49,10 +49,10 @@ every variant with each value's token and an Edit dialog, and its own page per v
 - [x] Overlays: Dialog, Confirmation dialog, Side drawer, Toast (batch 316, 0.31.15)
 - [x] Navigation: Tabs, Application header, Navigation rail, Product switcher, Action menu (batch 318, 0.31.17)
 - [x] Data display, Forms, Content, Layout and the rest: all done (batch 333). Every component with variant cards has a lab and a page per variant (58 components).
-- [ ] Forms: Combobox, Search input, Color swatch, Drop zone, Rating
-- [ ] Content: Text, Heading, List, Code block, Keyboard hint, Avatar, Property list, Thumbnail, Icon
-- [ ] Layout: Stack, Divider, Columns, Responsive grid, Dashboard grid, Secondary pane, Inspector region, Record page
-- [ ] The rest: Empty state, Preview, Typing indicator
+- [x] Forms: Combobox, Search input, Color swatch, Drop zone, Rating (batch 333)
+- [x] Content: Text, Heading, List, Code block, Keyboard hint, Avatar, Property list, Thumbnail, Icon (batch 333)
+- [x] Layout: Stack, Divider, Columns, Responsive grid, Dashboard grid, Secondary pane, Inspector region, Record page (batch 333)
+- [x] The rest: Empty state, Preview, Typing indicator (batch 333)
 Done = every record with variant cards has variant pages and a lab that passes tests/labs.test.js. The recipe is in
 the work log (batches 263-264): tokenize-component.js, a DS.registerLab spec, variantPages whose names match the cards.
 
