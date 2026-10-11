@@ -11258,7 +11258,7 @@
     {
      "part": "B",
      "name": "Value",
-     "about": "The optional amount done, muted, in tabular digits at the data text role."
+     "about": "The optional amount done, muted, in DM Mono at the data text role."
     },
     {
      "part": "C",
@@ -11347,11 +11347,11 @@
      "part": "B",
      "attribute": "Value",
      "token": "plx-comp-progress-bar-value-text",
-     "value": "DM Sans, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize), tabular digits, plx-sys-content-muted",
+     "value": "DM Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
      "apple": "None",
-     "swiftui": "currentValueLabel with .font(Plenix.Font.sans(Plenix.Platform.textDataSize, relativeTo: .footnote).monospacedDigit())",
-     "uikit": "A UILabel with UIFontDescriptor feature settings for tabular digits",
-     "appkit": "An NSTextField with monospacedDigitSystemFont, or DM Sans with tabular digits",
+     "swiftui": "currentValueLabel with .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+     "uikit": "A UILabel with DM Mono at the data role, scaled by UIFontMetrics(forTextStyle: .footnote)",
+     "appkit": "An NSTextField with DM Mono at the data role",
      "follows": "Best practices"
     },
     {
@@ -11445,7 +11445,7 @@
      "                    .foregroundStyle(Plenix.Colors.contentDefault)",
      "                Spacer()",
      "                configuration.currentValueLabel",
-     "                    .font(Plenix.Font.sans(Plenix.Platform.textDataSize, relativeTo: .footnote).monospacedDigit())",
+     "                    .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
      "                    .foregroundStyle(Plenix.Colors.contentMuted)",
      "            }",
      "            GeometryReader { proxy in",
@@ -12505,10 +12505,10 @@
      "part": "D",
      "attribute": "Value text",
      "token": "plx-comp-slider-value-text, plx-text--secondary (iOS secondary role)",
-     "value": "plx-sys-content-muted, 13 pt on 18 pt, tabular digits (Plenix.Platform.textSecondarySize)",
+     "value": "plx-sys-content-muted, DM Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
      "apple": "None",
-     "swiftui": "Text(value, format:).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).monospacedDigit().foregroundStyle(Plenix.Colors.contentMuted)",
-     "uikit": "A UILabel with UIFont.monospacedDigitSystemFont replaced by DM Sans and fontDescriptor feature tnum",
+     "swiftui": "Text(value, format:).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "uikit": "A UILabel with DM Mono at the data role, scaled by UIFontMetrics(forTextStyle: .footnote)",
      "appkit": "An NSTextField with a NumberFormatter",
      "follows": "Best practices"
     },
@@ -12593,8 +12593,7 @@
      "                    .foregroundStyle(Plenix.Colors.contentDefault)",
      "                Spacer()",
      "                Text(\"\\(Int(value))\\(unit)\")",
-     "                    .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote))",
-     "                    .monospacedDigit()",
+     "                    .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
      "                    .foregroundStyle(Plenix.Colors.contentMuted)",
      "            }",
      "            Slider(value: $value, in: range, step: step) { Text(title) } onEditingChanged: { editing in",
@@ -15329,7 +15328,7 @@
      "                }",
      "            }",
      "            .padding(Plenix.Space.spaceInsetXl)",
-     "            .frame(maxWidth: Plenix.Component.dialogSmMaxWidth)",
+     "            .frame(maxWidth: 270)   // Apple: the system alert width; on mobile the platform guideline wins",
      "            .background(Plenix.Colors.surfaceOverlay, in: .rect(cornerRadius: Plenix.Radius.radiusDialog8px))",
      "            .overlay { RoundedRectangle(cornerRadius: Plenix.Radius.radiusDialog8px).strokeBorder(Plenix.Colors.borderDefault, lineWidth: Plenix.Border.borderWidthThin) }",
      "            .accessibilityAddTraits(.isModal)",

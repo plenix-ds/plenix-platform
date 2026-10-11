@@ -4670,7 +4670,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
        { mode, open, expanded, width, setWidth, toggle, close, small, narrow, barEl, parentEl, hasSideNav, page, layout,
-         claimPage(kind) }; mode is "inline", "rail", "overlay" (Medium), "bar" or "screen" (Narrow) or "none"
+         claimPage(kind), parentRow, claimParentRow(), detailBack, claimBack({ label, onBack, ref }) }; mode is "inline",
+         "rail", "overlay" (Medium), "bar" or "screen" (Narrow) or "none". parentRow is true while NavPane draws the parent
+         row at Narrow; detailBack is a list-detail's Back (SecondaryPane, while its detail shows at Narrow), which the
+         parent row then becomes; each claim returns its release
    Behavior:
      The areas are the shell's immediate children.
      The header and the footer always span the full width, above and below both side areas.
@@ -4783,6 +4786,18 @@ function AppShell({
     return () => setPortals(n => n - 1);
   }, []);
   const hasSide = !!sideNav || portals > 0;
+  // one back control at Narrow: the parent row (NavPane) says it is drawn; a list-detail's Back (SecondaryPane) hands
+  // itself to it while the detail shows, so the page never has two back rows
+  const [parentRow, setParentRow] = _react.default.useState(false);
+  const [detailBack, setDetailBack] = _react.default.useState(null);
+  const claimParentRow = _react.default.useCallback(() => {
+    setParentRow(true);
+    return () => setParentRow(false);
+  }, []);
+  const claimBack = _react.default.useCallback(b => {
+    setDetailBack(b);
+    return () => setDetailBack(x => x === b ? null : x);
+  }, []);
   const setWidth = _react.default.useCallback(w => {
     setWidthState(w);
     writePref('plenix.sideNav.width', w);
@@ -4826,8 +4841,12 @@ function AppShell({
     close: () => setOverlay(false),
     page: claimed || page,
     layout,
-    claimPage
-  }), [hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
+    claimPage,
+    parentRow,
+    claimParentRow,
+    detailBack,
+    claimBack
+  }), [hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage, parentRow, claimParentRow, detailBack, claimBack]);
   return /*#__PURE__*/_react.default.createElement(LayoutContext.Provider, {
     value: ctx
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -5352,7 +5371,7 @@ function useToast() {
   return api;
 }
   } },
-  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5366,6 +5385,7 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Count = require("../Count/Count.jsx");
 var _Icon = require("../Icon/Icon.jsx");
+var _Menu = require("../Menu/Menu.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Tabs
    Summary: Switch between views of the same thing.
@@ -5386,12 +5406,18 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      idBase: the base of the tab and panel ids, for a panel the application renders
      className: more classes on the tabs
      panelClassName: more classes on each panel
+     strings: the words it shows, for other languages: { more: "More", moreLabel: "More tabs" }
    Behavior:
      In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
      The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
      Arrow keys move and select (wrapping); Home and End go to the first and last.
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
+     Tabs that do not fit on one row move into a "More" menu after the last shown tab: a menu button outside the tab list,
+       its own Tab stop. The tab list never scrolls sideways (Platforms Standard 3.5, reflow). The selected tab is always
+       shown: when it is one of the moved tabs, it takes the last shown place. Arrow keys, Home and End still reach every
+       tab, moved ones included (the one chosen is shown); each tab states its place in the whole set (aria-posinset,
+       aria-setsize), so a screen reader counts the moved tabs too. Choosing a tab in the menu selects it and focuses it.
    Notes:
      "contained" is the standard: folder tabs joined to a bordered panel.
      "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
@@ -5406,6 +5432,41 @@ const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createEl
 }) : i;
 const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
 exports.tabsPanelId = tabsPanelId;
+const STRINGS = {
+  more: 'More',
+  moreLabel: 'More tabs'
+};
+
+/* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
+   lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
+   shown, takes its own room, so the list narrows and the count is checked again). The width is the Tabs' own, which
+   does not follow the count, so the two never chase each other. */
+function useTabsFit(rootRef, listRef, count, key) {
+  const [fit, setFit] = _react.default.useState(count);
+  const [width, setWidth] = _react.default.useState(0);
+  _react.default.useLayoutEffect(() => {
+    setFit(count);
+  }, [count, key, width]);
+  _react.default.useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => setWidth(root.clientWidth));
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, []);
+  _react.default.useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list || fit <= 1) return;
+    const box = list.getBoundingClientRect();
+    const out = Array.prototype.some.call(list.children, el => {
+      if (el.hidden) return false;
+      const r = el.getBoundingClientRect();
+      return r.right > box.right + 0.5 || r.left < box.left - 0.5;
+    });
+    if (out) setFit(fit - 1);
+  });
+  return Math.max(1, Math.min(fit, count));
+}
 function Tabs({
   variant = 'contained',
   items,
@@ -5415,13 +5476,31 @@ function Tabs({
   label,
   idBase,
   className,
-  panelClassName
+  panelClassName,
+  strings
 }) {
+  const words = Object.assign({}, STRINGS, strings);
   const uid = (0, _layer.useUid)('plx-tabs');
   const base = idBase || uid;
   const [own, setOwn] = _react.default.useState(defaultValue !== undefined ? defaultValue : items[0] ? items[0].value : undefined);
   const current = value !== undefined ? value : own;
   const refs = _react.default.useRef({});
+  const root = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  const fit = useTabsFit(root, list, items.length, items.map(t => t.label).join('|') + '|' + String(current));
+  // the shown tabs: the first `fit`; the selected tab takes the last place when it is not among them
+  const at = items.findIndex(t => t.value === current);
+  const shown = i => at < fit ? i < fit : i < fit - 1 || i === at;
+  const moved = items.filter((t, i) => !shown(i));
+  // focus goes to a tab once it is shown (a moved tab chosen by key or from the menu)
+  const focusNext = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    const el = focusNext.current !== null ? refs.current[focusNext.current] : null;
+    if (el && !el.hidden) {
+      focusNext.current = null;
+      el.focus();
+    }
+  });
   const select = v => {
     if (value === undefined) setOwn(v);
     if (onChange) onChange(v);
@@ -5435,17 +5514,21 @@ function Tabs({
     e.preventDefault();
     const t = enabled[next];
     select(t.value);
-    if (refs.current[t.value]) refs.current[t.value].focus();
+    if (refs.current[t.value] && !refs.current[t.value].hidden) refs.current[t.value].focus();else focusNext.current = t.value;
   };
   const hasPanels = items.some(t => t.content !== undefined);
   return /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
     className: (0, _cx.cx)('plx-tabs', 'plx-tabs--' + variant, className)
   }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-tabs__list"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
     role: "tablist",
     "aria-label": label,
-    className: "plx-tabs__list",
+    className: "plx-tabs__tablist",
     onKeyDown: onKeyDown
-  }, items.map(t => {
+  }, items.map((t, i) => {
     const on = t.value === current;
     return /*#__PURE__*/_react.default.createElement("button", {
       key: t.value,
@@ -5457,8 +5540,11 @@ function Tabs({
       id: base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, ''),
       "aria-selected": on,
       "aria-controls": tabsPanelId(base, t.value),
+      "aria-posinset": i + 1,
+      "aria-setsize": items.length,
       tabIndex: on ? 0 : -1,
       disabled: t.disabled || undefined,
+      hidden: !shown(i) || undefined,
       className: (0, _cx.cx)('plx-tabs__tab', on && 'is-selected'),
       onClick: () => select(t.value)
     }, t.icon ? /*#__PURE__*/_react.default.createElement("span", {
@@ -5469,7 +5555,28 @@ function Tabs({
       value: t.count,
       tone: "neutral"
     }) : null);
-  })), hasPanels ? items.map(t => /*#__PURE__*/_react.default.createElement("div", {
+  })), moved.length ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: words.moreLabel,
+    placement: "bottom-end",
+    className: "plx-tabs__more-anchor",
+    trigger: /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-tabs__tab plx-tabs__more"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tabs__label"
+    }, words.more), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tabs__more-caret",
+      "aria-hidden": "true"
+    }))
+  }, moved.map(t => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: t.value,
+    icon: t.icon,
+    disabled: t.disabled,
+    onSelect: () => {
+      focusNext.current = t.value;
+      select(t.value);
+    }
+  }, t.count !== undefined ? t.label + ' (' + t.count + ')' : t.label))) : null), hasPanels ? items.map(t => /*#__PURE__*/_react.default.createElement("div", {
     key: t.value,
     role: "tabpanel",
     id: tabsPanelId(base, t.value),
@@ -10259,7 +10366,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        Narrow (under 600px): never a drawer. With two or more rail items, the page's top-level destinations are a bottom
          navigation bar: up to four of them, then Browse, which opens the pane as a screen of its own (every other
          destination is in it). Without, the pane is the first screen of a stack, and a parent row at the top of the page
-         (the pane's title after a back arrow) opens it. Choosing a destination, a link or a list item in the pane shows the
+         (the pane's title after a back arrow) opens it. While a list-detail's detail shows (SecondaryPane detailOpen),
+         the parent row is that detail's Back instead ("Back to {list}"; it returns to the list), so the page has one back
+         control; when the list shows again, the row opens the pane as before. Choosing a destination, a link or a list item in the pane shows the
          main region again; Escape does too.
      The body scrolls; its bar shows on hover.
      Outside an AppShell it is a plain pane (width: its own, or the shell navigation width) with no Collapse button.
@@ -10304,6 +10413,11 @@ function NavPane({
   const Tag = as;
   const mode = layout && layout.hasSideNav ? layout.mode : 'static';
   const narrow = mode === 'bar' || mode === 'screen';
+  const items = narrow ? railItems(rail) : [];
+  // the parent row (Narrow, fewer than two destinations) tells the shell it is drawn, so a list-detail's Back joins it
+  const rowed = narrow && items.length < 2 && !!(layout && layout.parentEl);
+  const claimRow = layout ? layout.claimParentRow : null;
+  _react.default.useLayoutEffect(() => rowed && claimRow ? claimRow() : undefined, [rowed, claimRow]);
   // the overlay and the screen are layers: Escape closes them
   (0, _layer.useLayer)(ref, mode === 'overlay' || mode === 'screen', {
     onEscape: layout ? layout.close : undefined
@@ -10322,7 +10436,6 @@ function NavPane({
   // Narrow: the bottom navigation bar (two or more destinations) or the parent row, put in the shell's slots
   let narrowEl = null;
   if (narrow) {
-    const items = railItems(rail);
     const close = fn => e => {
       layout.close();
       if (fn) fn(e);
@@ -10344,9 +10457,16 @@ function NavPane({
         onClick: layout.toggle
       }))), layout.barEl) : null;
     } else if (layout.parentEl && mode === 'bar') {
+      const back = layout.detailBack; // a list-detail's detail shows: the row is its Back
       narrowEl = /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
         className: "plx-nav-pane-parent"
-      }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      }, back ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        ref: back.ref,
+        size: "sm",
+        variant: "ghost",
+        icon: "arrow-left",
+        onClick: back.onBack
+      }, back.label) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
         size: "sm",
         variant: "ghost",
         icon: "arrow-left",
@@ -10751,8 +10871,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      List-detail at Narrow (with detailOpen): the list fills the main region and the panes beside it are hidden; choosing
        an item opens its detail (the application gives it an address and a history entry, so the browser's Back returns
        to the list), the list steps aside (it stays mounted: its state and scroll position are kept) and a bar with
-       "Back to {name}" leads the detail; focus moves to it. Back brings the list back with focus on the item that was
-       chosen. The application shows no selection in the list at Narrow (useAppLayout().narrow). The pane does not fold
+       "Back to {name}" leads the detail; focus moves to it. Where the shell draws a parent row (NavPane at Narrow
+       without a bottom navigation bar), that row becomes the Back and the pane draws no bar of its own: one back
+       control. Back brings the list back with focus on the item that was chosen. The application shows no selection in the list at Narrow (useAppLayout().narrow). The pane does not fold
        or resize at Narrow.
    Notes:
      It has the page surface, a divider on its content side, a header row (icon, title, actions) and a body.
@@ -10824,20 +10945,40 @@ function SecondaryPane({
   _react.default.useLayoutEffect(() => {
     if (body.current && !stepAside && top.current) body.current.scrollTop = top.current;
   }, [stepAside, folded]);
-  // focus: to the Back control when the detail opens at Narrow; back to the chosen item when the list returns
+  // the Back control: the shell's parent row when there is one (one back control at Narrow), else the pane's own bar
+  const layout = (0, _AppShell.useAppLayout)();
   const back = _react.default.useRef(null);
+  const backAction = _react.default.useRef(onBack);
+  backAction.current = onBack;
+  const backLabel = named(t.back);
+  const claimBack = layout ? layout.claimBack : null;
+  _react.default.useLayoutEffect(() => stepAside && claimBack ? claimBack({
+    label: backLabel,
+    onBack: e => {
+      if (backAction.current) backAction.current(e);
+    },
+    ref: back
+  }) : undefined, [stepAside, backLabel, claimBack]);
+  const ownBar = stepAside && !(layout && layout.parentRow);
+  // focus: to the Back control when the detail opens at Narrow; back to the chosen item when the list returns
   const chosen = _react.default.useRef(-1);
   const was = _react.default.useRef(stepAside);
   _react.default.useEffect(() => {
     if (was.current === stepAside) return;
     was.current = stepAside;
     if (stepAside) {
-      if (back.current) back.current.focus();
+      // the shell's row takes the control a moment later (its own render): focus it once it is there
+      const go = () => {
+        if (back.current) back.current.focus();
+      };
+      if (back.current) go();else requestAnimationFrame(go);
       return;
     }
     const items = body.current ? (0, _layer.focusables)(body.current) : [];
     const item = items[chosen.current] || items[0];
-    const lost = !document.activeElement || document.activeElement === document.body; // the Back control took focus with it
+    // the Back control took focus with it, or focus stayed on the shell's row (which is now the way to the pane)
+    const ae = document.activeElement;
+    const lost = !ae || ae === document.body || !!(layout && layout.parentEl && layout.parentEl.contains(ae));
     if (item && lost) item.focus();
   }, [stepAside]);
   const onBodyClick = e => {
@@ -10895,8 +11036,9 @@ function SecondaryPane({
     onChange: setSize,
     onCollapse: collapsible ? () => setFolded(true) : undefined
   }) : null);
-  // at Narrow with the detail open: the list stays mounted (hidden) and the Back bar leads the detail
-  return stepAside ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, pane, /*#__PURE__*/_react.default.createElement("div", {
+  // at Narrow with the detail open: the list stays mounted (hidden) and the Back bar leads the detail (unless the shell's
+  // parent row is the Back)
+  return ownBar ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, pane, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-secondary-pane-back"
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     ref: back,
@@ -10904,7 +11046,7 @@ function SecondaryPane({
     variant: "ghost",
     icon: "arrow-left",
     onClick: onBack
-  }, named(t.back)))) : pane;
+  }, backLabel))) : pane;
 }
   } },
   "platform/patterns/StatusBar/StatusBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

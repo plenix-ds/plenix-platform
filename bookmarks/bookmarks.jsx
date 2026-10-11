@@ -22,7 +22,7 @@ export function BookmarksScreen({ screen }) {
           <EntityHeader title="Bookmarks" media={{ icon: 'bookmark', hue: 'green' }} facts={[filtered.length + ' bookmarks', col === 'all' ? 'All collections' : col]} actions={[{ icon: 'share', label: 'Share' }]} />
           {/* the capability's own action stays out of the header (the capability menu is still to be decided) */}
           <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Add</Button></Inline>
-          <Inline wrap gap="xs">{cols.map((c) => <Chip key={c} selected={col === c} onClick={() => setCol(c)}>{c === 'all' ? 'All' : c}</Chip>)}</Inline>
+          <TagList label="Collections">{cols.map((c) => <Chip key={c} selected={col === c} onClick={() => setCol(c)}>{c === 'all' ? 'All' : c}</Chip>)}</TagList>
           <ContentGrid size="lg" label="Bookmarks">
             {filtered.map((b) => (
               <Card key={b.id} title={b.title} meta={b.url} selected={sel === b.id} onOpen={() => setSel(sel === b.id ? null : b.id)}>

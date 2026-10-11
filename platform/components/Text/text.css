@@ -15,3 +15,9 @@
 /* accent: a highlighted term, step number or key figure (batch 197) */
 .plx-text--accent{color:var(--plx-comp-text-accent-text);font-weight:var(--plx-comp-text-accent-font-weight);}
 .plx-text--link{color:var(--plx-comp-text-link-text);font-weight:var(--plx-comp-text-link-font-weight);}
+/* a link that stands alone as a table cell's only content (not inside a sentence, where WCAG's inline exception applies):
+   an invisible extension (centered on it in height, toward the cell's end in width, where the cell has room) reaches the minimum target (24px with a mouse, 44px with touch) without changing
+   the look; the cell (positioned, overflow hidden) clips it, so it never reaches a neighbor row or column (Platforms
+   Standard 3.1, 3.2) */
+.plx-data-table__portal>a.plx-text--link:only-child{position:relative;}
+.plx-data-table__portal>a.plx-text--link:only-child::before{content:"";inset-block-end:var(--plx-comp-text-link-target-inset-block);inset-block-start:var(--plx-comp-text-link-target-inset-block);inset-inline-end:var(--plx-comp-text-link-target-inset-inline-end);inset-inline-start:0;position:absolute;}

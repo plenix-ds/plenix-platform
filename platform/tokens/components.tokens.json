@@ -851,6 +851,21 @@
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
+    "switch-target-inset": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "The invisible target layer around a switch without a visible label: it grows the target to the minimum target (Platforms Standard 3.1) without changing the track"
+    },
+    "segmented-item-target-inset-block": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "How far a segmented option's invisible target reaches above and below it: up to the minimum target (24px with a mouse, 44px with touch), centered (Platforms Standard 3.1)"
+    },
+    "segmented-item-target-inset-outer": {
+      "$value": "min(0px, calc(100% - {plx-sys.control-target-min}))",
+      "$type": "dimension",
+      "$description": "How far the first option's target reaches before the track and the last option's after it, up to the minimum target width; the options between keep their own width, so no target covers a neighbor's"
+    },
     "check-target-inset": {
       "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
       "$type": "dimension",
@@ -2778,6 +2793,16 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
+    "tabs-more-caret-size": {
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension",
+      "$description": "The chevron on the Tabs' More menu button (the tabs that do not fit): the arrow_drop_down glyph in its whole square, 12px like the Button caret."
+    },
+    "tabs-more-caret-duration": {
+      "$value": "{plx-sys.motion-duration-fast}",
+      "$type": "duration",
+      "$description": "The More chevron turning while its menu opens, as fast as the Button caret."
+    },
     "tabs-list-gap": {
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
@@ -3964,6 +3989,16 @@
     "avatar-64-width": {
       "$value": "{plx-ref.size-64px}",
       "$type": "dimension"
+    },
+    "breadcrumbs-link-target-inset-block": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "How far a breadcrumb link's invisible target reaches above and below its text: up to the minimum target (--plx-sys-control-target-min: 24px with a mouse, 44px with touch), centered on the link; 0 when the link is already that tall (Platforms Standard 3.1)."
+    },
+    "breadcrumbs-link-target-inset-inline": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "How far a breadcrumb link's invisible target reaches before and after its text: up to the minimum target width, centered on the link; 0 when the link is already that wide."
     },
     "breadcrumbs-list-gap": {
       "$value": "{plx-sys.space-inline-sm}",
@@ -7280,6 +7315,16 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
+    "text-link-target-inset-block": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "How far a text link that is a table cell's only content reaches above and below its text with an invisible target: up to the minimum target (--plx-sys-control-target-min: 24px with a mouse, 44px with touch), centered on the link; the cell clips it, so it never reaches the next row (Platforms Standard 3.1)."
+    },
+    "text-link-target-inset-inline-end": {
+      "$value": "min(0px, calc(100% - {plx-sys.control-target-min}))",
+      "$type": "dimension",
+      "$description": "How far that link's invisible target reaches after its text (toward the cell's end, where the cell has room; the link starts at the cell's padding): up to the minimum target width; the cell clips it, so it never reaches the next column."
+    },
     "text-link-text": {
       "$value": "{plx-sys.content-link}",
       "$type": "color"
@@ -7728,6 +7773,11 @@
       "$value": "{plx-sys.space-cluster-sm}",
       "$type": "dimension"
     },
+    "selection-summary-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Between the count and \"Select all\" when the summary wraps in a narrow bar."
+    },
     "selection-summary-count-text": {
       "$value": "{plx-sys.content-default}",
       "$type": "color"
@@ -7783,6 +7833,16 @@
     "bulk-actions-list-height": {
       "$value": "{plx-sys.control-height-toolbar}",
       "$type": "dimension"
+    },
+    "bulk-actions-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Between the summary and the actions when a narrow bar wraps them onto two rows."
+    },
+    "bulk-actions-list-min-width": {
+      "$value": "{plx-ref.size-72px}",
+      "$type": "dimension",
+      "$description": "The least room the actions keep in a narrow bar: the More control (its label and chevron) always fits, and the selection summary wraps instead (reflow at 320px, Platforms Standard 3.5)."
     },
     "bulk-actions-list-gap": {
       "$value": "{plx-sys.space-cluster-sm}",

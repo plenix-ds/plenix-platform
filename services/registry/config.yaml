@@ -1,0 +1,43 @@
+# Plenix package registry (Verdaccio), option A of TODO.md "own mirror" (owner, 2026-10-11): a proxy that copies the
+# @plenix-ds packages from GitHub Packages and keeps them, so installs keep working when GitHub is down. GitHub stays the
+# one place releases are published; each release asks this registry for the new version at once (prefetch.sh), so the
+# copy never lags. Everything else (react, tabulator…) is proxied from the public npm registry and kept too.
+storage: /verdaccio/storage
+plugins: /verdaccio/plugins
+
+auth:
+  htpasswd:
+    file: /verdaccio/conf/htpasswd
+    # no sign-up: accounts are added on the VM with add-user.sh
+    max_users: -1
+
+uplinks:
+  github:
+    url: https://npm.pkg.github.com/
+    # a read-only GitHub token (classic, read:packages), read from the environment; deploy.sh passes the file
+    # /srv/plenix/registry/github-token, which the owner places on the VM (never in the repository)
+    auth:
+      type: bearer
+      token_env: GITHUB_TOKEN
+    cache: true
+    maxage: 2m
+  npmjs:
+    url: https://registry.npmjs.org/
+    cache: true
+
+packages:
+  '@plenix-ds/*':
+    access: $authenticated
+    publish: $nobody
+    proxy: github
+  '**':
+    access: $authenticated
+    publish: $nobody
+    proxy: npmjs
+
+server:
+  keepAliveTimeout: 60
+web:
+  enable: true
+  title: Plenix packages
+log: { type: stdout, format: pretty, level: warn }

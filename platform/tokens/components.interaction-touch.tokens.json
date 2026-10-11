@@ -8,6 +8,11 @@
     }
   },
   "plx-comp": {
+    "breadcrumbs-list-row-gap": {
+      "$value": "calc({plx-sys.control-target-min} - 1lh)",
+      "$type": "dimension",
+      "$description": "With touch a wrapped trail's rows part by the minimum target less one line, so the links' 44px targets of one row do not cover the next (Platforms Standard 3.2)"
+    },
     "toolbar-control-gap": {
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension"

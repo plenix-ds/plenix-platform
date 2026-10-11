@@ -1,7 +1,7 @@
 /* Plenix · dashboard (dashboard/dashboard.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: every widget is a Panel; the widgets sit in a WidgetGrid (drag a handle or use the arrow keys to reorder);
    rows are ActivityList items, RowButtons, Checkboxes and EventChips; project cards carry the project's color as their accent. */
-import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, WidgetGrid, useSession } from 'plenix-platform';
+import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, WidgetGrid, useAppLayout, useSession } from 'plenix-platform';
 import { ALL_NOTES, ALL_TASKS, CONTACTS, EMAILS, EVENTS, PROJECTS, PriDot } from '../suite/shared.jsx';
 const { useState, useEffect } = React;
 
@@ -111,14 +111,9 @@ export function NotesWidget({ handle,  onViewAll, prefs }) {
   const max = parseInt(prefs?.noteMax || '6', 10);
   return (
     <Panel icon="doc-text" title="Notes" flush actions={<Inline gap="xs">{allLink('View all notes', onViewAll)}{handle}</Inline>}>
-      <Stack gap="none">{ALL_NOTES.slice(0, max).map((n) => (
-        <RowButton key={n.id} onClick={onViewAll}>
-          <Inline gap="sm" inset="sm" justify="between">
-            <Text variant="strong" truncate>{n.title}</Text>
-            <Inline gap="sm">{showFolder ? <Text variant="caption">{n.folder.split(' ')[0]}</Text> : null}{showDate ? <Text variant="data">{n.date}</Text> : null}</Inline>
-          </Inline>
-        </RowButton>
-      ))}</Stack>
+      <ActivityList label="Notes">{ALL_NOTES.slice(0, max).map((n) => (
+        <ActivityList.Item key={n.id} onOpen={onViewAll} title={n.title} meta={showFolder ? n.folder.split(' ')[0] : null} time={showDate ? n.date : null} />
+      ))}</ActivityList>
     </Panel>
   );
 }
@@ -141,6 +136,10 @@ const ORDER = [{ id: 'projects', title: 'Projects', span: '2' }, { id: 'notifica
 
 export function Dashboard({ setSection, setProject, prefs }) {
   const [order, setOrder] = useState(ORDER);
+  // at Narrow the widgets stack in one column, each the full width (reflow at 320px, WCAG 1.4.10): three columns, or a
+  // widget spanning two, would scroll the page sideways
+  const layout = useAppLayout();
+  const narrow = !!(layout && layout.narrow);
   const widgets = {
     projects: <ProjectsWidget onViewAll={() => setSection('projects')} onProject={(p) => { setProject(p); setSection('project-detail'); }} prefs={prefs} />,
     emails: <EmailsWidget onViewAll={() => setSection('messaging')} prefs={prefs} />,
@@ -165,7 +164,7 @@ export function Dashboard({ setSection, setProject, prefs }) {
         <Divider orientation="vertical" />
         <Text variant="secondary">{dStr}</Text>
       </Inline>
-      <WidgetGrid label="Dashboard" columns={3} items={order} renderItem={(w, handle) => React.cloneElement(widgets[w.id], { handle })}
+      <WidgetGrid label="Dashboard" columns={narrow ? 'auto' : 3} items={narrow ? order.map((w) => ({ ...w, span: '1' })) : order} renderItem={(w, handle) => React.cloneElement(widgets[w.id], { handle })}
         onReorder={(ids) => setOrder(ids.map((id) => order.find((x) => x.id === id)))} />
     </Stack>
   );

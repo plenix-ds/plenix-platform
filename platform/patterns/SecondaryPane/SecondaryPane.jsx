@@ -43,8 +43,9 @@
      List-detail at Narrow (with detailOpen): the list fills the main region and the panes beside it are hidden; choosing
        an item opens its detail (the application gives it an address and a history entry, so the browser's Back returns
        to the list), the list steps aside (it stays mounted: its state and scroll position are kept) and a bar with
-       "Back to {name}" leads the detail; focus moves to it. Back brings the list back with focus on the item that was
-       chosen. The application shows no selection in the list at Narrow (useAppLayout().narrow). The pane does not fold
+       "Back to {name}" leads the detail; focus moves to it. Where the shell draws a parent row (NavPane at Narrow
+       without a bottom navigation bar), that row becomes the Back and the pane draws no bar of its own: one back
+       control. Back brings the list back with focus on the item that was chosen. The application shows no selection in the list at Narrow (useAppLayout().narrow). The pane does not fold
        or resize at Narrow.
    Notes:
      It has the page surface, a divider on its content side, a header row (icon, title, actions) and a body.
@@ -56,7 +57,7 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
-import { PanelSplitter, tokenPx, below, useMedia } from '../AppShell/AppShell.jsx';
+import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShell/AppShell.jsx';
 import { focusables } from '../../utils/layer.js';
 import { snapSize } from '../../utils/sizeSteps.js';
 
@@ -86,17 +87,32 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
     if (onScrollChange && !frame.current) frame.current = requestAnimationFrame(() => { frame.current = 0; onScrollChange(top.current); });
   };
   React.useLayoutEffect(() => { if (body.current && !stepAside && top.current) body.current.scrollTop = top.current; }, [stepAside, folded]);
-  // focus: to the Back control when the detail opens at Narrow; back to the chosen item when the list returns
+  // the Back control: the shell's parent row when there is one (one back control at Narrow), else the pane's own bar
+  const layout = useAppLayout();
   const back = React.useRef(null);
+  const backAction = React.useRef(onBack);
+  backAction.current = onBack;
+  const backLabel = named(t.back);
+  const claimBack = layout ? layout.claimBack : null;
+  React.useLayoutEffect(() => (stepAside && claimBack
+    ? claimBack({ label: backLabel, onBack: (e) => { if (backAction.current) backAction.current(e); }, ref: back }) : undefined), [stepAside, backLabel, claimBack]);
+  const ownBar = stepAside && !(layout && layout.parentRow);
+  // focus: to the Back control when the detail opens at Narrow; back to the chosen item when the list returns
   const chosen = React.useRef(-1);
   const was = React.useRef(stepAside);
   React.useEffect(() => {
     if (was.current === stepAside) return;
     was.current = stepAside;
-    if (stepAside) { if (back.current) back.current.focus(); return; }
+    if (stepAside) {   // the shell's row takes the control a moment later (its own render): focus it once it is there
+      const go = () => { if (back.current) back.current.focus(); };
+      if (back.current) go(); else requestAnimationFrame(go);
+      return;
+    }
     const items = body.current ? focusables(body.current) : [];
     const item = items[chosen.current] || items[0];
-    const lost = !document.activeElement || document.activeElement === document.body;   // the Back control took focus with it
+    // the Back control took focus with it, or focus stayed on the shell's row (which is now the way to the pane)
+    const ae = document.activeElement;
+    const lost = !ae || ae === document.body || !!(layout && layout.parentEl && layout.parentEl.contains(ae));
     if (item && lost) item.focus();
   }, [stepAside]);
   const onBodyClick = (e) => {
@@ -133,12 +149,13 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
       ) : null}
     </aside>
   );
-  // at Narrow with the detail open: the list stays mounted (hidden) and the Back bar leads the detail
-  return stepAside ? (
+  // at Narrow with the detail open: the list stays mounted (hidden) and the Back bar leads the detail (unless the shell's
+  // parent row is the Back)
+  return ownBar ? (
     <>
       {pane}
       <div className="plx-secondary-pane-back">
-        <Button ref={back} size="sm" variant="ghost" icon="arrow-left" onClick={onBack}>{named(t.back)}</Button>
+        <Button ref={back} size="sm" variant="ghost" icon="arrow-left" onClick={onBack}>{backLabel}</Button>
       </div>
     </>
   ) : pane;

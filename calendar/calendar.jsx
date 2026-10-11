@@ -1,7 +1,9 @@
 /* Plenix · calendar (calendar/calendar.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: the month as RowButton day cells with EventChips, the chosen day's events as Cards (accent: the calendar's
    color), the week and the day as TimeGrid. An event opened from its card or the grid is a screen (#/event/<id>, a history
-   entry: Back closes it; a search result opens it on its day; Platforms Standard 4.3). */
+   entry: Back closes it; a search result opens it on its day; Platforms Standard 4.3). The view and its date are in the
+   address too, each a screen: #/month/2026-03, #/week/2026-03-01 (the week's first day), #/day/2026-03-05; #/ is the
+   current month. Closing an event returns to the view it was opened from. */
 import { Button, Card, Chip, DateBadge, EventChip, Icon, Inline, SegmentedControl, Stack, Tag, TagList, Text, TimeGrid, RowButton } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { CALENDARS, CAL_EVENTS } from '../suite/shared.jsx';
@@ -10,11 +12,21 @@ const { useState } = React;
 /* ─── Calendar ──────────────────────────────────────────────────── */
 export function CalendarScreen({ screen }) {
   const TODAY = 5;
-  const selEv = screen.parts[0] === 'event' ? +screen.parts[1] : null;
-  const setSelEv = (id) => (id === null ? screen.parent('/') : screen.open(['event', id]));
-  const [selDay, setSelDay] = useState(() => { const e = CAL_EVENTS.find((x) => x.id === selEv); return e ? e.date : TODAY; });
+  const MONTH = '2026-03';   // the month shown (the sample data's month)
+  const iso = (d) => MONTH + '-' + String(d).padStart(2, '0');
+  const dayOf = (s) => { const d = s && s.indexOf(MONTH + '-') === 0 ? parseInt(s.slice(MONTH.length + 1), 10) : 0; return d >= 1 && d <= 31 ? d : null; };
+  const [top, arg] = screen.parts;
+  // the view screen the page is on (an event keeps the view it was opened from, its parent)
+  const viewPath = React.useRef(['month', 'week', 'day'].indexOf(top) >= 0 ? screen.path : '/');
+  if (['month', 'week', 'day'].indexOf(top) >= 0 || !top) viewPath.current = screen.path;
+  const view = top === 'event' ? (viewPath.current.split('/')[1] || 'month') : top === 'week' || top === 'day' ? top : 'month';
+  const selEv = top === 'event' ? +arg : null;
+  const setSelEv = (id) => (id === null ? screen.parent(viewPath.current) : screen.open(['event', id]));
+  const [pickedDay, setSelDay] = useState(() => { const e = CAL_EVENTS.find((x) => x.id === selEv); return e ? e.date : TODAY; });
+  const viewDay = view === 'day' ? dayOf(viewPath.current.split('/')[2]) : null;
+  const selDay = viewDay || pickedDay;   // the day view shows the day its address names
   const [evMeta, setEvMeta] = useState({});
-  const [view, setView] = useState('month');
+  const setView = (v) => { setSelDay(selDay); screen.open([v, v === 'month' ? MONTH : v === 'week' ? iso(1) : iso(selDay)]); };
   const [activeCals] = useState(() => Object.fromEntries(CALENDARS.map((c) => [c.id, true])));
   const [activeTag, setActiveTag] = useState(null);
 
@@ -42,7 +54,7 @@ export function CalendarScreen({ screen }) {
             <Button size="sm" iconOnly label="Previous" icon={<Icon name="chevron-left" />} />
             <Text as="h1" variant="heading">{view === 'day' ? `March ${selDay}, 2026` : view === 'week' ? 'Mar 1–7, 2026' : 'March 2026'}</Text>
             <Button size="sm" iconOnly label="Next" icon={<Icon name="chevron-right" />} />
-            <Button size="sm" onClick={() => { setSelDay(TODAY); setView('day'); }}>Today</Button>
+            <Button size="sm" onClick={() => { setSelDay(TODAY); screen.open(['day', iso(TODAY)]); }}>Today</Button>
           </Inline>
           <Inline gap="sm">
             <SegmentedControl size="sm" label="Calendar view" value={view} onChange={setView} options={[{ value: 'month', label: 'Month' }, { value: 'week', label: 'Week' }, { value: 'day', label: 'Day' }]} />

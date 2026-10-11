@@ -1,66 +1,17 @@
 {
- "dashboard/index.html": {
-  "coarse": 6
- },
- "calendar/index.html": {
-  "coarse": 1
- },
- "bookmarks/index.html": {
-  "coarse": 1
- },
- "settings/index.html": {
-  "coarse": 1
- },
  "dam/index.html": {
   "coarse": 6
  },
  "dam/settings-system.html": {
   "coarse": 6
  },
- "design-system home": {
-  "coarse": 132,
-  "fine": 13
- },
- "design-system #/foundations/design-tokens": {
-  "coarse": 3
- },
- "design-system #/layout/grid": {
-  "coarse": 3
- },
- "design-system #/content/text": {
-  "coarse": 4
- },
  "design-system #/actions/button": {
-  "coarse": 10
- },
- "design-system #/forms/fieldset": {
-  "coarse": 4
+  "coarse": 1
  },
  "design-system #/navigation/application-header": {
-  "coarse": 17
- },
- "design-system #/data-display/badge": {
   "coarse": 5
  },
- "design-system #/specialized/preview": {
-  "coarse": 4
- },
- "design-system #/feedback/notice": {
-  "coarse": 4
- },
- "design-system #/overlays/dialog": {
-  "coarse": 4
- },
  "design-system #/patterns/bulk-selection": {
-  "coarse": 18
- },
- "design-system #/page-structures/application-shell": {
-  "coarse": 8
- },
- "design-system #/interaction/focus-ring": {
-  "coarse": 3
- },
- "design-system #/implementation/react": {
-  "coarse": 126
+  "coarse": 5
  }
 }

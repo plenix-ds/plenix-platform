@@ -41,6 +41,19 @@ const ALL={label:"Everything",noun:"result",filters:[{id:"section",label:"Sectio
   columns:[{title:"Name",field:"name",kind:"name"},{title:"Section",field:"section"},{title:"Details",field:"sub"}],
   rows:()=>[].concat.apply([],Object.keys(FIND_SOURCES).map(id=>FIND_SOURCES[id].rows().map(r=>({...r,key:id+":"+r.key,app:id,cells:{...r.cells,section:FIND_SOURCES[id].label,sub:r.sub},facets:{...r.facets,section:FIND_SOURCES[id].label}}))))};
 
+// the rows of a source whose text holds every word of the query (the header's quick results and the workspace)
+const matches=(r,words)=>{
+  const hay=[r.name,r.sub].concat(Object.values(r.cells).map(String)).concat([].concat.apply([],Object.values(r.facets).map(v=>[].concat(v)))).join(" ").toLowerCase();
+  return words.every(w=>hay.indexOf(w)>=0);
+};
+const wordsOf=(query)=>query.toLowerCase().split(/\s+/).filter(Boolean);
+// the quick results of the header search (the full-screen search view at Narrow): app is an application id, or "home"
+export function findResults(app,query){
+  const src=app==="home"?ALL:FIND_SOURCES[app];
+  const words=wordsOf(query||"");
+  return src&&words.length?src.rows().filter(r=>matches(r,words)).map(r=>({...r,app:r.app||app,section:app==="home"?r.cells.section:null})):[];
+}
+
 const optsOf=(rows,id)=>{const all=[].concat.apply([],rows.map(r=>[].concat(r.facets[id]===undefined?[]:r.facets[id])));return Array.from(new Set(all)).sort().map(v=>({value:v,label:String(v),count:all.filter(x=>x===v).length}));};
 
 /* the workspace: app is a dashboard application id, or "home" for everything; onOpen(row, appId) opens a result */
@@ -49,10 +62,9 @@ export function FindWorkspace({app,query,onQuery,onOpen,onAskAI}){
   const [filters,setFilters]=useState({});
   const [sort,setSort]=useState("Relevance");
   const rows=src.rows();
-  const words=query.toLowerCase().split(/\s+/).filter(Boolean);
+  const words=wordsOf(query);
   let found=rows.filter(r=>{
-    const hay=[r.name,r.sub].concat(Object.values(r.cells).map(String)).concat([].concat.apply([],Object.values(r.facets).map(v=>[].concat(v)))).join(" ").toLowerCase();
-    if(words.some(w=>hay.indexOf(w)<0))return false;
+    if(!matches(r,words))return false;
  // a filter with several choices keeps rows that have any of them; a single choice must match
     return src.filters.every(f=>{
       const v=filters[f.id],has=[].concat(r.facets[f.id]===undefined?[]:r.facets[f.id]);

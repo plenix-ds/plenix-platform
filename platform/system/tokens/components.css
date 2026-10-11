@@ -209,6 +209,9 @@
   --plx-comp-check-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-check-input-accent-color: var(--plx-sys-action-primary-background);
   --plx-comp-check-input-height: var(--plx-ref-size-16px);
+  --plx-comp-switch-target-inset: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-segmented-item-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-segmented-item-target-inset-outer: min(0px, calc(100% - var(--plx-sys-control-target-min)));
   --plx-comp-check-target-inset: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-check-input-width: var(--plx-ref-size-16px);
   --plx-comp-check-input-margin-block-start: calc((1lh - var(--plx-ref-size-16px)) / 2);
@@ -685,6 +688,8 @@
   --plx-comp-toast-close-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-toast-close-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-toast-close-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-tabs-more-caret-size: var(--plx-ref-size-12px);
+  --plx-comp-tabs-more-caret-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-tabs-list-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-tabs-tab-text: var(--plx-sys-content-muted);
   --plx-comp-tabs-tab-gap: var(--plx-sys-space-inline-sm);
@@ -975,6 +980,8 @@
   --plx-comp-avatar-64-radius: var(--plx-sys-radius-avatar-8px);
   --plx-comp-avatar-64-font-size: var(--plx-ref-font-size-20);
   --plx-comp-avatar-64-width: var(--plx-ref-size-64px);
+  --plx-comp-breadcrumbs-link-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-breadcrumbs-link-target-inset-inline: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-breadcrumbs-list-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-breadcrumbs-list-font-size: var(--plx-ref-font-size-12);
   --plx-comp-breadcrumbs-list-row-gap: var(--plx-sys-space-stack-xs);
@@ -1801,6 +1808,8 @@
   --plx-comp-text-success-text: var(--plx-sys-feedback-success-content);
   --plx-comp-text-accent-text: var(--plx-sys-content-link);
   --plx-comp-text-accent-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-text-link-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-text-link-target-inset-inline-end: min(0px, calc(100% - var(--plx-sys-control-target-min)));
   --plx-comp-text-link-text: var(--plx-sys-content-link);
   --plx-comp-text-link-font-weight: var(--plx-sys-font-weight-regular);
   --plx-comp-thumbnail-background: var(--plx-sys-surface-sunken);
@@ -1912,6 +1921,7 @@
   --plx-comp-app-shell-padding-inline-end: var(--plx-sys-safe-area-end);
   --plx-comp-app-shell-padding-inline-start: var(--plx-sys-safe-area-start);
   --plx-comp-selection-summary-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-selection-summary-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-selection-summary-count-text: var(--plx-sys-content-default);
   --plx-comp-selection-summary-count-font-size: var(--plx-ref-font-size-13);
   --plx-comp-selection-summary-count-font-weight: var(--plx-sys-font-weight-semibold);
@@ -1926,6 +1936,8 @@
   --plx-comp-bulk-actions-divider-border-inline-start-color: var(--plx-sys-selected-border);
   --plx-comp-bulk-actions-divider-border-inline-start-width: var(--plx-sys-border-width-thin);
   --plx-comp-bulk-actions-list-height: var(--plx-sys-control-height-toolbar);
+  --plx-comp-bulk-actions-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-bulk-actions-list-min-width: var(--plx-ref-size-72px);
   --plx-comp-bulk-actions-list-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-bulk-actions-list-overflow-clip-margin: var(--plx-ref-space-4px);
   --plx-comp-bulk-actions-list-row-gap: var(--plx-ref-space-8px);
@@ -2375,6 +2387,7 @@
   --plx-comp-metadata-group-gap: var(--plx-ref-space-24px);
 }
 :root[data-plx-interaction="touch"],:root[data-plx-interaction="touch"] [data-plx-density]{
+  --plx-comp-breadcrumbs-list-row-gap: calc(var(--plx-sys-control-target-min) - 1lh);
   --plx-comp-toolbar-control-gap: var(--plx-ref-space-12px);
   --plx-comp-button-cluster-gap: var(--plx-ref-space-12px);
   --plx-comp-dialog-action-gap: var(--plx-ref-space-12px);
@@ -2394,6 +2407,7 @@
   --plx-comp-color-picker-slot-min-width: var(--plx-sys-control-target-min);
 }
 :root[data-plx-interaction="mobile"],:root[data-plx-interaction="mobile"] [data-plx-density]{
+  --plx-comp-breadcrumbs-list-row-gap: calc(var(--plx-sys-control-target-min) - 1lh);
   --plx-comp-toolbar-control-gap: var(--plx-ref-space-8px);
   --plx-comp-button-cluster-gap: var(--plx-ref-space-12px);
   --plx-comp-dialog-action-gap: var(--plx-ref-space-12px);

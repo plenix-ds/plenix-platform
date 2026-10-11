@@ -1338,6 +1338,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FIND_SOURCES = void 0;
 exports.FindWorkspace = FindWorkspace;
+exports.findResults = findResults;
 var _plenixPlatform = require("plenix-platform");
 var _shared = require("./shared.jsx");
 /* Plenix suite · the Search workspace (suite/findSources.jsx). Pressing Enter in the header search opens it in
@@ -1735,6 +1736,23 @@ const ALL = {
     }
   }))))
 };
+
+// the rows of a source whose text holds every word of the query (the header's quick results and the workspace)
+const matches = (r, words) => {
+  const hay = [r.name, r.sub].concat(Object.values(r.cells).map(String)).concat([].concat.apply([], Object.values(r.facets).map(v => [].concat(v)))).join(" ").toLowerCase();
+  return words.every(w => hay.indexOf(w) >= 0);
+};
+const wordsOf = query => query.toLowerCase().split(/\s+/).filter(Boolean);
+// the quick results of the header search (the full-screen search view at Narrow): app is an application id, or "home"
+function findResults(app, query) {
+  const src = app === "home" ? ALL : FIND_SOURCES[app];
+  const words = wordsOf(query || "");
+  return src && words.length ? src.rows().filter(r => matches(r, words)).map(r => ({
+    ...r,
+    app: r.app || app,
+    section: app === "home" ? r.cells.section : null
+  })) : [];
+}
 const optsOf = (rows, id) => {
   const all = [].concat.apply([], rows.map(r => [].concat(r.facets[id] === undefined ? [] : r.facets[id])));
   return Array.from(new Set(all)).sort().map(v => ({
@@ -1756,10 +1774,9 @@ function FindWorkspace({
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("Relevance");
   const rows = src.rows();
-  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const words = wordsOf(query);
   let found = rows.filter(r => {
-    const hay = [r.name, r.sub].concat(Object.values(r.cells).map(String)).concat([].concat.apply([], Object.values(r.facets).map(v => [].concat(v)))).join(" ").toLowerCase();
-    if (words.some(w => hay.indexOf(w) < 0)) return false;
+    if (!matches(r, words)) return false;
     // a filter with several choices keeps rows that have any of them; a single choice must match
     return src.filters.every(f => {
       const v = filters[f.id],
@@ -1846,7 +1863,10 @@ var _findSources = require("./findSources.jsx");
    workspace), #/ask?q=… (the AI search), the application's own screens (#/note/42, #/thread/3, #/project/3/tasks) and,
    on any of them, ?in=<item> for the item chosen in the navigation pane. screen is the location with open(path, params)
    and parent(path, params), which keep the navigation pane's item. The last screen is restored on load (plenix.<app>.view).
-   A search result opens its screen: in this page as a new history entry, on another application's page as its address. */
+   A search result opens its screen: in this page as a new history entry, on another application's page as its address.
+   At Narrow the header search is a full-screen view (AppHeader): it shows this application's recent searches (kept in its
+   view state, plenix.<app>.view, recentSearches; the last five) and, while a query is typed, its results; choosing one
+   leaves the view (its history entry) and opens the result's screen. */
 
 const {
   useState
@@ -1937,6 +1957,24 @@ const FIRST_SUB = {
   messaging: 't-1',
   calendar: 'month'
 };
+
+// the recent searches kept for an application, newest first
+const RECENT_MAX = 5;
+// the full-screen search view (AppHeader at Narrow) is a history entry of its own: leave it (Back, which closes it) before
+// opening a screen, so the screen's entry replaces it in the history instead of following it
+const afterSearchView = open => {
+  const st = window.history.state;
+  if (!(st && st.plxSearch)) {
+    open();
+    return;
+  }
+  const go = () => {
+    window.removeEventListener('popstate', go);
+    open();
+  };
+  window.addEventListener('popstate', go);
+  window.history.back();
+};
 function readPrefs() {
   try {
     return JSON.parse(localStorage.getItem('plenix.prefs')) || {};
@@ -1995,8 +2033,9 @@ function Suite({
     label: 'Settings'
   }).label;
   const openResult = (r, a) => {
-    const kind = RESULT_SCREEN[String(r.key || '').charAt(0)],
-      id = String(r.key || '').slice(1);
+    const key = String(r.key || '').split(':').pop(); // everything's rows are keyed "<app>:<key>"
+    const kind = RESULT_SCREEN[key.charAt(0)],
+      id = key.slice(1);
     const path = kind && id ? kind === 'project' ? ['project', id, 'home'] : [kind, id] : null;
     if (a === app && path) loc.navigate(path);else (0, _plenixPlatform.leavePage)(appPage(a, path ? '/' + path.join('/') : ''));
   };
@@ -2037,6 +2076,44 @@ function Suite({
     return () => window.removeEventListener('plenix:modechange', follow);
   }, []);
   const onAccent = tone === 'accent';
+  // the header search: Enter (or a recent search) opens the Search workspace and keeps the query among the recent ones
+  const [kept, updateKept] = (0, _plenixPlatform.useViewState)(app);
+  const recent = Array.isArray(kept.recentSearches) ? kept.recentSearches : [];
+  const runSearch = text => {
+    const q = text.trim();
+    if (q) updateKept(v => ({
+      recentSearches: [q].concat((v.recentSearches || []).filter(x => x !== q)).slice(0, RECENT_MAX)
+    }));
+    setHq(q);
+    afterSearchView(() => loc.navigate(['search'], {
+      q
+    }));
+  };
+  const typed = hq.trim().toLowerCase();
+  const recentShown = recent.filter(x => x.toLowerCase().indexOf(typed) >= 0);
+  const searchSuggestions = recentShown.length ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.SectionHeading, null, "Recent searches"), /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList, {
+    label: "Recent searches"
+  }, recentShown.map(x => /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList.Item, {
+    key: x,
+    leading: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
+      name: "clock"
+    }),
+    title: x,
+    onOpen: () => runSearch(x)
+  })))) : null;
+  const results = typed ? (0, _findSources.findResults)(scope, hq) : null;
+  const searchResults = results ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.SectionHeading, null, "Results"), results.length ? /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList, {
+    label: "Results",
+    stacked: true
+  }, results.map(r => /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList.Item, {
+    key: r.key,
+    title: r.name,
+    meta: r.section ? r.section + ' · ' + r.sub : r.sub,
+    onOpen: () => afterSearchView(() => openResult(r, r.app))
+  }))) : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+    variant: "secondary",
+    as: "p"
+  }, 'Nothing matches “' + hq.trim() + '”.')) : null;
   // refining the query keeps the same screen (its entry is corrected in place); a new search from the header is a new screen
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,
@@ -2094,11 +2171,11 @@ function Suite({
         onChange: e => setHq(e.target.value),
         onClear: () => setHq(''),
         onKeyDown: e => {
-          if (e.key === 'Enter') loc.navigate(['search'], {
-            q: hq.trim()
-          });
+          if (e.key === 'Enter') runSearch(hq);
         }
       }),
+      searchSuggestions: searchSuggestions,
+      searchResults: searchResults,
       account: /*#__PURE__*/React.createElement(_plenixPlatform.AppHeader.Account, {
         current: app === 'settings' ? top === 'account' ? 'account' : 'settings' : undefined,
         myAccount: {
@@ -2411,9 +2488,8 @@ function BookmarksScreen({
     icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
       name: "plus"
     })
-  }, "Add")), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    wrap: true,
-    gap: "xs"
+  }, "Add")), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
+    label: "Collections"
   }, cols.map(c => /*#__PURE__*/React.createElement(_plenixPlatform.Chip, {
     key: c,
     selected: col === c,

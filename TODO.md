@@ -11,19 +11,21 @@ its anatomy, every attribute from token to code) and the web meets the Plenix Pl
 - [ ] The Figma drawings of the 24 iOS components after Buttons: the Figma Starter plan's MCP tool-call limit stopped them.
   The scripts are ready (scratchpad native/*figma*.js, build-*.js); run them when the limit resets or on a higher plan,
   then add figma and images to each entry.
-- [ ] Owner: data values in DM Mono (slider and progress values, times, counts): the Platforms Standard 3.4 says DM Mono for
-  technical values outside tables; the font-roles rule says Mono only for code. Which one?
-- [ ] Owner: the iOS alert width now uses the Plenix dialog width (400) instead of Apple's narrower alert; keep?
+- [x] (0.31.39) Data values outside tables (slider and progress values) are DM Mono, the data role, on every platform: the
+  Platforms Standard 3.4 and the font-roles rule agree (tables and property lists are DM Sans).
+- [x] (0.31.39) Owner: on mobile, a conflict follows the platform's own guidelines: the iOS alert keeps Apple's width.
 - [x] (0.31.36) Web wave A: drag alternatives, error states, the narrow DataTable, its kept view, focus not obscured, touch
   tooltips, system appearance, input hints, reflow and target tests.
 - [x] (0.31.38) Web wave B: a URL and history entry per screen, the unsaved-changes guard, list-detail at Narrow, view
   restoration, the Sheet, the inspector and search at Narrow; touch targets 907 → 366 under 44px, fine pointer 29 → 13.
-- [ ] At Narrow, Messages shows two back rows (the shell's parent row and the list-detail Back bar): make them one.
-- [ ] Apps pass suggestions and results to the full-screen search (AppHeader searchSuggestions, searchResults).
-- [ ] Tab lists scroll sideways at 320px (dam/settings-system, design-system pages): wrap or an overflow menu.
-- [ ] Remaining reflow and target findings in tests/baselines (reflow 15; targets: text links in the design system's tables,
-  breadcrumbs, the dashboard stack, the DAM More button).
-- [ ] The calendar's view (month, week, day) and the DAM search refinements in the address.
+- [x] (0.31.39) Web wave C: one back control at Narrow; the full-screen search fed by the apps; tabs that do not fit go into
+  More; the calendar view and the DAM search in the address; reflow findings 15 → 0; touch targets 365 → 23 under 44px,
+  mouse 13 → 0.
+- [ ] The last 23 touch-target findings (tests/baselines/targets.json: DAM NavList pin and tag ×, DAM settings labels
+  and info button, the Link button, the application header's items in its design-system sample, bulk selection).
+- [ ] Typography, owner 2026-10-11: the original rule holds everywhere (DM Sans for UI; DM Mono for code and technical
+  values — IDs, file names, paths, versions, dates, sizes, counts, hex — tables included), at the neighbors' size and
+  line height; one data role; a typography test on every page that fails the build; the table test flipped.
 - [x] (0.31.38) The token rename: 137 component tokens named from selector fragments (data-table-background-2,
   pagination-page-hover-not-disabled-not-aria-current-…) now say what they style; values unchanged (visual test OK).
 
@@ -63,10 +65,6 @@ private, but on 2026-10-10 its pages, /cdn/ and apple-api.json answered 200 with
   "plenix-design-system"); only /cdn/ stays open for the apps. Database backup database.sqlite.bak-20261010-ds-private.
 - [x] (0.31.36) The login is built: services/login (accounts with scrypt hashes, signed session cookies, the sign-in page in
   the Plenix design system, an accounts command, Nginx auth_request; tests/login.test.js). Save accepts its headers.
-- [ ] Owner: the cutover from Authentik (services/login/README.md lists each step and the rollback): deploy, create your
-  account at the hidden prompt, merge the Nginx config, remove the Authentik config from NPM hosts 27 and 28.
-- [ ] Owner: one sign-in for both hosts (a cookie for lighthouseway.org) or one per host (today).
-- [ ] Later: self-service password reset (needs SMTP), passkeys, the apps' account menu on /auth/session.
 
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)
 
@@ -128,7 +126,6 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [x] Claude (read-only, 2026-10-09): Proxmox backups checked. **Nothing is backed up**: /etc/pve/jobs.cfg has no backup job and no storage holds a backup (container 104 "infra", Authentik, included).
 - [ ] Owner: set up Proxmox backups (where to: local, the Storage pool or a Proxmox Backup Server; how many to keep; when). Container 104 (Authentik) first.
 - [ ] Single sign-on plan: every Plenix app and the design system's Save sign in through Authentik; Admins / Editors / Users drive permissions.
-- [ ] To discuss first (owner, 2026-10-08): renaming to Lighthouse Design System (lighthouse-ds); the design system as its own source of truth that every app takes its UI from; themes (the current look as the default theme, more themes later).
 
 Every table is a Tabulator DataTable (owner, 2026-10-08: "every table rebuilt"; the style: docs/data-table-reference.html)
 - [x] 1. (batch 226) Foundation: Tabulator 6.6.1 vendored, the DataTable component (Tabulator's own column definitions), data-table.css from the reference with tokens only, table tokens, icons; 180/180 parts match the reference.
@@ -152,15 +149,15 @@ Phase 4 · grow
 - [x] 12. (batch 251) Starter template: plenix-ds/plenix-starter, a CDN starter (plain HTML, no build) and a Vite + React + TypeScript starter on the npm packages; both draw the same shell, navigation, DataTable and ActionBar, tested in Chrome. Fixed on the way: the npm package's DataTable found no Tabulator in a bundled app; it now loads the release's CDN copy.
 - [x] (2026-10-09) CI ran nothing since batch 234: a colon in a step name broke ci.yml; fixed, and the tests now run with reduced motion (CI had read the start of batch 236's fades).
 
-## Not urgent: own mirror of the Plenix packages and repos (added 2026-10-08)
+## Own mirror of the Plenix packages (owner chose option A, 2026-10-11)
 
 Keep a copy of the @plenix-ds packages (and the plenix-ds repos) on our own servers, so installs keep working if GitHub is down and projects use one registry address.
 
-- [ ] Owner to choose:
-  - (A, recommended) Proxy and pre-fetch: Verdaccio in Docker on the Plenix VM copies from GitHub Packages, and each release asks it for the new version right away. GitHub stays the one place releases are published; the copies cannot differ. Needs a read-only GitHub token (classic, read:packages only) on the VM.
-  - (B) Publish to both: the release publishes to GitHub Packages and, separately, to Verdaccio. Fully independent copies, but they drift if one publish fails, and the registry must accept publishing from the internet (a publishing password stored in GitHub).
-- [ ] Address: `registry.lighthouseway.org` (recommended; owner adds the DNS record, then an NPM proxy host and certificate) or `design-system.lighthouseway.org/npm/`.
-- [ ] Access: who may install (default: accounts created on the registry).
+- [x] Option A: Verdaccio on the Plenix VM, a proxy that copies @plenix-ds from GitHub Packages (services/registry).
+- [ ] Deploy it on the VM (the container on 127.0.0.1:4873, data in /srv/plenix/registry): needs the owner's go-ahead; auto mode blocked writing the deploy step.
+- [ ] Owner: the DNS record registry.lighthouseway.org; then Claude adds the NPM proxy host and certificate.
+- [ ] Owner: a read-only GitHub token (classic, read:packages) in /srv/plenix/registry/github-token on the VM.
+- [ ] Owner: your account: sudo /srv/plenix/registry/add-user.sh <name> on the VM; then the release runs prefetch.sh.
 - [ ] Repos: Forgejo (forgejo.lighthouseway.org) pull-mirrors plenix-ds/plenix-platform and plenix-ds/plenix-design-system on a schedule.
 - Done when: `npm install @plenix-ds/react` works against the registry address with GitHub unreachable, and Forgejo shows both repos up to date.
 

@@ -31,7 +31,9 @@
        Narrow (under 600px): never a drawer. With two or more rail items, the page's top-level destinations are a bottom
          navigation bar: up to four of them, then Browse, which opens the pane as a screen of its own (every other
          destination is in it). Without, the pane is the first screen of a stack, and a parent row at the top of the page
-         (the pane's title after a back arrow) opens it. Choosing a destination, a link or a list item in the pane shows the
+         (the pane's title after a back arrow) opens it. While a list-detail's detail shows (SecondaryPane detailOpen),
+         the parent row is that detail's Back instead ("Back to {list}"; it returns to the list), so the page has one back
+         control; when the list shows again, the row opens the pane as before. Choosing a destination, a link or a list item in the pane shows the
          main region again; Escape does too.
      The body scrolls; its bar shows on hover.
      Outside an AppShell it is a plain pane (width: its own, or the shell navigation width) with no Collapse button.
@@ -70,6 +72,11 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   const Tag = as;
   const mode = layout && layout.hasSideNav ? layout.mode : 'static';
   const narrow = mode === 'bar' || mode === 'screen';
+  const items = narrow ? railItems(rail) : [];
+  // the parent row (Narrow, fewer than two destinations) tells the shell it is drawn, so a list-detail's Back joins it
+  const rowed = narrow && items.length < 2 && !!(layout && layout.parentEl);
+  const claimRow = layout ? layout.claimParentRow : null;
+  React.useLayoutEffect(() => (rowed && claimRow ? claimRow() : undefined), [rowed, claimRow]);
   // the overlay and the screen are layers: Escape closes them
   useLayer(ref, mode === 'overlay' || mode === 'screen', { onEscape: layout ? layout.close : undefined });
   const expand = <ToolRail.Item icon="panel-left-open" label="Expand sidebar" onClick={layout ? layout.toggle : undefined} />;
@@ -81,7 +88,6 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   // Narrow: the bottom navigation bar (two or more destinations) or the parent row, put in the shell's slots
   let narrowEl = null;
   if (narrow) {
-    const items = railItems(rail);
     const close = (fn) => (e) => { layout.close(); if (fn) fn(e); };
     if (items.length >= 2) {
       narrowEl = layout.barEl ? createPortal(
@@ -92,9 +98,12 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
           </BarContext.Provider>
         </nav>, layout.barEl) : null;
     } else if (layout.parentEl && mode === 'bar') {
+      const back = layout.detailBack;   // a list-detail's detail shows: the row is its Back
       narrowEl = createPortal(
         <div className="plx-nav-pane-parent">
-          <Button size="sm" variant="ghost" icon="arrow-left" onClick={layout.toggle}>{title || label || t.browse}</Button>
+          {back
+            ? <Button ref={back.ref} size="sm" variant="ghost" icon="arrow-left" onClick={back.onBack}>{back.label}</Button>
+            : <Button size="sm" variant="ghost" icon="arrow-left" onClick={layout.toggle}>{title || label || t.browse}</Button>}
         </div>, layout.parentEl);
     }
     if (mode === 'bar') return narrowEl;

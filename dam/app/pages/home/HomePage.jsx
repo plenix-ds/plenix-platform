@@ -5,7 +5,9 @@
    the details pane. The sidebar is the shell's side navigation and the details pane its panel: the AppShell collapses,
    resizes and (below 1024px) overlays them.
    The address (Platforms Standard 4.3): each view is a screen with a history entry: #/ (categories), #/collections,
-   #/category/<name>, #/search?q=<text>, #/saved/<name>, and ?asset=<id> on any of them for the open asset; the last
+   #/category/<name>, #/search?q=<text>&<filters>&sort=… (findAssets.js), #/saved/<name>, and ?asset=<id> on any of them
+   for the open asset; refining a search in the workspace is a new entry per committed search (Enter or leaving the
+   field, a filter, Clear all, the sort), never per keystroke, and a refined saved search becomes a search; the last
    screen is restored on load (plenix.assets.view). ?q=text (the header on other pages links here) names the search
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
@@ -15,6 +17,7 @@ import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
 import * as D from './homeData.js';
+import { FIND_EMPTY, MONTH, findAssets, findOf, findParams } from './findAssets.js';
 import { DIALOGS as BROWSE_DIALOGS } from '../../dialogs/BrowseDialogs.jsx';
 import { DIALOGS as UPLOAD_DIALOGS } from '../../dialogs/UploadDialog.jsx';
 import { DIALOGS as METADATA_DIALOGS } from '../../dialogs/MetadataFilterDialog.jsx';
@@ -62,27 +65,6 @@ function FilesPane({ onUpload, onClose }) {
   );
 }
 
-// the Search workspace: which assets match a query and filters, and in which order
-const FIND_EMPTY = { query: '', filters: {}, sort: 'Relevance', saved: null };
-const MONTH = (d) => d.replace(/ \d+,/, '');   // "Aug 12, 2026" → "Aug 2026"
-function findAssets(f) {
-  const words = f.query.toLowerCase().split(/\s+/).filter(Boolean);
-  const v = f.filters;
-  const list = D.ASSETS.filter((a) => {
-    const hay = [a.name, a.file, a.cat, a.fmt, a.owner].concat(a.tags).join(' ').toLowerCase();
-    if (words.some((w) => hay.indexOf(w) < 0)) return false;
-    if ((v.type || []).length && v.type.indexOf(a.badge) < 0) return false;
-    if ((v.cat || []).length && v.cat.indexOf(a.cat) < 0) return false;
-    if ((v.tags || []).length && !v.tags.every((t) => a.tags.indexOf(t) >= 0)) return false;
-    if (v.owner && a.owner !== v.owner) return false;
-    if (v.status && a.status !== v.status) return false;
-    if (v.date && MONTH(a.date) !== v.date) return false;
-    return true;
-  });
-  const by = { Newest: (a, b) => Date.parse(b.date) - Date.parse(a.date), Oldest: (a, b) => Date.parse(a.date) - Date.parse(b.date),
-    'Name A–Z': (a, b) => a.name.localeCompare(b.name), 'Name Z–A': (a, b) => b.name.localeCompare(a.name), Size: (a, b) => parseFloat(b.size) - parseFloat(a.size) }[f.sort];
-  return by ? list.slice().sort(by) : list;
-}
 const opts = (values) => Array.from(new Set(values)).sort().map((x) => ({ value: x, label: x, count: values.filter((y) => y === x).length }));
 
 // ?q=text from another page names the search screen (in place: it is where the person arrived, not a move)
@@ -123,14 +105,15 @@ export function HomePage() {
   const collections = view === 'collections';
 
   // the screen named by the address: the view (with its category, search or saved search), then the open asset
-  const viewKey = loc.parts.join('/') + '?' + (loc.params.q || '');
+  const shownQuery = React.useRef('');   // the query of the search the address names
+  const viewKey = screenHref(loc.parts, Object.assign({}, loc.params, { asset: undefined }));   // the open asset is not a view
   React.useLayoutEffect(() => {
     const [top, name] = loc.parts;
     setFiles(false); setSelCats([]); setSelAssets([]);
     if (top === 'collections') { setView('collections'); setActive('All collections'); }
     else if (top === 'category' && name) { setView('search'); setHeading(name); setQuery(''); setActive(name); }
-    else if (top === 'search') { const q = loc.params.q || ''; setQuery(q); setActive(null); setFind({ ...FIND_EMPTY, query: q }); setView('find'); }
-    else if (top === 'saved' && name) { const s = saved.find((x) => x.name === name); setActive(name); setFind({ ...FIND_EMPTY, query: s ? s.query : '', filters: s ? s.filters : {}, saved: name }); setView('find'); }
+    else if (top === 'search') { setQuery(loc.params.q || ''); setActive(null); setFind(findOf(loc.params)); setView('find'); shownQuery.current = loc.params.q || ''; }
+    else if (top === 'saved' && name) { const s = saved.find((x) => x.name === name); shownQuery.current = s ? s.query : ''; setActive(name); setFind({ ...FIND_EMPTY, query: s ? s.query : '', filters: s ? s.filters : {}, saved: name }); setView('find'); }
     else { setView('categories'); setActive('All categories'); }
   }, [viewKey]);
   React.useLayoutEffect(() => {
@@ -224,7 +207,14 @@ export function HomePage() {
     if (view === 'find') setFind({ ...find, saved: name });
     setActive(name);
   } });
-  const setFindFilter = (id, value) => setFind({ ...find, filters: { ...find.filters, [id]: value }, saved: null });
+  // a committed refinement is a new screen (a history entry): the address carries the query, the filters and the sort
+  const commitFind = (next) => { setFind(next); loc.navigate(['search'], findParams(next)); };
+  const committed = find.query === shownQuery.current;
+  // the query typed in the workspace is applied as the person types; Enter or leaving the field commits it (and clearing it)
+  const onFindKey = (e) => { if (e.key === 'Enter' && view === 'find' && !committed && e.target.closest('.plx-search-ws__query')) commitFind(find); };
+  const onFindBlur = (e) => { if (view === 'find' && !committed && e.target.closest('.plx-search-ws__query')) commitFind(find); };
+  const setFindQuery = (q) => (q ? setFind({ ...find, query: q, saved: null }) : commitFind({ ...find, query: '', saved: null }));
+  const setFindFilter = (id, value) => commitFind({ ...find, filters: { ...find.filters, [id]: value }, saved: null });
   const filterDefs = [
     { id: 'type', label: 'Type', multiple: true, options: opts(D.ASSETS.map((a) => a.badge)), value: find.filters.type || [] },
     { id: 'cat', label: 'Category', multiple: true, options: opts(D.ASSETS.map((a) => a.cat)), value: find.filters.cat || [] },
@@ -312,12 +302,12 @@ export function HomePage() {
     <AssetPage title="Assets" query={view === 'find' ? find.query : query} onSearch={search} sideNav={sidebar} panel={panel} onUpload={() => openDialog('uploadModal')}>
       <Inline gap="none" align="stretch" grow>
         {files ? filesPane : null}
-        <PageContent aria-labelledby="home-title" {...(browse ? dropHandlers : {})}>
+        <PageContent aria-labelledby="home-title" onKeyDown={onFindKey} onBlur={onFindBlur} {...(browse ? dropHandlers : {})}>
           {view === 'find' ? (
-            <SearchWorkspace title={find.saved || (find.query ? 'Search results' : 'Search')} query={find.query} onQueryChange={(q) => setFind({ ...find, query: q, saved: null })}
+            <SearchWorkspace title={find.saved || (find.query ? 'Search results' : 'Search')} query={find.query} onQueryChange={setFindQuery}
               placeholder="Search assets by name, filename, metadata…" noun="asset" count={found.length}
-              filters={filterDefs} onFilterChange={setFindFilter} onClearAll={() => setFind({ ...find, filters: {}, saved: null })}
-              sort={{ value: find.sort, options: ['Relevance', 'Newest', 'Oldest', 'Name A–Z', 'Name Z–A', 'Size'], onChange: (o) => setFind({ ...find, sort: o }) }}
+              filters={filterDefs} onFilterChange={setFindFilter} onClearAll={() => commitFind({ ...find, filters: {}, saved: null })}
+              sort={{ value: find.sort, options: ['Relevance', 'Newest', 'Oldest', 'Name A–Z', 'Name Z–A', 'Size'], onChange: (o) => commitFind({ ...find, sort: o }) }}
               view={{ value: mode, onChange: setMode }}
               onSave={saveSearch}
               bulk={assetBulk}>

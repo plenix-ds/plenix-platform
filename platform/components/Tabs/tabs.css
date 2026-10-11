@@ -1,6 +1,14 @@
 /* Plenix · Tabs: folder, contained, segmented (the underline variant was removed, owner 2026-10-09) (D4; folder and contained keep the legacy folder tab look). */
 .plx-tabs{display:flex;flex-direction:column;min-inline-size:0;}
-.plx-tabs__list{align-items:flex-end;column-gap:var(--plx-comp-tabs-list-gap);display:flex;max-inline-size:100%;overflow-x:auto;scrollbar-width:none;}
+/* the strip: the tab list (role=tablist) and, when tabs do not fit, the More menu button after it (outside the tab list).
+   Nothing scrolls sideways (reflow, Platforms Standard 3.5): the tab list clips sideways only while Tabs measures, before
+   the browser paints, and the tabs that do not fit are hidden and listed in More. */
+.plx-tabs__list{align-items:flex-end;column-gap:var(--plx-comp-tabs-list-gap);display:flex;max-inline-size:100%;min-inline-size:0;}
+.plx-tabs__tablist{align-items:inherit;column-gap:inherit;display:flex;flex-grow:0;flex-shrink:1;min-inline-size:0;overflow-x:clip;}
+.plx-tabs__tab[hidden]{display:none;}
+.plx-tabs__more-anchor{display:inline-flex;flex-shrink:0;}
+.plx-tabs__more-caret{-webkit-mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:currentcolor;block-size:var(--plx-comp-tabs-more-caret-size);flex-shrink:0;inline-size:var(--plx-comp-tabs-more-caret-size);mask-image:var(--plx-comp-icon-glyph-arrow-drop-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;transition-duration:var(--plx-comp-tabs-more-caret-duration);transition-property:transform;}
+.plx-tabs__more[aria-expanded="true"] .plx-tabs__more-caret{transform:rotate(180deg);}
 .plx-tabs__tab{align-items:center;background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;box-sizing:border-box;color:var(--plx-comp-tabs-tab-text);column-gap:var(--plx-comp-tabs-tab-gap);cursor:pointer;display:inline-flex;flex-shrink:0;font-family:inherit;font-size:var(--plx-comp-tabs-tab-font-size);font-weight:var(--plx-comp-tabs-tab-font-weight);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-tabs-tab-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-tabs-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-tab-padding-inline);white-space:nowrap;}
 .plx-tabs__tab:hover,
 .plx-tabs__tab.is-hover{color:var(--plx-comp-tabs-tab-hover-text);}
@@ -33,12 +41,12 @@
 /* the contained panel: four real borders, like Panel and Card */
 .plx-tabs--contained>.plx-tabs__panel{background-color:var(--plx-comp-tabs-contained-panel-background);border-bottom-left-radius:var(--plx-comp-tabs-contained-panel-radius);border-bottom-right-radius:var(--plx-comp-tabs-contained-panel-radius);border-top-left-radius:var(--plx-comp-tabs-contained-panel-radius);border-top-right-radius:var(--plx-comp-tabs-contained-panel-radius);border-bottom-color:var(--plx-comp-tabs-contained-panel-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-tabs-contained-panel-border-width);border-left-color:var(--plx-comp-tabs-contained-panel-border-color);border-left-style:solid;border-left-width:var(--plx-comp-tabs-contained-panel-border-width);border-right-color:var(--plx-comp-tabs-contained-panel-border-color);border-right-style:solid;border-right-width:var(--plx-comp-tabs-contained-panel-border-width);border-top-color:var(--plx-comp-tabs-contained-panel-border-color);border-top-style:solid;border-top-width:var(--plx-comp-tabs-contained-panel-border-width);margin-block-start:var(--plx-comp-tabs-contained-panel-margin-block-start);padding-block-end:var(--plx-comp-tabs-contained-panel-padding-block);padding-block-start:var(--plx-comp-tabs-contained-panel-padding-block);padding-inline-end:var(--plx-comp-tabs-contained-panel-padding-inline);padding-inline-start:var(--plx-comp-tabs-contained-panel-padding-inline);}
 /* the first tab open: it stands on the panel's top-left corner, which is square to meet it (owner, batch 249) */
-.plx-tabs--contained:has(>.plx-tabs__list>.plx-tabs__tab:first-child[aria-selected="true"])>.plx-tabs__panel{border-top-left-radius:0;}
+.plx-tabs--contained:has(>.plx-tabs__list>.plx-tabs__tablist>.plx-tabs__tab:first-child[aria-selected="true"])>.plx-tabs__panel{border-top-left-radius:0;}
 /* the open tab's joint (owner, batch 271: "a thin underline on the open tab"): at fractional display scales (125%) the
    tab's bottom edge falls inside a device pixel and blends with the panel's top edge under it, a faint line. The open tab
-   draws its own joint: a strip of its surface, between its side borders, two thin lines tall across the seam. The tab list
-   scrolls sideways (overflow-x: auto), so it clips what reaches below it: it reaches one thin line further (padding) and
-   gives that line back (margin), so the joint is not clipped and nothing below moves. */
+   draws its own joint: a strip of its surface, between its side borders, two thin lines tall across the seam. The strip
+   reaches one thin line further (padding) and gives that line back (margin), so the joint has room below the tabs and
+   nothing below moves (the tab list clips only sideways, overflow-x: clip, never below). */
 .plx-tabs--folder .plx-tabs__tab.is-selected,.plx-tabs--contained .plx-tabs__tab.is-selected{position:relative;}
 .plx-tabs--folder>.plx-tabs__list,.plx-tabs--contained>.plx-tabs__list{margin-block-end:var(--plx-comp-tabs-folder-list-margin-block-end);padding-block-end:var(--plx-comp-tabs-folder-list-padding-block-end);}
 .plx-tabs--folder .plx-tabs__tab.is-selected::after,.plx-tabs--contained .plx-tabs__tab.is-selected::after{background-color:var(--plx-comp-tabs-folder-tab-selected-after-background);block-size:var(--plx-comp-tabs-folder-tab-selected-after-height);content:"";inset-block-end:var(--plx-comp-tabs-folder-tab-selected-after-inset-block-end);inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}

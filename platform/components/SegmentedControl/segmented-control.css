@@ -7,3 +7,10 @@
 .plx-segmented__item:focus-visible,
 .plx-segmented__item.is-focus-visible{outline-color:var(--plx-comp-segmented-item-focus-outline-color);outline-offset:var(--plx-comp-segmented-item-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-segmented-item-focus-outline-width);}
 .plx-segmented--sm .plx-segmented__item{font-size:var(--plx-comp-segmented-sm-item-font-size);padding-inline-end:var(--plx-comp-segmented-sm-item-padding-inline);padding-inline-start:var(--plx-comp-segmented-sm-item-padding-inline);}
+/* the target (Platforms Standard 3.1): an invisible extension reaches the minimum target (24px with a mouse, 44px with touch)
+   without changing the look. In height it is centered on the option; in width only the first option reaches out before
+   the track and the last after it, so no option's target covers its neighbor's */
+.plx-segmented__item{position:relative;}
+.plx-segmented__item::before{content:"";inset-block-end:var(--plx-comp-segmented-item-target-inset-block);inset-block-start:var(--plx-comp-segmented-item-target-inset-block);inset-inline-end:0;inset-inline-start:0;position:absolute;}
+.plx-segmented__item:first-child::before{inset-inline-start:var(--plx-comp-segmented-item-target-inset-outer);}
+.plx-segmented__item:last-child::before{inset-inline-end:var(--plx-comp-segmented-item-target-inset-outer);}

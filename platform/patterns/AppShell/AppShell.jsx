@@ -27,7 +27,10 @@
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
        { mode, open, expanded, width, setWidth, toggle, close, small, narrow, barEl, parentEl, hasSideNav, page, layout,
-         claimPage(kind) }; mode is "inline", "rail", "overlay" (Medium), "bar" or "screen" (Narrow) or "none"
+         claimPage(kind), parentRow, claimParentRow(), detailBack, claimBack({ label, onBack, ref }) }; mode is "inline",
+         "rail", "overlay" (Medium), "bar" or "screen" (Narrow) or "none". parentRow is true while NavPane draws the parent
+         row at Narrow; detailBack is a list-detail's Back (SecondaryPane, while its detail shows at Narrow), which the
+         parent row then becomes; each claim returns its release
    Behavior:
      The areas are the shell's immediate children.
      The header and the footer always span the full width, above and below both side areas.
@@ -114,6 +117,12 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   const [portals, setPortals] = React.useState(0);
   const registerPortal = React.useCallback(() => { setPortals((n) => n + 1); return () => setPortals((n) => n - 1); }, []);
   const hasSide = !!sideNav || portals > 0;
+  // one back control at Narrow: the parent row (NavPane) says it is drawn; a list-detail's Back (SecondaryPane) hands
+  // itself to it while the detail shows, so the page never has two back rows
+  const [parentRow, setParentRow] = React.useState(false);
+  const [detailBack, setDetailBack] = React.useState(null);
+  const claimParentRow = React.useCallback(() => { setParentRow(true); return () => setParentRow(false); }, []);
+  const claimBack = React.useCallback((b) => { setDetailBack(b); return () => setDetailBack((x) => (x === b ? null : x)); }, []);
   const setWidth = React.useCallback((w) => { setWidthState(w); writePref('plenix.sideNav.width', w); }, []);
   const toggle = React.useCallback(() => {
     if (small) setOverlay((o) => !o);
@@ -129,8 +138,10 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   }, [toggle, hasSide]);
   const mode = !hasSide ? 'none' : narrow ? (overlay ? 'screen' : 'bar') : small ? (overlay ? 'overlay' : 'rail') : expanded ? 'inline' : 'rail';
   const ctx = React.useMemo(() => ({ hasSideNav: hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, open: mode === 'inline' || mode === 'overlay' || mode === 'screen',
-    expanded: small ? overlay : expanded, width, setWidth, toggle, close: () => setOverlay(false), page: claimed || page, layout, claimPage }),
-  [hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage]);
+    expanded: small ? overlay : expanded, width, setWidth, toggle, close: () => setOverlay(false), page: claimed || page, layout, claimPage,
+    parentRow, claimParentRow, detailBack, claimBack }),
+  [hasSide, slotEl, registerPortal, small, narrow, barEl, parentEl, mode, overlay, expanded, width, setWidth, toggle, claimed, page, layout, claimPage,
+    parentRow, claimParentRow, detailBack, claimBack]);
   return (
     <LayoutContext.Provider value={ctx}>
       <div className={cx('plx-app-shell', className)} data-plx-layout={LAYOUTS.indexOf(layout) >= 0 ? layout : 'fluid'}>

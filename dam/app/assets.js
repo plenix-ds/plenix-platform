@@ -5,7 +5,241 @@
  */
 (function () {
   var defs = {
-  "dam/app/shell/AssetShell.jsx": { deps: {"react":null,"plenix-platform":null}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
+  "dam/app/pages/home/homeData.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VERSIONS = exports.USAGE_RIGHTS = exports.TRASH = exports.SORT_OPTIONS = exports.SEARCH_QUERY = exports.SEARCH_COUNT = exports.SAVED_SEARCHES = exports.RECENT_IMPORTS = exports.FOLDERS_OPEN = exports.FOLDERS = exports.COLLECTION_DETAIL = exports.COLLECTION_CARDS = exports.COLLECTIONS = exports.CATEGORY_TOTAL = exports.CATEGORY_DOWNLOADS = exports.CATEGORY_DETAIL = exports.CATEGORY_COUNT_LABEL = exports.CATEGORY_CARDS = exports.CATEGORIES_SHOWN = exports.CATEGORIES = exports.CARD_MENU = exports.ASSET_TOTAL = exports.ASSET_STATUSES = exports.ASSET_DOWNLOADS = exports.ASSETS = void 0;
+/* Plenix asset app · home page data (app/pages/home/homeData.js).
+   DATA: every list here comes from the back end; these are the sample records the home page showed in HTML and in
+   plenix.js (CATEGORIES, COLLECTIONS, assetData) until then, unchanged. Thumbnails are the stand-in images in assets/. */
+
+const folder = (name, children) => ({
+  id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+  label: name,
+  icon: 'folder',
+  children
+});
+const FOLDERS = exports.FOLDERS = [folder('All', [folder('Digital Assets', [folder('Banner icon'), folder('Bookshelf'), folder('Borders', [folder('Arch'), folder('Banner'), folder('Circular'), folder('Divider'), folder('Linear'), folder('Page')]), folder('Branding', [folder('Churches'), folder('CYC'), folder('Diakonia'), folder('LACopts')]), folder('Certificates'), folder('Clergy'), folder('Crosses'), folder('Embroideries'), folder('Fonts')]), folder('Documents', [folder('Manuals'), folder('Templates')]), folder('Facial Profiles'), folder('Users')])];
+const FOLDERS_OPEN = exports.FOLDERS_OPEN = ['all', 'digital-assets'];
+
+// the sidebar lists (the first row of each is the "All …" view)
+const CATEGORIES = exports.CATEGORIES = [['All categories', '4,546', true], ['Branding', '326', true], ['Crosses', '1,284', true], ['Banner icon', '18'], ['Bookshelf', '18'], ['Borders', '245'], ['Certificates', '387'], ['Clergy', '512'], ['Covers', '198'], ['Dome', '14'], ['Embroideries', '31'], ['Fonts', '22'], ['Galloons', '27'], ['Korban Stamp', '8'], ['Ornamental Elements', '45'], ['Presentation Folders', '12']].map(([name, count, pinned]) => ({
+  name,
+  count,
+  pinned: !!pinned
+}));
+const CATEGORIES_SHOWN = exports.CATEGORIES_SHOWN = 7;
+const COLLECTIONS = exports.COLLECTIONS = [['All collections', '305', true], ['Website Assets', '84', true], ['Social Media', '42', true], ['Print ready', '156'], ['Needs review', '23']].map(([name, count, pinned]) => ({
+  name,
+  count,
+  pinned: !!pinned
+}));
+// a saved search keeps its query and filters; opening it restores them in the Search workspace
+const SAVED_SEARCHES = exports.SAVED_SEARCHES = [{
+  name: 'High-res crosses',
+  query: 'cross',
+  filters: {}
+}, {
+  name: 'Untagged assets',
+  query: '',
+  filters: {
+    status: 'New'
+  }
+}, {
+  name: 'Large files >50MB',
+  query: '',
+  filters: {
+    type: ['PSD']
+  }
+}];
+const RECENT_IMPORTS = exports.RECENT_IMPORTS = [['Aug 31, 2026', 28], ['Aug 24, 2026', 112], ['Aug 15, 2026', 67]];
+const TRASH = exports.TRASH = [['Deleted assets', 12]];
+const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner icon', 24, 5, 'Aug 28, 2026'], ['Bookshelf', 18, 6, 'Aug 25, 2026'], ['Borders - Arch', 31, 7, 'Aug 22, 2026'], ['Borders - Circular', 42, 8, 'Aug 20, 2026'], ['Branding - Churches', 28, 9, 'Aug 18, 2026'], ['Branding - CYC', 5, 10, 'Aug 15, 2026'], ['Branding - Diakonia', 15, 11, 'Aug 12, 2026'], ['Certificate - Baptism', 89, 12, 'Aug 10, 2026'], ['Certificate - Masters', 47, 13, 'Aug 8, 2026'], ['Clergy - Metropolitan Serapion', 62, 14, 'Aug 5, 2026'], ['Clergy - Pope Shenouda III', 210, 15, 'Aug 2, 2026'], ['Clergy - Pope Tawadros II', 45, 16, 'Jul 30, 2026'], ['Cross - Traditional', 78, 17, 'Jul 25, 2026'], ['Dome', 33, 18, 'Jul 20, 2026'], ['Embroideries', 156, 19, 'Jul 15, 2026'], ['Fonts', 18, 20, 'Jul 10, 2026']].map(([name, count, thumb, modified], i) => ({
+  id: i,
+  name,
+  count,
+  thumb: 'assets/thumb-' + thumb + '.svg',
+  modified,
+  status: 'Active'
+}));
+const CATEGORY_TOTAL = exports.CATEGORY_TOTAL = 48;
+const CATEGORY_COUNT_LABEL = exports.CATEGORY_COUNT_LABEL = '52 categories';
+const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'raphael'], ['Social Media', 42, 'Aug 25, 2026', 'raphael'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
+  id: i,
+  name,
+  count,
+  updated,
+  owner
+}));
+const ASSETS = exports.ASSETS = [['Coptic Cross Gold Traditional', 'Cross - Traditional', 'Coptic_Cross_Gold.ai', 'Adobe Illustrator (.ai)', 'AI', '18.7 MB', '2400 × 3200 px', 'Aug 12, 2026', 'Complete'], ['Cross Gold Ornate Large', 'Cross - Majestic', 'Cross_Gold_Ornate.psd', 'Photoshop (.psd)', 'PSD', '42.1 MB', '4800 × 6400 px', 'Aug 10, 2026', 'Complete'], ['Cross Gold Pectoral', 'Cross - Pectoral Silver', 'Cross_Gold_Pectoral.ai', 'Adobe Illustrator (.ai)', 'AI', '8.3 MB', '1200 × 1600 px', 'Aug 8, 2026', 'Complete'], ['Gold Cross Floral Border', 'Cross - Floral', 'Gold_Cross_Floral.png', 'PNG', 'PNG', '4.2 MB', '2000 × 2000 px', 'Jul 28, 2026', 'New'], ['Cross Gold Diamond Pattern', 'Cross - Diamond', 'Cross_Gold_Diamond.ai', 'Adobe Illustrator (.ai)', 'AI', '12.6 MB', '3000 × 3000 px', 'Jul 22, 2026', 'Complete'], ['Gold Cross Iconostasis', 'Cross - Iconostasis', 'Gold_Cross_Iconostasis.jpg', 'JPEG', 'JPG', '1.8 MB', '1920 × 2560 px', 'Jul 15, 2026', 'Complete'], ['Cross Gold Procession', 'Cross - Procession', 'Cross_Gold_Procession.psd', 'Photoshop (.psd)', 'PSD', '28.4 MB', '4000 × 5000 px', 'Jul 10, 2026', 'New'], ['Gold Coptic Cross Linear', 'Cross - Linear', 'Gold_Coptic_Linear.ai', 'Adobe Illustrator (.ai)', 'AI', '6.1 MB', '1800 × 2400 px', 'Jul 5, 2026', 'Complete']].map(([name, cat, file, fmt, badge, size, dims, date, status], i) => ({
+  id: i,
+  name,
+  cat,
+  file,
+  fmt,
+  badge,
+  size,
+  dims,
+  date,
+  status,
+  thumb: 'assets/thumb-' + (21 + i) + '.svg',
+  typeIcon: 'file-' + badge.toLowerCase(),
+  tags: name.toLowerCase().split(' '),
+  owner: ['Raphael Maher', 'Sarah M.', 'John Deacon'][i % 3]
+}));
+const ASSET_TOTAL = exports.ASSET_TOTAL = 210;
+const SEARCH_QUERY = exports.SEARCH_QUERY = 'cross gold';
+const SEARCH_COUNT = exports.SEARCH_COUNT = 24;
+const SORT_OPTIONS = exports.SORT_OPTIONS = ['Relevance', 'Newest', 'Oldest', 'Name A-Z', 'Name Z-A', 'Size ▼', 'Size ▲', 'Modified'];
+
+// the details pane for a category (and the collection shown in the collections view)
+const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
+  name: 'Cross - Traditional',
+  count: '78 assets',
+  parent: 'Categories (root)',
+  parents: ['Categories (root)', 'Borders', 'Branding', 'Clergy', 'Crosses'],
+  order: '8',
+  color: 'brown' /* a category color (CATEGORY_COLORS, batch 290) */,
+  copyright: 'Coptic Orthodox Church',
+  rights: 'Internal',
+  rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
+  rating: 0,
+  description: 'Traditional Coptic cross designs and variations',
+  tags: ['cross', 'traditional', 'coptic'],
+  stats: [['Total assets', '78'], ['Storage used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
+  permissions: [['Owner', 'raphael'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
+  customFields: [['Style', 'e.g. Byzantine, Nubian...'], ['Material', 'e.g. Wood, Stone, Metal...'], ['Origin', 'e.g. Egypt, Ethiopia...']]
+};
+const COLLECTION_DETAIL = exports.COLLECTION_DETAIL = {
+  name: 'Website Assets',
+  count: '84 assets'
+};
+const CATEGORY_DOWNLOADS = exports.CATEGORY_DOWNLOADS = [{
+  title: 'Download entire category',
+  items: [['file-zip', 'All Files (Source)', '78 files · ~1.4 GB']]
+}, {
+  title: 'Download by file type',
+  items: [['file-ai', 'Adobe Illustrator (.ai)', '42 files · ~820 MB'], ['file-png', 'PNG Images', '78 files · ~340 MB'], ['file-jpg', 'JPEG Thumbnails', '78 files · ~18 MB'], ['file-svg', 'SVG Vectors', '35 files · ~12 MB'], ['file-pdf', 'PDF Print-Ready', '42 files · ~280 MB']]
+}, {
+  title: 'Variations',
+  items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '78 files · ~45 MB'], ['file-png', 'Social Media (1080×1080)', '78 files · ~62 MB']]
+}];
+const ASSET_DOWNLOADS = exports.ASSET_DOWNLOADS = [{
+  title: 'Download by file type',
+  items: [['file-png', 'Preview.png', '4.2 MB'], ['file-jpg', 'Web.jpg', '245 KB']]
+}, {
+  title: 'Variations',
+  items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '180 KB'], ['file-png', 'Social Media (1080×1080)', '520 KB']]
+}];
+const ASSET_STATUSES = exports.ASSET_STATUSES = ['Complete', 'New', 'In progress', 'Pending review', 'Archived'];
+const USAGE_RIGHTS = exports.USAGE_RIGHTS = ['Internal use only', 'Church Use', 'Creative Commons', 'Public domain'];
+const VERSIONS = exports.VERSIONS = [{
+  label: 'Version 3 (Current)',
+  date: 'Aug 12, 2026 at 2:45 PM',
+  user: 'Fr. Raphael M.',
+  current: true
+}, {
+  label: 'Version 2',
+  date: 'Jul 5, 2026 at 10:12 AM',
+  user: 'Sarah M.'
+}, {
+  label: 'Version 1 (Original)',
+  date: 'Jun 18, 2026 at 3:30 PM',
+  user: 'Fr. Daniel'
+}];
+
+// the options menu on a category card
+const CARD_MENU = exports.CARD_MENU = [['fields', 'Edit category', 'Edit category'], ['rename', 'Rename', 'Rename'], ['image-a-2', 'Set thumbnail', 'Set thumbnail'], ['menu-lines', 'Visible metadata', 'Manage metadata'], ['move', 'Move To...', 'Move'], ['lock', 'Permissions', 'Permissions'], ['trash-detail', 'Delete', 'Delete']];
+  } },
+  "dam/app/pages/home/findAssets.js": { deps: {"./homeData.js":"dam/app/pages/home/homeData.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MONTH = exports.FIND_EMPTY = void 0;
+exports.findAssets = findAssets;
+exports.findOf = findOf;
+exports.findParams = findParams;
+var D = _interopRequireWildcard(require("./homeData.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+/* Plenix asset app · asset search (app/pages/home/findAssets.js): which assets match a query and filters, and in which
+   order; and the search screen's address. Shared by the home page's Search workspace and the header's quick results (the
+   full-screen search view at Narrow, app/shell/AssetShell.jsx).
+   The address of a search (Platforms Standard 4.3): #/search?q=<text>&type=AI,PSD&cat=…&tags=…&owner=…&date=…&status=…&sort=…;
+   a multiple-choice filter is its values joined by commas (no value holds one), a single choice its value; a filter
+   without a value and the default sort are left out. */
+
+const FIND_EMPTY = exports.FIND_EMPTY = {
+  query: '',
+  filters: {},
+  sort: 'Relevance',
+  saved: null
+};
+const MONTH = d => d.replace(/ \d+,/, ''); // "Aug 12, 2026" → "Aug 2026"
+exports.MONTH = MONTH;
+const MULTIPLE = ['type', 'cat', 'tags'],
+  SINGLE = ['owner', 'date', 'status'];
+function findAssets(f) {
+  const words = f.query.toLowerCase().split(/\s+/).filter(Boolean);
+  const v = f.filters;
+  const list = D.ASSETS.filter(a => {
+    const hay = [a.name, a.file, a.cat, a.fmt, a.owner].concat(a.tags).join(' ').toLowerCase();
+    if (words.some(w => hay.indexOf(w) < 0)) return false;
+    if ((v.type || []).length && v.type.indexOf(a.badge) < 0) return false;
+    if ((v.cat || []).length && v.cat.indexOf(a.cat) < 0) return false;
+    if ((v.tags || []).length && !v.tags.every(t => a.tags.indexOf(t) >= 0)) return false;
+    if (v.owner && a.owner !== v.owner) return false;
+    if (v.status && a.status !== v.status) return false;
+    if (v.date && MONTH(a.date) !== v.date) return false;
+    return true;
+  });
+  const by = {
+    Newest: (a, b) => Date.parse(b.date) - Date.parse(a.date),
+    Oldest: (a, b) => Date.parse(a.date) - Date.parse(b.date),
+    'Name A–Z': (a, b) => a.name.localeCompare(b.name),
+    'Name Z–A': (a, b) => b.name.localeCompare(a.name),
+    Size: (a, b) => parseFloat(b.size) - parseFloat(a.size)
+  }[f.sort];
+  return by ? list.slice().sort(by) : list;
+}
+
+// a search's address parameters: { q, type, cat, tags, owner, date, status, sort }
+function findParams(f) {
+  const p = {
+    q: f.query || ''
+  };
+  MULTIPLE.forEach(k => {
+    if ((f.filters[k] || []).length) p[k] = f.filters[k].join(',');
+  });
+  SINGLE.forEach(k => {
+    if (f.filters[k]) p[k] = f.filters[k];
+  });
+  if (f.sort && f.sort !== FIND_EMPTY.sort) p.sort = f.sort;
+  return p;
+}
+
+// the search an address names (the inverse of findParams)
+function findOf(params) {
+  const filters = {};
+  MULTIPLE.forEach(k => {
+    if (params[k]) filters[k] = params[k].split(',');
+  });
+  SINGLE.forEach(k => {
+    if (params[k]) filters[k] = params[k];
+  });
+  return {
+    ...FIND_EMPTY,
+    query: params.q || '',
+    filters,
+    sort: params.sort || FIND_EMPTY.sort
+  };
+}
+  } },
+  "dam/app/shell/AssetShell.jsx": { deps: {"react":null,"plenix-platform":null,"../pages/home/findAssets.js":"dam/app/pages/home/findAssets.js"}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16,6 +250,7 @@ exports.AssetPage = AssetPage;
 exports.AssetStatusBar = AssetStatusBar;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
+var _findAssets = require("../pages/home/findAssets.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix asset app · shell (app/shell/AssetShell.jsx): what every asset page shares, in React.
    <AssetPage title="My account" current="account" sideNav={<NavPane…/>} panel={<SidePanel…/>}>…</AssetPage> renders the AppShell — skip link, header, the page's <main>
@@ -24,13 +259,32 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    upload in place (query: the initial search text); elsewhere they go to the home page (index.html?q=… / ?upload=1).
    Header: brand (home), asset search (Enter searches on the home page; Ctrl K or ⌘K focuses it), Upload (opens the upload
    dialog on the home page), notifications and the account menu. Replaces partials/topbar.html on the pages that have
-   moved to React. */
+   moved to React.
+   At Narrow the header search is a full-screen view (AppHeader): the recent searches (kept in plenix.assets.view,
+   recentSearches; the last five) and, while a query is typed, the matching assets; choosing an asset leaves the view
+   (its history entry) and opens the asset in the search screen (#/search?q=…&asset=<id>). */
 
 // DATA: the library totals come from the back end; this is the sample record the pages show until then. Who is signed in
 // and their notifications come from the Platform session (SessionProvider, mounted in app/assets.jsx).
 const LIBRARY = {
   summary: '4,546 assets | 12.4 GB',
   owner: 'Lighthouse Way'
+};
+const RECENT_MAX = 5;
+// the full-screen search view (AppHeader at Narrow) is a history entry of its own: leave it (Back, which closes it) before
+// opening a screen, so the screen's entry replaces it in the history instead of following it
+const afterSearchView = open => {
+  const st = window.history.state;
+  if (!(st && st.plxSearch)) {
+    open();
+    return;
+  }
+  const go = () => {
+    window.removeEventListener('popstate', go);
+    open();
+  };
+  window.addEventListener('popstate', go);
+  window.history.back();
 };
 function AssetHeader({
   current,
@@ -39,10 +293,64 @@ function AssetHeader({
   onUpload
 }) {
   const [q, setQ] = _react.default.useState(query);
-  const onSearchKey = e => {
-    if (e.key !== 'Enter') return;
-    if (onSearch) onSearch(q.trim());else if (q.trim()) location.href = 'index.html?q=' + encodeURIComponent(q.trim());
+  const [kept, updateKept] = (0, _plenixPlatform.useViewState)('assets');
+  const recent = Array.isArray(kept.recentSearches) ? kept.recentSearches : [];
+  const run = text => {
+    const t = text.trim();
+    if (t) updateKept(v => ({
+      recentSearches: [t].concat((v.recentSearches || []).filter(x => x !== t)).slice(0, RECENT_MAX)
+    }));
+    setQ(t);
+    afterSearchView(() => {
+      if (onSearch) onSearch(t);else if (t) location.href = 'index.html?q=' + encodeURIComponent(t);
+    });
   };
+  const onSearchKey = e => {
+    if (e.key === 'Enter') run(q);
+  };
+  // an asset from the quick results: the search screen with the asset open (on another page, the home page's)
+  const openAsset = a => afterSearchView(() => {
+    const t = q.trim();
+    if (onSearch) (0, _plenixPlatform.navigate)(['search'], {
+      q: t,
+      asset: a.id
+    });else location.href = 'index.html' + (0, _plenixPlatform.screenHref)(['search'], {
+      q: t,
+      asset: a.id
+    });
+  });
+  const typed = q.trim().toLowerCase();
+  const recentShown = recent.filter(x => x.toLowerCase().indexOf(typed) >= 0);
+  const suggestions = recentShown.length ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SectionHeading, null, "Recent searches"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList, {
+    label: "Recent searches"
+  }, recentShown.map(x => /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList.Item, {
+    key: x,
+    leading: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
+      name: "clock"
+    }),
+    title: x,
+    onOpen: () => run(x)
+  })))) : null;
+  const found = typed ? (0, _findAssets.findAssets)({
+    ..._findAssets.FIND_EMPTY,
+    query: q
+  }) : null;
+  const results = found ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SectionHeading, null, "Assets"), found.length ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList, {
+    label: "Assets",
+    stacked: true
+  }, found.map(a => /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActivityList.Item, {
+    key: a.id,
+    leading: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Thumbnail, {
+      src: a.thumb,
+      alt: ""
+    }),
+    title: a.name,
+    meta: a.cat + ' · ' + a.badge,
+    onOpen: () => openAsset(a)
+  }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+    variant: "secondary",
+    as: "p"
+  }, 'Nothing matches “' + q.trim() + '”.')) : null;
   // the universal Plenix header: this is the Asset Manager; the header brings the pinned applications, search (Ctrl K),
   // notifications, the account and the switcher
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.AppHeader, {
@@ -66,6 +374,8 @@ function AssetHeader({
       shortcut: "Ctrl K",
       onAccent: true
     }),
+    searchSuggestions: suggestions,
+    searchResults: results,
     account: /*#__PURE__*/_react.default.createElement(_plenixPlatform.AppHeader.Account, {
       current: current === 'system' ? 'app-settings' : current,
       myAccount: {
@@ -1800,155 +2110,6 @@ function SystemSettingsPage() {
     section: section
   }));
 }
-  } },
-  "dam/app/pages/home/homeData.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VERSIONS = exports.USAGE_RIGHTS = exports.TRASH = exports.SORT_OPTIONS = exports.SEARCH_QUERY = exports.SEARCH_COUNT = exports.SAVED_SEARCHES = exports.RECENT_IMPORTS = exports.FOLDERS_OPEN = exports.FOLDERS = exports.COLLECTION_DETAIL = exports.COLLECTION_CARDS = exports.COLLECTIONS = exports.CATEGORY_TOTAL = exports.CATEGORY_DOWNLOADS = exports.CATEGORY_DETAIL = exports.CATEGORY_COUNT_LABEL = exports.CATEGORY_CARDS = exports.CATEGORIES_SHOWN = exports.CATEGORIES = exports.CARD_MENU = exports.ASSET_TOTAL = exports.ASSET_STATUSES = exports.ASSET_DOWNLOADS = exports.ASSETS = void 0;
-/* Plenix asset app · home page data (app/pages/home/homeData.js).
-   DATA: every list here comes from the back end; these are the sample records the home page showed in HTML and in
-   plenix.js (CATEGORIES, COLLECTIONS, assetData) until then, unchanged. Thumbnails are the stand-in images in assets/. */
-
-const folder = (name, children) => ({
-  id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-  label: name,
-  icon: 'folder',
-  children
-});
-const FOLDERS = exports.FOLDERS = [folder('All', [folder('Digital Assets', [folder('Banner icon'), folder('Bookshelf'), folder('Borders', [folder('Arch'), folder('Banner'), folder('Circular'), folder('Divider'), folder('Linear'), folder('Page')]), folder('Branding', [folder('Churches'), folder('CYC'), folder('Diakonia'), folder('LACopts')]), folder('Certificates'), folder('Clergy'), folder('Crosses'), folder('Embroideries'), folder('Fonts')]), folder('Documents', [folder('Manuals'), folder('Templates')]), folder('Facial Profiles'), folder('Users')])];
-const FOLDERS_OPEN = exports.FOLDERS_OPEN = ['all', 'digital-assets'];
-
-// the sidebar lists (the first row of each is the "All …" view)
-const CATEGORIES = exports.CATEGORIES = [['All categories', '4,546', true], ['Branding', '326', true], ['Crosses', '1,284', true], ['Banner icon', '18'], ['Bookshelf', '18'], ['Borders', '245'], ['Certificates', '387'], ['Clergy', '512'], ['Covers', '198'], ['Dome', '14'], ['Embroideries', '31'], ['Fonts', '22'], ['Galloons', '27'], ['Korban Stamp', '8'], ['Ornamental Elements', '45'], ['Presentation Folders', '12']].map(([name, count, pinned]) => ({
-  name,
-  count,
-  pinned: !!pinned
-}));
-const CATEGORIES_SHOWN = exports.CATEGORIES_SHOWN = 7;
-const COLLECTIONS = exports.COLLECTIONS = [['All collections', '305', true], ['Website Assets', '84', true], ['Social Media', '42', true], ['Print ready', '156'], ['Needs review', '23']].map(([name, count, pinned]) => ({
-  name,
-  count,
-  pinned: !!pinned
-}));
-// a saved search keeps its query and filters; opening it restores them in the Search workspace
-const SAVED_SEARCHES = exports.SAVED_SEARCHES = [{
-  name: 'High-res crosses',
-  query: 'cross',
-  filters: {}
-}, {
-  name: 'Untagged assets',
-  query: '',
-  filters: {
-    status: 'New'
-  }
-}, {
-  name: 'Large files >50MB',
-  query: '',
-  filters: {
-    type: ['PSD']
-  }
-}];
-const RECENT_IMPORTS = exports.RECENT_IMPORTS = [['Aug 31, 2026', 28], ['Aug 24, 2026', 112], ['Aug 15, 2026', 67]];
-const TRASH = exports.TRASH = [['Deleted assets', 12]];
-const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner icon', 24, 5, 'Aug 28, 2026'], ['Bookshelf', 18, 6, 'Aug 25, 2026'], ['Borders - Arch', 31, 7, 'Aug 22, 2026'], ['Borders - Circular', 42, 8, 'Aug 20, 2026'], ['Branding - Churches', 28, 9, 'Aug 18, 2026'], ['Branding - CYC', 5, 10, 'Aug 15, 2026'], ['Branding - Diakonia', 15, 11, 'Aug 12, 2026'], ['Certificate - Baptism', 89, 12, 'Aug 10, 2026'], ['Certificate - Masters', 47, 13, 'Aug 8, 2026'], ['Clergy - Metropolitan Serapion', 62, 14, 'Aug 5, 2026'], ['Clergy - Pope Shenouda III', 210, 15, 'Aug 2, 2026'], ['Clergy - Pope Tawadros II', 45, 16, 'Jul 30, 2026'], ['Cross - Traditional', 78, 17, 'Jul 25, 2026'], ['Dome', 33, 18, 'Jul 20, 2026'], ['Embroideries', 156, 19, 'Jul 15, 2026'], ['Fonts', 18, 20, 'Jul 10, 2026']].map(([name, count, thumb, modified], i) => ({
-  id: i,
-  name,
-  count,
-  thumb: 'assets/thumb-' + thumb + '.svg',
-  modified,
-  status: 'Active'
-}));
-const CATEGORY_TOTAL = exports.CATEGORY_TOTAL = 48;
-const CATEGORY_COUNT_LABEL = exports.CATEGORY_COUNT_LABEL = '52 categories';
-const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'raphael'], ['Social Media', 42, 'Aug 25, 2026', 'raphael'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
-  id: i,
-  name,
-  count,
-  updated,
-  owner
-}));
-const ASSETS = exports.ASSETS = [['Coptic Cross Gold Traditional', 'Cross - Traditional', 'Coptic_Cross_Gold.ai', 'Adobe Illustrator (.ai)', 'AI', '18.7 MB', '2400 × 3200 px', 'Aug 12, 2026', 'Complete'], ['Cross Gold Ornate Large', 'Cross - Majestic', 'Cross_Gold_Ornate.psd', 'Photoshop (.psd)', 'PSD', '42.1 MB', '4800 × 6400 px', 'Aug 10, 2026', 'Complete'], ['Cross Gold Pectoral', 'Cross - Pectoral Silver', 'Cross_Gold_Pectoral.ai', 'Adobe Illustrator (.ai)', 'AI', '8.3 MB', '1200 × 1600 px', 'Aug 8, 2026', 'Complete'], ['Gold Cross Floral Border', 'Cross - Floral', 'Gold_Cross_Floral.png', 'PNG', 'PNG', '4.2 MB', '2000 × 2000 px', 'Jul 28, 2026', 'New'], ['Cross Gold Diamond Pattern', 'Cross - Diamond', 'Cross_Gold_Diamond.ai', 'Adobe Illustrator (.ai)', 'AI', '12.6 MB', '3000 × 3000 px', 'Jul 22, 2026', 'Complete'], ['Gold Cross Iconostasis', 'Cross - Iconostasis', 'Gold_Cross_Iconostasis.jpg', 'JPEG', 'JPG', '1.8 MB', '1920 × 2560 px', 'Jul 15, 2026', 'Complete'], ['Cross Gold Procession', 'Cross - Procession', 'Cross_Gold_Procession.psd', 'Photoshop (.psd)', 'PSD', '28.4 MB', '4000 × 5000 px', 'Jul 10, 2026', 'New'], ['Gold Coptic Cross Linear', 'Cross - Linear', 'Gold_Coptic_Linear.ai', 'Adobe Illustrator (.ai)', 'AI', '6.1 MB', '1800 × 2400 px', 'Jul 5, 2026', 'Complete']].map(([name, cat, file, fmt, badge, size, dims, date, status], i) => ({
-  id: i,
-  name,
-  cat,
-  file,
-  fmt,
-  badge,
-  size,
-  dims,
-  date,
-  status,
-  thumb: 'assets/thumb-' + (21 + i) + '.svg',
-  typeIcon: 'file-' + badge.toLowerCase(),
-  tags: name.toLowerCase().split(' '),
-  owner: ['Raphael Maher', 'Sarah M.', 'John Deacon'][i % 3]
-}));
-const ASSET_TOTAL = exports.ASSET_TOTAL = 210;
-const SEARCH_QUERY = exports.SEARCH_QUERY = 'cross gold';
-const SEARCH_COUNT = exports.SEARCH_COUNT = 24;
-const SORT_OPTIONS = exports.SORT_OPTIONS = ['Relevance', 'Newest', 'Oldest', 'Name A-Z', 'Name Z-A', 'Size ▼', 'Size ▲', 'Modified'];
-
-// the details pane for a category (and the collection shown in the collections view)
-const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
-  name: 'Cross - Traditional',
-  count: '78 assets',
-  parent: 'Categories (root)',
-  parents: ['Categories (root)', 'Borders', 'Branding', 'Clergy', 'Crosses'],
-  order: '8',
-  color: 'brown' /* a category color (CATEGORY_COLORS, batch 290) */,
-  copyright: 'Coptic Orthodox Church',
-  rights: 'Internal',
-  rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
-  rating: 0,
-  description: 'Traditional Coptic cross designs and variations',
-  tags: ['cross', 'traditional', 'coptic'],
-  stats: [['Total assets', '78'], ['Storage used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
-  permissions: [['Owner', 'raphael'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
-  customFields: [['Style', 'e.g. Byzantine, Nubian...'], ['Material', 'e.g. Wood, Stone, Metal...'], ['Origin', 'e.g. Egypt, Ethiopia...']]
-};
-const COLLECTION_DETAIL = exports.COLLECTION_DETAIL = {
-  name: 'Website Assets',
-  count: '84 assets'
-};
-const CATEGORY_DOWNLOADS = exports.CATEGORY_DOWNLOADS = [{
-  title: 'Download entire category',
-  items: [['file-zip', 'All Files (Source)', '78 files · ~1.4 GB']]
-}, {
-  title: 'Download by file type',
-  items: [['file-ai', 'Adobe Illustrator (.ai)', '42 files · ~820 MB'], ['file-png', 'PNG Images', '78 files · ~340 MB'], ['file-jpg', 'JPEG Thumbnails', '78 files · ~18 MB'], ['file-svg', 'SVG Vectors', '35 files · ~12 MB'], ['file-pdf', 'PDF Print-Ready', '42 files · ~280 MB']]
-}, {
-  title: 'Variations',
-  items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '78 files · ~45 MB'], ['file-png', 'Social Media (1080×1080)', '78 files · ~62 MB']]
-}];
-const ASSET_DOWNLOADS = exports.ASSET_DOWNLOADS = [{
-  title: 'Download by file type',
-  items: [['file-png', 'Preview.png', '4.2 MB'], ['file-jpg', 'Web.jpg', '245 KB']]
-}, {
-  title: 'Variations',
-  items: [['file-jpg', 'Web Optimized (sRGB, 1200px)', '180 KB'], ['file-png', 'Social Media (1080×1080)', '520 KB']]
-}];
-const ASSET_STATUSES = exports.ASSET_STATUSES = ['Complete', 'New', 'In progress', 'Pending review', 'Archived'];
-const USAGE_RIGHTS = exports.USAGE_RIGHTS = ['Internal use only', 'Church Use', 'Creative Commons', 'Public domain'];
-const VERSIONS = exports.VERSIONS = [{
-  label: 'Version 3 (Current)',
-  date: 'Aug 12, 2026 at 2:45 PM',
-  user: 'Fr. Raphael M.',
-  current: true
-}, {
-  label: 'Version 2',
-  date: 'Jul 5, 2026 at 10:12 AM',
-  user: 'Sarah M.'
-}, {
-  label: 'Version 1 (Original)',
-  date: 'Jun 18, 2026 at 3:30 PM',
-  user: 'Fr. Daniel'
-}];
-
-// the options menu on a category card
-const CARD_MENU = exports.CARD_MENU = [['fields', 'Edit category', 'Edit category'], ['rename', 'Rename', 'Rename'], ['image-a-2', 'Set thumbnail', 'Set thumbnail'], ['menu-lines', 'Visible metadata', 'Manage metadata'], ['move', 'Move To...', 'Move'], ['lock', 'Permissions', 'Permissions'], ['trash-detail', 'Delete', 'Delete']];
   } },
   "dam/app/pages/home/Sidebar.jsx": { deps: {"react":null,"plenix-platform":null,"./homeData.js":"dam/app/pages/home/homeData.js"}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 "use strict";
@@ -5713,7 +5874,7 @@ const DIALOGS = exports.DIALOGS = {
   baRename: BaRenameDialog
 };
   } },
-  "dam/app/pages/home/HomePage.jsx": { deps: {"react":null,"plenix-platform":null,"../../shell/AssetShell.jsx":"dam/app/shell/AssetShell.jsx","./Sidebar.jsx":"dam/app/pages/home/Sidebar.jsx","./Inspector.jsx":"dam/app/pages/home/Inspector.jsx","./homeData.js":"dam/app/pages/home/homeData.js","../../dialogs/BrowseDialogs.jsx":"dam/app/dialogs/BrowseDialogs.jsx","../../dialogs/UploadDialog.jsx":"dam/app/dialogs/UploadDialog.jsx","../../dialogs/MetadataFilterDialog.jsx":"dam/app/dialogs/MetadataFilterDialog.jsx","../../dialogs/BulkDialogs.jsx":"dam/app/dialogs/BulkDialogs.jsx"}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
+  "dam/app/pages/home/HomePage.jsx": { deps: {"react":null,"plenix-platform":null,"../../shell/AssetShell.jsx":"dam/app/shell/AssetShell.jsx","./Sidebar.jsx":"dam/app/pages/home/Sidebar.jsx","./Inspector.jsx":"dam/app/pages/home/Inspector.jsx","./homeData.js":"dam/app/pages/home/homeData.js","./findAssets.js":"dam/app/pages/home/findAssets.js","../../dialogs/BrowseDialogs.jsx":"dam/app/dialogs/BrowseDialogs.jsx","../../dialogs/UploadDialog.jsx":"dam/app/dialogs/UploadDialog.jsx","../../dialogs/MetadataFilterDialog.jsx":"dam/app/dialogs/MetadataFilterDialog.jsx","../../dialogs/BulkDialogs.jsx":"dam/app/dialogs/BulkDialogs.jsx"}, externals: { "react": function () { return window.React; }, "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5726,6 +5887,7 @@ var _AssetShell = require("../../shell/AssetShell.jsx");
 var _Sidebar = require("./Sidebar.jsx");
 var _Inspector = require("./Inspector.jsx");
 var D = _interopRequireWildcard(require("./homeData.js"));
+var _findAssets = require("./findAssets.js");
 var _BrowseDialogs = require("../../dialogs/BrowseDialogs.jsx");
 var _UploadDialog = require("../../dialogs/UploadDialog.jsx");
 var _MetadataFilterDialog = require("../../dialogs/MetadataFilterDialog.jsx");
@@ -5739,7 +5901,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    the details pane. The sidebar is the shell's side navigation and the details pane its panel: the AppShell collapses,
    resizes and (below 1024px) overlays them.
    The address (Platforms Standard 4.3): each view is a screen with a history entry: #/ (categories), #/collections,
-   #/category/<name>, #/search?q=<text>, #/saved/<name>, and ?asset=<id> on any of them for the open asset; the last
+   #/category/<name>, #/search?q=<text>&<filters>&sort=… (findAssets.js), #/saved/<name>, and ?asset=<id> on any of them
+   for the open asset; refining a search in the workspace is a new entry per committed search (Enter or leaving the
+   field, a filter, Clear all, the sort), never per keystroke, and a refined saved search becomes a search; the last
    screen is restored on load (plenix.assets.view). ?q=text (the header on other pages links here) names the search
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
@@ -5872,38 +6036,6 @@ function FilesPane({
     }, "New folder")))
   );
 }
-
-// the Search workspace: which assets match a query and filters, and in which order
-const FIND_EMPTY = {
-  query: '',
-  filters: {},
-  sort: 'Relevance',
-  saved: null
-};
-const MONTH = d => d.replace(/ \d+,/, ''); // "Aug 12, 2026" → "Aug 2026"
-function findAssets(f) {
-  const words = f.query.toLowerCase().split(/\s+/).filter(Boolean);
-  const v = f.filters;
-  const list = D.ASSETS.filter(a => {
-    const hay = [a.name, a.file, a.cat, a.fmt, a.owner].concat(a.tags).join(' ').toLowerCase();
-    if (words.some(w => hay.indexOf(w) < 0)) return false;
-    if ((v.type || []).length && v.type.indexOf(a.badge) < 0) return false;
-    if ((v.cat || []).length && v.cat.indexOf(a.cat) < 0) return false;
-    if ((v.tags || []).length && !v.tags.every(t => a.tags.indexOf(t) >= 0)) return false;
-    if (v.owner && a.owner !== v.owner) return false;
-    if (v.status && a.status !== v.status) return false;
-    if (v.date && MONTH(a.date) !== v.date) return false;
-    return true;
-  });
-  const by = {
-    Newest: (a, b) => Date.parse(b.date) - Date.parse(a.date),
-    Oldest: (a, b) => Date.parse(a.date) - Date.parse(b.date),
-    'Name A–Z': (a, b) => a.name.localeCompare(b.name),
-    'Name Z–A': (a, b) => b.name.localeCompare(a.name),
-    Size: (a, b) => parseFloat(b.size) - parseFloat(a.size)
-  }[f.sort];
-  return by ? list.slice().sort(by) : list;
-}
 const opts = values => Array.from(new Set(values)).sort().map(x => ({
   value: x,
   label: x,
@@ -5930,7 +6062,7 @@ function HomePage() {
   const params = _react.default.useMemo(() => new URLSearchParams(location.search), []);
   const [view, setView] = _react.default.useState(params.get('q') !== null ? 'find' : 'categories');
   const [find, setFind] = _react.default.useState({
-    ...FIND_EMPTY,
+    ..._findAssets.FIND_EMPTY,
     query: params.get('q') || ''
   });
   const [saved, setSaved] = _react.default.useState(D.SAVED_SEARCHES);
@@ -5963,7 +6095,10 @@ function HomePage() {
   const collections = view === 'collections';
 
   // the screen named by the address: the view (with its category, search or saved search), then the open asset
-  const viewKey = loc.parts.join('/') + '?' + (loc.params.q || '');
+  const shownQuery = _react.default.useRef(''); // the query of the search the address names
+  const viewKey = (0, _plenixPlatform.screenHref)(loc.parts, Object.assign({}, loc.params, {
+    asset: undefined
+  })); // the open asset is not a view
   _react.default.useLayoutEffect(() => {
     const [top, name] = loc.parts;
     setFiles(false);
@@ -5978,19 +6113,17 @@ function HomePage() {
       setQuery('');
       setActive(name);
     } else if (top === 'search') {
-      const q = loc.params.q || '';
-      setQuery(q);
+      setQuery(loc.params.q || '');
       setActive(null);
-      setFind({
-        ...FIND_EMPTY,
-        query: q
-      });
+      setFind((0, _findAssets.findOf)(loc.params));
       setView('find');
+      shownQuery.current = loc.params.q || '';
     } else if (top === 'saved' && name) {
       const s = saved.find(x => x.name === name);
+      shownQuery.current = s ? s.query : '';
       setActive(name);
       setFind({
-        ...FIND_EMPTY,
+        ..._findAssets.FIND_EMPTY,
         query: s ? s.query : '',
         filters: s ? s.filters : {},
         saved: name
@@ -6297,7 +6430,7 @@ function HomePage() {
       onSelect: () => bulk('Regenerate thumbnail')
     }]
   });
-  const found = findAssets(find);
+  const found = (0, _findAssets.findAssets)(find);
   // Save search: keeps the query and filters under a name in the left navigation's Saved Searches
   const saveSearch = () => openDialog('saveSearchModal', {
     onSave: v => {
@@ -6314,7 +6447,29 @@ function HomePage() {
       setActive(name);
     }
   });
-  const setFindFilter = (id, value) => setFind({
+  // a committed refinement is a new screen (a history entry): the address carries the query, the filters and the sort
+  const commitFind = next => {
+    setFind(next);
+    loc.navigate(['search'], (0, _findAssets.findParams)(next));
+  };
+  const committed = find.query === shownQuery.current;
+  // the query typed in the workspace is applied as the person types; Enter or leaving the field commits it (and clearing it)
+  const onFindKey = e => {
+    if (e.key === 'Enter' && view === 'find' && !committed && e.target.closest('.plx-search-ws__query')) commitFind(find);
+  };
+  const onFindBlur = e => {
+    if (view === 'find' && !committed && e.target.closest('.plx-search-ws__query')) commitFind(find);
+  };
+  const setFindQuery = q => q ? setFind({
+    ...find,
+    query: q,
+    saved: null
+  }) : commitFind({
+    ...find,
+    query: '',
+    saved: null
+  });
+  const setFindFilter = (id, value) => commitFind({
     ...find,
     filters: {
       ...find.filters,
@@ -6348,7 +6503,7 @@ function HomePage() {
   }, {
     id: 'date',
     label: 'Date',
-    options: opts(D.ASSETS.map(a => MONTH(a.date))),
+    options: opts(D.ASSETS.map(a => (0, _findAssets.MONTH)(a.date))),
     value: find.filters.date || null
   }, {
     id: 'status',
@@ -6648,21 +6803,19 @@ function HomePage() {
     align: "stretch",
     grow: true
   }, files ? filesPane : null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.PageContent, _extends({
-    "aria-labelledby": "home-title"
+    "aria-labelledby": "home-title",
+    onKeyDown: onFindKey,
+    onBlur: onFindBlur
   }, browse ? dropHandlers : {}), view === 'find' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.SearchWorkspace, {
     title: find.saved || (find.query ? 'Search results' : 'Search'),
     query: find.query,
-    onQueryChange: q => setFind({
-      ...find,
-      query: q,
-      saved: null
-    }),
+    onQueryChange: setFindQuery,
     placeholder: "Search assets by name, filename, metadata\u2026",
     noun: "asset",
     count: found.length,
     filters: filterDefs,
     onFilterChange: setFindFilter,
-    onClearAll: () => setFind({
+    onClearAll: () => commitFind({
       ...find,
       filters: {},
       saved: null
@@ -6670,7 +6823,7 @@ function HomePage() {
     sort: {
       value: find.sort,
       options: ['Relevance', 'Newest', 'Oldest', 'Name A–Z', 'Name Z–A', 'Size'],
-      onChange: o => setFind({
+      onChange: o => commitFind({
         ...find,
         sort: o
       })

@@ -11,6 +11,11 @@
 //   restoration   the last screen and the list's width and scroll come back on load (plenix.<app>.view)
 //   no rewrite    choosing a section in the DAM settings pages pushes an entry (never replaceState)
 //   legacy        an older address (#t-2, #account) opens its screen under its new address
+//   calendar      the view and its date are the address (#/month/2026-03, #/week/2026-03-01, #/day/2026-03-05), each an entry
+//   DAM search    refining a search in the workspace updates the address: an entry per committed search (Enter, the sort),
+//                 none per keystroke; an address with filters opens with them
+//   search view   at Narrow the header search shows the recent searches and the results; choosing a result opens its
+//                 screen in place of the view's entry
 //   node tests/navigation.test.js            run
 //   NAV_PORT=8855 node tests/navigation.test.js   another port (several runs side by side)
 const { serve, launch, sleep } = require('./lib.js');
@@ -109,12 +114,16 @@ async function fresh(browser, url, width) {
       await clickRow(page, 1); await settle();
       check(app + ' at 390px: choosing an item opens its detail', open.test(await hash(page)), await hash(page));
       check(app + ' at 390px: the list steps aside', !(await shown(page, '.plx-secondary-pane')));
-      check(app + ' at 390px: Back to the list leads the detail', /^Back to /.test((await text(page, '.plx-secondary-pane-back')) || ''));
-      check(app + ' at 390px: focus is on Back', await page.evaluate(() => !!document.activeElement.closest('.plx-secondary-pane-back')));
+      // one back control: the shell's parent row (NavPane) becomes the Back while the detail shows; a pane whose shell has
+      // no parent row (a bottom navigation bar) draws its own Back bar
+      const BACK = '.plx-nav-pane-parent button, .plx-secondary-pane-back button';
+      const backs = await page.$$eval(BACK, (x) => x.filter((b) => b.offsetParent).map((b) => b.textContent.trim()));
+      check(app + ' at 390px: Back to the list leads the detail', backs.length === 1 && /^Back to /.test(backs[0]), JSON.stringify(backs));
+      check(app + ' at 390px: focus is on Back', await page.evaluate((sel) => !!document.activeElement.closest('.plx-nav-pane-parent, .plx-secondary-pane-back') && document.activeElement.matches(sel), BACK));
       await back(page);
       check(app + ' at 390px: the browser\'s Back returns to the list', await shown(page, '.plx-secondary-pane--list'));
       await clickRow(page, 2); await settle();
-      await page.evaluate(() => document.querySelector('.plx-secondary-pane-back button').click()); await settle();
+      await page.evaluate((sel) => [...document.querySelectorAll(sel)].find((b) => b.offsetParent && /^Back to /.test(b.textContent.trim())).click(), BACK); await settle();
       check(app + ' at 390px: the Back control returns to the list', await shown(page, '.plx-secondary-pane--list') && ['', '#', '#/'].includes(await hash(page)), await hash(page));
       check(app + ' at 390px: focus returns to the chosen item', await page.evaluate((s) => document.activeElement === document.querySelectorAll(s)[2], rows));
       await page.close();
@@ -143,6 +152,56 @@ async function fresh(browser, url, width) {
       check(file + ': Back returns to the previous section', !/users|preferences/.test(await hash(page)), await hash(page));
       await page.close();
     }
+
+    /* ── calendar: the view and date in the address ── */
+    page = await fresh(browser, 'calendar/index.html');
+    const seg = (l) => page.evaluate((x) => { const b = [...document.querySelectorAll('.plx-segmented__item')].find((e) => e.innerText.trim() === x); if (b) b.click(); return !!b; }, l);
+    const c0 = await len(page);
+    await seg('Week'); await settle();
+    check('calendar: the week view is #/week/<first day>', (await hash(page)) === '#/week/2026-03-01', await hash(page));
+    await seg('Day'); await settle();
+    check('calendar: the day view is #/day/<date>', (await hash(page)) === '#/day/2026-03-05', await hash(page));
+    check('calendar: each view is a history entry', (await len(page)) === c0 + 2, (await len(page)) + ' vs ' + c0);
+    await back(page);
+    check('calendar: Back returns to the week', (await hash(page)) === '#/week/2026-03-01' && /Mar 1–7/.test((await text(page, 'h1')) || ''), await hash(page));
+    await page.close();
+    page = await fresh(browser, 'calendar/index.html#/day/2026-03-12');
+    check('calendar: an address opens its day', /March 12, 2026/.test((await text(page, 'h1')) || ''), await text(page, 'h1'));
+    await page.close();
+
+    /* ── DAM search: refinements in the address ── */
+    page = await fresh(browser, 'dam/index.html#/search?q=cross');
+    const d0 = await len(page);
+    await page.focus('.plx-search-ws__query input'); await page.keyboard.press('End'); await page.keyboard.type(' gold'); await settle();
+    check('DAM search: typing changes neither the address nor the history', (await hash(page)) === '#/search?q=cross' && (await len(page)) === d0, (await hash(page)) + ', ' + (await len(page)));
+    await page.keyboard.press('Enter'); await settle();
+    check('DAM search: Enter commits the query to the address (an entry)', (await hash(page)) === '#/search?q=cross+gold' && (await len(page)) === d0 + 1, (await hash(page)) + ', ' + (await len(page)));
+    await page.evaluate(() => document.querySelector('.plx-search-ws__bar button[aria-label^="Sort"]').click()); await settle();
+    await page.evaluate(() => { const m = [...document.querySelectorAll('[role^="menuitem"]')].find((x) => x.innerText.trim() === 'Newest'); if (m) m.click(); }); await settle();
+    check('DAM search: the sort is in the address (an entry)', /[?&]sort=Newest/.test(await hash(page)) && (await len(page)) === d0 + 2, (await hash(page)) + ', ' + (await len(page)));
+    await back(page);
+    check('DAM search: Back returns to the previous search', (await hash(page)) === '#/search?q=cross+gold' && (await page.$eval('.plx-search-ws__query input', (i) => i.value)) === 'cross gold', await hash(page));
+    await page.close();
+    page = await fresh(browser, 'dam/index.html#/search?q=cross&type=PSD');
+    check('DAM search: an address with filters opens with them', /Type: PSD/.test((await text(page, '.plx-search-ws__active')) || ''), await text(page, '.plx-search-ws__active'));
+    await page.close();
+
+    /* ── the full-screen search at Narrow: recent searches and results ── */
+    page = await fresh(browser, 'notes/index.html', 390);
+    await page.evaluate(() => document.querySelector('.plx-app-header__search-toggle').click()); await settle();
+    await page.keyboard.type('kitchen'); await page.keyboard.press('Enter'); await settle();
+    check('search view: Enter searches and closes the view', /^#\/search\?q=kitchen$/.test(await hash(page)) && !(await shown(page, '.plx-search-view')), await hash(page));
+    const kept = await page.evaluate(() => JSON.parse(localStorage.getItem('plenix.notes.view') || '{}').recentSearches);
+    check('search view: the search is kept among the recent ones', Array.isArray(kept) && kept[0] === 'kitchen', JSON.stringify(kept));
+    await page.evaluate(() => document.querySelector('.plx-app-header__search-toggle').click()); await settle();
+    check('search view: the recent searches show', /kitchen/.test((await text(page, '.plx-search-view__suggestions')) || ''), await text(page, '.plx-search-view__suggestions'));
+    const s0 = await len(page);
+    await page.evaluate(() => { const i = document.querySelector('.plx-search-view input'); const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; set.call(i, ''); i.dispatchEvent(new Event('input', { bubbles: true })); });
+    await page.keyboard.type('contractor'); await settle();
+    check('search view: the results show', !!(await page.$('.plx-search-view__results .plx-activity-list__opener')), await text(page, '.plx-search-view__results'));
+    await page.evaluate(() => document.querySelector('.plx-search-view__results .plx-activity-list__opener').click()); await sleep(500);
+    check('search view: a result opens its screen in place of the view entry', /^#\/note\/\d+$/.test(await hash(page)) && (await len(page)) === s0 && !(await shown(page, '.plx-search-view')), (await hash(page)) + ', ' + (await len(page)) + ' vs ' + s0);
+    await page.close();
 
     /* ── legacy addresses ── */
     page = await fresh(browser, 'messages/index.html#t-2');

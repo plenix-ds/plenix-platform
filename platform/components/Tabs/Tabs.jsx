@@ -17,12 +17,18 @@
      idBase: the base of the tab and panel ids, for a panel the application renders
      className: more classes on the tabs
      panelClassName: more classes on each panel
+     strings: the words it shows, for other languages: { more: "More", moreLabel: "More tabs" }
    Behavior:
      In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
      The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
      Arrow keys move and select (wrapping); Home and End go to the first and last.
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
+     Tabs that do not fit on one row move into a "More" menu after the last shown tab: a menu button outside the tab list,
+       its own Tab stop. The tab list never scrolls sideways (Platforms Standard 3.5, reflow). The selected tab is always
+       shown: when it is one of the moved tabs, it takes the last shown place. Arrow keys, Home and End still reach every
+       tab, moved ones included (the one chosen is shown); each tab states its place in the whole set (aria-posinset,
+       aria-setsize), so a screen reader counts the moved tabs too. Choosing a tab in the menu selects it and focuses it.
    Notes:
      "contained" is the standard: folder tabs joined to a bordered panel.
      "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
@@ -37,16 +43,60 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Count } from '../Count/Count.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import { Menu, MenuItem } from '../Menu/Menu.jsx';
 
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 export const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
+const STRINGS = { more: 'More', moreLabel: 'More tabs' };
 
-export function Tabs({ variant = 'contained', items, value, defaultValue, onChange, label, idBase, className, panelClassName }) {
+/* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
+   lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
+   shown, takes its own room, so the list narrows and the count is checked again). The width is the Tabs' own, which
+   does not follow the count, so the two never chase each other. */
+function useTabsFit(rootRef, listRef, count, key) {
+  const [fit, setFit] = React.useState(count);
+  const [width, setWidth] = React.useState(0);
+  React.useLayoutEffect(() => { setFit(count); }, [count, key, width]);
+  React.useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => setWidth(root.clientWidth));
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, []);
+  React.useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list || fit <= 1) return;
+    const box = list.getBoundingClientRect();
+    const out = Array.prototype.some.call(list.children, (el) => {
+      if (el.hidden) return false;
+      const r = el.getBoundingClientRect();
+      return r.right > box.right + 0.5 || r.left < box.left - 0.5;
+    });
+    if (out) setFit(fit - 1);
+  });
+  return Math.max(1, Math.min(fit, count));
+}
+
+export function Tabs({ variant = 'contained', items, value, defaultValue, onChange, label, idBase, className, panelClassName, strings }) {
+  const words = Object.assign({}, STRINGS, strings);
   const uid = useUid('plx-tabs');
   const base = idBase || uid;
   const [own, setOwn] = React.useState(defaultValue !== undefined ? defaultValue : (items[0] ? items[0].value : undefined));
   const current = value !== undefined ? value : own;
   const refs = React.useRef({});
+  const root = React.useRef(null), list = React.useRef(null);
+  const fit = useTabsFit(root, list, items.length, items.map((t) => t.label).join('|') + '|' + String(current));
+  // the shown tabs: the first `fit`; the selected tab takes the last place when it is not among them
+  const at = items.findIndex((t) => t.value === current);
+  const shown = (i) => (at < fit ? i < fit : (i < fit - 1 || i === at));
+  const moved = items.filter((t, i) => !shown(i));
+  // focus goes to a tab once it is shown (a moved tab chosen by key or from the menu)
+  const focusNext = React.useRef(null);
+  React.useLayoutEffect(() => {
+    const el = focusNext.current !== null ? refs.current[focusNext.current] : null;
+    if (el && !el.hidden) { focusNext.current = null; el.focus(); }
+  });
   const select = (v) => { if (value === undefined) setOwn(v); if (onChange) onChange(v); };
   const enabled = items.filter((t) => !t.disabled);
   const onKeyDown = (e) => {
@@ -61,24 +111,41 @@ export function Tabs({ variant = 'contained', items, value, defaultValue, onChan
     e.preventDefault();
     const t = enabled[next];
     select(t.value);
-    if (refs.current[t.value]) refs.current[t.value].focus();
+    if (refs.current[t.value] && !refs.current[t.value].hidden) refs.current[t.value].focus();
+    else focusNext.current = t.value;
   };
   const hasPanels = items.some((t) => t.content !== undefined);
   return (
-    <div className={cx('plx-tabs', 'plx-tabs--' + variant, className)}>
-      <div role="tablist" aria-label={label} className="plx-tabs__list" onKeyDown={onKeyDown}>
-        {items.map((t) => {
-          const on = t.value === current;
-          return (
-            <button key={t.value} ref={(el) => { refs.current[t.value] = el; }} type="button" role="tab" id={base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, '')}
-              aria-selected={on} aria-controls={tabsPanelId(base, t.value)} tabIndex={on ? 0 : -1} disabled={t.disabled || undefined}
-              className={cx('plx-tabs__tab', on && 'is-selected')} onClick={() => select(t.value)}>
-              {t.icon ? <span className="plx-tabs__icon">{asIcon(t.icon)}</span> : null}
-              <span className="plx-tabs__label">{t.label}</span>
-              {t.count !== undefined ? <Count value={t.count} tone="neutral" /> : null}
-            </button>
-          );
-        })}
+    <div ref={root} className={cx('plx-tabs', 'plx-tabs--' + variant, className)}>
+      <div className="plx-tabs__list">
+        <div ref={list} role="tablist" aria-label={label} className="plx-tabs__tablist" onKeyDown={onKeyDown}>
+          {items.map((t, i) => {
+            const on = t.value === current;
+            return (
+              <button key={t.value} ref={(el) => { refs.current[t.value] = el; }} type="button" role="tab" id={base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, '')}
+                aria-selected={on} aria-controls={tabsPanelId(base, t.value)} aria-posinset={i + 1} aria-setsize={items.length}
+                tabIndex={on ? 0 : -1} disabled={t.disabled || undefined} hidden={!shown(i) || undefined}
+                className={cx('plx-tabs__tab', on && 'is-selected')} onClick={() => select(t.value)}>
+                {t.icon ? <span className="plx-tabs__icon">{asIcon(t.icon)}</span> : null}
+                <span className="plx-tabs__label">{t.label}</span>
+                {t.count !== undefined ? <Count value={t.count} tone="neutral" /> : null}
+              </button>
+            );
+          })}
+        </div>
+        {moved.length ? (
+          <Menu label={words.moreLabel} placement="bottom-end" className="plx-tabs__more-anchor" trigger={
+            <button type="button" className="plx-tabs__tab plx-tabs__more">
+              <span className="plx-tabs__label">{words.more}</span>
+              <span className="plx-tabs__more-caret" aria-hidden="true" />
+            </button>}>
+            {moved.map((t) => (
+              <MenuItem key={t.value} icon={t.icon} disabled={t.disabled} onSelect={() => { focusNext.current = t.value; select(t.value); }}>
+                {t.count !== undefined ? t.label + ' (' + t.count + ')' : t.label}
+              </MenuItem>
+            ))}
+          </Menu>
+        ) : null}
       </div>
       {hasPanels ? items.map((t) => (
         <div key={t.value} role="tabpanel" id={tabsPanelId(base, t.value)} aria-labelledby={base + '-tab-' + String(t.value).replace(/[^a-zA-Z0-9_-]/g, '')}

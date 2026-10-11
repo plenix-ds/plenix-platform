@@ -12,12 +12,15 @@
    workspace), #/ask?q=… (the AI search), the application's own screens (#/note/42, #/thread/3, #/project/3/tasks) and,
    on any of them, ?in=<item> for the item chosen in the navigation pane. screen is the location with open(path, params)
    and parent(path, params), which keep the navigation pane's item. The last screen is restored on load (plenix.<app>.view).
-   A search result opens its screen: in this page as a new history entry, on another application's page as its address. */
-import { AppHeader, AppShell, SearchField, SessionProvider, StatusBar, PLENIX_APPS, useScreenLocation, leavePage } from 'plenix-platform';
+   A search result opens its screen: in this page as a new history entry, on another application's page as its address.
+   At Narrow the header search is a full-screen view (AppHeader): it shows this application's recent searches (kept in its
+   view state, plenix.<app>.view, recentSearches; the last five) and, while a query is typed, its results; choosing one
+   leaves the view (its history entry) and opens the result's screen. */
+import { ActivityList, AppHeader, AppShell, Icon, SearchField, SectionHeading, SessionProvider, StatusBar, Text, PLENIX_APPS, useScreenLocation, useViewState, leavePage } from 'plenix-platform';
 import { CaptureUI } from './capture.jsx';
 import { LeftNav } from './leftnav.jsx';
 import { SearchScreen } from './search.jsx';
-import { FindWorkspace } from './findSources.jsx';
+import { FindWorkspace, findResults } from './findSources.jsx';
 const { useState } = React;
 
 // every Plenix application of this suite: its id (PLENIX_APPS), its folder and its label
@@ -42,6 +45,18 @@ const SETTINGS_FOR = { messaging: 'email', contacts: 'contacts', calendar: 'cale
 const HAS_NAV = ['messaging', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files'];
 const FIRST_SUB = { messaging: 't-1', calendar: 'month' };
 
+// the recent searches kept for an application, newest first
+const RECENT_MAX = 5;
+// the full-screen search view (AppHeader at Narrow) is a history entry of its own: leave it (Back, which closes it) before
+// opening a screen, so the screen's entry replaces it in the history instead of following it
+const afterSearchView = (open) => {
+  const st = window.history.state;
+  if (!(st && st.plxSearch)) { open(); return; }
+  const go = () => { window.removeEventListener('popstate', go); open(); };
+  window.addEventListener('popstate', go);
+  window.history.back();
+};
+
 export function readPrefs() { try { return JSON.parse(localStorage.getItem('plenix.prefs')) || {}; } catch (e) { return {}; } }
 export function writePrefs(p) { try { localStorage.setItem('plenix.prefs', JSON.stringify(p)); } catch (e) { /* this visit only */ } }
 
@@ -65,7 +80,8 @@ function Suite({ app, render, page = 'workspace', legacy }) {
   const [hq, setHq] = useState(() => (find ? find.query : ''));                       // the header search field
   const label = (SUITE.find((x) => x.id === app) || { label: 'Settings' }).label;
   const openResult = (r, a) => {
-    const kind = RESULT_SCREEN[String(r.key || '').charAt(0)], id = String(r.key || '').slice(1);
+    const key = String(r.key || '').split(':').pop();   // everything's rows are keyed "<app>:<key>"
+    const kind = RESULT_SCREEN[key.charAt(0)], id = key.slice(1);
     const path = kind && id ? (kind === 'project' ? ['project', id, 'home'] : [kind, id]) : null;
     if (a === app && path) loc.navigate(path); else leavePage(appPage(a, path ? '/' + path.join('/') : ''));
   };
@@ -91,6 +107,30 @@ function Suite({ app, render, page = 'workspace', legacy }) {
     return () => window.removeEventListener('plenix:modechange', follow);
   }, []);
   const onAccent = tone === 'accent';
+  // the header search: Enter (or a recent search) opens the Search workspace and keeps the query among the recent ones
+  const [kept, updateKept] = useViewState(app);
+  const recent = Array.isArray(kept.recentSearches) ? kept.recentSearches : [];
+  const runSearch = (text) => {
+    const q = text.trim();
+    if (q) updateKept((v) => ({ recentSearches: [q].concat((v.recentSearches || []).filter((x) => x !== q)).slice(0, RECENT_MAX) }));
+    setHq(q);
+    afterSearchView(() => loc.navigate(['search'], { q }));
+  };
+  const typed = hq.trim().toLowerCase();
+  const recentShown = recent.filter((x) => x.toLowerCase().indexOf(typed) >= 0);
+  const searchSuggestions = recentShown.length ? <>
+    <SectionHeading>Recent searches</SectionHeading>
+    <ActivityList label="Recent searches">{recentShown.map((x) => (
+      <ActivityList.Item key={x} leading={<Icon name="clock" />} title={x} onOpen={() => runSearch(x)} />
+    ))}</ActivityList>
+  </> : null;
+  const results = typed ? findResults(scope, hq) : null;
+  const searchResults = results ? <>
+    <SectionHeading>Results</SectionHeading>
+    {results.length ? <ActivityList label="Results" stacked>{results.map((r) => (
+      <ActivityList.Item key={r.key} title={r.name} meta={r.section ? r.section + ' · ' + r.sub : r.sub} onOpen={() => afterSearchView(() => openResult(r, r.app))} />
+    ))}</ActivityList> : <Text variant="secondary" as="p">{'Nothing matches “' + hq.trim() + '”.'}</Text>}
+  </> : null;
   // refining the query keeps the same screen (its entry is corrected in place); a new search from the header is a new screen
   const main = ai !== null ? <SearchScreen key={ai} initialQuery={ai} />
     : find ? <FindWorkspace key={find.app} app={find.app} query={find.query} onQuery={(q) => { loc.navigate(['search'], { q }, { replace: true }); setHq(q); }} onOpen={openResult} onAskAI={(q) => loc.navigate(['ask'], { q })} />
@@ -102,7 +142,8 @@ function Suite({ app, render, page = 'workspace', legacy }) {
       header={<AppHeader tone={tone} currentApp={inSuite ? app : null} appsRoot="../" appName={inSuite ? undefined : label}
         action={<AppHeader.Action variant={onAccent ? 'secondary' : 'primary'} icon="snapshot" onClick={() => setCapture(true)}>Capture</AppHeader.Action>}
         search={<SearchField placeholder={inSuite && app !== 'home' ? 'Search ' + label.toLowerCase() + '…' : 'Search files, notes, contacts…'} label="Search" shortcut="Ctrl K" onAccent={onAccent}
-          value={hq} onChange={(e) => setHq(e.target.value)} onClear={() => setHq('')} onKeyDown={(e) => { if (e.key === 'Enter') loc.navigate(['search'], { q: hq.trim() }); }} />}
+          value={hq} onChange={(e) => setHq(e.target.value)} onClear={() => setHq('')} onKeyDown={(e) => { if (e.key === 'Enter') runSearch(hq); }} />}
+        searchSuggestions={searchSuggestions} searchResults={searchResults}
         account={<AppHeader.Account current={app === 'settings' ? (top === 'account' ? 'account' : 'settings') : undefined}
           myAccount={{ href: settingsPage('account') }} settings={{ href: settingsPage('general') }}
           appSettings={APP_SETTINGS[app] ? { app: label, href: settingsPage(APP_SETTINGS[app]) } : {}} />} />}>

@@ -6,6 +6,24 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.39] - 2026-10-11
+
+### Added
+- Tabs that do not fit move into a More menu outside the tab list; the selected tab always shows; arrow keys still
+  reach every tab.
+- The full-screen search at Narrow shows recent searches and results in every app and the asset manager.
+- The calendar's view and date, and the asset manager's refined searches, have their own addresses.
+- services/registry: the Plenix package registry (Verdaccio) configuration and scripts. Not deployed yet.
+### Changed
+- At Narrow there is one back control: the shell's parent row returns from a detail to its list.
+- The bulk actions bar wraps at narrow widths instead of cutting off its actions.
+- Touch targets reach 44 by 44 without changing the look on breadcrumbs, standalone table links, segmented controls
+  and unlabeled switches. Undersized targets with touch fell from 365 to 23, and with a mouse from 13 to 0. Reflow
+  findings at 320px fell from 15 to 0.
+- On iOS and Android, sizes and layout follow the platform's guidelines when they differ from the web's (owner): the
+  iOS alert keeps Apple's width. The slider's and the progress indicator's values on iOS are DM Mono, the data role,
+  as on the web and Android.
+
 ## [0.31.38] - 2026-10-11
 
 ### Added
