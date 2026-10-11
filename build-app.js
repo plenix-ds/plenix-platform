@@ -6,6 +6,7 @@
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/
 //   Asset Manager  dam/app/assets.jsx              → dam/app/assets.js
+//   Library parts  platform/exports/*, design-system/parts/* → index.js / platform.css blocks, spec-parts.js (build-exports.js, build-spec-parts.js)
 //
 // Source files use import/export. Each bundle is one plain script with a small module table, so pages need no
 // in-browser compiler and the dashboard still opens straight from disk (file://); browser-native modules would not.
@@ -24,6 +25,12 @@ const ROOT = __dirname;
 const DAM = path.join(ROOT, 'dam');
 // the suite's applications: one folder each, beside platform/ (batch 149)
 const SUITE = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
+// the library parts first (library plan, wave 0): the lanes' exports and stylesheets into the generated block of index.js and
+// platform.css (build-exports.js), and their records, labs and docs into the design system's spec-parts.js (build-spec-parts.js)
+const EXPORTS = require('./build-exports.js')(ROOT);
+console.log('Built the library block of platform/index.js and platform.css (' + EXPORTS.exports + ' exports, ' + EXPORTS.stylesheets + ' stylesheets' + (EXPORTS.stale.length ? '' : ', unchanged') + ')');
+const PARTS = require('./build-spec-parts.js')(ROOT);
+if (!PARTS.skipped) console.log('Built platform/design-system/spec-parts.js and ds-sample-parts.css (' + PARTS.parts + ' part files' + (PARTS.changed ? '' : ', unchanged') + ')');
 // the token stylesheets first (platform/tokens/*.tokens.json -> system/tokens/*.css, themes/plenix.css; batch 158)
 const TOKENS = buildTokens(ROOT);
 console.log('Built ' + TOKENS.files.length + ' token stylesheets from platform/tokens (' + TOKENS.count + ' tokens' + (TOKENS.stale.length ? ', ' + TOKENS.stale.length + ' changed' : '') + ')');

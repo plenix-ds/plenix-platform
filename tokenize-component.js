@@ -1,6 +1,8 @@
 // Moves a component's design values into component tokens (the Button treatment, batch 207, as a tool; batch 223).
-//   node tokenize-component.js <stylesheet under platform/> [--dry]
+//   node tokenize-component.js <stylesheet under platform/> [--dry] [--out components/<name>.tokens.json]
 //   e.g. node tokenize-component.js components/Input/input.css
+//   --out writes the new tokens into that file under platform/tokens/ (a library component's own token file, read by
+//   build-tokens.js's glob set) instead of components.tokens.json, which a library lane never edits
 //
 // Every declaration of a Platform stylesheet whose value points to a shared token (var(--plx-sys-…) / var(--plx-ref-…))
 // gets a component token, --plx-comp-<block>-<context>-<property>, written into platform/tokens/components.tokens.json
@@ -19,6 +21,7 @@ const path = require('path');
 const ROOT = __dirname;
 const P = path.join(ROOT, 'platform');
 const TOKENS = path.join(P, 'tokens', 'components.tokens.json');
+const OUT_AT = process.argv.indexOf('--out'), OUT = OUT_AT > 0 ? path.join(P, 'tokens', process.argv[OUT_AT + 1]) : TOKENS;
 
 const file = process.argv[2], dry = process.argv.includes('--dry');
 if (!file) { console.log('usage: node tokenize-component.js <stylesheet under platform/> [--dry]'); process.exit(1); }
@@ -62,8 +65,11 @@ function context(sel, block) {
   return words.join('-');
 }
 
-const tok = JSON.parse(fs.readFileSync(TOKENS, 'utf8'));
-const comp = tok['plx-comp'];
+// the names already taken (the shared set and, with --out, the component's own file); new tokens go into OUT
+const tok = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : { $description: 'Component tokens of ' + path.basename(OUT, '.tokens.json') + ' (a library component file, read by build-tokens.js).', 'plx-comp': {} };
+const comp = tok['plx-comp'] = tok['plx-comp'] || {};
+const shared = OUT === TOKENS ? {} : JSON.parse(fs.readFileSync(TOKENS, 'utf8'))['plx-comp'];
+const taken = (n) => comp[n] || shared[n];
 const toJson = (v) => v.replace(/var\(--(plx-(?:ref|sys|comp))-([a-z0-9-]+)\)/g, '{$1.$2}');
 const added = [], kept = [];
 let out = '', last = 0;
@@ -90,8 +96,8 @@ for (const m of body.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const short = nameFor[p] || SHORT[p] || p;
     let name = block + (ctx ? '-' + ctx : '') + '-' + short;
     const value = toJson(v);
-    if (comp[name] && comp[name].$value !== value) { let i = 2; while (comp[name + '-' + i] && comp[name + '-' + i].$value !== value) i++; name = name + '-' + i; }
-    if (!comp[name]) { comp[name] = { $value: value, $type: TYPE(short) }; added.push('--plx-comp-' + name + ' = ' + value); }
+    if (taken(name) && taken(name).$value !== value) { let i = 2; while (taken(name + '-' + i) && taken(name + '-' + i).$value !== value) i++; name = name + '-' + i; }
+    if (!taken(name)) { comp[name] = { $value: value, $type: TYPE(short) }; added.push('--plx-comp-' + name + ' = ' + value); }
     return p + ':var(--plx-comp-' + name + ')';
   });
   out += body.slice(last, m.index) + selRaw + '{' + newDecls.join(';') + ';}';
@@ -103,5 +109,6 @@ console.log(file + ': ' + added.length + ' component tokens' + (kept.length ? ',
 if (process.argv.includes('--list')) { added.forEach((a) => console.log('  ' + a)); kept.forEach((k) => console.log('  local: ' + k)); }
 if (!dry) {
   fs.writeFileSync(full, out);
-  fs.writeFileSync(TOKENS, JSON.stringify(tok, null, 2) + '\n');
+  fs.mkdirSync(path.dirname(OUT), { recursive: true });
+  fs.writeFileSync(OUT, JSON.stringify(tok, null, 2) + '\n');
 }

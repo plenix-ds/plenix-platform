@@ -23,7 +23,8 @@
 //   generated   the token stylesheets and the standards' code (build-standards.js: providers/pageLayouts.js, system/layout-modes.css)
 //               are exactly what is generated from their JSON (platform/tokens/*.tokens.json, platform/standards/*.json);
 //               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
-//               tokens are edited in the JSON, never in the CSS (batch 158)
+//               tokens are edited in the JSON, never in the CSS (batch 158); the library parts' bundles (spec-parts.js,
+//               ds-sample-parts.css) and the library block of index.js and platform.css match their part files
 //   palette     a stylesheet takes colors from roles (--plx-sys-, --plx-comp-), never from the palette (--plx-ref-color-)
 //   themeable   a stylesheet takes typefaces, weights, letter spacing, radius, border widths and styles, motion and opacity
 //               from the theme's scales (--plx-sys-typeface-, -shape-, -border-width-…), never the reference scales (batch 220)
@@ -278,6 +279,10 @@ for (const kind of ['components', 'patterns']) {
 for (const f of require('./build-standards.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/standards: edit the standard (JSON) and run node build-app.js, never the generated file');
 // generated: the token stylesheets match their JSON source
 for (const f of require('./build-tokens.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/tokens: edit the .tokens.json, then build');
+// generated: the library parts' bundles (build-spec-parts.js: spec-parts.js, ds-sample-parts.css) and the library block of
+// index.js and platform.css (build-exports.js) match their parts (platform/design-system/parts/, platform/exports/)
+for (const f of require('./build-spec-parts.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/design-system/parts: run node build-app.js');
+for (const f of require('./build-exports.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ': its library block differs from platform/exports: run node build-app.js');
 // legacy files stay gone
 for (const f of [path.join(ROOT, 'shared'), path.join(ROOT, 'platform', 'system', 'tokens', 'legacy.css'), path.join(DAM, 'plenix.css'), path.join(DAM, 'demo.css')]) {
   if (fs.existsSync(f)) add('legacy', f, 0, 'retired file or folder is back');

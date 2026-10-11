@@ -7,7 +7,8 @@
 // a reference, "{plx-ref.color-gray-800}" (group = the tier, key = the rest of the name), also inside a longer value
 // ("calc({plx-ref.space-8px} * -1)"). Each set's "$extensions"."com.plenix" says which stylesheet and selector it is
 // written into (light or dark, a density, an interaction mode); platform/tokens/build.json lists the stylesheets, their
-// header comments and the order of their sets. Comments that sit between tokens in the stylesheet are kept on the token
+// header comments and the order of their sets. A set may be a glob, "components/*.tokens.json" (also semantic/ and reference/): every file
+// of that folder in name order, so each library component owns its own token file (expandGlob below). Comments that sit between tokens in the stylesheet are kept on the token
 // they precede ("before"), a comment after a token on its line is its "$description" ("after" keeps its spacing), so the
 // stylesheet is written exactly as it always was: same names, same values, same comments.
 //
@@ -93,9 +94,45 @@ function themeOutputs(root) {
   return outs;
 }
 
+// a glob set of build.json ({ "glob": "components/*.tokens.json", "before": NL }): one set per file of that folder (library
+// plan, wave 0: each new component owns platform/tokens/components/<name>.tokens.json, each foundation semantic/<topic>…),
+// in name order, a file's contexts after its base file in the order of the output's own sets: <name>.tokens.json, then
+// <name>.density-standard.tokens.json, <name>.density-compact…, as components.density-standard.tokens.json… are ordered.
+// A file without "$extensions"."com.plenix" is written where the output's set of the same context is (components.<context>
+// .tokens.json, or the output's first set for a base file), so a lane's file holds only its tokens.
+function expandGlob(o, g) {
+  const dir = path.dirname(g.glob), pat = path.basename(g.glob);
+  if (pat !== '*.tokens.json') throw new Error('platform/tokens/build.json: a glob set must be <folder>/*.tokens.json (' + g.glob + ')');
+  const full = path.join(SRC, dir);
+  if (!fs.existsSync(full)) return [];
+  const own = o.sets.filter((s) => s.tokens);
+  const ctxOf = (f) => { const m = f.match(/^([^.]+)(?:\.(.+))?\.tokens\.json$/); return m ? { base: m[1], ctx: m[2] || '' } : null; };
+  const rank = (ctx) => { if (!ctx) return -1; const i = own.findIndex((s) => s.tokens.endsWith('.' + ctx + '.tokens.json')); if (i < 0) throw new Error('platform/tokens/' + dir + ': no shared set for the context "' + ctx + '" in ' + o.file); return i; };
+  return fs.readdirSync(full).filter((f) => f.endsWith('.tokens.json')).map((f) => {
+    const c = ctxOf(f); if (!c) throw new Error('platform/tokens/' + dir + '/' + f + ': not <name>.tokens.json or <name>.<context>.tokens.json');
+    return { f, c, r: rank(c.ctx) };
+  }).sort((a, b) => (a.c.base < b.c.base ? -1 : a.c.base > b.c.base ? 1 : a.r - b.r)).map(({ f, r }) => {
+    const data = JSON.parse(fs.readFileSync(path.join(full, f), 'utf8'));
+    if (!data.$extensions || !data.$extensions[EXT]) {
+      const like = r < 0 ? own[0] : own[r];
+      data.$extensions = Object.assign({}, data.$extensions, { [EXT]: Object.assign({}, like.data.$extensions[EXT], { tail: [] }) });
+    }
+    return { tokens: dir + '/' + f, before: g.before == null ? NL : g.before, data };
+  });
+}
+
 function load(root = ROOT) {
   const manifest = JSON.parse(fs.readFileSync(path.join(SRC, 'build.json'), 'utf8'));
-  for (const o of manifest.outputs) for (const s of o.sets) s.data = JSON.parse(fs.readFileSync(path.join(SRC, s.tokens), 'utf8'));
+  for (const o of manifest.outputs) {
+    for (const s of o.sets) if (s.tokens) s.data = JSON.parse(fs.readFileSync(path.join(SRC, s.tokens), 'utf8'));
+    o.sets = o.sets.reduce((all, s) => all.concat(s.glob ? expandGlob(o, s) : [s]), []);
+  }
+  // a token is defined in one file only: a lane's file never redefines a token of a shared set (or of another lane)
+  const where = {};
+  for (const o of manifest.outputs) for (const s of o.sets) {
+    const ctx = s.data.$extensions[EXT].selector;
+    for (const { name } of tokensOf(s.data)) { const k = name + ' @ ' + ctx; if (where[k] && (/\//.test(s.tokens) || /\//.test(where[k]))) throw new Error('platform/tokens: ' + name + ' is defined in ' + where[k] + ' and ' + s.tokens); where[k] = s.tokens; }
+  }
   manifest.outputs = manifest.outputs.concat(themeOutputs(root));
   return manifest;
 }

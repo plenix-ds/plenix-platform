@@ -2,6 +2,14 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## The complete library (owner, 2026-10-11)
+
+Owner: "I am building this as a cdn so that any app i build will use whatever is needed and it has the entire libraries
+ of the cdn." Every Web inventory leaf exists as a real, published part of Plenix; nothing waits as a placeholder.
+- [ ] Classify the 486 leaves with no record (component, pattern, extension of an existing one, foundation, template,
+  package) and order them in waves (scratchpad library/plan.json).
+- [ ] Build every wave (the Every Variant recipe: tokens, lab, variant pages; native designs; tests); release each.
+
 ## Native designs and the Plenix Platforms Standard on the web (added 2026-10-11)
 
 Owner: every iOS and Android component gets the Plenix design (the Apple or Material default beside the Plenix control,
@@ -23,9 +31,10 @@ its anatomy, every attribute from token to code) and the web meets the Plenix Pl
   mouse 13 → 0.
 - [ ] The last 23 touch-target findings (tests/baselines/targets.json: DAM NavList pin and tag ×, DAM settings labels
   and info button, the Link button, the application header's items in its design-system sample, bulk selection).
-- [ ] Typography, owner 2026-10-11: the original rule holds everywhere (DM Sans for UI; DM Mono for code and technical
-  values — IDs, file names, paths, versions, dates, sizes, counts, hex — tables included), at the neighbors' size and
-  line height; one data role; a typography test on every page that fails the build; the table test flipped.
+- [x] (0.31.40) Typography: the 2026-10-04 rule everywhere, tables included; one data role at its neighbors' size; tests/typography.test.js
+  (0 findings on 80 pages) and the flipped table test fail the build on any slip; native check.js the same.
+- [ ] Owner: counts inside phrases ("7 files", "4,546 assets | 12.4 GB" in the DAM status bar): Mono for the number only, or
+  wording in Sans as today?
 - [x] (0.31.38) The token rename: 137 component tokens named from selector fragments (data-table-background-2,
   pagination-page-hover-not-disabled-not-aria-current-…) now say what they style; values unchanged (visual test OK).
 
@@ -121,7 +130,6 @@ Next, in order (agreed after the Authentik set-up, 2026-10-08)
 - [x] 3. (batch 251) Starter template (item 12): plenix-ds/plenix-starter with a CDN (plain HTML) starter and a Vite + React + TypeScript starter, both on the shell, page kinds and tokens.
 - [x] 4. Form controls on component tokens (item 9): Input, Select, Checkbox, Radio, Switch and Field get the Button treatment. Tokens done (batch 223); the shared lab (batch 252) and the labs of Text field, Text area, Native select, Checkbox, Radio group, Switch and Field (batches 253-256): an All page, 41 variant pages, the anatomy and the Edit dialog each; tests/labs.test.js proves every field moves its own property.
 - [x] (batch 224) A compact Checkbox is 24px: no top and bottom padding in compact (owner chose A).
-- [ ] 5. Build the placeholders the next project needs (item 11): owner to name the project or the items.
 - [ ] Owner: create the DS_TOKEN secret so CI also tests the design system.
 - [x] Claude (read-only, 2026-10-09): Proxmox backups checked. **Nothing is backed up**: /etc/pve/jobs.cfg has no backup job and no storage holds a backup (container 104 "infra", Authentik, included).
 - [ ] Owner: set up Proxmox backups (where to: local, the Storage pool or a Proxmox Backup Server; how many to keep; when). Container 104 (Authentik) first.
@@ -145,7 +153,6 @@ Phase 3 · editable and governed
 - [x] 10. Contribution model (batch 210): CONTRIBUTING.md (stages, who decides, the rules, the review checklist), a Component proposal issue form and a pull request checklist on GitHub.
 
 Phase 4 · grow
-- [ ] 11. Build the placeholders the next projects need.
 - [x] 12. (batch 251) Starter template: plenix-ds/plenix-starter, a CDN starter (plain HTML, no build) and a Vite + React + TypeScript starter on the npm packages; both draw the same shell, navigation, DataTable and ActionBar, tested in Chrome. Fixed on the way: the npm package's DataTable found no Tabulator in a bundled app; it now loads the release's CDN copy.
 - [x] (2026-10-09) CI ran nothing since batch 234: a colon in a step name broke ci.yml; fixed, and the tests now run with reduced motion (CI had read the start of batch 236's fades).
 

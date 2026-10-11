@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.41] - 2026-10-11
+
+### Added
+- The complete library, wave 0: every Web inventory item will exist as a real part of Plenix (owner).
+  - 49 items another component already answers get their own pages, linked to the main one (records 132 → 181).
+  - Parallel lanes now have their own part files: records, labs, docs and sample styles (build-spec-parts.js);
+    exports (build-exports.js); a token file per component (platform/tokens/components/); and a native map per lane
+    (web-native-map.d). So three writers can build at once without editing the same file.
+
 ## [0.31.40] - 2026-10-11
 
 ### Changed

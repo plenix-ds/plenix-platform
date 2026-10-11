@@ -6,7 +6,8 @@
 //
 //   taxonomy   inventory-taxonomy.js has exactly the sections, subcategories and leaves of STANDARD.md §2–§3, in order
 //   records    every inventory record has one canonical home: a section, subcategory and leaf that exist in the taxonomy,
-//              and no two records claim the same leaf
+//              and no two records claim the same leaf; the library parts' records (spec-parts.js) included
+//   parts      every library part (platform/design-system/parts/, bundled into spec-parts.js) loads and its records build
 //   sidebar    the sidebar lists every leaf (Plenix decision 1)
 //   order      the item page has the template's sections in the approved order (Plenix decision 2)
 //   variants   every variant class a record's stylesheet defines (block--modifier) has its own variant card (decision 5)
@@ -52,17 +53,20 @@ function standardTaxonomy() {
   return out;
 }
 
-function load(file, global) {
-  const ctx = { window: {}, React: { createElement: (...a) => ({ type: a[0], props: a[1] || {}, children: a.slice(2) }), useState: (v) => [v, () => {}] } };
+// files: one file, or several run in order in one context (the library parts, spec-parts.js, before inventory.js)
+function load(files, global) {
+  const ctx = { window: {}, console, React: { createElement: (...a) => ({ type: a[0], props: a[1] || {}, children: a.slice(2) }), useState: (v) => [v, () => {}] } };
   ctx.window.React = ctx.React; ctx.window.Plenix = new Proxy({}, { get: (_, k) => k });
-  vm.createContext(ctx); vm.runInContext(read(file), ctx);
+  vm.createContext(ctx);
+  [].concat(files).filter((f) => fs.existsSync(f)).forEach((f) => vm.runInContext(read(f), ctx, { filename: path.basename(f) }));
   let v = ctx.window[global]; if (typeof v === 'function') v = v();
+  if (ctx.window.DSParts) (ctx.window.DSParts.errors || []).forEach((e) => add('parts', e));
   return v;
 }
 
 const std = standardTaxonomy();
 const tax = load(path.join(SPEC, 'inventory-taxonomy.js'), 'DSTaxonomy');
-const recs = load(path.join(SPEC, 'inventory.js'), 'DSInventory');
+const recs = load([path.join(SPEC, 'spec-parts.js'), path.join(SPEC, 'inventory.js')], 'DSInventory');
 
 // taxonomy
 if (std.length !== tax.length) add('taxonomy', 'STANDARD.md §3 has ' + std.length + ' sections, inventory-taxonomy.js ' + tax.length);
@@ -84,8 +88,10 @@ if (tax.length > std.length) add('taxonomy', 'extra sections in inventory-taxono
 // records: one canonical home each
 const leafOf = {};
 tax.forEach((t) => t.subs.forEach((s) => s[1].split('|').forEach((l) => { leafOf[t.id + '|' + s[0] + '|' + l] = true; })));
-const claimed = {};
+const claimed = {}, ids = {};
 recs.forEach((r) => {
+  if (ids[r.id]) add('records', r.id + ': two records have this id');
+  ids[r.id] = true;
   const key = r.sec + '|' + r.sub + '|' + r.leaf;
   if (!leafOf[key]) add('records', r.id + ': "' + r.sec + ' › ' + r.sub + ' › ' + r.leaf + '" is not a leaf of the taxonomy');
   if (claimed[key]) add('records', r.id + ' and ' + claimed[key] + ' claim the same leaf (' + r.leaf + ')');
@@ -169,7 +175,7 @@ for (const dir of ['components', 'patterns', 'providers', 'hooks']) {
 
 // report
 let failed = 0;
-for (const rule of ['taxonomy', 'records', 'sidebar', 'order', 'variants', 'states', 'api']) {
+for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'variants', 'states', 'api']) {
   const list = findings[rule] || [];
   const pending = PENDING[rule];
   if (!list.length) { console.log('ok       ' + rule); continue; }

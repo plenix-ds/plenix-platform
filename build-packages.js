@@ -7,6 +7,7 @@
 //   packages/react    @plenix-ds/react    the components and patterns: ES module, CommonJS, and the browser global (window.Plenix)
 //   release/cdn/<v>/  the same files at a fixed address per version (design-system.lighthouseway.org/cdn/<v>/)
 //   release/api/v1/   read-only JSON: tokens, components, taxonomy, guidance, icons (design-system.lighthouseway.org/api/v1/)
+//   build-packages.d/ one step per further package (<name>.js, run in name order; the library's package lanes add files here)
 //
 // The version is "version" in package.json; every package gets the same one. Everything here is generated: edit the
 // Platform (platform/), never packages/ or release/. The API needs the design system (platform/design-system, a
@@ -56,7 +57,7 @@ const readme = (name, body) => write(path.join(PKG, name, 'README.md'),
 // ---------- tokens ----------
 const T = path.join(PKG, 'tokens');
 const index = JSON.parse(fs.readFileSync(path.join(P, 'tokens', 'tokens.index.json'), 'utf8'));
-copyDir(path.join(P, 'tokens'), path.join(T, 'json'), (n) => n.endsWith('.tokens.json'));
+copyDir(path.join(P, 'tokens'), path.join(T, 'json'), (n) => n.endsWith('.tokens.json') || ['components', 'semantic', 'reference'].includes(n));   // with the per-component sets (components/<name>.tokens.json)
 copyDir(path.join(P, 'system', 'tokens'), path.join(T, 'css'));
 copy(path.join(P, 'system', 'themes', 'default.css'), path.join(T, 'css', 'theme-default.css'));   // the default theme (renamed in batch 219)
 // the module: every token with its tier, type and value per selector (theme, density, interaction)
@@ -193,7 +194,7 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
   const stub = new Proxy(function () { return null; }, { get: (t, k) => (k === Symbol.toPrimitive ? () => '' : stub), apply: () => null });
   const win = { Plenix: stub };
   const ctx = vm.createContext({ window: win, React: stub, ReactDOM: stub, document: stub, console });
-  for (const f of ['inventory-taxonomy.js', 'inventory.js', 'inventory-guidance.js', 'inventory-docs.js'].filter((x) => fs.existsSync(path.join(DS, x)))) vm.runInContext(fs.readFileSync(path.join(DS, f), 'utf8'), ctx, { filename: f });
+  for (const f of ['inventory-taxonomy.js', 'spec-parts.js', 'inventory.js', 'inventory-guidance.js', 'inventory-docs.js'].filter((x) => fs.existsSync(path.join(DS, x)))) vm.runInContext(fs.readFileSync(path.join(DS, f), 'utf8'), ctx, { filename: f });
   const recs = Array.isArray(win.DSInventory) ? win.DSInventory : Object.values(win.DSInventory || {});
   const pick = (o, ks) => Object.fromEntries(ks.filter((k) => o[k] !== undefined && o[k] !== '').map((k) => [k, o[k]]));
   // each record with its written sections (inventory-docs.js, batch 208); a record's own fields win
@@ -239,7 +240,17 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
   apiNote = components.length + ' components, ' + Object.keys(g).length + ' guidance items, ' + tokens.length + ' tokens';
 }
 
+// the library's further packages (library plan, wave 0): every build-packages.d/<name>.js is a step of its own, run in name
+// order with the release's context; it builds packages/<name>/ and may add its files to the CDN or the API
+const STEPS = path.join(ROOT, 'build-packages.d');
+const stepNotes = [];
+if (fs.existsSync(STEPS)) for (const f of fs.readdirSync(STEPS).filter((x) => x.endsWith('.js')).sort()) {
+  const note = require(path.join(STEPS, f))({ ROOT, P, VERSION, SCOPE, SITE, REPO, PKG, REL, CDN, API, write, json, copy, copyDir });
+  stepNotes.push(f.replace(/\.js$/, '') + (note ? ' (' + note + ')' : ''));
+}
+
 const kb = (f) => Math.round(fs.statSync(f).size / 1024) + ' KB';
 console.log('Plenix ' + VERSION + ': packages ' + ['tokens', 'icons', 'styles', 'react'].map((n) => SCOPE + '/' + n).join(', '));
 console.log('  styles/plenix.css ' + kb(path.join(S, 'plenix.css')) + ' (min ' + kb(path.join(S, 'plenix.min.css')) + '), react ' + kb(path.join(R, 'dist', 'index.js')) + ' ESM, ' + exportsList.length + ' exports, ' + icons.length + ' icons, ' + tokens.length + ' tokens');
 console.log('  cdn: release/cdn/' + VERSION + '/   api: ' + apiNote);
+if (stepNotes.length) console.log('  steps (build-packages.d): ' + stepNotes.join(', '));

@@ -3,6 +3,8 @@
 // a property table across iOS, Android and Web, and the Web and Android pages it maps to) becomes the design system's
 // data: platform/design-system/native-guidance.js (window.DSNativeGuidance), with the reverse index, so a Web or Android
 // page lists the iOS guidance mapped to it. Every mapped page must exist in the taxonomy; a missing one stops the build.
+// The web side is web-native-map.json plus the library lanes' web-native-map.d/*.json; the web records include the library
+// parts (spec-parts.js).
 // Run by build-app.js; alone: node build-native-guidance.js
 const fs = require('fs');
 const path = require('path');
@@ -30,8 +32,14 @@ module.exports = function buildNativeGuidance(root) {
     (g.android || []).forEach((a) => { if (leaves.size && !leaves.has(a)) bad.push(key + ': Android page ' + a + ' does not exist'); (byAndroid[a] = byAndroid[a] || []).push(key); });
   }
   // the web side (web-native-map.json): web pages that no iOS guidance page names, mapped straight to iOS and Android
+  // plus the library lanes' own maps (web-native-map.d/wNNL.json, same shape, read in name order): a page mapped twice stops the build
   const mapFile = path.join(root, 'platform', 'standards', 'web-native-map.json');
-  const direct = fs.existsSync(mapFile) ? JSON.parse(fs.readFileSync(mapFile, 'utf8')).map : {};
+  const direct = fs.existsSync(mapFile) ? Object.assign({}, JSON.parse(fs.readFileSync(mapFile, 'utf8')).map) : {};
+  const mapDir = path.join(root, 'platform', 'standards', 'web-native-map.d');
+  if (fs.existsSync(mapDir)) for (const f of fs.readdirSync(mapDir).filter((x) => x.endsWith('.json')).sort()) {
+    const part = JSON.parse(fs.readFileSync(path.join(mapDir, f), 'utf8')).map || {};
+    for (const [w, d] of Object.entries(part)) { if (direct[w]) bad.push('web-native-map.d/' + f + ': ' + w + ' is already mapped'); else direct[w] = d; }
+  }
   const uniq = (a) => [...new Set(a)];
   const webMap = {}, iosWeb = {}, androidWeb = {};
   Object.keys(byWeb).concat(Object.keys(direct)).forEach((w) => {
@@ -48,7 +56,11 @@ module.exports = function buildNativeGuidance(root) {
   const inv = path.join(root, 'platform', 'design-system', 'inventory.js');
   if (fs.existsSync(inv)) {
     const c2 = { window: {}, React: { createElement: () => null } }; c2.window.React = c2.React; c2.window.Plenix = new Proxy({}, { get: (t, k) => k });
-    vm.createContext(c2); vm.runInContext(fs.readFileSync(inv, 'utf8'), c2);
+    vm.createContext(c2);
+    // the library parts' records first (spec-parts.js, build-spec-parts.js), then inventory.js pushes them
+    const parts = path.join(path.dirname(inv), 'spec-parts.js');
+    if (fs.existsSync(parts)) vm.runInContext(fs.readFileSync(parts, 'utf8'), c2);
+    vm.runInContext(fs.readFileSync(inv, 'utf8'), c2);
     let recs = c2.window.DSInventory; if (typeof recs === 'function') recs = recs();
     recs.forEach((r) => { const m = webMap[r.sec + '|' + r.leaf]; if (!m || !m.ios.length || !m.android.length) bad.push('web item ' + r.id + ' (' + r.sec + '|' + r.leaf + ') has no ' + (!m || !m.ios.length ? 'iOS' : 'Android') + ' counterpart'); });
   }
