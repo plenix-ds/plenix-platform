@@ -6,6 +6,24 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.34] - 2026-10-11
+
+### Added
+- The Plenix iOS design, starting with Buttons (the model for every native component). The iOS Buttons page now
+  shows what the guidance becomes as a real control:
+  - Variants: Apple's kit default beside the same kit component styled with the Plenix variables, in light and dark,
+    for Primary, Secondary, Ghost, Danger and Danger secondary. Each variant gets its Apple kit style, its Web page,
+    its background, content and border tokens, and its SwiftUI, UIKit and AppKit form.
+  - States: default, pressed, disabled, focused and loading, with their tokens and where SwiftUI, UIKit and AppKit
+    report each.
+  - Anatomy: a lettered drawing (container, label, symbol), and every attribute from the Plenix token to the Plenix
+    iOS value, Apple's default, the guideline it follows, and the SwiftUI, UIKit and AppKit attribute that sets it.
+  - Development and API: Plenix code in SwiftUI (a PlenixButtonStyle on the generated tokens), UIKit and AppKit.
+- In the Figma copy of the iOS and iPadOS 27 kit: Plenix Light and Plenix Dark variable collections (the Plenix
+  values) and the comparison and anatomy drawings, on the kit's Buttons page.
+- The data is platform/standards/native-design.json. The build checks every page, image, token and guideline it
+  names, and the API serves it at /api/v1/native-design.
+
 ## [0.31.33] - 2026-10-11
 
 ### Changed

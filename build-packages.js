@@ -204,7 +204,7 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
     description: 'The Plenix design system as read-only JSON. Every file is also published at ' + SITE + '/api/v1/<name>.',
     endpoints: {
       tokens: SITE + '/api/v1/tokens', components: SITE + '/api/v1/components', exports: SITE + '/api/v1/exports',
-      taxonomy: SITE + '/api/v1/taxonomy', guidance: SITE + '/api/v1/guidance', platforms: SITE + '/api/v1/platforms', nativeGuidance: SITE + '/api/v1/native-guidance', figmaMap: SITE + '/api/v1/figma-map', icons: SITE + '/api/v1/icons', cdn: SITE + '/cdn/' + VERSION + '/',
+      taxonomy: SITE + '/api/v1/taxonomy', guidance: SITE + '/api/v1/guidance', platforms: SITE + '/api/v1/platforms', nativeGuidance: SITE + '/api/v1/native-guidance', figmaMap: SITE + '/api/v1/figma-map', nativeDesign: SITE + '/api/v1/native-design', icons: SITE + '/api/v1/icons', cdn: SITE + '/cdn/' + VERSION + '/',
     },
     packages: ['tokens', 'icons', 'styles', 'react'].map((n) => SCOPE + '/' + n + '@' + VERSION),
   }));
@@ -219,6 +219,9 @@ if (fs.existsSync(path.join(DS, 'inventory.js'))) {
     // Plenix's guidance for the Apple HIG pages, mapped to Web and Android (platform/standards/native-guidance.json, batch 330)
     const ngf = path.join(P, 'standards', 'native-guidance.json');
     if (fs.existsSync(ngf)) { const ng = JSON.parse(fs.readFileSync(ngf, 'utf8')); json(path.join(API, 'native-guidance.json'), Object.assign({}, meta, { source: ng.source, read: ng.read, count: Object.keys(ng.pages).length, pages: ng.pages }));
+    // the Plenix design of each native component (platform/standards/native-design.json, batch 336)
+    const ndf = path.join(P, 'standards', 'native-design.json');
+    if (fs.existsSync(ndf)) json(path.join(API, 'native-design.json'), Object.assign({}, meta, JSON.parse(fs.readFileSync(ndf, 'utf8'))));
     // the Figma kit mapped to the iOS pages (platform/standards/figma-map.json, batch 334)
     const fmf = path.join(P, 'standards', 'figma-map.json');
     if (fs.existsSync(fmf)) json(path.join(API, 'figma-map.json'), Object.assign({}, meta, JSON.parse(fs.readFileSync(fmf, 'utf8')))); }
