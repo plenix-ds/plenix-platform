@@ -29,6 +29,16 @@ or as a class from a palette. Say "continue Strict DS" to pick it up.
 - [x] 7. (batch 283, 0.24.0) check-system rejects every style attribute, custom properties included; and a runtime test (Codex,
   owner yes 2026-10-09) that fails any page rendering an element with a style attribute
 
+## A lightweight Plenix login, separate from Authentik (added 2026-10-10)
+
+Owner: "i actually want a completely separate login for plenix. something lightweight". It covers both hosts:
+plenix.lighthouseway.org (Authentik forward auth today) and design-system.lighthouseway.org. The owner meant the second to be
+private, but on 2026-10-10 its pages, /cdn/ and apple-api.json answered 200 with no sign-in.
+- [ ] Close the design system host now (owner's choice: Authentik forward auth like the apps, or wait for the new login).
+  The apps load /cdn/<version>/ from that host, so the CDN needs the same session or its own rule.
+- [ ] Choose the login: the owner's accounts, sessions, sign-in page in the Plenix brand kit.
+- [ ] Replace Authentik on plenix.lighthouseway.org; keep the switch-account and recovery needs (see below).
+
 ## Every Variant (the Button treatment for every component) (added 2026-10-09)
 
 Owner: "every variant for every component to have navigation and design specs just like we did for the buttons". Say
