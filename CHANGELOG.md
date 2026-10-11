@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.35] - 2026-10-11
+
+### Fixed
+- The build no longer fails when the design system is not checked out (CI): the native guidance step now looks for
+  the design system itself, not only its folder, before checking the images it shows. (batch 337)
+
 ## [0.31.34] - 2026-10-11
 
 ### Added

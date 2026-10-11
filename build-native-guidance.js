@@ -12,7 +12,7 @@ module.exports = function buildNativeGuidance(root) {
   const src = path.join(root, 'platform', 'standards', 'native-guidance.json');
   const out = path.join(root, 'platform', 'design-system', 'native-guidance.js');
   // without the design system checked out (CI: it is a private submodule) there is nothing to write into
-  if (!fs.existsSync(src) || !fs.existsSync(path.dirname(out))) return { changed: false, pages: 0, rules: 0 };
+  if (!fs.existsSync(src) || !fs.existsSync(path.join(path.dirname(out), 'spec.js'))) return { changed: false, pages: 0, rules: 0 };
   const data = JSON.parse(fs.readFileSync(src, 'utf8'));
   const ctx = { window: {} };
   const tax = path.join(root, 'platform', 'design-system', 'inventory-taxonomy.js');
