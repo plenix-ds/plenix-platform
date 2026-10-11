@@ -37,7 +37,8 @@ const mk = (d) => fs.mkdirSync(d, { recursive: true });
 const write = (f, s) => { mk(path.dirname(f)); fs.writeFileSync(f, s); };
 const json = (f, o) => write(f, JSON.stringify(o, null, 2) + '\n');
 const copy = (from, to) => { mk(path.dirname(to)); fs.copyFileSync(from, to); };
-const copyDir = (from, to, keep = () => true) => { for (const n of fs.readdirSync(from)) if (keep(n)) copy(path.join(from, n), path.join(to, n)); };
+// folders are copied whole (the Android outputs hold res/values, batch 341)
+const copyDir = (from, to, keep = () => true) => { for (const n of fs.readdirSync(from)) if (keep(n)) { const p = path.join(from, n); if (fs.statSync(p).isDirectory()) copyDir(p, path.join(to, n)); else copy(p, path.join(to, n)); } };
 
 rm(PKG); rm(REL);
 

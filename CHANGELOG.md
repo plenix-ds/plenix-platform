@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.37] - 2026-10-11
+
+### Fixed
+- The release build copies folders inside the native outputs (the Android plenix_dimens.xml under res/values), so the
+  CDN has every native file; 0.31.36 stopped before it was published. (batch 342)
+
 ## [0.31.36] - 2026-10-11
 
 ### Added
