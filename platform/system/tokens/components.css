@@ -392,6 +392,7 @@
   --plx-comp-action-bar-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-action-bar-layer: var(--plx-sys-layer-sticky);
   --plx-comp-action-bar-stick: 0;
+  --plx-comp-action-bar-block-size: calc(var(--plx-sys-control-height-standard) + var(--plx-sys-space-inset-sm) * 2 + var(--plx-sys-border-width-thin));
   --plx-comp-badge-radius: var(--plx-sys-radius-compact-4px);
   --plx-comp-badge-font-size: var(--plx-ref-font-size-10);
   --plx-comp-badge-font-weight: var(--plx-sys-font-weight-bold);
@@ -620,6 +621,7 @@
   --plx-comp-toast-region-row-gap: var(--plx-sys-space-stack-sm);
   --plx-comp-toast-region-z-index: var(--plx-sys-layer-toast);
   --plx-comp-toast-animation-duration: var(--plx-sys-motion-duration-slow);
+  --plx-comp-toast-duration: 4s;
   --plx-comp-toast-animation-timing-function: var(--plx-sys-motion-ease-standard);
   --plx-comp-toast-background: var(--plx-sys-toast-background);
   --plx-comp-toast-radius: var(--plx-sys-radius-surface-4px);
@@ -1244,6 +1246,12 @@
   --plx-comp-data-table-resize-hover-background-image: linear-gradient(var(--plx-sys-data-table-accent),var(--plx-sys-data-table-accent));
   --plx-comp-data-table-drop-shadow: inset 0 var(--plx-sys-border-width-medium) 0 0 var(--plx-sys-data-table-accent);
   --plx-comp-data-table-drop-shadow-2: inset var(--plx-sys-border-width-medium) 0 0 0 var(--plx-sys-data-table-accent);
+  --plx-comp-data-table-list-intrinsic-width: var(--plx-ref-size-720px);
+  --plx-comp-data-table-list-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-data-table-list-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-data-table-list-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-data-table-list-detail-text: var(--plx-sys-data-table-text-muted);
+  --plx-comp-data-table-resize-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-date-badge-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-date-badge-weekday-text: var(--plx-sys-content-muted);
   --plx-comp-date-badge-weekday-font-family: var(--plx-sys-font-label);
@@ -1296,6 +1304,7 @@
   --plx-comp-empty-state-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-empty-state-text-max-width: var(--plx-ref-size-400px);
   --plx-comp-empty-state-action-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-empty-state-error-icon-text: var(--plx-sys-feedback-danger-content);
   --plx-comp-event-chip-background: var(--plx-sys-surface-sunken);
   --plx-comp-event-chip-radius: var(--plx-sys-radius-compact-4px);
   --plx-comp-event-chip-border-inline-start-width: var(--plx-sys-border-width-thick);
@@ -1750,6 +1759,8 @@
   --plx-comp-tooltip-bubble-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-tooltip-bubble-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-tooltip-bubble-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-tooltip-long-press-delay: var(--plx-sys-touch-long-press-delay);
+  --plx-comp-tooltip-touch-dismiss-delay: var(--plx-sys-touch-dismiss-delay);
   --plx-comp-tooltip-bubble-z-index: var(--plx-sys-layer-popover);
   --plx-comp-tooltip-bubble--bottom-inset-block-start: calc(100% + var(--plx-sys-space-stack-sm));
   --plx-comp-tooltip-bubble--top-inset-block-end: calc(100% + var(--plx-sys-space-stack-sm));
@@ -1832,6 +1843,8 @@
   --plx-comp-panel-splitter-after-inset-inline-start: calc(50% - var(--plx-sys-border-width-thin));
   --plx-comp-panel-splitter-after-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-panel-splitter-hover-after-background: var(--plx-sys-focus-ring-color);
+  --plx-comp-panel-splitter-menu-inset: var(--plx-sys-space-inset-xs);
+  --plx-comp-panel-splitter-menu-z-index: var(--plx-sys-layer-raised);
   --plx-comp-page-content-padding-block: var(--plx-sys-space-layout-sm);
   --plx-comp-page-content-padding-inline: var(--plx-sys-space-layout-md);
   --plx-comp-page-content-row-gap: var(--plx-sys-space-stack-md);

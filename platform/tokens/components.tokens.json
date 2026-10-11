@@ -1588,6 +1588,11 @@
       "$type": "dimension",
       "$description": "How far below the scrolling area's padding edge the bar sticks: a scrolling area sets it to minus its own bottom padding, so the bar sits flush with the bottom (batch 231)"
     },
+    "action-bar-block-size": {
+      "$value": "calc({plx-sys.control-height-standard} + {plx-sys.space-inset-sm} * 2 + {plx-sys.border-width-thin})",
+      "$type": "dimension",
+      "$description": "The height of a one-row ActionBar (its padding, its line and a standard button): the scroll padding at the bottom of a scrolling area with a stuck bar, so a focused element is never hidden behind it (WCAG 2.2 SC 2.4.11; Platforms Standard 8.1)"
+    },
     "badge-radius": {
       "$value": "{plx-sys.radius-compact-4px}",
       "$type": "dimension"
@@ -2506,6 +2511,11 @@
     "toast-animation-duration": {
       "$value": "{plx-sys.motion-duration-slow}",
       "$type": "duration"
+    },
+    "toast-duration": {
+      "$value": "4s",
+      "$type": "duration",
+      "$description": "How long a toast stays before it leaves by itself (ToastProvider default)"
     },
     "toast-animation-timing-function": {
       "$value": "{plx-sys.motion-ease-standard}",
@@ -5027,6 +5037,36 @@
       "$value": "inset {plx-sys.border-width-medium} 0 0 0 {plx-sys.data-table-accent}",
       "$type": "shadow"
     },
+    "data-table-list-intrinsic-width": {
+      "$value": "{plx-ref.size-720px}",
+      "$type": "dimension",
+      "$description": "The width a grid that can become a Narrow list asks for where its container takes the width of its content (a size container has no content width of its own): wide enough to stay a table."
+    },
+    "data-table-list-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "A Narrow grid's list item (platforms.md 6.5): the space above and below its lines."
+    },
+    "data-table-list-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "A Narrow grid's list item: the space between its title line and the lines under it."
+    },
+    "data-table-list-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "A Narrow grid's list item: the line height of each key column's line."
+    },
+    "data-table-list-detail-text": {
+      "$value": "{plx-sys.data-table-text-muted}",
+      "$type": "color",
+      "$description": "A Narrow grid's list item: the lines under the title (the key columns after the first)."
+    },
+    "data-table-resize-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "A column's resize grip while it has the keyboard focus: the width of its outline."
+    },
     "date-badge-row-gap": {
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension"
@@ -5234,6 +5274,11 @@
     "empty-state-action-margin-block-start": {
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension"
+    },
+    "empty-state-error-icon-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "The error tone (platforms.md 5.5: it names the problem, one action recovers): the icon in the danger color; the words say what failed, so color is never the only sign."
     },
     "event-chip-background": {
       "$value": "{plx-sys.surface-sunken}",
@@ -7051,6 +7096,16 @@
       "$value": "{plx-sys.motion-duration-fast}",
       "$type": "duration"
     },
+    "tooltip-long-press-delay": {
+      "$value": "{plx-sys.touch-long-press-delay}",
+      "$type": "duration",
+      "$description": "On touch (a coarse pointer, no hover) the tooltip shows after a long press of this length; Tooltip.jsx reads it"
+    },
+    "tooltip-touch-dismiss-delay": {
+      "$value": "{plx-sys.touch-dismiss-delay}",
+      "$type": "duration",
+      "$description": "A tooltip opened by a long press hides this long after the finger lifts; Tooltip.jsx reads it"
+    },
     "tooltip-bubble-z-index": {
       "$value": "{plx-sys.layer-popover}",
       "$type": "number"
@@ -7378,6 +7433,16 @@
     "panel-splitter-hover-after-background": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color"
+    },
+    "panel-splitter-menu-inset": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "The splitter's width menu button (a way to resize without dragging, WCAG 2.5.7): its distance from the area's edge, inside the area."
+    },
+    "panel-splitter-menu-z-index": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "The splitter's width menu button: above the area's content, like the splitter."
     },
     "page-content-padding-block": {
       "$value": "{plx-sys.space-layout-sm}",

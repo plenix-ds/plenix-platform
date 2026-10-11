@@ -13,13 +13,16 @@
      columns: "auto" (default; as many as fit) | 2 | 3 | 4
      className: more classes on the grid
      strings: the words it announces, for other languages: { widget: "Widget", widgetLower: "widget", move: "Move {title}
-       (arrow keys)", position: "{title}, position {index} of {total}" } (widget and widgetLower stand in for a widget
-       without a title, in the announcement and in the handle's name)
+       (arrow keys)", position: "{title}, position {index} of {total}", earlier: "Move earlier", later: "Move later",
+       first: "Move to the start", last: "Move to the end" } (widget and widgetLower stand in for a widget without a
+       title, in the announcement and in the handle's name)
    Behavior:
      Drag and drop (batch 271): the handle shows the grab cursor, grabbing while held or while its widget moves.
      Each widget gets a handle (a button) when the grid can be reordered: drag it onto another widget to place it there;
      or focus it and press Arrow Up (earlier) or Arrow Down (later); Arrow Left / Right follow reading order (in a
      right-to-left page Arrow Right is earlier).
+     Without dragging (WCAG 2.5.7): a click on the handle (or Enter or Space) opens its menu: Move earlier, Move later,
+     Move to the start and Move to the end (the ones that cannot move are disabled).
      While dragging, the widget under the pointer shows the drop ring.
      The new place is announced ("Site visits, position 2 of 6").
    Notes:
@@ -30,11 +33,23 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { arrowStep } from '../../utils/direction.js';
+import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 
-const STRINGS = { widget: 'Widget', widgetLower: 'widget', move: 'Move {title} (arrow keys)', position: '{title}, position {index} of {total}' };
+const STRINGS = { widget: 'Widget', widgetLower: 'widget', move: 'Move {title} (arrow keys)', position: '{title}, position {index} of {total}',
+  earlier: 'Move earlier', later: 'Move later', first: 'Move to the start', last: 'Move to the end' };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
 const move = (ids, from, to) => { const next = ids.slice(); const [x] = next.splice(from, 1); next.splice(to, 0, x); return next; };
+
+// the handle: a menu button (Menu gives it the click, Enter and Space) whose arrow keys move the widget instead of
+// opening the menu, so the keys keep their meaning on the handle
+const Handle = React.forwardRef(function Handle({ onStep, onKeyDown, expanded, ...rest }, ref) {
+  return <button ref={ref} type="button" {...rest} onKeyDown={(e) => {
+    const step = arrowStep(e, e.currentTarget);
+    if (step) { e.preventDefault(); onStep(step); return; }
+    if (onKeyDown) onKeyDown(e);
+  }} />;
+});
 
 export function WidgetGrid({ items = [], renderItem, onReorder, label, columns = 'auto', strings, className, ...rest }) {
   const t = Object.assign({}, STRINGS, strings);
@@ -56,15 +71,21 @@ export function WidgetGrid({ items = [], renderItem, onReorder, label, columns =
           onDragLeave={onReorder ? () => setOver((o) => (o === it.id ? null : o)) : undefined}
           onDrop={onReorder ? (e) => { e.preventDefault(); const from = ids.indexOf(dragging); setOver(null); setDragging(null); place(from, i); } : undefined}>
           {(() => { const handle = onReorder ? (
-            <button type="button" className={cx('plx-widget-grid__handle', renderItem && renderItem.length > 1 && 'plx-widget-grid__handle--inline')} draggable aria-label={fill(t.move, { title: it.title || t.widgetLower })}
-              onDragStart={(e) => { setDragging(it.id); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(it.id)); }}
-              onDragEnd={() => { setDragging(null); setOver(null); }}
-              onKeyDown={(e) => {
-                const step = arrowStep(e, e.currentTarget);
-                if (step) { e.preventDefault(); place(i, i + step); }
-              }}>
-              <Icon name="drag" size="md" />
-            </button>
+            <Menu label={fill(t.move, { title: it.title || t.widgetLower })} placement="bottom-end"
+              className={cx('plx-widget-grid__menu', renderItem && renderItem.length > 1 && 'plx-widget-grid__menu--inline')}
+              trigger={
+                <Handle className={cx('plx-widget-grid__handle', renderItem && renderItem.length > 1 && 'plx-widget-grid__handle--inline')} draggable aria-label={fill(t.move, { title: it.title || t.widgetLower })}
+                  onDragStart={(e) => { setDragging(it.id); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(it.id)); }}
+                  onDragEnd={() => { setDragging(null); setOver(null); }}
+                  onStep={(step) => place(i, i + step)}>
+                  <Icon name="drag" size="md" />
+                </Handle>
+              }>
+              <MenuItem disabled={i === 0} onSelect={() => place(i, i - 1)}>{t.earlier}</MenuItem>
+              <MenuItem disabled={i === items.length - 1} onSelect={() => place(i, i + 1)}>{t.later}</MenuItem>
+              <MenuItem disabled={i === 0} onSelect={() => place(i, 0)}>{t.first}</MenuItem>
+              <MenuItem disabled={i === items.length - 1} onSelect={() => place(i, items.length - 1)}>{t.last}</MenuItem>
+            </Menu>
           ) : null;
           return renderItem && renderItem.length > 1 ? renderItem(it, handle) : <>{handle}{renderItem ? renderItem(it) : null}</>; })()}
         </div>

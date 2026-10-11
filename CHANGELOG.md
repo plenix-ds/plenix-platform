@@ -6,6 +6,40 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.36] - 2026-10-11
+
+### Added
+- The Plenix design for 49 more native components, following the iOS Buttons model.
+  - iOS (24): Toggles, Sliders, Steppers, Segmented controls, Text fields, Pickers, Pop-up buttons, Color wells,
+    Search fields, Page controls, Alerts, Action sheets, Sheets, Popovers, Activity views, Menus, Context menus, Edit
+    menus, Toolbars, Notifications, Tab bars, Sidebars, Lists and tables, Progress indicators and Windows.
+  - Android (24), with Jetpack Compose and Android Views: Button, Icon button, Menu, OutlinedTextField, Switch,
+    Checkbox, Radio group, Slider, Search bar, Exposed dropdown menu, DatePicker and TimePicker, Top app bar,
+    NavigationBar, NavigationRail, Tabs and segmented buttons, Badge, List, Card, Progress indicators, Snackbar,
+    AlertDialog, ModalBottomSheet, Tooltip and Avatar.
+  - Each page has its variants (with their Web pages and tokens), states, anatomy, every attribute from the Plenix
+    token to the code that sets it, and the Plenix code.
+  - Web pages show the Plenix design of their iOS and Android counterparts under Across platforms.
+- The native token files name every value the native code uses: border widths, icon sizes, shapes, shell sizes,
+  opacities, durations, and the component values the native designs name. Android also gets plenix_dimens.xml for
+  Views XML.
+- Web, Plenix Platforms Standard:
+  - DataTable: rows move without dragging (a handle menu, the row menu, Alt+Arrow keys); columns move and resize from
+    the header menu and the keyboard; a narrow table becomes a list of its key columns; an error state with Retry;
+    a kept view (sort, widths, order, hidden columns) under a storage key.
+  - The pane splitters and the dashboard grid have menus to resize and move without dragging.
+  - EmptyState has an error tone with one recovery action.
+  - Tooltips open on a long press on touch screens.
+  - The appearance follows the system by default; Settings and My account offer System, Light and Dark, applied live
+    across the open apps.
+  - Inputs bring the right keyboard, autofill and Enter key hints.
+  - Scrolling areas with an action bar keep the focused element in view.
+  - New tests: 320px reflow and touch and pointer target sizes, with their known findings as baselines.
+- A lightweight Plenix sign-in service (services/login), with an accounts command, tests and the steps to switch
+  from Authentik. It is not deployed: switching is the owner's decision.
+### Changed
+- Toasts take how long they stay from a token (--plx-comp-toast-duration).
+
 ## [0.31.35] - 2026-10-11
 
 ### Fixed

@@ -283,6 +283,241 @@ object PlenixSpace {
     val spaceRegionSpaceLg = 48.dp
 }
 
+object PlenixBorder {
+    val borderWidthThin = 1.dp
+    val borderWidthMedium = 2.dp
+    val borderWidthThick = 3.dp
+    val borderWidthHeavy = 4.dp
+}
+
+object PlenixIcon {
+    val iconSizeXs = 12.dp
+    val iconSizeSm = 16.dp
+    val iconSizeMd = 20.dp
+    val iconSizeLg = 24.dp
+    val iconSizeXl = 48.dp
+    val controlIconInline = 20.dp
+    val controlIconToolbar = 20.dp
+    val controlIconStandard = 24.dp
+    val controlIconProminent = 24.dp
+    val controlIconDialog = 20.dp
+    val controlIconDialogDestructive = 20.dp
+}
+
+object PlenixShape {
+    val shapeNone = 0.dp
+    val shape2xs = 2.dp
+    val shapeXs = 4.dp
+    val shapeSm = 6.dp
+    val shapeMd = 8.dp
+    val shapeLg = 12.dp
+    val shapeXl = 16.dp
+    val shapePill = 9999.dp
+}
+
+object PlenixShell {
+    val shellPhoneBelow = 600.dp
+    val shellHeaderHeight = 56.dp
+    val shellNavWidth = 240.dp
+    val shellNavMinWidth = 140.dp
+    val shellNavMaxWidth = 320.dp
+    val shellSplitterStep = 16.dp
+    val shellRailBelow = 840.dp
+    val shellInspectorOverlayBelow = 1024.dp
+}
+
+object PlenixOpacity {
+    const val opacityLow = 0.3f
+    const val opacityMid = 0.5f
+    const val opacityHigh = 0.7f
+}
+
+/** Durations in milliseconds. */
+object PlenixMotion {
+    const val motionDurationQuick = 120
+    const val motionDurationInstant = 80
+    const val motionDurationFast = 150
+    const val motionDurationBase = 200
+    const val motionDurationSlow = 250
+    const val motionDurationLoopFast = 700
+    const val motionDurationLoopBase = 1100
+    const val motionDurationLoopSlow = 1400
+    const val motionDelayStagger = 180
+}
+
+/** The component values the Plenix native designs use (dp; durations in milliseconds). */
+object PlenixComponent {
+    val activityListItemBorderBottomWidth = 1.dp
+    val avatar20FontSize = 10.dp
+    val avatar20Radius = 4.dp
+    val avatar20Width = 20.dp
+    val avatar24FontSize = 10.dp
+    val avatar24Radius = 4.dp
+    val avatar24Width = 24.dp
+    val avatar28FontSize = 11.dp
+    val avatar28Radius = 6.dp
+    val avatar28Width = 28.dp
+    val avatar32FontSize = 12.dp
+    val avatar32Radius = 6.dp
+    val avatar32Width = 32.dp
+    val avatar40FontSize = 15.dp
+    val avatar40Radius = 6.dp
+    val avatar40Width = 40.dp
+    val avatar48FontSize = 18.dp
+    val avatar48Radius = 8.dp
+    val avatar48Width = 48.dp
+    val avatar64FontSize = 20.dp
+    val avatar64Radius = 8.dp
+    val avatar64Width = 64.dp
+    const val avatarLineHeight = 1f
+    val buttonBorderWidth = 1.dp
+    val buttonClusterGap = 8.dp
+    val buttonIconLabelGap = 4.dp
+    val buttonPaddingInline = 12.dp
+    val buttonRadius = 6.dp
+    val cardAccentBorderInlineStartWidth = 3.dp
+    val cardBodyFontSize = 13.dp
+    val cardBorderWidth = 1.dp
+    val cardContentActionsGap = 16.dp
+    val cardInteractiveOpenerFocusOutlineWidth = 2.dp
+    val cardMetaFontSize = 12.dp
+    val cardPadding = 16.dp
+    val cardRadius = 12.dp
+    val cardTitleContentGap = 12.dp
+    val cardTitleFontSize = 13.dp
+    val checkDescriptionFontSize = 11.dp
+    val checkGap = 8.dp
+    const val checkInputDisabledOpacity = 0.5f
+    val checkInputWidth = 16.dp
+    val checkTextRowGap = 4.dp
+    val colorSwatchBorderWidth = 1.dp
+    val colorSwatchMdHeight = 20.dp
+    val colorSwatchMdWidth = 20.dp
+    val colorSwatchRadius = 2.dp
+    val colorSwatchRoundRadius = 9999.dp
+    val comboboxListMarginBlockStart = 4.dp
+    val comboboxOptionPaddingInline = 12.dp
+    val countPillBorderWidth = 1.dp
+    val countPillMinHeight = 16.dp
+    val countPillMinWidth = 16.dp
+    val countPillPaddingInline = 4.dp
+    val countPillRadius = 9999.dp
+    val dialogActionGap = 8.dp
+    val dialogActionHeight = 36.dp
+    const val dialogDescriptionLineHeight = 1.5f
+    val dialogFooterBorderTopWidth = 1.dp
+    val dialogFooterPaddingBlock = 12.dp
+    val dialogFooterPaddingInline = 16.dp
+    val dialogHeaderBorderBottomWidth = 1.dp
+    val dialogHeaderMinHeight = 48.dp
+    val dialogHeaderPaddingBlock = 8.dp
+    val dialogHeaderPaddingInlineEnd = 8.dp
+    val dialogHeaderPaddingInlineStart = 16.dp
+    val dialogPadding = 24.dp
+    val dialogRadius = 8.dp
+    val dialogSmMaxWidth = 400.dp
+    val dialogTitleFontSize = 15.dp
+    const val drawerAnimationDuration = 200
+    val drawerPadding = 16.dp
+    val inputBorderWidth = 1.dp
+    val inputMinHeight = 32.dp
+    val inputPaddingInline = 12.dp
+    val inputRadius = 6.dp
+    val listItemFontSize = 13.dp
+    val listItemGap = 8.dp
+    val menuBorderWidth = 1.dp
+    val menuCheckWidth = 16.dp
+    val menuDividerBorderTopWidth = 1.dp
+    val menuItemGap = 8.dp
+    val menuItemMinHeight = 32.dp
+    val menuItemPaddingInline = 8.dp
+    val menuMaxWidth = 320.dp
+    val menuMinWidth = 220.dp
+    val menuPaddingBlock = 4.dp
+    val menuPaddingInline = 4.dp
+    val menuRadius = 4.dp
+    const val modalLayerBeforeOpacity = 0.5f
+    val navBarHeight = 56.dp
+    val navBarIconSize = 20.dp
+    val navBarItemMinWidth = 64.dp
+    val navBarItemTarget = 24.dp
+    val navBarLabelFontSize = 12.dp
+    val navBarLabelGap = 4.dp
+    val navListItemFontSize = 13.dp
+    val navListItemGap = 8.dp
+    val navListItemMinHeight = 32.dp
+    val navListItemPaddingInline = 8.dp
+    val navListItemRadius = 6.dp
+    val navPaneWidth = 240.dp
+    const val progressBarFillDuration = 200
+    val progressBarFillRadius = 9999.dp
+    const val progressBarIndeterminateFillAnimationDuration = 1400
+    val progressBarLabelFontSize = 12.dp
+    val progressBarRowGap = 4.dp
+    val progressBarSmTrackHeight = 4.dp
+    val progressBarTrackHeight = 8.dp
+    val progressBarTrackRadius = 9999.dp
+    val radioGroupRowGap = 12.dp
+    val radioTileBorderWidth = 1.dp
+    const val radioTileDisabledOpacity = 0.5f
+    val radioTileRadius = 8.dp
+    val rowButtonFocusOutlineWidth = 2.dp
+    val searchClearWidth = 28.dp
+    val searchIconInsetInlineStart = 12.dp
+    val searchInputBorderWidth = 1.dp
+    val searchInputMinHeight = 28.dp
+    val searchInputRadius = 6.dp
+    val segmentedItemMinHeight = 28.dp
+    val segmentedPaddingBlock = 4.dp
+    val segmentedPaddingInline = 4.dp
+    val segmentedRadius = 6.dp
+    val selectAfterInsetInlineEnd = 12.dp
+    val selectAfterWidth = 12.dp
+    const val sliderInputDisabledOpacity = 0.5f
+    val sliderInputHeight = 28.dp
+    val sliderRowGap = 4.dp
+    const val spinnerAnimationDuration = 700
+    val spinnerLgBorderWidth = 3.dp
+    val spinnerLgWidth = 24.dp
+    val spinnerMdBorderWidth = 2.dp
+    val spinnerMdWidth = 16.dp
+    val spinnerSmBorderWidth = 2.dp
+    val spinnerSmWidth = 12.dp
+    val statusDotHeight = 6.dp
+    val statusDotWidth = 6.dp
+    val switchGap = 8.dp
+    const val switchInputDisabledTrackOpacity = 0.5f
+    val switchMinHeight = 28.dp
+    val switchTrackAfterWidth = 16.dp
+    val switchTrackHeight = 20.dp
+    val switchTrackWidth = 36.dp
+    val tableCellPaddingInline = 8.dp
+    val tableRadius = 8.dp
+    const val toastAnimationDuration = 250
+    val toastBorderInlineStartWidth = 3.dp
+    val toastCloseHeight = 24.dp
+    const val toastCloseOpacity = 0.7f
+    val toastCloseWidth = 24.dp
+    const val toastDuration = 4000
+    val toastFontSize = 13.dp
+    const val toastMessageLineHeight = 1.5f
+    val toastPaddingBlock = 8.dp
+    val toastPaddingInlineEnd = 8.dp
+    val toastPaddingInlineStart = 16.dp
+    val toastRadius = 4.dp
+    val toastRegionInsetBlockEnd = 24.dp
+    val toolbarGroupGap = 16.dp
+    val toolbarPaddingInline = 16.dp
+    val tooltipBubbleBeforeBorderWidth = 4.dp
+    const val tooltipBubbleDuration = 150
+    val tooltipBubbleFontSize = 11.dp
+    const val tooltipBubbleLineHeight = 1.3f
+    val tooltipBubblePaddingBlock = 4.dp
+    val tooltipBubblePaddingInline = 8.dp
+    val tooltipBubbleRadius = 4.dp
+    const val tooltipTouchDismissDelay = 1500
+}
+
 /** The Android size and behavior set (platform-android.tokens.json): dp, and sp for type. */
 object PlenixPlatform {
     val controlTargetMin = 48.dp // web --plx-sys-control-target-min; rule: Target sizes (touch) (https://m3.material.io/foundations/designing/structure)

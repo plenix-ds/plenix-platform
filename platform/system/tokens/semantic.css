@@ -23,6 +23,8 @@
   --plx-sys-safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --plx-sys-safe-area-start: env(safe-area-inset-left, 0px);
   --plx-sys-safe-area-end: env(safe-area-inset-right, 0px);
+  --plx-sys-touch-long-press-delay: var(--plx-ref-motion-delay-long-press);
+  --plx-sys-touch-dismiss-delay: var(--plx-ref-motion-delay-dismiss);
   /* ── TYPOGRAPHY: font roles ── */
   --plx-sys-font-body: var(--plx-sys-typeface-sans);
   --plx-sys-font-heading: var(--plx-sys-typeface-sans);

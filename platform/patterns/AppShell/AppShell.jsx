@@ -66,6 +66,8 @@ import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
 import { snapSize, stepSize } from '../../utils/sizeSteps.js';
 import { pageLayout } from '../../providers/pageLayouts.js';
+import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
+import { Button } from '../../components/Button/Button.jsx';
 
 const STRINGS = { skip: 'Skip to main content' };
 // the five layout modes (the Layout foundation; app-shell.css draws them)
@@ -150,8 +152,12 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
    collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
    "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
-   are mirrored (arrowStep gives the step in reading order). */
-export function PanelSplitter({ label, value, min, max, onChange, onCollapse, edge = 'end' }) {
+   are mirrored (arrowStep gives the step in reading order).
+   Without dragging (WCAG 2.5.7): a small menu button on the edge (shown while the edge is hovered or focused, always with
+   a touch or mobile interaction) offers Narrower and Wider (one size token), Reset width (with defaultValue, the area's
+   default width) and Collapse (with onCollapse). */
+const SPLITTER = { options: '{label} options', narrower: 'Narrower', wider: 'Wider', reset: 'Reset width', collapse: 'Collapse' };
+export function PanelSplitter({ label, value, min, max, onChange, onCollapse, defaultValue, edge = 'end' }) {
   const dir = edge === 'end' ? 1 : -1;
   // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
   const clamp = (w) => snapSize(w, min, max());
@@ -170,10 +176,20 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
     else if (e.key === 'End') { e.preventDefault(); onChange(clamp(max())); }
     else if (e.key === 'Enter' && onCollapse) { e.preventDefault(); onCollapse(); }
   };
+  const top = clamp(max()), now = clamp(value);
   return (
-    <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={min} aria-valuemax={clamp(max())} tabIndex={0}
-      className={cx('plx-panel-splitter', 'plx-panel-splitter--' + edge)} onPointerDown={onPointerDown} onKeyDown={onKeyDown}
-      onDoubleClick={onCollapse || undefined} />
+    <>
+      <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={min} aria-valuemax={top} tabIndex={0}
+        className={cx('plx-panel-splitter', 'plx-panel-splitter--' + edge)} onPointerDown={onPointerDown} onKeyDown={onKeyDown}
+        onDoubleClick={onCollapse || undefined} />
+      <Menu label={label} placement={edge === 'end' ? 'bottom-end' : 'bottom-start'} className={cx('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge)}
+        trigger={<Button size="xs" iconOnly icon="more" label={SPLITTER.options.replace('{label}', label || '')} />}>
+        <MenuItem disabled={now <= clamp(min)} onSelect={() => onChange(stepSize(value, -1, min, max()))}>{SPLITTER.narrower}</MenuItem>
+        <MenuItem disabled={now >= top} onSelect={() => onChange(stepSize(value, 1, min, max()))}>{SPLITTER.wider}</MenuItem>
+        {defaultValue != null ? <MenuItem icon="refresh" disabled={now === clamp(defaultValue)} onSelect={() => onChange(clamp(defaultValue))}>{SPLITTER.reset}</MenuItem> : null}
+        {onCollapse ? <MenuItem icon={edge === 'end' ? 'panel-left-close' : 'panel-right-close'} onSelect={onCollapse}>{SPLITTER.collapse}</MenuItem> : null}
+      </Menu>
+    </>
   );
 }
 

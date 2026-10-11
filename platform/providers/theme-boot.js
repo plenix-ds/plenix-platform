@@ -5,7 +5,9 @@
      <html lang="en" data-plx-density-policy="compact">
        <head> … <script src="…/platform/providers/theme-boot.js"></script> … </head>
    Props:
-     data-plx-mode: on <html>: "light" (default) | "dark" | "system" (follows the system setting live)
+     data-plx-mode: on <html>: "system" (default: the person's choice, else the system setting, followed live) | "light" | "dark"
+       (fixes the page, whatever the person chose: the image editor is always dark)
+     PlenixWorkspace.setMode(m), mode(): the person's appearance, "system" (default) | "light" | "dark", kept for every page
      data-plx-density-policy: on <html> or a region: the density a page or region asks for when the user has not chosen
      data-plx-density-view: on <html>: the name of a workspace or view whose density is saved on its own ("audit-log")
      data-plx-theme: on <html>: the theme (default "default"; the themes are in platform/standards/themes.json)
@@ -37,16 +39,39 @@
   try { chosenTheme = localStorage.getItem(THEME_KEY); } catch (e) { /* storage unavailable */ }
   if (!root.hasAttribute('data-plx-theme')) root.setAttribute('data-plx-theme', chosenTheme && THEME_NAME.test(chosenTheme) ? chosenTheme : 'default');
 
-  // mode: <html data-plx-mode="system"> follows the system setting live (light or dark; data-plx-mode-auto marks it);
-  // "light" or "dark" fixes it. (Moved here from the asset app's include.js.)
+  // mode (Platforms Standard 1.6): the app follows the system appearance live unless the person chooses light or dark. The
+  // person's choice (PlenixWorkspace.setMode, kept under plenix.mode; the suite's older prefs.theme counts until then)
+  // applies to every page whose <html> has data-plx-mode="system" or none; a page that writes "light" or "dark" keeps it.
+  // "system" resolves to light or dark from prefers-color-scheme, live (data-plx-mode-auto marks it).
+  var MODE_KEY = 'plenix.mode', MODES = ['system', 'light', 'dark'];
+  var pageMode = root.getAttribute('data-plx-mode'), fixedMode = pageMode === 'light' || pageMode === 'dark';
   var sysDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-  if (root.getAttribute('data-plx-mode') === 'system') root.setAttribute('data-plx-mode-auto', '');
-  function followSystem() {
-    if (!root.hasAttribute('data-plx-mode-auto')) return;
-    root.setAttribute('data-plx-mode', sysDark && sysDark.matches ? 'dark' : 'light');
+  function chosenMode() {
+    var m = null;
+    try { m = localStorage.getItem(MODE_KEY); if (MODES.indexOf(m) < 0) m = (JSON.parse(localStorage.getItem('plenix.prefs')) || {}).theme; } catch (e) { m = null; }
+    return MODES.indexOf(m) >= 0 ? m : 'system';
   }
-  followSystem();
+  function applyMode(m) {
+    if (fixedMode) return;
+    m = m || chosenMode();
+    if (m === 'system') { root.setAttribute('data-plx-mode-auto', ''); m = sysDark && sysDark.matches ? 'dark' : 'light'; }
+    else root.removeAttribute('data-plx-mode-auto');
+    if (root.getAttribute('data-plx-mode') !== m) root.setAttribute('data-plx-mode', m);
+  }
+  function followSystem() { if (root.hasAttribute('data-plx-mode-auto')) root.setAttribute('data-plx-mode', sysDark && sysDark.matches ? 'dark' : 'light'); }
+  applyMode();
   if (sysDark && sysDark.addEventListener) sysDark.addEventListener('change', followSystem);
+  function setMode(m) {
+    if (MODES.indexOf(m) < 0) return;
+    try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* this visit only */ }
+    applyMode(m);
+    window.dispatchEvent(new CustomEvent('plenix:modechange', { detail: { mode: m } }));
+  }
+  // another open page changed it: follow live
+  window.addEventListener('storage', function (e) {
+    if (e.key !== MODE_KEY) return;
+    applyMode(); window.dispatchEvent(new CustomEvent('plenix:modechange', { detail: { mode: chosenMode() } }));
+  });
   // the three levels, densest first; standard is the system default (a name, never "Default")
   var DENSITIES = ['compact', 'standard', 'comfortable'];
   var LABELS = { compact: 'Compact', standard: 'Standard', comfortable: 'Comfortable' };
@@ -171,6 +196,7 @@
   function clearTheme() { store.set(THEME_KEY, null); root.setAttribute('data-plx-theme', 'default'); }
   window.PlenixWorkspace = {
     setTheme: setTheme, clearTheme: clearTheme, theme: function () { return root.getAttribute('data-plx-theme'); },
+    setMode: setMode, mode: chosenMode,
     setDensity: setDensity, setViewDensity: setViewDensity, clearDensity: clearDensity,
     density: function () { return root.getAttribute('data-plx-density'); },
     densitySource: function () { var c = chosen(); return c ? c.source : root.hasAttribute('data-plx-density-policy') ? 'policy' : 'system'; },

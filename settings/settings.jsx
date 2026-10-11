@@ -575,7 +575,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
   const AddRow=({label,value,onChange,placeholder,onAdd,onCancel})=>(
     <Panel title={label} headingLevel={2}>
       <Inline gap="sm">
-        <Stack grow><Input autoFocus aria-label={label} value={value} onChange={onChange} placeholder={placeholder} onKeyDown={e=>{if(e.key==="Enter")onAdd();if(e.key==="Escape")onCancel();}}/></Stack>
+        <Stack grow><Input autoFocus autoComplete="off" enterKeyHint="done" aria-label={label} value={value} onChange={onChange} placeholder={placeholder} onKeyDown={e=>{if(e.key==="Enter")onAdd();if(e.key==="Escape")onCancel();}}/></Stack>
         <Button variant="primary" onClick={onAdd} size="sm">Add</Button>
         <Button onClick={onCancel} size="sm">Cancel</Button>
       </Inline>
@@ -685,7 +685,7 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
       <Screen title="Appearance" desc="Theme, header style, accent color and typography.">
         <SettingsSection title="Theme">
           <Row label="Theme" desc="The look of every Plenix application; themes are defined in the design system"><ThemeChoice/></Row>
-          <Row label="Mode"><Seg opts={[{v:"light",l:"Light"},{v:"dark",l:"Dark"},{v:"system",l:"System"}]} val={prefs.theme||"light"} onChange={v=>set("theme",v)}/></Row>
+          <Row label="Mode" desc="System follows the light or dark setting of your device"><Seg opts={[{v:"system",l:"System"},{v:"light",l:"Light"},{v:"dark",l:"Dark"}]} val={prefs.theme||"system"} onChange={v=>set("theme",v)}/></Row>
         </SettingsSection>
         <DensityChoice/>
         <SettingsSection title="Header and accent">
@@ -831,8 +831,8 @@ export function Settings({prefs,setPrefs,startCat="general",onBack}){
       <Screen title="Account" desc="Profile, integrations and connected services.">
         <SettingsSection title="Profile">
           <Row label="Picture"><Inline gap="sm" align="center"><Avatar name={account.name} src={account.src} size="md"/><Button size="sm" icon="settings-camera" onClick={()=>choosePicture().then(p=>{if(p)setPicture(p);})}>Change picture</Button>{account.src?<Button size="sm" variant="ghost" onClick={()=>setPicture(null)}>Remove</Button>:null}</Inline></Row>
-          <Row label="Name"><Stack width="sm"><Input defaultValue={account.name} aria-label="Name"/></Stack></Row>
-          <Row label="Email"><Stack width="md"><Input defaultValue={account.email} aria-label="Email"/></Stack></Row>
+          <Row label="Name"><Stack width="sm"><Input defaultValue={account.name} aria-label="Name" autoComplete="name" autoCapitalize="words" enterKeyHint="next"/></Stack></Row>
+          <Row label="Email"><Stack width="md"><Input type="email" defaultValue={account.email} aria-label="Email" autoComplete="email" enterKeyHint="done"/></Stack></Row>
         </SettingsSection>
         <SettingsSection title="Integrations">
           <Row label="Calendar source">

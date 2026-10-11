@@ -56,7 +56,9 @@ const Form = ({ act, saved, children }) => <form noValidate onSubmit={(e) => { e
 function Properties({ act }) {
   const [p, setP] = React.useState(D.PROPERTIES);
   const [views, setViews] = React.useState(D.RESULT_VIEWS.map((v) => ({ value: v, label: v })));
-  const text = (k, extra) => ({ value: p[k], onChange: (e) => setP({ ...p, [k]: e.target.value }), name: k, ...extra });
+  // configuration values: no autofill; a path or a number gets its own keyboard (Platforms Standard 3.5)
+  const text = (k, extra) => ({ value: p[k], onChange: (e) => setP({ ...p, [k]: e.target.value }), name: k, autoComplete: 'off', ...extra });
+  const path = { autoCapitalize: 'off', spellCheck: false, inputMode: 'url' };
   const sw = (k, label) => <Field label={label} layout="row"><Switch label={label} labelHidden checked={p[k]} onChange={(e) => setP({ ...p, [k]: e.target.checked })} /></Field>;
   const enabled = useToggles(D.ENABLED_FOR), viewAll = useToggles(D.VIEW_ALL), editAll = useToggles(D.EDIT_ALL);
   const roleCol = { title: 'Group / Role', field: 'name', kind: 'name', frozen: true, filter: true };
@@ -75,10 +77,10 @@ function Properties({ act }) {
                 onCreate={(t) => { const v = t.trim(); if (v) { setViews(views.concat({ value: v, label: v })); setP({ ...p, defaultResultsView: v }); } }} />
             </Field>
             <Field label="Default sort field" layout="inline"><Input {...text('defaultSortField', { placeholder: 'Default sort field' })} /></Field>
-            <Field label="Upload sourcepath" layout="inline"><Input {...text('uploadSourcepath')} /></Field>
+            <Field label="Upload sourcepath" layout="inline"><Input {...text('uploadSourcepath', path)} /></Field>
             {sw('autoCreateEntities', 'Auto create entities')}
-            <Field label="Root folder path" layout="inline"><Input {...text('rootFolderPath', { placeholder: 'Root folder path' })} /></Field>
-            <Field label="Auto create at folder level" layout="inline" info="Scan deep A/B/C, B = 2"><Input {...text('autoCreateAtFolderLevel')} /></Field>
+            <Field label="Root folder path" layout="inline"><Input {...text('rootFolderPath', { placeholder: 'Root folder path', ...path })} /></Field>
+            <Field label="Auto create at folder level" layout="inline" info="Scan deep A/B/C, B = 2"><Input {...text('autoCreateAtFolderLevel', { inputMode: 'numeric', enterKeyHint: 'done' })} /></Field>
             {sw('semanticEnabled', 'Semantic enabled')}
             <Field label="AI search prompt" layout="inline"><Textarea {...text('aiSearchPrompt', { placeholder: 'AI search prompt' })} /></Field>
             <Field label="AI search contains" layout="inline"><Textarea {...text('aiSearchContains', { placeholder: 'AI search contains' })} /></Field>
@@ -104,7 +106,7 @@ function Fields({ act }) {
         { value: 'fields', label: 'Fields', content: (
           <>
             <Bar label="Field actions">
-              <Input name="newFieldName" width="lg" placeholder="New field name..." aria-label="New field name" />
+              <Input name="newFieldName" autoComplete="off" enterKeyHint="done" width="lg" placeholder="New field name..." aria-label="New field name" />
               <B icon="add" label="Add field" act={act} />
               <Search value={q} onChange={setQ} label={'Search ' + D.FIELD_TOTAL + ' fields'} />
             </Bar>
@@ -128,10 +130,10 @@ function AssetTypes({ act }) {
       <Tabs variant="contained" label="Asset types" items={types.map((t, i) => ({ value: String(i), label: D.ASSET_TYPES[i][0], content: (
         <div className="plx-settings__rows">
           <Sub first>Properties</Sub>
-          <Field label="Name" layout="inline"><Input name="name" value={t.name} onChange={edit(i, 'name')} /></Field>
-          <Field label="Extensions" layout="inline"><Textarea name="extensions" value={t.ext} onChange={edit(i, 'ext')} /></Field>
-          <Field label="Paths" layout="inline"><Input name="paths" placeholder="Paths" value={t.paths} onChange={edit(i, 'paths')} /></Field>
-          <Field label="Ordering" layout="inline"><Input name="ordering" width="sm" value={t.order} onChange={edit(i, 'order')} /></Field>
+          <Field label="Name" layout="inline"><Input name="name" autoComplete="off" value={t.name} onChange={edit(i, 'name')} /></Field>
+          <Field label="Extensions" layout="inline"><Textarea name="extensions" autoComplete="off" autoCapitalize="off" spellCheck={false} value={t.ext} onChange={edit(i, 'ext')} /></Field>
+          <Field label="Paths" layout="inline"><Input name="paths" autoComplete="off" autoCapitalize="off" spellCheck={false} placeholder="Paths" value={t.paths} onChange={edit(i, 'paths')} /></Field>
+          <Field label="Ordering" layout="inline"><Input name="ordering" inputMode="numeric" autoComplete="off" enterKeyHint="done" width="sm" value={t.order} onChange={edit(i, 'order')} /></Field>
         </div>) }))} />
       <Actions act={act} save="Save changes" />
     </Form>
@@ -207,7 +209,7 @@ function Groups({ act }) {
       <Tabs variant="contained" label="Groups" items={D.GROUPS.map((g, i) => ({ value: String(i), label: g, content: (
         <div className="plx-settings__rows">
           <Sub first>Properties</Sub>
-          <Field label="Name" layout="inline"><Input name="name" value={names[i]} onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} /></Field>
+          <Field label="Name" layout="inline"><Input name="name" autoComplete="off" value={names[i]} onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} /></Field>
         </div>) }))} />
       <Actions act={act} save="Save changes" del="Delete group" />
     </Form>

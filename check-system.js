@@ -48,7 +48,9 @@ const SKIP = /[\\/](node_modules|dist|vendor|Archived|archive|backups|audit|docs
 // files that are not part of either application (kept for reference, never loaded)
 const NOT_LOADED = new Set([]);
 const SOURCES = [
-  { dir: path.join(ROOT, 'platform'), app: 'platform' },
+  // native-guidance.js is generated data: its code samples are Swift, Kotlin and Android XML (UIAlertAction style:,
+  // <style name=…>), shown as text in a code block, never markup a page renders (batch 341)
+  { dir: path.join(ROOT, 'platform'), app: 'platform', skip: /[\\/]design-system[\\/]native-guidance\.js$/ },
   { dir: path.join(ROOT, 'suite'), app: 'suite' },
   ...SUITE.map((f) => ({ dir: path.join(ROOT, f), app: f, skip: /[\\/]app\.js$/ })),
   { dir: path.join(DAM, 'app'), app: 'asset manager', skip: /[\\/]app[\\/]assets\.js$/ },

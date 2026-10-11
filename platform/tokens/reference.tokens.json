@@ -713,6 +713,14 @@
       "$value": "0.18s",
       "$type": "duration"
     },
+    "motion-delay-long-press": {
+      "$value": "0.5s",
+      "$type": "duration"
+    },
+    "motion-delay-dismiss": {
+      "$value": "1.5s",
+      "$type": "duration"
+    },
     "radius-0px": {
       "$value": "0px",
       "$type": "dimension",

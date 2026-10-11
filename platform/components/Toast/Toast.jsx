@@ -5,7 +5,7 @@
      const toast = useToast();
      toast.show('Saved', { tone: 'success' });
    Props:
-     ToastProvider.duration: the default milliseconds before a toast leaves by itself; default 4000
+     ToastProvider.duration: the default milliseconds before a toast leaves by itself; default the --plx-comp-toast-duration token
      ToastProvider.children: the application
      toast.show(message, options): shows a toast and returns its id
      options.tone: "info" (default) | "success" | "warning" | "danger"
@@ -23,21 +23,22 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { tokenMs } from '../../utils/tokenTime.js';
 
 const ToastContext = React.createContext(null);
 const TONE_ICON = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert' };
 let nextId = 1;
 
-export function ToastProvider({ duration = 4000, children }) {
+export function ToastProvider({ duration, children }) {
   const [toasts, setToasts] = React.useState([]);
   const remove = React.useCallback((id) => setToasts((all) => all.filter((t) => t.id !== id)), []);
   const dismiss = React.useCallback((id) => {
     setToasts((all) => all.map((t) => (t.id === id ? { ...t, leaving: true } : t)));
-    setTimeout(() => remove(id), 1000);
+    setTimeout(() => remove(id), tokenMs('--plx-comp-toast-animation-duration'));
   }, [remove]);
   const show = React.useCallback((message, { tone = 'info', duration: ms } = {}) => {
     const id = nextId++;
-    const wait = ms !== undefined ? ms : (tone === 'danger' ? 0 : duration);
+    const wait = ms !== undefined ? ms : (tone === 'danger' ? 0 : duration !== undefined ? duration : tokenMs('--plx-comp-toast-duration'));
     setToasts((all) => all.concat({ id, message, tone, leaving: false }));
     if (wait > 0) setTimeout(() => dismiss(id), wait);
     return id;

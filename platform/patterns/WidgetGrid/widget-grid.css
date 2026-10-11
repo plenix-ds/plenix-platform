@@ -16,3 +16,6 @@
 .plx-widget-grid__handle.plx-widget-grid__handle--inline{inset-block-start:auto;inset-inline-end:auto;position:static;}
 /* drag and drop (batch 271): the handle shows grab, grabbing while held or while its widget moves */
 .plx-widget-grid__handle:active,.plx-widget-grid__item.is-dragging,.plx-widget-grid__item.is-dragging *{cursor:grabbing;}
+/* the handle's menu (Move earlier / later, a way without dragging): its anchor leaves the corner handle placed against the
+   widget; a handle the widget places itself keeps the anchor in the flow */
+.plx-widget-grid__menu.plx-menu-anchor:not(.plx-widget-grid__menu--inline){position:static;}

@@ -38,6 +38,14 @@
      rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
      empty: shown when no row matches; default "Nothing to show"
+     error: the rows could not load (a message or an Error): the grid shows the error state, naming the problem
+     onRetry(): the error state's one recovery action (Retry); a grid whose engine failed to load retries it as well
+     keyColumns: the fields a Narrow grid keeps (its list layout); default the first column plus the next two (icon,
+       actions and handle columns are not counted)
+     narrow: "list" (the DataTable's default: under 600px of its own width, a list of the key columns) | "table" (the
+       static Table's default: the columns stay and scroll sideways)
+     storageKey: keeps the person's view (sort, column widths, order and hidden columns) in this browser under the key
+       and restores it the next time the grid is built
      height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container)
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
      on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
@@ -48,6 +56,16 @@
    Behavior:
      Drag and drop (batch 271): a row handle (a column with rowHandle) shows the grab cursor; the row being moved shows
        grabbing.
+     Every drag has a way without dragging (WCAG 2.5.7): a click on a row handle, or the row menu, offers Move up, Move
+       down, Move to top and Move to bottom; a focused handle moves its row with Alt + Arrow Up / Down (Alt + Home / End
+       to the ends). A column's header menu offers Move left and Move right (options.movableColumns), Narrower and Wider
+       (one size token) and Fit to content; its resize grip is a separator that the arrow keys step through the size
+       tokens (Home and End: narrowest and widest).
+     Error: the error prop, or an engine that failed to load, shows an inline error state (EmptyState tone="error"): what
+       failed and Retry.
+     Narrow (platforms.md 6.5): under 600px of its own width (a container query, not the window) the grid becomes a list
+       of its key columns: the first is the row's title line, the others the lines under it; the checkbox, the row handle
+       and the row actions stay; the header row and the other columns are not shown.
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
@@ -68,15 +86,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { loadTabulator, tablePx } from './tabulator.js';
-import { snapSize, SIZE_STEPS } from '../../utils/sizeSteps.js';
+import { snapSize, stepSize, SIZE_STEPS } from '../../utils/sizeSteps.js';
+import { arrowStep, isRtl } from '../../utils/direction.js';
+import { EmptyState } from '../EmptyState/EmptyState.jsx';
+import { Button } from '../Button/Button.jsx';
 
 const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px';   // the narrowest a resized column gets
 const STRINGS = {
   empty: 'Nothing to show', sortUp: 'Sort A to Z', sortDown: 'Sort Z to A', clearSort: 'Clear sort', clearFilter: 'Clear filter',
   group: 'Group by this column', ungroup: 'Ungroup', fit: 'Fit to content', hide: 'Hide column', showAll: 'Show all columns',
-  filter: 'Filter', any: 'Any', contains: 'Contains…', clear: 'Clear', apply: 'Apply', selectRow: 'Select row', item: 'item', items: 'items', failed: 'The grid could not load.'
+  filter: 'Filter', any: 'Any', contains: 'Contains…', clear: 'Clear', apply: 'Apply', selectRow: 'Select row', item: 'item', items: 'items',
+  failed: 'The table could not load', retry: 'Retry', moveUp: 'Move up', moveDown: 'Move down', moveTop: 'Move to top', moveBottom: 'Move to bottom',
+  moveRow: 'Move row', moveLeft: 'Move left', moveRight: 'Move right', narrower: 'Narrower', wider: 'Wider', resize: 'Resize'
 };
+const VIEW = 'plx-data-table:';   // the browser storage prefix of a kept view (storageKey)
+const readView = (key) => { try { const s = window.localStorage.getItem(VIEW + key); return s ? JSON.parse(s) : null; } catch (e) { return null; } };
+const writeView = (key, v) => { try { window.localStorage.setItem(VIEW + key, JSON.stringify(v)); } catch (e) { /* storage off: the view is not kept */ } };
+// the columns a Narrow grid can keep: data columns (not the icon, actions or handle columns)
+const listable = (c) => !!c.field && c.kind !== 'icon' && c.kind !== 'actions' && !c.rowHandle;
+const keyFields = (cols, want) => (want && want.length ? want.slice() : cols.filter(listable).slice(0, 3).map((c) => c.field));
 
 const el = (tag, className, text) => { const e = document.createElement(tag); if (className) e.className = className; if (text != null) e.textContent = text; return e; };
 const iconEl = (name) => { const s = el('span', 'plx-icon plx-icon--' + name); s.setAttribute('aria-hidden', 'true'); return s; };
@@ -143,7 +172,14 @@ export function TableEngine(props) {
   // one look from one set of tokens (owner, 2026-10-09): the static Table draws with the DataTable's classes and tokens
   // (--plx-sys-data-table-*, --plx-comp-data-table-*); isStatic only switches the interaction off
   const isStatic = !!props.isStatic, B = 'plx-data-table';
-  const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className } = props;
+  const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className,
+    error: failure, onRetry, keyColumns, narrow = isStatic ? 'table' : 'list', storageKey } = props;
+  // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
+  const keys = keyFields(columns, keyColumns);
+  const listed = narrow === 'list' && columns.some((c) => listable(c) && keys.indexOf(c.field) < 0);
+  const [attempt, setAttempt] = React.useState(0);   // a Retry after the engine failed to load builds the grid again
+  const resized = React.useRef({});   // the widths the person chose (field -> size name), for the kept view
+  const restoring = React.useRef(false);
   const syncing = React.useRef(false);   // the selection is being set from the selected prop
   const frameRef = React.useRef(null);
   const hostRef = React.useRef(null);
@@ -171,6 +207,76 @@ export function TableEngine(props) {
     return () => cancelAnimationFrame(id);
   });
 
+  // the person's view, kept under storageKey: written after each change they make (not while it is being restored)
+  const saveView = () => {
+    const t = tableRef.current, key = latest.current.storageKey;
+    if (!key || !t || restoring.current) return;
+    writeView(key, {
+      sort: t.getSorters().map((s) => ({ column: s.field, dir: s.dir })),
+      widths: resized.current,
+      order: t.getColumns().map((c) => c.getField()).filter(Boolean),
+      hidden: t.getColumns().filter((c) => !c.isVisible()).map((c) => c.getField()).filter(Boolean),
+    });
+  };
+  // the kept view onto a grid just built: what still fits its columns (a field that is gone is skipped)
+  const restoreView = (t) => {
+    const key = latest.current.storageKey, v = key ? readView(key) : null;
+    resized.current = {};
+    if (!v) return;
+    restoring.current = true;
+    try {
+      const col = (f) => t.getColumns().find((c) => c.getField() === f);
+      const order = (v.order || []).filter(col);
+      order.forEach((f, i) => { const c = col(f), prev = i ? col(order[i - 1]) : null; if (c && prev && !c.getDefinition().frozen && !prev.getDefinition().frozen) c.move(prev, true); });
+      Object.keys(v.widths || {}).forEach((f) => { const c = col(f); if (c && /^\d+px$/.test(v.widths[f])) { setWidthClass(c, v.widths[f], B); resized.current[f] = v.widths[f]; } });
+      (v.hidden || []).forEach((f) => { const c = col(f); if (c) c.hide(); });
+      const sort = (v.sort || []).filter((s) => col(s.column) && (s.dir === 'asc' || s.dir === 'desc'));
+      if (sort.length) t.setSort(sort);
+    } catch (e) { /* a view kept for another column set: what fits is restored */ }
+    restoring.current = false;
+  };
+  // a column's width as a size token (the grip, the header menu, Fit to content), kept in the view
+  const applyWidth = (col, size) => {
+    setWidthClass(col, size, B);
+    if (col.getField()) resized.current[col.getField()] = size;
+    const grip = col.getElement().querySelector('.' + B + '__resize'); if (grip) grip.setAttribute('aria-valuenow', String(parseInt(size, 10)));
+    saveView();
+  };
+  const widthLimits = (el) => [tablePx(MIN, el), SIZE_STEPS[SIZE_STEPS.length - 1]];
+  const stepWidth = (col, dir) => { const el = col.getElement(), [lo, hi] = widthLimits(el); applyWidth(col, stepSize(el.getBoundingClientRect().width, dir, lo, hi) + 'px'); };
+  // a column one place left or right (the header menu): past hidden columns, never into the pinned ones
+  const moveColumn = (col, step) => {
+    const dir = isRtl(col.getElement()) ? -step : step;
+    let to = dir < 0 ? col.getPrevColumn() : col.getNextColumn();
+    while (to && !to.isVisible()) to = dir < 0 ? to.getPrevColumn() : to.getNextColumn();
+    if (!to || to.getDefinition().frozen) return;
+    col.move(to, dir > 0);
+    const h = (latest.current.on || {}).columnMoved; if (h) h(col, tableRef.current.getColumns());
+    saveView();
+  };
+  // a row one place up or down, or to the top or bottom (the handle's menu, the row menu, Alt + the arrow keys)
+  const moveRow = (row, where) => {
+    const t = tableRef.current; if (!t) return false;
+    const rows = t.getRows('active'), prev = row.getPrevRow(), next = row.getNextRow();
+    // (Tabulator's row.move(target, true) places the row above the target, false below it)
+    if (where === 'up' && prev) row.move(prev, true);
+    else if (where === 'down' && next) row.move(next, false);
+    else if (where === 'top' && prev) row.move(rows[0], true);
+    else if (where === 'bottom' && next) row.move(rows[rows.length - 1], false);
+    else return false;
+    const h = (latest.current.on || {}).rowMoved; if (h) h(row);
+    return true;
+  };
+  const rowMoveItems = (row) => {
+    const up = !row.getPrevRow(), down = !row.getNextRow();
+    return [
+      { label: menuLabel(STRINGS.moveUp, 'chevron-up'), disabled: up, action: () => moveRow(row, 'up') },
+      { label: menuLabel(STRINGS.moveDown, 'chevron-down'), disabled: down, action: () => moveRow(row, 'down') },
+      { label: menuLabel(STRINGS.moveTop), disabled: up, action: () => moveRow(row, 'top') },
+      { label: menuLabel(STRINGS.moveBottom), disabled: down, action: () => moveRow(row, 'bottom') }
+    ];
+  };
+
   // Plenix columns -> Tabulator column definitions
   const defsOf = (cols, host) => {
     const T = () => tableRef.current;
@@ -187,7 +293,7 @@ export function TableEngine(props) {
     const fitColumn = (col) => {
       const els = [col.getElement()].concat(col.getCells().map((x) => x.getElement()));
       const need = Math.max.apply(null, els.map((el) => el.scrollWidth));
-      setWidthClass(col, snapSize(SIZE_STEPS.find((z) => z >= need) || need, SIZE_STEPS[0], SIZE_STEPS[SIZE_STEPS.length - 1]) + 'px', B);
+      applyWidth(col, snapSize(SIZE_STEPS.find((z) => z >= need) || need, SIZE_STEPS[0], SIZE_STEPS[SIZE_STEPS.length - 1]) + 'px');
     };
     const filterPopup = (c) => (e, column, onRendered) => {
       const field = column.getField(), active = filters(field)[0];
@@ -213,8 +319,14 @@ export function TableEngine(props) {
       onRendered(() => input.focus());
       return box;
     };
-    const headerItems = (c) => () => {
+    const headerItems = (c, pinned) => () => {
       const items = [];
+      // moving a column without dragging it (WCAG 2.5.7): one place left or right
+      if ((latest.current.options || {}).movableColumns && !pinned) {
+        items.push({ label: menuLabel(STRINGS.moveLeft, 'chevron-left'), action: (e, col) => moveColumn(col, -1) });
+        items.push({ label: menuLabel(STRINGS.moveRight, 'chevron-right'), action: (e, col) => moveColumn(col, 1) });
+        items.push({ separator: true });
+      }
       if (c.headerSort !== false && c.kind !== 'actions') {
         items.push({ label: menuLabel(STRINGS.sortUp, 'sort-ascending'), action: (e, col) => T().setSort(col.getField(), 'asc') });
         items.push({ label: menuLabel(STRINGS.sortDown, 'sort-descending'), action: (e, col) => T().setSort(col.getField(), 'desc') });
@@ -227,9 +339,14 @@ export function TableEngine(props) {
         if (T().options.groupBy) items.push({ label: menuLabel(STRINGS.ungroup, 'list-bullets'), action: () => T().setGroupBy(false) });
       }
       if (items.length && !items[items.length - 1].separator) items.push({ separator: true });
-      if (c.kind !== 'icon' && c.resizable !== false) items.push({ label: menuLabel(STRINGS.fit, 'expand'), action: (e, col) => fitColumn(col) });
-      items.push({ label: menuLabel(STRINGS.hide, 'visibility-off'), action: (e, col) => col.hide() });
-      items.push({ label: menuLabel(STRINGS.showAll, 'visibility'), action: () => T().getColumns().forEach((col) => col.show()) });
+      // the width without dragging: one size token narrower or wider, or fitted to the content
+      if (c.kind !== 'icon' && c.kind !== 'actions' && c.resizable !== false) {
+        items.push({ label: menuLabel(STRINGS.narrower), action: (e, col) => stepWidth(col, -1) });
+        items.push({ label: menuLabel(STRINGS.wider), action: (e, col) => stepWidth(col, 1) });
+        items.push({ label: menuLabel(STRINGS.fit, 'expand'), action: (e, col) => fitColumn(col) });
+      }
+      items.push({ label: menuLabel(STRINGS.hide, 'visibility-off'), action: (e, col) => { col.hide(); saveView(); } });
+      items.push({ label: menuLabel(STRINGS.showAll, 'visibility'), action: () => { T().getColumns().forEach((col) => col.show()); saveView(); } });
       return items;
     };
 
@@ -245,7 +362,8 @@ export function TableEngine(props) {
       const headAlign = hh && hh !== 'left' ? B + '__head-align-' + hh : null;
       ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach((k) => { delete d[k]; });
       d.cssClass = cx(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || (labelAt > i)) && B + '__cell--row-label',
-        w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle') || undefined;
+        w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle',
+        keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
       if (kind === 'icon') {
@@ -255,7 +373,9 @@ export function TableEngine(props) {
       if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false });
       if (render) d.formatter = (cell) => { const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
       if (filter && !isStatic) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
-      if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
+      if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c, labelAt >= i || !!c.frozen);
+      // a click on a row handle opens its move menu (a way to move rows without dragging; WCAG 2.5.7)
+      if (c.rowHandle && !isStatic && (latest.current.options || {}).movableRows && d.clickMenu === undefined) d.clickMenu = (e, cell) => rowMoveItems(cell.getRow());
       return d;
     });
   };
@@ -275,14 +395,18 @@ export function TableEngine(props) {
       const host = hostRef.current;
       const p = latest.current;
       const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
-      const rowContextMenu = p.rowMenu ? (e, row) => {
+      // the row menu: the page's items, then (movable rows) the moves
+      const movable = !isStatic && !!(p.options || {}).movableRows;
+      const rowContextMenu = p.rowMenu || movable ? (e, row) => {
         const cur = latest.current.rowMenu, d = row.getData();
         const list = typeof cur === 'function' ? cur(d) : cur;
-        return (list || []).map((it) => (it.separator ? { separator: true } : {
+        const items = (list || []).map((it) => (it.separator ? { separator: true } : {
           label: menuLabel(it.label, it.icon, it.danger),
           disabled: typeof it.disabled === 'function' ? it.disabled(d) : !!it.disabled,
           action: () => it.onSelect && it.onSelect(d, row)
         }));
+        if (movable) { if (items.length) items.push({ separator: true }); items.push(...rowMoveItems(row)); }
+        return items;
       } : undefined;
       const labelled = p.columns.some((c) => c.rowLabel);
       const opts = {
@@ -337,6 +461,12 @@ export function TableEngine(props) {
         // when it already matches)
         if (table) syncSelection(table);
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => { if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', STRINGS.selectRow + ' ' + (n + 1)); });
+        // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
+        if (movable) host.querySelectorAll('.tabulator-row .' + B + '__cell--handle').forEach((h) => {
+          if (h.hasAttribute('aria-keyshortcuts')) return;
+          h.tabIndex = 0; h.setAttribute('aria-label', STRINGS.moveRow); h.setAttribute('aria-haspopup', 'menu');
+          h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
+        });
       };
       table.on('renderComplete', aria);
       table.on('tableBuilt', () => {
@@ -345,7 +475,10 @@ export function TableEngine(props) {
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h) h(...a); }));
         table.on('rowSelectionChanged', () => { const q = latest.current; if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map((x) => x[q.index || 'id'])); });
         syncSelection(table);
-        if (!isStatic) { wireColumns(table); wireRows(table, host); }
+        if (!isStatic) {
+          wireColumns(table); wireRows(table, host);
+          restoreView(table); table.on('dataSorted', () => saveView());
+        }
         if (latest.current.onReady) latest.current.onReady(table);
         bump();
       });
@@ -373,7 +506,7 @@ export function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '']);
+  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '']);
 
   // moving rows (options.movableRows with a rowHandle column): native drag and drop from the handle, delegated on the grid;
   // the row it is dropped on shows a line (a class) and the moved row lands before it
@@ -398,6 +531,17 @@ export function TableEngine(props) {
       const h = (latest.current.on || {}).rowMoved; if (h) h(from);
     });
     host.addEventListener('dragend', () => { clear(); host.querySelectorAll('.tabulator-moving').forEach((x) => x.classList.remove('tabulator-moving')); moving.current = null; });
+    // the keyboard on a focused handle: Enter or Space opens its menu; Alt + Arrow Up / Down (Home / End) moves the row,
+    // and the handle keeps the focus
+    host.addEventListener('keydown', (ev) => {
+      const h = ev.target.closest && ev.target.closest('.tabulator-row .' + B + '__cell--handle');
+      if (!h || ev.target !== h) return;
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); h.click(); return; }
+      const where = ev.altKey ? { ArrowUp: 'up', ArrowDown: 'down', Home: 'top', End: 'bottom' }[ev.key] : null;
+      const r = where && rowOf(h); if (!r) return;
+      ev.preventDefault();
+      if (moveRow(r, where)) requestAnimationFrame(() => { const c = r.getElement().querySelector('.' + B + '__cell--handle'); if (c) c.focus(); });
+    });
   };
 
   // a header can be dragged onto another to move its column (options.movableColumns), and its edge resizes it: the width
@@ -415,21 +559,36 @@ export function TableEngine(props) {
         el.addEventListener('dragend', () => { el.classList.remove('tabulator-moving'); dragged = null; });
         el.addEventListener('dragover', (ev) => { if (dragged && dragged !== col) { ev.preventDefault(); el.classList.add(B + '__drop'); } });
         el.addEventListener('dragleave', () => el.classList.remove(B + '__drop'));
-        el.addEventListener('drop', (ev) => { ev.preventDefault(); el.classList.remove(B + '__drop'); if (dragged && dragged !== col) { const from = dragged; dragged = null; from.move(col, true); const h = (latest.current.on || {}).columnMoved; if (h) h(from, table.getColumns()); } });
+        el.addEventListener('drop', (ev) => { ev.preventDefault(); el.classList.remove(B + '__drop'); if (dragged && dragged !== col) { const from = dragged; dragged = null; from.move(col, true); const h = (latest.current.on || {}).columnMoved; if (h) h(from, table.getColumns()); saveView(); } });
       }
       // resizable unless the page's column says not (Tabulator's own resizing is off: its handles write styles)
       const mine = (latest.current.columns || []).find((x) => x.field && x.field === col.getField());
       const resizable = !!mine && mine.resizable !== false && !/__cell--(icon|actions|select)|__w-lead/.test(String(def.cssClass || ''));
       if (resizable) {
-        const grip = el.ownerDocument.createElement('span'); grip.className = B + '__resize'; grip.setAttribute('aria-hidden', 'true');
+        // the grip is a separator: dragged, or focused and stepped with the arrow keys (WCAG 2.5.7 and 2.1.1); the header
+        // keeps its own name (its title), so the grip's name does not join it
+        const title = String(def.title || col.getField() || '');
+        const [lo, hi] = widthLimits(el);
+        const grip = el.ownerDocument.createElement('span'); grip.className = B + '__resize';
+        grip.setAttribute('role', 'separator'); grip.setAttribute('aria-orientation', 'vertical'); grip.tabIndex = 0;
+        grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
+        grip.setAttribute('aria-valuemin', String(lo)); grip.setAttribute('aria-valuemax', String(hi));
+        grip.setAttribute('aria-valuenow', String(Math.round(el.getBoundingClientRect().width) || lo));
+        if (title && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', title);
         grip.addEventListener('click', (ev) => ev.stopPropagation());
+        grip.addEventListener('keydown', (ev) => {
+          const now = el.getBoundingClientRect().width, step = arrowStep(ev, el, { vertical: false });
+          const to = step ? stepSize(now, step, lo, hi) : ev.key === 'Home' ? snapSize(lo, lo, hi) : ev.key === 'End' ? snapSize(hi, lo, hi) : null;
+          if (to == null) return;
+          ev.preventDefault(); ev.stopPropagation(); applyWidth(col, to + 'px');
+        });
         grip.addEventListener('pointerdown', (ev) => {
           ev.preventDefault(); ev.stopPropagation();
           const x0 = ev.clientX, w0 = el.getBoundingClientRect().width, rtl = getComputedStyle(el).direction === 'rtl' ? -1 : 1;
-          const lo = tablePx(MIN, el), hi = SIZE_STEPS[SIZE_STEPS.length - 1];
           const doc = el.ownerDocument;
-          const move = (e2) => setWidthClass(col, snapSize(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px', B);
-          const up = () => { doc.removeEventListener('pointermove', move); doc.removeEventListener('pointerup', up); doc.documentElement.classList.remove('is-resizing-columns'); };
+          let last = null;
+          const move = (e2) => { last = snapSize(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px'; setWidthClass(col, last, B); };
+          const up = () => { doc.removeEventListener('pointermove', move); doc.removeEventListener('pointerup', up); doc.documentElement.classList.remove('is-resizing-columns'); if (last) applyWidth(col, last); };
           doc.addEventListener('pointermove', move); doc.addEventListener('pointerup', up); doc.documentElement.classList.add('is-resizing-columns');
         });
         el.appendChild(grip);
@@ -483,11 +642,18 @@ export function TableEngine(props) {
     });
   }
 
+  // the error state (platforms.md 5.5: it names the problem, one action recovers): the page's failure, or the engine's
+  const failed = failure || error;
+  const retry = () => { if (error) { setError(null); setAttempt((n) => n + 1); } if (onRetry) onRetry(); };
+  const reason = failed && failed !== true ? String(failed.message || failed) : null;
   return (
-    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', className)}
+    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', className)}
       data-plx-height={height && height !== '100%' ? (sizeName(height) || undefined) : undefined}>
-      {error ? <div className={B + '__empty'} role="alert">{STRINGS.failed} {String(error.message || error)}</div> : null}
-      <div ref={hostRef} className={B + '__table'} />
+      {failed ? (
+        <EmptyState className={B + '__error'} tone="error" title={STRINGS.failed}
+          action={error || onRetry ? <Button size="sm" icon="refresh" onClick={retry}>{STRINGS.retry}</Button> : null}>{reason}</EmptyState>
+      ) : null}
+      <div ref={hostRef} className={B + '__table'} hidden={failed ? true : undefined} />
       {portals}
     </div>
   );

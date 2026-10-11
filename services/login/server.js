@@ -1,0 +1,397 @@
+// Plenix login service (services/login): the Plenix sign-in, separate from Authentik (TODO.md "A lightweight Plenix login").
+//   GET  /auth/check        for Nginx auth_request: 204 with X-Plenix-User, -Email, -Name and -Groups, or 401
+//   GET  /auth/sign-in      the sign-in page (?rd=/path: where to go after signing in; a path on this site only)
+//   POST /auth/sign-in      form post: user (user name or email), password, keep ("Keep me signed in"), rd
+//   POST /auth/sign-out     signs out (everywhere=1 also ends every other session of the account); back to the sign-in page
+//   GET  /auth/sign-out     the apps' "Sign out" link: signs out when followed on this site, otherwise asks first
+//   GET  /auth/session      who is signed in, for the apps' account menu: { user, email, name, groups } or 401
+//   GET  /auth/login.css    the page's layout stylesheet (Plenix tokens only); /auth/favicon.svg the brand kit's icon
+// It runs on the Plenix VM in Docker, behind the VM's Nginx, like the save service. Accounts are DATA/accounts.json, made and
+// changed with the CLI (accounts.js: add, groups, disable, enable, reset-password, revoke, list); passwords are scrypt hashes
+// with a salt per account. A session is a cookie signed with HMAC-SHA256 (the key is DATA/secret, made on first start, mode
+// 600): the user, the account's session version, and the expiry (12 hours, or 30 days with "Keep me signed in"). Raising the
+// session version (revoke, reset-password, disable, "sign out everywhere") ends every session of that account at once.
+// Every sign-in attempt is logged (who, when, IP, result) to DATA/log.jsonl; passwords never are.
+// No dependencies: Node 22.
+'use strict';
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+const PORT = +process.env.PORT || 8782;
+const DATA = process.env.DATA || '/data';
+const ACCOUNTS = path.join(DATA, 'accounts.json');
+const SECRET_FILE = path.join(DATA, 'secret');
+const LOG = path.join(DATA, 'log.jsonl');
+// the Platform release the page loads (the apps' CDN path, deploy.sh): CDN=https://design-system.lighthouseway.org/cdn/<version>
+const CDN = (process.env.CDN || 'https://design-system.lighthouseway.org/cdn/' + localVersion()).replace(/\/+$/, '');
+// behind Nginx the visitor's address is X-Real-IP; without a proxy (TRUST_PROXY=0) the socket's
+const TRUST_PROXY = process.env.TRUST_PROXY !== '0';
+// one cookie per host (__Host-: Secure, Path=/, no Domain); COOKIE_DOMAIN shares one sign-in across the hosts instead
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '';
+const COOKIE = COOKIE_DOMAIN ? 'plenix_session' : '__Host-plenix_session';
+const HOUR = 3600 * 1000;
+const SHORT = 12 * HOUR, LONG = 30 * 24 * HOUR;
+// lockout: after LOCK_AFTER failures in a row an account (or a name that is not one) waits LOCK_BASE_MS, doubling with each
+// further failure, up to LOCK_MAX_MS; an address may fail IP_MAX times in IP_WINDOW_MS, then waits out the window
+const LOCK_AFTER = +process.env.LOCK_AFTER || 5;
+const LOCK_BASE_MS = +process.env.LOCK_BASE_MS || 60 * 1000;
+const LOCK_MAX_MS = +process.env.LOCK_MAX_MS || 15 * 60 * 1000;
+const IP_MAX = +process.env.IP_MAX || 20;
+const IP_WINDOW_MS = +process.env.IP_WINDOW_MS || 15 * 60 * 1000;
+const GROUPS = ['Admins', 'Editors', 'Users'];
+const USER_RE = /^[a-z0-9][a-z0-9._-]{0,63}$/;
+const SCRYPT = { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
+const BAD = 'That user name or password is not right.';
+
+function localVersion() { try { return require(path.join(__dirname, '..', '..', 'package.json')).version; } catch (e) { return '0.31.35'; } }
+
+// ---- accounts ----------------------------------------------------------------------------------------------------------
+// accounts.json: { "accounts": [{ user, email, name, groups, hash, created, updated, disabled, sessionVersion }] }
+let cache = { mtime: 0, list: [] };
+function loadAccounts() {
+  let st; try { st = fs.statSync(ACCOUNTS); } catch (e) { return []; }
+  // read again when the file changed (the CLI writes it while the service runs)
+  const stamp = st.mtimeMs + ':' + st.size + ':' + st.ino;
+  if (stamp !== cache.mtime) {
+    const json = JSON.parse(fs.readFileSync(ACCOUNTS, 'utf8'));
+    cache = { mtime: stamp, list: Array.isArray(json.accounts) ? json.accounts : [] };
+  }
+  return cache.list;
+}
+// written whole to a new file, then renamed over the old one, so a reader never sees half a file
+function saveAccounts(list) {
+  fs.mkdirSync(DATA, { recursive: true });
+  const tmp = ACCOUNTS + '.' + process.pid + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify({ accounts: list }, null, 2) + '\n', { mode: 0o600 });
+  fs.renameSync(tmp, ACCOUNTS);
+  cache = { mtime: 0, list: [] };
+}
+const findAccount = (list, id) => {
+  const key = String(id || '').trim().toLowerCase();
+  return key ? list.find((a) => a.user === key || String(a.email || '').toLowerCase() === key) || null : null;
+};
+
+// ---- passwords: scrypt$N$r$p$salt$hash (base64) ------------------------------------------------------------------------
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16);
+  const hash = crypto.scryptSync(String(password).normalize('NFKC'), salt, 32, SCRYPT);
+  return ['scrypt', SCRYPT.N, SCRYPT.r, SCRYPT.p, salt.toString('base64'), hash.toString('base64')].join('$');
+}
+function verifyPassword(password, stored) {
+  return new Promise((resolve) => {
+    const parts = String(stored || '').split('$');
+    if (parts.length !== 6 || parts[0] !== 'scrypt') return resolve(false);
+    const salt = Buffer.from(parts[4], 'base64'), want = Buffer.from(parts[5], 'base64');
+    const opts = { N: +parts[1], r: +parts[2], p: +parts[3], maxmem: SCRYPT.maxmem };
+    crypto.scrypt(String(password).normalize('NFKC'), salt, want.length, opts, (err, got) => resolve(!err && got.length === want.length && crypto.timingSafeEqual(got, want)));
+  });
+}
+// a name that is no account still costs one scrypt, so the answer takes as long either way (no enumeration by timing)
+let dummyHash = null;
+const dummy = () => dummyHash || (dummyHash = hashPassword(crypto.randomBytes(16).toString('hex')));
+
+// ---- the session cookie: base64url(payload).base64url(HMAC-SHA256) -----------------------------------------------------
+let secret = null;
+function loadSecret() {
+  if (secret) return secret;
+  fs.mkdirSync(DATA, { recursive: true });
+  try { fs.writeFileSync(SECRET_FILE, crypto.randomBytes(32).toString('hex') + '\n', { flag: 'wx', mode: 0o600 }); } catch (e) { if (e.code !== 'EEXIST') throw e; }
+  try { fs.chmodSync(SECRET_FILE, 0o600); } catch (e) { /* not on every file system */ }
+  secret = Buffer.from(fs.readFileSync(SECRET_FILE, 'utf8').trim(), 'hex');
+  if (secret.length < 32) throw new Error(SECRET_FILE + ' is too short: delete it to make a new one (every session ends)');
+  return secret;
+}
+const b64u = (buf) => Buffer.from(buf).toString('base64url');
+const sign = (data) => crypto.createHmac('sha256', loadSecret()).update(data).digest();
+function makeToken(account, keep) {
+  const now = Date.now();
+  const data = b64u(JSON.stringify({ u: account.user, v: account.sessionVersion || 1, iat: now, exp: now + (keep ? LONG : SHORT), k: keep ? 1 : 0 }));
+  return data + '.' + b64u(sign(data));
+}
+// the signed-in account, or null: a good signature, not expired, the account there and enabled, the same session version
+function readToken(token) {
+  const m = /^([A-Za-z0-9_-]{1,2048})\.([A-Za-z0-9_-]{43})$/.exec(String(token || ''));
+  if (!m) return null;
+  const want = sign(m[1]), got = Buffer.from(m[2], 'base64url');
+  if (got.length !== want.length || !crypto.timingSafeEqual(got, want)) return null;
+  let p; try { p = JSON.parse(Buffer.from(m[1], 'base64url').toString('utf8')); } catch (e) { return null; }
+  if (!p || typeof p.exp !== 'number' || p.exp <= Date.now()) return null;
+  const a = loadAccounts().find((x) => x.user === p.u);
+  if (!a || a.disabled || (a.sessionVersion || 1) !== p.v) return null;
+  return a;
+}
+const cookies = (req) => {
+  const out = {};
+  String(req.headers.cookie || '').split(';').forEach((c) => { const i = c.indexOf('='); if (i > 0) out[c.slice(0, i).trim()] = c.slice(i + 1).trim(); });
+  return out;
+};
+const signedIn = (req) => readToken(cookies(req)[COOKIE]);
+function sessionCookie(value, maxAgeSeconds) {
+  const parts = [COOKIE + '=' + value, 'Path=/', 'HttpOnly', 'Secure', 'SameSite=Lax'];
+  if (COOKIE_DOMAIN) parts.push('Domain=' + COOKIE_DOMAIN);
+  if (maxAgeSeconds !== undefined) parts.push('Max-Age=' + maxAgeSeconds);
+  return parts.join('; ');
+}
+const person = (a) => ({ user: a.user, email: a.email || '', name: a.name || a.user, groups: (a.groups || []).slice() });
+
+// ---- requests ----------------------------------------------------------------------------------------------------------
+const clientIp = (req) => {
+  const fwd = TRUST_PROXY ? String(req.headers['x-real-ip'] || '').trim() : '';
+  return fwd || String(req.socket.remoteAddress || '').replace(/^::ffff:/, '');
+};
+const log = (entry) => { try { fs.appendFileSync(LOG, JSON.stringify(Object.assign({ at: new Date().toISOString() }, entry)) + '\n', { mode: 0o600 }); } catch (e) { /* the log is best effort */ } };
+const safeEqual = (a, b) => {
+  const x = crypto.createHash('sha256').update(String(a)).digest(), y = crypto.createHash('sha256').update(String(b)).digest();
+  return crypto.timingSafeEqual(x, y) && String(a) === String(b);
+};
+// a POST must come from a page of this site: its Origin (or, without one, its Referer) names the host the request came to
+function sameSite(req) {
+  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim().toLowerCase();
+  const from = req.headers.origin && req.headers.origin !== 'null' ? req.headers.origin : req.headers.referer;
+  if (!host || !from) return false;
+  let u; try { u = new URL(from); } catch (e) { return false; }
+  const local = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(host);
+  return (u.protocol === 'https:' || (local && u.protocol === 'http:')) && safeEqual(u.host.toLowerCase(), host);
+}
+// where to go after signing in: a path on this site only. Never a scheme, never "//host" or "/\host", no backslash, no
+// control characters, only the characters a URL path and query may hold. Anything else goes to the start page.
+function safeRedirect(rd) {
+  const s = String(rd || '');
+  if (s.length < 1 || s.length > 2048) return '/';
+  if (s[0] !== '/' || s[1] === '/' || s[1] === '\\' || s.indexOf('\\') >= 0) return '/';
+  if (!/^\/[A-Za-z0-9\-._~!$&'()*+,;=:@%/?#]*$/.test(s)) return '/';
+  // nor percent-encoded: control characters, a backslash, or a second slash at the start
+  if (/%(0[0-9a-f]|1[0-9a-f]|7f|5c)/i.test(s) || /^\/%2f/i.test(s)) return '/';
+  if (/^\/auth\/sign-(in|out)\b/.test(s)) return '/';
+  return s;
+}
+// rd from a query: Nginx sends the original $request_uri raw (it may hold its own ? and &), the apps send it encoded
+function rdFromQuery(url) {
+  const q = url.indexOf('?');
+  if (q < 0) return '';
+  const query = url.slice(q + 1);
+  if (query.indexOf('rd=') !== 0) return new URLSearchParams(query).get('rd') || '';
+  const raw = query.slice(3);
+  if (/^%2f/i.test(raw)) { try { return decodeURIComponent(raw.split('&')[0]); } catch (e) { return ''; } }
+  return raw;
+}
+function readBody(req, limit) {
+  return new Promise((resolve, reject) => {
+    let raw = '';
+    req.setEncoding('utf8');
+    req.on('data', (d) => { raw += d; if (raw.length > limit) { reject(new Error('too-large')); req.destroy(); } });
+    req.on('end', () => resolve(raw));
+    req.on('error', reject);
+  });
+}
+
+// ---- rate limits (in memory: a restart clears them) --------------------------------------------------------------------
+const byAccount = new Map(); // key -> { fails, until }
+const byIp = new Map();      // ip -> [failure times]
+function lockedFor(key, ip) {
+  const now = Date.now();
+  const a = byAccount.get(key);
+  const times = (byIp.get(ip) || []).filter((t) => t > now - IP_WINDOW_MS);
+  byIp.set(ip, times);
+  const ipWait = times.length >= IP_MAX ? times[times.length - IP_MAX] + IP_WINDOW_MS - now : 0;
+  return Math.max(a && a.until > now ? a.until - now : 0, ipWait);
+}
+function failed(key, ip) {
+  const now = Date.now();
+  const a = byAccount.get(key) || { fails: 0, until: 0 };
+  a.fails += 1;
+  if (a.fails >= LOCK_AFTER) a.until = now + Math.min(LOCK_MAX_MS, LOCK_BASE_MS * Math.pow(2, a.fails - LOCK_AFTER));
+  byAccount.set(key, a);
+  byIp.set(ip, (byIp.get(ip) || []).concat(now));
+}
+// old entries go, so the maps stay small
+setInterval(() => {
+  const now = Date.now();
+  byAccount.forEach((a, k) => { if (a.until < now - LOCK_MAX_MS * 2 && a.until) byAccount.delete(k); });
+  byIp.forEach((t, k) => { if (!t.some((x) => x > now - IP_WINDOW_MS)) byIp.delete(k); });
+}, 10 * 60 * 1000).unref();
+
+// ---- the page ----------------------------------------------------------------------------------------------------------
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const minutes = (ms) => { const m = Math.max(1, Math.ceil(ms / 60000)); return m + (m === 1 ? ' minute' : ' minutes'); };
+// the Plenix page: the application header (accent), the canvas, and a centered card (Platforms Standard 5.3 "Sign-in and
+// account"; one column at Narrow, login.css). Only Platform classes and the release stylesheets: no style attributes.
+function page({ title, body }) {
+  return '<!doctype html>\n<html lang="en" data-plx-mode="system" data-plx-density-policy="standard">\n<head>\n<meta charset="utf-8">\n'
+    + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+    + '<meta name="robots" content="noindex">\n'
+    + '<title>' + esc(title) + ' · Plenix</title>\n'
+    + '<link rel="icon" type="image/svg+xml" href="/auth/favicon.svg">\n'
+    + '<script src="' + CDN + '/theme-boot.js"></script>\n'
+    + '<link rel="stylesheet" href="' + CDN + '/fonts.css">\n'
+    + '<link rel="stylesheet" href="' + CDN + '/plenix.css">\n'
+    + '<link rel="stylesheet" href="/auth/login.css">\n'
+    + '</head>\n<body class="plx-login">\n'
+    + '<header class="plx-app-header plx-app-header--accent"><div class="plx-app-header__start"><span class="plx-app-header__brand"><span aria-hidden="true" class="plx-brand-mark"></span>Plenix</span></div></header>\n'
+    + '<main class="plx-login__main">\n' + body + '\n</main>\n</body>\n</html>\n';
+}
+const notice = (tone, text) => '<div class="plx-notice plx-notice--' + tone + '"' + (tone === 'danger' ? ' role="alert"' : '') + '><span class="plx-icon plx-icon--' + (tone === 'danger' ? 'alert' : 'info-circle') + '" aria-hidden="true"></span><div class="plx-notice__text">' + esc(text) + '</div></div>';
+function signInPage({ rd, user, error, info }) {
+  const field = (id, label, input) => '<div class="plx-field plx-field--stacked"><div class="plx-field__head"><label class="plx-field__label" for="' + id + '">' + label + '</label></div><div class="plx-field__control">' + input + '</div></div>';
+  return page({ title: 'Sign in', body: '<section class="plx-panel plx-login__card" aria-labelledby="plx-login-title">'
+    + '<div class="plx-panel__header"><div class="plx-panel__heading"><h1 id="plx-login-title" class="plx-panel__title">Sign in to Plenix</h1>'
+    + '<p class="plx-panel__description">Use your Plenix user name or email.</p></div></div>'
+    + '<div class="plx-panel__body"><form class="plx-stack plx-stack--gap-md" method="post" action="/auth/sign-in" novalidate>'
+    + (error ? notice('danger', error) : '') + (info ? notice('info', info) : '')
+    + '<input type="hidden" name="rd" value="' + esc(rd) + '">'
+    + field('plx-login-user', 'User name or email', '<input class="plx-input" id="plx-login-user" name="user" type="text" value="' + esc(user || '') + '" autocomplete="username" autocapitalize="off" spellcheck="false" required' + (error && user ? '' : ' autofocus') + (error ? ' aria-invalid="true"' : '') + '>')
+    + field('plx-login-password', 'Password', '<input class="plx-input" id="plx-login-password" name="password" type="password" autocomplete="current-password" required' + (error && user ? ' autofocus' : '') + (error ? ' aria-invalid="true"' : '') + '>')
+    + '<label class="plx-check"><input class="plx-check__input" type="checkbox" name="keep" value="1"><span class="plx-check__text"><span class="plx-check__label">Keep me signed in</span><span class="plx-check__description">For 30 days on this device. Otherwise, for 12 hours.</span></span></label>'
+    + '<button class="plx-button plx-button--primary plx-login__submit" type="submit"><span class="plx-button__label">Sign in</span></button>'
+    + '</form></div></section>' });
+}
+function signedInPage(a, rd) {
+  return page({ title: 'Signed in', body: '<section class="plx-panel plx-login__card" aria-labelledby="plx-login-title">'
+    + '<div class="plx-panel__header"><div class="plx-panel__heading"><h1 id="plx-login-title" class="plx-panel__title">You are signed in</h1>'
+    + '<p class="plx-panel__description">As ' + esc(a.name || a.user) + ' (' + esc(a.user) + ').</p></div></div>'
+    + '<div class="plx-panel__body"><div class="plx-stack plx-stack--gap-md">'
+    + '<a class="plx-button plx-button--primary plx-login__submit" href="' + esc(rd) + '"><span class="plx-button__label">Continue</span></a>'
+    + '<form method="post" action="/auth/sign-out"><input type="hidden" name="rd" value="' + esc(rd) + '">'
+    + '<button class="plx-button plx-button--secondary plx-login__submit" type="submit"><span class="plx-button__label">Switch account</span></button></form>'
+    + '</div></div></section>' });
+}
+
+// ---- responses ---------------------------------------------------------------------------------------------------------
+const cdnOrigin = (() => { try { return new URL(CDN).origin; } catch (e) { return "'none'"; } })();
+const CSP = ["default-src 'none'", "script-src " + cdnOrigin, "style-src 'self' " + cdnOrigin, "font-src " + cdnOrigin, "img-src 'self' data: " + cdnOrigin,
+  "form-action 'self'", "frame-ancestors 'none'", "base-uri 'none'"].join('; ');
+const SECURITY = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'same-origin' };
+function html(res, status, body, extra) {
+  res.writeHead(status, Object.assign({ 'Content-Type': 'text/html; charset=utf-8', 'Content-Security-Policy': CSP }, SECURITY, extra || {}));
+  res.end(body);
+}
+function json(res, status, body, extra) {
+  res.writeHead(status, Object.assign({ 'Content-Type': 'application/json' }, SECURITY, extra || {}));
+  res.end(JSON.stringify(body));
+}
+function redirect(res, location, extra) {
+  res.writeHead(303, Object.assign({ Location: location }, SECURITY, extra || {}));
+  res.end();
+}
+// the brand kit's favicon is copied beside server.js by deploy.sh; from the source tree it is read where it lives
+function file(res, name, type) {
+  const own = path.join(__dirname, name), kit = path.join(__dirname, '..', '..', 'platform', 'brand', name);
+  fs.readFile(fs.existsSync(own) ? own : kit, (err, buf) => {
+    if (err) return json(res, 404, { error: 'not-found' });
+    res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' });
+    res.end(buf);
+  });
+}
+
+async function signIn(req, res) {
+  const ip = clientIp(req);
+  if (!sameSite(req)) { log({ event: 'sign-in', ip, result: 'bad-origin' }); return html(res, 403, signInPage({ rd: '/', error: 'This sign-in did not come from a Plenix page. Open the sign-in page and try again.' })); }
+  let form;
+  try { form = new URLSearchParams(await readBody(req, 8192)); } catch (e) { return json(res, 413, { error: 'too-large' }); }
+  const id = String(form.get('user') || '').trim().slice(0, 254), password = String(form.get('password') || '');
+  const rd = safeRedirect(form.get('rd')), keep = form.get('keep') === '1' || form.get('keep') === 'on';
+  const account = findAccount(loadAccounts(), id);
+  // a name that is no account is limited the same way as one that is, so a lockout reveals nothing either
+  const key = account ? 'a:' + account.user : 'n:' + id.toLowerCase();
+  const entry = { event: 'sign-in', user: id.slice(0, 100), account: account ? account.user : null, ip, keep };
+  const wait = lockedFor(key, ip);
+  if (wait > 0) {
+    log(Object.assign(entry, { result: 'locked' }));
+    return html(res, 429, signInPage({ rd, user: id, error: 'Too many attempts. Try again in ' + minutes(wait) + '.' }), { 'Retry-After': String(Math.ceil(wait / 1000)) });
+  }
+  const ok = id && password && password.length <= 1024 ? await verifyPassword(password, account ? account.hash : dummy()) : (await verifyPassword('x', dummy()), false);
+  if (!ok || !account || account.disabled) {
+    failed(key, ip);
+    log(Object.assign(entry, { result: !ok || !account ? 'bad-credentials' : 'disabled' }));
+    return html(res, 401, signInPage({ rd, user: id, error: BAD }));
+  }
+  byAccount.delete(key);
+  log(Object.assign(entry, { result: 'ok' }));
+  return redirect(res, rd, { 'Set-Cookie': sessionCookie(makeToken(account, keep), keep ? LONG / 1000 : undefined) });
+}
+
+// GET /auth/sign-out: the apps' "Sign out" link (today /outpost.goauthentik.io/sign_out, which Nginx sends here). A link
+// followed on this site (Sec-Fetch-Site: same-origin) signs out at once; from anywhere else the page asks first (a POST),
+// so another site cannot sign people out.
+function signOutLink(req, res) {
+  const rd = safeRedirect(rdFromQuery(req.url));
+  if (req.headers['sec-fetch-site'] === 'same-origin') return endSession(req, res, rd, false);
+  const a = signedIn(req);
+  if (!a) return redirect(res, '/auth/sign-in' + (rd !== '/' ? '?rd=' + encodeURIComponent(rd) : ''));
+  return html(res, 200, page({ title: 'Sign out', body: '<section class="plx-panel plx-login__card" aria-labelledby="plx-login-title">'
+    + '<div class="plx-panel__header"><div class="plx-panel__heading"><h1 id="plx-login-title" class="plx-panel__title">Sign out of Plenix?</h1>'
+    + '<p class="plx-panel__description">You are signed in as ' + esc(a.name || a.user) + ' (' + esc(a.user) + ').</p></div></div>'
+    + '<div class="plx-panel__body"><form class="plx-stack plx-stack--gap-md" method="post" action="/auth/sign-out"><input type="hidden" name="rd" value="' + esc(rd) + '">'
+    + '<button class="plx-button plx-button--primary plx-login__submit" type="submit"><span class="plx-button__label">Sign out</span></button>'
+    + '<a class="plx-button plx-button--secondary plx-login__submit" href="' + esc(rd) + '"><span class="plx-button__label">Stay signed in</span></a>'
+    + '</form></div></section>' }));
+}
+
+async function signOut(req, res) {
+  if (!sameSite(req)) return json(res, 403, { error: 'bad-origin' });
+  let form; try { form = new URLSearchParams(await readBody(req, 8192)); } catch (e) { return json(res, 413, { error: 'too-large' }); }
+  if (/application\/json/.test(String(req.headers.accept || ''))) return endSession(req, res, null, form.get('everywhere') === '1');
+  return endSession(req, res, safeRedirect(form.get('rd')), form.get('everywhere') === '1');
+}
+// clears the cookie; everywhere also raises the session version, which ends every copy of every session of the account
+function endSession(req, res, rd, everywhere) {
+  const a = signedIn(req);
+  if (a && everywhere) bumpSessionVersion(a.user);
+  log({ event: 'sign-out', account: a ? a.user : null, ip: clientIp(req), everywhere });
+  const clear = { 'Set-Cookie': sessionCookie('', 0) };
+  if (rd === null) return json(res, 200, { ok: true }, clear);
+  return redirect(res, '/auth/sign-in' + (rd !== '/' ? '?rd=' + encodeURIComponent(rd) : ''), clear);
+}
+
+function bumpSessionVersion(user) {
+  const list = loadAccounts().map((a) => Object.assign({}, a));
+  const a = list.find((x) => x.user === user);
+  if (!a) return false;
+  a.sessionVersion = (a.sessionVersion || 1) + 1;
+  a.updated = new Date().toISOString();
+  saveAccounts(list);
+  return true;
+}
+
+function handle(req, res) {
+  const url = req.url.split('?')[0];
+  if (url === '/auth/check') {
+    // Nginx's auth_request asks with the method of the request it checks, so any method is answered
+    const a = signedIn(req);
+    if (!a) { res.writeHead(401, { 'Cache-Control': 'no-store' }); return res.end(); }
+    const p = person(a);
+    // header values: one line, ASCII (a name with other letters is sent percent-encoded)
+    const h = (s) => /^[\x20-\x7e]*$/.test(s) ? s : encodeURIComponent(s);
+    res.writeHead(204, { 'Cache-Control': 'no-store', 'X-Plenix-User': h(p.user), 'X-Plenix-Email': h(p.email), 'X-Plenix-Name': h(p.name), 'X-Plenix-Groups': h(p.groups.join('|')) });
+    return res.end();
+  }
+  if (url === '/auth/session' && req.method === 'GET') {
+    const a = signedIn(req);
+    return a ? json(res, 200, Object.assign(person(a), { signOut: '/auth/sign-out', signIn: '/auth/sign-in' })) : json(res, 401, { error: 'signed-out', signIn: '/auth/sign-in' });
+  }
+  if (url === '/auth/sign-in' && req.method === 'GET') {
+    const rd = safeRedirect(rdFromQuery(req.url));
+    const a = signedIn(req);
+    return html(res, 200, a ? signedInPage(a, rd) : signInPage({ rd }));
+  }
+  if (url === '/auth/sign-in' && req.method === 'POST') return signIn(req, res).catch((e) => { log({ event: 'sign-in', result: 'error', error: String(e.message).slice(0, 200) }); json(res, 500, { error: 'failed' }); });
+  if (url === '/auth/sign-out' && req.method === 'GET') return signOutLink(req, res);
+  if (url === '/auth/sign-out' && req.method === 'POST') return signOut(req, res).catch(() => json(res, 500, { error: 'failed' }));
+  if (url === '/auth/login.css' && req.method === 'GET') return file(res, 'login.css', 'text/css; charset=utf-8');
+  if (url === '/auth/favicon.svg' && req.method === 'GET') return file(res, 'favicon.svg', 'image/svg+xml');
+  return json(res, 404, { error: 'not-found' });
+}
+
+function start() {
+  loadSecret();
+  dummy();
+  if (!loadAccounts().length) console.log('plenix-login: no accounts yet; make the first with: node accounts.js add <user> --groups Admins');
+  const server = http.createServer(handle);
+  server.listen(PORT, '0.0.0.0', () => console.log('plenix-login listening on ' + PORT + ' (Platform ' + CDN + ')'));
+  return server;
+}
+
+module.exports = { DATA, ACCOUNTS, GROUPS, USER_RE, loadAccounts, saveAccounts, findAccount, hashPassword, verifyPassword, bumpSessionVersion, safeRedirect, makeToken, readToken };
+if (require.main === module) start();

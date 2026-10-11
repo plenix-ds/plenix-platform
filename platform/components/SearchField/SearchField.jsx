@@ -12,10 +12,11 @@
      loading: shows a spinner in place of the search icon; default false
      onAccent: the look for the blue header; default false
      className: more classes on the field
-     ...rest: other attributes go on the input
+     ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
      The clear button shows only while there is text.
      The shortcut hint shows only while the field is empty.
+     It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
    Notes:
      It has the toolbar control height.
 */
@@ -30,7 +31,7 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
   return (
     <div className={cx('plx-search', onAccent && 'plx-search--on-accent', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label="Searching" /> : <Icon name="search" />}</span>
-      <input ref={ref} type="search" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value} onChange={onChange} {...rest} />
+      <input ref={ref} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value} onChange={onChange} {...rest} />
       {onClear && value ? <button type="button" className="plx-search__clear" aria-label="Clear search" onClick={onClear}><Icon name="close" /></button> : null}
       {shortcut && !value ? <span className="plx-search__kbd"><Kbd onAccent={onAccent}>{shortcut}</Kbd></span> : null}
     </div>

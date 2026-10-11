@@ -14,6 +14,8 @@
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end)
      labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
+     type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
+       unless it sets its own
      children: exactly one control
      className: more classes on the field
    Behavior:
@@ -28,7 +30,7 @@ import { cx } from '../../utils/cx.js';
 import { useTruncated } from '../../utils/overflow.js';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 
-export function Field({ label, description, error, required = false, info, infoLabel, layout = 'stacked', labelWidth, className, children, ...rest }) {
+export function Field({ label, description, error, required = false, info, infoLabel, layout = 'stacked', labelWidth, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
   const id = React.useId();
   const controlId = 'plx-f' + id.replace(/[^a-zA-Z0-9]/g, '');
   const descId = description ? controlId + '-d' : undefined, errId = error ? controlId + '-e' : undefined;
@@ -36,12 +38,16 @@ export function Field({ label, description, error, required = false, info, infoL
   const labelRef = React.useRef(null);
   const cut = useTruncated(labelRef);
   const child = React.Children.only(children);
-  const control = React.cloneElement(child, {
+  const props = {
     id: child.props.id || controlId,
     'aria-describedby': [child.props['aria-describedby'], descId, errId].filter(Boolean).join(' ') || undefined,
     invalid: child.props.invalid !== undefined ? child.props.invalid : (error ? true : undefined),
     required: child.props.required !== undefined ? child.props.required : (required || undefined),
-  });
+  };
+  // keyboard hints given on the Field reach the control, unless it has its own
+  const hints = { type, inputMode, autoComplete, enterKeyHint };
+  Object.keys(hints).forEach((k) => { if (hints[k] !== undefined && child.props[k] === undefined) props[k] = hints[k]; });
+  const control = React.cloneElement(child, props);
   return (
     <div className={cx('plx-field', 'plx-field--' + layout, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)} {...rest}>
       <div className="plx-field__head">

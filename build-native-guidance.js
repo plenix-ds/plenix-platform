@@ -78,7 +78,7 @@ module.exports = function buildNativeGuidance(root) {
       if (leaves.size && !leaves.has(key)) bad.push('native-design.json: ' + key + ' is not a page');
       Object.values(d.images || {}).forEach((im) => { if (!fs.existsSync(path.join(root, 'platform', 'design-system', im.src))) bad.push('native-design.json: ' + key + ' image ' + im.src + ' is missing'); });
       const sections = new Set(((pages[key] || {}).rules || []).map((r) => r.section));
-      (d.attributes || []).forEach((a) => { if (a.follows && !sections.has(a.follows)) bad.push('native-design.json: ' + key + ' ' + a.attribute + ' follows ' + a.follows + ', not a section of its guidance'); });
+      (d.attributes || []).forEach((a) => { if (pages[key] && a.follows && !a.followsUrl && !sections.has(a.follows)) bad.push('native-design.json: ' + key + ' ' + a.attribute + ' follows ' + a.follows + ', not a section of its guidance'); });
       (d.variants || []).forEach((v) => { if (v.web && leaves.size && !leaves.has(v.web)) bad.push('native-design.json: ' + key + ' ' + v.name + ' web page ' + v.web + ' does not exist'); });
       if (toks) (JSON.stringify([d.variants, d.attributes, d.states]).match(/plx-(?:sys|comp)-[a-z0-9-]*[a-z0-9]/g) || []).forEach((t) => { if (!toks.has(t)) bad.push('native-design.json: ' + key + ' names ' + t + ', not a token'); });
     });

@@ -11,6 +11,8 @@
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
        (owner, batch 275); the system sizes it, so it takes no width or utility
+     Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
+       (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
      Textarea.rows: the visible lines (default 3)
@@ -21,6 +23,8 @@
      Select.className: more classes on the wrapper
    Behavior:
      Inside a Field, the label, description and error are connected for you.
+     Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
+     check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
      All three forward their ref to the native element.
@@ -28,8 +32,16 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
+// the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
+const TYPE_HINTS = {
+  email: { inputMode: 'email', autoCapitalize: 'off', spellCheck: false },
+  url: { inputMode: 'url', autoCapitalize: 'off', spellCheck: false },
+  tel: { inputMode: 'tel' },
+  search: { inputMode: 'search', enterKeyHint: 'search' },
+};
+
 export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, className, type = 'text', ...rest }, ref) {
-  return <input ref={ref} type={type} className={cx('plx-input', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', className)} aria-invalid={invalid || undefined} {...rest} />;
+  return <input ref={ref} type={type} className={cx('plx-input', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', className)} aria-invalid={invalid || undefined} {...TYPE_HINTS[type]} {...rest} />;
 });
 
 export const Textarea = React.forwardRef(function Textarea({ invalid, className, rows = 3, ...rest }, ref) {

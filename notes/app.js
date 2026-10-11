@@ -1964,6 +1964,31 @@ function Suite({
     root.setAttribute('data-plx-header-tint', prefs.headerTint || 'blue');
     root.setAttribute('data-plx-header-tint-style', prefs.headerTintStyle || 'fade');
   }, [prefs.headerTint, prefs.headerTintStyle]);
+  // the appearance (Settings › Mode: system, light or dark; Platforms Standard 1.6): theme-boot keeps it for every page
+  // (PlenixWorkspace.setMode) and applies it to <html data-plx-mode>. On load the kept choice wins (another app, such as
+  // the DAM, may have changed it); a later change of prefs.theme is applied live; a change in another open page comes back
+  const modeLoaded = React.useRef(false);
+  React.useEffect(() => {
+    const ws = window.PlenixWorkspace;
+    if (!ws || !ws.setMode) return;
+    if (!modeLoaded.current) {
+      modeLoaded.current = true;
+      if (prefs.theme !== ws.mode()) setPrefs(p => ({
+        ...p,
+        theme: ws.mode()
+      }));
+      return;
+    }
+    if (prefs.theme) ws.setMode(prefs.theme);
+  }, [prefs.theme]);
+  React.useEffect(() => {
+    const follow = e => setPrefs(p => p.theme === e.detail.mode ? p : {
+      ...p,
+      theme: e.detail.mode
+    });
+    window.addEventListener('plenix:modechange', follow);
+    return () => window.removeEventListener('plenix:modechange', follow);
+  }, []);
   const onAccent = tone === 'accent';
   const main = ai !== null ? /*#__PURE__*/React.createElement(_search.SearchScreen, {
     key: ai,

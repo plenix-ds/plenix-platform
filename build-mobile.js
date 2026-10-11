@@ -28,6 +28,19 @@ module.exports = function buildMobile(root) {
   const colors = index.filter((t) => /^--plx-sys-/.test(t.name) && t.type === 'color').map((t) => ({ id: camel(t.name), light: hex8(at(t, 'light')), dark: hex8(at(t, 'dark')) })).filter((c) => c.light && c.dark);
   const sizes = (re) => index.filter((t) => re.test(t.name) && t.type === 'dimension').map((t) => ({ id: camel(t.name), v: px(at(t, 'light')) })).filter((x) => x.v !== null);
   const radius = sizes(/^--plx-sys-radius-/), space = sizes(/^--plx-sys-space-/);
+  // batch 341: the other system scales native code needs (border widths, icon sizes, shapes; opacities; durations in
+  // seconds), and the component tokens the native designs name (platform/standards/native-design.json), so native code
+  // names a token for every value
+  const nums = (re) => index.filter((t) => re.test(t.name) && t.type === 'number').map((t) => ({ id: camel(t.name), v: parseFloat(at(t, 'light')) })).filter((x) => !isNaN(x.v));
+  const secs = (v) => { const s = String(v).trim(); let m; if ((m = /^([\d.]+)ms$/.exec(s))) return +m[1] / 1000; if ((m = /^([\d.]+)s$/.exec(s))) return +m[1]; return null; };
+  const durs = (re) => index.filter((t) => re.test(t.name) && t.type === 'duration').map((t) => ({ id: camel(t.name), v: secs(at(t, 'light')) })).filter((x) => x.v !== null);
+  const shell = sizes(/^--plx-sys-shell-/), border = sizes(/^--plx-sys-border-width-/), icon = sizes(/^--plx-sys-(icon-size|control-icon)-/), shape = sizes(/^--plx-sys-shape-/);
+  const opacity = nums(/^--plx-sys-opacity-/), motion = durs(/^--plx-sys-motion-(duration|delay)-/);
+  const designFile = path.join(root, 'platform', 'standards', 'native-design.json');
+  const named = new Set(fs.existsSync(designFile) ? (fs.readFileSync(designFile, 'utf8').match(/plx-comp-[a-z0-9-]*[a-z0-9]/g) || []).map((n) => '--' + n) : []);
+  const comp = index.filter((t) => named.has(t.name)).map((t) => { const v = at(t, 'light'); const d = px(v), n = parseFloat(v), sec = secs(v);
+    return t.type === 'dimension' && d !== null ? { id: camel(t.name), kind: 'size', v: d } : t.type === 'duration' && sec !== null ? { id: camel(t.name), kind: 'sec', v: sec } : t.type === 'number' && !isNaN(n) ? { id: camel(t.name), kind: 'num', v: n } : null; }).filter(Boolean)
+    .sort((a, b) => a.id.localeCompare(b.id));
   // the typefaces: the first family of --plx-sys-typeface-sans and -mono (the web's font stacks)
   const face = (name) => { const t = index.find((x) => x.name === name); const v = t && at(t, 'light'); const m = v && /^\s*"?([^",]+)"?/.exec(v); if (!m) throw new Error(name + ' has no typeface'); return m[1].trim(); };
   const SANS = face('--plx-sys-typeface-sans'), MONO = face('--plx-sys-typeface-mono');
@@ -75,6 +88,29 @@ ${radius.map((r) => `        public static let ${r.id}: CGFloat = ${r.v}`).join(
     public enum Space {
 ${space.map((r) => `        public static let ${r.id}: CGFloat = ${r.v}`).join('\n')}
     }
+    public enum Border {
+${border.map((r) => `        public static let ${r.id}: CGFloat = ${r.v}`).join('\n')}
+    }
+    public enum Icon {
+${icon.map((r) => `        public static let ${r.id}: CGFloat = ${r.v}`).join('\n')}
+    }
+    public enum Shape {
+${shape.map((r) => `        public static let ${r.id}: CGFloat = ${r.v}`).join('\n')}
+    }
+    public enum Shell {
+${shell.map((r) => `        public static let ${r.id}: CGFloat = ${r.v}`).join('\n')}
+    }
+    public enum Opacity {
+${opacity.map((r) => `        public static let ${r.id}: Double = ${r.v}`).join('\n')}
+    }
+    /// Durations in seconds.
+    public enum Motion {
+${motion.map((r) => `        public static let ${r.id}: Double = ${r.v}`).join('\n')}
+    }
+    /// The component values the Plenix native designs use (sizes in points, durations in seconds).
+    public enum Component {
+${comp.map((r) => `        public static let ${r.id}: ${r.kind === 'size' ? 'CGFloat' : 'Double'} = ${r.v}`).join('\n')}
+    }
     /// The iOS size and behavior set (platform-ios.tokens.json), in points.
     public enum Platform {
 ${ios.map((x) => x.type === 'dimension' ? `        public static let ${x.id}: CGFloat = ${num(x.value)}${note(x)}` : x.type === 'fontWeight' ? `        public static let ${x.id}: CGFloat = ${num(x.value)}${note(x)}` : `        public static let ${x.id} = ${JSON.stringify(x.value)}${note(x)}`).join('\n')}
@@ -112,6 +148,36 @@ ${radius.map((r) => `    val ${r.id} = ${r.v}.dp`).join('\n')}
 
 object PlenixSpace {
 ${space.map((r) => `    val ${r.id} = ${r.v}.dp`).join('\n')}
+}
+
+object PlenixBorder {
+${border.map((r) => `    val ${r.id} = ${r.v}.dp`).join('\n')}
+}
+
+object PlenixIcon {
+${icon.map((r) => `    val ${r.id} = ${r.v}.dp`).join('\n')}
+}
+
+object PlenixShape {
+${shape.map((r) => `    val ${r.id} = ${r.v}.dp`).join('\n')}
+}
+
+object PlenixShell {
+${shell.map((r) => `    val ${r.id} = ${r.v}.dp`).join('\n')}
+}
+
+object PlenixOpacity {
+${opacity.map((r) => `    const val ${r.id} = ${r.v}f`).join('\n')}
+}
+
+/** Durations in milliseconds. */
+object PlenixMotion {
+${motion.map((r) => `    const val ${r.id} = ${Math.round(r.v * 1000)}`).join('\n')}
+}
+
+/** The component values the Plenix native designs use (dp; durations in milliseconds). */
+object PlenixComponent {
+${comp.map((r) => r.kind === 'size' ? `    val ${r.id} = ${r.v}.dp` : r.kind === 'sec' ? `    const val ${r.id} = ${Math.round(r.v * 1000)}` : `    const val ${r.id} = ${r.v}f`).join('\n')}
 }
 
 /** The Android size and behavior set (platform-android.tokens.json): dp, and sp for type. */
@@ -168,6 +234,12 @@ class PlenixPlatform {
   static double get targetMin => isApple ? PlenixIos.controlTargetMin : PlenixAndroid.controlTargetMin;
 }
 `;
+  // Android Views read sizes from resources, not Kotlin: the same values as <dimen> (plx_<group>_<name>)
+  const snake = (id) => id.replace(/([A-Z])/g, (m, c) => '_' + c.toLowerCase()).replace(/([a-z])([0-9])/g, '$1_$2');
+  const dimGroups = [['radius', radius], ['space', space], ['border', border], ['icon', icon], ['shape', shape], ['shell', shell], ['component', comp.filter((r) => r.kind === 'size')]];
+  out['android/res/values/plenix_dimens.xml'] = '<?xml version="1.0" encoding="utf-8"?>\n<!--' + HEAD('').replace("\\n", '') + ' -->\n<resources>\n'
+    + dimGroups.map(([g, list]) => list.map((r) => '    <dimen name="plx_' + g + '_' + snake(r.id) + '">' + r.v + 'dp</dimen>').join('\n')).join('\n')
+    + '\n' + android.filter((x) => x.type === 'dimension').map((x) => '    <dimen name="plx_platform_' + snake(x.id) + '">' + num(x.value) + (/sp$/.test(x.value) ? 'sp' : 'dp') + '</dimen>').join('\n') + '\n</resources>\n';
   let changed = 0;
   for (const [f, text] of Object.entries(out)) {
     const p = path.join(root, 'platform', 'mobile', f);

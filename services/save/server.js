@@ -2,8 +2,9 @@
 //   POST /api/tokens   { component, variant, file, changes: [{ token, from, to }] } -> a pull request on GitHub
 //   GET  /api/session  who is signed in: { user, email, groups, canSave }
 // It runs on the Plenix VM in Docker, behind the VM's Nginx, which accepts these paths only from Nginx Proxy Manager. The
-// proxy signs people in through Authentik (forward auth) and passes X-authentik-username, -email and -groups; only the
-// Editors and Admins groups may save. A save: fetch main, check each token still has the value the dialog started from,
+// proxy signs people in through Authentik (forward auth) and passes X-authentik-username, -email and -groups (or, after
+// the cutover, the VM's Nginx asks the Plenix login and passes X-Plenix-User, -Email and -Groups); only the Editors and
+// Admins groups may save. A save: fetch main, check each token still has the value the dialog started from,
 // write the new values into the token JSON, rebuild the token stylesheets (build-tokens.js), run the system check
 // (check-system.js), commit on a new branch as the person who saved, push, and open a pull request. Nothing reaches main
 // without a review; nothing reaches the live site without a release. Every attempt is logged (who, when, the changes, the
@@ -32,10 +33,12 @@ const TOKEN_RE = /^--(plx-(?:ref|sys|comp))-([a-z0-9-]+)$/;
 // a new value: a token reference as the JSON writes it ({plx-sys.state-hover}) or a plain CSS keyword or value
 const VALUE_RE = /^(\{plx-(?:ref|sys|comp)\.[a-z0-9-]+\}|[a-zA-Z0-9#.%(), -]{1,120})$/;
 
+// the Plenix login (services/login) passes X-Plenix-User, -Email and -Groups; Authentik's X-authentik-* still work until the cutover
 const who = (req) => {
-  const groups = String(req.headers['x-authentik-groups'] || '').split('|').map((g) => g.trim()).filter(Boolean);
-  const user = String(req.headers['x-authentik-username'] || '').trim();
-  return { user, email: String(req.headers['x-authentik-email'] || '').trim(), groups, canSave: !!user && groups.some((g) => SAVE_GROUPS.indexOf(g) >= 0) };
+  const plenix = !!String(req.headers['x-plenix-user'] || '').trim(), h = (p, a) => String(req.headers[plenix ? p : a] || '').trim();
+  const groups = h('x-plenix-groups', 'x-authentik-groups').split('|').map((g) => g.trim()).filter(Boolean);
+  const user = h('x-plenix-user', 'x-authentik-username');
+  return { user, email: h('x-plenix-email', 'x-authentik-email'), groups, canSave: !!user && groups.some((g) => SAVE_GROUPS.indexOf(g) >= 0) };
 };
 const send = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(body)); };
 const log = (entry) => { try { fs.appendFileSync(LOG, JSON.stringify(Object.assign({ at: new Date().toISOString() }, entry)) + '\n'); } catch (e) { /* the log is best effort */ } };

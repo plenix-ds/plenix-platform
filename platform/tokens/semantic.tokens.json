@@ -160,6 +160,16 @@
         }
       }
     },
+    "touch-long-press-delay": {
+      "$value": "{plx-ref.motion-delay-long-press}",
+      "$type": "duration",
+      "$description": "How long a finger rests on a control before it counts as a long press (Android's long-press timeout is 400 to 500ms); a long press shows a tooltip on touch (Platforms Standard 6.5)"
+    },
+    "touch-dismiss-delay": {
+      "$value": "{plx-ref.motion-delay-dismiss}",
+      "$type": "duration",
+      "$description": "How long a tooltip opened by a long press stays after the finger lifts (Material 3 › Tooltips: 1.5s)"
+    },
     "font-body": {
       "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily",

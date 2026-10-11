@@ -20,7 +20,8 @@
      release's CDN copy, https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
      window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
-     A failed load rejects; the DataTable shows the reason in place of the grid. */
+     A failed load rejects and is forgotten; the DataTable shows its error state (the reason and Retry) in place of the
+     grid, and Retry loads the files again. */
 
 import { strictTabulator } from './strict.js';
 
@@ -63,8 +64,9 @@ export function loadTabulator(win) {
     }
     const script = doc.createElement('script');
     script.src = base + 'tabulator.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'tabulator');
-    script.onload = () => (w.Tabulator ? resolve(strict(w.Tabulator)) : reject(new Error('Tabulator did not load from ' + script.src)));
-    script.onerror = () => { loading.delete(w); reject(new Error('Tabulator could not be loaded from ' + script.src)); };
+    // a failed load is forgotten, so the error state's Retry loads the files again
+    script.onload = () => { if (w.Tabulator) resolve(strict(w.Tabulator)); else { loading.delete(w); script.remove(); reject(new Error('Tabulator did not load from ' + script.src)); } };
+    script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('Tabulator could not be loaded from ' + script.src)); };
     doc.head.appendChild(script);
   });
   loading.set(w, p);

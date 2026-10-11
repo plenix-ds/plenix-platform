@@ -36,9 +36,9 @@ function Profile() {
     <form noValidate onSubmit={(e) => { e.preventDefault(); toast.show('Profile saved', { tone: 'success' }); }}>
       <RecordPage.Header title="Profile" description="Edit your account details and update your password." headingLevel={2} />
       <SettingsSection card actions={<><Button onClick={() => toast.show('Change password')}>Change password</Button><Button type="submit" variant="primary">Save</Button></>}>
-        <Field label="First name" layout="inline"><Input name="firstName" autoComplete="given-name" {...field('firstName')} /></Field>
-        <Field label="Last name" layout="inline"><Input name="lastName" autoComplete="family-name" {...field('lastName')} /></Field>
-        <Field label="Email" layout="inline"><Input name="email" type="email" autoComplete="email" {...field('email')} /></Field>
+        <Field label="First name" layout="inline"><Input name="firstName" autoComplete="given-name" enterKeyHint="next" {...field('firstName')} /></Field>
+        <Field label="Last name" layout="inline"><Input name="lastName" autoComplete="family-name" enterKeyHint="next" {...field('lastName')} /></Field>
+        <Field label="Email" layout="inline"><Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="off" spellCheck={false} enterKeyHint="done" {...field('email')} /></Field>
       </SettingsSection>
     </form>
   );
@@ -47,7 +47,12 @@ function Profile() {
 function Preferences() {
   const toast = useToast();
   const [density, setDensity] = useDensity();
-  const [prefs, setPrefs] = React.useState({ theme: 'Light', assets: '30', rows: '30', album: false, approval: false, dateFormat: '' });
+  // the appearance (Platforms Standard 1.6): system (default), light or dark, the same choice as the suite's Settings › Mode;
+  // theme-boot keeps it for every page and it applies at once, like the display density
+  const ws = window.PlenixWorkspace;
+  const [mode, setModeState] = React.useState(() => (ws && ws.mode ? ws.mode() : 'system'));
+  const setMode = (m) => { setModeState(m); if (ws && ws.setMode) ws.setMode(m); };
+  const [prefs, setPrefs] = React.useState({ assets: '30', rows: '30', album: false, approval: false, dateFormat: '' });
   const [sizes, setSizes] = React.useState(PAGE_SIZES.map((v) => ({ value: v, label: v })));
   const set = (k) => (v) => setPrefs({ ...prefs, [k]: v });
   const create = (k) => (text) => { const v = text.trim(); if (!v) return; if (!sizes.some((o) => o.value === v)) setSizes(sizes.concat({ value: v, label: v })); set(k)(v); };
@@ -55,8 +60,8 @@ function Preferences() {
     <form noValidate onSubmit={(e) => { e.preventDefault(); toast.show('Preferences saved', { tone: 'success' }); }}>
       <RecordPage.Header title="Preferences" description="Your personal display and notification preferences." headingLevel={2} />
       <SettingsSection card actions={<Button type="submit" variant="primary">Save preferences</Button>}>
-        <Field label="Default theme" layout="inline">
-          <Select name="defaultTheme" value={prefs.theme} onChange={(e) => set('theme')(e.target.value)}><option>Light</option><option>Dark</option></Select>
+        <Field label="Mode" layout="inline" info="System follows the light or dark setting of your device">
+          <Select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></Select>
         </Field>
         <div className="plx-field">
           <ChoiceList legend="Display density" value={density} onChange={setDensity} options={window.PlenixWorkspace ? window.PlenixWorkspace.densities() : []} />
@@ -74,7 +79,7 @@ function Preferences() {
           <Switch label="Receive Approval / Rejection Notifications" labelHidden checked={prefs.approval} onChange={(e) => set('approval')(e.target.checked)} />
         </Field>
         <Field label="Preferred date format" layout="inline" info="Accepted formats: yyyy-MM-dd, MM-dd-yyyy, dd-MM-yyyy">
-          <Input name="preferredDateFormat" placeholder="Preferred date format" value={prefs.dateFormat} onChange={(e) => set('dateFormat')(e.target.value)} />
+          <Input name="preferredDateFormat" autoComplete="off" autoCapitalize="off" spellCheck={false} enterKeyHint="done" placeholder="Preferred date format" value={prefs.dateFormat} onChange={(e) => set('dateFormat')(e.target.value)} />
         </Field>
         <Field label="Last viewed application" layout="inline">
           <Text as="output" variant="data">{LAST_VIEWED}</Text>

@@ -18,6 +18,16 @@
 .plx-panel-splitter.is-hover::after,.plx-panel-splitter.is-focus-visible::after{background-color:var(--plx-comp-panel-splitter-hover-after-background);}
 .plx-panel-splitter:focus-visible,
 .plx-panel-splitter.is-focus-visible{outline-style:none;}
+/* the splitter's width menu (Narrower, Wider, Reset width, Collapse: a way without dragging, WCAG 2.5.7): a small button
+   inside the area at the middle of its edge, shown while the edge or the button is hovered or focused (it stays a moment
+   as the pointer moves onto it), and always with a touch or mobile interaction */
+.plx-panel-splitter__menu.plx-menu-anchor{inset-block-start:50%;position:absolute;transform:translateY(-50%);transition-duration:var(--plx-comp-panel-splitter-after-duration);transition-property:visibility;visibility:hidden;z-index:var(--plx-comp-panel-splitter-menu-z-index);}
+.plx-panel-splitter__menu--end{inset-inline-end:var(--plx-comp-panel-splitter-menu-inset);}
+.plx-panel-splitter__menu--start{inset-inline-start:var(--plx-comp-panel-splitter-menu-inset);}
+.plx-panel-splitter:hover+.plx-panel-splitter__menu,.plx-panel-splitter:focus-visible+.plx-panel-splitter__menu,
+.plx-panel-splitter.is-hover+.plx-panel-splitter__menu,.plx-panel-splitter.is-focus-visible+.plx-panel-splitter__menu,
+.plx-panel-splitter__menu.plx-menu-anchor:hover,.plx-panel-splitter__menu.plx-menu-anchor:focus-within,
+:root[data-plx-interaction="touch"] .plx-panel-splitter__menu,:root[data-plx-interaction="mobile"] .plx-panel-splitter__menu{visibility:visible;}
 /* the side-navigation area a screen fills through SideNavPortal: it lays out as if its child were the body's */
 .plx-app-shell__slot{display:contents;}
 /* an application's main column inside the main region: fills it, stacks its content, never scrolls sideways */

@@ -152,7 +152,7 @@
 .tabulator-menu .tabulator-menu-separator{border-top-color:var(--plx-sys-data-table-line);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);margin-bottom:var(--plx-comp-data-table-menu-separator-margin);margin-top:var(--plx-comp-data-table-menu-separator-margin);}
 .tabulator-menu .tabulator-menu-item.tabulator-menu-item-disabled{opacity:var(--plx-comp-data-table-menu-disabled-opacity);}
 .plx-data-table__menu-item{align-items:center;column-gap:var(--plx-comp-data-table-menu-item-gap);display:flex;}
-.plx-data-table__menu-icon{color:var(--plx-comp-data-table-menu-icon-text);display:inline-flex;}
+.plx-data-table__menu-icon{color:var(--plx-comp-data-table-menu-icon-text);display:inline-flex;min-inline-size:var(--plx-comp-data-table-menu-icon-size);}
 .plx-data-table__menu-icon .plx-icon{block-size:var(--plx-comp-data-table-menu-icon-size);inline-size:var(--plx-comp-data-table-menu-icon-size);}
 .plx-data-table__menu-item--danger,
 .plx-data-table__menu-item--danger .plx-data-table__menu-icon{color:var(--plx-comp-data-table-menu-item--danger-text);}
@@ -217,3 +217,25 @@
 /* menus and the filter popup: in the top layer, under (or above) what opened them by CSS anchor positioning (no coordinates) */
 .plx-data-table__popup-anchor{anchor-name:--plx-data-table-popup;}
 .tabulator-popup-container.plx-data-table__popup{inset:auto;margin:0;position:fixed;position-anchor:--plx-data-table-popup;position-area:block-end span-inline-end;position-try-fallbacks:flip-block,flip-inline;}
+/* without dragging (WCAG 2.5.7): a resize grip and a row handle take the keyboard focus, shown in the accent color */
+.plx-data-table .tabulator .tabulator-header .tabulator-col .plx-data-table__resize:focus-visible{background-image:var(--plx-comp-data-table-resize-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-resize-focus-outline-width) 100%;outline-style:none;}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--handle:focus-visible{outline-color:var(--plx-comp-data-table-focus-outline-color);outline-offset:calc(var(--plx-comp-data-table-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-table-editing-outline-width);}
+/* Narrow (platforms.md 3.3 and 6.5): the grid lays out for its own width (a container query), and under 600px it becomes a
+   list of its key columns: the first is the item's title line, the others the lines under it; the checkbox and the row
+   handle stay at the start and the row actions at the end; the header row and the other columns are not shown */
+/* (a size container has no width of its own content: the grid takes its container's full width, as a block does, and
+   where the container takes the width of its content, the grid asks for a table's width) */
+.plx-data-table.plx-data-table--list{box-sizing:border-box;contain-intrinsic-inline-size:var(--plx-comp-data-table-list-intrinsic-width);container-name:plx-data-table;container-type:inline-size;inline-size:100%;}
+@container plx-data-table (max-width: 599px){
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-header{display:none;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-tableholder .tabulator-table{inline-size:auto;min-inline-size:0;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs){align-items:center;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;padding-block-end:var(--plx-comp-data-table-list-padding-block);padding-block-start:var(--plx-comp-data-table-list-padding-block);}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell:not(.plx-data-table__cell--key):not(.tabulator-row-header):not(.plx-data-table__cell--handle):not(.plx-data-table__cell--actions){display:none;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell::before{content:none;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.tabulator-row-header{grid-column:1;grid-row:1 / span 8;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--handle{grid-column:2;grid-row:1 / span 8;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--actions{contain:none;grid-column:4;grid-row:1 / span 8;inline-size:auto;max-inline-size:none;min-inline-size:0;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key{contain:none;display:block;grid-column:3;inline-size:auto;line-height:var(--plx-comp-data-table-list-line-height);max-inline-size:none;min-height:0;min-inline-size:0;overflow:hidden;position:relative;text-align:start;text-overflow:ellipsis;white-space:nowrap;}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key-first{font-weight:var(--plx-comp-data-table-name-font-weight);}
+  .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key:not(.plx-data-table__cell--key-first){color:var(--plx-comp-data-table-list-detail-text);padding-block-start:var(--plx-comp-data-table-list-row-gap);}
+}

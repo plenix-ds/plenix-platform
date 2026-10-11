@@ -2,12 +2,14 @@
 // awaited (Tabulator loads the first time a table renders), and for each table: it is built, it has its rows or its empty
 // message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
 // and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own font and size
+// (a grid in its error state counts as built: it shows what failed and Retry instead of its rows)
 // (owner: one typography in tables, batch 247; badges, tags, chips, buttons and keys keep their component sizes, and the design
 // system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-table.test.js
 const { serve, launch, sleep } = require('./lib.js');
 const PORT = 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 // [page, the steps first (a control's visible text to press, or #section to go to without reloading), the grids expected]
+const ONLY = process.env.DT_ONLY ? new RegExp(process.env.DT_ONLY) : null;
 const STATES = [
   ['files/index.html', [], 1],
   ['dashboard/index.html', ['enter:kitchen'], 1],
@@ -48,6 +50,7 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
   for (const [url, steps, want] of STATES) {
+    if (ONLY && !ONLY.test(url)) continue;   // DT_ONLY=<pattern>: only the views whose address matches
     if (!HAS_DS && url.indexOf('platform/design-system/') === 0) continue;
     const name = url + (steps.length ? ' › ' + steps.join(' › ') : '');
     await page.goto('about:blank'); await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await sleep(400);
@@ -73,7 +76,7 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
     }
     if (missing) { res.push([name, false, 'no control "' + missing + '"']); continue; }
     try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).length >= n
-      && Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).every((g) => g.querySelector('.tabulator-row, .tabulator-placeholder')), { timeout: 15000 }, want); }
+      && Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent).every((g) => g.querySelector('.tabulator-row, .tabulator-placeholder, .plx-data-table__error')), { timeout: 15000 }, want); }
     catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table, .plx-table')).filter((g) => g.offsetParent && g.querySelector('.tabulator-row, .tabulator-placeholder')).length)) + ' of ' + want]); continue; }
     await sleep(600);
     if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });

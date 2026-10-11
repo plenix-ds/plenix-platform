@@ -1,0 +1,198 @@
+// Plenix tests · the login service (services/login): the server on a temporary DATA folder, two accounts made by the CLI with
+// generated passwords (piped to its prompt), then HTTP checks of the sign-in, the session cookie and Nginx's /auth/check.
+// Also the save service's /api/session with the X-Plenix-* headers (it must work after the cutover from Authentik).
+//   node tests/login.test.js
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const crypto = require('crypto');
+const { spawn, execFileSync } = require('child_process');
+
+const ROOT = path.join(__dirname, '..');
+const LOGIN = path.join(ROOT, 'services', 'login');
+const PORT = +process.env.LOGIN_PORT || 8892, SAVE_PORT = PORT + 1;
+const BASE = 'http://127.0.0.1:' + PORT, ORIGIN = BASE;
+const DATA = fs.mkdtempSync(path.join(os.tmpdir(), 'plenix-login-'));
+const SAVE_DATA = fs.mkdtempSync(path.join(os.tmpdir(), 'plenix-save-'));
+const env = Object.assign({}, process.env, { DATA, PORT: String(PORT), CDN: 'https://cdn.example.test/cdn/0.0.0', LOCK_AFTER: '3', LOCK_BASE_MS: '60000', IP_MAX: '1000', TRUST_PROXY: '0' });
+const pw = () => crypto.randomBytes(18).toString('base64url');
+const PASS = pw(), LOCK_PASS = pw();
+
+let failures = 0, passes = 0;
+const ok = (cond, name, detail) => { if (cond) { passes++; console.log('  ok   ' + name); } else { failures++; console.log('  FAIL ' + name + (detail ? ': ' + detail : '')); } };
+
+const cli = (args, input) => execFileSync(process.execPath, [path.join(LOGIN, 'accounts.js')].concat(args), { env, input: input || '', encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+const request = (method, url, { headers, body } = {}) => fetch(BASE + url, { method, headers: headers || {}, body, redirect: 'manual' });
+const form = (o) => new URLSearchParams(o).toString();
+const post = (url, fields, headers) => request('POST', url, { headers: Object.assign({ 'Content-Type': 'application/x-www-form-urlencoded', Origin: ORIGIN }, headers || {}), body: form(fields) });
+const cookieOf = (res) => { const c = res.headers.get('set-cookie') || ''; const m = /^([^=]+)=([^;]*)/.exec(c); return m ? { name: m[1], value: m[2], raw: c } : null; };
+const withCookie = (c) => ({ Cookie: c.name + '=' + c.value });
+async function waitFor(port) {
+  for (let i = 0; i < 100; i++) { try { await fetch('http://127.0.0.1:' + port + '/'); return; } catch (e) { await new Promise((r) => setTimeout(r, 100)); } }
+  throw new Error('the server on ' + port + ' did not start');
+}
+
+async function main() {
+  // the accounts, through the CLI: the password only on standard input
+  cli(['add', 'tester', '--email', 'tester@example.test', '--name', 'Test Person', '--groups', 'Editors,Users'], PASS + '\n' + PASS + '\n');
+  cli(['add', 'locktest', '--groups', 'Users'], LOCK_PASS + '\n' + LOCK_PASS + '\n');
+  let refused = false; try { cli(['add', 'short'], 'abc\nabc\n'); } catch (e) { refused = true; }
+  ok(refused, 'CLI: a short password is refused');
+  refused = false; try { cli(['add', 'x', '--password', 'abcdefghijklmnop']); } catch (e) { refused = true; }
+  ok(refused, 'CLI: a password is never an option');
+  const stored = fs.readFileSync(path.join(DATA, 'accounts.json'), 'utf8');
+  ok(stored.indexOf(PASS) < 0 && /"hash": "scrypt\$/.test(stored), 'accounts.json holds scrypt hashes, not passwords');
+  ok(cli(['list']).indexOf('tester  Test Person  <tester@example.test>  Editors,Users') >= 0, 'CLI: list');
+
+  const server = spawn(process.execPath, [path.join(LOGIN, 'server.js')], { env, stdio: ['ignore', 'pipe', 'inherit'] });
+  const save = spawn(process.execPath, [path.join(ROOT, 'services', 'save', 'server.js')], { env: Object.assign({}, process.env, { DATA: SAVE_DATA, PORT: String(SAVE_PORT) }), stdio: ['ignore', 'pipe', 'inherit'] });
+  try {
+    await waitFor(PORT); await waitFor(SAVE_PORT);
+    if (process.platform !== 'win32') ok((fs.statSync(path.join(DATA, 'secret')).mode & 0o777) === 0o600, 'the secret file has mode 600');
+    else ok(fs.existsSync(path.join(DATA, 'secret')), 'the secret file is made on first start');
+
+    // signed out
+    let r = await request('GET', '/auth/check');
+    ok(r.status === 401, 'check: 401 when signed out', r.status);
+    r = await request('GET', '/auth/session');
+    ok(r.status === 401, 'session: 401 when signed out', r.status);
+
+    // the page
+    r = await request('GET', '/auth/sign-in?rd=/Plenix/dashboard/');
+    let html = await r.text();
+    ok(r.status === 200, 'sign-in page: 200');
+    ok(!/\sstyle\s*=/i.test(html) && !/<style/i.test(html), 'sign-in page: no style attributes or style elements');
+    ok(/autocomplete="username"/.test(html) && /autocomplete="current-password"/.test(html), 'sign-in page: autocomplete username and current-password');
+    ok(!/onpaste|oncopy|readonly/i.test(html), 'sign-in page: paste and autofill are not blocked');
+    ok(/https:\/\/cdn\.example\.test\/cdn\/0\.0\.0\/plenix\.css/.test(html) && /\/auth\/login\.css/.test(html), 'sign-in page: the release stylesheet from the CDN and login.css');
+    ok(/name="rd" value="\/Plenix\/dashboard\/"/.test(html), 'sign-in page: keeps a same-site rd');
+    ok(/frame-ancestors 'none'/.test(r.headers.get('content-security-policy') || '') && r.headers.get('cache-control') === 'no-store', 'sign-in page: CSP and no-store');
+    const css = await (await request('GET', '/auth/login.css')).text();
+    // (a media query's width cannot be a custom property: the Narrow breakpoint is the one number, as in the Platform's own CSS)
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media \(width < 600px\)/g, '');
+    ok(!/#[0-9a-f]{3,8}\b|\b\d+(\.\d+)?(px|rem|em|pt)\b|rgba?\(|hsla?\(/i.test(rules), 'login.css: no hard-coded colors or sizes');
+    ok((rules.match(/var\(--[a-z0-9-]+\)/g) || []).every((v) => /^var\(--plx-/.test(v)), 'login.css: only Plenix tokens');
+
+    // POSTs from elsewhere
+    r = await request('POST', '/auth/sign-in', { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form({ user: 'tester', password: PASS }) });
+    ok(r.status === 403 && !cookieOf(r), 'sign-in without Origin or Referer: refused', r.status);
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS }, { Origin: 'https://evil.example' });
+    ok(r.status === 403 && !cookieOf(r), 'sign-in from another origin: refused', r.status);
+
+    // wrong password and unknown name: the same generic answer
+    r = await post('/auth/sign-in', { user: 'tester', password: 'not-the-password' });
+    html = await r.text();
+    ok(r.status === 401 && !cookieOf(r) && html.indexOf('That user name or password is not right.') >= 0, 'wrong password: 401, generic message, no cookie', r.status);
+    ok(/value="tester"/.test(html), 'wrong password: the user name stays filled in (WCAG 3.3.7)');
+    const r2 = await post('/auth/sign-in', { user: 'nobody-here', password: 'not-the-password' });
+    const html2 = await r2.text();
+    ok(r2.status === 401 && html2.indexOf('That user name or password is not right.') >= 0, 'unknown user: the same answer');
+
+    // success
+    r = await post('/auth/sign-in', { user: 'Tester@Example.test', password: PASS, rd: '/Plenix/dashboard/?tab=1' });
+    let c = cookieOf(r);
+    ok(r.status === 303 && r.headers.get('location') === '/Plenix/dashboard/?tab=1', 'sign-in (by email, any case): 303 to rd', r.status + ' ' + r.headers.get('location'));
+    ok(c && c.name === '__Host-plenix_session' && /HttpOnly/.test(c.raw) && /Secure/.test(c.raw) && /SameSite=Lax/.test(c.raw) && /Path=\//.test(c.raw) && !/Max-Age/.test(c.raw), 'cookie: __Host-, HttpOnly, Secure, SameSite=Lax, Path=/, ends with the browser session', c && c.raw);
+    r = await request('GET', '/auth/check', { headers: withCookie(c) });
+    ok(r.status === 204 && r.headers.get('x-plenix-user') === 'tester' && r.headers.get('x-plenix-email') === 'tester@example.test' && r.headers.get('x-plenix-name') === 'Test Person' && r.headers.get('x-plenix-groups') === 'Editors|Users', 'check: 204 with the X-Plenix-* headers', r.status + ' ' + [...r.headers].join(' '));
+    r = await request('POST', '/auth/check', { headers: withCookie(c) });
+    ok(r.status === 204, 'check: answers any method (auth_request keeps the original one)');
+    r = await request('GET', '/auth/session', { headers: withCookie(c) });
+    const s = await r.json();
+    ok(r.status === 200 && s.user === 'tester' && s.name === 'Test Person' && s.groups.join() === 'Editors,Users', 'session: who is signed in');
+    r = await request('GET', '/auth/sign-in?rd=/x', { headers: withCookie(c) });
+    ok(/You are signed in/.test(await r.text()), 'sign-in page when signed in: Continue or Switch account');
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS, keep: '1' });
+    ok(/Max-Age=2592000/.test(cookieOf(r).raw), 'keep me signed in: 30 days');
+
+    // tampered cookies
+    const [data, sig] = c.value.split('.');
+    const flip = (str) => str.slice(0, 5) + (str[5] === 'A' ? 'B' : 'A') + str.slice(6);
+    const forged = Buffer.from(JSON.stringify(Object.assign(JSON.parse(Buffer.from(data, 'base64url')), { u: 'locktest' }))).toString('base64url');
+    const longer = Buffer.from(JSON.stringify(Object.assign(JSON.parse(Buffer.from(data, 'base64url')), { exp: Date.now() + 1e10 }))).toString('base64url');
+    for (const [name, value] of [['payload changed', flip(data) + '.' + sig], ['signature changed', data + '.' + flip(sig)], ['another user', forged + '.' + sig], ['longer expiry', longer + '.' + sig], ['no signature', data], ['garbage', 'x.y']]) {
+      r = await request('GET', '/auth/check', { headers: { Cookie: c.name + '=' + value } });
+      ok(r.status === 401, 'tampered cookie (' + name + '): 401', r.status);
+    }
+
+    // open redirects
+    for (const rd of ['//evil.example/', '/\\evil.example', 'https://evil.example/', 'javascript:alert(1)', '/%0d%0aSet-Cookie:x', '/%5Cevil.example', '/%2F%2Fevil.example', '/a b', '\t//evil.example', '/auth/sign-in?rd=//evil.example']) {
+      r = await post('/auth/sign-in', { user: 'tester', password: PASS, rd });
+      ok(r.status === 303 && r.headers.get('location') === '/', 'rd ' + JSON.stringify(rd) + ': goes to /', r.headers.get('location'));
+    }
+    for (const q of ['//evil.example', '%2F%2Fevil.example', 'https://evil.example', '/%5Cevil.example'.replace('%5C', '\\')]) {
+      html = await (await request('GET', '/auth/sign-in?rd=' + q)).text();
+      ok(/name="rd" value="\/"/.test(html), 'sign-in page rd ' + JSON.stringify(q) + ': dropped');
+    }
+    html = await (await request('GET', '/auth/sign-in?rd=/Plenix/notes/?a=1&b=2')).text();
+    ok(/name="rd" value="\/Plenix\/notes\/\?a=1&amp;b=2"/.test(html), 'sign-in page: Nginx\'s raw $request_uri keeps its own query');
+
+    // sign out: the cookie is cleared; "everywhere" also ends the copies
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS });
+    const c2 = cookieOf(r);
+    r = await post('/auth/sign-out', {}, withCookie(c2));
+    ok(r.status === 303 && r.headers.get('location') === '/auth/sign-in' && /Max-Age=0/.test(cookieOf(r).raw) && cookieOf(r).value === '', 'sign-out: cookie cleared, back to the sign-in page');
+    r = await request('POST', '/auth/sign-out', { headers: withCookie(c2) });
+    ok(r.status === 403, 'sign-out without Origin: refused');
+    r = await post('/auth/sign-out', { everywhere: '1' }, withCookie(c2));
+    r = await request('GET', '/auth/check', { headers: withCookie(c2) });
+    ok(r.status === 401, 'sign-out everywhere: that session no longer passes');
+    r = await request('GET', '/auth/check', { headers: withCookie(c) });
+    ok(r.status === 401, 'sign-out everywhere: the other sessions end too');
+
+    // the apps' Sign out link (GET): at once from this site, asked first from anywhere else
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS });
+    const c4 = cookieOf(r);
+    r = await request('GET', '/auth/sign-out', { headers: Object.assign({ 'Sec-Fetch-Site': 'cross-site' }, withCookie(c4)) });
+    html = await r.text();
+    ok(r.status === 200 && !cookieOf(r) && /Sign out of Plenix\?/.test(html) && !/\sstyle\s*=/i.test(html), 'sign-out link from another site: asks first, keeps the session');
+    r = await request('GET', '/auth/sign-out?rd=/Plenix/notes/', { headers: Object.assign({ 'Sec-Fetch-Site': 'same-origin' }, withCookie(c4)) });
+    ok(r.status === 303 && r.headers.get('location') === '/auth/sign-in?rd=%2FPlenix%2Fnotes%2F' && /Max-Age=0/.test(cookieOf(r).raw), 'sign-out link on this site: signs out, then the sign-in page', r.status + ' ' + r.headers.get('location'));
+    html = await (await request('GET', '/auth/sign-in?rd=%2FPlenix%2Fnotes%2F')).text();
+    ok(/name="rd" value="\/Plenix\/notes\/"/.test(html), 'sign-in page: an encoded rd is read');
+
+    // revocation from the CLI, and a disabled account
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS });
+    const c3 = cookieOf(r);
+    ok((await request('GET', '/auth/check', { headers: withCookie(c3) })).status === 204, 'revocation: signed in again');
+    cli(['revoke', 'tester']);
+    ok((await request('GET', '/auth/check', { headers: withCookie(c3) })).status === 401, 'revocation: revoke ends the session');
+    cli(['disable', 'tester']);
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS });
+    ok(r.status === 401 && !cookieOf(r) && (await r.text()).indexOf('That user name or password is not right.') >= 0, 'disabled account: cannot sign in, generic message');
+    cli(['enable', 'tester']);
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS });
+    ok(r.status === 303, 'enabled again: signs in');
+
+    // lockout with backoff (LOCK_AFTER=3 here)
+    for (let i = 0; i < 3; i++) await post('/auth/sign-in', { user: 'locktest', password: 'wrong-' + i });
+    r = await post('/auth/sign-in', { user: 'locktest', password: LOCK_PASS });
+    html = await r.text();
+    ok(r.status === 429 && !cookieOf(r) && /Too many attempts/.test(html) && +r.headers.get('retry-after') > 0, 'lockout: the right password is refused after 3 failures', r.status);
+    for (let i = 0; i < 3; i++) await post('/auth/sign-in', { user: 'ghost', password: 'wrong-' + i });
+    r = await post('/auth/sign-in', { user: 'ghost', password: 'x' });
+    ok(r.status === 429, 'lockout: a name that is no account locks the same way (no enumeration)');
+    r = await post('/auth/sign-in', { user: 'tester', password: PASS });
+    ok(r.status === 303, 'lockout: other accounts still sign in');
+
+    // the log: every attempt, never a password
+    const log = fs.readFileSync(path.join(DATA, 'log.jsonl'), 'utf8');
+    const lines = log.trim().split('\n').map((l) => JSON.parse(l)).filter((e) => e.event === 'sign-in');
+    ok(lines.some((e) => e.result === 'ok' && e.account === 'tester' && e.ip && e.at) && lines.some((e) => e.result === 'bad-credentials') && lines.some((e) => e.result === 'locked') && lines.some((e) => e.result === 'bad-origin'), 'log: who, when, IP and result of each attempt');
+    ok(log.indexOf(PASS) < 0 && log.indexOf(LOCK_PASS) < 0 && log.indexOf('not-the-password') < 0, 'log: no passwords');
+
+    // the save service accepts the Plenix login's headers (and still Authentik's)
+    const sr = await fetch('http://127.0.0.1:' + SAVE_PORT + '/api/session', { headers: { 'X-Plenix-User': 'tester', 'X-Plenix-Email': 'tester@example.test', 'X-Plenix-Groups': 'Editors|Users' } });
+    const sj = await sr.json();
+    ok(sr.status === 200 && sj.user === 'tester' && sj.email === 'tester@example.test' && sj.canSave === true, 'save: X-Plenix-* headers sign the person in');
+    const ar = await fetch('http://127.0.0.1:' + SAVE_PORT + '/api/session', { headers: { 'X-authentik-username': 'owner', 'X-authentik-groups': 'Users' } });
+    const aj = await ar.json();
+    ok(ar.status === 200 && aj.user === 'owner' && aj.canSave === false, 'save: X-authentik-* headers still work');
+  } finally {
+    server.kill(); save.kill();
+    try { fs.rmSync(DATA, { recursive: true, force: true }); fs.rmSync(SAVE_DATA, { recursive: true, force: true }); } catch (e) { /* temp */ }
+  }
+  console.log((failures ? 'FAIL' : 'PASS') + ' login: ' + passes + ' passed, ' + failures + ' failed');
+  process.exit(failures ? 1 : 0);
+}
+main().catch((e) => { console.error(e); process.exit(1); });

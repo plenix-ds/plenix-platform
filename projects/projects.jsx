@@ -210,7 +210,7 @@ export function NewProjectModal({ onClose, newName, setNewName, newClient, setNe
       footer={<><Button onClick={onClose}>Cancel</Button><Button variant="primary" disabled={!newName.trim()} onClick={onClose}>Create project</Button></>}>
       <Stack gap="md">
         <Field label="Project title">
-          <Input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Website Redesign" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} />
+          <Input autoFocus autoComplete="off" autoCapitalize="words" enterKeyHint="done" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Website Redesign" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }} />
         </Field>
         <Field label="Client" description="optional">
           <Select value={newClient || '__none__'} onChange={(e) => setNewClient(e.target.value)}>
@@ -221,8 +221,8 @@ export function NewProjectModal({ onClose, newName, setNewName, newClient, setNe
         </Field>
         {newClient === '__new__' ? (
           <Stack gap="sm">
-            <Field label="Company name"><Input /></Field>
-            <Columns count={2} gap="md"><Field label="Contact name"><Input /></Field><Field label="Email"><Input type="email" /></Field></Columns>
+            <Field label="Company name"><Input autoComplete="organization" autoCapitalize="words" enterKeyHint="next" /></Field>
+            <Columns count={2} gap="md"><Field label="Contact name"><Input autoComplete="name" autoCapitalize="words" enterKeyHint="next" /></Field><Field label="Email"><Input type="email" autoComplete="email" enterKeyHint="done" /></Field></Columns>
           </Stack>
         ) : null}
         {newClient && newClient !== '__none__' && newClient !== '__new__' ? (

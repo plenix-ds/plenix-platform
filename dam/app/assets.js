@@ -204,27 +204,40 @@ function Profile() {
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "firstName",
-    autoComplete: "given-name"
+    autoComplete: "given-name",
+    enterKeyHint: "next"
   }, field('firstName')))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "Last name",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "lastName",
-    autoComplete: "family-name"
+    autoComplete: "family-name",
+    enterKeyHint: "next"
   }, field('lastName')))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "Email",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "email",
     type: "email",
-    autoComplete: "email"
+    inputMode: "email",
+    autoComplete: "email",
+    autoCapitalize: "off",
+    spellCheck: false,
+    enterKeyHint: "done"
   }, field('email'))))));
 }
 function Preferences() {
   const toast = (0, _plenixPlatform.useToast)();
   const [density, setDensity] = (0, _plenixPlatform.useDensity)();
+  // the appearance (Platforms Standard 1.6): system (default), light or dark, the same choice as the suite's Settings › Mode;
+  // theme-boot keeps it for every page and it applies at once, like the display density
+  const ws = window.PlenixWorkspace;
+  const [mode, setModeState] = _react.default.useState(() => ws && ws.mode ? ws.mode() : 'system');
+  const setMode = m => {
+    setModeState(m);
+    if (ws && ws.setMode) ws.setMode(m);
+  };
   const [prefs, setPrefs] = _react.default.useState({
-    theme: 'Light',
     assets: '30',
     rows: '30',
     album: false,
@@ -267,13 +280,20 @@ function Preferences() {
       variant: "primary"
     }, "Save preferences")
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Default theme",
-    layout: "inline"
+    label: "Mode",
+    layout: "inline",
+    info: "System follows the light or dark setting of your device"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
-    name: "defaultTheme",
-    value: prefs.theme,
-    onChange: e => set('theme')(e.target.value)
-  }, /*#__PURE__*/_react.default.createElement("option", null, "Light"), /*#__PURE__*/_react.default.createElement("option", null, "Dark"))), /*#__PURE__*/_react.default.createElement("div", {
+    name: "mode",
+    value: mode,
+    onChange: e => setMode(e.target.value)
+  }, /*#__PURE__*/_react.default.createElement("option", {
+    value: "system"
+  }, "System"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "light"
+  }, "Light"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "dark"
+  }, "Dark"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ChoiceList, {
     legend: "Display density",
@@ -320,6 +340,10 @@ function Preferences() {
     info: "Accepted formats: yyyy-MM-dd, MM-dd-yyyy, dd-MM-yyyy"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "preferredDateFormat",
+    autoComplete: "off",
+    autoCapitalize: "off",
+    spellCheck: false,
+    enterKeyHint: "done",
     placeholder: "Preferred date format",
     value: prefs.dateFormat,
     onChange: e => set('dateFormat')(e.target.value)
@@ -661,6 +685,7 @@ function Properties({
     value: v,
     label: v
   })));
+  // configuration values: no autofill; a path or a number gets its own keyboard (Platforms Standard 3.5)
   const text = (k, extra) => ({
     value: p[k],
     onChange: e => setP({
@@ -668,8 +693,14 @@ function Properties({
       [k]: e.target.value
     }),
     name: k,
+    autoComplete: 'off',
     ...extra
   });
+  const path = {
+    autoCapitalize: 'off',
+    spellCheck: false,
+    inputMode: 'url'
+  };
   const sw = (k, label) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: label,
     layout: "row"
@@ -745,16 +776,20 @@ function Properties({
       }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
         label: "Upload sourcepath",
         layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('uploadSourcepath'))), sw('autoCreateEntities', 'Auto create entities'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('uploadSourcepath', path))), sw('autoCreateEntities', 'Auto create entities'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
         label: "Root folder path",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('rootFolderPath', {
-        placeholder: 'Root folder path'
+        placeholder: 'Root folder path',
+        ...path
       }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
         label: "Auto create at folder level",
         layout: "inline",
         info: "Scan deep A/B/C, B = 2"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('autoCreateAtFolderLevel'))), sw('semanticEnabled', 'Semantic enabled'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('autoCreateAtFolderLevel', {
+        inputMode: 'numeric',
+        enterKeyHint: 'done'
+      }))), sw('semanticEnabled', 'Semantic enabled'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
         label: "AI search prompt",
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchPrompt', {
@@ -839,6 +874,8 @@ function Fields({
         label: "Field actions"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
         name: "newFieldName",
+        autoComplete: "off",
+        enterKeyHint: "done",
         width: "lg",
         placeholder: "New field name...",
         "aria-label": "New field name"
@@ -922,6 +959,7 @@ function AssetTypes({
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
         name: "name",
+        autoComplete: "off",
         value: t.name,
         onChange: edit(i, 'name')
       })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
@@ -929,6 +967,9 @@ function AssetTypes({
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, {
         name: "extensions",
+        autoComplete: "off",
+        autoCapitalize: "off",
+        spellCheck: false,
         value: t.ext,
         onChange: edit(i, 'ext')
       })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
@@ -936,6 +977,9 @@ function AssetTypes({
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
         name: "paths",
+        autoComplete: "off",
+        autoCapitalize: "off",
+        spellCheck: false,
         placeholder: "Paths",
         value: t.paths,
         onChange: edit(i, 'paths')
@@ -944,6 +988,9 @@ function AssetTypes({
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
         name: "ordering",
+        inputMode: "numeric",
+        autoComplete: "off",
+        enterKeyHint: "done",
         width: "sm",
         value: t.order,
         onChange: edit(i, 'order')
@@ -1151,6 +1198,7 @@ function Groups({
         layout: "inline"
       }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
         name: "name",
+        autoComplete: "off",
         value: names[i],
         onChange: e => setNames(names.map((n, j) => j === i ? e.target.value : n))
       })))

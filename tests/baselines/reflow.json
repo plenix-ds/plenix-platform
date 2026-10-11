@@ -1,0 +1,57 @@
+{
+ "dashboard/index.html": {
+  "scroller": 1
+ },
+ "messages/index.html": {
+  "scroller": 1,
+  "cut-off": 2
+ },
+ "contacts/index.html": {
+  "scroller": 1
+ },
+ "dam/index.html": {
+  "cut-off": 1
+ },
+ "dam/settings-system.html": {
+  "scroller": 1
+ },
+ "design-system #/foundations/design-tokens": {
+  "scroller": 1
+ },
+ "design-system #/layout/grid": {
+  "scroller": 1
+ },
+ "design-system #/content/text": {
+  "scroller": 2
+ },
+ "design-system #/actions/button": {
+  "scroller": 2
+ },
+ "design-system #/forms/fieldset": {
+  "scroller": 3
+ },
+ "design-system #/navigation/application-header": {
+  "scroller": 3
+ },
+ "design-system #/data-display/badge": {
+  "scroller": 2
+ },
+ "design-system #/specialized/preview": {
+  "scroller": 2
+ },
+ "design-system #/feedback/notice": {
+  "scroller": 2
+ },
+ "design-system #/overlays/dialog": {
+  "scroller": 2
+ },
+ "design-system #/page-structures/application-shell": {
+  "scroller": 2
+ },
+ "design-system #/interaction/focus-ring": {
+  "scroller": 1
+ },
+ "design-system #/implementation/react": {
+  "scroller": 1
+ }
+}

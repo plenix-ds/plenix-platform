@@ -1,0 +1,103 @@
+{
+ "dashboard/index.html": {
+  "coarse": 20
+ },
+ "projects/index.html": {
+  "coarse": 15,
+  "fine": 1
+ },
+ "messages/index.html": {
+  "coarse": 15
+ },
+ "contacts/index.html": {
+  "coarse": 15
+ },
+ "calendar/index.html": {
+  "coarse": 24
+ },
+ "tasks/index.html": {
+  "coarse": 24
+ },
+ "notes/index.html": {
+  "coarse": 15,
+  "fine": 1
+ },
+ "bookmarks/index.html": {
+  "coarse": 20
+ },
+ "files/index.html": {
+  "coarse": 19
+ },
+ "settings/index.html": {
+  "coarse": 16,
+  "fine": 1
+ },
+ "dam/index.html": {
+  "coarse": 43
+ },
+ "dam/settings-system.html": {
+  "coarse": 21,
+  "fine": 1
+ },
+ "dam/settings-myaccount.html": {
+  "coarse": 15
+ },
+ "design-system home": {
+  "coarse": 138,
+  "fine": 13
+ },
+ "design-system #/foundations/design-tokens": {
+  "coarse": 12,
+  "fine": 1
+ },
+ "design-system #/layout/grid": {
+  "coarse": 10,
+  "fine": 1
+ },
+ "design-system #/content/text": {
+  "coarse": 26,
+  "fine": 1
+ },
+ "design-system #/actions/button": {
+  "coarse": 32
+ },
+ "design-system #/forms/fieldset": {
+  "coarse": 12
+ },
+ "design-system #/navigation/application-header": {
+  "coarse": 144,
+  "fine": 1
+ },
+ "design-system #/data-display/badge": {
+  "coarse": 20,
+  "fine": 1
+ },
+ "design-system #/specialized/preview": {
+  "coarse": 17,
+  "fine": 1
+ },
+ "design-system #/feedback/notice": {
+  "coarse": 16,
+  "fine": 1
+ },
+ "design-system #/overlays/dialog": {
+  "coarse": 29,
+  "fine": 1
+ },
+ "design-system #/patterns/bulk-selection": {
+  "coarse": 31,
+  "fine": 1
+ },
+ "design-system #/page-structures/application-shell": {
+  "coarse": 26,
+  "fine": 1
+ },
+ "design-system #/interaction/focus-ring": {
+  "coarse": 10,
+  "fine": 1
+ },
+ "design-system #/implementation/react": {
+  "coarse": 121,
+  "fine": 1
+ }
+}

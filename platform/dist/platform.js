@@ -579,7 +579,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover and on keyboard focus.
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press.
    Usage:
      <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
    Props:
@@ -590,13 +590,40 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the wrapper
      children: the control it labels (one element)
    Behavior:
-     It shows on hover and on keyboard focus, and hides on leave, on blur and with Escape.
+     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
+     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
+     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
+     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
+     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
+     release is dropped): a long press asks what a control is, it does not use it.
      The trigger is described by the tooltip (aria-describedby), added to any it already has.
    Notes:
-     An icon-only control still needs its own label: the tooltip repeats it visually, it does not replace it.
+     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
+     way to learn the control's name.
      Not for essential or interactive content.
 */
 
+// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+
+// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
+// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
+let lastInput = 'key',
+  listening = false;
+const listen = () => {
+  if (listening) return;
+  listening = true;
+  document.addEventListener('pointerdown', e => {
+    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
+  }, true);
+  document.addEventListener('keydown', () => {
+    lastInput = 'key';
+  }, true);
+};
 function Tooltip({
   content,
   placement = 'bottom',
@@ -606,6 +633,18 @@ function Tooltip({
 }) {
   const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null);
+  const press = _react.default.useRef(null); // the long-press timer
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press opened
+  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const clear = () => {
+    clearTimeout(press.current);
+    clearTimeout(hide.current);
+  };
+  _react.default.useEffect(() => {
+    listen();
+    return clear;
+  }, []);
   _react.default.useEffect(() => {
     if (!open) return undefined;
     const esc = e => {
@@ -618,13 +657,55 @@ function Tooltip({
   const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, {
     'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
   });
+  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className)
+  }, trigger);
+  const onPointerDown = e => {
+    if (e.pointerType !== 'touch') return;
+    clear();
+    pressed.current = false;
+    press.current = setTimeout(() => {
+      pressed.current = true;
+      setOpen(true);
+    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
+  };
+  const onPointerEnd = e => {
+    if (e.pointerType !== 'touch') return;
+    clearTimeout(press.current);
+    if (pressed.current) hide.current = setTimeout(() => {
+      setOpen(false);
+      pressed.current = false;
+    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
+  };
   return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
     className: (0, _cx.cx)('plx-tooltip', className),
-    onMouseEnter: () => setOpen(true),
-    onMouseLeave: () => setOpen(false),
-    onFocus: () => setOpen(true),
-    onBlur: () => setOpen(false)
-  }, trigger, disabled ? null : /*#__PURE__*/_react.default.createElement("span", {
+    onPointerEnter: e => {
+      if (e.pointerType !== 'touch') setOpen(true);
+    },
+    onPointerLeave: e => {
+      if (e.pointerType !== 'touch') setOpen(false);
+    },
+    onPointerDown: onPointerDown,
+    onPointerUp: onPointerEnd,
+    onPointerCancel: onPointerEnd,
+    onContextMenu: e => {
+      if (pressed.current) e.preventDefault();
+    },
+    onClickCapture: e => {
+      if (pressed.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        pressed.current = false;
+      }
+    },
+    onFocus: () => {
+      if (lastInput !== 'touch') setOpen(true);
+    },
+    onBlur: () => {
+      if (!pressed.current) setOpen(false);
+    }
+  }, trigger, /*#__PURE__*/_react.default.createElement("span", {
     role: "tooltip",
     id: id,
     className: (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + placement, open && 'is-open')
@@ -2717,6 +2798,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Input.emphasis: semibold, for a record's title (default false)
      Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
        (owner, batch 275); the system sizes it, so it takes no width or utility
+     Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
+       (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
      Textarea.rows: the visible lines (default 3)
@@ -2727,10 +2810,32 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Select.className: more classes on the wrapper
    Behavior:
      Inside a Field, the label, description and error are connected for you.
+     Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
+     check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
      All three forward their ref to the native element.
 */
+// the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
+const TYPE_HINTS = {
+  email: {
+    inputMode: 'email',
+    autoCapitalize: 'off',
+    spellCheck: false
+  },
+  url: {
+    inputMode: 'url',
+    autoCapitalize: 'off',
+    spellCheck: false
+  },
+  tel: {
+    inputMode: 'tel'
+  },
+  search: {
+    inputMode: 'search',
+    enterKeyHint: 'search'
+  }
+};
 const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
   invalid,
   width,
@@ -2745,7 +2850,7 @@ const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function In
     type: type,
     className: (0, _cx.cx)('plx-input', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', className),
     "aria-invalid": invalid || undefined
-  }, rest));
+  }, TYPE_HINTS[type], rest));
 });
 const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(function Textarea({
   invalid,
@@ -2996,22 +3101,31 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EmptyState
-   Summary: What a region shows when it has nothing yet, and how to add the first item.
+   Summary: What a region shows when it has nothing yet, and how to add the first item; or, in the error tone, what failed
+     and the one action that recovers (platforms.md 5.5).
    Usage:
      <EmptyState size="page" icon="folder" title="No assets yet" action={<Button variant="primary">Upload</Button>}>
        Upload files to start.</EmptyState>
+     <EmptyState tone="error" title="The assets could not load" action={<Button icon="refresh" onClick={reload}>Retry</Button>}>
+       The server did not answer.</EmptyState>
    Props:
      size: "inline" (default; a line inside a list or table area) | "page" (a whole view)
-     icon: an icon name or an <Icon> (or other mark); hidden from assistive technology
+     tone: "neutral" (default; empty) | "error" (the content could not load: the title names the problem, the action
+       recovers; announced as an alert, the icon in the danger color)
+     icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the error tone's default is "warning"
      title: the main line
-     action: a button
+     action: a button (one: the action that fills the region, or that recovers from the error)
      children: the explaining text
      className: more classes on the region
+   Behavior:
+     The error tone is a live alert (role="alert"): a screen reader says it when it appears. Its words carry the meaning;
+       the danger color on the icon is never the only sign (WCAG 1.4.1).
    Notes:
      Other props pass through to the <div>.
 */
 function EmptyState({
   size = 'inline',
+  tone = 'neutral',
   icon,
   title,
   action,
@@ -3019,14 +3133,17 @@ function EmptyState({
   children,
   ...rest
 }) {
+  const error = tone === 'error';
+  const mark = icon === undefined && error ? 'warning' : icon;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-empty-state', 'plx-empty-state--' + size, className)
-  }, rest), icon ? /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-empty-state', 'plx-empty-state--' + size, error && 'plx-empty-state--error', className),
+    role: error ? 'alert' : undefined
+  }, rest), mark ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__icon",
     "aria-hidden": "true"
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon) : null, title ? /*#__PURE__*/_react.default.createElement("div", {
+  }, typeof mark === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: mark
+  }) : mark) : null, title ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__title"
   }, title) : null, children ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__text"
@@ -3442,6 +3559,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end)
      labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
+     type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
+       unless it sets its own
      children: exactly one control
      className: more classes on the field
    Behavior:
@@ -3460,6 +3579,10 @@ function Field({
   infoLabel,
   layout = 'stacked',
   labelWidth,
+  type,
+  inputMode,
+  autoComplete,
+  enterKeyHint,
   className,
   children,
   ...rest
@@ -3472,12 +3595,23 @@ function Field({
   const labelRef = _react.default.useRef(null);
   const cut = (0, _overflow.useTruncated)(labelRef);
   const child = _react.default.Children.only(children);
-  const control = /*#__PURE__*/_react.default.cloneElement(child, {
+  const props = {
     id: child.props.id || controlId,
     'aria-describedby': [child.props['aria-describedby'], descId, errId].filter(Boolean).join(' ') || undefined,
     invalid: child.props.invalid !== undefined ? child.props.invalid : error ? true : undefined,
     required: child.props.required !== undefined ? child.props.required : required || undefined
+  };
+  // keyboard hints given on the Field reach the control, unless it has its own
+  const hints = {
+    type,
+    inputMode,
+    autoComplete,
+    enterKeyHint
+  };
+  Object.keys(hints).forEach(k => {
+    if (hints[k] !== undefined && child.props[k] === undefined) props[k] = hints[k];
   });
+  const control = /*#__PURE__*/_react.default.cloneElement(child, props);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-field', 'plx-field--' + layout, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
@@ -3936,10 +4070,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      loading: shows a spinner in place of the search icon; default false
      onAccent: the look for the blue header; default false
      className: more classes on the field
-     ...rest: other attributes go on the input
+     ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
      The clear button shows only while there is text.
      The shortcut hint shows only while the field is empty.
+     It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
    Notes:
      It has the toolbar control height.
 */
@@ -3969,6 +4104,9 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   })), /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "search",
+    inputMode: "search",
+    enterKeyHint: "search",
+    autoComplete: "off",
     className: "plx-search__input",
     "aria-label": label,
     placeholder: placeholder,
@@ -4386,7 +4524,24 @@ function ConfirmDialog({
   }, children);
 }
   } },
-  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenMs = tokenMs;
+// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
+// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
+// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
+function tokenMs(name, fallback = 0, el) {
+  if (typeof document === 'undefined') return fallback;
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
+  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
+  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
+}
+  } },
+  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4398,6 +4553,7 @@ var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _tokenTime = require("../../utils/tokenTime.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ToastProvider, useToast
    Summary: A short message about something that just happened, at the end of the screen.
@@ -4406,7 +4562,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      const toast = useToast();
      toast.show('Saved', { tone: 'success' });
    Props:
-     ToastProvider.duration: the default milliseconds before a toast leaves by itself; default 4000
+     ToastProvider.duration: the default milliseconds before a toast leaves by itself; default the --plx-comp-toast-duration token
      ToastProvider.children: the application
      toast.show(message, options): shows a toast and returns its id
      options.tone: "info" (default) | "success" | "warning" | "danger"
@@ -4430,7 +4586,7 @@ const TONE_ICON = {
 };
 let nextId = 1;
 function ToastProvider({
-  duration = 4000,
+  duration,
   children
 }) {
   const [toasts, setToasts] = _react.default.useState([]);
@@ -4440,14 +4596,14 @@ function ToastProvider({
       ...t,
       leaving: true
     } : t));
-    setTimeout(() => remove(id), 1000);
+    setTimeout(() => remove(id), (0, _tokenTime.tokenMs)('--plx-comp-toast-animation-duration'));
   }, [remove]);
   const show = _react.default.useCallback((message, {
     tone = 'info',
     duration: ms
   } = {}) => {
     const id = nextId++;
-    const wait = ms !== undefined ? ms : tone === 'danger' ? 0 : duration;
+    const wait = ms !== undefined ? ms : tone === 'danger' ? 0 : duration !== undefined ? duration : (0, _tokenTime.tokenMs)('--plx-comp-toast-duration');
     setToasts(all => all.concat({
       id,
       message,
@@ -5154,7 +5310,8 @@ var _strict = require("./strict.js");
      release's CDN copy, https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
      window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
-     A failed load rejects; the DataTable shows the reason in place of the grid. */
+     A failed load rejects and is forgotten; the DataTable shows its error state (the reason and Retry) in place of the
+     grid, and Retry loads the files again. */
 
 // the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
 const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
@@ -5199,9 +5356,17 @@ function loadTabulator(win) {
     script.src = base + 'tabulator.min.js';
     script.async = true;
     script.setAttribute('data-plx-vendor', 'tabulator');
-    script.onload = () => w.Tabulator ? resolve(strict(w.Tabulator)) : reject(new Error('Tabulator did not load from ' + script.src));
+    // a failed load is forgotten, so the error state's Retry loads the files again
+    script.onload = () => {
+      if (w.Tabulator) resolve(strict(w.Tabulator));else {
+        loading.delete(w);
+        script.remove();
+        reject(new Error('Tabulator did not load from ' + script.src));
+      }
+    };
     script.onerror = () => {
       loading.delete(w);
+      script.remove();
       reject(new Error('Tabulator could not be loaded from ' + script.src));
     };
     doc.head.appendChild(script);
@@ -5278,7 +5443,7 @@ function stepSize(px, dir, min, max) {
   return c[Math.max(0, Math.min(c.length - 1, i))];
 }
   } },
-  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5291,6 +5456,9 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 var _cx = require("../../utils/cx.js");
 var _tabulator = require("./tabulator.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
+var _direction = require("../../utils/direction.js");
+var _EmptyState = require("../EmptyState/EmptyState.jsx");
+var _Button = require("../Button/Button.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable (and the engine the static Table shares, components/Table)
    Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
@@ -5332,6 +5500,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
      empty: shown when no row matches; default "Nothing to show"
+     error: the rows could not load (a message or an Error): the grid shows the error state, naming the problem
+     onRetry(): the error state's one recovery action (Retry); a grid whose engine failed to load retries it as well
+     keyColumns: the fields a Narrow grid keeps (its list layout); default the first column plus the next two (icon,
+       actions and handle columns are not counted)
+     narrow: "list" (the DataTable's default: under 600px of its own width, a list of the key columns) | "table" (the
+       static Table's default: the columns stay and scroll sideways)
+     storageKey: keeps the person's view (sort, column widths, order and hidden columns) in this browser under the key
+       and restores it the next time the grid is built
      height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container)
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
      on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
@@ -5342,6 +5518,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      Drag and drop (batch 271): a row handle (a column with rowHandle) shows the grab cursor; the row being moved shows
        grabbing.
+     Every drag has a way without dragging (WCAG 2.5.7): a click on a row handle, or the row menu, offers Move up, Move
+       down, Move to top and Move to bottom; a focused handle moves its row with Alt + Arrow Up / Down (Alt + Home / End
+       to the ends). A column's header menu offers Move left and Move right (options.movableColumns), Narrower and Wider
+       (one size token) and Fit to content; its resize grip is a separator that the arrow keys step through the size
+       tokens (Home and End: narrowest and widest).
+     Error: the error prop, or an engine that failed to load, shows an inline error state (EmptyState tone="error"): what
+       failed and Retry.
+     Narrow (platforms.md 6.5): under 600px of its own width (a container query, not the window) the grid becomes a list
+       of its key columns: the first is the row's title line, the others the lines under it; the checkbox, the row handle
+       and the row actions stay; the header row and the other columns are not shown.
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
@@ -5379,8 +5565,36 @@ const STRINGS = {
   selectRow: 'Select row',
   item: 'item',
   items: 'items',
-  failed: 'The grid could not load.'
+  failed: 'The table could not load',
+  retry: 'Retry',
+  moveUp: 'Move up',
+  moveDown: 'Move down',
+  moveTop: 'Move to top',
+  moveBottom: 'Move to bottom',
+  moveRow: 'Move row',
+  moveLeft: 'Move left',
+  moveRight: 'Move right',
+  narrower: 'Narrower',
+  wider: 'Wider',
+  resize: 'Resize'
 };
+const VIEW = 'plx-data-table:'; // the browser storage prefix of a kept view (storageKey)
+const readView = key => {
+  try {
+    const s = window.localStorage.getItem(VIEW + key);
+    return s ? JSON.parse(s) : null;
+  } catch (e) {
+    return null;
+  }
+};
+const writeView = (key, v) => {
+  try {
+    window.localStorage.setItem(VIEW + key, JSON.stringify(v));
+  } catch (e) {/* storage off: the view is not kept */}
+};
+// the columns a Narrow grid can keep: data columns (not the icon, actions or handle columns)
+const listable = c => !!c.field && c.kind !== 'icon' && c.kind !== 'actions' && !c.rowHandle;
+const keyFields = (cols, want) => want && want.length ? want.slice() : cols.filter(listable).slice(0, 3).map(c => c.field);
 const el = (tag, className, text) => {
   const e = document.createElement(tag);
   if (className) e.className = className;
@@ -5511,8 +5725,19 @@ function TableEngine(props) {
     empty,
     height,
     options,
-    className
+    className,
+    error: failure,
+    onRetry,
+    keyColumns,
+    narrow = isStatic ? 'table' : 'list',
+    storageKey
   } = props;
+  // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
+  const keys = keyFields(columns, keyColumns);
+  const listed = narrow === 'list' && columns.some(c => listable(c) && keys.indexOf(c.field) < 0);
+  const [attempt, setAttempt] = _react.default.useState(0); // a Retry after the engine failed to load builds the grid again
+  const resized = _react.default.useRef({}); // the widths the person chose (field -> size name), for the kept view
+  const restoring = _react.default.useRef(false);
   const syncing = _react.default.useRef(false); // the selection is being set from the selected prop
   const frameRef = _react.default.useRef(null);
   const hostRef = _react.default.useRef(null);
@@ -5551,6 +5776,112 @@ function TableEngine(props) {
     return () => cancelAnimationFrame(id);
   });
 
+  // the person's view, kept under storageKey: written after each change they make (not while it is being restored)
+  const saveView = () => {
+    const t = tableRef.current,
+      key = latest.current.storageKey;
+    if (!key || !t || restoring.current) return;
+    writeView(key, {
+      sort: t.getSorters().map(s => ({
+        column: s.field,
+        dir: s.dir
+      })),
+      widths: resized.current,
+      order: t.getColumns().map(c => c.getField()).filter(Boolean),
+      hidden: t.getColumns().filter(c => !c.isVisible()).map(c => c.getField()).filter(Boolean)
+    });
+  };
+  // the kept view onto a grid just built: what still fits its columns (a field that is gone is skipped)
+  const restoreView = t => {
+    const key = latest.current.storageKey,
+      v = key ? readView(key) : null;
+    resized.current = {};
+    if (!v) return;
+    restoring.current = true;
+    try {
+      const col = f => t.getColumns().find(c => c.getField() === f);
+      const order = (v.order || []).filter(col);
+      order.forEach((f, i) => {
+        const c = col(f),
+          prev = i ? col(order[i - 1]) : null;
+        if (c && prev && !c.getDefinition().frozen && !prev.getDefinition().frozen) c.move(prev, true);
+      });
+      Object.keys(v.widths || {}).forEach(f => {
+        const c = col(f);
+        if (c && /^\d+px$/.test(v.widths[f])) {
+          setWidthClass(c, v.widths[f], B);
+          resized.current[f] = v.widths[f];
+        }
+      });
+      (v.hidden || []).forEach(f => {
+        const c = col(f);
+        if (c) c.hide();
+      });
+      const sort = (v.sort || []).filter(s => col(s.column) && (s.dir === 'asc' || s.dir === 'desc'));
+      if (sort.length) t.setSort(sort);
+    } catch (e) {/* a view kept for another column set: what fits is restored */}
+    restoring.current = false;
+  };
+  // a column's width as a size token (the grip, the header menu, Fit to content), kept in the view
+  const applyWidth = (col, size) => {
+    setWidthClass(col, size, B);
+    if (col.getField()) resized.current[col.getField()] = size;
+    const grip = col.getElement().querySelector('.' + B + '__resize');
+    if (grip) grip.setAttribute('aria-valuenow', String(parseInt(size, 10)));
+    saveView();
+  };
+  const widthLimits = el => [(0, _tabulator.tablePx)(MIN, el), _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1]];
+  const stepWidth = (col, dir) => {
+    const el = col.getElement(),
+      [lo, hi] = widthLimits(el);
+    applyWidth(col, (0, _sizeSteps.stepSize)(el.getBoundingClientRect().width, dir, lo, hi) + 'px');
+  };
+  // a column one place left or right (the header menu): past hidden columns, never into the pinned ones
+  const moveColumn = (col, step) => {
+    const dir = (0, _direction.isRtl)(col.getElement()) ? -step : step;
+    let to = dir < 0 ? col.getPrevColumn() : col.getNextColumn();
+    while (to && !to.isVisible()) to = dir < 0 ? to.getPrevColumn() : to.getNextColumn();
+    if (!to || to.getDefinition().frozen) return;
+    col.move(to, dir > 0);
+    const h = (latest.current.on || {}).columnMoved;
+    if (h) h(col, tableRef.current.getColumns());
+    saveView();
+  };
+  // a row one place up or down, or to the top or bottom (the handle's menu, the row menu, Alt + the arrow keys)
+  const moveRow = (row, where) => {
+    const t = tableRef.current;
+    if (!t) return false;
+    const rows = t.getRows('active'),
+      prev = row.getPrevRow(),
+      next = row.getNextRow();
+    // (Tabulator's row.move(target, true) places the row above the target, false below it)
+    if (where === 'up' && prev) row.move(prev, true);else if (where === 'down' && next) row.move(next, false);else if (where === 'top' && prev) row.move(rows[0], true);else if (where === 'bottom' && next) row.move(rows[rows.length - 1], false);else return false;
+    const h = (latest.current.on || {}).rowMoved;
+    if (h) h(row);
+    return true;
+  };
+  const rowMoveItems = row => {
+    const up = !row.getPrevRow(),
+      down = !row.getNextRow();
+    return [{
+      label: menuLabel(STRINGS.moveUp, 'chevron-up'),
+      disabled: up,
+      action: () => moveRow(row, 'up')
+    }, {
+      label: menuLabel(STRINGS.moveDown, 'chevron-down'),
+      disabled: down,
+      action: () => moveRow(row, 'down')
+    }, {
+      label: menuLabel(STRINGS.moveTop),
+      disabled: up,
+      action: () => moveRow(row, 'top')
+    }, {
+      label: menuLabel(STRINGS.moveBottom),
+      disabled: down,
+      action: () => moveRow(row, 'bottom')
+    }];
+  };
+
   // Plenix columns -> Tabulator column definitions
   const defsOf = (cols, host) => {
     const T = () => tableRef.current;
@@ -5569,7 +5900,7 @@ function TableEngine(props) {
     const fitColumn = col => {
       const els = [col.getElement()].concat(col.getCells().map(x => x.getElement()));
       const need = Math.max.apply(null, els.map(el => el.scrollWidth));
-      setWidthClass(col, (0, _sizeSteps.snapSize)(_sizeSteps.SIZE_STEPS.find(z => z >= need) || need, _sizeSteps.SIZE_STEPS[0], _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1]) + 'px', B);
+      applyWidth(col, (0, _sizeSteps.snapSize)(_sizeSteps.SIZE_STEPS.find(z => z >= need) || need, _sizeSteps.SIZE_STEPS[0], _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1]) + 'px');
     };
     const filterPopup = c => (e, column, onRendered) => {
       const field = column.getField(),
@@ -5627,8 +5958,22 @@ function TableEngine(props) {
       onRendered(() => input.focus());
       return box;
     };
-    const headerItems = c => () => {
+    const headerItems = (c, pinned) => () => {
       const items = [];
+      // moving a column without dragging it (WCAG 2.5.7): one place left or right
+      if ((latest.current.options || {}).movableColumns && !pinned) {
+        items.push({
+          label: menuLabel(STRINGS.moveLeft, 'chevron-left'),
+          action: (e, col) => moveColumn(col, -1)
+        });
+        items.push({
+          label: menuLabel(STRINGS.moveRight, 'chevron-right'),
+          action: (e, col) => moveColumn(col, 1)
+        });
+        items.push({
+          separator: true
+        });
+      }
       if (c.headerSort !== false && c.kind !== 'actions') {
         items.push({
           label: menuLabel(STRINGS.sortUp, 'sort-ascending'),
@@ -5663,17 +6008,34 @@ function TableEngine(props) {
       if (items.length && !items[items.length - 1].separator) items.push({
         separator: true
       });
-      if (c.kind !== 'icon' && c.resizable !== false) items.push({
-        label: menuLabel(STRINGS.fit, 'expand'),
-        action: (e, col) => fitColumn(col)
-      });
+      // the width without dragging: one size token narrower or wider, or fitted to the content
+      if (c.kind !== 'icon' && c.kind !== 'actions' && c.resizable !== false) {
+        items.push({
+          label: menuLabel(STRINGS.narrower),
+          action: (e, col) => stepWidth(col, -1)
+        });
+        items.push({
+          label: menuLabel(STRINGS.wider),
+          action: (e, col) => stepWidth(col, 1)
+        });
+        items.push({
+          label: menuLabel(STRINGS.fit, 'expand'),
+          action: (e, col) => fitColumn(col)
+        });
+      }
       items.push({
         label: menuLabel(STRINGS.hide, 'visibility-off'),
-        action: (e, col) => col.hide()
+        action: (e, col) => {
+          col.hide();
+          saveView();
+        }
       });
       items.push({
         label: menuLabel(STRINGS.showAll, 'visibility'),
-        action: () => T().getColumns().forEach(col => col.show())
+        action: () => {
+          T().getColumns().forEach(col => col.show());
+          saveView();
+        }
       });
       return items;
     };
@@ -5710,7 +6072,7 @@ function TableEngine(props) {
       ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach(k => {
         delete d[k];
       });
-      d.cssClass = (0, _cx.cx)(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || labelAt > i) && B + '__cell--row-label', w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle') || undefined;
+      d.cssClass = (0, _cx.cx)(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || labelAt > i) && B + '__cell--row-label', w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle', keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
       if (kind === 'icon') {
@@ -5737,7 +6099,9 @@ function TableEngine(props) {
         d.headerPopup = filterPopup(c);
         d.headerPopupIcon = iconEl('filter').outerHTML;
       }
-      if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c);
+      if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c, labelAt >= i || !!c.frozen);
+      // a click on a row handle opens its move menu (a way to move rows without dragging; WCAG 2.5.7)
+      if (c.rowHandle && !isStatic && (latest.current.options || {}).movableRows && d.clickMenu === undefined) d.clickMenu = (e, cell) => rowMoveItems(cell.getRow());
       return d;
     });
   };
@@ -5757,17 +6121,26 @@ function TableEngine(props) {
       const host = hostRef.current;
       const p = latest.current;
       const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
-      const rowContextMenu = p.rowMenu ? (e, row) => {
+      // the row menu: the page's items, then (movable rows) the moves
+      const movable = !isStatic && !!(p.options || {}).movableRows;
+      const rowContextMenu = p.rowMenu || movable ? (e, row) => {
         const cur = latest.current.rowMenu,
           d = row.getData();
         const list = typeof cur === 'function' ? cur(d) : cur;
-        return (list || []).map(it => it.separator ? {
+        const items = (list || []).map(it => it.separator ? {
           separator: true
         } : {
           label: menuLabel(it.label, it.icon, it.danger),
           disabled: typeof it.disabled === 'function' ? it.disabled(d) : !!it.disabled,
           action: () => it.onSelect && it.onSelect(d, row)
         });
+        if (movable) {
+          if (items.length) items.push({
+            separator: true
+          });
+          items.push(...rowMoveItems(row));
+        }
+        return items;
       } : undefined;
       const labelled = p.columns.some(c => c.rowLabel);
       const opts = {
@@ -5852,6 +6225,14 @@ function TableEngine(props) {
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => {
           if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', STRINGS.selectRow + ' ' + (n + 1));
         });
+        // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
+        if (movable) host.querySelectorAll('.tabulator-row .' + B + '__cell--handle').forEach(h => {
+          if (h.hasAttribute('aria-keyshortcuts')) return;
+          h.tabIndex = 0;
+          h.setAttribute('aria-label', STRINGS.moveRow);
+          h.setAttribute('aria-haspopup', 'menu');
+          h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
+        });
       };
       table.on('renderComplete', aria);
       table.on('tableBuilt', () => {
@@ -5870,6 +6251,8 @@ function TableEngine(props) {
         if (!isStatic) {
           wireColumns(table);
           wireRows(table, host);
+          restoreView(table);
+          table.on('dataSorted', () => saveView());
         }
         if (latest.current.onReady) latest.current.onReady(table);
         bump();
@@ -5916,7 +6299,7 @@ function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '']);
+  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '']);
 
   // moving rows (options.movableRows with a rowHandle column): native drag and drop from the handle, delegated on the grid;
   // the row it is dropped on shows a line (a class) and the moved row lands before it
@@ -5969,6 +6352,30 @@ function TableEngine(props) {
       host.querySelectorAll('.tabulator-moving').forEach(x => x.classList.remove('tabulator-moving'));
       moving.current = null;
     });
+    // the keyboard on a focused handle: Enter or Space opens its menu; Alt + Arrow Up / Down (Home / End) moves the row,
+    // and the handle keeps the focus
+    host.addEventListener('keydown', ev => {
+      const h = ev.target.closest && ev.target.closest('.tabulator-row .' + B + '__cell--handle');
+      if (!h || ev.target !== h) return;
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        h.click();
+        return;
+      }
+      const where = ev.altKey ? {
+        ArrowUp: 'up',
+        ArrowDown: 'down',
+        Home: 'top',
+        End: 'bottom'
+      }[ev.key] : null;
+      const r = where && rowOf(h);
+      if (!r) return;
+      ev.preventDefault();
+      if (moveRow(r, where)) requestAnimationFrame(() => {
+        const c = r.getElement().querySelector('.' + B + '__cell--handle');
+        if (c) c.focus();
+      });
+    });
   };
 
   // a header can be dragged onto another to move its column (options.movableColumns), and its edge resizes it: the width
@@ -6013,6 +6420,7 @@ function TableEngine(props) {
             from.move(col, true);
             const h = (latest.current.on || {}).columnMoved;
             if (h) h(from, table.getColumns());
+            saveView();
           }
         });
       }
@@ -6020,24 +6428,49 @@ function TableEngine(props) {
       const mine = (latest.current.columns || []).find(x => x.field && x.field === col.getField());
       const resizable = !!mine && mine.resizable !== false && !/__cell--(icon|actions|select)|__w-lead/.test(String(def.cssClass || ''));
       if (resizable) {
+        // the grip is a separator: dragged, or focused and stepped with the arrow keys (WCAG 2.5.7 and 2.1.1); the header
+        // keeps its own name (its title), so the grip's name does not join it
+        const title = String(def.title || col.getField() || '');
+        const [lo, hi] = widthLimits(el);
         const grip = el.ownerDocument.createElement('span');
         grip.className = B + '__resize';
-        grip.setAttribute('aria-hidden', 'true');
+        grip.setAttribute('role', 'separator');
+        grip.setAttribute('aria-orientation', 'vertical');
+        grip.tabIndex = 0;
+        grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
+        grip.setAttribute('aria-valuemin', String(lo));
+        grip.setAttribute('aria-valuemax', String(hi));
+        grip.setAttribute('aria-valuenow', String(Math.round(el.getBoundingClientRect().width) || lo));
+        if (title && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', title);
         grip.addEventListener('click', ev => ev.stopPropagation());
+        grip.addEventListener('keydown', ev => {
+          const now = el.getBoundingClientRect().width,
+            step = (0, _direction.arrowStep)(ev, el, {
+              vertical: false
+            });
+          const to = step ? (0, _sizeSteps.stepSize)(now, step, lo, hi) : ev.key === 'Home' ? (0, _sizeSteps.snapSize)(lo, lo, hi) : ev.key === 'End' ? (0, _sizeSteps.snapSize)(hi, lo, hi) : null;
+          if (to == null) return;
+          ev.preventDefault();
+          ev.stopPropagation();
+          applyWidth(col, to + 'px');
+        });
         grip.addEventListener('pointerdown', ev => {
           ev.preventDefault();
           ev.stopPropagation();
           const x0 = ev.clientX,
             w0 = el.getBoundingClientRect().width,
             rtl = getComputedStyle(el).direction === 'rtl' ? -1 : 1;
-          const lo = (0, _tabulator.tablePx)(MIN, el),
-            hi = _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
           const doc = el.ownerDocument;
-          const move = e2 => setWidthClass(col, (0, _sizeSteps.snapSize)(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px', B);
+          let last = null;
+          const move = e2 => {
+            last = (0, _sizeSteps.snapSize)(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px';
+            setWidthClass(col, last, B);
+          };
           const up = () => {
             doc.removeEventListener('pointermove', move);
             doc.removeEventListener('pointerup', up);
             doc.documentElement.classList.remove('is-resizing-columns');
+            if (last) applyWidth(col, last);
           };
           doc.addEventListener('pointermove', move);
           doc.addEventListener('pointerup', up);
@@ -6113,16 +6546,34 @@ function TableEngine(props) {
       if (c && c.render && cell && key) portals.push(/*#__PURE__*/_reactDom.default.createPortal(c.render(cell.getRow().getData(), cell), node, id));
     });
   }
+
+  // the error state (platforms.md 5.5: it names the problem, one action recovers): the page's failure, or the engine's
+  const failed = failure || error;
+  const retry = () => {
+    if (error) {
+      setError(null);
+      setAttempt(n => n + 1);
+    }
+    if (onRetry) onRetry();
+  };
+  const reason = failed && failed !== true ? String(failed.message || failed) : null;
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: frameRef,
-    className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', className),
+    className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', className),
     "data-plx-height": height && height !== '100%' ? sizeName(height) || undefined : undefined
-  }, error ? /*#__PURE__*/_react.default.createElement("div", {
-    className: B + '__empty',
-    role: "alert"
-  }, STRINGS.failed, " ", String(error.message || error)) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
+    className: B + '__error',
+    tone: "error",
+    title: STRINGS.failed,
+    action: error || onRetry ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      icon: "refresh",
+      onClick: retry
+    }, STRINGS.retry) : null
+  }, reason) : null, /*#__PURE__*/_react.default.createElement("div", {
     ref: hostRef,
-    className: B + '__table'
+    className: B + '__table',
+    hidden: failed ? true : undefined
   }), portals);
 }
 
@@ -8943,7 +9394,7 @@ function pageLayout(kind) {
   return (PAGE_LAYOUTS[kind] || PAGE_LAYOUTS[DEFAULT_PAGE]).layout;
 }
   } },
-  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8963,6 +9414,8 @@ var _cx = require("../../utils/cx.js");
 var _direction = require("../../utils/direction.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 var _pageLayouts = require("../../providers/pageLayouts.js");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Button = require("../../components/Button/Button.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
@@ -9181,7 +9634,17 @@ function AppShell({
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
    collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
    "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
-   are mirrored (arrowStep gives the step in reading order). */
+   are mirrored (arrowStep gives the step in reading order).
+   Without dragging (WCAG 2.5.7): a small menu button on the edge (shown while the edge is hovered or focused, always with
+   a touch or mobile interaction) offers Narrower and Wider (one size token), Reset width (with defaultValue, the area's
+   default width) and Collapse (with onCollapse). */
+const SPLITTER = {
+  options: '{label} options',
+  narrower: 'Narrower',
+  wider: 'Wider',
+  reset: 'Reset width',
+  collapse: 'Collapse'
+};
 function PanelSplitter({
   label,
   value,
@@ -9189,6 +9652,7 @@ function PanelSplitter({
   max,
   onChange,
   onCollapse,
+  defaultValue,
   edge = 'end'
 }) {
   const dir = edge === 'end' ? 1 : -1;
@@ -9228,19 +9692,44 @@ function PanelSplitter({
       onCollapse();
     }
   };
-  return /*#__PURE__*/_react.default.createElement("div", {
+  const top = clamp(max()),
+    now = clamp(value);
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
     role: "separator",
     "aria-orientation": "vertical",
     "aria-label": label,
     "aria-valuenow": value,
     "aria-valuemin": min,
-    "aria-valuemax": clamp(max()),
+    "aria-valuemax": top,
     tabIndex: 0,
     className: (0, _cx.cx)('plx-panel-splitter', 'plx-panel-splitter--' + edge),
     onPointerDown: onPointerDown,
     onKeyDown: onKeyDown,
     onDoubleClick: onCollapse || undefined
-  });
+  }), /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    placement: edge === 'end' ? 'bottom-end' : 'bottom-start',
+    className: (0, _cx.cx)('plx-panel-splitter__menu', 'plx-panel-splitter__menu--' + edge),
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      iconOnly: true,
+      icon: "more",
+      label: SPLITTER.options.replace('{label}', label || '')
+    })
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: now <= clamp(min),
+    onSelect: () => onChange((0, _sizeSteps.stepSize)(value, -1, min, max()))
+  }, SPLITTER.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    disabled: now >= top,
+    onSelect: () => onChange((0, _sizeSteps.stepSize)(value, 1, min, max()))
+  }, SPLITTER.wider), defaultValue != null ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "refresh",
+    disabled: now === clamp(defaultValue),
+    onSelect: () => onChange(clamp(defaultValue))
+  }, SPLITTER.reset) : null, onCollapse ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: edge === 'end' ? 'panel-left-close' : 'panel-right-close',
+    onSelect: onCollapse
+  }, SPLITTER.collapse) : null));
 }
 function SideNavPortal({
   children
@@ -10184,7 +10673,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined' && document
   if (!speculationRules(document)) hoverPrefetch(document);
 }
   } },
-  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10196,6 +10685,7 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _direction = require("../../utils/direction.js");
+var _Menu = require("../../components/Menu/Menu.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WidgetGrid
    Summary: A dashboard's widgets in a grid that people reorder by dragging a widget's handle, or with the arrow keys on it
@@ -10212,13 +10702,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      columns: "auto" (default; as many as fit) | 2 | 3 | 4
      className: more classes on the grid
      strings: the words it announces, for other languages: { widget: "Widget", widgetLower: "widget", move: "Move {title}
-       (arrow keys)", position: "{title}, position {index} of {total}" } (widget and widgetLower stand in for a widget
-       without a title, in the announcement and in the handle's name)
+       (arrow keys)", position: "{title}, position {index} of {total}", earlier: "Move earlier", later: "Move later",
+       first: "Move to the start", last: "Move to the end" } (widget and widgetLower stand in for a widget without a
+       title, in the announcement and in the handle's name)
    Behavior:
      Drag and drop (batch 271): the handle shows the grab cursor, grabbing while held or while its widget moves.
      Each widget gets a handle (a button) when the grid can be reordered: drag it onto another widget to place it there;
      or focus it and press Arrow Up (earlier) or Arrow Down (later); Arrow Left / Right follow reading order (in a
      right-to-left page Arrow Right is earlier).
+     Without dragging (WCAG 2.5.7): a click on the handle (or Enter or Space) opens its menu: Move earlier, Move later,
+     Move to the start and Move to the end (the ones that cannot move are disabled).
      While dragging, the widget under the pointer shows the drop ring.
      The new place is announced ("Site visits, position 2 of 6").
    Notes:
@@ -10228,7 +10721,11 @@ const STRINGS = {
   widget: 'Widget',
   widgetLower: 'widget',
   move: 'Move {title} (arrow keys)',
-  position: '{title}, position {index} of {total}'
+  position: '{title}, position {index} of {total}',
+  earlier: 'Move earlier',
+  later: 'Move later',
+  first: 'Move to the start',
+  last: 'Move to the end'
 };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const move = (ids, from, to) => {
@@ -10237,6 +10734,30 @@ const move = (ids, from, to) => {
   next.splice(to, 0, x);
   return next;
 };
+
+// the handle: a menu button (Menu gives it the click, Enter and Space) whose arrow keys move the widget instead of
+// opening the menu, so the keys keep their meaning on the handle
+const Handle = /*#__PURE__*/_react.default.forwardRef(function Handle({
+  onStep,
+  onKeyDown,
+  expanded,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: "button"
+  }, rest, {
+    onKeyDown: e => {
+      const step = (0, _direction.arrowStep)(e, e.currentTarget);
+      if (step) {
+        e.preventDefault();
+        onStep(step);
+        return;
+      }
+      if (onKeyDown) onKeyDown(e);
+    }
+  }));
+});
 function WidgetGrid({
   items = [],
   renderItem,
@@ -10283,33 +10804,45 @@ function WidgetGrid({
       place(from, i);
     } : undefined
   }, (() => {
-    const handle = onReorder ? /*#__PURE__*/_react.default.createElement("button", {
-      type: "button",
-      className: (0, _cx.cx)('plx-widget-grid__handle', renderItem && renderItem.length > 1 && 'plx-widget-grid__handle--inline'),
-      draggable: true,
-      "aria-label": fill(t.move, {
+    const handle = onReorder ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: fill(t.move, {
         title: it.title || t.widgetLower
       }),
-      onDragStart: e => {
-        setDragging(it.id);
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(it.id));
-      },
-      onDragEnd: () => {
-        setDragging(null);
-        setOver(null);
-      },
-      onKeyDown: e => {
-        const step = (0, _direction.arrowStep)(e, e.currentTarget);
-        if (step) {
-          e.preventDefault();
-          place(i, i + step);
-        }
-      }
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "drag",
-      size: "md"
-    })) : null;
+      placement: "bottom-end",
+      className: (0, _cx.cx)('plx-widget-grid__menu', renderItem && renderItem.length > 1 && 'plx-widget-grid__menu--inline'),
+      trigger: /*#__PURE__*/_react.default.createElement(Handle, {
+        className: (0, _cx.cx)('plx-widget-grid__handle', renderItem && renderItem.length > 1 && 'plx-widget-grid__handle--inline'),
+        draggable: true,
+        "aria-label": fill(t.move, {
+          title: it.title || t.widgetLower
+        }),
+        onDragStart: e => {
+          setDragging(it.id);
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', String(it.id));
+        },
+        onDragEnd: () => {
+          setDragging(null);
+          setOver(null);
+        },
+        onStep: step => place(i, i + step)
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "drag",
+        size: "md"
+      }))
+    }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: i === 0,
+      onSelect: () => place(i, i - 1)
+    }, t.earlier), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: i === items.length - 1,
+      onSelect: () => place(i, i + 1)
+    }, t.later), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: i === 0,
+      onSelect: () => place(i, 0)
+    }, t.first), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      disabled: i === items.length - 1,
+      onSelect: () => place(i, items.length - 1)
+    }, t.last)) : null;
     return renderItem && renderItem.length > 1 ? renderItem(it, handle) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, handle, renderItem ? renderItem(it) : null);
   })()))), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
     role: "status"
