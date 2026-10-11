@@ -1,10 +1,11 @@
 // Plenix tests · every Table and DataTable in the apps: each page (and the tab or view that shows its tables) is opened, the tables are
 // awaited (Tabulator loads the first time a table renders), and for each table: it is built, it has its rows or its empty
 // message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
-// and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own font and size
+// and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own size and
+// the typeface of its kind: DM Mono in a column of kind "data" and for code and the data role, DM Sans elsewhere
 // (a grid in its error state counts as built: it shows what failed and Retry instead of its rows)
-// (owner: one typography in tables, batch 247; badges, tags, chips, buttons and keys keep their component sizes, and the design
-// system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
+// (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
+// component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-table.test.js
 const { serve, launch, sleep } = require('./lib.js');
 const PORT = 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
@@ -96,16 +97,20 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
           rowHeight: row ? Math.round(row.getBoundingClientRect().height) : null, want: Math.round(want) + 1,
           font: getComputedStyle(g.querySelector('.tabulator')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-table-font-size').trim() };
       });
-      // one typography: each text in the body rows in the table's font family and size (component labels excepted)
+      // typefaces by kind, one size (owner, 2026-10-11): each text in the body rows at the table's own size; in a column of
+      // kind "data" in DM Mono, elsewhere in DM Sans, except code and the data role (code, Text "data", token and class
+      // links), which are DM Mono wherever they are (component labels excepted)
       const type = [];
+      const MARKED = 'code, samp, .plx-text--data, .plx-font-data, .plx-font-code, .ds-code-link, .ds-mono, .ds-value, .ds-name';
       grids.forEach((g) => {
-        const first = g.querySelector('.tabulator-row .tabulator-cell'); if (!first) return;
-        const base = getComputedStyle(first), fam = base.fontFamily.split(',')[0], size = base.fontSize;
+        if (!g.querySelector('.tabulator-row .tabulator-cell')) return;
+        const size = getComputedStyle(g.querySelector('.tabulator')).fontSize;
         const w = document.createTreeWalker(g.querySelector('.tabulator-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
         while ((n = w.nextNode()) && type.length < 3) {
           const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .tabulator-placeholder, .ds-vis')) continue;
-          const c = getComputedStyle(el);
-          if (c.fontFamily.split(',')[0] !== fam || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + c.fontFamily.split(',')[0] + ' ' + c.fontSize + ', the table ' + fam + ' ' + size);
+          const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
+          const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'DM Mono' : 'DM Sans';
+          if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
         }
       });
       // header weights (owner, batch 248): every header row title is 600 and every row-label cell's text 500

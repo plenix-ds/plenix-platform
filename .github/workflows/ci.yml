@@ -1,5 +1,5 @@
 # Plenix checks: on every push and pull request. Build, the system and spec checks, the release build, the visual
-# snapshot, every page, the accessibility scan, reflow at 320px and target sizes (known issues may only go down).
+# snapshot, every page, the accessibility scan, typography, reflow at 320px and target sizes (known issues may only go down).
 # The design system (platform/design-system) is a private submodule: with the DS_TOKEN secret (a token that can read
 # plenix-ds/plenix-design-system) it is checked out and tested too; without it, the apps and the Platform are tested.
 name: Checks
@@ -76,6 +76,9 @@ jobs:
 
       - name: "Data tables (every DataTable view: built, axe, style audit, row height, typography)"
         run: node tests/data-table.test.js
+
+      - name: "Typography (DM Sans for interface text, DM Mono for code and technical values, one baseline; known findings may only go down)"
+        run: node tests/typography.test.js
 
       - name: "Component labs (each Edit dialog field moves its own property)"
         run: node tests/labs.test.js

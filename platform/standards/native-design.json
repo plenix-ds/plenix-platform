@@ -2695,7 +2695,7 @@
      "token": "plx-comp-progress-bar-value-text, plx-comp-progress-bar-value-font-family",
      "value": "The data font (PlenixFonts.MONO), 12 sp, Body small (PlenixPlatform.textDataSize), contentMuted; 8 dp from the label",
      "material": "None",
-     "compose": "Text(percent, style = TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize, lineHeight = PlenixPlatform.textDataLineHeight), color = PlenixColors.contentMuted.current())",
+     "compose": "Text(percent, style = TextStyle(fontFamily = FontFamily(Font(R.font.dm_mono_regular)), fontSize = PlenixPlatform.textDataSize, lineHeight = PlenixPlatform.textDataLineHeight), color = PlenixColors.contentMuted.current())",
      "views": "value.textRole(PlenixPlatform.textDataSize, PlenixPlatform.textDataLineHeight, R.font.dm_mono_regular)",
      "follows": "Material 3: Progress indicators",
      "followsUrl": "https://m3.material.io/components/progress-indicators/guidelines"
@@ -11350,8 +11350,8 @@
      "value": "DM Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
      "apple": "None",
      "swiftui": "currentValueLabel with .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
-     "uikit": "A UILabel with DM Mono at the data role, scaled by UIFontMetrics(forTextStyle: .footnote)",
-     "appkit": "An NSTextField with DM Mono at the data role",
+     "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
+     "appkit": "An NSTextField with NSFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role)",
      "follows": "Best practices"
     },
     {
@@ -12508,8 +12508,8 @@
      "value": "plx-sys-content-muted, DM Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
      "apple": "None",
      "swiftui": "Text(value, format:).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
-     "uikit": "A UILabel with DM Mono at the data role, scaled by UIFontMetrics(forTextStyle: .footnote)",
-     "appkit": "An NSTextField with a NumberFormatter",
+     "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
+     "appkit": "An NSTextField with a NumberFormatter and NSFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role)",
      "follows": "Best practices"
     },
     {

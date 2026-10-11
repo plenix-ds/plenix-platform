@@ -901,7 +901,7 @@
             "plenix": {
               "web": {
                 "class": "plx-text--data",
-                "token": "--plx-ref-font-size-11"
+                "token": "--plx-ref-font-size-12"
               },
               "source": {
                 "verified": "2026-10-10",

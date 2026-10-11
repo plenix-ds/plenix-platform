@@ -18,10 +18,14 @@
      data: the rows: plain objects, Tabulator's data format (children in _children with options.dataTree)
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
        own terms, with these Plenix additions:
-     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: the same DM Sans, size and color as the row, so every cell reads alike; batches 245–246) |
+     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: IDs, file names, paths, versions,
+       dates and times, sizes, counts, durations: the data font, DM Mono, at the row's own size and line height, so it shares
+       the row's baseline; owner, 2026-10-11) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
-       selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does)
+       selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does).
+       Two kinds combine as a list: ["name", "data"] (a row named by a file name: medium weight in the data font),
+       ["wrap", "data"] (a long path)
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
@@ -361,7 +365,7 @@ export function TableEngine(props) {
       const align = hz && hz !== 'left' ? B + '__cell--align-' + hz : null;
       const headAlign = hh && hh !== 'left' ? B + '__head-align-' + hh : null;
       ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach((k) => { delete d[k]; });
-      d.cssClass = cx(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || (labelAt > i)) && B + '__cell--row-label',
+      d.cssClass = cx(c.cssClass, kind && [].concat(kind).map((k) => B + '__cell--' + k).join(' '), (rowLabel || (labelAt > i)) && B + '__cell--row-label',
         w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle',
         keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');

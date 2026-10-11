@@ -1665,7 +1665,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     columns: [{
       title: "Name",
       field: "name",
-      kind: "name"
+      kind: ["name", "data"]
     }, {
       title: "Type",
       field: "t",
@@ -1701,7 +1701,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     }))
   }
 };
-// the dashboard home: everything, with the section each row comes from
+// the dashboard home: everything, with the section each row comes from (a file is named by its file name: the data font)
 const ALL = {
   label: "Everything",
   noun: "result",
@@ -1713,7 +1713,10 @@ const ALL = {
   columns: [{
     title: "Name",
     field: "name",
-    kind: "name"
+    kind: "name",
+    render: r => r.app === "files" ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, r.name) : r.name
   }, {
     title: "Section",
     field: "section"
@@ -2511,7 +2514,9 @@ function ContactsScreen({
       person: contact.name,
       color: contact.avColor
     },
-    facts: [contact.role, contact.co, 'Last message ' + contact.last],
+    facts: [contact.role, contact.co, /*#__PURE__*/React.createElement(React.Fragment, null, "Last message ", /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, contact.last))],
     actions: [{
       icon: 'phone',
       label: 'Call'

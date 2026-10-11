@@ -328,8 +328,8 @@
   --plx-comp-table-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-data-table-font-family: var(--plx-sys-typeface-sans);
   --plx-comp-table-font-family: var(--plx-sys-typeface-sans);
-  --plx-comp-data-table-data-font-family: var(--plx-sys-typeface-sans);
-  --plx-comp-table-data-font-family: var(--plx-sys-typeface-sans);
+  --plx-comp-data-table-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-table-data-font-family: var(--plx-sys-font-data);
   --plx-comp-data-table-font-size: var(--plx-sys-data-table-font-size);
   --plx-comp-table-font-size: var(--plx-sys-table-font-size);
   --plx-comp-data-table-header-font-size: var(--plx-ref-font-size-12);
@@ -1785,7 +1785,7 @@
   --plx-comp-text-caption-font-family: var(--plx-sys-font-body);
   --plx-comp-text-caption-font-size: var(--plx-ref-font-size-11);
   --plx-comp-text-data-font-family: var(--plx-sys-font-data);
-  --plx-comp-text-data-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-text-data-font-size: var(--plx-ref-font-size-12);
   --plx-comp-text-label-text: var(--plx-sys-content-default);
   --plx-comp-text-label-font-family: var(--plx-sys-font-label);
   --plx-comp-text-label-font-size: var(--plx-ref-font-size-12);
@@ -2107,8 +2107,8 @@
   --plx-comp-property-list-description-font-size: var(--plx-ref-font-size-11);
   --plx-comp-property-list-value-text: var(--plx-sys-content-default);
   --plx-comp-property-list-value-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-property-list-value-data-font-family: var(--plx-sys-font-body);
-  --plx-comp-property-list-value-data-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-property-list-value-data-font-family: var(--plx-sys-font-data);
+  --plx-comp-property-list-value-data-font-size: var(--plx-ref-font-size-13);
   --plx-comp-property-list-columns-gap: var(--plx-sys-space-inline-md);
   --plx-comp-property-list-columns-label-tip-max-width: var(--plx-ref-size-160px);
   --plx-comp-property-list-columns-item-row-gap: var(--plx-sys-space-stack-xs);

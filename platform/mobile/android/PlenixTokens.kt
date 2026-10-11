@@ -583,7 +583,7 @@ object PlenixPlatform {
     val textEyebrowLineHeight = 16.sp // platform only; token: md.sys.typescale.label-small.line-height (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
     const val textEyebrowTypeRole = "Label small" // platform only; The style it scales with.
     const val textEyebrowWeight = 700 // web .plx-text--eyebrow --plx-sys-font-weight-bold; token: md.sys.typescale.label-small.weight (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
-    val textDataSize = 12.sp // web .plx-text--data --plx-ref-font-size-11; token: md.sys.typescale.body-small.size (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
+    val textDataSize = 12.sp // web .plx-text--data --plx-ref-font-size-12; token: md.sys.typescale.body-small.size (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
     val textDataLineHeight = 16.sp // platform only; token: md.sys.typescale.body-small.line-height (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
     const val textDataTypeRole = "Body small" // platform only; The style it scales with.
     const val textDataWeight = 400 // web .plx-text--data; token: md.sys.typescale.body-small.weight (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)

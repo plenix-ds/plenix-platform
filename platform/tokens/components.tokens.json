@@ -1332,12 +1332,14 @@
       "$type": "fontFamily"
     },
     "data-table-data-font-family": {
-      "$value": "{plx-sys.typeface-sans}",
-      "$type": "fontFamily"
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "A column of kind \"data\" (IDs, file names, paths, versions, dates, sizes, counts): the data font, DM Mono, at the table's own size and line height so it shares the row's baseline (owner, 2026-10-11)"
     },
     "table-data-font-family": {
-      "$value": "{plx-sys.typeface-sans}",
-      "$type": "fontFamily"
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "A column of kind \"data\": the data font, DM Mono, at the table's own size and line height (owner, 2026-10-11)"
     },
     "data-table-font-size": {
       "$value": "{plx-sys.data-table-font-size}",
@@ -7224,8 +7226,9 @@
       "$type": "fontFamily"
     },
     "text-data-font-size": {
-      "$value": "{plx-ref.font-size-11}",
-      "$type": "dimension"
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "The data role on its own: the secondary size (12px), the meta line it usually sits in; inside other text it takes that text's size"
     },
     "text-label-text": {
       "$value": "{plx-sys.content-default}",
@@ -8521,12 +8524,14 @@
       "$type": "dimension"
     },
     "property-list-value-data-font-family": {
-      "$value": "{plx-sys.font-body}",
-      "$type": "fontFamily"
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "A technical value (a size, a date, an ID): the data font, DM Mono (owner, 2026-10-11)"
     },
     "property-list-value-data-font-size": {
-      "$value": "{plx-ref.font-size-12}",
-      "$type": "dimension"
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "A technical value at the value size (--plx-comp-property-list-value-font-size), so DM Mono and DM Sans values share one baseline"
     },
     "property-list-columns-gap": {
       "$value": "{plx-sys.space-inline-md}",

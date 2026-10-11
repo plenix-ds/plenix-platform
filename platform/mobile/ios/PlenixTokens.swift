@@ -555,7 +555,7 @@ public enum Plenix {
         public static let textEyebrowLineHeight: CGFloat = 16 // platform only; rule: Typography: Dynamic Type Caption 1 line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
         public static let textEyebrowTextStyle = "Caption 1" // platform only; The style it scales with.
         public static let textEyebrowWeight: CGFloat = 600 // web .plx-text--eyebrow --plx-sys-font-weight-bold; rule: Typography: Dynamic Type Caption 1 weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-        public static let textDataSize: CGFloat = 13 // web .plx-text--data --plx-ref-font-size-11; rule: Typography: Dynamic Type Footnote size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+        public static let textDataSize: CGFloat = 13 // web .plx-text--data --plx-ref-font-size-12; rule: Typography: Dynamic Type Footnote size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
         public static let textDataLineHeight: CGFloat = 18 // platform only; rule: Typography: Dynamic Type Footnote line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
         public static let textDataTextStyle = "Footnote" // platform only; The style it scales with.
         public static let textDataWeight: CGFloat = 400 // web .plx-text--data; rule: Typography: Dynamic Type Footnote weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)

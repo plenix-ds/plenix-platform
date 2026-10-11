@@ -777,7 +777,9 @@ const PERMISSION_AREAS = exports.PERMISSION_AREAS = [{
   items: [['Programming API', 'Enables REST API access to this catalog.']]
 }];
 const EMAIL_TEMPLATES = exports.EMAIL_TEMPLATES = [['Administrative notification when assets have been published', 'admintemplate.html'], ['Confirmation email sent to user after assets have been successfully shared', 'usertemplate.html'], ['Email sent when a user shares an asset', 'sharetemplate.html'], ['Email sent when assets are added or removed from a collection', 'collection-count-modified.html'], ['Email sent when assets are approved', 'collection-assets-approved.html'], ['Email sent when assets are rejected', 'collection-assets-rejected.html'], ['Email sent when a user is added to a collection', 'collection-add-new-follower.html'], ['Asset renewal notification', 'assetrenew.html']];
-const CATALOG_PARAMETERS = exports.CATALOG_PARAMETERS = [['Application site title', 'sitetitle', 'Plenix Library'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN prefix', 'cdn_prefix', '—'], ['AWS bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'], ['AI: Ollama Server', 'ollama-url', 'https://ollama.example.com'], ['AI: Translate Server', 'ai_translate_server', 'http://translate.example.com:48991'], ['AI: Vectorizer Server', 'ai_vectorizer_server', 'http://vectorizer.example.com:48981'], ['Face: Faceprofile Server', 'faceprofileserver', '—'], ['Catalog Asset Edit Groups', 'catalogasseteditgroups', 'administrators users'], ['Admin Catalog Asset View Groups', 'catalogassetviewgroups', 'administrators']];
+
+// [label, key, value, 'text' when the value is words (a title), not a technical value in the data font]
+const CATALOG_PARAMETERS = exports.CATALOG_PARAMETERS = [['Application site title', 'sitetitle', 'Plenix Library', 'text'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN prefix', 'cdn_prefix', '—'], ['AWS bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'], ['AI: Ollama Server', 'ollama-url', 'https://ollama.example.com'], ['AI: Translate Server', 'ai_translate_server', 'http://translate.example.com:48991'], ['AI: Vectorizer Server', 'ai_vectorizer_server', 'http://vectorizer.example.com:48981'], ['Face: Faceprofile Server', 'faceprofileserver', '—'], ['Catalog Asset Edit Groups', 'catalogasseteditgroups', 'administrators users'], ['Admin Catalog Asset View Groups', 'catalogassetviewgroups', 'administrators']];
 const CATALOG_TOTAL = exports.CATALOG_TOTAL = 'roughly 130';
 const SERVER_STATUS = exports.SERVER_STATUS = [['Node ID', 'plenix003'], ['Cluster ID', 'plenix-cluster'], ['Catalog ID', 'finder/catalog']];
 const VERSIONS = exports.VERSIONS = [['Plenix Server', '11.2218'], ['Plenix', '11.375'], ['Elasticsearch (Lucene)', '5.5.4'], ['Groovy', '2.4.11'], ['Velocity Engine', '2.3'], ['Apache PDFBox', '2.0.6']];
@@ -1668,13 +1670,13 @@ function CatalogParameters({
     value: q,
     onChange: setQ,
     label: "Search catalog settings"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList, null, rows.map(([label, id, value]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList.Item, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList, null, rows.map(([label, id, value, kind]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList.Item, {
     key: id,
     label: label,
     description: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
       variant: "data"
     }, id),
-    data: true
+    data: kind !== 'text'
   }, value))), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings')), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActionBar, {
     label: "Form actions"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {

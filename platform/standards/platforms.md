@@ -25,7 +25,7 @@ Every Plenix screen is made from five layers. Each layer answers one question an
 
 | Layer | Question | Values | Owns |
 |---|---|---|---|
-| **Theme** | What does Plenix look like? | Default, and every theme added to Plenix | Color roles, typeface (DM Sans; DM Mono for code), weights, radius, lines, motion, the focus color |
+| **Theme** | What does Plenix look like? | Default, and every theme added to Plenix | Color roles, typeface (DM Sans; DM Mono for code and technical values), weights, radius, lines, motion, the focus color |
 | **Platform** | Whose rules apply? | `web` · `ios` · `android` | Sizes, touch targets, spacing between targets, controls, navigation and back behavior, type scaling, platform accessibility features |
 | **Input** | Which input can the person use? | `pointer` · `touch` · keyboard · stylus, in any combination | The target floor, hover behavior, gestures, keyboard focus |
 | **Window** | How much room? | Narrow · Medium · Wide | Panes, the form of top-level navigation, reflow |
@@ -175,8 +175,30 @@ On the web, the size label of the main region (`data-plx-main-size`) reads `narr
 
 ### 3.4 Type
 
-Plenix uses DM Sans on every platform (DM Mono for code and technical values outside tables). Text sizes follow the
-person's text-size setting.
+Plenix uses DM Sans on every platform, with DM Mono for code and technical values. Text sizes follow the person's
+text-size setting.
+
+**Typefaces by kind** (a Plenix rule). DM Sans for all interface text:
+body, headings, buttons, labels, menus, names, descriptions, statuses and what people type. DM Mono only where fixed
+width helps, decided by the kind of the value, not by the element:
+
+- **Code** (the code role, `--plx-sys-font-code`): code, token names, hex values, logs.
+- **Technical values** (the data role, `--plx-sys-font-data`): IDs, file names and paths, versions, dates and times,
+  sizes, counts, durations, percentages shown as measured values, coordinates.
+
+The rule holds everywhere, table cells and property-list values included; names, descriptions and statuses beside a
+technical value stay DM Sans. The data role is the only way to get DM Mono outside code, and a component chooses it by
+the value's kind: a DataTable or Table column of kind `data` (`["name", "data"]` for a row named by its file name), a
+PropertyList item marked `data`, Text variant `data`, Kbd and code. No component sets a font family outside its tokens.
+DM Mono always takes its neighbors' size and line height: the table's size in a table, the value size in a property
+list, the size of the text around it inside a sentence or a line of facts (on its own, the secondary size). So DM Mono
+and DM Sans in one row share a baseline (within 0.5px, measured with the fonts loaded). On iOS and Android the data role
+uses the platform's DM Mono: `Plenix.Font.mono` (SwiftUI), `PlenixFonts.MONO` (Compose, `R.font.dm_mono`).
+
+Checks: `tests/typography.test.js` (every app page and a sample of the design system, light and dark: the data role is
+DM Mono, DM Mono is never prose, a technical value on its own is DM Mono, and Mono and Sans in a row share a baseline),
+`tests/data-table.test.js` (data columns DM Mono at the table's size, other cells DM Sans) and the native check (the
+data role uses DM Mono in its code).
 
 | Platform | Scales with | Default body | Minimum | Source |
 |---|---|---|---|---|
@@ -196,7 +218,7 @@ Each Plenix text role maps to one iOS text style and one Material type role:
 | `secondary` (12, muted) | Footnote 13 / 18 | Body medium 14 / 20 |
 | `caption` (11, subtle) | Caption 1 12 / 16 | Body small 12 / 16 |
 | `eyebrow` (11, bold, uppercase) | Caption 1 12 / 16, semibold | Label small 11 / 16 |
-| `data` (11, DM Mono) | Footnote 13 / 18, DM Mono | Body small 12 / 16, DM Mono |
+| `data` (12, DM Mono; inside text, that text's size) | Footnote 13 / 18, DM Mono | Body small 12 / 16, DM Mono |
 
 Sources: Apple HIG › Typography (Dynamic Type sizes at Large); Material 3 `md.sys.typescale`. The pairing of each
 Plenix role with a style is a Plenix rule.

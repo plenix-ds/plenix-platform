@@ -273,8 +273,8 @@ function CatalogParameters({ act }) {
       <SettingsSection card actions={null}>
         <Inline wrap className="plx-u-gap-cluster-sm plx-u-mb-stack-md"><Search value={q} onChange={setQ} label="Search catalog settings" /></Inline>
         <PropertyList>
-          {rows.map(([label, id, value]) => (
-            <PropertyList.Item key={id} label={label} description={<Text variant="data">{id}</Text>} data>{value}</PropertyList.Item>
+          {rows.map(([label, id, value, kind]) => (
+            <PropertyList.Item key={id} label={label} description={<Text variant="data">{id}</Text>} data={kind !== 'text'}>{value}</PropertyList.Item>
           ))}
         </PropertyList>
         <CountNote>{'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings'}</CountNote>

@@ -36,9 +36,12 @@
 .plx-table .tabulator .tabulator-row .tabulator-cell.plx-table__cell--row-label+.tabulator-cell:not(.plx-table__cell--row-label)::before,
 .plx-table .tabulator .tabulator-header .tabulator-col.plx-table__cell--row-label+.tabulator-col:not(.plx-table__cell--row-label)::before{content:none;}
 .plx-table .tabulator .tabulator-placeholder .tabulator-placeholder-contents{color:var(--plx-comp-table-header-text);font-size:var(--plx-comp-table-placeholder-font-size);font-weight:var(--plx-comp-table-placeholder-font-weight);}
-/* one typography in a table (owner, batch 247): text placed in a cell (Text in any variant, code) takes the cell's font and
-   size; its color and weight stay (a link stays a link, strong stays strong) */
-.plx-table .tabulator-cell .plx-text,.plx-table .tabulator-cell code,.plx-table .tabulator-cell .plx-list,.plx-table .tabulator-cell .plx-list__text,.plx-table .tabulator-cell .plx-list__item{font-family:inherit;font-size:inherit;}
+/* one size in a table (owner, batch 247; typefaces by kind, owner 2026-10-11): text placed in a cell (Text in any variant,
+   code) takes the cell's size, so every text in a row shares one baseline; it takes the cell's typeface too (DM Mono in a
+   column of kind "data", DM Sans elsewhere), except code and Text "data", which are technical values and keep the data
+   font wherever they are. Its color and weight stay (a link stays a link, strong stays strong) */
+.plx-table .tabulator-cell .plx-text,.plx-table .tabulator-cell code,.plx-table .tabulator-cell .plx-list,.plx-table .tabulator-cell .plx-list__text,.plx-table .tabulator-cell .plx-list__item{font-size:inherit;}
+.plx-table .tabulator-cell .plx-text:not(.plx-text--data),.plx-table .tabulator-cell .plx-list,.plx-table .tabulator-cell .plx-list__text,.plx-table .tabulator-cell .plx-list__item{font-family:inherit;}
 /* a row label is the row's name: the same medium weight as a name column, also for links and text inside it (owner, batch 248) */
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--row-label{font-weight:var(--plx-comp-table-name-font-weight);}
 .plx-table .tabulator-row .tabulator-cell.plx-table__cell--row-label .plx-text{font-weight:inherit;}

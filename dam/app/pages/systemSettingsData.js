@@ -82,8 +82,9 @@ export const EMAIL_TEMPLATES = [
   ['Asset renewal notification', 'assetrenew.html'],
 ];
 
+// [label, key, value, 'text' when the value is words (a title), not a technical value in the data font]
 export const CATALOG_PARAMETERS = [
-  ['Application site title', 'sitetitle', 'Plenix Library'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN prefix', 'cdn_prefix', '—'],
+  ['Application site title', 'sitetitle', 'Plenix Library', 'text'], ['Allow login by Email Address', 'allowloginbyemail', 'true'], ['CDN prefix', 'cdn_prefix', '—'],
   ['AWS bucket', 'awsbucket', '—'], ['AI: Enable Content Creation', 'ai_create_enabled', 'true'], ['AI: OpenAI Model (AI Chat)', 'gpt-model', 'gpt-4o'],
   ['AI: Ollama Server', 'ollama-url', 'https://ollama.example.com'], ['AI: Translate Server', 'ai_translate_server', 'http://translate.example.com:48991'],
   ['AI: Vectorizer Server', 'ai_vectorizer_server', 'http://vectorizer.example.com:48981'], ['Face: Faceprofile Server', 'faceprofileserver', '—'],

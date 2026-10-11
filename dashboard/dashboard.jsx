@@ -31,7 +31,7 @@ export function EmailsWidget({ handle,  onViewAll, prefs }) {
 
 export function CalendarWidget({ handle,  onViewAll }) {
   return (
-    <Panel icon="calendar" title="Calendar" description="Mar 5" actions={<Inline gap="xs">{allLink('View all calendar', onViewAll)}{handle}</Inline>}>
+    <Panel icon="calendar" title="Calendar" description={<Text variant="data">Mar 5</Text>} actions={<Inline gap="xs">{allLink('View all calendar', onViewAll)}{handle}</Inline>}>
       <Stack gap="xs">{EVENTS.map((ev) => <EventChip key={ev.id} title={ev.title} time={ev.time} color={ev.color} />)}</Stack>
     </Panel>
   );
@@ -96,7 +96,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
   return (
     <Panel icon="circle-check" title="To do" actions={<Inline gap="xs"><Badge tone="warning" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{pending.map((t) => (
-        <Inline key={t.id} gap="sm" justify="between">
+        <Inline key={t.id} gap="sm" justify="between" align="baseline">
           <Inline gap="xs">{showPri ? <PriDot pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
           {showDue ? <Text variant="data">{t.due}</Text> : null}
         </Inline>

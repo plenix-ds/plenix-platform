@@ -25,7 +25,7 @@ export function FilesScreen({ screen }) {
           <Inline justify="end"><Button variant="primary" icon={<Icon name="plus" />}>Upload</Button></Inline>
           <DataTable label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }}
             on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[
-              { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-320px' },
+              { title: 'Name', field: 'name', kind: ['name', 'data'], filter: true, width: '--plx-ref-size-320px' },
               { title: 'Type', field: 't', kind: 'data', filter: 'list' },
               { title: 'Size', field: 's', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },
               { title: 'Modified', field: 'd', kind: 'data' },
@@ -35,7 +35,7 @@ export function FilesScreen({ screen }) {
       {file ? (
         <SidePanel title={file.name} icon="doc-text" onOpenChange={(o) => { if (!o) setSel(null); }}>
           <Stack gap="md">
-            <Inline gap="sm" wrap><Tag>{file.t}</Tag><Text variant="data">{file.s}</Text><Text variant="secondary">{file.d}</Text></Inline>
+            <Inline gap="sm" wrap><Tag>{file.t}</Tag><Text variant="data">{file.s}</Text><Text variant="data">{file.d}</Text></Inline>
             <ClassificationWidget value={meta[sel]} onChange={(m) => setMeta((prev) => ({ ...prev, [sel]: m }))} />
           </Stack>
         </SidePanel>

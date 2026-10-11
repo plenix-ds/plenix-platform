@@ -7,7 +7,9 @@
        | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
        | "eyebrow" | "danger" | "link" | "title".
        body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, 11px (IDs, sizes, dates, paths). label: semibold 12px. strong: semibold, the current size.
+       data: the data font, DM Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
        heading: a group's title inside a page or dialog, semibold 13px.
        eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
        danger: the danger color (a required marker). link: the link color, normal weight (an a element in running text).

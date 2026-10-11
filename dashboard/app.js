@@ -1665,7 +1665,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     columns: [{
       title: "Name",
       field: "name",
-      kind: "name"
+      kind: ["name", "data"]
     }, {
       title: "Type",
       field: "t",
@@ -1701,7 +1701,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     }))
   }
 };
-// the dashboard home: everything, with the section each row comes from
+// the dashboard home: everything, with the section each row comes from (a file is named by its file name: the data font)
 const ALL = {
   label: "Everything",
   noun: "result",
@@ -1713,7 +1713,10 @@ const ALL = {
   columns: [{
     title: "Name",
     field: "name",
-    kind: "name"
+    kind: "name",
+    render: r => r.app === "files" ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, r.name) : r.name
   }, {
     title: "Section",
     field: "section"
@@ -2296,7 +2299,9 @@ function CalendarWidget({
   return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
     icon: "calendar",
     title: "Calendar",
-    description: "Mar 5",
+    description: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, "Mar 5"),
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
     }, allLink('View all calendar', onViewAll), handle)
@@ -2438,7 +2443,8 @@ function TasksWidget({
   }, pending.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
     key: t.id,
     gap: "sm",
-    justify: "between"
+    justify: "between",
+    align: "baseline"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
     gap: "xs"
   }, showPri ? /*#__PURE__*/React.createElement(_shared.PriDot, {
@@ -3019,6 +3025,7 @@ function ProjectContent({
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, f.t), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data",
       truncate: true
     }, f.name)), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
@@ -3077,7 +3084,9 @@ function ProjectContent({
   }, pNotes.map((n, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
     key: i,
     title: n.title,
-    meta: n.date,
+    meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, n.date),
     accent: proj.color,
     onOpen: () => {}
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
@@ -3115,7 +3124,7 @@ function ProjectContent({
     columns: [{
       title: 'Name',
       field: 'name',
-      kind: 'name',
+      kind: ['name', 'data'],
       filter: true,
       width: '--plx-ref-size-320px'
     }, {

@@ -10,8 +10,9 @@
    Props:
      label: names the table for screen readers (required)
      data: the rows: plain objects with an id (or name the field with index)
-     columns: Tabulator column definitions (title, field, hozAlign, width…) with the Plenix kinds: "name", "data", "wrap",
-       "center", "icon"; render(row) for React content; rowLabel for the row header. Interactive options are ignored.
+     columns: Tabulator column definitions (title, field, hozAlign, width…) with the Plenix kinds: "name", "data" (technical
+       values: the data font, DM Mono, at the table's size), "wrap", "center", "icon", or two as a list
+       (["name", "data"]); render(row) for React content; rowLabel for the row header. Interactive options are ignored.
      index: the field that identifies a row; default "id"
      empty: shown when there are no rows; default "Nothing to show"
      height: a fixed height (a size token) for a long table; its rows scroll inside it

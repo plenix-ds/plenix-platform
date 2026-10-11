@@ -1665,7 +1665,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     columns: [{
       title: "Name",
       field: "name",
-      kind: "name"
+      kind: ["name", "data"]
     }, {
       title: "Type",
       field: "t",
@@ -1701,7 +1701,7 @@ const FIND_SOURCES = exports.FIND_SOURCES = {
     }))
   }
 };
-// the dashboard home: everything, with the section each row comes from
+// the dashboard home: everything, with the section each row comes from (a file is named by its file name: the data font)
 const ALL = {
   label: "Everything",
   noun: "result",
@@ -1713,7 +1713,10 @@ const ALL = {
   columns: [{
     title: "Name",
     field: "name",
-    kind: "name"
+    kind: "name",
+    render: r => r.app === "files" ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, r.name) : r.name
   }, {
     title: "Section",
     field: "section"
@@ -2506,7 +2509,7 @@ function FilesScreen({
     columns: [{
       title: 'Name',
       field: 'name',
-      kind: 'name',
+      kind: ['name', 'data'],
       filter: true,
       width: '--plx-ref-size-320px'
     }, {
@@ -2539,7 +2542,7 @@ function FilesScreen({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, file.t), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "data"
   }, file.s), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "secondary"
+    variant: "data"
   }, file.d)), /*#__PURE__*/React.createElement(_classification.ClassificationWidget, {
     value: meta[sel],
     onChange: m => setMeta(prev => ({

@@ -2,7 +2,7 @@
    the main work area: inside an application (Notes, Files…) it searches only that application, with that application's
    filters; on the dashboard home it searches everything, with a Section filter. Each source says what its rows are, which
    text is searched, its filters and its result columns; FindWorkspace draws them with the Platform SearchWorkspace. */
-import { SearchWorkspace, DataTable, Tag, Badge, Button } from 'plenix-platform';
+import { SearchWorkspace, DataTable, Tag, Badge, Button, Text } from 'plenix-platform';
 import { ALL_BOOKMARKS, ALL_FILES, ALL_NOTES, ALL_TASKS, CAL_EVENTS, CONTACTS, PROJECTS, THREADS } from './shared.jsx';
 const {useState}=React;
 
@@ -33,12 +33,12 @@ export const FIND_SOURCES={
     columns:[{title:"Bookmark",field:"name",kind:"name"},{title:"Site",field:"url",kind:"data"},{title:"Collection",field:"col"},{title:"Date",field:"date",kind:"data"}],
     rows:()=>ALL_BOOKMARKS.map(b=>({key:"b"+b.id,name:b.title,sub:b.url,cells:{url:b.url,col:b.col,date:b.date},facets:{col:b.col,tags:b.tags}}))},
   files:{label:"Files",noun:"file",filters:[{id:"t",label:"Type",multiple:true},{id:"folder",label:"Folder",multiple:true}],
-    columns:[{title:"Name",field:"name",kind:"name"},{title:"Type",field:"t",kind:"data"},{title:"Size",field:"s",kind:"data",hozAlign:"right",headerHozAlign:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
+    columns:[{title:"Name",field:"name",kind:["name","data"]},{title:"Type",field:"t",kind:"data"},{title:"Size",field:"s",kind:"data",hozAlign:"right",headerHozAlign:"right"},{title:"Folder",field:"folder"},{title:"Modified",field:"d",kind:"data"}],
     rows:()=>ALL_FILES.map((f,i)=>({key:"f"+i,name:f.name,sub:f.folder,cells:{t:f.t,s:f.s,folder:f.folder,d:f.d},facets:{t:f.t,folder:f.folder}}))},
 };
-// the dashboard home: everything, with the section each row comes from
+// the dashboard home: everything, with the section each row comes from (a file is named by its file name: the data font)
 const ALL={label:"Everything",noun:"result",filters:[{id:"section",label:"Section",multiple:true}],
-  columns:[{title:"Name",field:"name",kind:"name"},{title:"Section",field:"section"},{title:"Details",field:"sub"}],
+  columns:[{title:"Name",field:"name",kind:"name",render:r=>r.app==="files"?<Text variant="data">{r.name}</Text>:r.name},{title:"Section",field:"section"},{title:"Details",field:"sub"}],
   rows:()=>[].concat.apply([],Object.keys(FIND_SOURCES).map(id=>FIND_SOURCES[id].rows().map(r=>({...r,key:id+":"+r.key,app:id,cells:{...r.cells,section:FIND_SOURCES[id].label,sub:r.sub},facets:{...r.facets,section:FIND_SOURCES[id].label}}))))};
 
 // the rows of a source whose text holds every word of the query (the header's quick results and the workspace)

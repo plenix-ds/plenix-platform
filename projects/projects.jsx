@@ -137,7 +137,7 @@ export function ProjectContent({ proj, panel }) {
             <Stack gap="md">
               <Panel icon="alert" title="Overdue">{overdue.length ? <Stack gap="sm">{overdue.slice(0, 4).map(taskRow)}</Stack> : <Text variant="secondary">No overdue tasks.</Text>}</Panel>
               <Panel icon="folder" title="Files">{pFiles.length ? <Stack gap="sm">{pFiles.slice(0, 4).map((f, i) => (
-                <Inline key={i} gap="sm" justify="between"><Inline gap="sm"><Tag>{f.t}</Tag><Text truncate>{f.name}</Text></Inline><Text variant="data">{f.d}</Text></Inline>
+                <Inline key={i} gap="sm" justify="between"><Inline gap="sm"><Tag>{f.t}</Tag><Text variant="data" truncate>{f.name}</Text></Inline><Text variant="data">{f.d}</Text></Inline>
               ))}</Stack> : <Text variant="secondary">No files attached.</Text>}</Panel>
             </Stack>
           </Columns>
@@ -164,7 +164,7 @@ export function ProjectContent({ proj, panel }) {
         <EntityHeader title="Notes" media={{ icon: 'doc-text', hue: proj.color }} context={proj.name} facts={[pNotes.length + ' notes']} actions={[{ icon: 'share', label: 'Share' }]} />
         {pNotes.length ? (
           <ContentGrid size="lg" label="Notes">{pNotes.map((n, i) => (
-            <Card key={i} title={n.title} meta={n.date} accent={proj.color} onOpen={() => {}}>
+            <Card key={i} title={n.title} meta={<Text variant="data">{n.date}</Text>} accent={proj.color} onOpen={() => {}}>
               <Text variant="secondary">{n.preview}</Text>
               <TagList label="Tags">{n.tags.map((t) => <Tag key={t}>{t}</Tag>)}</TagList>
             </Card>
@@ -180,7 +180,7 @@ export function ProjectContent({ proj, panel }) {
       <Stack gap="md">
         <EntityHeader title="Files" media={{ icon: 'folder', hue: proj.color }} context={proj.name} facts={[pFiles.length + ' files']} actions={[{ icon: 'share', label: 'Share' }]} />
         <DataTable label="Files" data={pFiles.map((f, i) => ({ ...f, id: i }))} empty="No files attached. Connect OneDrive in Settings to link files." columns={[
-          { title: 'Name', field: 'name', kind: 'name', filter: true, width: '--plx-ref-size-320px' },
+          { title: 'Name', field: 'name', kind: ['name', 'data'], filter: true, width: '--plx-ref-size-320px' },
           { title: 'Type', field: 't', kind: 'data', filter: 'list' },
           { title: 'Size', field: 's', kind: 'data', hozAlign: 'right', headerHozAlign: 'right' },
           { title: 'Modified', field: 'd', kind: 'data' },

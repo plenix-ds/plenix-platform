@@ -33,7 +33,7 @@ export function TasksScreen({ screen }) {
       {task ? (
         <SidePanel title={task.title} icon="circle-info" onOpenChange={(o) => { if (!o) setSel(null); }}>
           <Stack gap="md">
-            <Text variant="secondary">Due {task.due} · {task.proj}</Text>
+            <Text variant="secondary">Due <Text variant="data">{task.due}</Text> · {task.proj}</Text>
             <ClassificationWidget value={meta[task.id]} onChange={(m) => setMeta((prev) => ({ ...prev, [task.id]: m }))} />
           </Stack>
         </SidePanel>

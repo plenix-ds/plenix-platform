@@ -954,7 +954,7 @@ class PlenixIos {
   static const double textEyebrowLineHeight = 16; // platform only; rule: Typography: Dynamic Type Caption 1 line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
   static const String textEyebrowTextStyle = "Caption 1"; // platform only; The style it scales with.
   static const double textEyebrowWeight = 600; // web .plx-text--eyebrow --plx-sys-font-weight-bold; rule: Typography: Dynamic Type Caption 1 weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
-  static const double textDataSize = 13; // web .plx-text--data --plx-ref-font-size-11; rule: Typography: Dynamic Type Footnote size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
+  static const double textDataSize = 13; // web .plx-text--data --plx-ref-font-size-12; rule: Typography: Dynamic Type Footnote size at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
   static const double textDataLineHeight = 18; // platform only; rule: Typography: Dynamic Type Footnote line height at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
   static const String textDataTextStyle = "Footnote"; // platform only; The style it scales with.
   static const double textDataWeight = 400; // web .plx-text--data; rule: Typography: Dynamic Type Footnote weight at Large (https://developer.apple.com/design/human-interface-guidelines/typography)
@@ -1025,7 +1025,7 @@ class PlenixAndroid {
   static const double textEyebrowLineHeight = 16; // platform only; token: md.sys.typescale.label-small.line-height (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
   static const String textEyebrowTypeRole = "Label small"; // platform only; The style it scales with.
   static const double textEyebrowWeight = 700; // web .plx-text--eyebrow --plx-sys-font-weight-bold; token: md.sys.typescale.label-small.weight (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
-  static const double textDataSize = 12; // web .plx-text--data --plx-ref-font-size-11; token: md.sys.typescale.body-small.size (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
+  static const double textDataSize = 12; // web .plx-text--data --plx-ref-font-size-12; token: md.sys.typescale.body-small.size (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
   static const double textDataLineHeight = 16; // platform only; token: md.sys.typescale.body-small.line-height (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)
   static const String textDataTypeRole = "Body small"; // platform only; The style it scales with.
   static const double textDataWeight = 400; // web .plx-text--data; token: md.sys.typescale.body-small.weight (https://github.com/material-components/material-web/tree/main/tokens/versions/latest/sass/_md-sys-typescale.scss)

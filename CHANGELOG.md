@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.40] - 2026-10-11
+
+### Changed
+- Typography follows the owner's rule everywhere, tables and property lists included: DM Sans for all interface text;
+  DM Mono only for code (code, token names, hex values, logs) and technical values (IDs, file names and paths,
+  versions, dates and times, sizes, counts, durations, measured percentages, coordinates). The data role is the only
+  way to get Mono. It always takes its neighbors' size and line height, so Mono and Sans share a baseline (measured:
+  at most 0.41px apart). Data cells in tables, data values in property lists, file names, dates and times across the
+  apps now follow it.
+- DataTable and Table columns can have two kinds (["name", "data"]) for a row named by its file name.
+### Added
+- tests/typography.test.js on every app page and 66 design-system pages, light and dark. It fails the build when Mono
+  holds prose, data is not Mono, a date, size, version, file name or ID stands outside Mono, or the two typefaces
+  miss a shared baseline.
+- The table test requires Mono for data cells. The native checker requires the data role to use DM Mono on iOS and
+  Android.
+
 ## [0.31.39] - 2026-10-11
 
 ### Added

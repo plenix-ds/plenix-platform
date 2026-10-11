@@ -1218,7 +1218,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
        | "eyebrow" | "danger" | "link" | "title".
        body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, 11px (IDs, sizes, dates, paths). label: semibold 12px. strong: semibold, the current size.
+       data: the data font, DM Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
        heading: a group's title inside a page or dialog, semibold 13px.
        eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
        danger: the danger color (a required marker). link: the link color, normal weight (an a element in running text).
@@ -6259,10 +6261,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      data: the rows: plain objects, Tabulator's data format (children in _children with options.dataTree)
      columns: Tabulator column definitions (title, field, sorter, editor, hozAlign, frozen, headerSort…), in Tabulator's
        own terms, with these Plenix additions:
-     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: the same DM Sans, size and color as the row, so every cell reads alike; batches 245–246) |
+     columns[].kind: "name" (the row's name, medium weight) | "data" (technical values: IDs, file names, paths, versions,
+       dates and times, sizes, counts, durations: the data font, DM Mono, at the row's own size and line height, so it shares
+       the row's baseline; owner, 2026-10-11) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
-       selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does)
+       selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does).
+       Two kinds combine as a list: ["name", "data"] (a row named by a file name: medium weight in the data font),
+       ["wrap", "data"] (a long path)
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
@@ -6851,7 +6857,7 @@ function TableEngine(props) {
       ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach(k => {
         delete d[k];
       });
-      d.cssClass = (0, _cx.cx)(c.cssClass, kind && B + '__cell--' + kind, (rowLabel || labelAt > i) && B + '__cell--row-label', w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle', keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
+      d.cssClass = (0, _cx.cx)(c.cssClass, kind && [].concat(kind).map(k => B + '__cell--' + k).join(' '), (rowLabel || labelAt > i) && B + '__cell--row-label', w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle', keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
       if (kind === 'icon') {
@@ -7391,8 +7397,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      label: names the table for screen readers (required)
      data: the rows: plain objects with an id (or name the field with index)
-     columns: Tabulator column definitions (title, field, hozAlign, width…) with the Plenix kinds: "name", "data", "wrap",
-       "center", "icon"; render(row) for React content; rowLabel for the row header. Interactive options are ignored.
+     columns: Tabulator column definitions (title, field, hozAlign, width…) with the Plenix kinds: "name", "data" (technical
+       values: the data font, DM Mono, at the table's size), "wrap", "center", "icon", or two as a list
+       (["name", "data"]); render(row) for React content; rowLabel for the row header. Interactive options are ignored.
      index: the field that identifies a row; default "id"
      empty: shown when there are no rows; default "Nothing to show"
      height: a fixed height (a size token) for a long table; its rows scroll inside it
@@ -9651,8 +9658,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PropertyList.Item.label: the label
      PropertyList.Item.htmlFor: the id of a control in the item, so the label names it
      PropertyList.Item.description: a line under the label
-     PropertyList.Item.data: the value is a technical value: DM Sans at the label's size with equal-width digits (batch 294;
-       DM Mono read 30% wider than its label); default false
+     PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, DM Mono,
+       at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
@@ -9807,7 +9814,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      header study, docs/page-header-study.html).
    Usage:
      <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'warning', label: 'Reconnect due' }}
-       title="Maya Chen" facts={['Creative Director', 'Apex Co', 'Last message 10:24 AM']}
+       title="Maya Chen" facts={['Creative Director', 'Apex Co', <>Last message <Text variant="data">10:24 AM</Text></>]}
        actions={[{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }]} />
      <EntityHeader media={{ icon: 'briefcase', hue: 'blue' }} title="AI Writing Tools" description="Evaluating AI writing assistants" />
    Props:
@@ -9823,7 +9830,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
      (with neither actions nor moreActions there is no action area, not even ⋯: a documentation page, an overview)
      live: the live state, the first fact, with a status dot: { tone, label }
-     facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …
+     facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …;
+       a technical value in a fact (a date, a time, a file name) is Text variant "data", at the facts' size
      description: a sentence instead of facts (never both)
      headingLevel: the title's heading level (default 1)
      className: more classes on the header

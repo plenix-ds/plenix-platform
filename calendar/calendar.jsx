@@ -87,7 +87,7 @@ export function CalendarScreen({ screen }) {
             <Stack gap="sm">
               <Text variant="eyebrow">March {selDay}</Text>
               {evFor(selDay).map((e) => (
-                <Card key={e.id} title={e.title} meta={e.time} accent={e.color} selected={selEv === e.id} onOpen={() => setSelEv(selEv === e.id ? null : e.id)}
+                <Card key={e.id} title={e.title} meta={<Text variant="data">{e.time}</Text>} accent={e.color} selected={selEv === e.id} onOpen={() => setSelEv(selEv === e.id ? null : e.id)}
                   actions={<Tag>{calName(e.cal)}</Tag>}>
                   {selEv === e.id ? <ClassificationWidget value={evMeta[e.id]} onChange={(m) => setEvMeta((p) => ({ ...p, [e.id]: m }))} /> : null}
                 </Card>
