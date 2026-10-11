@@ -48,7 +48,7 @@ every variant with each value's token and an Edit dialog, and its own page per v
 - [x] Badge (0.17.0); Counter, Status dot, Notice, Spinner, Progress bar (0.18.0): 37 of 192 variants
 - [x] Overlays: Dialog, Confirmation dialog, Side drawer, Toast (batch 316, 0.31.15)
 - [x] Navigation: Tabs, Application header, Navigation rail, Product switcher, Action menu (batch 318, 0.31.17)
-- [ ] Data display (Tag, Chip done in 0.25.2): Metric, Card, Media card, Interactive list, Activity stream, Radio tiles, Calendar view
+- [x] Data display, Forms, Content, Layout and the rest: all done (batch 333). Every component with variant cards has a lab and a page per variant (58 components).
 - [ ] Forms: Combobox, Search input, Color swatch, Drop zone, Rating
 - [ ] Content: Text, Heading, List, Code block, Keyboard hint, Avatar, Property list, Thumbnail, Icon
 - [ ] Layout: Stack, Divider, Columns, Responsive grid, Dashboard grid, Secondary pane, Inspector region, Record page

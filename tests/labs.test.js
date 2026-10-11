@@ -3,10 +3,12 @@
 // property its Edit dialog field names must take that marker. A field whose token does not move its property fails: the
 // Edit dialog would edit the wrong token. Button is checked by tests/visual.test.js (its lab is too large to run here).
 //   node tests/labs.test.js
+//   LABS_ONLY=tabs,toast LABS_PORT=8821 node tests/labs.test.js   only those labs, on another port (several runs side by side)
 const fs = require('fs');
 const path = require('path');
 const { serve, launch, sleep } = require('./lib.js');
-const PORT = 8811;
+const PORT = +process.env.LABS_PORT || 8811;
+const ONLY = process.env.LABS_ONLY ? process.env.LABS_ONLY.split(',') : null;
 
 if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'))) {
   console.log('NOTE: platform/design-system is not checked out; the labs are skipped');
@@ -19,7 +21,7 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   await page.goto('http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/index.html', { waitUntil: 'networkidle0' }); await sleep(1500);
-  const ids = await page.evaluate(() => Object.keys(window.DS.labs || {}).filter((id) => id !== 'button'));
+  const ids = (await page.evaluate(() => Object.keys(window.DS.labs || {}).filter((id) => id !== 'button'))).filter((id) => !ONLY || ONLY.includes(id));
   const results = [];
   for (const id of ids) {
     const r = await page.evaluate((id) => {

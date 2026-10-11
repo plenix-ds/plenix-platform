@@ -8846,6 +8846,46 @@
     "widget-grid-handle-focus-outline-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
+    },
+    "icon-size-xs": {
+      "$value": "{plx-sys.icon-size-xs}",
+      "$type": "dimension",
+      "$description": "The xs icon size (Icon size=\"xs\")"
+    },
+    "icon-size-sm": {
+      "$value": "{plx-sys.icon-size-sm}",
+      "$type": "dimension",
+      "$description": "The sm icon size (Icon size=\"sm\")"
+    },
+    "icon-size-md": {
+      "$value": "{plx-sys.icon-size-md}",
+      "$type": "dimension",
+      "$description": "The md icon size (Icon size=\"md\")"
+    },
+    "icon-size-lg": {
+      "$value": "{plx-sys.icon-size-lg}",
+      "$type": "dimension",
+      "$description": "The lg icon size (Icon size=\"lg\")"
+    },
+    "icon-size-xl": {
+      "$value": "{plx-sys.icon-size-xl}",
+      "$type": "dimension",
+      "$description": "The xl icon size (Icon size=\"xl\")"
+    },
+    "list-icon-size": {
+      "$value": "{plx-sys.icon-size-sm}",
+      "$type": "dimension",
+      "$description": "The icon beside a list item"
+    },
+    "avatar-background": {
+      "$value": "{plx-sys.avatar-background}",
+      "$type": "color",
+      "$description": "An avatar in the theme colors: its fill"
+    },
+    "avatar-content": {
+      "$value": "{plx-sys.avatar-content}",
+      "$type": "color",
+      "$description": "An avatar in the theme colors: its initials"
     }
   }
 }

@@ -2199,6 +2199,14 @@
   --plx-comp-widget-grid-handle-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-widget-grid-handle-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-widget-grid-handle-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-icon-size-xs: var(--plx-sys-icon-size-xs);
+  --plx-comp-icon-size-sm: var(--plx-sys-icon-size-sm);
+  --plx-comp-icon-size-md: var(--plx-sys-icon-size-md);
+  --plx-comp-icon-size-lg: var(--plx-sys-icon-size-lg);
+  --plx-comp-icon-size-xl: var(--plx-sys-icon-size-xl);
+  --plx-comp-list-icon-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-avatar-background: var(--plx-sys-avatar-background);
+  --plx-comp-avatar-content: var(--plx-sys-avatar-content);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-button-icon-label-gap: var(--plx-ref-space-4px);

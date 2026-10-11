@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.31] - 2026-10-11
+
+### Added
+- Every variant is its own page, as the owner asked: the last 33 components get the Button treatment. Data display:
+  metric, interactive list, activity stream, card, selectable card, calendar view and media card. Forms and more:
+  color swatch, drop zone, rating, combobox, search input, empty state, preview, chat and bulk action bar. Content:
+  text, heading, list, code block, keyboard hint, avatar, property list, thumbnail and icon. Layout: stack, divider,
+  dashboard grid, responsive grid, columns, secondary pane, inspector region and record page. Each has an "All" lab
+  with every value's component token, and a page per variant: 125 new pages. All 58 components with variants are now
+  done, with none left. The lab test passes 57 of 57 labs and the pages test 946 of 946.
+- Icons, the list's icon and the avatar's theme colors read their own component tokens (icon-size-xs..xl,
+  list-icon-size, avatar-background, avatar-content; same values as before), so their labs edit component tokens.
+
+### Fixed
+- A variant page that names only a size, a state or content (Large metric, Large spinner) now opens the lab on it;
+  it showed the default before. (batch 333)
+
 ## [0.31.30] - 2026-10-11
 
 ### Added

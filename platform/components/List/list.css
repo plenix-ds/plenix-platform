@@ -1,7 +1,7 @@
 /* Plenix · List: rows of icon + text; the icon box is the line height (20px) so it sits on the first line on the 4px grid. */
 .plx-list{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-list-row-gap);}
 .plx-list__item{align-items:flex-start;color:var(--plx-comp-list-item-text);column-gap:var(--plx-comp-list-item-gap);display:flex;font-size:var(--plx-comp-list-item-font-size);line-height:var(--plx-comp-list-item-line-height);}
-.plx-list__icon{--plx-comp-icon-size:var(--plx-sys-icon-size-sm);align-items:center;block-size:var(--plx-comp-list-icon-height);display:inline-flex;flex-shrink:0;}
+.plx-list__icon{--plx-comp-icon-size:var(--plx-comp-list-icon-size);align-items:center;block-size:var(--plx-comp-list-icon-height);display:inline-flex;flex-shrink:0;}
 .plx-list__text{min-inline-size:0;}
 .plx-list__item--neutral .plx-list__icon{color:var(--plx-comp-list-item--neutral-icon-text);}
 .plx-list__item--success .plx-list__icon{color:var(--plx-comp-list-item--success-icon-text);}
