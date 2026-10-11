@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.26] - 2026-10-11
+
+### Changed
+- The iOS view is generated from the Apple Human Interface Guidelines' own index, as the owner asked ("ensure
+  everything is taken from" the HIG). It has all six groups and Components' eight groups, with every page in Apple's
+  order: 158 pages, including Designing for iPhone Duo and the pages for other Apple platforms, previously left out.
+  Plenix's own pages (how to build, token mapping, generated files, sources and levels, conformance) are a seventh
+  section, 07 Plenix for iOS.
+- Every HIG page shows its outline from the Guidelines: each section and subsection, linked to its place on Apple's
+  page (581 sections), and Apple's resources for it: related pages, developer documentation and videos. These are
+  names and links; Apple's guidance is read on Apple's site. The SwiftUI symbols, frameworks and Plenix Platforms
+  Standard parts stay on their pages.
+- A breadcrumb no longer shows an empty step for a page that sits directly under its section. (batch 327)
+
 ## [0.31.25] - 2026-10-10
 
 ### Added
