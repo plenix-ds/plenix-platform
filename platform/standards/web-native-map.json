@@ -1,0 +1,612 @@
+{
+  "$description": "Plenix web items mapped to their iOS (Apple HIG) and Android pages where no iOS guidance page names them (batch 332). Together with native-guidance.json (iOS page -> web and Android pages), every built web component, pattern, foundation, page structure and utility has an iOS and an Android counterpart. Keys: the web section|page; values: page keys in the iOS and Android sections. build-native-guidance.js checks every key exists and that every built web item is covered.",
+  "map": {
+    "foundations|Primitive / global tokens": {
+      "ios": [
+        "ios-plenix|Token mapping"
+      ],
+      "android": [
+        "android-foundations|Tokens",
+        "android-foundations|Token mapping"
+      ]
+    },
+    "foundations|Density": {
+      "ios": [
+        "ios-foundations|Layout"
+      ],
+      "android": [
+        "android-foundations|Five layers"
+      ]
+    },
+    "foundations|Border width": {
+      "ios": [
+        "ios-foundations|Materials"
+      ],
+      "android": [
+        "android-foundations|Borders"
+      ]
+    },
+    "foundations|Radius scale": {
+      "ios": [
+        "ios-foundations|Layout"
+      ],
+      "android": [
+        "android-foundations|Shape and radius"
+      ]
+    },
+    "foundations|Opacity": {
+      "ios": [
+        "ios-foundations|Materials"
+      ],
+      "android": [
+        "android-foundations|Elevation"
+      ]
+    },
+    "foundations|Device behavior": {
+      "ios": [
+        "ios-getting-started|Designing for iOS",
+        "ios-getting-started|Designing for iPadOS"
+      ],
+      "android": [
+        "android-foundations|Five layers",
+        "android-interaction|Touch targets"
+      ]
+    },
+    "layout|Stack": {
+      "ios": [
+        "ios-foundations|Layout"
+      ],
+      "android": [
+        "android-layout|Column, Row and Box"
+      ]
+    },
+    "layout|Divider": {
+      "ios": [
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-foundations|Borders"
+      ]
+    },
+    "layout|Dashboard grid": {
+      "ios": [
+        "ios-components|Collections"
+      ],
+      "android": [
+        "android-screen-structures|Dashboard"
+      ]
+    },
+    "layout|Responsive grid": {
+      "ios": [
+        "ios-components|Collections"
+      ],
+      "android": [
+        "android-layout|Lazy grids"
+      ]
+    },
+    "content|Heading": {
+      "ios": [
+        "ios-foundations|Typography"
+      ],
+      "android": [
+        "android-content|Headers"
+      ]
+    },
+    "content|Unordered list": {
+      "ios": [
+        "ios-components|Text views"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "content|Code block": {
+      "ios": [
+        "ios-components|Text views"
+      ],
+      "android": [
+        "android-content|Text roles"
+      ]
+    },
+    "content|Avatar": {
+      "ios": [
+        "ios-components|Image views"
+      ],
+      "android": [
+        "android-content|Avatar"
+      ]
+    },
+    "content|Property list": {
+      "ios": [
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-data-display|Details"
+      ]
+    },
+    "actions|Action panel": {
+      "ios": [
+        "ios-components|Toolbars"
+      ],
+      "android": [
+        "android-actions|Top app bar actions"
+      ]
+    },
+    "actions|Bulk action bar": {
+      "ios": [
+        "ios-components|Toolbars",
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-actions|Multiple selection"
+      ]
+    },
+    "forms|Fieldset": {
+      "ios": [
+        "ios-patterns|Entering data"
+      ],
+      "android": [
+        "android-forms|Form screen"
+      ]
+    },
+    "forms|Choice card": {
+      "ios": [
+        "ios-components|Toggles"
+      ],
+      "android": [
+        "android-forms|Radio group"
+      ]
+    },
+    "navigation|Product switcher": {
+      "ios": [
+        "ios-components|Sidebars"
+      ],
+      "android": [
+        "android-navigation|NavigationBar"
+      ]
+    },
+    "navigation|Account menu": {
+      "ios": [
+        "ios-patterns|Managing accounts"
+      ],
+      "android": [
+        "android-patterns|Sign-in and account"
+      ]
+    },
+    "navigation|Navigation menu": {
+      "ios": [
+        "ios-components|Menus"
+      ],
+      "android": [
+        "android-actions|Menu"
+      ]
+    },
+    "navigation|Filter bar": {
+      "ios": [
+        "ios-patterns|Searching",
+        "ios-components|Search fields"
+      ],
+      "android": [
+        "android-navigation|Search and filters"
+      ]
+    },
+    "data-display|Badge": {
+      "ios": [
+        "ios-components|Labels"
+      ],
+      "android": [
+        "android-content|Badge"
+      ]
+    },
+    "data-display|Chip": {
+      "ios": [
+        "ios-components|Toggles",
+        "ios-components|Segmented controls"
+      ],
+      "android": [
+        "android-content|Label",
+        "android-navigation|Search and filters"
+      ]
+    },
+    "data-display|Counter": {
+      "ios": [
+        "ios-components|Labels"
+      ],
+      "android": [
+        "android-content|Badge"
+      ]
+    },
+    "data-display|Metric": {
+      "ios": [
+        "ios-components|Gauges"
+      ],
+      "android": [
+        "android-data-display|Metric"
+      ]
+    },
+    "data-display|Interactive list": {
+      "ios": [
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-data-display|List"
+      ]
+    },
+    "data-display|Card": {
+      "ios": [
+        "ios-components|Boxes"
+      ],
+      "android": [
+        "android-data-display|Card"
+      ]
+    },
+    "data-display|Selectable card": {
+      "ios": [
+        "ios-components|Toggles"
+      ],
+      "android": [
+        "android-data-display|Card",
+        "android-forms|Radio group"
+      ]
+    },
+    "content|Thumbnail": {
+      "ios": [
+        "ios-components|Image views"
+      ],
+      "android": [
+        "android-content|Images"
+      ]
+    },
+    "data-display|Calendar view": {
+      "ios": [
+        "ios-components|Pickers"
+      ],
+      "android": [
+        "android-forms|DatePicker and TimePicker"
+      ]
+    },
+    "data-display|Media card": {
+      "ios": [
+        "ios-components|Collections",
+        "ios-components|Image views"
+      ],
+      "android": [
+        "android-data-display|Card",
+        "android-content|Images"
+      ]
+    },
+    "feedback|Status dot": {
+      "ios": [
+        "ios-components|Labels"
+      ],
+      "android": [
+        "android-content|Badge"
+      ]
+    },
+    "feedback|Empty state": {
+      "ios": [
+        "ios-patterns|Loading"
+      ],
+      "android": [
+        "android-feedback|Empty state"
+      ]
+    },
+    "overlays|Media lightbox": {
+      "ios": [
+        "ios-patterns|Going full screen"
+      ],
+      "android": [
+        "android-screen-structures|Full-screen viewer"
+      ]
+    },
+    "patterns|Filter and sort workflow": {
+      "ios": [
+        "ios-patterns|Searching"
+      ],
+      "android": [
+        "android-navigation|Search and filters"
+      ]
+    },
+    "layout|Two-column layout": {
+      "ios": [
+        "ios-components|Split views"
+      ],
+      "android": [
+        "android-screen-structures|Supporting pane"
+      ]
+    },
+    "page-structures|Status region": {
+      "ios": [
+        "ios-components|Status bars"
+      ],
+      "android": [
+        "android-feedback|App state"
+      ]
+    },
+    "page-structures|Object / record page": {
+      "ios": [
+        "ios-components|Split views"
+      ],
+      "android": [
+        "android-screen-structures|Detail"
+      ]
+    },
+    "page-structures|Listing page": {
+      "ios": [
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-screen-structures|List-detail"
+      ]
+    },
+    "page-structures|Content-management template": {
+      "ios": [
+        "ios-components|Split views",
+        "ios-patterns|File management"
+      ],
+      "android": [
+        "android-screen-structures|List-detail scaffold"
+      ]
+    },
+    "page-structures|Master-detail workspace": {
+      "ios": [
+        "ios-components|Split views",
+        "ios-components|Sidebars"
+      ],
+      "android": [
+        "android-screen-structures|List-detail",
+        "android-screen-structures|List-detail scaffold"
+      ]
+    },
+    "page-structures|Single-pane workspace": {
+      "ios": [
+        "ios-getting-started|Designing for iOS"
+      ],
+      "android": [
+        "android-screen-structures|App frames"
+      ]
+    },
+    "page-structures|Detail page": {
+      "ios": [
+        "ios-components|Split views"
+      ],
+      "android": [
+        "android-screen-structures|Detail"
+      ]
+    },
+    "page-structures|Home page": {
+      "ios": [
+        "ios-components|Tab bars"
+      ],
+      "android": [
+        "android-screen-structures|Dashboard"
+      ]
+    },
+    "page-structures|DAM / asset-management template": {
+      "ios": [
+        "ios-patterns|File management",
+        "ios-components|Collections"
+      ],
+      "android": [
+        "android-screen-structures|List-detail scaffold",
+        "android-specialized|File and photo pickers"
+      ]
+    },
+    "page-structures|Dashboard template": {
+      "ios": [
+        "ios-components|Collections",
+        "ios-patterns|Charting data"
+      ],
+      "android": [
+        "android-screen-structures|Dashboard"
+      ]
+    },
+    "specialized|Chat": {
+      "ios": [
+        "ios-components|Text views",
+        "ios-technologies|iMessage apps and stickers"
+      ],
+      "android": [
+        "android-data-display|Activity feed",
+        "android-forms|Multi-line text field"
+      ]
+    },
+    "interaction|Overlay manager": {
+      "ios": [
+        "ios-patterns|Modality"
+      ],
+      "android": [
+        "android-overlays|ModalBottomSheet",
+        "android-overlays|AlertDialog"
+      ]
+    },
+    "interaction|Breakpoint utility": {
+      "ios": [
+        "ios-foundations|Layout",
+        "ios-getting-started|Designing for iPadOS"
+      ],
+      "android": [
+        "android-layout|Window classes"
+      ]
+    },
+    "implementation|React": {
+      "ios": [
+        "ios-plenix|How to build"
+      ],
+      "android": [
+        "android-implementation|Implementations and controls"
+      ]
+    },
+    "implementation|CSS architecture": {
+      "ios": [
+        "ios-plenix|Generated files"
+      ],
+      "android": [
+        "android-implementation|Build outputs"
+      ]
+    },
+    "implementation|State management": {
+      "ios": [
+        "ios-plenix|How to build"
+      ],
+      "android": [
+        "android-implementation|Behavior"
+      ]
+    },
+    "implementation|Testing": {
+      "ios": [
+        "ios-plenix|Conformance"
+      ],
+      "android": [
+        "android-interaction|Conformance"
+      ]
+    },
+    "implementation|Component lifecycle": {
+      "ios": [
+        "ios-plenix|Sources and levels"
+      ],
+      "android": [
+        "android-implementation|Versions"
+      ]
+    },
+    "implementation|Contribution model": {
+      "ios": [
+        "ios-plenix|Sources and levels"
+      ],
+      "android": [
+        "android-implementation|Contribution"
+      ]
+    },
+    "implementation|Changelog": {
+      "ios": [
+        "ios-plenix|Sources and levels"
+      ],
+      "android": [
+        "android-implementation|Versions"
+      ]
+    },
+    "foundations|Product icons": {
+      "ios": [
+        "ios-foundations|Branding"
+      ],
+      "android": [
+        "android-foundations|Material Symbols"
+      ]
+    },
+    "forms|Color picker": {
+      "ios": [
+        "ios-components|Color wells"
+      ],
+      "android": [
+        "android-forms|Exposed dropdown menu"
+      ]
+    },
+    "forms|Rating": {
+      "ios": [
+        "ios-components|Rating indicators"
+      ],
+      "android": [
+        "android-data-display|Metric"
+      ]
+    },
+    "forms|Creatable select": {
+      "ios": [
+        "ios-components|Combo boxes",
+        "ios-components|Token fields"
+      ],
+      "android": [
+        "android-forms|Exposed dropdown menu"
+      ]
+    },
+    "navigation|Breadcrumbs": {
+      "ios": [
+        "ios-components|Path controls"
+      ],
+      "android": [
+        "android-navigation|Back stack"
+      ]
+    },
+    "data-display|Tag": {
+      "ios": [
+        "ios-components|Token fields",
+        "ios-components|Labels"
+      ],
+      "android": [
+        "android-content|Label"
+      ]
+    },
+    "foundations|Spacing scale": {
+      "ios": [
+        "ios-foundations|Layout"
+      ],
+      "android": [
+        "android-foundations|Spacing between targets"
+      ]
+    },
+    "foundations|Control heights": {
+      "ios": [
+        "ios-foundations|Accessibility",
+        "ios-components|Buttons"
+      ],
+      "android": [
+        "android-foundations|Touch targets"
+      ]
+    },
+    "foundations|Shadows": {
+      "ios": [
+        "ios-foundations|Materials"
+      ],
+      "android": [
+        "android-foundations|Elevation"
+      ]
+    },
+    "foundations|Z-index scale": {
+      "ios": [
+        "ios-patterns|Modality"
+      ],
+      "android": [
+        "android-foundations|Elevation"
+      ]
+    },
+    "navigation|Application header": {
+      "ios": [
+        "ios-components|Toolbars"
+      ],
+      "android": [
+        "android-navigation|Top app bar"
+      ]
+    },
+    "navigation|Search workspace": {
+      "ios": [
+        "ios-patterns|Searching"
+      ],
+      "android": [
+        "android-navigation|Search screen"
+      ]
+    },
+    "data-display|Activity stream": {
+      "ios": [
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-data-display|Activity feed"
+      ]
+    },
+    "patterns|Bulk selection": {
+      "ios": [
+        "ios-components|Lists and tables"
+      ],
+      "android": [
+        "android-actions|Multiple selection"
+      ]
+    },
+    "interaction|Visually hidden content": {
+      "ios": [
+        "ios-technologies|VoiceOver"
+      ],
+      "android": [
+        "android-interaction|TalkBack"
+      ]
+    }
+  }
+}

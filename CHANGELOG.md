@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.30] - 2026-10-11
+
+### Added
+- Every built Web item maps to iOS and Android, as the owner asked: all 128 components, patterns, foundations, page
+  structures, templates and utilities. Most come from the iOS guidance (an iOS page names its Web and Android pages).
+  The rest are in platform/standards/web-native-map.json, where foundations, page structures and utilities map to
+  their nearest iOS (HIG or Plenix for iOS) and Android pages. The build stops when a built Web item has no iOS or no
+  Android counterpart. 340 Web pages are mapped in all.
+- "Across platforms" on every page with a counterpart: Web pages list their iOS and Android pages and the iOS guidance
+  mapped to them; Android pages list their Web and iOS pages (also where the standard has no part yet); iOS pages list
+  every Web page mapped to them. (batch 332)
+
 ## [0.31.29] - 2026-10-11
 
 ### Changed
