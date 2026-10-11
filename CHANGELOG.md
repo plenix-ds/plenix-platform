@@ -6,6 +6,24 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.33] - 2026-10-11
+
+### Changed
+- iOS has the same 14 sections as the Web (01 Foundations to 14 Implementation & Governance). Each Apple Human
+  Interface Guidelines page sits in the section it belongs to, under the Web's subcategory name (Buttons, Menus and
+  commands, Text input, Dialogs and so on), or Apple's group name where the Web has none (Media, System experiences,
+  Technologies, Inputs). Every page keeps its Apple name and link. Plenix's own iOS pages are under 14 Implementation &
+  Governance. Android's sections 11 and 13 take the Web titles (Page Structures & Templates; Interaction,
+  Accessibility & Utilities).
+- iOS and Android pages use the Web page's section names, in the Web order, listing only the sections they have:
+  Overview and Purpose, Usage, Across platforms, Figma, Platform specification, Development and API, Implementation
+  and Source-system mappings. The References panel is split: the SwiftUI, UIKit and AppKit documentation is under
+  Development and API, and the Human Interface Guidelines outline under Source-system mappings.
+- "API and usage" on Web pages is now "Development and API".
+
+### Removed
+- The Designing for macOS, tvOS, visionOS, watchOS and games pages, with their guidance and references.
+
 ## [0.31.32] - 2026-10-11
 
 ### Added

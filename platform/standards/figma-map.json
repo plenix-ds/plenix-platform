@@ -97,7 +97,7 @@
   },
   "Alerts": {
    "id": "507:24668",
-   "ios": "ios-components|Alerts",
+   "ios": "ios-overlays|Alerts",
    "components": [
     {
      "id": "63:57121",
@@ -129,7 +129,7 @@
   },
   "Action Sheets": {
    "id": "507:24669",
-   "ios": "ios-components|Action sheets",
+   "ios": "ios-overlays|Action sheets",
    "components": [
     {
      "id": "5446:10266",
@@ -146,7 +146,7 @@
   },
   "Activity Views": {
    "id": "507:24670",
-   "ios": "ios-components|Activity views",
+   "ios": "ios-actions|Activity views",
    "components": [
     {
      "id": "5908:1783",
@@ -179,7 +179,7 @@
   },
   "App Icons": {
    "id": "507:24671",
-   "ios": "ios-foundations|App icons",
+   "ios": "ios-content|App icons",
    "components": [
     {
      "id": "5592:63202",
@@ -217,7 +217,7 @@
   },
   "Product Bezels": {
    "id": "507:24672",
-   "ios": "ios-getting-started|Designing for iOS",
+   "ios": "ios-foundations|Designing for iOS",
    "components": [
     {
      "id": "5456:18828",
@@ -346,7 +346,7 @@
   },
   "Buttons": {
    "id": "507:24673",
-   "ios": "ios-components|Buttons",
+   "ios": "ios-actions|Buttons",
    "components": [
     {
      "id": "40:58696",
@@ -429,7 +429,7 @@
   },
   "Keyboards": {
    "id": "507:24674",
-   "ios": "ios-components|Virtual keyboards",
+   "ios": "ios-forms|Virtual keyboards",
    "components": [
     {
      "id": "5720:47982",
@@ -574,7 +574,7 @@
   },
   "Lists": {
    "id": "507:24675",
-   "ios": "ios-components|Lists and tables",
+   "ios": "ios-data-display|Lists and tables",
    "components": [
     {
      "id": "35:55757",
@@ -680,7 +680,7 @@
   },
   "Menus": {
    "id": "507:24676",
-   "ios": "ios-components|Menus",
+   "ios": "ios-actions|Menus",
    "components": [
     {
      "id": "5713:47505",
@@ -689,7 +689,7 @@
      "props": [
       "Items"
      ],
-     "ios": "ios-components|Edit menus"
+     "ios": "ios-actions|Edit menus"
     },
     {
      "id": "5908:6487",
@@ -818,13 +818,13 @@
      "id": "5711:35414",
      "name": "Text Selection",
      "variants": 0,
-     "ios": "ios-components|Edit menus"
+     "ios": "ios-actions|Edit menus"
     }
    ]
   },
   "Notifications": {
    "id": "507:24678",
-   "ios": "ios-components|Notifications",
+   "ios": "ios-feedback|Notifications",
    "components": [
     {
      "id": "135:67787",
@@ -874,7 +874,7 @@
   },
   "Page Controls": {
    "id": "507:24679",
-   "ios": "ios-components|Page controls",
+   "ios": "ios-navigation|Page controls",
    "components": [
     {
      "id": "10520:3448",
@@ -897,7 +897,7 @@
   },
   "Date and Time Pickers": {
    "id": "507:24680",
-   "ios": "ios-components|Pickers",
+   "ios": "ios-forms|Pickers",
    "components": [
     {
      "id": "30:53803",
@@ -937,7 +937,7 @@
   },
   "Popovers": {
    "id": "507:24681",
-   "ios": "ios-components|Popovers",
+   "ios": "ios-overlays|Popovers",
    "components": [
     {
      "id": "61:65421",
@@ -964,7 +964,7 @@
   },
   "Progress Indicators": {
    "id": "507:24682",
-   "ios": "ios-components|Progress indicators",
+   "ios": "ios-feedback|Progress indicators",
    "components": [
     {
      "id": "9:55875",
@@ -1010,7 +1010,7 @@
   },
   "Segmented Controls": {
    "id": "507:24683",
-   "ios": "ios-components|Segmented controls",
+   "ios": "ios-forms|Segmented controls",
    "components": [
     {
      "id": "10460:145",
@@ -1034,7 +1034,7 @@
   },
   "Sheets": {
    "id": "507:24684",
-   "ios": "ios-components|Sheets",
+   "ios": "ios-overlays|Sheets",
    "components": [
     {
      "id": "5827:57566",
@@ -1078,7 +1078,7 @@
   },
   "Sliders": {
    "id": "507:24685",
-   "ios": "ios-components|Sliders",
+   "ios": "ios-forms|Sliders",
    "components": [
     {
      "id": "7:53847",
@@ -1109,19 +1109,19 @@
   },
   "Status Bars and Menu Bars": {
    "id": "507:24686",
-   "ios": "ios-components|Status bars",
+   "ios": "ios-feedback|Status bars",
    "components": [
     {
      "id": "10465:36399",
      "name": "iPad - Leading Accessories",
      "variants": 0,
-     "ios": "ios-components|The menu bar"
+     "ios": "ios-actions|The menu bar"
     },
     {
      "id": "10465:36393",
      "name": "iPad - Trailing Accessories",
      "variants": 0,
-     "ios": "ios-components|The menu bar"
+     "ios": "ios-actions|The menu bar"
     },
     {
      "id": "5465:16807",
@@ -1165,13 +1165,13 @@
      "props": [
       "Menubar"
      ],
-     "ios": "ios-components|The menu bar"
+     "ios": "ios-actions|The menu bar"
     }
    ]
   },
   "Steppers": {
    "id": "507:24687",
-   "ios": "ios-components|Steppers",
+   "ios": "ios-forms|Steppers",
    "components": [
     {
      "id": "5415:17699",
@@ -1182,19 +1182,19 @@
   },
   "System": {
    "id": "507:24688",
-   "ios": "ios-getting-started|Designing for iOS",
+   "ios": "ios-foundations|Designing for iOS",
    "components": [
     {
      "id": "2606:21776",
      "name": "Control Center - iPad",
      "variants": 0,
-     "ios": "ios-components|Controls"
+     "ios": "ios-specialized|Controls"
     },
     {
      "id": "2524:24489",
      "name": "Control Center - iPhone",
      "variants": 0,
-     "ios": "ios-components|Controls"
+     "ios": "ios-specialized|Controls"
     },
     {
      "id": "106:60033",
@@ -1249,13 +1249,13 @@
      "id": "2607:25388",
      "name": "Home Screen Quick Actions - iPad",
      "variants": 0,
-     "ios": "ios-components|Home Screen quick actions"
+     "ios": "ios-actions|Home Screen quick actions"
     },
     {
      "id": "2607:25374",
      "name": "Home Screen Quick Actions - iPhone",
      "variants": 0,
-     "ios": "ios-components|Home Screen quick actions"
+     "ios": "ios-actions|Home Screen quick actions"
     },
     {
      "id": "12887:18298",
@@ -1293,13 +1293,13 @@
        "Dark"
       ]
      },
-     "ios": "ios-getting-started|Designing for iOS"
+     "ios": "ios-foundations|Designing for iOS"
     }
    ]
   },
   "Tab Bars": {
    "id": "507:24689",
-   "ios": "ios-components|Tab bars",
+   "ios": "ios-navigation|Tab bars",
    "components": [
     {
      "id": "2524:7957",
@@ -1310,7 +1310,7 @@
       "Show Search",
       "Buttons"
      ],
-     "ios": "ios-components|Tab bars"
+     "ios": "ios-navigation|Tab bars"
     },
     {
      "id": "3:70967",
@@ -1360,7 +1360,7 @@
   },
   "Toggles": {
    "id": "507:24690",
-   "ios": "ios-components|Toggles",
+   "ios": "ios-forms|Toggles",
    "components": [
     {
      "id": "29:56814",
@@ -1388,7 +1388,7 @@
   },
   "Toolbars": {
    "id": "507:25993",
-   "ios": "ios-components|Toolbars",
+   "ios": "ios-actions|Toolbars",
    "components": [
     {
      "id": "8515:13163",
@@ -1492,7 +1492,7 @@
   },
   "Contextual Menus": {
    "id": "507:25994",
-   "ios": "ios-components|Context menus",
+   "ios": "ios-actions|Context menus",
    "components": [
     {
      "id": "125:58750",
@@ -1518,7 +1518,7 @@
   },
   "Pop-up Buttons": {
    "id": "507:26009",
-   "ios": "ios-components|Pop-up buttons",
+   "ios": "ios-actions|Pop-up buttons",
    "components": [
     {
      "id": "410:50387",
@@ -1538,7 +1538,7 @@
   },
   "Color Pickers": {
    "id": "507:26010",
-   "ios": "ios-components|Color wells",
+   "ios": "ios-forms|Color wells",
    "components": [
     {
      "id": "515:56319",
@@ -1586,7 +1586,7 @@
   },
   "Sidebars": {
    "id": "507:26013",
-   "ios": "ios-components|Sidebars",
+   "ios": "ios-navigation|Sidebars",
    "components": [
     {
      "id": "10472:45236",
@@ -1644,13 +1644,13 @@
      "id": "5840:30516",
      "name": "Sidebar Search Field",
      "variants": 0,
-     "ios": "ios-components|Search fields"
+     "ios": "ios-navigation|Search fields"
     }
    ]
   },
   "Widgets": {
    "id": "507:26511",
-   "ios": "ios-components|Widgets",
+   "ios": "ios-specialized|Widgets",
    "components": [
     {
      "id": "144:109471",
@@ -1885,7 +1885,7 @@
   },
   "Text Fields": {
    "id": "553:22762",
-   "ios": "ios-components|Text fields",
+   "ios": "ios-forms|Text fields",
    "components": [
     {
      "id": "553:23047",
@@ -1907,7 +1907,7 @@
   },
   "Windows": {
    "id": "5413:10149",
-   "ios": "ios-components|Windows",
+   "ios": "ios-page-structures|Windows",
    "components": [
     {
      "id": "5588:3741",
@@ -1929,7 +1929,7 @@
   },
   "Empty States": {
    "id": "5518:18111",
-   "ios": "ios-patterns|Loading",
+   "ios": "ios-feedback|Loading",
    "components": [
     {
      "id": "5583:24408",
@@ -1952,7 +1952,7 @@
   },
   "Safe Areas and Margins": {
    "id": "12892:60611",
-   "ios": "ios-foundations|Layout",
+   "ios": "ios-layout|Layout",
    "components": [
     {
      "id": "12892:62243",
