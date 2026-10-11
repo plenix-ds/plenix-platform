@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.28] - 2026-10-11
+
+### Added
+- Plenix guidance for every page of the Apple Human Interface Guidelines: 158 pages and 1,322 rules, written in Plenix's
+  own words (never Apple's text) and true to the guidelines. Each rule says Must or Should and links to the HIG
+  section it follows. Components and inputs carry a cross-platform property table: 416 rows naming each setting in iOS
+  (SwiftUI / UIKit), Android (Jetpack Compose) and Web (Plenix). Each page maps to its matching Web and Android pages.
+- The guidance is part of the design system's data: platform/standards/native-guidance.json, built by
+  build-native-guidance.js (a missing mapped page stops the build). It is also served at /api/v1/native-guidance. iOS
+  pages show it first, under "Plenix guidance". Web and Android pages show the iOS pages mapped to them, with their
+  property tables, under "Across platforms".
+- build-platforms and build-native-guidance skip their output when the design system is not checked out. (batch 330)
+
 ## [0.31.27] - 2026-10-11
 
 ### Changed
