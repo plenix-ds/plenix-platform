@@ -1,0 +1,2000 @@
+{
+ "$description": "The Figma kit \"iOS and iPadOS 27\" (Apple Design Resources, Figma Community) mapped to the Plenix iOS pages: every public component of the kit, grouped by its kit page; each kit page names the Plenix iOS page (HIG page) it draws, and a component that draws another page names its own. Node ids are the kit's, so each opens in the Plenix copy of the file. Read from the kit file (its .fig canvas) in batch 334; build-native-guidance.js checks every iOS page exists.",
+ "file": {
+  "name": "iOS and iPadOS 27",
+  "key": "DmrfSZiICFRBqgOci5dRQ6",
+  "url": "https://www.figma.com/design/DmrfSZiICFRBqgOci5dRQ6/iOS-and-iPadOS-27--Community-",
+  "community": "https://www.figma.com/community/file/1651309003795292092"
+ },
+ "pages": {
+  "Colors": {
+   "id": "0:1746",
+   "ios": "ios-foundations|Color",
+   "components": []
+  },
+  "Text Styles and Dynamic Type": {
+   "id": "0:2194",
+   "ios": "ios-foundations|Typography",
+   "components": []
+  },
+  "Materials": {
+   "id": "215:105157",
+   "ios": "ios-foundations|Materials",
+   "components": [
+    {
+     "id": "5914:23547",
+     "name": "Liquid Glass - Clear",
+     "variants": 0
+    },
+    {
+     "id": "5584:32504",
+     "name": "Liquid Glass - Regular - Large",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5584:32503",
+     "name": "Liquid Glass - Regular - Medium",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5584:32505",
+     "name": "Liquid Glass - Regular - Small",
+     "variants": 8,
+     "axes": {
+      "Mode": [
+       "Dark",
+       "Light"
+      ],
+      "Active": [
+       "True",
+       "False"
+      ],
+      "Prominent": [
+       "False",
+       "True"
+      ]
+     }
+    },
+    {
+     "id": "5661:26978",
+     "name": "Scroll Edge Effect - Hard",
+     "variants": 4,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ],
+      "Edge": [
+       "Bottom",
+       "Top"
+      ]
+     }
+    },
+    {
+     "id": "5661:26943",
+     "name": "Scroll Edge Effect - Soft",
+     "variants": 2,
+     "axes": {
+      "Edge": [
+       "Top",
+       "Bottom"
+      ]
+     }
+    }
+   ]
+  },
+  "Alerts": {
+   "id": "507:24668",
+   "ios": "ios-components|Alerts",
+   "components": [
+    {
+     "id": "63:57121",
+     "name": "Alert",
+     "variants": 2,
+     "axes": {
+      "Button Layout": [
+       "Stacked",
+       "Side-by-Side"
+      ]
+     },
+     "props": [
+      "Actions",
+      "Message",
+      "Title",
+      "Show Message",
+      "Show Text Field"
+     ]
+    },
+    {
+     "id": "12616:942",
+     "name": "Text Field",
+     "variants": 0,
+     "props": [
+      "Second Field"
+     ]
+    }
+   ]
+  },
+  "Action Sheets": {
+   "id": "507:24669",
+   "ios": "ios-components|Action sheets",
+   "components": [
+    {
+     "id": "5446:10266",
+     "name": "Action Sheet",
+     "variants": 0,
+     "props": [
+      "Message",
+      "Title",
+      "Show message",
+      "Actions"
+     ]
+    }
+   ]
+  },
+  "Activity Views": {
+   "id": "507:24670",
+   "ios": "ios-components|Activity views",
+   "components": [
+    {
+     "id": "5908:1783",
+     "name": "Activity View - iPad",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5908:2105",
+     "name": "Activity View - iPhone",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5846:3358",
+     "name": "Overlay",
+     "variants": 0
+    }
+   ]
+  },
+  "App Icons": {
+   "id": "507:24671",
+   "ios": "ios-foundations|App icons",
+   "components": [
+    {
+     "id": "5592:63202",
+     "name": "App Icon/iPad",
+     "variants": 2,
+     "axes": {
+      "Type": [
+       "Custom",
+       "System"
+      ]
+     },
+     "props": [
+      "Show App Name",
+      "App Name",
+      "Show Badge"
+     ]
+    },
+    {
+     "id": "2402:17543",
+     "name": "App Icon/iPhone",
+     "variants": 2,
+     "axes": {
+      "Type": [
+       "System",
+       "Custom"
+      ]
+     },
+     "props": [
+      "Show App Name",
+      "App Name",
+      "Show Badge"
+     ]
+    }
+   ]
+  },
+  "Product Bezels": {
+   "id": "507:24672",
+   "ios": "ios-getting-started|Designing for iOS",
+   "components": [
+    {
+     "id": "5456:18828",
+     "name": "iPad mini",
+     "variants": 0
+    },
+    {
+     "id": "6316:14229",
+     "name": "iPad Pro M4 11\"",
+     "variants": 2,
+     "axes": {
+      "Color": [
+       "Silver",
+       "Space Gray"
+      ]
+     }
+    },
+    {
+     "id": "6316:14232",
+     "name": "iPad Pro M4 13\"",
+     "variants": 2,
+     "axes": {
+      "Color": [
+       "Silver",
+       "Space Gray"
+      ]
+     }
+    },
+    {
+     "id": "6316:14198",
+     "name": "iPhone 17",
+     "variants": 5,
+     "axes": {
+      "Color": [
+       "Black",
+       "Lavendar",
+       "Mist Blue",
+       "Sage",
+       "White"
+      ]
+     }
+    },
+    {
+     "id": "6316:14140",
+     "name": "iPhone 17 Pro",
+     "variants": 3,
+     "axes": {
+      "Color": [
+       "Deep Blue",
+       "Cosmic Orange",
+       "Silver"
+      ]
+     }
+    },
+    {
+     "id": "6316:14155",
+     "name": "iPhone 17 Pro Max",
+     "variants": 3,
+     "axes": {
+      "Color": [
+       "Deep Blue",
+       "Cosmic Orange",
+       "Silver"
+      ]
+     }
+    },
+    {
+     "id": "12887:20847",
+     "name": "iPhone 18 Pro",
+     "variants": 4,
+     "axes": {
+      "Color": [
+       "Black",
+       "Burgundy",
+       "Glacier",
+       "Silver"
+      ]
+     }
+    },
+    {
+     "id": "12887:20854",
+     "name": "iPhone 18 Pro Max",
+     "variants": 4,
+     "axes": {
+      "Color": [
+       "Black",
+       "Burgundy",
+       "Glacier",
+       "Silver"
+      ]
+     }
+    },
+    {
+     "id": "6316:14172",
+     "name": "iPhone Air",
+     "variants": 4,
+     "axes": {
+      "Color": [
+       "Cloud White",
+       "Sky Blue",
+       "Space Black",
+       "Light Gold"
+      ]
+     }
+    },
+    {
+     "id": "12887:20891",
+     "name": "iPhone Duo",
+     "variants": 8,
+     "axes": {
+      "Display": [
+       "Inner",
+       "Outer"
+      ],
+      "Color": [
+       "Night Sky",
+       "Star White"
+      ],
+      "Orientation": [
+       "Portrait",
+       "Landscape"
+      ]
+     }
+    }
+   ]
+  },
+  "Buttons": {
+   "id": "507:24673",
+   "ios": "ios-components|Buttons",
+   "components": [
+    {
+     "id": "40:58696",
+     "name": "Button - Content Area",
+     "variants": 108,
+     "axes": {
+      "Size": [
+       "Large",
+       "Medium",
+       "Small"
+      ],
+      "Style": [
+       "Bordered - Prominent",
+       "Bordered",
+       "Borderless"
+      ],
+      "Label Style": [
+       "Title only",
+       "Icon only",
+       "Title and Icon"
+      ],
+      "Is Enabled": [
+       "True",
+       "False"
+      ],
+      "Destructive": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Label",
+      "Symbol"
+     ]
+    },
+    {
+     "id": "5522:11866",
+     "name": "Button - Liquid Glass - Symbol",
+     "variants": 8,
+     "axes": {
+      "Style": [
+       "Glass Prominent",
+       "Glass"
+      ],
+      "Is Enabled": [
+       "True",
+       "False"
+      ],
+      "Destructive": [
+       "False",
+       "True"
+      ]
+     }
+    },
+    {
+     "id": "5473:21667",
+     "name": "Button - Liquid Glass - Text",
+     "variants": 24,
+     "axes": {
+      "Size": [
+       "Large",
+       "Medium",
+       "Small"
+      ],
+      "Style": [
+       "Glass Prominent",
+       "Glass"
+      ],
+      "Is Enabled": [
+       "True",
+       "False"
+      ],
+      "Destructive": [
+       "False",
+       "True"
+      ]
+     }
+    }
+   ]
+  },
+  "Keyboards": {
+   "id": "507:24674",
+   "ios": "ios-components|Virtual keyboards",
+   "components": [
+    {
+     "id": "5720:47982",
+     "name": "Accessory Bar - iPhone/Find",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5720:48008",
+     "name": "Accessory Bar - iPhone/Find and Replace",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "12892:51480",
+     "name": "Accessory Bar - iPhone/Search",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Dark",
+       "Light"
+      ]
+     },
+     "props": [
+      "Placeholder"
+     ]
+    },
+    {
+     "id": "5522:14771",
+     "name": "Accessory Bar - iPhone/Toolbar",
+     "variants": 4,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ],
+      "Type": [
+       "Button Group",
+       "Button"
+      ]
+     },
+     "props": [
+      "Buttons"
+     ]
+    },
+    {
+     "id": "6334:12943",
+     "name": "Accessory Bar - iPhone/URL",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Dark",
+       "Light"
+      ]
+     },
+     "props": [
+      "Value"
+     ]
+    },
+    {
+     "id": "6334:13068",
+     "name": "Accessory Bar - iPhone/Web Form",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Dark",
+       "Light"
+      ]
+     }
+    },
+    {
+     "id": "106:60296",
+     "name": "Keyboard",
+     "variants": 9,
+     "axes": {
+      "Type": [
+       "Lower Case",
+       "Number Pad",
+       "Emoji",
+       "Web",
+       "Email",
+       "Upper Case",
+       "Punctuation",
+       "URL",
+       "Numeric"
+      ]
+     },
+     "props": [
+      "Show suggestions"
+     ]
+    },
+    {
+     "id": "128:78692",
+     "name": "Keyboard",
+     "variants": 2,
+     "axes": {
+      "Type": [
+       "Default",
+       "Shift"
+      ]
+     },
+     "props": [
+      "Show Bar"
+     ]
+    },
+    {
+     "id": "12890:26716",
+     "name": "Keyboard",
+     "variants": 16,
+     "axes": {
+      "Display": [
+       "Outer",
+       "Inner"
+      ],
+      "Orientation": [
+       "Portrait",
+       "Landscape"
+      ],
+      "Type": [
+       "Numeric",
+       "Punctuation",
+       "Upper Case",
+       "Lower Case"
+      ]
+     },
+     "props": [
+      "Show suggestions",
+      "Camera Reserved Region"
+     ]
+    }
+   ]
+  },
+  "Lists": {
+   "id": "507:24675",
+   "ios": "ios-components|Lists and tables",
+   "components": [
+    {
+     "id": "35:55757",
+     "name": "Grouped Table Footer",
+     "variants": 0,
+     "props": [
+      "Text"
+     ]
+    },
+    {
+     "id": "517:38042",
+     "name": "Header",
+     "variants": 3,
+     "axes": {
+      "Type": [
+       "Extra Prominent",
+       "Prominent",
+       "Nested"
+      ]
+     },
+     "props": [
+      "Text",
+      "Show Trailing",
+      "Subtitle",
+      "Supertitle",
+      "Show Subtitle",
+      "Show Supertitle"
+     ]
+    },
+    {
+     "id": "48:56457",
+     "name": "Index Bar",
+     "variants": 2,
+     "axes": {
+      "Device": [
+       "iPad",
+       "iPhone"
+      ]
+     }
+    },
+    {
+     "id": "550:50430",
+     "name": "Row",
+     "variants": 2,
+     "axes": {
+      "Height": [
+       "Tall",
+       "Regular"
+      ]
+     },
+     "props": [
+      "Show Image",
+      "Show Edit Button",
+      "Show Grabber",
+      "Title",
+      "Subtitle",
+      "Show Subtitle",
+      "Show Trailing"
+     ]
+    },
+    {
+     "id": "550:49677",
+     "name": "Row - Button",
+     "variants": 3,
+     "axes": {
+      "Value": [
+       "Disabled",
+       "Destructive",
+       "Default"
+      ]
+     }
+    },
+    {
+     "id": "550:49969",
+     "name": "Row with Swipe Actions",
+     "variants": 6,
+     "axes": {
+      "Type": [
+       "Symbol and Label Tall",
+       "Symbol Only",
+       "Symbol and Label"
+      ],
+      "Swipe": [
+       "Right",
+       "Left"
+      ]
+     },
+     "props": [
+      "Swipe Actions Symbol Only",
+      "Swipe Actions Symbol and Label",
+      "Swipe Actions Symbol and Label Tall"
+     ]
+    },
+    {
+     "id": "50:56535",
+     "name": "Section Title",
+     "variants": 0,
+     "props": [
+      "Text"
+     ]
+    }
+   ]
+  },
+  "Menus": {
+   "id": "507:24676",
+   "ios": "ios-components|Menus",
+   "components": [
+    {
+     "id": "5713:47505",
+     "name": "Edit Menu",
+     "variants": 0,
+     "props": [
+      "Items"
+     ],
+     "ios": "ios-components|Edit menus"
+    },
+    {
+     "id": "5908:6487",
+     "name": "Menu",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     },
+     "props": [
+      "Menu Items"
+     ]
+    },
+    {
+     "id": "5502:6049",
+     "name": "Menu Items",
+     "variants": 12,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ],
+      "State": [
+       "Destructive",
+       "Disabled",
+       "Default"
+      ],
+      "Menu has Selection": [
+       "True",
+       "False"
+      ]
+     },
+     "props": [
+      "Show Shortcut",
+      "Show Checkmark",
+      "Show Symbol",
+      "Label",
+      "Subtitle",
+      "Show Subtitle",
+      "Symbol",
+      "Show Control",
+      "Show Option",
+      "Show Shift",
+      "Show Command",
+      "Letter"
+     ]
+    },
+    {
+     "id": "5848:33925",
+     "name": "Menu Items - Submenus",
+     "variants": 16,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ],
+      "State": [
+       "Disabled",
+       "Default"
+      ],
+      "Open": [
+       "False",
+       "True"
+      ],
+      "Menu has Selection": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Symbol",
+      "Label",
+      "Subtitle",
+      "Show Subtitle",
+      "Show Symbol"
+     ]
+    },
+    {
+     "id": "5498:16565",
+     "name": "Quick Action",
+     "variants": 4,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ],
+      "Destructive": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Symbol",
+      "Label",
+      "Show Selection"
+     ]
+    },
+    {
+     "id": "5855:4981",
+     "name": "Section Title",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     },
+     "props": [
+      "Text"
+     ]
+    },
+    {
+     "id": "5855:5763",
+     "name": "Separator",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5711:35414",
+     "name": "Text Selection",
+     "variants": 0,
+     "ios": "ios-components|Edit menus"
+    }
+   ]
+  },
+  "Notifications": {
+   "id": "507:24678",
+   "ios": "ios-components|Notifications",
+   "components": [
+    {
+     "id": "135:67787",
+     "name": "Notification - Collapsed",
+     "variants": 3,
+     "axes": {
+      "Stack": [
+       "1",
+       "2",
+       "3"
+      ]
+     },
+     "props": [
+      "Title",
+      "Message",
+      "Show Image"
+     ]
+    },
+    {
+     "id": "135:73247",
+     "name": "Notification - Collapsed - List",
+     "variants": 0,
+     "props": [
+      "List"
+     ]
+    },
+    {
+     "id": "143:62847",
+     "name": "Notification - Expanded",
+     "variants": 0,
+     "props": [
+      "Show Menu"
+     ]
+    },
+    {
+     "id": "5551:17755",
+     "name": "Overlay",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Dark",
+       "Light"
+      ]
+     }
+    }
+   ]
+  },
+  "Page Controls": {
+   "id": "507:24679",
+   "ios": "ios-components|Page controls",
+   "components": [
+    {
+     "id": "10520:3448",
+     "name": "Page Control",
+     "variants": 3,
+     "axes": {
+      "Pages": [
+       "1-6",
+       "7",
+       "8+"
+      ]
+     },
+     "props": [
+      "2-6 Pages",
+      "7 Pages",
+      "8+ Pages"
+     ]
+    }
+   ]
+  },
+  "Date and Time Pickers": {
+   "id": "507:24680",
+   "ios": "ios-components|Pickers",
+   "components": [
+    {
+     "id": "30:53803",
+     "name": "Date and time - Collapsed",
+     "variants": 2,
+     "axes": {
+      "State": [
+       "Default",
+       "Selected"
+      ]
+     },
+     "props": [
+      "Month",
+      "Year",
+      "Time",
+      "Show date",
+      "Show time"
+     ]
+    },
+    {
+     "id": "5442:1885",
+     "name": "Date and time - Pickers",
+     "variants": 2,
+     "axes": {
+      "Style": [
+       "Inline",
+       "Compact"
+      ]
+     },
+     "props": [
+      "Show Date",
+      "Show Time",
+      "Text"
+     ]
+    }
+   ]
+  },
+  "Popovers": {
+   "id": "507:24681",
+   "ios": "ios-components|Popovers",
+   "components": [
+    {
+     "id": "61:65421",
+     "name": "Popovers (iPad Only)",
+     "variants": 12,
+     "axes": {
+      "Edge": [
+       "Top (Center)",
+       "Bottom (Center)",
+       "Leading (Top)",
+       "Bottom (Trailing)",
+       "Trailing (Top)",
+       "Top (Trailing)",
+       "Bottom (Leading)",
+       "Top (Leading)",
+       "Trailing (Middle)",
+       "Leading (Middle)",
+       "Trailing (Bottom)",
+       "Leading (Bottom)"
+      ]
+     }
+    }
+   ]
+  },
+  "Progress Indicators": {
+   "id": "507:24682",
+   "ios": "ios-components|Progress indicators",
+   "components": [
+    {
+     "id": "9:55875",
+     "name": "Progress Bar - Determinate Linear",
+     "variants": 11,
+     "axes": {
+      "Value": [
+       "100%",
+       "90%",
+       "80%",
+       "70%",
+       "60%",
+       "50%",
+       "40%",
+       "30%",
+       "20%",
+       "10%",
+       "0%"
+      ]
+     },
+     "props": [
+      "Show Label",
+      "Label"
+     ]
+    },
+    {
+     "id": "5425:3431",
+     "name": "Progress Bar - Indeterminate Circular (\"Spinner\")",
+     "variants": 3,
+     "axes": {
+      "Size": [
+       "Regular",
+       "Small",
+       "Large"
+      ]
+     },
+     "props": [
+      "Show Label",
+      "Label"
+     ]
+    }
+   ]
+  },
+  "Segmented Controls": {
+   "id": "507:24683",
+   "ios": "ios-components|Segmented controls",
+   "components": [
+    {
+     "id": "10460:145",
+     "name": "Segmented Control",
+     "variants": 4,
+     "axes": {
+      "Size": [
+       "Small",
+       "Large"
+      ],
+      "Is Enabled": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Segments"
+     ]
+    }
+   ]
+  },
+  "Sheets": {
+   "id": "507:24684",
+   "ios": "ios-components|Sheets",
+   "components": [
+    {
+     "id": "5827:57566",
+     "name": "Grabber",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5551:18479",
+     "name": "Overlay",
+     "variants": 0
+    },
+    {
+     "id": "5719:30145",
+     "name": "Sheet - iPad",
+     "variants": 0
+    },
+    {
+     "id": "10525:1632",
+     "name": "Sheet - iPhone",
+     "variants": 3,
+     "axes": {
+      "Detent": [
+       "Medium",
+       "Large",
+       "Large (Stacked)"
+      ]
+     },
+     "props": [
+      "Show Grabber",
+      "Show Dimming Layer",
+      "Content"
+     ]
+    }
+   ]
+  },
+  "Sliders": {
+   "id": "507:24685",
+   "ios": "ios-components|Sliders",
+   "components": [
+    {
+     "id": "7:53847",
+     "name": "Sliders",
+     "variants": 15,
+     "axes": {
+      "State": [
+       "Idle",
+       "Pressed",
+       "Disabled"
+      ],
+      "Value": [
+       "100%",
+       "75%",
+       "50%",
+       "25%",
+       "0%"
+      ]
+     },
+     "props": [
+      "Symbol - Max",
+      "Symbol - Min",
+      "Show Symbols",
+      "Show Ticks"
+     ]
+    }
+   ]
+  },
+  "Status Bars and Menu Bars": {
+   "id": "507:24686",
+   "ios": "ios-components|Status bars",
+   "components": [
+    {
+     "id": "10465:36399",
+     "name": "iPad - Leading Accessories",
+     "variants": 0,
+     "ios": "ios-components|The menu bar"
+    },
+    {
+     "id": "10465:36393",
+     "name": "iPad - Trailing Accessories",
+     "variants": 0,
+     "ios": "ios-components|The menu bar"
+    },
+    {
+     "id": "5465:16807",
+     "name": "Status bar - iPhone 17 Pro",
+     "variants": 0,
+     "props": [
+      "Time"
+     ]
+    },
+    {
+     "id": "12884:7911",
+     "name": "Status bar - iPhone Duo",
+     "variants": 2,
+     "axes": {
+      "Type": [
+       "Vertical",
+       "Horizontal"
+      ]
+     },
+     "props": [
+      "Time"
+     ]
+    },
+    {
+     "id": "5413:10006",
+     "name": "Status bar and Menu bar- iPad",
+     "variants": 4,
+     "axes": {
+      "Full Screen": [
+       "True",
+       "False"
+      ],
+      "Menu Expanded": [
+       "False",
+       "True"
+      ],
+      "Background": [
+       "Light"
+      ]
+     },
+     "props": [
+      "Menubar"
+     ],
+     "ios": "ios-components|The menu bar"
+    }
+   ]
+  },
+  "Steppers": {
+   "id": "507:24687",
+   "ios": "ios-components|Steppers",
+   "components": [
+    {
+     "id": "5415:17699",
+     "name": "Stepper",
+     "variants": 0
+    }
+   ]
+  },
+  "System": {
+   "id": "507:24688",
+   "ios": "ios-getting-started|Designing for iOS",
+   "components": [
+    {
+     "id": "2606:21776",
+     "name": "Control Center - iPad",
+     "variants": 0,
+     "ios": "ios-components|Controls"
+    },
+    {
+     "id": "2524:24489",
+     "name": "Control Center - iPhone",
+     "variants": 0,
+     "ios": "ios-components|Controls"
+    },
+    {
+     "id": "106:60033",
+     "name": "Home Indicator",
+     "variants": 4,
+     "axes": {
+      "Device": [
+       "iPhone",
+       "iPad"
+      ],
+      "Orientation": [
+       "Portrait",
+       "Landscape"
+      ]
+     },
+     "props": [
+      "Show Home Indicator"
+     ]
+    },
+    {
+     "id": "595:43249",
+     "name": "Home Screen - iPad",
+     "variants": 5,
+     "axes": {
+      "Widgets": [
+       "None",
+       "Extra Large",
+       "Large",
+       "Medium",
+       "Small"
+      ]
+     },
+     "props": [
+      "Show Status Bar"
+     ]
+    },
+    {
+     "id": "561:5800",
+     "name": "Home Screen - iPhone",
+     "variants": 5,
+     "axes": {
+      "Widgets": [
+       "None",
+       "Large",
+       "Medium",
+       "Small",
+       "XL"
+      ]
+     }
+    },
+    {
+     "id": "2607:25388",
+     "name": "Home Screen Quick Actions - iPad",
+     "variants": 0,
+     "ios": "ios-components|Home Screen quick actions"
+    },
+    {
+     "id": "2607:25374",
+     "name": "Home Screen Quick Actions - iPhone",
+     "variants": 0,
+     "ios": "ios-components|Home Screen quick actions"
+    },
+    {
+     "id": "12887:18298",
+     "name": "iPhone Duo/Outer Display Lens",
+     "variants": 0
+    },
+    {
+     "id": "557:20781",
+     "name": "Lock Screen - iPad",
+     "variants": 0
+    },
+    {
+     "id": "557:20840",
+     "name": "Lock Screen - iPhone",
+     "variants": 0
+    },
+    {
+     "id": "5707:11471",
+     "name": "Wallpapers - iPad",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     }
+    },
+    {
+     "id": "5707:9420",
+     "name": "Wallpapers - iPhone",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Light",
+       "Dark"
+      ]
+     },
+     "ios": "ios-getting-started|Designing for iOS"
+    }
+   ]
+  },
+  "Tab Bars": {
+   "id": "507:24689",
+   "ios": "ios-components|Tab bars",
+   "components": [
+    {
+     "id": "2524:7957",
+     "name": "Tab Bar - iPad",
+     "variants": 0,
+     "props": [
+      "Show Sidebar",
+      "Show Search",
+      "Buttons"
+     ],
+     "ios": "ios-components|Tab bars"
+    },
+    {
+     "id": "3:70967",
+     "name": "Tab Bar - iPhone",
+     "variants": 24,
+     "axes": {
+      "Minimized": [
+       "False",
+       "True"
+      ],
+      "Tabs": [
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
+      "Type": [
+       "Default",
+       "Search Role",
+       "Prominent Tab"
+      ]
+     }
+    },
+    {
+     "id": "12887:20935",
+     "name": "Tab Bar - iPhone Duo",
+     "variants": 24,
+     "axes": {
+      "Minimized": [
+       "False",
+       "True"
+      ],
+      "Tabs": [
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
+      "Type": [
+       "Default",
+       "Search Role",
+       "Prominent Tab"
+      ]
+     }
+    }
+   ]
+  },
+  "Toggles": {
+   "id": "507:24690",
+   "ios": "ios-components|Toggles",
+   "components": [
+    {
+     "id": "29:56814",
+     "name": "Toggle - Switch",
+     "variants": 8,
+     "axes": {
+      "State": [
+       "Idle",
+       "Pressed"
+      ],
+      "Is On": [
+       "True",
+       "False"
+      ],
+      "Is Enabled": [
+       "True",
+       "False"
+      ]
+     },
+     "props": [
+      "Show AX Label"
+     ]
+    }
+   ]
+  },
+  "Toolbars": {
+   "id": "507:25993",
+   "ios": "ios-components|Toolbars",
+   "components": [
+    {
+     "id": "8515:13163",
+     "name": "Toolbar - Bottom - iPad",
+     "variants": 0,
+     "props": [
+      "Buttons Leading",
+      "Buttons Center",
+      "Buttons Trailing"
+     ]
+    },
+    {
+     "id": "4:55732",
+     "name": "Toolbar - Bottom - iPhone",
+     "variants": 6,
+     "axes": {
+      "Type": [
+       "Buttons",
+       "Search",
+       "Search + Trailing Item",
+       "Search + Leading Item",
+       "Search with Focus",
+       "Buttons + Page Dots"
+      ]
+     },
+     "props": [
+      "Buttons Leading",
+      "Buttons Trailing"
+     ]
+    },
+    {
+     "id": "5561:41165",
+     "name": "Toolbar - Top - iPad",
+     "variants": 8,
+     "axes": {
+      "Style": [
+       "Title 2 Line",
+       "Title 2 Line Left",
+       "Large Title",
+       "Compact Large"
+      ],
+      "Tab Bar": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Show Subtitle",
+      "Show Search",
+      "Leading",
+      "Trailing"
+     ]
+    },
+    {
+     "id": "1:54472",
+     "name": "Toolbar - Top - iPhone",
+     "variants": 5,
+     "axes": {
+      "Style": [
+       "Default",
+       "Compact Large",
+       "Title 2 Line",
+       "Title 2 Line Left",
+       "Large Title"
+      ]
+     },
+     "props": [
+      "Show Subtitle",
+      "Leading",
+      "Trailing"
+     ]
+    },
+    {
+     "id": "12883:6008",
+     "name": "Toolbar - Top - iPhone Duo",
+     "variants": 8,
+     "axes": {
+      "Style": [
+       "Compact Large",
+       "Large Title",
+       "Title 2 Line",
+       "Title"
+      ],
+      "Sheet": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Show Subtitle",
+      "Leading",
+      "Trailing",
+      "Show Title",
+      "Show Leading",
+      "Show Trailing",
+      "Show Reserved Region",
+      "Show Status Bar"
+     ]
+    }
+   ]
+  },
+  "Contextual Menus": {
+   "id": "507:25994",
+   "ios": "ios-components|Context menus",
+   "components": [
+    {
+     "id": "125:58750",
+     "name": "Context Menu",
+     "variants": 4,
+     "axes": {
+      "Alignment": [
+       "Vertical",
+       "Horizontal (iPad only)"
+      ],
+      "Side": [
+       "Leading",
+       "Trailing"
+      ]
+     }
+    },
+    {
+     "id": "128:76929",
+     "name": "Context Menu - Dimming Overlay",
+     "variants": 0
+    }
+   ]
+  },
+  "Pop-up Buttons": {
+   "id": "507:26009",
+   "ios": "ios-components|Pop-up buttons",
+   "components": [
+    {
+     "id": "410:50387",
+     "name": "Popup Button",
+     "variants": 2,
+     "axes": {
+      "Is Enabled": [
+       "True",
+       "False"
+      ]
+     },
+     "props": [
+      "Label"
+     ]
+    }
+   ]
+  },
+  "Color Pickers": {
+   "id": "507:26010",
+   "ios": "ios-components|Color wells",
+   "components": [
+    {
+     "id": "515:56319",
+     "name": "Color Picker - iPad",
+     "variants": 0
+    },
+    {
+     "id": "0:5275",
+     "name": "Color Picker - iPhone",
+     "variants": 0
+    },
+    {
+     "id": "5739:34128",
+     "name": "Picker Button",
+     "variants": 4,
+     "axes": {
+      "Size": [
+       "Large",
+       "Small"
+      ],
+      "Selected": [
+       "False",
+       "True"
+      ]
+     }
+    }
+   ]
+  },
+  "Face ID": {
+   "id": "507:26011",
+   "ios": "ios-patterns|Managing accounts",
+   "components": [
+    {
+     "id": "123:58236",
+     "name": "Face ID",
+     "variants": 2,
+     "axes": {
+      "State": [
+       "Success",
+       "Authenticating"
+      ]
+     }
+    }
+   ]
+  },
+  "Sidebars": {
+   "id": "507:26013",
+   "ios": "ios-components|Sidebars",
+   "components": [
+    {
+     "id": "10472:45236",
+     "name": "BG",
+     "variants": 2,
+     "axes": {
+      "Active": [
+       "True",
+       "False"
+      ]
+     }
+    },
+    {
+     "id": "131:66427",
+     "name": "Section Header",
+     "variants": 0
+    },
+    {
+     "id": "10464:33764",
+     "name": "Sidebar",
+     "variants": 2,
+     "axes": {
+      "Floating Window": [
+       "False",
+       "True"
+      ]
+     },
+     "props": [
+      "Sidebar Items"
+     ]
+    },
+    {
+     "id": "131:70029",
+     "name": "Sidebar Row",
+     "variants": 12,
+     "axes": {
+      "State": [
+       "Default",
+       "Selected",
+       "Disabled",
+       "Disclosable"
+      ],
+      "Indent Level": [
+       "0",
+       "1",
+       "2"
+      ]
+     },
+     "props": [
+      "Show Image",
+      "Show Trailing"
+     ]
+    },
+    {
+     "id": "5840:30516",
+     "name": "Sidebar Search Field",
+     "variants": 0,
+     "ios": "ios-components|Search fields"
+    }
+   ]
+  },
+  "Widgets": {
+   "id": "507:26511",
+   "ios": "ios-components|Widgets",
+   "components": [
+    {
+     "id": "144:109471",
+     "name": "Home Screen Widget - iPad",
+     "variants": 4,
+     "axes": {
+      "Size": [
+       "Small",
+       "Medium",
+       "Large",
+       "Extra Large"
+      ]
+     },
+     "props": [
+      "Show Padding"
+     ]
+    },
+    {
+     "id": "143:214872",
+     "name": "Home Screen Widget - iPhone",
+     "variants": 4,
+     "axes": {
+      "Size": [
+       "Small",
+       "Medium",
+       "Large",
+       "Extra Large"
+      ]
+     },
+     "props": [
+      "Show Padding",
+      "Widget Name"
+     ]
+    },
+    {
+     "id": "525:43245",
+     "name": "Lock Screen Widget - Clock",
+     "variants": 0,
+     "props": [
+      "City"
+     ]
+    },
+    {
+     "id": "145:62745",
+     "name": "Lock Screen Widget - Inline",
+     "variants": 0,
+     "props": [
+      "Text"
+     ]
+    },
+    {
+     "id": "525:43126",
+     "name": "Lock Screen Widget - Modular Columns",
+     "variants": 0,
+     "props": [
+      "Symbol 1",
+      "Symbol 2",
+      "Symbol 3",
+      "Line 1 Leading",
+      "Line 2 Leading",
+      "Line 3 Leading",
+      "Line 1 Trailing",
+      "Line 2 Trailing",
+      "Line 3 Trailing"
+     ]
+    },
+    {
+     "id": "525:43156",
+     "name": "Lock Screen Widget - Modular List",
+     "variants": 0,
+     "props": [
+      "Bullet 1",
+      "Bullet 2",
+      "Bullet 3",
+      "Line 1",
+      "Line 3",
+      "Line 2"
+     ]
+    },
+    {
+     "id": "525:43148",
+     "name": "Lock Screen Widget - Modular Standard",
+     "variants": 0,
+     "props": [
+      "Header",
+      "Body",
+      "Symbol"
+     ]
+    },
+    {
+     "id": "525:43141",
+     "name": "Lock Screen Widget - Modular Table",
+     "variants": 0,
+     "props": [
+      "Symbol",
+      "Line 1",
+      "Line 2",
+      "Line 3"
+     ]
+    },
+    {
+     "id": "525:43071",
+     "name": "Lock Screen Widget - Modular with Bar",
+     "variants": 0,
+     "props": [
+      "Line 1",
+      "Line 2",
+      "Line 3"
+     ]
+    },
+    {
+     "id": "525:43106",
+     "name": "Lock Screen Widget - Rectangular Text Gauge",
+     "variants": 0,
+     "props": [
+      "Symbol",
+      "Line 1",
+      "Line 2"
+     ]
+    },
+    {
+     "id": "525:43083",
+     "name": "Lock Screen Widget - Rectangular with Chart",
+     "variants": 0,
+     "props": [
+      "Symbol",
+      "Label",
+      "Secondary Label"
+     ]
+    },
+    {
+     "id": "525:43122",
+     "name": "Lock Screen Widget - Tall Body",
+     "variants": 0,
+     "props": [
+      "Line 1",
+      "Line 2"
+     ]
+    },
+    {
+     "id": "525:43115",
+     "name": "Lock Screen Widget - Tall Body with Icon",
+     "variants": 0,
+     "props": [
+      "Symbol",
+      "Title",
+      "Header"
+     ]
+    },
+    {
+     "id": "525:43689",
+     "name": "Lock Screen Widget / Circular / Closed Gauge",
+     "variants": 0,
+     "props": [
+      "Symbol"
+     ]
+    },
+    {
+     "id": "525:43588",
+     "name": "Lock Screen Widget / Circular / Icon",
+     "variants": 0,
+     "props": [
+      "Symbol"
+     ]
+    },
+    {
+     "id": "145:62699",
+     "name": "Lock Screen Widget / Circular / Open Gauge",
+     "variants": 0,
+     "props": [
+      "Symbol",
+      "Value"
+     ]
+    },
+    {
+     "id": "145:62670",
+     "name": "Lock Screen Widget / Circular / Open Gauge 2",
+     "variants": 0,
+     "props": [
+      "Value",
+      "Min Value",
+      "Max Value"
+     ]
+    },
+    {
+     "id": "525:43658",
+     "name": "Lock Screen Widget / Circular / Open Gauge 3",
+     "variants": 0,
+     "props": [
+      "Number",
+      "Label"
+     ]
+    },
+    {
+     "id": "525:43609",
+     "name": "Lock Screen Widget / Circular / Stack 2 Rows - Icon and Label",
+     "variants": 0,
+     "props": [
+      "Symbol",
+      "Label"
+     ]
+    },
+    {
+     "id": "525:43610",
+     "name": "Lock Screen Widget / Circular / Stack 2 Rows - Labels",
+     "variants": 0,
+     "props": [
+      "Secondary Label"
+     ]
+    },
+    {
+     "id": "145:62733",
+     "name": "Lock Screen Widget / Circular / Stack 3 Rows",
+     "variants": 0,
+     "props": [
+      "Secondary Value",
+      "Value",
+      "Symbol"
+     ]
+    },
+    {
+     "id": "526:38737",
+     "name": "Lock Screen Widget/2x2/Clock Big (iPad Only)",
+     "variants": 0
+    },
+    {
+     "id": "526:38824",
+     "name": "Lock Screen Widget/2x2/Date (iPad Only)",
+     "variants": 0
+    }
+   ]
+  },
+  "Text Fields": {
+   "id": "553:22762",
+   "ios": "ios-components|Text fields",
+   "components": [
+    {
+     "id": "553:23047",
+     "name": "Text Field",
+     "variants": 4,
+     "axes": {
+      "State": [
+       "Placeholder",
+       "Value Entered",
+       "Typing",
+       "Focused"
+      ]
+     },
+     "props": [
+      "Value"
+     ]
+    }
+   ]
+  },
+  "Windows": {
+   "id": "5413:10149",
+   "ios": "ios-components|Windows",
+   "components": [
+    {
+     "id": "5588:3741",
+     "name": "Window",
+     "variants": 0
+    },
+    {
+     "id": "12492:2483",
+     "name": "Window with Sidebar",
+     "variants": 2,
+     "axes": {
+      "Mode": [
+       "Active",
+       "Inactive"
+      ]
+     }
+    }
+   ]
+  },
+  "Empty States": {
+   "id": "5518:18111",
+   "ios": "ios-patterns|Loading",
+   "components": [
+    {
+     "id": "5583:24408",
+     "name": "Empty States",
+     "variants": 3,
+     "axes": {
+      "Type": [
+       "Large Symbol",
+       "Symbol in Circle",
+       "Title and Subtitle"
+      ]
+     },
+     "props": [
+      "Description",
+      "Message",
+      "Symbol"
+     ]
+    }
+   ]
+  },
+  "Safe Areas and Margins": {
+   "id": "12892:60611",
+   "ios": "ios-foundations|Layout",
+   "components": [
+    {
+     "id": "12892:62243",
+     "name": "iPhone Duo/Sheets/Inner - Landscape",
+     "variants": 0
+    },
+    {
+     "id": "12892:62242",
+     "name": "iPhone Duo/Sheets/Inner - Portrait",
+     "variants": 0
+    },
+    {
+     "id": "12892:62241",
+     "name": "iPhone Duo/Sheets/Outer - Landscape",
+     "variants": 0
+    },
+    {
+     "id": "12892:62240",
+     "name": "iPhone Duo/Sheets/Outer - Portrait",
+     "variants": 0
+    },
+    {
+     "id": "12892:62247",
+     "name": "iPhone Duo/Vertical Bar/Inner - Landscape",
+     "variants": 0
+    },
+    {
+     "id": "12892:62246",
+     "name": "iPhone Duo/Vertical Bar/Inner - Portrait",
+     "variants": 0
+    },
+    {
+     "id": "12892:62245",
+     "name": "iPhone Duo/Vertical Bar/Outer - Landscape",
+     "variants": 0
+    },
+    {
+     "id": "12892:62244",
+     "name": "iPhone Duo/Vertical Bar/Outer - Portrait",
+     "variants": 0
+    }
+   ]
+  }
+ }
+}

@@ -6,6 +6,16 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.32] - 2026-10-11
+
+### Added
+- The Figma kit "iOS and iPadOS 27" (Apple Design Resources) is mapped to the design system: its 141 public
+  components, across 36 kit pages, each under the iOS page it draws (Buttons, Toggles, Tab bars, Sheets and so on).
+  Every iOS page with kit components has a Figma section: each component, its kit page, its variant count and its
+  variant properties, linked to its node in the Plenix copy of the file. Web and Android pages show the components of
+  the iOS pages they map to. The map is data (platform/standards/figma-map.json), checked by the build, and served by
+  the API at /api/v1/figma-map.
+
 ## [0.31.31] - 2026-10-11
 
 ### Added
