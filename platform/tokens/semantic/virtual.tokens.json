@@ -1,0 +1,20 @@
+{
+  "$description": "Virtualization (hooks/useVirtualizer.js, system/virtual.css): the size of one item of a virtualized collection, which the gaps standing in for unrendered items are measured in. A container sets both on itself in its own stylesheet to the size and gap its items have.",
+  "plx-sys": {
+    "virtual-item-size": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension",
+      "$description": "One item's size along the scroll axis (a row's height, a column's width); a virtualized container sets it to its own item size (for a list: --plx-sys-data-table-row-height)"
+    },
+    "virtual-item-gap": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$description": "The gap between two items along the scroll axis (the container's row-gap or column-gap)"
+    },
+    "virtual-sticky-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "The surface behind a sticky group header of a virtualized list, so the items do not show through it"
+    }
+  }
+}

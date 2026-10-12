@@ -1,0 +1,30 @@
+{
+  "$description": "Interaction states (library plan wave 1, foundation interaction-states): the state roles that are not colors. The state colors are the theme's roles (--plx-sys-state-hover, -state-pressed, -state-selected, -accent-state-hover, -focus-ring-color, -content-disabled), set per light and dark mode; system/interaction.css draws every treatment from both.",
+  "plx-sys": {
+    "state-disabled-opacity": {
+      "$value": "{plx-sys.opacity-mid}",
+      "$type": "number",
+      "$description": "Disabled treatment on the accent and inverse surfaces: the whole element dims to this opacity (on a surface the text takes --plx-sys-content-disabled instead)."
+    },
+    "state-dragged-opacity": {
+      "$value": "{plx-sys.opacity-high}",
+      "$type": "number",
+      "$description": "Dragged treatment: the lifted item, raised with the overlay shadow, at this opacity so the drop target shows through it."
+    },
+    "state-drag-origin-opacity": {
+      "$value": "{plx-sys.opacity-low}",
+      "$type": "number",
+      "$description": "Dragged treatment: the place the item was picked up from (its placeholder) dims to this opacity while it moves."
+    },
+    "state-inverse-rest-opacity": {
+      "$value": "{plx-sys.opacity-high}",
+      "$type": "number",
+      "$description": "On the inverse surface (a toast, a tooltip): an action's content at rest. There is no lighter fill step on the inverse surface, so hover, pressed and selected bring the content to full strength."
+    },
+    "state-inverse-active-opacity": {
+      "$value": "1",
+      "$type": "number",
+      "$description": "On the inverse surface: an action's content while hovered, pressed or selected (full strength)."
+    }
+  }
+}

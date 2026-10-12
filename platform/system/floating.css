@@ -1,0 +1,144 @@
+/* Plenix · Floating positioning (platform/system/floating.css). Places a floating element (a menu, popover, tooltip or
+   list) beside its anchor; utils/floating.js (useFloating) writes the data attributes this file reads, so no position is
+   ever written as a style.
+     data-plx-floating-anchor="N" / data-plx-floating="N"   the pair, by a slot (1-16) held while it is open
+     data-plx-floating-placement   12 placements: top | bottom | start | end (the side; start and end follow the
+                                   writing direction), centered or aligned: top-start, top-end, start-top, start-bottom…
+     data-plx-floating-offset      the gap: xs (default) | sm | md | none (--plx-sys-floating-offset-*)
+     data-plx-floating-flip="off"  keeps the side without room; data-plx-floating-shift="off" keeps the alignment
+     data-plx-floating-match="width"  at least as wide as the anchor (a select or combobox list)
+     data-plx-floating-pointer, data-plx-floating-x / -y   placed at a point (a context menu at the pointer)
+   Three ways, chosen by what the browser supports (the same markup for all three):
+     anchor   CSS anchor positioning (Chrome 125, Safari 26, Firefox 147): position-area beside the anchor, flip and
+              shift as position-try fallbacks; it follows the anchor on scroll and resize by itself
+     pointer  typed attr() (Chrome 133): the point, already flipped and kept inside the window by useFloating
+     inline   neither: the floating element sits inside the anchor's parent (data-plx-floating-host), placed on its
+              side by these rules, with the side and alignment useFloating measured; render it next to its anchor */
+[data-plx-floating]{box-sizing:border-box;}
+
+@supports (anchor-name: --plx-a){
+  [data-plx-floating-anchor="1"]{anchor-name:--plx-floating-1;}
+  [data-plx-floating-anchor="2"]{anchor-name:--plx-floating-2;}
+  [data-plx-floating-anchor="3"]{anchor-name:--plx-floating-3;}
+  [data-plx-floating-anchor="4"]{anchor-name:--plx-floating-4;}
+  [data-plx-floating-anchor="5"]{anchor-name:--plx-floating-5;}
+  [data-plx-floating-anchor="6"]{anchor-name:--plx-floating-6;}
+  [data-plx-floating-anchor="7"]{anchor-name:--plx-floating-7;}
+  [data-plx-floating-anchor="8"]{anchor-name:--plx-floating-8;}
+  [data-plx-floating-anchor="9"]{anchor-name:--plx-floating-9;}
+  [data-plx-floating-anchor="10"]{anchor-name:--plx-floating-10;}
+  [data-plx-floating-anchor="11"]{anchor-name:--plx-floating-11;}
+  [data-plx-floating-anchor="12"]{anchor-name:--plx-floating-12;}
+  [data-plx-floating-anchor="13"]{anchor-name:--plx-floating-13;}
+  [data-plx-floating-anchor="14"]{anchor-name:--plx-floating-14;}
+  [data-plx-floating-anchor="15"]{anchor-name:--plx-floating-15;}
+  [data-plx-floating-anchor="16"]{anchor-name:--plx-floating-16;}
+  [data-plx-floating="1"]{position-anchor:--plx-floating-1;}
+  [data-plx-floating="2"]{position-anchor:--plx-floating-2;}
+  [data-plx-floating="3"]{position-anchor:--plx-floating-3;}
+  [data-plx-floating="4"]{position-anchor:--plx-floating-4;}
+  [data-plx-floating="5"]{position-anchor:--plx-floating-5;}
+  [data-plx-floating="6"]{position-anchor:--plx-floating-6;}
+  [data-plx-floating="7"]{position-anchor:--plx-floating-7;}
+  [data-plx-floating="8"]{position-anchor:--plx-floating-8;}
+  [data-plx-floating="9"]{position-anchor:--plx-floating-9;}
+  [data-plx-floating="10"]{position-anchor:--plx-floating-10;}
+  [data-plx-floating="11"]{position-anchor:--plx-floating-11;}
+  [data-plx-floating="12"]{position-anchor:--plx-floating-12;}
+  [data-plx-floating="13"]{position-anchor:--plx-floating-13;}
+  [data-plx-floating="14"]{position-anchor:--plx-floating-14;}
+  [data-plx-floating="15"]{position-anchor:--plx-floating-15;}
+  [data-plx-floating="16"]{position-anchor:--plx-floating-16;}
+  [data-plx-floating]{inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;position:fixed;z-index:var(--plx-sys-layer-popover);}
+  [data-plx-floating-placement="top"]{position-area:block-start center;position-try-fallbacks:flip-block, block-start span-inline-end, block-start span-inline-start, block-end span-inline-end, block-end span-inline-start;}
+  [data-plx-floating-placement="top"][data-plx-floating-flip="off"]{position-try-fallbacks:block-start span-inline-end, block-start span-inline-start;}
+  [data-plx-floating-placement="top"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="top"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="top-start"]{position-area:block-start span-inline-end;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="top-start"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="top-start"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="top-start"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="top-end"]{position-area:block-start span-inline-start;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="top-end"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="top-end"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="top-end"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="bottom"]{position-area:block-end center;position-try-fallbacks:flip-block, block-end span-inline-end, block-end span-inline-start, block-start span-inline-end, block-start span-inline-start;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-flip="off"]{position-try-fallbacks:block-end span-inline-end, block-end span-inline-start;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="bottom"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="bottom-start"]{position-area:block-end span-inline-end;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="bottom-start"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="bottom-start"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="bottom-start"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="bottom-end"]{position-area:block-end span-inline-start;position-try-fallbacks:flip-block, flip-inline, flip-block flip-inline;}
+  [data-plx-floating-placement="bottom-end"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="bottom-end"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="bottom-end"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="start"]{position-area:center inline-start;position-try-fallbacks:flip-inline, span-block-end inline-start, span-block-start inline-start, span-block-end inline-end, span-block-start inline-end;}
+  [data-plx-floating-placement="start"][data-plx-floating-flip="off"]{position-try-fallbacks:span-block-end inline-start, span-block-start inline-start;}
+  [data-plx-floating-placement="start"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="start"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="start-top"]{position-area:span-block-end inline-start;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="start-top"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="start-top"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="start-top"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="start-bottom"]{position-area:span-block-start inline-start;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="start-bottom"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="start-bottom"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="start-bottom"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="end"]{position-area:center inline-end;position-try-fallbacks:flip-inline, span-block-end inline-end, span-block-start inline-end, span-block-end inline-start, span-block-start inline-start;}
+  [data-plx-floating-placement="end"][data-plx-floating-flip="off"]{position-try-fallbacks:span-block-end inline-end, span-block-start inline-end;}
+  [data-plx-floating-placement="end"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="end"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="end-top"]{position-area:span-block-end inline-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="end-top"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="end-top"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="end-top"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-placement="end-bottom"]{position-area:span-block-start inline-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+  [data-plx-floating-placement="end-bottom"][data-plx-floating-flip="off"]{position-try-fallbacks:flip-block;}
+  [data-plx-floating-placement="end-bottom"][data-plx-floating-shift="off"]{position-try-fallbacks:flip-inline;}
+  [data-plx-floating-placement="end-bottom"][data-plx-floating-flip="off"][data-plx-floating-shift="off"]{position-try-fallbacks:none;}
+  [data-plx-floating-match="width"]{min-inline-size:anchor-size(inline);}
+}
+
+/* the gap on the side that faces the anchor (a flip moves it with the element) */
+[data-plx-floating][data-plx-floating-placement^="top"]{margin-block-end:var(--plx-sys-floating-offset-xs);}
+[data-plx-floating][data-plx-floating-placement^="top"][data-plx-floating-offset="sm"]{margin-block-end:var(--plx-sys-floating-offset-sm);}
+[data-plx-floating][data-plx-floating-placement^="top"][data-plx-floating-offset="md"]{margin-block-end:var(--plx-sys-floating-offset-md);}
+[data-plx-floating][data-plx-floating-placement^="top"][data-plx-floating-offset="none"]{margin-block-end:0;}
+[data-plx-floating][data-plx-floating-placement^="bottom"]{margin-block-start:var(--plx-sys-floating-offset-xs);}
+[data-plx-floating][data-plx-floating-placement^="bottom"][data-plx-floating-offset="sm"]{margin-block-start:var(--plx-sys-floating-offset-sm);}
+[data-plx-floating][data-plx-floating-placement^="bottom"][data-plx-floating-offset="md"]{margin-block-start:var(--plx-sys-floating-offset-md);}
+[data-plx-floating][data-plx-floating-placement^="bottom"][data-plx-floating-offset="none"]{margin-block-start:0;}
+[data-plx-floating][data-plx-floating-placement^="start"]{margin-inline-end:var(--plx-sys-floating-offset-xs);}
+[data-plx-floating][data-plx-floating-placement^="start"][data-plx-floating-offset="sm"]{margin-inline-end:var(--plx-sys-floating-offset-sm);}
+[data-plx-floating][data-plx-floating-placement^="start"][data-plx-floating-offset="md"]{margin-inline-end:var(--plx-sys-floating-offset-md);}
+[data-plx-floating][data-plx-floating-placement^="start"][data-plx-floating-offset="none"]{margin-inline-end:0;}
+[data-plx-floating][data-plx-floating-placement^="end"]{margin-inline-start:var(--plx-sys-floating-offset-xs);}
+[data-plx-floating][data-plx-floating-placement^="end"][data-plx-floating-offset="sm"]{margin-inline-start:var(--plx-sys-floating-offset-sm);}
+[data-plx-floating][data-plx-floating-placement^="end"][data-plx-floating-offset="md"]{margin-inline-start:var(--plx-sys-floating-offset-md);}
+[data-plx-floating][data-plx-floating-placement^="end"][data-plx-floating-offset="none"]{margin-inline-start:0;}
+
+/* pointer: at the point useFloating measured (already flipped and inside the window); no anchor, no fallbacks */
+@supports (inset-block-start: attr(data-plx-floating-y px, 0px)){
+  [data-plx-floating-pointer]{inset-block-end:auto;inset-block-start:attr(data-plx-floating-y px, 0px);inset-inline-end:auto;inset-inline-start:attr(data-plx-floating-x px, 0px);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;position:fixed;z-index:var(--plx-sys-layer-popover);}
+}
+
+/* inline: inside the anchor's parent, on its side (browsers without anchor positioning) */
+@supports not (anchor-name: --plx-a){
+  [data-plx-floating-host]{position:relative;}
+  [data-plx-floating]{inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;position:absolute;z-index:var(--plx-sys-layer-popover);}
+  [data-plx-floating-placement="top"]{inline-size:max-content;inset-block-end:100%;inset-inline-end:0;inset-inline-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  [data-plx-floating-placement="top-start"]{inset-block-end:100%;inset-inline-start:0;}
+  [data-plx-floating-placement="top-end"]{inset-block-end:100%;inset-inline-end:0;}
+  [data-plx-floating-placement="bottom"]{inline-size:max-content;inset-block-start:100%;inset-inline-end:0;inset-inline-start:0;margin-inline-end:auto;margin-inline-start:auto;}
+  [data-plx-floating-placement="bottom-start"]{inset-block-start:100%;inset-inline-start:0;}
+  [data-plx-floating-placement="bottom-end"]{inset-block-start:100%;inset-inline-end:0;}
+  [data-plx-floating-placement="start"]{block-size:max-content;inset-block-end:0;inset-block-start:0;inset-inline-end:100%;margin-block-end:auto;margin-block-start:auto;}
+  [data-plx-floating-placement="start-top"]{inset-block-start:0;inset-inline-end:100%;}
+  [data-plx-floating-placement="start-bottom"]{inset-block-end:0;inset-inline-end:100%;}
+  [data-plx-floating-placement="end"]{block-size:max-content;inset-block-end:0;inset-block-start:0;inset-inline-start:100%;margin-block-end:auto;margin-block-start:auto;}
+  [data-plx-floating-placement="end-top"]{inset-block-start:0;inset-inline-start:100%;}
+  [data-plx-floating-placement="end-bottom"]{inset-block-end:0;inset-inline-start:100%;}
+  [data-plx-floating-match="width"]{min-inline-size:100%;}
+}

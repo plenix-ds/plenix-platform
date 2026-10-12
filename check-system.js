@@ -288,6 +288,10 @@ for (const f of [path.join(ROOT, 'shared'), path.join(ROOT, 'platform', 'system'
   if (fs.existsSync(f)) add('legacy', f, 0, 'retired file or folder is back');
 }
 
+// rules kept as their own modules (check-system.rules/<name>.js: { check({ files, add }) }; the library waves, batch 347)
+const RULES_DIR = path.join(ROOT, 'check-system.rules');
+if (fs.existsSync(RULES_DIR)) for (const f of fs.readdirSync(RULES_DIR).filter((x) => /\.js$/.test(x)).sort()) require(path.join(RULES_DIR, f)).check({ files, add });
+
 const byRule = {};
 for (const f of findings) (byRule[f.rule] = byRule[f.rule] || []).push(f);
 for (const rule of Object.keys(byRule)) {

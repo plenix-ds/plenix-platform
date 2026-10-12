@@ -12018,7 +12018,2070 @@ const IMAGE_EDITOR_STEPS = exports.IMAGE_EDITOR_STEPS = {
   }
 };
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FORMATS = void 0;
+exports.dateTimeAttr = dateTimeAttr;
+exports.formatAddress = formatAddress;
+exports.formatBytes = formatBytes;
+exports.formatCompact = formatCompact;
+exports.formatCurrency = formatCurrency;
+exports.formatDate = formatDate;
+exports.formatDateTime = formatDateTime;
+exports.formatDuration = formatDuration;
+exports.formatList = formatList;
+exports.formatLocale = formatLocale;
+exports.formatNumber = formatNumber;
+exports.formatPercent = formatPercent;
+exports.formatPersonName = formatPersonName;
+exports.formatPhone = formatPhone;
+exports.formatRange = formatRange;
+exports.formatRelative = formatRelative;
+exports.formatTime = formatTime;
+exports.formatUnit = formatUnit;
+exports.regionName = regionName;
+/* Plenix · Formatting (platform/utils/format.js)
+   Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
+     every page, in the reader's locale, on the browser's Intl formatters (NumberFormat, DateTimeFormat,
+     RelativeTimeFormat, ListFormat, DisplayNames). The rules (precision, when relative time ends, address layouts, phone
+     groupings) are the Formats standard, platform/standards/formats.json; FORMATS below is the same data (the format test
+     keeps the two equal).
+   Usage:
+     formatNumber(1234.5)                         // "1,234.5"
+     formatBytes(1200000)                         // "1.2 MB"
+     formatCompact(1234)                          // "1.2K"
+     formatDate(date, { dateStyle: 'long' })          // "March 4, 2026"
+     formatRelative(date)                         // "5 minutes ago" (an absolute date after 7 days)
+     formatCurrency(12.5, 'EUR')                  // "€12.50"
+     formatPercent(0.256)                         // "26%"
+     formatPhone('+14155550123')                  // "+1 415 555 0123"
+   Props:
+     every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
+     formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
+     formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
+       display "short" (default), "long" or "narrow"
+     formatBytes(bytes, { decimals }): a file size in B, kB, MB, GB or TB (powers of 1000)
+     formatDuration(seconds, { display }): "1 hr, 5 min" (display "short", default), "1 hour, 5 minutes" ("long") or "1:05:00" ("clock")
+     formatCompact(value, { decimals }): "1.2K", "3.4M": only where space is tight, with the full value beside it (title, tooltip)
+     formatDate(date, { dateStyle, timeZone }): dateStyle "short" ("Mar 4"; the year when it is not this year), "medium"
+       ("Mar 4, 2026", default), "long" ("March 4, 2026") or "full" ("Wednesday, March 4, 2026")
+     formatTime(date, { seconds, timeZone, timeZoneName }): "2:05 PM"; timeZoneName "short" adds the zone ("2:05 PM PST")
+     formatDateTime(date, { dateStyle, timeZone, timeZoneName }): the date (medium) and the time together
+     formatRelative(date, { now, untilDays }): "5 minutes ago", "in 2 days", "yesterday"; after untilDays (FORMATS) the date
+     formatRange(from, to, { kind, dateStyle }): two dates ("Mar 4 – 6, 2026", kind "date", default) or numbers ("3–5", kind "number")
+     formatCurrency(amount, currency, { display, decimals, signed }): money in an ISO 4217 currency ("USD"); display
+       "symbol" (default, "$12.50") or "code" ("USD 12.50", for pages that mix currencies)
+     formatPercent(ratio, { decimals, signed }): a ratio as a percentage, 0.256 → "26%" (signed: "+3%", for changes)
+     formatList(items, { type }): "A, B, and C"; type "conjunction" (default), "disjunction" ("A, B, or C") or "unit"
+     formatPersonName(person, { display }): a name as the person wrote it; person is a string or { full, preferred };
+       display "full" (default), "preferred" (the preferred name, else the full one) or "initials"
+     formatAddress(address, { country, includeCountry }): the lines of a postal address in its country's order; address
+       is { name, organization, street (a string or lines), locality, region, postalCode, country (ISO 3166 code) }
+     regionName(code): a country's name in the reader's language ("DE" → "Germany")
+     formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
+       "national" ("(415) 555-0123")
+     dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     FORMATS: the standard's data (see platform/standards/formats.json)
+   Behavior:
+     Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
+     A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
+   Notes:
+     Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
+     Phone numbers and addresses follow FORMATS for the countries it lists; others fall back to a neutral layout.
+*/
+
+// The Formats standard (platform/standards/formats.json): edit both together; the format test compares them.
+const FORMATS = exports.FORMATS = {
+  number: {
+    decimals: {
+      default: 0,
+      ratio: 0,
+      compact: 1,
+      bytes: 1
+    }
+  },
+  bytes: {
+    base: 1000,
+    units: ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte']
+  },
+  relative: {
+    untilDays: 7
+  },
+  currency: {
+    display: 'symbol',
+    mixedDisplay: 'code'
+  },
+  date: {
+    default: 'medium'
+  },
+  address: {
+    default: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
+    US: ['name', 'organization', 'street', 'locality, region postalCode', 'country'],
+    CA: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
+    GB: ['name', 'organization', 'street', 'locality', 'postalCode', 'country'],
+    DE: ['name', 'organization', 'street', 'postalCode locality', 'country'],
+    FR: ['name', 'organization', 'street', 'postalCode locality', 'country'],
+    IT: ['name', 'organization', 'street', 'postalCode locality region', 'country'],
+    JP: ['country', 'postalCode', 'region locality', 'street', 'organization', 'name']
+  },
+  phone: {
+    '1': {
+      national: '(###) ###-####',
+      international: '+1 ### ### ####'
+    },
+    '33': {
+      national: '0# ## ## ## ##',
+      international: '+33 # ## ## ## ##'
+    },
+    '44': {
+      national: '0#### ######',
+      international: '+44 #### ######'
+    },
+    '49': {
+      national: '0### #######',
+      international: '+49 ### #######'
+    },
+    '61': {
+      national: '0# #### ####',
+      international: '+61 # #### ####'
+    }
+  }
+};
+const ok = n => typeof n === 'number' && isFinite(n);
+const toDate = d => {
+  const x = d instanceof Date ? d : new Date(d);
+  return isNaN(x.getTime()) ? null : x;
+};
+function formatLocale() {
+  const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
+  if (lang) return lang;
+  if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
+  return 'en-US';
+}
+const loc = o => o && o.locale || formatLocale();
+const digits = d => d === undefined ? {} : {
+  minimumFractionDigits: d,
+  maximumFractionDigits: d
+};
+function formatNumber(value, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    ...digits(o.decimals),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(value);
+}
+function formatUnit(value, unit, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    style: 'unit',
+    unit,
+    unitDisplay: o.display || 'short',
+    ...digits(o.decimals)
+  }).format(value);
+}
+function formatBytes(bytes, o = {}) {
+  if (!ok(bytes)) return '';
+  const {
+    base,
+    units
+  } = FORMATS.bytes;
+  let i = 0,
+    v = Math.abs(bytes);
+  while (v >= base && i < units.length - 1) {
+    v /= base;
+    i++;
+  }
+  const d = o.decimals !== undefined ? o.decimals : i === 0 ? 0 : FORMATS.number.decimals.bytes;
+  return new Intl.NumberFormat(loc(o), {
+    style: 'unit',
+    unit: units[i],
+    unitDisplay: 'short',
+    maximumFractionDigits: d
+  }).format(Math.sign(bytes) * v);
+}
+function formatDuration(seconds, o = {}) {
+  if (!ok(seconds)) return '';
+  const s = Math.round(Math.abs(seconds)),
+    h = Math.floor(s / 3600),
+    m = Math.floor(s % 3600 / 60),
+    r = s % 60;
+  if (o.display === 'clock') {
+    const two = n => String(n).padStart(2, '0');
+    return (seconds < 0 ? '-' : '') + (h ? h + ':' + two(m) : String(m)) + ':' + two(r);
+  }
+  const display = o.display === 'long' ? 'long' : 'short';
+  const parts = [[h, 'hour'], [m, 'minute'], [r, 'second']].filter(([n], i, all) => n || i === 2 && !all[0][0] && !all[1][0]);
+  return formatList(parts.map(([n, unit]) => formatUnit(n, unit, {
+    locale: o.locale,
+    display
+  })), {
+    locale: o.locale,
+    type: 'unit'
+  });
+}
+function formatCompact(value, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    notation: 'compact',
+    maximumFractionDigits: o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.compact
+  }).format(value);
+}
+const DATE_STYLES = {
+  medium: {
+    dateStyle: 'medium'
+  },
+  long: {
+    dateStyle: 'long'
+  },
+  full: {
+    dateStyle: 'full'
+  }
+};
+function formatDate(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const style = o.dateStyle || FORMATS.date.default;
+  if (style === 'short') {
+    const thisYear = d.getFullYear() === new Date().getFullYear();
+    return new Intl.DateTimeFormat(loc(o), {
+      month: 'short',
+      day: 'numeric',
+      year: thisYear ? undefined : 'numeric',
+      timeZone: o.timeZone
+    }).format(d);
+  }
+  return new Intl.DateTimeFormat(loc(o), {
+    ...(DATE_STYLES[style] || DATE_STYLES.medium),
+    timeZone: o.timeZone
+  }).format(d);
+}
+function formatTime(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  return new Intl.DateTimeFormat(loc(o), {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: o.seconds ? '2-digit' : undefined,
+    timeZone: o.timeZone,
+    timeZoneName: o.timeZoneName
+  }).format(d);
+}
+function formatDateTime(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const style = o.dateStyle && DATE_STYLES[o.dateStyle] ? o.dateStyle : FORMATS.date.default;
+  if (o.timeZoneName) return new Intl.DateTimeFormat(loc(o), {
+    ...(style === 'medium' ? {
+      month: 'short'
+    } : {
+      month: 'long'
+    }),
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: o.timeZone,
+    timeZoneName: o.timeZoneName
+  }).format(d);
+  return new Intl.DateTimeFormat(loc(o), {
+    dateStyle: style,
+    timeStyle: 'short',
+    timeZone: o.timeZone
+  }).format(d);
+}
+const STEPS = [['second', 60], ['minute', 60], ['hour', 24], ['day', 7]];
+function formatRelative(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const now = toDate(o.now || Date.now());
+  const until = o.untilDays !== undefined ? o.untilDays : FORMATS.relative.untilDays;
+  let diff = (d.getTime() - now.getTime()) / 1000;
+  if (Math.abs(diff) >= until * 86400) return formatDate(d, {
+    locale: o.locale,
+    dateStyle: 'medium',
+    timeZone: o.timeZone
+  });
+  const rtf = new Intl.RelativeTimeFormat(loc(o), {
+    numeric: 'auto'
+  });
+  for (const [unit, size] of STEPS) {
+    if (Math.abs(diff) < size || unit === 'day') return rtf.format(Math.round(diff), unit);
+    diff /= size;
+  }
+  return '';
+}
+function formatRange(from, to, o = {}) {
+  if (o.kind === 'number') {
+    if (!ok(from) || !ok(to)) return '';
+    return new Intl.NumberFormat(loc(o), digits(o.decimals)).formatRange(from, to);
+  }
+  const a = toDate(from),
+    b = toDate(to);
+  if (!a || !b) return '';
+  return new Intl.DateTimeFormat(loc(o), {
+    ...(DATE_STYLES[o.dateStyle] || DATE_STYLES.medium),
+    timeZone: o.timeZone
+  }).formatRange(a, b);
+}
+function formatCurrency(amount, currency, o = {}) {
+  if (!ok(amount) || !currency) return '';
+  return new Intl.NumberFormat(loc(o), {
+    style: 'currency',
+    currency,
+    currencyDisplay: o.display || FORMATS.currency.display,
+    ...digits(o.decimals),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(amount);
+}
+function formatPercent(ratio, o = {}) {
+  if (!ok(ratio)) return '';
+  const d = o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.ratio;
+  return new Intl.NumberFormat(loc(o), {
+    style: 'percent',
+    ...digits(d),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(ratio);
+}
+function formatList(items, o = {}) {
+  const list = (items || []).filter(x => x !== undefined && x !== null && x !== '').map(String);
+  return new Intl.ListFormat(loc(o), o.type === 'unit' ? {
+    type: 'unit',
+    style: 'short'
+  } : {
+    type: o.type || 'conjunction'
+  }).format(list);
+}
+function formatPersonName(person, o = {}) {
+  const p = typeof person === 'string' ? {
+    full: person
+  } : person || {};
+  const full = String(p.full || '').trim();
+  if (o.display === 'preferred') return String(p.preferred || '').trim() || full;
+  if (o.display === 'initials') {
+    const words = full.split(/\s+/).filter(Boolean);
+    const pick = words.length > 1 ? [words[0], words[words.length - 1]] : words;
+    return pick.map(w => Array.from(w)[0].toLocaleUpperCase(loc(o))).join('');
+  }
+  return full;
+}
+function regionName(code, o = {}) {
+  if (!code) return '';
+  try {
+    return new Intl.DisplayNames(loc(o), {
+      type: 'region'
+    }).of(code) || code;
+  } catch (e) {
+    return code;
+  }
+}
+function formatAddress(address, o = {}) {
+  const a = address || {};
+  const country = (o.country || a.country || '').toUpperCase();
+  const layout = FORMATS.address[country] || FORMATS.address.default;
+  const readerRegion = (loc(o).split('-')[1] || '').toUpperCase();
+  const includeCountry = o.includeCountry !== undefined ? o.includeCountry : !!country && country !== readerRegion;
+  const value = k => {
+    if (k === 'country') return includeCountry ? regionName(country, o) : '';
+    if (k === 'street') return [].concat(a.street || []).filter(Boolean).join('\n');
+    return a[k] ? String(a[k]) : '';
+  };
+  const lines = [];
+  layout.forEach(pattern => {
+    // a pattern line: field names with the punctuation between them; a separator is written only between two values
+    let text = '',
+      sep = '';
+    for (const [, field, between] of pattern.matchAll(/([A-Za-z]+)|([^A-Za-z]+)/g)) {
+      if (between) {
+        sep = between;
+        continue;
+      }
+      const v = value(field);
+      if (!v) continue;
+      text += (text ? sep : '') + v;
+      sep = '';
+    }
+    text.split('\n').forEach(l => {
+      if (l.trim()) lines.push(l.trim());
+    });
+  });
+  return lines;
+}
+function formatPhone(e164, o = {}) {
+  const raw = String(e164 || '').trim();
+  const num = raw.replace(/[^\d+]/g, '');
+  if (!/^\+\d{4,15}$/.test(num)) return raw;
+  const all = num.slice(1);
+  const code = Object.keys(FORMATS.phone).sort((x, y) => y.length - x.length).find(c => all.startsWith(c));
+  const display = o.display === 'national' ? 'national' : 'international';
+  if (code) {
+    const rest = all.slice(code.length),
+      pattern = FORMATS.phone[code][display];
+    if ((pattern.match(/#/g) || []).length === rest.length) {
+      let i = 0;
+      return pattern.replace(/#/g, () => rest[i++]);
+    }
+  }
+  // a country Formats does not list (or a length its pattern does not fit): the country code when it is known, then the
+  // digits in groups of three, the last group taking up to four
+  const groups = [];
+  let rest = code ? all.slice(code.length) : all;
+  while (rest.length > 4) {
+    groups.push(rest.slice(0, 3));
+    rest = rest.slice(3);
+  }
+  groups.push(rest);
+  return '+' + (code ? code + ' ' : '') + groups.join(' ');
+}
+function dateTimeAttr(date) {
+  const d = toDate(date);
+  return d ? d.toISOString() : '';
+}
+  } },
+  "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LiveRegion = LiveRegion;
+exports.announce = announce;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("./cx.js");
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LiveRegion, announce (platform/utils/announce.jsx)
+   Summary: Tells screen-reader users about a change they cannot see happen (a save, a count of results, an upload that
+     finished, an error) without moving their focus. announce(text) speaks through one pair of page-wide regions;
+     LiveRegion is a region of a component's own, for messages that also stay on screen (a status line, a log).
+   Usage:
+     announce('12 results');                               // polite: waits until the reader is idle
+     announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
+     <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
+     <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
+   Props:
+     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
+     LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
+       (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
+     LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
+     LiveRegion.atomic: read the whole region on every change, not only what changed (default: true for status, else false)
+     LiveRegion.children: the message (render the region empty first, then put the text in it)
+     LiveRegion.className: more classes on the region
+   Behavior:
+     The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
+     Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
+     A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
+   Notes:
+     Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
+     Never put a control inside a live region. Messages are plain text: no markup, icons or emoji names.
+     Meets WCAG 2.2 SC 4.1.3 Status Messages.
+*/
+const regions = {};
+const pending = {};
+
+// the page-wide region for one politeness (made once, visually hidden)
+function region(politeness) {
+  if (regions[politeness] && regions[politeness].isConnected) return regions[politeness];
+  const el = document.createElement('div');
+  el.className = 'plx-visually-hidden';
+  el.setAttribute('aria-live', politeness);
+  el.setAttribute('aria-atomic', 'true');
+  el.setAttribute('data-plx-announcer', politeness);
+  if (politeness === 'assertive') el.setAttribute('role', 'alert');
+  document.body.appendChild(el);
+  regions[politeness] = el;
+  return el;
+}
+function announce(text, {
+  politeness = 'polite'
+} = {}) {
+  if (typeof document === 'undefined' || !document.body) return;
+  const p = politeness === 'assertive' ? 'assertive' : 'polite';
+  const el = region(p);
+  // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
+  el.textContent = '';
+  if (pending[p]) clearTimeout(pending[p]);
+  pending[p] = setTimeout(() => {
+    pending[p] = null;
+    el.textContent = String(text || '');
+  }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
+}
+const KINDS = {
+  polite: {
+    'aria-live': 'polite'
+  },
+  assertive: {
+    'aria-live': 'assertive'
+  },
+  status: {
+    role: 'status',
+    'aria-live': 'polite'
+  },
+  log: {
+    role: 'log',
+    'aria-live': 'polite'
+  }
+};
+function LiveRegion({
+  kind = 'polite',
+  visible = false,
+  atomic,
+  className,
+  children,
+  ...rest
+}) {
+  const a = KINDS[kind] || KINDS.polite;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({}, a, {
+    "aria-atomic": atomic !== undefined ? atomic : kind === 'status',
+    "data-plx-live": kind,
+    className: (0, _cx.cx)(!visible && 'plx-visually-hidden', className)
+  }, rest), children);
+}
+  } },
+  "platform/utils/clipboard.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.copyImage = copyImage;
+exports.copyRich = copyRich;
+exports.copyText = copyText;
+exports.useClipboard = useClipboard;
+var _react = _interopRequireDefault(require("react"));
+var _announce = require("./announce.jsx");
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Clipboard (platform/utils/clipboard.js)
+   Summary: Copies a value (an ID, a path, a link, a code sample, a picture) to the clipboard and confirms it: the copy
+     functions write it, useClipboard keeps the "Copied" state for a moment and announces the result to screen readers.
+   Usage:
+     const clip = useClipboard();
+     <Button icon={clip.copied ? 'check' : 'copy'} onClick={() => clip.copy(path)}>{clip.copied ? 'Copied' : 'Copy file path'}</Button>
+     {clip.error && <Notice tone="danger">{clip.error}</Notice>}
+     await copyText('ASSET-0142');
+     await copyRich({ html: '<b>Cross 014</b>', text: 'Cross 014' });
+     await copyImage(pngBlob);
+   Props:
+     copyText(text): writes plain text; resolves true when copied, false when the browser refused
+     copyRich({ html, text }): writes HTML for editors that paste formatting, with the plain text for the others
+     copyImage(blob): writes a picture (a PNG Blob, or a Promise of one); false where the browser cannot
+     useClipboard({ timeout, strings }): returns { copy(value), copied, error, reset() }; value is text, { html, text } or a
+       Blob. copied stays true for timeout milliseconds (default the --plx-sys-clipboard-feedback-duration token)
+     strings: { copied: 'Copied', failed: 'Couldn’t copy. Select the text and copy it by hand.' }: what is announced and
+       returned as error
+   Behavior:
+     Uses the asynchronous Clipboard API; for text, where it is missing or refused (an insecure page, an old browser), it
+     falls back to a hidden text area and the copy command.
+     Copies only from a person's action (a press or a key): browsers refuse it otherwise.
+     Success and failure are announced through the polite live region (announce); the failure message says what to do.
+   Notes:
+     Never reads the clipboard. Name the button for what it copies ("Copy file path"), not just "Copy".
+*/
+
+const STRINGS = {
+  copied: 'Copied',
+  failed: 'Couldn’t copy. Select the text and copy it by hand.'
+};
+
+// the copy command on a hidden text area: for pages without the Clipboard API
+function legacyCopy(text) {
+  if (typeof document === 'undefined' || !document.body) return false;
+  const area = document.createElement('textarea');
+  area.className = 'plx-visually-hidden';
+  area.setAttribute('readonly', '');
+  area.setAttribute('aria-hidden', 'true');
+  area.value = text;
+  const active = document.activeElement;
+  document.body.appendChild(area);
+  area.select();
+  let done = false;
+  try {
+    done = document.execCommand('copy');
+  } catch (e) {
+    done = false;
+  }
+  area.remove();
+  if (active && active.focus) active.focus();
+  return done;
+}
+async function copyText(text) {
+  const value = String(text === undefined || text === null ? '' : text);
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch (e) {/* refused: try the copy command */}
+  return legacyCopy(value);
+}
+async function copyRich({
+  html = '',
+  text = ''
+} = {}) {
+  try {
+    if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/html': new Blob([html], {
+          type: 'text/html'
+        }),
+        'text/plain': new Blob([text], {
+          type: 'text/plain'
+        })
+      })]);
+      return true;
+    }
+  } catch (e) {/* refused: plain text only */}
+  return copyText(text);
+}
+async function copyImage(blob) {
+  try {
+    if (typeof ClipboardItem === 'undefined' || !navigator.clipboard || !navigator.clipboard.write) return false;
+    const b = await blob;
+    await navigator.clipboard.write([new ClipboardItem({
+      [b.type || 'image/png']: b
+    })]);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+function useClipboard({
+  timeout,
+  strings
+} = {}) {
+  const s = {
+    ...STRINGS,
+    ...(strings || {})
+  };
+  const [copied, setCopied] = _react.default.useState(false);
+  const [error, setError] = _react.default.useState(null);
+  const timer = _react.default.useRef(null);
+  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
+  const reset = _react.default.useCallback(() => {
+    clearTimeout(timer.current);
+    setCopied(false);
+    setError(null);
+  }, []);
+  const copy = _react.default.useCallback(async value => {
+    clearTimeout(timer.current);
+    const done = typeof Blob !== 'undefined' && value instanceof Blob ? await copyImage(value) : value && typeof value === 'object' && ('html' in value || 'text' in value) ? await copyRich(value) : await copyText(value);
+    setCopied(done);
+    setError(done ? null : s.failed);
+    (0, _announce.announce)(done ? s.copied : s.failed, {
+      politeness: done ? 'polite' : 'assertive'
+    });
+    if (done) timer.current = setTimeout(() => setCopied(false), timeout !== undefined ? timeout : (0, _tokenTime.tokenMs)('--plx-sys-clipboard-feedback-duration'));
+    return done;
+  }, [timeout, s.copied, s.failed]);
+  return {
+    copy,
+    copied,
+    error,
+    reset
+  };
+}
+  } },
+  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hotkeyKeys = hotkeyKeys;
+exports.hotkeyLabel = hotkeyLabel;
+exports.hotkeyList = hotkeyList;
+exports.isMac = isMac;
+exports.parseHotkey = parseHotkey;
+exports.registerHotkey = registerHotkey;
+exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
+exports.singleKeyHotkeys = singleKeyHotkeys;
+exports.subscribeHotkeys = subscribeHotkeys;
+exports.useHotkey = useHotkey;
+exports.useHotkeyList = useHotkeyList;
+var _react = _interopRequireDefault(require("react"));
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Hotkey (platform/utils/hotkey.js)
+   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
+     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
+     menus read their hints from (Kbd draws the label).
+   Usage:
+     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
+     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
+     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
+     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
+     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
+   Props:
+     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
+     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
+       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
+     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
+     options.enabled: false unbinds it without unmounting (default true)
+     options.allowInFields: also fire while focus is in a text field (default false)
+     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
+     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
+     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
+     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
+     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
+   Behavior:
+     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
+     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
+     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
+     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
+   Notes:
+     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
+     Use the same label here as in the menu item, so the dialog and the menu agree.
+*/
+
+const MODS = ['ctrl', 'meta', 'alt', 'shift'];
+const NAMES = {
+  esc: 'escape',
+  del: 'delete',
+  space: ' ',
+  spacebar: ' ',
+  return: 'enter',
+  up: 'arrowup',
+  down: 'arrowdown',
+  left: 'arrowleft',
+  right: 'arrowright',
+  cmd: 'meta',
+  command: 'meta',
+  option: 'alt',
+  control: 'ctrl'
+};
+const entries = [];
+const listeners = new Set();
+let singleKeys = true;
+let buffer = [],
+  bufferAt = 0,
+  installed = false,
+  nextId = 1;
+function isMac() {
+  if (typeof navigator === 'undefined') return false;
+  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
+  return /mac|iphone|ipad|ipod/i.test(p);
+}
+
+// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
+function parseStep(step, mac) {
+  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
+  const s = {
+    ctrl: false,
+    meta: false,
+    alt: false,
+    shift: false,
+    key: ''
+  };
+  parts.forEach(raw => {
+    let p = raw.toLowerCase();
+    p = NAMES[p] || p;
+    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
+  });
+  return s;
+}
+function parseHotkey(binding, mac = isMac()) {
+  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
+}
+function matchStep(s, e) {
+  const key = (e.key || '').toLowerCase();
+  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
+  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
+  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
+  if (!sameKey) return false;
+  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
+  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
+  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
+}
+const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
+function inField(el) {
+  if (!el || !el.tagName) return false;
+  if (el.isContentEditable) return true;
+  const t = el.tagName.toLowerCase();
+  if (t === 'textarea' || t === 'select') return true;
+  if (t !== 'input') return false;
+  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
+}
+const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
+const depth = el => {
+  let n = 0;
+  for (let x = el; x; x = x.parentElement) n++;
+  return n;
+};
+function onKeyDown(e) {
+  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
+  const now = Date.now();
+  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
+  const target = e.target,
+    field = inField(target);
+  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
+    x,
+    scope: scopeOf(x.scope)
+  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
+  const step = buffer.length;
+  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
+  // the longest waiting sequence first, then a fresh start
+  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
+    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
+    if (full) {
+      buffer = [];
+      e.preventDefault();
+      full.x.handler(e);
+      return;
+    }
+    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
+      buffer = buffer.slice(buffer.length - at).concat([{
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey
+      }]);
+      bufferAt = now;
+      return;
+    }
+  }
+  buffer = [];
+}
+function install() {
+  if (installed || typeof document === 'undefined') return;
+  document.addEventListener('keydown', onKeyDown);
+  installed = true;
+}
+const notify = () => listeners.forEach(fn => fn());
+function registerHotkey(binding, handler, options = {}) {
+  install();
+  const entry = {
+    id: nextId++,
+    binding,
+    steps: parseHotkey(binding),
+    handler,
+    scope: options.scope || null,
+    enabled: options.enabled !== false,
+    allowInFields: !!options.allowInFields,
+    label: options.label || '',
+    group: options.group || ''
+  };
+  entries.push(entry);
+  if (entry.label) notify();
+  return () => {
+    const i = entries.indexOf(entry);
+    if (i >= 0) {
+      entries.splice(i, 1);
+      if (entry.label) notify();
+    }
+  };
+}
+function useHotkey(binding, handler, options = {}) {
+  const ref = _react.default.useRef(handler);
+  ref.current = handler;
+  const {
+    scope,
+    enabled = true,
+    allowInFields = false,
+    label,
+    group
+  } = options;
+  _react.default.useEffect(() => {
+    if (!enabled || !binding) return undefined;
+    return registerHotkey(binding, e => ref.current && ref.current(e), {
+      scope,
+      allowInFields,
+      label,
+      group
+    });
+  }, [binding, scope, enabled, allowInFields, label, group]);
+}
+const MAC_NAMES = {
+  meta: '⌘',
+  ctrl: '⌃',
+  alt: '⌥',
+  shift: '⇧'
+};
+const PC_NAMES = {
+  meta: 'Win',
+  ctrl: 'Ctrl',
+  alt: 'Alt',
+  shift: 'Shift'
+};
+const KEY_NAMES = {
+  ' ': 'Space',
+  escape: 'Esc',
+  arrowup: '↑',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+  enter: 'Enter',
+  delete: 'Delete',
+  backspace: 'Backspace',
+  tab: 'Tab'
+};
+function hotkeyKeys(binding, {
+  mac = isMac()
+} = {}) {
+  const names = mac ? MAC_NAMES : PC_NAMES;
+  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
+}
+function hotkeyLabel(binding, options) {
+  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
+}
+function hotkeyList() {
+  return entries.filter(x => x.label).map(x => ({
+    binding: x.binding,
+    label: x.label,
+    group: x.group,
+    keys: hotkeyLabel(x.binding),
+    enabled: x.enabled
+  }));
+}
+function subscribeHotkeys(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+function useHotkeyList() {
+  const [list, setList] = _react.default.useState(hotkeyList);
+  _react.default.useEffect(() => {
+    setList(hotkeyList());
+    return subscribeHotkeys(() => setList(hotkeyList()));
+  }, []);
+  return list;
+}
+function setSingleKeyHotkeys(on) {
+  singleKeys = !!on;
+  buffer = [];
+}
+function singleKeyHotkeys() {
+  return singleKeys;
+}
+  } },
+  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VIRTUAL_STICKY_CLASS = void 0;
+exports.VirtualGap = VirtualGap;
+exports.VirtualProbe = VirtualProbe;
+exports.gapPieces = gapPieces;
+exports.useVirtualizer = useVirtualizer;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useVirtualizer
+   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
+     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
+     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
+   Usage:
+     const v = useVirtualizer({ count: files.length });
+     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
+       <VirtualProbe />
+       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
+         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
+     </div>
+     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
+   Props:
+     count: how many items there are
+     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
+       size; the token is the estimate for the items not rendered)
+     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
+     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
+     overscan: rows rendered beyond each edge of the view (default 4)
+     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
+     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
+     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
+       grid) not rendered
+     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
+     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
+       first in the viewport)
+   Behavior:
+     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
+     name it (aria-label) and give it its role (list, grid, listbox).
+     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
+     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
+     scroll anchoring keeps the content still while gaps replace items of another size.
+     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
+     "12 of 4,000" even though only a few are in the page.
+   Notes:
+     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
+     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
+     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
+     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
+*/
+
+const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
+
+// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
+function gapPieces(count) {
+  const out = [];
+  let n = Math.max(0, Math.floor(count));
+  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
+    out.push(p);
+    n -= p;
+  }
+  return out;
+}
+function VirtualGap({
+  count,
+  axis = 'y'
+}) {
+  if (!count) return null;
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-gap',
+    'data-plx-axis': axis,
+    'aria-hidden': 'true'
+  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
+    key: i,
+    className: 'plx-virtual-gap__piece',
+    'data-plx-span': String(p)
+  })));
+}
+function VirtualProbe({
+  axis = 'y'
+}) {
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-probe',
+    'data-plx-axis': axis,
+    'data-plx-virtual-probe': '',
+    'aria-hidden': 'true'
+  });
+}
+function useVirtualizer({
+  count = 0,
+  mode = 'fixed',
+  axis = 'y',
+  grid = false,
+  overscan = 4,
+  sticky
+} = {}) {
+  const viewportRef = _react.default.useRef(null);
+  const [view, setView] = _react.default.useState({
+    offset: 0,
+    size: 0,
+    pitch: 0,
+    columns: 1
+  });
+  const [focused, setFocused] = _react.default.useState(-1);
+  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
+  const shown = _react.default.useRef({
+    start: 0,
+    end: 0
+  }); // the rows rendered last
+  const horizontal = axis === 'x';
+
+  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
+  const measure = _react.default.useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
+    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
+    let columns = 1;
+    if (grid) {
+      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
+      if (items.length) {
+        const top = items[0].offsetTop;
+        let n = 0;
+        while (n < items.length && items[n].offsetTop === top) n++;
+        // no wrap seen while more items exist: guess wider, render more and look again
+        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
+      }
+    }
+    if (mode === 'measured') {
+      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
+        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
+      });
+    }
+    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
+    const size = horizontal ? el.clientWidth : el.clientHeight;
+    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
+      offset,
+      size,
+      pitch,
+      columns
+    });
+  }, [horizontal, grid, mode, count, view.columns]);
+  _react.default.useLayoutEffect(() => {
+    measure();
+  });
+  _react.default.useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return undefined;
+    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
+    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+    const onScroll = () => measure();
+    const onFocus = e => {
+      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
+      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
+    };
+    const onBlur = e => {
+      if (!el.contains(e.relatedTarget)) setFocused(-1);
+    };
+    el.addEventListener('scroll', onScroll, {
+      passive: true
+    });
+    el.addEventListener('focusin', onFocus);
+    el.addEventListener('focusout', onBlur);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('focusin', onFocus);
+      el.removeEventListener('focusout', onBlur);
+      if (ro) ro.disconnect();
+    };
+  }, [measure]);
+  const columns = grid ? Math.max(1, view.columns) : 1;
+  const rows = Math.ceil(count / columns);
+  const pitch = view.pitch || 1;
+  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
+  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
+  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
+  let first;
+  const last = shown.current;
+  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
+    let pos = last.start * pitch,
+      i = last.start;
+    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
+      pos += sizes.current.get(i) || pitch;
+      i++;
+    }
+    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
+    first = Math.min(rows, i);
+  } else first = Math.min(rows, Math.floor(view.offset / pitch));
+  let fill = 0,
+    covered = 0;
+  const target = view.size || pitch * 10;
+  while (first + fill < rows && covered < target) {
+    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
+    fill++;
+  }
+  const startRow = Math.max(0, first - overscan);
+  const endRow = Math.min(rows, first + fill + overscan); // exclusive
+  const start = startRow * columns,
+    end = Math.min(count, endRow * columns);
+  shown.current = {
+    start: startRow,
+    end: endRow
+  };
+
+  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
+  const pinned = [];
+  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
+  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
+  if (header !== undefined && !grid) pinned.push(header);
+  const segments = [];
+  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
+  let at = 0;
+  const pushRows = (from, to) => {
+    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
+      key: 'i' + i,
+      index: i
+    });
+  };
+  const pushGap = (from, to) => {
+    if (to > from) segments.push({
+      key: 'g' + from,
+      gap: true,
+      count: to - from
+    });
+  };
+  rowsOut.filter(r => r < startRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, startRow);
+  pushRows(startRow, endRow);
+  at = endRow;
+  rowsOut.filter(r => r >= endRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, rows);
+  const itemProps = _react.default.useCallback(index => ({
+    'data-plx-virtual-index': index,
+    'aria-posinset': index + 1,
+    'aria-setsize': count
+  }), [count]);
+  const scrollToIndex = _react.default.useCallback(index => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const offset = Math.floor(index / columns) * pitch;
+    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
+    measure();
+  }, [columns, pitch, horizontal, measure]);
+  return {
+    viewportRef,
+    segments,
+    itemProps,
+    scrollToIndex,
+    range: {
+      start,
+      end
+    },
+    columns
+  };
+}
+  } },
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
+}
+  } },
+  "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Portal = Portal;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _cx = require("./cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Portal
+   Summary: Draws its children outside their parent's layout, so an overlay is never clipped by a scroll area, a card or a pane and never sits under a stacking context: into one shared root at the end of the page, into the browser's top layer, or into a container you name. The density, theme and direction of the place it is written go with it.
+   Usage:
+     <Portal><div className="plx-toast-region">…</div></Portal>
+     <Portal layer="top"><div ref={panel} className="plx-menu">…</div></Portal>        // above every dialog and pane
+     <Portal container={sideRef}>…</Portal>                                          // into an element of the page
+   Props:
+     children: what to draw
+     layer ('page'): 'page' draws into the shared root at the end of <body> (plx-portal-root); 'top' into the browser's top layer (a manual popover over the whole window that lets the pointer through to the page except on its content)
+     container (null): an element, or a ref to one, to draw into instead of the shared root
+     className: more classes on the Portal's own container (plx-portal)
+   Behavior:
+     The Portal leaves an empty <template> where it is written and copies from its nearest ancestors the density (data-plx-density), the theme and mode of a theme zone (data-plx-theme, data-plx-mode), the direction (dir) and the language (lang) onto its own container, so the tokens and the reading direction inside are those of the place it came from. It copies them again on every render.
+     Its container is created with it and removed when it unmounts; the shared root stays.
+     Events from the content bubble through the React tree as if it were in place (React portals), not through the page.
+   Notes:
+     A Portal moves content, nothing else: focus into the content and back to its trigger, Escape and the modal veil are the overlay's (useLayer); the ARIA link between a trigger and its content (aria-controls, aria-describedby) is the component's, since the page order no longer shows it.
+     Do not portal content that belongs in the reading order of the page.
+     Dialog, Sheet, Toast and MediaViewer adopt it in their own tasks.
+*/
+
+const ROOT_ID = 'plx-portal-root';
+// what the Portal carries from where it is written: [attribute, the attributes that travel with it]
+const CARRIED = [['data-plx-density'], ['data-plx-mode', 'data-plx-theme'], ['dir'], ['lang']];
+const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// the shared root at the end of <body>, made once
+function sharedRoot() {
+  let root = document.getElementById(ROOT_ID);
+  if (!root) {
+    root = document.createElement('div');
+    root.id = ROOT_ID;
+    root.className = 'plx-portal-root';
+    document.body.appendChild(root);
+  }
+  return root;
+}
+
+// the origin's nearest ancestor (below <html>, whose attributes reach everything already) that sets each carried attribute
+function carry(origin, node) {
+  CARRIED.forEach(group => {
+    const from = origin && origin.parentElement ? origin.parentElement.closest('[' + group[0] + ']') : null;
+    const own = from && from !== document.documentElement ? from : null;
+    group.forEach(name => {
+      const v = own ? own.getAttribute(name) : null;
+      if (v == null) node.removeAttribute(name);else node.setAttribute(name, v);
+    });
+  });
+}
+function Portal({
+  children,
+  layer = 'page',
+  container = null,
+  className
+}) {
+  const origin = _react.default.useRef(null);
+  const [node] = _react.default.useState(() => typeof document === 'undefined' ? null : document.createElement('div'));
+  const top = layer === 'top';
+
+  // the container: placed in its parent while the Portal is mounted, in the top layer for layer="top"
+  _react.default.useLayoutEffect(() => {
+    if (!node) return undefined;
+    const target = container && 'current' in container ? container.current : container;
+    const parent = target || sharedRoot();
+    parent.appendChild(node);
+    if (top && TOP_LAYER) {
+      node.setAttribute('popover', 'manual');
+      if (node.showPopover && !node.matches(':popover-open')) node.showPopover();
+    }
+    return () => {
+      if (top && TOP_LAYER && node.matches(':popover-open')) node.hidePopover();
+      node.removeAttribute('popover');
+      if (node.parentNode) node.parentNode.removeChild(node);
+    };
+  }, [node, container, top]);
+
+  // its class and the density, theme and direction of where it is written, on every render
+  _react.default.useLayoutEffect(() => {
+    if (!node) return;
+    node.className = (0, _cx.cx)('plx-portal', top && 'plx-portal--top', className);
+    carry(origin.current, node);
+  });
+  if (!node) return null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("template", {
+    ref: origin,
+    "data-plx-portal-origin": ""
+  }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
+}
+  } },
+  "platform/hooks/useIntersection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useIntersection = useIntersection;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useIntersection
+   Summary: Tells a component when an element enters or leaves the window or a scroll area (IntersectionObserver), without scroll handlers: to load a thumbnail just before it shows, fetch the next page near the end of a list, or mark a sticky header once the content passes under it.
+   Usage:
+     const ref = React.useRef(null);
+     const { visible } = useIntersection(ref, { once: true, rootMargin: '--plx-ref-size-200px' });   // load once, a little early
+     <div ref={ref}>{visible ? <img … /> : <Skeleton … />}</div>
+     const { ratio } = useIntersection(ref, { threshold: [0, 0.5, 1] });                             // how much of it shows
+     useIntersection(sentinel, { root: listRef, onChange: (e) => { if (e.isIntersecting) loadMore(); } });
+   Props:
+     ref: a ref to the element to watch
+     options.root (null): a ref to the scroll area to watch in (or an element); the window when null
+     options.rootMargin (null): a length token (a name such as '--plx-ref-size-200px', or a list of up to four for the top, right, bottom and left) that grows the area, so it fires before the element is in view; a negative margin is not offered
+     options.threshold (0): the visible share, from 0 to 1 (or a list), at which it reports
+     options.once (false): stops watching once the element has been visible, and stays visible
+     options.disabled (false): does not watch
+     options.onChange (null): called with each IntersectionObserverEntry
+     returns { visible (at least the threshold shows), ratio (0 to 1), entry (the last IntersectionObserverEntry) }
+   Behavior:
+     The observer starts after the element is drawn and disconnects when the component unmounts, the element changes, or once it has been seen (once).
+     Without IntersectionObserver (an old browser, a page drawn on the server) the element counts as visible, so nothing that depends on it is lost.
+   Notes:
+     It reports; it hides nothing. Content that loads as it scrolls into view keeps a placeholder of its final size (no layout shift), newly loaded results are announced politely (a live region), and a "Load more" button stays as the keyboard way to the next page.
+     The margin is a token, never a number: the tokens are in rem, so it is converted to pixels with the page's root font size.
+*/
+
+// a length token as pixels for rootMargin ('--plx-ref-size-200px' -> '200px'); the tokens are written in rem
+function marginOf(value) {
+  if (!value || typeof document === 'undefined') return '0px';
+  const root = document.documentElement,
+    size = parseFloat(getComputedStyle(root).fontSize);
+  return [].concat(value).slice(0, 4).map(name => {
+    const v = getComputedStyle(root).getPropertyValue(name).trim(),
+      n = parseFloat(v) || 0;
+    return Math.round(/rem$/.test(v) ? n * size : n) + 'px';
+  }).join(' ');
+}
+function useIntersection(ref, options = {}) {
+  const {
+    root = null,
+    rootMargin = null,
+    threshold = 0,
+    once = false,
+    disabled = false,
+    onChange = null
+  } = options;
+  const [state, setState] = _react.default.useState({
+    visible: false,
+    ratio: 0,
+    entry: null
+  });
+  const seen = _react.default.useRef(false);
+  const change = _react.default.useRef(onChange);
+  change.current = onChange;
+  const margin = [].concat(rootMargin || []).join(' '),
+    steps = [].concat(threshold).join(' ');
+  _react.default.useEffect(() => {
+    const el = ref && ref.current;
+    if (!el || disabled || once && seen.current) return undefined;
+    if (typeof IntersectionObserver === 'undefined') {
+      seen.current = true;
+      setState({
+        visible: true,
+        ratio: 1,
+        entry: null
+      });
+      return undefined;
+    }
+    const area = root && 'current' in root ? root.current : root;
+    const min = Math.min.apply(null, [].concat(threshold));
+    const io = new IntersectionObserver(entries => {
+      const entry = entries[entries.length - 1];
+      const visible = entry.isIntersecting && entry.intersectionRatio >= min;
+      if (change.current) change.current(entry);
+      setState({
+        visible: visible || once && seen.current,
+        ratio: entry.intersectionRatio,
+        entry
+      });
+      if (visible && once) {
+        seen.current = true;
+        io.disconnect();
+      }
+    }, {
+      root: area || null,
+      rootMargin: marginOf(rootMargin),
+      threshold
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, root, margin, steps, once, disabled]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return state;
+}
+  } },
+  "platform/utils/contrast.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CONTRAST_PAIRS = exports.CONTRAST_MINIMUMS = void 0;
+exports.contrastRatio = contrastRatio;
+exports.meetsContrast = meetsContrast;
+exports.parseColor = parseColor;
+exports.relativeLuminance = relativeLuminance;
+/* Plenix · contrast (platform/utils/contrast.js): the contrast rules in code.
+   Summary: WCAG 2.2 contrast between two colors (contrastRatio), whether a ratio meets a rule (meetsContrast), the rules
+     themselves (CONTRAST_MINIMUMS) and the theme's role pairs that must meet them (CONTRAST_PAIRS). tests/contrast.test.js
+     checks every pair in every theme and mode; the Contrast rules page draws the same pairs live from the page's tokens.
+   Usage:
+     import { contrastRatio, meetsContrast, CONTRAST_PAIRS } from 'plenix-platform';
+     const css = getComputedStyle(document.documentElement), role = (n) => css.getPropertyValue('--plx-sys-' + n).trim();
+     contrastRatio(role('content-muted'), role('surface-default'))   // 7.11 in the default light theme
+     meetsContrast(4.6, 'text')                      // true: 4.5:1 is the rule for normal text
+     CONTRAST_PAIRS.filter((p) => p.rule === 'non-text')
+   Props:
+     contrastRatio(a, b): the ratio (1 to 21) of two colors, "#rgb", "#rrggbb" or "rgb(r, g, b)"; NaN when one is not a color
+     relativeLuminance(color): the color's relative luminance (0 to 1), as WCAG defines it
+     parseColor(color): [r, g, b] (0 to 255), or null
+     meetsContrast(ratio, rule): true when the ratio meets the rule ("text", "large-text", "enhanced", "non-text")
+     CONTRAST_MINIMUMS: { text: 4.5, 'large-text': 3, enhanced: 7, 'non-text': 3 }
+     CONTRAST_PAIRS: [{ fg, bg, rule, use }]: a foreground role on a background role (--plx-sys-<fg> on --plx-sys-<bg>)
+   Behavior:
+     Ratios are not rounded: 4.49 fails the text rule. Colors are opaque in Plenix (opacity is its own token), so alpha is
+     ignored.
+   Notes:
+     The rules are the baseline (WCAG 2.2 AA; enhanced is AAA for dense small text): never loosen them. A pair that fails is
+     fixed by pointing a role at another palette color in that theme and mode, never by adding a color. */
+
+// the minimum ratio of each rule (WCAG 2.2: 1.4.3, 1.4.6 and 1.4.11)
+const CONTRAST_MINIMUMS = exports.CONTRAST_MINIMUMS = Object.freeze({
+  text: 4.5,
+  'large-text': 3,
+  enhanced: 7,
+  'non-text': 3
+});
+
+// the role pairs the themes must keep: text on its surfaces, content on its fills, marks and edges on the surface
+const T = 'text',
+  N = 'non-text';
+const CONTRAST_PAIRS = exports.CONTRAST_PAIRS = Object.freeze([{
+  fg: 'content-default',
+  bg: 'surface-canvas',
+  rule: T,
+  use: 'Body text on the canvas'
+}, {
+  fg: 'content-default',
+  bg: 'surface-default',
+  rule: T,
+  use: 'Body text on a surface'
+}, {
+  fg: 'content-default',
+  bg: 'surface-raised',
+  rule: T,
+  use: 'Body text on a raised surface'
+}, {
+  fg: 'content-default',
+  bg: 'surface-sunken',
+  rule: T,
+  use: 'Body text on a sunken surface (read-only fields)'
+}, {
+  fg: 'content-default',
+  bg: 'surface-overlay',
+  rule: T,
+  use: 'Body text in menus and dialogs'
+}, {
+  fg: 'content-muted',
+  bg: 'surface-default',
+  rule: T,
+  use: 'Secondary text on a surface'
+}, {
+  fg: 'content-muted',
+  bg: 'surface-canvas',
+  rule: T,
+  use: 'Secondary text on the canvas'
+}, {
+  fg: 'content-link',
+  bg: 'surface-default',
+  rule: T,
+  use: 'Links on a surface'
+}, {
+  fg: 'content-inverse',
+  bg: 'surface-inverse',
+  rule: T,
+  use: 'Text on the inverse surface'
+}, {
+  fg: 'field-placeholder',
+  bg: 'control-background',
+  rule: T,
+  use: 'Placeholder text in a field'
+}, {
+  fg: 'action-primary-content',
+  bg: 'action-primary-background',
+  rule: T,
+  use: 'Primary button label'
+}, {
+  fg: 'action-danger-content',
+  bg: 'action-danger-background',
+  rule: T,
+  use: 'Danger button label'
+}, {
+  fg: 'fill-neutral-content',
+  bg: 'fill-neutral',
+  rule: T,
+  use: 'Label on a neutral fill (secondary button)'
+}, {
+  fg: 'selected-content',
+  bg: 'state-selected',
+  rule: T,
+  use: 'Text of a selected row or item'
+}, {
+  fg: 'accent-content',
+  bg: 'accent-surface',
+  rule: T,
+  use: 'Text in the accent header'
+}, {
+  fg: 'tooltip-content',
+  bg: 'tooltip-background',
+  rule: T,
+  use: 'Tooltip text'
+}, {
+  fg: 'toast-content',
+  bg: 'toast-background',
+  rule: T,
+  use: 'Toast text'
+}, {
+  fg: 'status-bar-content',
+  bg: 'status-bar-background',
+  rule: T,
+  use: 'Status bar text'
+}, {
+  fg: 'data-table-text',
+  bg: 'data-table-surface',
+  rule: T,
+  use: 'Table cells'
+}, {
+  fg: 'avatar-content',
+  bg: 'avatar-background',
+  rule: T,
+  use: 'Avatar initials'
+}, {
+  fg: 'feedback-info-content',
+  bg: 'feedback-info-soft',
+  rule: T,
+  use: 'Info message text'
+}, {
+  fg: 'feedback-success-content',
+  bg: 'feedback-success-soft',
+  rule: T,
+  use: 'Success message text'
+}, {
+  fg: 'feedback-warning-content',
+  bg: 'feedback-warning-soft',
+  rule: T,
+  use: 'Warning message text'
+}, {
+  fg: 'feedback-danger-content',
+  bg: 'feedback-danger-soft',
+  rule: T,
+  use: 'Error message text'
+}, {
+  fg: 'feedback-neutral-content',
+  bg: 'feedback-neutral-soft',
+  rule: T,
+  use: 'Neutral message text'
+}, {
+  fg: 'feedback-info-on-solid',
+  bg: 'feedback-info-solid',
+  rule: T,
+  use: 'Text on a solid info badge'
+}, {
+  fg: 'feedback-success-on-solid',
+  bg: 'feedback-success-solid',
+  rule: T,
+  use: 'Text on a solid success badge'
+}, {
+  fg: 'feedback-warning-on-solid',
+  bg: 'feedback-warning-solid',
+  rule: T,
+  use: 'Text on a solid warning badge'
+}, {
+  fg: 'feedback-danger-on-solid',
+  bg: 'feedback-danger-solid',
+  rule: T,
+  use: 'Text on a solid danger badge'
+}, {
+  fg: 'control-border',
+  bg: 'control-background',
+  rule: N,
+  use: 'The edge of a field'
+}, {
+  fg: 'border-strong',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Strong borders and control edges'
+}, {
+  fg: 'focus-ring-color',
+  bg: 'surface-default',
+  rule: N,
+  use: 'The focus color on a surface'
+}, {
+  fg: 'focus-ring-color',
+  bg: 'surface-canvas',
+  rule: N,
+  use: 'The focus color on the canvas'
+}, {
+  fg: 'feedback-info-solid',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Info marks (dots, icons)'
+}, {
+  fg: 'feedback-success-solid',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Success marks (dots, icons)'
+}, {
+  fg: 'feedback-warning-solid',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Warning marks (dots, icons)'
+}, {
+  fg: 'feedback-danger-solid',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Danger marks (dots, icons)'
+}]);
+function parseColor(color) {
+  const s = String(color || '').trim().toLowerCase();
+  let m = /^#([0-9a-f]{3}|[0-9a-f]{6})([0-9a-f]{1,2})?$/.exec(s);
+  if (m) {
+    const h = m[1].length === 3 ? m[1].replace(/./g, '$&$&') : m[1];
+    return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16));
+  }
+  m = /^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/.exec(s);
+  return m ? [+m[1], +m[2], +m[3]] : null;
+}
+function relativeLuminance(color) {
+  const c = Array.isArray(color) ? color : parseColor(color);
+  if (!c) return NaN;
+  const lin = c.map(v => {
+    const x = v / 255;
+    return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+}
+function contrastRatio(a, b) {
+  const la = relativeLuminance(a),
+    lb = relativeLuminance(b);
+  if (Number.isNaN(la) || Number.isNaN(lb)) return NaN;
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+function meetsContrast(ratio, rule = 'text') {
+  const min = CONTRAST_MINIMUMS[rule];
+  if (min == null) throw new Error('meetsContrast: no rule "' + rule + '" (text, large-text, enhanced, non-text)');
+  return ratio >= min;
+}
+  } },
+  "platform/utils/dataviz.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DATAVIZ_STATUS = exports.DATAVIZ_SCALES = exports.DATAVIZ_ALERT = void 0;
+exports.datavizCategory = datavizCategory;
+exports.datavizStep = datavizStep;
+exports.datavizToken = datavizToken;
+/* Plenix · data visualization colors (platform/utils/dataviz.js): which chart color a series or a value takes.
+   Summary: The chart scales (--plx-sys-dataviz-*, platform/tokens/semantic/dataviz.tokens.json) by name: categorical (6
+     hues, the data colors in order), sequential (7 steps of one hue), diverging (7 steps, two hues around a neutral
+     midpoint), status (positive, caution, negative, informative, neutral) and alert (warning, critical). The helpers return
+     the step's name; data-plx-dataviz="<name>" on an element makes it the element's data color (system/dataviz.css sets
+     --plx-comp-data-color), so a chart part fills itself with var(--plx-comp-data-color) and no style is written.
+   Usage:
+     import { datavizCategory, datavizStep } from 'plenix-platform';
+     series.map((s, i) => <path key={s.id} className="my-line" data-plx-dataviz={datavizCategory(i)} />)
+     <rect data-plx-dataviz={datavizStep('sequential', value, 0, 100)} />     // "sequential-5"
+     <rect data-plx-dataviz={datavizStep('diverging', change, -10, 10)} />     // midpoint 0 -> "diverging-4"
+     <line data-plx-dataviz="alert-critical" />
+   Props:
+     DATAVIZ_SCALES: { categorical: 6, sequential: 7, diverging: 7 }, the number of steps of each scale
+     DATAVIZ_STATUS: ['positive', 'caution', 'negative', 'informative', 'neutral'] (data-plx-dataviz="status-<name>")
+     DATAVIZ_ALERT: ['warning', 'critical'] (data-plx-dataviz="alert-<name>")
+     datavizCategory(index): "categorical-1" to "categorical-6" for series index 0, 1, …; after six it starts again
+     datavizStep(scale, value, min?, max?): the step of "sequential" or "diverging" for a value between min and max
+       (default 0 and 1; values outside are clamped); for diverging the midpoint is halfway between min and max
+     datavizToken(name): the token of a step, "--plx-sys-dataviz-" + name
+   Behavior:
+     A series keeps its color in every view: assign by a stable order (the series' order in the data), never by rank.
+     The scales are the same in light and dark mode; marks keep 3:1 against the chart surface (the Contrast rules page).
+   Notes:
+     Color is never the only cue: label series directly or add markers and patterns (Use of color). Status and alert colors
+     only where the data is a status or a threshold, never for ordinary series. More than six categories: group or filter. */
+
+const DATAVIZ_SCALES = exports.DATAVIZ_SCALES = Object.freeze({
+  categorical: 6,
+  sequential: 7,
+  diverging: 7
+});
+const DATAVIZ_STATUS = exports.DATAVIZ_STATUS = Object.freeze(['positive', 'caution', 'negative', 'informative', 'neutral']);
+const DATAVIZ_ALERT = exports.DATAVIZ_ALERT = Object.freeze(['warning', 'critical']);
+function datavizCategory(index) {
+  const n = DATAVIZ_SCALES.categorical,
+    i = Math.floor(Number(index) || 0);
+  return 'categorical-' + ((i % n + n) % n + 1);
+}
+function datavizStep(scale, value, min = 0, max = 1) {
+  const steps = DATAVIZ_SCALES[scale];
+  if (!steps || scale === 'categorical') throw new Error('datavizStep: the scale is "sequential" or "diverging", not "' + scale + '"');
+  const span = max - min;
+  const t = span ? Math.min(1, Math.max(0, (Number(value) - min) / span)) : 0.5;
+  return scale + '-' + Math.min(steps, Math.floor(t * steps) + 1);
+}
+function datavizToken(name) {
+  return '--plx-sys-dataviz-' + name;
+}
+  } },
+  "platform/utils/describedBy.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.joinIds = joinIds;
+exports.useDescribedBy = useDescribedBy;
+exports.useDescriptionId = useDescriptionId;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · accessible descriptions (platform/utils/describedBy.js): one way to tie descriptions to an element.
+   Summary: joinIds merges description ids into one aria-describedby value (empty and repeated ids dropped, the order kept);
+     useDescriptionId gives a component a stable id for its description; useDescribedBy builds the attribute from the ids a
+     component has now. Field and Tooltip do this by hand today; new components use these.
+   Usage:
+     import { joinIds, useDescriptionId, useDescribedBy } from 'plenix-platform';
+     const hintId = useDescriptionId('hint');
+     const describedBy = useDescribedBy(props['aria-describedby'], hint && hintId, error && errorId);
+     <input aria-describedby={describedBy} />
+     <p id={hintId}>Use letters and numbers only</p>
+   Props:
+     joinIds(...ids): a string of ids separated by spaces, or undefined when there is none; each argument may itself hold
+       several ids ("a b"), or be empty, false or undefined
+     useDescriptionId(prefix?): a stable, unique id for this component ("plx-" + prefix + a React id); default prefix "desc"
+     useDescribedBy(...ids): joinIds of the arguments (the hook form, for symmetry with useDescriptionId)
+   Behavior:
+     The ids already on the element come first (what its owner set), then the component's own, so nothing the owner
+     described is lost. A description that is not shown (a hint only for screen readers) is VisuallyHidden text with the id.
+   Notes:
+     A description adds to the name, it never repeats it. Visible text first: aria-describedby points at text everyone can
+     read (the hint, the error message); a hidden description only for what sighted people get from the layout. */
+
+function joinIds(...ids) {
+  const out = [];
+  ids.forEach(v => {
+    if (!v) return;
+    String(v).split(/\s+/).forEach(id => {
+      if (id && out.indexOf(id) < 0) out.push(id);
+    });
+  });
+  return out.length ? out.join(' ') : undefined;
+}
+function useDescriptionId(prefix = 'desc') {
+  return 'plx-' + prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+}
+function useDescribedBy(...ids) {
+  return joinIds(...ids);
+}
+  } },
+  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isScrollLocked = isScrollLocked;
+exports.lockScroll = lockScroll;
+exports.scrollLockCount = scrollLockCount;
+exports.useScrollLock = useScrollLock;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
+   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
+     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
+     so nested modals release the page only when the last one closes.
+   Usage:
+     import { useScrollLock, lockScroll } from 'plenix-platform';
+     useScrollLock(open);                          // the page, while open
+     useScrollLock(open, listRef);                 // one scroll container
+     const release = lockScroll(); … release();    // outside React
+   Props:
+     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
+     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
+     isScrollLocked(target?): true while the target holds a lock
+     scrollLockCount(target?): how many locks the target holds
+   Behavior:
+     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
+     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
+     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
+     scrolls as usual.
+   Notes:
+     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
+     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
+
+const ATTR = 'data-plx-scroll-lock';
+const counts = new Map();
+const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
+function lockScroll(target) {
+  const el = pageOf(target);
+  if (!el) return () => {};
+  const n = (counts.get(el) || 0) + 1;
+  counts.set(el, n);
+  if (n === 1) el.setAttribute(ATTR, 'locked');
+  let released = false;
+  return function release() {
+    if (released) return;
+    released = true;
+    const left = (counts.get(el) || 1) - 1;
+    if (left > 0) {
+      counts.set(el, left);
+      return;
+    }
+    counts.delete(el);
+    el.removeAttribute(ATTR);
+  };
+}
+function isScrollLocked(target) {
+  return (counts.get(pageOf(target)) || 0) > 0;
+}
+function scrollLockCount(target) {
+  return counts.get(pageOf(target)) || 0;
+}
+function useScrollLock(active, ref) {
+  _react.default.useEffect(() => {
+    if (!active) return undefined;
+    if (ref && !ref.current) return undefined;
+    return lockScroll(ref ? ref.current : undefined);
+  }, [active, ref]);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12094,6 +14157,18 @@ Object.defineProperty(exports, "CATEGORY_COLORS", {
   enumerable: true,
   get: function () {
     return _categoryColors.CATEGORY_COLORS;
+  }
+});
+Object.defineProperty(exports, "CONTRAST_MINIMUMS", {
+  enumerable: true,
+  get: function () {
+    return _contrast.CONTRAST_MINIMUMS;
+  }
+});
+Object.defineProperty(exports, "CONTRAST_PAIRS", {
+  enumerable: true,
+  get: function () {
+    return _contrast.CONTRAST_PAIRS;
   }
 });
 Object.defineProperty(exports, "Card", {
@@ -12180,6 +14255,24 @@ Object.defineProperty(exports, "Count", {
     return _Count.Count;
   }
 });
+Object.defineProperty(exports, "DATAVIZ_ALERT", {
+  enumerable: true,
+  get: function () {
+    return _dataviz.DATAVIZ_ALERT;
+  }
+});
+Object.defineProperty(exports, "DATAVIZ_SCALES", {
+  enumerable: true,
+  get: function () {
+    return _dataviz.DATAVIZ_SCALES;
+  }
+});
+Object.defineProperty(exports, "DATAVIZ_STATUS", {
+  enumerable: true,
+  get: function () {
+    return _dataviz.DATAVIZ_STATUS;
+  }
+});
 Object.defineProperty(exports, "DATA_COLORS", {
   enumerable: true,
   get: function () {
@@ -12258,6 +14351,18 @@ Object.defineProperty(exports, "EventChip", {
     return _EventChip.EventChip;
   }
 });
+Object.defineProperty(exports, "FLOATING_PLACEMENTS", {
+  enumerable: true,
+  get: function () {
+    return _floating.PLACEMENTS;
+  }
+});
+Object.defineProperty(exports, "FORMATS", {
+  enumerable: true,
+  get: function () {
+    return _format.FORMATS;
+  }
+});
 Object.defineProperty(exports, "Field", {
   enumerable: true,
   get: function () {
@@ -12310,6 +14415,12 @@ Object.defineProperty(exports, "List", {
   enumerable: true,
   get: function () {
     return _List.List;
+  }
+});
+Object.defineProperty(exports, "LiveRegion", {
+  enumerable: true,
+  get: function () {
+    return _announce.LiveRegion;
   }
 });
 Object.defineProperty(exports, "MediaCard", {
@@ -12406,6 +14517,12 @@ Object.defineProperty(exports, "Panel", {
   enumerable: true,
   get: function () {
     return _Card.Panel;
+  }
+});
+Object.defineProperty(exports, "Portal", {
+  enumerable: true,
+  get: function () {
+    return _portal.Portal;
   }
 });
 Object.defineProperty(exports, "Preview", {
@@ -12690,6 +14807,24 @@ Object.defineProperty(exports, "Tree", {
     return _Tree.Tree;
   }
 });
+Object.defineProperty(exports, "VIRTUAL_STICKY_CLASS", {
+  enumerable: true,
+  get: function () {
+    return _useVirtualizer.VIRTUAL_STICKY_CLASS;
+  }
+});
+Object.defineProperty(exports, "VirtualGap", {
+  enumerable: true,
+  get: function () {
+    return _useVirtualizer.VirtualGap;
+  }
+});
+Object.defineProperty(exports, "VirtualProbe", {
+  enumerable: true,
+  get: function () {
+    return _useVirtualizer.VirtualProbe;
+  }
+});
 Object.defineProperty(exports, "VisuallyHidden", {
   enumerable: true,
   get: function () {
@@ -12700,6 +14835,12 @@ Object.defineProperty(exports, "WidgetGrid", {
   enumerable: true,
   get: function () {
     return _WidgetGrid.WidgetGrid;
+  }
+});
+Object.defineProperty(exports, "announce", {
+  enumerable: true,
+  get: function () {
+    return _announce.announce;
   }
 });
 Object.defineProperty(exports, "appById", {
@@ -12732,6 +14873,162 @@ Object.defineProperty(exports, "confirmLeave", {
     return _UnsavedGuard.confirmLeave;
   }
 });
+Object.defineProperty(exports, "contrastRatio", {
+  enumerable: true,
+  get: function () {
+    return _contrast.contrastRatio;
+  }
+});
+Object.defineProperty(exports, "copyImage", {
+  enumerable: true,
+  get: function () {
+    return _clipboard.copyImage;
+  }
+});
+Object.defineProperty(exports, "copyRich", {
+  enumerable: true,
+  get: function () {
+    return _clipboard.copyRich;
+  }
+});
+Object.defineProperty(exports, "copyText", {
+  enumerable: true,
+  get: function () {
+    return _clipboard.copyText;
+  }
+});
+Object.defineProperty(exports, "datavizCategory", {
+  enumerable: true,
+  get: function () {
+    return _dataviz.datavizCategory;
+  }
+});
+Object.defineProperty(exports, "datavizStep", {
+  enumerable: true,
+  get: function () {
+    return _dataviz.datavizStep;
+  }
+});
+Object.defineProperty(exports, "datavizToken", {
+  enumerable: true,
+  get: function () {
+    return _dataviz.datavizToken;
+  }
+});
+Object.defineProperty(exports, "dateTimeAttr", {
+  enumerable: true,
+  get: function () {
+    return _format.dateTimeAttr;
+  }
+});
+Object.defineProperty(exports, "formatAddress", {
+  enumerable: true,
+  get: function () {
+    return _format.formatAddress;
+  }
+});
+Object.defineProperty(exports, "formatBytes", {
+  enumerable: true,
+  get: function () {
+    return _format.formatBytes;
+  }
+});
+Object.defineProperty(exports, "formatCompact", {
+  enumerable: true,
+  get: function () {
+    return _format.formatCompact;
+  }
+});
+Object.defineProperty(exports, "formatCurrency", {
+  enumerable: true,
+  get: function () {
+    return _format.formatCurrency;
+  }
+});
+Object.defineProperty(exports, "formatDate", {
+  enumerable: true,
+  get: function () {
+    return _format.formatDate;
+  }
+});
+Object.defineProperty(exports, "formatDateTime", {
+  enumerable: true,
+  get: function () {
+    return _format.formatDateTime;
+  }
+});
+Object.defineProperty(exports, "formatDuration", {
+  enumerable: true,
+  get: function () {
+    return _format.formatDuration;
+  }
+});
+Object.defineProperty(exports, "formatList", {
+  enumerable: true,
+  get: function () {
+    return _format.formatList;
+  }
+});
+Object.defineProperty(exports, "formatLocale", {
+  enumerable: true,
+  get: function () {
+    return _format.formatLocale;
+  }
+});
+Object.defineProperty(exports, "formatNumber", {
+  enumerable: true,
+  get: function () {
+    return _format.formatNumber;
+  }
+});
+Object.defineProperty(exports, "formatPercent", {
+  enumerable: true,
+  get: function () {
+    return _format.formatPercent;
+  }
+});
+Object.defineProperty(exports, "formatPersonName", {
+  enumerable: true,
+  get: function () {
+    return _format.formatPersonName;
+  }
+});
+Object.defineProperty(exports, "formatPhone", {
+  enumerable: true,
+  get: function () {
+    return _format.formatPhone;
+  }
+});
+Object.defineProperty(exports, "formatRange", {
+  enumerable: true,
+  get: function () {
+    return _format.formatRange;
+  }
+});
+Object.defineProperty(exports, "formatRelative", {
+  enumerable: true,
+  get: function () {
+    return _format.formatRelative;
+  }
+});
+Object.defineProperty(exports, "formatTime", {
+  enumerable: true,
+  get: function () {
+    return _format.formatTime;
+  }
+});
+Object.defineProperty(exports, "formatUnit", {
+  enumerable: true,
+  get: function () {
+    return _format.formatUnit;
+  }
+});
+Object.defineProperty(exports, "gapPieces", {
+  enumerable: true,
+  get: function () {
+    return _useVirtualizer.gapPieces;
+  }
+});
 Object.defineProperty(exports, "goToParent", {
   enumerable: true,
   get: function () {
@@ -12744,16 +15041,64 @@ Object.defineProperty(exports, "hasUnsaved", {
     return _UnsavedGuard.hasUnsaved;
   }
 });
+Object.defineProperty(exports, "hotkeyKeys", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.hotkeyKeys;
+  }
+});
+Object.defineProperty(exports, "hotkeyLabel", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.hotkeyLabel;
+  }
+});
+Object.defineProperty(exports, "hotkeyList", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.hotkeyList;
+  }
+});
 Object.defineProperty(exports, "initialsOf", {
   enumerable: true,
   get: function () {
     return _Avatar.initialsOf;
   }
 });
+Object.defineProperty(exports, "isMac", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.isMac;
+  }
+});
+Object.defineProperty(exports, "isScrollLocked", {
+  enumerable: true,
+  get: function () {
+    return _scrollLock.isScrollLocked;
+  }
+});
+Object.defineProperty(exports, "joinIds", {
+  enumerable: true,
+  get: function () {
+    return _describedBy.joinIds;
+  }
+});
 Object.defineProperty(exports, "leavePage", {
   enumerable: true,
   get: function () {
     return _UnsavedGuard.leavePage;
+  }
+});
+Object.defineProperty(exports, "lockScroll", {
+  enumerable: true,
+  get: function () {
+    return _scrollLock.lockScroll;
+  }
+});
+Object.defineProperty(exports, "meetsContrast", {
+  enumerable: true,
+  get: function () {
+    return _contrast.meetsContrast;
   }
 });
 Object.defineProperty(exports, "navigate", {
@@ -12768,16 +15113,70 @@ Object.defineProperty(exports, "pageLayout", {
     return _pageLayouts.pageLayout;
   }
 });
+Object.defineProperty(exports, "parseColor", {
+  enumerable: true,
+  get: function () {
+    return _contrast.parseColor;
+  }
+});
+Object.defineProperty(exports, "parseHotkey", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.parseHotkey;
+  }
+});
 Object.defineProperty(exports, "parseScreen", {
   enumerable: true,
   get: function () {
     return _ScreenLocation.parseScreen;
   }
 });
+Object.defineProperty(exports, "regionName", {
+  enumerable: true,
+  get: function () {
+    return _format.regionName;
+  }
+});
+Object.defineProperty(exports, "registerHotkey", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.registerHotkey;
+  }
+});
+Object.defineProperty(exports, "relativeLuminance", {
+  enumerable: true,
+  get: function () {
+    return _contrast.relativeLuminance;
+  }
+});
 Object.defineProperty(exports, "screenHref", {
   enumerable: true,
   get: function () {
     return _ScreenLocation.screenHref;
+  }
+});
+Object.defineProperty(exports, "scrollLockCount", {
+  enumerable: true,
+  get: function () {
+    return _scrollLock.scrollLockCount;
+  }
+});
+Object.defineProperty(exports, "setSingleKeyHotkeys", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.setSingleKeyHotkeys;
+  }
+});
+Object.defineProperty(exports, "singleKeyHotkeys", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.singleKeyHotkeys;
+  }
+});
+Object.defineProperty(exports, "subscribeHotkeys", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.subscribeHotkeys;
   }
 });
 Object.defineProperty(exports, "tabsPanelId", {
@@ -12804,10 +15203,46 @@ Object.defineProperty(exports, "useAppLayout", {
     return _AppShell.useAppLayout;
   }
 });
+Object.defineProperty(exports, "useClipboard", {
+  enumerable: true,
+  get: function () {
+    return _clipboard.useClipboard;
+  }
+});
 Object.defineProperty(exports, "useDensity", {
   enumerable: true,
   get: function () {
     return _useDensity.useDensity;
+  }
+});
+Object.defineProperty(exports, "useDescribedBy", {
+  enumerable: true,
+  get: function () {
+    return _describedBy.useDescribedBy;
+  }
+});
+Object.defineProperty(exports, "useDescriptionId", {
+  enumerable: true,
+  get: function () {
+    return _describedBy.useDescriptionId;
+  }
+});
+Object.defineProperty(exports, "useFloating", {
+  enumerable: true,
+  get: function () {
+    return _floating.useFloating;
+  }
+});
+Object.defineProperty(exports, "useHotkey", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.useHotkey;
+  }
+});
+Object.defineProperty(exports, "useHotkeyList", {
+  enumerable: true,
+  get: function () {
+    return _hotkey.useHotkeyList;
   }
 });
 Object.defineProperty(exports, "useInteraction", {
@@ -12816,10 +15251,22 @@ Object.defineProperty(exports, "useInteraction", {
     return _useInteraction.useInteraction;
   }
 });
+Object.defineProperty(exports, "useIntersection", {
+  enumerable: true,
+  get: function () {
+    return _useIntersection.useIntersection;
+  }
+});
 Object.defineProperty(exports, "useScreenLocation", {
   enumerable: true,
   get: function () {
     return _ScreenLocation.useScreenLocation;
+  }
+});
+Object.defineProperty(exports, "useScrollLock", {
+  enumerable: true,
+  get: function () {
+    return _scrollLock.useScrollLock;
   }
 });
 Object.defineProperty(exports, "useSession", {
@@ -12850,6 +15297,12 @@ Object.defineProperty(exports, "useViewState", {
   enumerable: true,
   get: function () {
     return _ScreenLocation.useViewState;
+  }
+});
+Object.defineProperty(exports, "useVirtualizer", {
+  enumerable: true,
+  get: function () {
+    return _useVirtualizer.useVirtualizer;
   }
 });
 var _Badge = require("./components/Badge/Badge.jsx");
@@ -12942,6 +15395,18 @@ var _TimeGrid = require("./patterns/TimeGrid/TimeGrid.jsx");
 require("./utils/prefetch.js");
 var _WidgetGrid = require("./patterns/WidgetGrid/WidgetGrid.jsx");
 var _imageEditorSteps = require("./patterns/ImageEditor/imageEditorSteps.js");
+var _format = require("./utils/format.js");
+var _announce = require("./utils/announce.jsx");
+var _clipboard = require("./utils/clipboard.js");
+var _hotkey = require("./utils/hotkey.js");
+var _useVirtualizer = require("./hooks/useVirtualizer.js");
+var _floating = require("./utils/floating.js");
+var _portal = require("./utils/portal.jsx");
+var _useIntersection = require("./hooks/useIntersection.js");
+var _contrast = require("./utils/contrast.js");
+var _dataviz = require("./utils/dataviz.js");
+var _describedBy = require("./utils/describedBy.js");
+var _scrollLock = require("./utils/scrollLock.js");
   } }
   };
   var cache = {};

@@ -1,0 +1,40 @@
+{
+  "$description": "Aspect-ratio scale (library plan wave 1, foundation aspect-ratio-scale): the width-to-height ratios a media frame, preview or card may take, as CSS ratios. system/ratio.css draws them as the .plx-ratio-<w>-<h> classes.",
+  "plx-ref": {
+    "ratio-1-1": {
+      "$value": "1 / 1",
+      "$type": "string",
+      "$description": "Aspect ratio 1:1, a square: avatars, icon tiles and square thumbnails in a grid."
+    },
+    "ratio-4-3": {
+      "$value": "4 / 3",
+      "$type": "string",
+      "$description": "Aspect ratio 4:3, landscape: the default media frame of an asset card and a preview."
+    },
+    "ratio-3-2": {
+      "$value": "3 / 2",
+      "$type": "string",
+      "$description": "Aspect ratio 3:2, landscape: photographs as most cameras take them."
+    },
+    "ratio-16-9": {
+      "$value": "16 / 9",
+      "$type": "string",
+      "$description": "Aspect ratio 16:9, wide: video, screenshots and banners."
+    },
+    "ratio-21-9": {
+      "$value": "21 / 9",
+      "$type": "string",
+      "$description": "Aspect ratio 21:9, very wide: page heroes and cinematic video."
+    },
+    "ratio-3-4": {
+      "$value": "3 / 4",
+      "$type": "string",
+      "$description": "Aspect ratio 3:4, portrait: documents, book covers and portrait photographs."
+    },
+    "ratio-9-16": {
+      "$value": "9 / 16",
+      "$type": "string",
+      "$description": "Aspect ratio 9:16, tall: phone screens, stories and vertical video."
+    }
+  }
+}

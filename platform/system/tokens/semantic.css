@@ -262,3 +262,82 @@
 :root[data-plx-interaction="pointer"]{
   --plx-sys-control-target-min: var(--plx-ref-control-size-24px);
 }
+:root {
+  --plx-sys-clipboard-feedback-duration: 2s;
+}
+:root {
+  --plx-sys-dataviz-categorical-1: var(--plx-sys-data-color-blue);
+  --plx-sys-dataviz-categorical-2: var(--plx-sys-data-color-green);
+  --plx-sys-dataviz-categorical-3: var(--plx-sys-data-color-purple);
+  --plx-sys-dataviz-categorical-4: var(--plx-sys-data-color-red);
+  --plx-sys-dataviz-categorical-5: var(--plx-sys-data-color-brown);
+  --plx-sys-dataviz-categorical-6: var(--plx-sys-data-color-gray);
+  --plx-sys-dataviz-sequential-1: var(--plx-ref-color-blue-100);
+  --plx-sys-dataviz-sequential-2: var(--plx-ref-color-blue-200);
+  --plx-sys-dataviz-sequential-3: var(--plx-ref-color-blue-300);
+  --plx-sys-dataviz-sequential-4: var(--plx-ref-color-blue-400);
+  --plx-sys-dataviz-sequential-5: var(--plx-ref-color-blue-600);
+  --plx-sys-dataviz-sequential-6: var(--plx-ref-color-blue-700);
+  --plx-sys-dataviz-sequential-7: var(--plx-ref-color-blue-900);
+  --plx-sys-dataviz-diverging-1: var(--plx-ref-color-red-800);
+  --plx-sys-dataviz-diverging-2: var(--plx-ref-color-red-500);
+  --plx-sys-dataviz-diverging-3: var(--plx-ref-color-red-200);
+  --plx-sys-dataviz-diverging-4: var(--plx-ref-color-gray-200);
+  --plx-sys-dataviz-diverging-5: var(--plx-ref-color-blue-200);
+  --plx-sys-dataviz-diverging-6: var(--plx-ref-color-blue-400);
+  --plx-sys-dataviz-diverging-7: var(--plx-ref-color-blue-700);
+  --plx-sys-dataviz-status-positive: var(--plx-sys-feedback-success-solid);
+  --plx-sys-dataviz-status-caution: var(--plx-sys-feedback-warning-solid);
+  --plx-sys-dataviz-status-negative: var(--plx-sys-feedback-danger-solid);
+  --plx-sys-dataviz-status-informative: var(--plx-sys-feedback-info-solid);
+  --plx-sys-dataviz-status-neutral: var(--plx-sys-feedback-neutral-solid);
+  --plx-sys-dataviz-alert-warning: var(--plx-sys-feedback-warning-solid);
+  --plx-sys-dataviz-alert-critical: var(--plx-sys-feedback-danger-solid);
+  --plx-sys-dataviz-grid-line: var(--plx-sys-border-subtle);
+  --plx-sys-dataviz-label: var(--plx-sys-content-muted);
+}
+:root {
+  --plx-sys-floating-offset-xs: var(--plx-ref-space-4px);
+  --plx-sys-floating-offset-sm: var(--plx-ref-space-8px);
+  --plx-sys-floating-offset-md: var(--plx-ref-space-12px);
+  --plx-sys-floating-viewport-margin: var(--plx-ref-space-8px);
+}
+:root {
+  --plx-sys-hotkey-sequence-timeout: 1s;
+}
+:root {
+  --plx-sys-keyline-icon-grid: 24;
+  --plx-sys-keyline-icon-padding: 2;
+  --plx-sys-keyline-icon-circle: 20;
+  --plx-sys-keyline-icon-square: 18;
+  --plx-sys-keyline-icon-short: 16;
+  --plx-sys-keyline-specimen-size: var(--plx-ref-size-96px);
+}
+:root {
+  --plx-sys-layout-grid-columns-narrow: var(--plx-ref-grid-columns-4);
+  --plx-sys-layout-grid-gutter-narrow: var(--plx-ref-grid-gutter-12px);
+  --plx-sys-layout-grid-margin-narrow: var(--plx-ref-grid-margin-16px);
+  --plx-sys-layout-grid-columns-medium: var(--plx-ref-grid-columns-8);
+  --plx-sys-layout-grid-gutter-medium: var(--plx-ref-grid-gutter-16px);
+  --plx-sys-layout-grid-margin-medium: var(--plx-ref-grid-margin-24px);
+  --plx-sys-layout-grid-columns-wide: var(--plx-ref-grid-columns-12);
+  --plx-sys-layout-grid-gutter-wide: var(--plx-ref-grid-gutter-24px);
+  --plx-sys-layout-grid-margin-wide: var(--plx-ref-grid-margin-32px);
+  --plx-sys-layout-grid-contained-max: var(--plx-ref-content-max-1200px);
+  --plx-sys-layout-grid-overlay-opacity: var(--plx-sys-opacity-low);
+}
+:root {
+  --plx-sys-live-region-delay: 50ms;
+}
+:root {
+  --plx-sys-state-disabled-opacity: var(--plx-sys-opacity-mid);
+  --plx-sys-state-dragged-opacity: var(--plx-sys-opacity-high);
+  --plx-sys-state-drag-origin-opacity: var(--plx-sys-opacity-low);
+  --plx-sys-state-inverse-rest-opacity: var(--plx-sys-opacity-high);
+  --plx-sys-state-inverse-active-opacity: 1;
+}
+:root {
+  --plx-sys-virtual-item-size: var(--plx-ref-size-32px);
+  --plx-sys-virtual-item-gap: 0px;
+  --plx-sys-virtual-sticky-background: var(--plx-sys-surface-default);
+}

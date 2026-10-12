@@ -1,0 +1,44 @@
+{
+  "$description": "The Formats standard: how Plenix writes numbers, units, dates, money, percentages, names, addresses and phone numbers. platform/utils/format.js applies it on the browser's Intl formatters (its FORMATS constant is this data; tests/formats.test.js keeps the two equal). Separators, symbol positions and date orders always come from the locale, never from here.",
+  "number": {
+    "$description": "Precision: the decimals a value gets when the caller does not fix them; keep one precision per column.",
+    "decimals": { "default": 0, "ratio": 0, "compact": 1, "bytes": 1 }
+  },
+  "bytes": {
+    "$description": "File sizes in powers of 1000 with the Intl byte units (B, kB, MB, GB, TB).",
+    "base": 1000,
+    "units": ["byte", "kilobyte", "megabyte", "gigabyte", "terabyte"]
+  },
+  "relative": {
+    "$description": "Relative time (\"5 minutes ago\") for recent events; from this many days on, the absolute date.",
+    "untilDays": 7
+  },
+  "currency": {
+    "$description": "Money shows the currency symbol; a page that mixes currencies shows the ISO 4217 code.",
+    "display": "symbol",
+    "mixedDisplay": "code"
+  },
+  "date": {
+    "$description": "The default date style: the month as text, never an all-numeric date.",
+    "default": "medium"
+  },
+  "address": {
+    "$description": "The order of a postal address's lines by country (ISO 3166 code). Field names: name, organization, street, locality, region, postalCode, country; the punctuation between two fields is written only when both have a value. The country line is shown when it differs from the reader's region.",
+    "default": ["name", "organization", "street", "locality region postalCode", "country"],
+    "US": ["name", "organization", "street", "locality, region postalCode", "country"],
+    "CA": ["name", "organization", "street", "locality region postalCode", "country"],
+    "GB": ["name", "organization", "street", "locality", "postalCode", "country"],
+    "DE": ["name", "organization", "street", "postalCode locality", "country"],
+    "FR": ["name", "organization", "street", "postalCode locality", "country"],
+    "IT": ["name", "organization", "street", "postalCode locality region", "country"],
+    "JP": ["country", "postalCode", "region locality", "street", "organization", "name"]
+  },
+  "phone": {
+    "$description": "Phone numbers are stored as E.164 (+ country code and number) and shown grouped by these patterns, keyed by the country calling code; # is one digit. A number whose length does not fit is shown in groups of three.",
+    "1": { "national": "(###) ###-####", "international": "+1 ### ### ####" },
+    "33": { "national": "0# ## ## ## ##", "international": "+33 # ## ## ## ##" },
+    "44": { "national": "0#### ######", "international": "+44 #### ######" },
+    "49": { "national": "0### #######", "international": "+49 ### #######" },
+    "61": { "national": "0# #### ####", "international": "+61 # #### ####" }
+  }
+}

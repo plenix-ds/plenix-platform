@@ -7,6 +7,36 @@ import 'package:flutter/material.dart';
 /// platform set (PlenixPlatform.current picks it by defaultTargetPlatform).
 @immutable
 class PlenixTheme extends ThemeExtension<PlenixTheme> {
+  final Color datavizCategorical1;
+  final Color datavizCategorical2;
+  final Color datavizCategorical3;
+  final Color datavizCategorical4;
+  final Color datavizCategorical5;
+  final Color datavizCategorical6;
+  final Color datavizSequential1;
+  final Color datavizSequential2;
+  final Color datavizSequential3;
+  final Color datavizSequential4;
+  final Color datavizSequential5;
+  final Color datavizSequential6;
+  final Color datavizSequential7;
+  final Color datavizDiverging1;
+  final Color datavizDiverging2;
+  final Color datavizDiverging3;
+  final Color datavizDiverging4;
+  final Color datavizDiverging5;
+  final Color datavizDiverging6;
+  final Color datavizDiverging7;
+  final Color datavizStatusPositive;
+  final Color datavizStatusCaution;
+  final Color datavizStatusNegative;
+  final Color datavizStatusInformative;
+  final Color datavizStatusNeutral;
+  final Color datavizAlertWarning;
+  final Color datavizAlertCritical;
+  final Color datavizGridLine;
+  final Color datavizLabel;
+  final Color virtualStickyBackground;
   final Color surfaceCanvas;
   final Color surfaceDefault;
   final Color surfaceRaised;
@@ -214,6 +244,36 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color categoryGrey;
   final Color categoryGreyOn;
   const PlenixTheme({
+    required this.datavizCategorical1,
+    required this.datavizCategorical2,
+    required this.datavizCategorical3,
+    required this.datavizCategorical4,
+    required this.datavizCategorical5,
+    required this.datavizCategorical6,
+    required this.datavizSequential1,
+    required this.datavizSequential2,
+    required this.datavizSequential3,
+    required this.datavizSequential4,
+    required this.datavizSequential5,
+    required this.datavizSequential6,
+    required this.datavizSequential7,
+    required this.datavizDiverging1,
+    required this.datavizDiverging2,
+    required this.datavizDiverging3,
+    required this.datavizDiverging4,
+    required this.datavizDiverging5,
+    required this.datavizDiverging6,
+    required this.datavizDiverging7,
+    required this.datavizStatusPositive,
+    required this.datavizStatusCaution,
+    required this.datavizStatusNegative,
+    required this.datavizStatusInformative,
+    required this.datavizStatusNeutral,
+    required this.datavizAlertWarning,
+    required this.datavizAlertCritical,
+    required this.datavizGridLine,
+    required this.datavizLabel,
+    required this.virtualStickyBackground,
     required this.surfaceCanvas,
     required this.surfaceDefault,
     required this.surfaceRaised,
@@ -422,6 +482,36 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.categoryGreyOn,
   });
   static const light = PlenixTheme(
+    datavizCategorical1: Color(0xFF2A6FDB),
+    datavizCategorical2: Color(0xFF107C10),
+    datavizCategorical3: Color(0xFF3D5A80),
+    datavizCategorical4: Color(0xFFF60000),
+    datavizCategorical5: Color(0xFFC05A00),
+    datavizCategorical6: Color(0xFF56585E),
+    datavizSequential1: Color(0xFFEBF0F7),
+    datavizSequential2: Color(0xFFC8DFF7),
+    datavizSequential3: Color(0xFFA2C0E3),
+    datavizSequential4: Color(0xFF2A6FDB),
+    datavizSequential5: Color(0xFF1F5BB8),
+    datavizSequential6: Color(0xFF005A9E),
+    datavizSequential7: Color(0xFF1F2A3A),
+    datavizDiverging1: Color(0xFF990000),
+    datavizDiverging2: Color(0xFFF60000),
+    datavizDiverging3: Color(0xFFF8ACA2),
+    datavizDiverging4: Color(0xFFE8E9EC),
+    datavizDiverging5: Color(0xFFC8DFF7),
+    datavizDiverging6: Color(0xFF2A6FDB),
+    datavizDiverging7: Color(0xFF005A9E),
+    datavizStatusPositive: Color(0xFF107C10),
+    datavizStatusCaution: Color(0xFFC05A00),
+    datavizStatusNegative: Color(0xFFF60000),
+    datavizStatusInformative: Color(0xFF2A6FDB),
+    datavizStatusNeutral: Color(0xFF6E6E6E),
+    datavizAlertWarning: Color(0xFFC05A00),
+    datavizAlertCritical: Color(0xFFF60000),
+    datavizGridLine: Color(0xFFE8E9EC),
+    datavizLabel: Color(0xFF56585E),
+    virtualStickyBackground: Color(0xFFFFFFFF),
     surfaceCanvas: Color(0xFFF7F7F8),
     surfaceDefault: Color(0xFFFFFFFF),
     surfaceRaised: Color(0xFFFFFFFF),
@@ -630,6 +720,36 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     categoryGreyOn: Color(0xFF000000),
   );
   static const dark = PlenixTheme(
+    datavizCategorical1: Color(0xFF2A6FDB),
+    datavizCategorical2: Color(0xFF107C10),
+    datavizCategorical3: Color(0xFF3D5A80),
+    datavizCategorical4: Color(0xFFF60000),
+    datavizCategorical5: Color(0xFFC05A00),
+    datavizCategorical6: Color(0xFF56585E),
+    datavizSequential1: Color(0xFFEBF0F7),
+    datavizSequential2: Color(0xFFC8DFF7),
+    datavizSequential3: Color(0xFFA2C0E3),
+    datavizSequential4: Color(0xFF2A6FDB),
+    datavizSequential5: Color(0xFF1F5BB8),
+    datavizSequential6: Color(0xFF005A9E),
+    datavizSequential7: Color(0xFF1F2A3A),
+    datavizDiverging1: Color(0xFF990000),
+    datavizDiverging2: Color(0xFFF60000),
+    datavizDiverging3: Color(0xFFF8ACA2),
+    datavizDiverging4: Color(0xFFE8E9EC),
+    datavizDiverging5: Color(0xFFC8DFF7),
+    datavizDiverging6: Color(0xFF2A6FDB),
+    datavizDiverging7: Color(0xFF005A9E),
+    datavizStatusPositive: Color(0xFF107C10),
+    datavizStatusCaution: Color(0xFFC05A00),
+    datavizStatusNegative: Color(0xFFF60000),
+    datavizStatusInformative: Color(0xFF2A6FDB),
+    datavizStatusNeutral: Color(0xFF6E6E6E),
+    datavizAlertWarning: Color(0xFFC05A00),
+    datavizAlertCritical: Color(0xFFF60000),
+    datavizGridLine: Color(0xFF56585E),
+    datavizLabel: Color(0xFFD0D0D0),
+    virtualStickyBackground: Color(0xFF444444),
     surfaceCanvas: Color(0xFF000000),
     surfaceDefault: Color(0xFF444444),
     surfaceRaised: Color(0xFF444444),

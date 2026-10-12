@@ -1,0 +1,14 @@
+{
+  "$description": "Library part w01C (wave 1, lane C): the iOS and Android counterparts of the foundations data visualization colors, contrast, layout grid, keylines, scroll lock, accessible descriptions and use of color. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Data visualization colors": { "ios": ["ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "foundations|Contrast rules": { "ios": ["ios-interaction|Accessibility", "ios-foundations|Color"], "android": ["android-foundations|Contrast", "android-interaction|Contrast"] },
+    "foundations|Layout grid": { "ios": ["ios-layout|Layout"], "android": ["android-foundations|Window classes", "android-layout|Window classes"] },
+    "foundations|Keylines": { "ios": ["ios-foundations|Icons"], "android": ["android-foundations|Material Symbols"] },
+    "overlays|Scroll lock": { "ios": ["ios-overlays|Modality"], "android": ["android-layout|Scrolling containers"] },
+    "interaction|Accessible descriptions": { "ios": ["ios-interaction|VoiceOver"], "android": ["android-interaction|TalkBack"] },
+    "interaction|Color contrast": { "ios": ["ios-interaction|Accessibility"], "android": ["android-interaction|Contrast", "android-foundations|Contrast"] },
+    "interaction|Use of color": { "ios": ["ios-foundations|Color", "ios-interaction|Accessibility"], "android": ["android-foundations|Color alone"] },
+    "interaction|Scroll lock": { "ios": ["ios-overlays|Modality"], "android": ["android-layout|Scrolling containers"] }
+  }
+}

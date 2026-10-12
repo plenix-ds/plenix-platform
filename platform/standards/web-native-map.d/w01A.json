@@ -1,0 +1,14 @@
+{
+  "$description": "Library part w01A (wave 1, lane A): the iOS and Android counterparts of the formatting foundation and the live region, clipboard, hotkey and virtualization utilities. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Numbers and units": { "ios": ["ios-foundations|Writing"], "android": ["android-content|Text expansion"] },
+    "foundations|Date and time formats": { "ios": ["ios-foundations|Writing"], "android": ["android-forms|DatePicker and TimePicker"] },
+    "foundations|Currency and percentages": { "ios": ["ios-foundations|Writing"], "android": ["android-content|Text expansion"] },
+    "foundations|Names, addresses and phone numbers": { "ios": ["ios-forms|Entering data"], "android": ["android-patterns|Form"] },
+    "interaction|Live regions": { "ios": ["ios-interaction|VoiceOver"], "android": ["android-interaction|TalkBack"] },
+    "interaction|Clipboard": { "ios": ["ios-actions|Edit menus"], "android": ["android-actions|Menu"] },
+    "interaction|Hotkey": { "ios": ["ios-interaction|Keyboards"], "android": ["android-interaction|Keyboard"] },
+    "interaction|Virtualization": { "ios": ["ios-data-display|Lists and tables", "ios-data-display|Collections"], "android": ["android-data-display|List", "android-data-display|Collection"] },
+    "implementation|Virtualization": { "ios": ["ios-implementation|How to build"], "android": ["android-implementation|Behavior"] }
+  }
+}

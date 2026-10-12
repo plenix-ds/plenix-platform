@@ -1,0 +1,30 @@
+/* Plenix · Data visualization colors (platform/system/dataviz.css): data-plx-dataviz="<scale>-<step>" on any element makes that
+   step of the chart scales (--plx-sys-dataviz-*, utils/dataviz.js) the element’s data color, --plx-comp-data-color, as
+   data-plx-color does for a hue (system/steps.css). A chart part fills or strokes itself with var(--plx-comp-data-color). */
+[data-plx-dataviz="categorical-1"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-1);}
+[data-plx-dataviz="categorical-2"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-2);}
+[data-plx-dataviz="categorical-3"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-3);}
+[data-plx-dataviz="categorical-4"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-4);}
+[data-plx-dataviz="categorical-5"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-5);}
+[data-plx-dataviz="categorical-6"]{--plx-comp-data-color:var(--plx-sys-dataviz-categorical-6);}
+[data-plx-dataviz="sequential-1"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-1);}
+[data-plx-dataviz="sequential-2"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-2);}
+[data-plx-dataviz="sequential-3"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-3);}
+[data-plx-dataviz="sequential-4"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-4);}
+[data-plx-dataviz="sequential-5"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-5);}
+[data-plx-dataviz="sequential-6"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-6);}
+[data-plx-dataviz="sequential-7"]{--plx-comp-data-color:var(--plx-sys-dataviz-sequential-7);}
+[data-plx-dataviz="diverging-1"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-1);}
+[data-plx-dataviz="diverging-2"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-2);}
+[data-plx-dataviz="diverging-3"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-3);}
+[data-plx-dataviz="diverging-4"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-4);}
+[data-plx-dataviz="diverging-5"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-5);}
+[data-plx-dataviz="diverging-6"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-6);}
+[data-plx-dataviz="diverging-7"]{--plx-comp-data-color:var(--plx-sys-dataviz-diverging-7);}
+[data-plx-dataviz="status-positive"]{--plx-comp-data-color:var(--plx-sys-dataviz-status-positive);}
+[data-plx-dataviz="status-caution"]{--plx-comp-data-color:var(--plx-sys-dataviz-status-caution);}
+[data-plx-dataviz="status-negative"]{--plx-comp-data-color:var(--plx-sys-dataviz-status-negative);}
+[data-plx-dataviz="status-informative"]{--plx-comp-data-color:var(--plx-sys-dataviz-status-informative);}
+[data-plx-dataviz="status-neutral"]{--plx-comp-data-color:var(--plx-sys-dataviz-status-neutral);}
+[data-plx-dataviz="alert-warning"]{--plx-comp-data-color:var(--plx-sys-dataviz-alert-warning);}
+[data-plx-dataviz="alert-critical"]{--plx-comp-data-color:var(--plx-sys-dataviz-alert-critical);}

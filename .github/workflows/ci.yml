@@ -88,3 +88,12 @@ jobs:
 
       - name: "Target sizes (coarse pointer 44x44, fine pointer 24x24 or spacing; known findings may only go down)"
         run: node tests/targets.test.js
+
+      - name: "Contrast of the theme roles (WCAG 1.4.3, 1.4.11; pending pairs may only go down)"
+        run: node tests/contrast.test.js
+
+      - name: "Formats (numbers, dates, currency, names) match the Formats standard"
+        run: node tests/formats.test.js
+
+      - name: "Utilities (virtualizer, hotkeys, live regions, clipboard)"
+        run: node tests/utilities.test.js

@@ -21,3 +21,89 @@
 @media (width < 600px){
   .plx-shell{grid-template-areas:"header" "main";grid-template-columns:minmax(0,1fr);}
 }
+
+/* ── Interaction states (the Interaction states foundation, library wave 1) ──
+   One treatment per state, the same on every interactive element: hover, focus, pressed, selected, dragged and
+   disabled, on a surface (the default), on the accent surface (plx-state--accent) and on the inverse surface
+   (plx-state--inverse). The colors are the theme's state roles (--plx-sys-state-hover, -state-pressed, -state-selected,
+   -accent-state-hover…, light and dark); the rest are the state tokens (platform/tokens/semantic/state.tokens.json).
+     <button class="plx-state">…</button>      <a class="plx-state plx-state--accent" aria-current="page">…</a>
+   Rules every treatment keeps:
+     hover     a one-step fill, never a change of size or layout; only where a pointer can hover (touch has none), and
+               nothing is found or operated by hover alone
+     focus     keyboard focus (:focus-visible) draws the focus ring (the Focus ring item); a focused field changes only
+               its border color, which the field draws itself
+     pressed   one step stronger than hover, only while the pointer or the key is down; the action runs on release
+     selected  the selected fill and border, with a second cue the component draws (a check, a filled icon, a bar) and
+               its ARIA state (aria-selected, aria-pressed, aria-current): color is never the only signal
+     dragged   the lifted item: raised (the overlay shadow) and slightly transparent; its origin dims (is-drag-origin)
+     disabled  the disabled text color (or, on the accent and inverse surfaces, the whole element dims), no hover or
+               pressed feedback and the not-allowed pointer; prefer read-only when the value must stay readable
+   Every state selector has the same weight (one class and one state), so the order below decides: disabled last.
+   The is-hover, is-focus-visible and is-pressed classes draw a state in documentation. Components adopt these rules
+   in their own tasks; this file never styles a component. */
+.plx-state{cursor:pointer;}
+@media (hover: hover){
+  .plx-state:hover{background-color:var(--plx-sys-state-hover);}
+}
+.plx-state.is-hover{background-color:var(--plx-sys-state-hover);}
+.plx-state:active,
+.plx-state.is-pressed{background-color:var(--plx-sys-state-pressed);}
+.plx-state:focus-visible,
+.plx-state.is-focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-focus-ring-width);}
+.plx-state.is-selected,
+.plx-state[aria-selected="true"],
+.plx-state[aria-pressed="true"],
+.plx-state[aria-current="page"],
+.plx-state[aria-current="true"]{background-color:var(--plx-sys-state-selected);border-bottom-color:var(--plx-sys-state-selected-border);border-left-color:var(--plx-sys-state-selected-border);border-right-color:var(--plx-sys-state-selected-border);border-top-color:var(--plx-sys-state-selected-border);color:var(--plx-sys-selected-content);}
+.plx-state.is-selected:active,
+.plx-state.is-selected.is-pressed{background-color:var(--plx-sys-state-selected-pressed);}
+.plx-state.is-dragging{background-color:var(--plx-sys-surface-raised);box-shadow:var(--plx-sys-elevation-overlay-shadow);cursor:grabbing;opacity:var(--plx-sys-state-dragged-opacity);}
+.plx-state.is-drag-origin{opacity:var(--plx-sys-state-drag-origin-opacity);}
+.plx-state:disabled,
+.plx-state[aria-disabled="true"],
+.plx-state.is-disabled{background-color:transparent;box-shadow:none;color:var(--plx-sys-content-disabled);cursor:not-allowed;}
+
+/* on the accent surface (the accent header, an accent band): the accent's own state roles; the text is the muted accent
+   content at rest and the full accent content while active */
+.plx-state--accent{color:var(--plx-sys-accent-content-muted);}
+@media (hover: hover){
+  .plx-state--accent:hover{background-color:var(--plx-sys-accent-state-hover);color:var(--plx-sys-accent-content);}
+}
+.plx-state--accent.is-hover{background-color:var(--plx-sys-accent-state-hover);color:var(--plx-sys-accent-content);}
+.plx-state--accent:active,
+.plx-state--accent.is-pressed{background-color:var(--plx-sys-accent-state-pressed);color:var(--plx-sys-accent-content);}
+.plx-state--accent:focus-visible,
+.plx-state--accent.is-focus-visible{outline-color:var(--plx-sys-accent-content);}
+.plx-state--accent.is-selected,
+.plx-state--accent[aria-selected="true"],
+.plx-state--accent[aria-pressed="true"],
+.plx-state--accent[aria-current="page"],
+.plx-state--accent[aria-current="true"]{background-color:var(--plx-sys-accent-state-hover);border-bottom-color:var(--plx-sys-accent-content);border-left-color:var(--plx-sys-accent-content);border-right-color:var(--plx-sys-accent-content);border-top-color:var(--plx-sys-accent-content);color:var(--plx-sys-accent-content);}
+.plx-state--accent.is-selected:active,
+.plx-state--accent.is-selected.is-pressed{background-color:var(--plx-sys-accent-state-pressed);}
+.plx-state--accent.is-dragging{background-color:var(--plx-sys-accent-surface-raised);color:var(--plx-sys-accent-content);}
+.plx-state--accent:disabled,
+.plx-state--accent[aria-disabled="true"],
+.plx-state--accent.is-disabled{background-color:transparent;color:var(--plx-sys-accent-content-muted);opacity:var(--plx-sys-state-disabled-opacity);}
+
+/* on the inverse surface (a toast, a tooltip, a snackbar): there is no lighter fill step, so the content brightens to
+   full strength instead; the focus ring stays the focus color */
+.plx-state--inverse{color:var(--plx-sys-content-inverse);opacity:var(--plx-sys-state-inverse-rest-opacity);}
+@media (hover: hover){
+  .plx-state--inverse:hover{background-color:transparent;opacity:var(--plx-sys-state-inverse-active-opacity);}
+}
+.plx-state--inverse.is-hover{background-color:transparent;opacity:var(--plx-sys-state-inverse-active-opacity);}
+.plx-state--inverse:active,
+.plx-state--inverse.is-pressed{background-color:transparent;opacity:var(--plx-sys-state-inverse-active-opacity);}
+.plx-state--inverse.is-selected,
+.plx-state--inverse[aria-selected="true"],
+.plx-state--inverse[aria-pressed="true"],
+.plx-state--inverse[aria-current="page"],
+.plx-state--inverse[aria-current="true"]{background-color:transparent;border-bottom-color:var(--plx-sys-content-inverse);border-left-color:var(--plx-sys-content-inverse);border-right-color:var(--plx-sys-content-inverse);border-top-color:var(--plx-sys-content-inverse);color:var(--plx-sys-content-inverse);opacity:var(--plx-sys-state-inverse-active-opacity);}
+.plx-state--inverse.is-selected:active,
+.plx-state--inverse.is-selected.is-pressed{background-color:transparent;}
+.plx-state--inverse.is-dragging{background-color:var(--plx-sys-surface-inverse);opacity:var(--plx-sys-state-dragged-opacity);}
+.plx-state--inverse:disabled,
+.plx-state--inverse[aria-disabled="true"],
+.plx-state--inverse.is-disabled{background-color:transparent;color:var(--plx-sys-content-inverse);opacity:var(--plx-sys-state-disabled-opacity);}

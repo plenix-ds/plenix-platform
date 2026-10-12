@@ -1,0 +1,16 @@
+/* Plenix · Aspect-ratio scale (platform/system/ratio.css). The ratios a media frame, preview or card may take, from the
+   reference tokens --plx-ref-ratio-<w>-<h> (platform/tokens/reference/ratio.tokens.json): 1:1, 4:3, 3:2, 16:9, 21:9 and
+   the portrait 3:4 and 9:16. A frame keeps its ratio as its width changes; the media inside fills it (.plx-ratio-media)
+   and is cropped (cover, the default) or letterboxed (contain), never stretched. One ratio per grid of thumbnails.
+     <div class="plx-ratio-16-9"><img class="plx-ratio-media" alt="…" src="…"></div>
+   Preview, MediaCard and Image adopt the scale in their own tasks; this file never styles them. */
+.plx-ratio-1-1{aspect-ratio:var(--plx-ref-ratio-1-1);}
+.plx-ratio-4-3{aspect-ratio:var(--plx-ref-ratio-4-3);}
+.plx-ratio-3-2{aspect-ratio:var(--plx-ref-ratio-3-2);}
+.plx-ratio-16-9{aspect-ratio:var(--plx-ref-ratio-16-9);}
+.plx-ratio-21-9{aspect-ratio:var(--plx-ref-ratio-21-9);}
+.plx-ratio-3-4{aspect-ratio:var(--plx-ref-ratio-3-4);}
+.plx-ratio-9-16{aspect-ratio:var(--plx-ref-ratio-9-16);}
+/* the media inside a ratio frame: it fills the frame and is cropped to it (cover); contain shows the whole asset */
+.plx-ratio-media{block-size:100%;display:block;inline-size:100%;object-fit:cover;}
+.plx-ratio-media--contain{object-fit:contain;}

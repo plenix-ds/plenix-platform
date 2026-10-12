@@ -1,0 +1,41 @@
+{
+  "$description": "Library part w01B (wave 1, lane B): the iOS and Android counterparts of the aspect-ratio scale, the interaction states, floating positioning, the Portal and the intersection observer, and of their duplicate leaves. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Aspect-ratio scale": {
+      "ios": ["ios-content|Images", "ios-layout|Layout"],
+      "android": ["android-foundations|Images", "android-content|Images"]
+    },
+    "foundations|Hover treatment": {
+      "ios": ["ios-interaction|Pointing devices", "ios-interaction|Focus and selection"],
+      "android": ["android-interaction|States"]
+    },
+    "feedback|Disabled state": {
+      "ios": ["ios-interaction|Focus and selection"],
+      "android": ["android-interaction|States"]
+    },
+    "overlays|Floating positioning": {
+      "ios": ["ios-overlays|Popovers", "ios-actions|Context menus"],
+      "android": ["android-actions|Menu", "android-overlays|Tooltip"]
+    },
+    "overlays|Anchored overlay": {
+      "ios": ["ios-overlays|Popovers"],
+      "android": ["android-actions|Menu"]
+    },
+    "overlays|Portal": {
+      "ios": ["ios-overlays|Modality"],
+      "android": ["android-overlays|AlertDialog", "android-overlays|ModalBottomSheet"]
+    },
+    "interaction|Portal": {
+      "ios": ["ios-overlays|Modality"],
+      "android": ["android-overlays|ModalBottomSheet"]
+    },
+    "interaction|Floating positioner": {
+      "ios": ["ios-overlays|Popovers"],
+      "android": ["android-overlays|Tooltip"]
+    },
+    "interaction|Intersection observer": {
+      "ios": ["ios-layout|Scroll views", "ios-data-display|Collections"],
+      "android": ["android-layout|Lazy grids", "android-layout|Scrolling containers"]
+    }
+  }
+}

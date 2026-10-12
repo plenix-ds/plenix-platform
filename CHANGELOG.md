@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.42] - 2026-10-12
+
+### Added
+- The complete library, wave 1: the foundations and utilities (32 inventory items, 27 new records).
+  - Formats: numbers and units, dates and times, currency and percentages, names, addresses and phone numbers
+    (utils/format.js, the Formats standard).
+  - Live regions (LiveRegion, announce), clipboard (copyText, useClipboard), hotkeys (useHotkey and a registry), and a
+    virtualizer that writes no styles (useVirtualizer).
+  - The aspect-ratio scale, interaction states (hover, focus, pressed, selected, dragged, disabled; with a lab),
+    floating positioning (useFloating), Portal, and an intersection observer hook.
+  - Data visualization colors, contrast rules (utils/contrast.js), the layout grid and keylines (with developer
+    overlays), scroll lock, accessible descriptions (useDescribedBy), and use of color, which a new system rule checks.
+- New tests: contrast of the theme roles (13 pairs pending, may only go down), formats and utilities.
+
 ## [0.31.41] - 2026-10-11
 
 ### Added

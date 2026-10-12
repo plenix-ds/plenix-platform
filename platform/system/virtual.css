@@ -1,0 +1,51 @@
+/* Plenix · Virtualization (platform/system/virtual.css): the stand-ins for the items useVirtualizer does not render
+   (hooks/useVirtualizer.js). A run of items is a gap made of pieces of 1, 2, 4 … 1048576 items; each piece is one rule
+   here (data-plx-span), sized in items of --plx-sys-virtual-item-size plus --plx-sys-virtual-item-gap, the size the
+   container's stylesheet gives its items. No style is written by script. */
+.plx-virtual-gap{display:block;flex-grow:0;flex-shrink:0;grid-column-end:-1;grid-column-start:1;margin-block-end:calc(var(--plx-sys-virtual-item-gap) * -1);pointer-events:none;}
+.plx-virtual-gap[data-plx-axis="x"]{display:flex;margin-block-end:0;margin-inline-end:calc(var(--plx-sys-virtual-item-gap) * -1);}
+.plx-virtual-gap__piece{flex-grow:0;flex-shrink:0;}
+.plx-virtual-probe{block-size:calc(var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap));inline-size:calc(var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap));pointer-events:none;position:absolute;visibility:hidden;}
+.plx-virtual-sticky{background-color:var(--plx-sys-virtual-sticky-background);inset-block-start:0;position:sticky;z-index:var(--plx-sys-layer-sticky);}
+.plx-virtual-gap__piece[data-plx-span="1"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 1);}
+.plx-virtual-gap__piece[data-plx-span="2"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 2);}
+.plx-virtual-gap__piece[data-plx-span="4"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 4);}
+.plx-virtual-gap__piece[data-plx-span="8"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 8);}
+.plx-virtual-gap__piece[data-plx-span="16"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 16);}
+.plx-virtual-gap__piece[data-plx-span="32"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 32);}
+.plx-virtual-gap__piece[data-plx-span="64"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 64);}
+.plx-virtual-gap__piece[data-plx-span="128"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 128);}
+.plx-virtual-gap__piece[data-plx-span="256"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 256);}
+.plx-virtual-gap__piece[data-plx-span="512"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 512);}
+.plx-virtual-gap__piece[data-plx-span="1024"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 1024);}
+.plx-virtual-gap__piece[data-plx-span="2048"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 2048);}
+.plx-virtual-gap__piece[data-plx-span="4096"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 4096);}
+.plx-virtual-gap__piece[data-plx-span="8192"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 8192);}
+.plx-virtual-gap__piece[data-plx-span="16384"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 16384);}
+.plx-virtual-gap__piece[data-plx-span="32768"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 32768);}
+.plx-virtual-gap__piece[data-plx-span="65536"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 65536);}
+.plx-virtual-gap__piece[data-plx-span="131072"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 131072);}
+.plx-virtual-gap__piece[data-plx-span="262144"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 262144);}
+.plx-virtual-gap__piece[data-plx-span="524288"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 524288);}
+.plx-virtual-gap__piece[data-plx-span="1048576"]{block-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 1048576);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="1"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 1);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="2"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 2);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="4"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 4);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="8"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 8);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="16"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 16);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="32"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 32);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="64"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 64);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="128"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 128);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="256"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 256);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="512"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 512);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="1024"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 1024);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="2048"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 2048);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="4096"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 4096);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="8192"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 8192);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="16384"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 16384);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="32768"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 32768);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="65536"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 65536);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="131072"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 131072);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="262144"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 262144);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="524288"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 524288);}
+.plx-virtual-gap[data-plx-axis="x"]>.plx-virtual-gap__piece[data-plx-span="1048576"]{block-size:auto;inline-size:calc((var(--plx-sys-virtual-item-size) + var(--plx-sys-virtual-item-gap)) * 1048576);}

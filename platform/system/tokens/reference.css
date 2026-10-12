@@ -246,3 +246,12 @@
   --plx-ref-color-category-navy: #000075;
   --plx-ref-color-category-grey: #a9a9a9;
 }
+:root {
+  --plx-ref-ratio-1-1: 1 / 1;
+  --plx-ref-ratio-4-3: 4 / 3;
+  --plx-ref-ratio-3-2: 3 / 2;
+  --plx-ref-ratio-16-9: 16 / 9;
+  --plx-ref-ratio-21-9: 21 / 9;
+  --plx-ref-ratio-3-4: 3 / 4;
+  --plx-ref-ratio-9-16: 9 / 16;
+}
