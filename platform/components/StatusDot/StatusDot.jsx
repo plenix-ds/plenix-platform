@@ -1,16 +1,19 @@
 /* Plenix · StatusDot
-   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy,
-     offline) in the Status colors.
+   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
+     not disturb, offline) in the Status colors.
    Usage:
      <StatusDot tone="success" label="Active" />
      <StatusDot tone="busy" label="Busy" />
+     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
      <StatusDot tone="away" size="md" icon label="Away" />
    Props:
      tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
-       roles of the Status colors, library wave 4): "online" | "away" | "busy" (do not disturb) | "offline"
+       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
+       "offline"
      size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
      icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
-       clock, busy a bar, offline a cross (default false; presence tones only)
+       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
+       disturb share a color and differ by shape (default false; presence tones only)
      label: the state in words, read by assistive technology
      className: more classes on the dot
      ...rest: other attributes go on the dot element
@@ -26,16 +29,16 @@ import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 
-const PRESENCE = ['online', 'away', 'busy', 'offline'];
-const GLYPHS = { online: 'check', away: 'clock', offline: 'close-2' };   // busy is a bar, drawn by the stylesheet
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const GLYPHS = { online: 'check', away: 'clock', dnd: 'remove', offline: 'close-2' };   // busy is the solid dot: nothing cut out
 const SIZES = ['md', 'lg'];
 
 export function StatusDot({ tone = 'neutral', size = 'sm', icon = false, label, className, ...rest }) {
   const s = SIZES.indexOf(size) >= 0 ? size : null;
-  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0;
+  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
   return (
     <span className={cx('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className)} aria-hidden={label ? undefined : true} {...rest}>
-      {glyph ? (GLYPHS[tone] ? <Icon name={GLYPHS[tone]} className="plx-status-dot__glyph" /> : <span className="plx-status-dot__bar" aria-hidden="true" />) : null}
+      {glyph ? <Icon name={glyph} className="plx-status-dot__glyph" /> : null}
       {label ? <VisuallyHidden>{label}</VisuallyHidden> : null}
     </span>
   );

@@ -598,18 +598,21 @@ var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
-   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy,
-     offline) in the Status colors.
+   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
+     not disturb, offline) in the Status colors.
    Usage:
      <StatusDot tone="success" label="Active" />
      <StatusDot tone="busy" label="Busy" />
+     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
      <StatusDot tone="away" size="md" icon label="Away" />
    Props:
      tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
-       roles of the Status colors, library wave 4): "online" | "away" | "busy" (do not disturb) | "offline"
+       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
+       "offline"
      size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
      icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
-       clock, busy a bar, offline a cross (default false; presence tones only)
+       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
+       disturb share a color and differ by shape (default false; presence tones only)
      label: the state in words, read by assistive technology
      className: more classes on the dot
      ...rest: other attributes go on the dot element
@@ -620,12 +623,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Without a label, pair the dot with visible text.
      Avatar's presence prop draws this dot at the avatar's corner.
 */
-const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const GLYPHS = {
   online: 'check',
   away: 'clock',
+  dnd: 'remove',
   offline: 'close-2'
-}; // busy is a bar, drawn by the stylesheet
+}; // busy is the solid dot: nothing cut out
 const SIZES = ['md', 'lg'];
 function StatusDot({
   tone = 'neutral',
@@ -636,16 +640,13 @@ function StatusDot({
   ...rest
 }) {
   const s = SIZES.indexOf(size) >= 0 ? size : null;
-  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0;
+  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
     "aria-hidden": label ? undefined : true
-  }, rest), glyph ? GLYPHS[tone] ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: GLYPHS[tone],
+  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: glyph,
     className: "plx-status-dot__glyph"
-  }) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-status-dot__bar",
-    "aria-hidden": "true"
   }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
@@ -1105,11 +1106,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        black or white text (batch 290)
      label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
        assistive technology
-     presence: the person's availability (library wave 4): "online" | "away" | "busy" (do not disturb) | "offline", a
-       StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
+     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
+       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
        its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
-       availability's glyph (check, clock, bar, cross) so it never rests on color alone
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy", offline: "Offline" }
+       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
+       color alone
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the avatar
    Behavior:
      A picture that fails to load falls back to the initials.
@@ -1134,7 +1137,7 @@ const NAMED = {
   '2xl': 64
 };
 // presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
-const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const DOT = {
   20: 'sm',
   24: 'sm',
@@ -1148,6 +1151,7 @@ const STRINGS = {
   online: 'Online',
   away: 'Away',
   busy: 'Busy',
+  dnd: 'Do not disturb',
   offline: 'Offline'
 };
 
@@ -3649,7 +3653,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        works fully: the icon in the warning color) | "success" (the work here is finished: the icon in the success color);
        warning and success are announced politely (role="status")
      kind: a system state that brings its icon, tone, title and text (each still overridable by the props):
-       "offline" (warning) | "degraded" (warning) | "permission-denied" (neutral) | "not-found" (neutral)
+       "offline" (warning, wifi-off) | "degraded" (warning, cloud-off) | "permission-denied" (neutral) | "not-found" (neutral)
        | "maintenance" (neutral) | "completion" (success)
      icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the default comes from the kind,
        else from the tone (error and warning "warning", success "circle-check")
@@ -3670,11 +3674,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const KINDS = {
   offline: {
     tone: 'warning',
-    icon: 'warning'
+    icon: 'wifi-off'
   },
   degraded: {
     tone: 'warning',
-    icon: 'warning'
+    icon: 'cloud-off'
   },
   'permission-denied': {
     tone: 'neutral',
@@ -14781,6 +14785,11 @@ const CONTRAST_PAIRS = exports.CONTRAST_PAIRS = Object.freeze([{
   rule: N,
   use: 'Presence: busy (a dot)'
 }, {
+  fg: 'status-dnd',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Presence: do not disturb (a dot)'
+}, {
   fg: 'status-offline',
   bg: 'surface-default',
   rule: N,
@@ -17244,8 +17253,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      The barcode is one image (role="img") named by its format and value; the bars and the line under them are hidden from
        assistive technology, which reads the name.
-     A value the format cannot hold draws no bars: the line says it is not valid, in the danger color.
-     The bars keep a quiet zone of ten narrow bars on each side, on the barcode's background, so scanners find the start.
+     A value the format cannot hold draws no bars: the line says it is not valid, in the danger color on the surface.
+     The bars keep a quiet zone of ten narrow bars on each side, on the barcode's plate, so scanners find the start.
+     Black on white in both themes, as the QR code (the media roles do not follow the theme), so scanners read it; the line
+       under the bars is on the plate in the bars' black. An invalid value has no plate (the message is on the surface).
    Notes:
      Encoding is platform/utils/barcode.js (encodeBarcode). Other props pass through to the outer <div>.
 */
@@ -17584,7 +17595,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <AvatarGroup label="Members" people={team} layout="grid" max={12} />
    Props:
      people: [{ id, name, src, color, presence }]: each person as an Avatar (name gives the initials and the accessible
-       name; src a picture; color a data color; presence "online" | "away" | "busy" | "offline")
+       name; src a picture; color a data color; presence "online" | "away" | "busy" | "dnd" | "offline")
      label: the group's accessible name, by role ("Collaborators", "Assignees")
      max: how many avatars show before the rest collapse into +N (default 4)
      size: "xs" (24px) | "sm" (28px, default) | "md" (32px) | "lg" (40px): every avatar of a group has the same size
@@ -17678,11 +17689,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      src: the person's picture; color: their data color (Avatar's color)
      secondary: one detail under the name: a role, a team or an email
      role: a short role on a neutral badge after the name ("Owner", "Admin")
-     presence: "online" | "away" | "busy" | "offline": the dot on the avatar, and the state in words for assistive technology
+     presence: "online" | "away" | "busy" | "dnd" (do not disturb) | "offline": the dot on the avatar, and the state in
+       words for assistive technology
      size: "xs" (24px avatar) | "sm" (28px) | "md" (32px, default) | "lg" (40px) | "xl" (48px): the avatar and the text
        sizes step together
      href: the person's profile: the name becomes a link to it
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy", offline: "Offline" }
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the wrapper
    Behavior:
      The avatar is decorative (the name is next to it); the presence state is read after the name ("Maya Chen, Online").
@@ -17692,11 +17705,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the wrapper.
 */
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
-const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const STRINGS = {
   online: 'Online',
   away: 'Away',
   busy: 'Busy',
+  dnd: 'Do not disturb',
   offline: 'Offline'
 };
 function Persona({

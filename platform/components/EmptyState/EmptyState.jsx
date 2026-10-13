@@ -16,7 +16,7 @@
        works fully: the icon in the warning color) | "success" (the work here is finished: the icon in the success color);
        warning and success are announced politely (role="status")
      kind: a system state that brings its icon, tone, title and text (each still overridable by the props):
-       "offline" (warning) | "degraded" (warning) | "permission-denied" (neutral) | "not-found" (neutral)
+       "offline" (warning, wifi-off) | "degraded" (warning, cloud-off) | "permission-denied" (neutral) | "not-found" (neutral)
        | "maintenance" (neutral) | "completion" (success)
      icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the default comes from the kind,
        else from the tone (error and warning "warning", success "circle-check")
@@ -39,8 +39,8 @@ import { Icon } from '../Icon/Icon.jsx';
 
 // the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
 const KINDS = {
-  offline: { tone: 'warning', icon: 'warning' },
-  degraded: { tone: 'warning', icon: 'warning' },
+  offline: { tone: 'warning', icon: 'wifi-off' },
+  degraded: { tone: 'warning', icon: 'cloud-off' },
   'permission-denied': { tone: 'neutral', icon: 'lock' },
   'not-found': { tone: 'neutral', icon: 'doc-search' },
   maintenance: { tone: 'neutral', icon: 'settings-maintenance' },

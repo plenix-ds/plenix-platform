@@ -732,7 +732,18 @@
       "$extensions": {
         "plenix": {
           "group": "status",
-          "purpose": "Presence: the person is busy (do not disturb)."
+          "purpose": "Presence: the person is busy (in a meeting or a call; a solid dot)."
+        }
+      }
+    },
+    "status-dnd": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color",
+      "$description": "Do not disturb: red-700, the danger solid, the same color as busy; the shapes tell them apart (busy a solid dot, do not disturb a minus cut out). Its own presence state: the owner, 2026-10-13.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Presence: the person asks not to be disturbed (notifications are held; a minus cut out of the dot)."
         }
       }
     },

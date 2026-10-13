@@ -71,6 +71,7 @@ export const CONTRAST_PAIRS = Object.freeze([
   { fg: 'status-online', bg: 'surface-default', rule: N, use: 'Presence: online (a dot)' },
   { fg: 'status-away', bg: 'surface-default', rule: N, use: 'Presence: away (a dot)' },
   { fg: 'status-busy', bg: 'surface-default', rule: N, use: 'Presence: busy (a dot)' },
+  { fg: 'status-dnd', bg: 'surface-default', rule: N, use: 'Presence: do not disturb (a dot)' },
   { fg: 'status-offline', bg: 'surface-default', rule: N, use: 'Presence: offline (a dot)' },
   { fg: 'status-done', bg: 'surface-default', rule: N, use: 'Workflow: done (a dot, an icon)' },
   { fg: 'status-in-progress', bg: 'surface-default', rule: N, use: 'Workflow: in progress (a dot, an icon)' },

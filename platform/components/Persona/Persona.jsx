@@ -10,11 +10,13 @@
      src: the person's picture; color: their data color (Avatar's color)
      secondary: one detail under the name: a role, a team or an email
      role: a short role on a neutral badge after the name ("Owner", "Admin")
-     presence: "online" | "away" | "busy" | "offline": the dot on the avatar, and the state in words for assistive technology
+     presence: "online" | "away" | "busy" | "dnd" (do not disturb) | "offline": the dot on the avatar, and the state in
+       words for assistive technology
      size: "xs" (24px avatar) | "sm" (28px) | "md" (32px, default) | "lg" (40px) | "xl" (48px): the avatar and the text
        sizes step together
      href: the person's profile: the name becomes a link to it
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy", offline: "Offline" }
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the wrapper
    Behavior:
      The avatar is decorative (the name is next to it); the presence state is read after the name ("Maya Chen, Online").
@@ -31,8 +33,8 @@ import { Link } from '../Link/Link.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
-const PRESENCE = ['online', 'away', 'busy', 'offline'];
-const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', offline: 'Offline' };
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', dnd: 'Do not disturb', offline: 'Offline' };
 
 export function Persona({ name, src, color, secondary, role, presence, size = 'md', href, strings, className, ...rest }) {
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';

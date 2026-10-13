@@ -123,6 +123,7 @@ public enum Plenix {
         public static let statusOnline = Plenix.color(light: 0xFF107C10, dark: 0xFF58AD58)
         public static let statusAway = Plenix.color(light: 0xFF7D3C00, dark: 0xFFDFAA7C)
         public static let statusBusy = Plenix.color(light: 0xFFB70000, dark: 0xFFF8ACA2)
+        public static let statusDnd = Plenix.color(light: 0xFFB70000, dark: 0xFFF8ACA2)
         public static let statusOffline = Plenix.color(light: 0xFF6E6E6E, dark: 0xFFA3A6AD)
         public static let statusDone = Plenix.color(light: 0xFF107C10, dark: 0xFF58AD58)
         public static let statusInProgress = Plenix.color(light: 0xFF2A6FDB, dark: 0xFFA2C0E3)

@@ -2472,9 +2472,9 @@
   --plx-comp-banner-neutral-border: var(--plx-sys-feedback-neutral-soft-border);
 }
 :root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-barcode-background: var(--plx-sys-surface-default);
-  --plx-comp-barcode-bar: var(--plx-sys-content-default);
-  --plx-comp-barcode-text: var(--plx-sys-content-default);
+  --plx-comp-barcode-background: var(--plx-sys-content-on-media);
+  --plx-comp-barcode-bar: var(--plx-sys-surface-media);
+  --plx-comp-barcode-text: var(--plx-sys-surface-media);
   --plx-comp-barcode-font-family: var(--plx-sys-font-data);
   --plx-comp-barcode-font-size: var(--plx-ref-font-size-12);
   --plx-comp-barcode-line-height: var(--plx-ref-line-height-normal);
@@ -2484,6 +2484,7 @@
   --plx-comp-barcode-md-height: var(--plx-ref-size-64px);
   --plx-comp-barcode-lg-height: var(--plx-ref-size-96px);
   --plx-comp-barcode-error-text: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-barcode-invalid-background: var(--plx-sys-surface-default);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-blockquote-rule-color: var(--plx-sys-border-strong);
@@ -2899,14 +2900,11 @@
   --plx-comp-status-dot-online-background: var(--plx-sys-status-online);
   --plx-comp-status-dot-away-background: var(--plx-sys-status-away);
   --plx-comp-status-dot-busy-background: var(--plx-sys-status-busy);
+  --plx-comp-status-dot-dnd-background: var(--plx-sys-status-dnd);
   --plx-comp-status-dot-offline-background: var(--plx-sys-status-offline);
   --plx-comp-status-dot-md-size: var(--plx-ref-size-12px);
   --plx-comp-status-dot-lg-size: var(--plx-ref-size-16px);
   --plx-comp-status-dot-glyph-color: var(--plx-sys-surface-default);
-  --plx-comp-status-dot-bar-height: var(--plx-sys-border-width-medium);
-  --plx-comp-status-dot-bar-radius: var(--plx-sys-shape-pill);
-  --plx-comp-status-dot-md-bar-width: var(--plx-ref-glyph-size-6px);
-  --plx-comp-status-dot-lg-bar-width: var(--plx-ref-size-8px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-status-icon-gap: var(--plx-sys-space-inline-xs);

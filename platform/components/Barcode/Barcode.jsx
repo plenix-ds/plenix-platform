@@ -19,8 +19,10 @@
    Behavior:
      The barcode is one image (role="img") named by its format and value; the bars and the line under them are hidden from
        assistive technology, which reads the name.
-     A value the format cannot hold draws no bars: the line says it is not valid, in the danger color.
-     The bars keep a quiet zone of ten narrow bars on each side, on the barcode's background, so scanners find the start.
+     A value the format cannot hold draws no bars: the line says it is not valid, in the danger color on the surface.
+     The bars keep a quiet zone of ten narrow bars on each side, on the barcode's plate, so scanners find the start.
+     Black on white in both themes, as the QR code (the media roles do not follow the theme), so scanners read it; the line
+       under the bars is on the plate in the bars' black. An invalid value has no plate (the message is on the surface).
    Notes:
      Encoding is platform/utils/barcode.js (encodeBarcode). Other props pass through to the outer <div>.
 */

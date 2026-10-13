@@ -115,6 +115,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color statusOnline;
   final Color statusAway;
   final Color statusBusy;
+  final Color statusDnd;
   final Color statusOffline;
   final Color statusDone;
   final Color statusInProgress;
@@ -370,6 +371,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.statusOnline,
     required this.statusAway,
     required this.statusBusy,
+    required this.statusDnd,
     required this.statusOffline,
     required this.statusDone,
     required this.statusInProgress,
@@ -626,6 +628,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusOnline: Color(0xFF107C10),
     statusAway: Color(0xFF7D3C00),
     statusBusy: Color(0xFFB70000),
+    statusDnd: Color(0xFFB70000),
     statusOffline: Color(0xFF6E6E6E),
     statusDone: Color(0xFF107C10),
     statusInProgress: Color(0xFF2A6FDB),
@@ -882,6 +885,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusOnline: Color(0xFF58AD58),
     statusAway: Color(0xFFDFAA7C),
     statusBusy: Color(0xFFF8ACA2),
+    statusDnd: Color(0xFFF8ACA2),
     statusOffline: Color(0xFFA3A6AD),
     statusDone: Color(0xFF58AD58),
     statusInProgress: Color(0xFFA2C0E3),

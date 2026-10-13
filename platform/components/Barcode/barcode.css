@@ -1,5 +1,7 @@
 /* Plenix · Barcode (platform/components/Barcode). The bars are an SVG whose height is a token; its width follows the
-   viewBox (the value's length in narrow bars), so every barcode of a size has the same narrow-bar width. */
+   viewBox (the value's length in narrow bars), so every barcode of a size has the same narrow-bar width. Black on white
+   in both themes, as the QR code: scanners read dark on light. A value the format cannot hold has no plate: its message
+   sits on the surface. */
 .plx-barcode{align-items:center;background-color:var(--plx-comp-barcode-background);display:inline-flex;flex-direction:column;max-inline-size:100%;padding-block-end:var(--plx-comp-barcode-padding-block);padding-block-start:var(--plx-comp-barcode-padding-block);row-gap:var(--plx-comp-barcode-row-gap);vertical-align:top;}
 .plx-barcode__svg{block-size:var(--plx-comp-barcode-md-height);display:block;inline-size:auto;max-inline-size:100%;}
 .plx-barcode--sm .plx-barcode__svg{block-size:var(--plx-comp-barcode-sm-height);}
@@ -7,4 +9,5 @@
 .plx-barcode__background{fill:var(--plx-comp-barcode-background);}
 .plx-barcode__bars{fill:var(--plx-comp-barcode-bar);}
 .plx-barcode__text{color:var(--plx-comp-barcode-text);font-family:var(--plx-comp-barcode-font-family);font-size:var(--plx-comp-barcode-font-size);line-height:var(--plx-comp-barcode-line-height);}
+.plx-barcode:has(> .plx-barcode__error){background-color:var(--plx-comp-barcode-invalid-background);}
 .plx-barcode__error{color:var(--plx-comp-barcode-error-text);font-size:var(--plx-comp-barcode-font-size);line-height:var(--plx-comp-barcode-line-height);padding-inline-end:var(--plx-comp-barcode-padding-block);padding-inline-start:var(--plx-comp-barcode-padding-block);}

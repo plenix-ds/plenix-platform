@@ -128,6 +128,7 @@
   --plx-sys-status-online: var(--plx-ref-color-green-500);
   --plx-sys-status-away: var(--plx-ref-color-brown-800);
   --plx-sys-status-busy: var(--plx-ref-color-red-700);
+  --plx-sys-status-dnd: var(--plx-ref-color-red-700);
   --plx-sys-status-offline: var(--plx-ref-color-gray-600);
   --plx-sys-status-done: var(--plx-ref-color-green-500);
   --plx-sys-status-in-progress: var(--plx-ref-color-blue-400);
@@ -372,6 +373,7 @@
   --plx-sys-status-online: var(--plx-ref-color-green-300);
   --plx-sys-status-away: var(--plx-ref-color-brown-300);
   --plx-sys-status-busy: var(--plx-ref-color-red-200);
+  --plx-sys-status-dnd: var(--plx-ref-color-red-200);
   --plx-sys-status-offline: var(--plx-ref-color-gray-400);
   --plx-sys-status-done: var(--plx-ref-color-green-300);
   --plx-sys-status-in-progress: var(--plx-ref-color-blue-300);

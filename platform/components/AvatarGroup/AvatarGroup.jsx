@@ -7,7 +7,7 @@
      <AvatarGroup label="Members" people={team} layout="grid" max={12} />
    Props:
      people: [{ id, name, src, color, presence }]: each person as an Avatar (name gives the initials and the accessible
-       name; src a picture; color a data color; presence "online" | "away" | "busy" | "offline")
+       name; src a picture; color a data color; presence "online" | "away" | "busy" | "dnd" | "offline")
      label: the group's accessible name, by role ("Collaborators", "Assignees")
      max: how many avatars show before the rest collapse into +N (default 4)
      size: "xs" (24px) | "sm" (28px, default) | "md" (32px) | "lg" (40px): every avatar of a group has the same size

@@ -119,6 +119,7 @@ object PlenixColors {
     val statusOnline = Pair(Color(0xFF107C10), Color(0xFF58AD58))
     val statusAway = Pair(Color(0xFF7D3C00), Color(0xFFDFAA7C))
     val statusBusy = Pair(Color(0xFFB70000), Color(0xFFF8ACA2))
+    val statusDnd = Pair(Color(0xFFB70000), Color(0xFFF8ACA2))
     val statusOffline = Pair(Color(0xFF6E6E6E), Color(0xFFA3A6AD))
     val statusDone = Pair(Color(0xFF107C10), Color(0xFF58AD58))
     val statusInProgress = Pair(Color(0xFF2A6FDB), Color(0xFFA2C0E3))
