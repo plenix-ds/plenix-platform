@@ -31,10 +31,12 @@
     "close": "close",
     "close-2": "close_small",
     "close-bold": "close",
+    "cloud-off": "cloud_off",
     "database": "database",
     "density-comfortable": "density_large",
     "density-compact": "density_small",
     "density-standard": "density_medium",
+    "do-not-disturb": "do_not_disturb_on",
     "doc-search": "find_in_page",
     "doc-text": "description",
     "document": "draft",
@@ -114,6 +116,7 @@
     "plus": "add",
     "progress": "linear_scale",
     "refresh": "refresh",
+    "remove": "remove",
     "rename": "drive_file_rename_outline",
     "reply": "reply",
     "reply-all": "reply_all",
@@ -159,7 +162,8 @@
     "view-table": "table_rows",
     "visibility": "visibility",
     "visibility-off": "visibility_off",
-    "warning": "warning"
+    "warning": "warning",
+    "wifi-off": "wifi_off"
   },
   "flag": {
     "ed-flip-y": "Material has one Flip (horizontal); no vertical flip",

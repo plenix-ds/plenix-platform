@@ -15,11 +15,13 @@
        black or white text (batch 290)
      label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
        assistive technology
-     presence: the person's availability (library wave 4): "online" | "away" | "busy" (do not disturb) | "offline", a
-       StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
+     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
+       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
        its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
-       availability's glyph (check, clock, bar, cross) so it never rests on color alone
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy", offline: "Offline" }
+       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
+       color alone
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the avatar
    Behavior:
      A picture that fails to load falls back to the initials.
@@ -40,9 +42,9 @@ const SIZES = [20, 24, 28, 32, 40, 48, 64];   // the scale its classes define (p
 // the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
 const NAMED = { '2xs': 20, xs: 24, sm: 28, md: 32, lg: 40, xl: 48, '2xl': 64 };
 // presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
-const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const DOT = { 20: 'sm', 24: 'sm', 28: 'sm', 32: 'sm', 40: 'md', 48: 'md', 64: 'lg' };
-const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', offline: 'Offline' };
+const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', dnd: 'Do not disturb', offline: 'Offline' };
 
 // first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped
 export function initialsOf(name) {

@@ -2,19 +2,19 @@
   "$description": "Barcode (platform/components/Barcode): its tokens (library wave 4).",
   "plx-comp": {
     "barcode-background": {
-      "$value": "{plx-sys.surface-default}",
+      "$value": "{plx-sys.content-on-media}",
       "$type": "color",
-      "$description": "Barcode: the surface behind the bars, the quiet zone and the line under them."
+      "$description": "Barcode: the white plate behind the bars, the quiet zone and the line under them (white in both themes, as the QR code’s plate: scanners read dark on light; the owner, 2026-10-13)."
     },
     "barcode-bar": {
-      "$value": "{plx-sys.content-default}",
+      "$value": "{plx-sys.surface-media}",
       "$type": "color",
-      "$description": "Barcode: the color of the bars, the text color, the highest contrast with the surface."
+      "$description": "Barcode: the black bars (black in both themes: the media roles do not follow the theme)."
     },
     "barcode-text": {
-      "$value": "{plx-sys.content-default}",
+      "$value": "{plx-sys.surface-media}",
       "$type": "color",
-      "$description": "Barcode: the human-readable line under the bars."
+      "$description": "Barcode: the human-readable line under the bars, on the plate, in the bars’ black (readable in both themes)."
     },
     "barcode-font-family": {
       "$value": "{plx-sys.font-data}",
@@ -59,7 +59,12 @@
     "barcode-error-text": {
       "$value": "{plx-sys.feedback-danger-solid}",
       "$type": "color",
-      "$description": "Barcode: the message for a value the format cannot hold, in the danger color on the surface (as the error empty state’s icon)."
+      "$description": "Barcode: the message for a value the format cannot hold, in the danger color on the theme’s surface (as the error empty state’s icon)."
+    },
+    "barcode-invalid-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "Barcode: a value the format cannot hold draws no code, so it sits on the theme’s surface, not on the white plate (its message keeps the danger color’s contrast in both themes)."
     }
   }
 }
