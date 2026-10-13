@@ -1,0 +1,80 @@
+/* Plenix · TeachingBubble
+   Summary: A callout that points at a feature to introduce it once, or leads a short tour step by step: a title, one or
+     two sentences, an optional picture, a step count and its actions, in a Popover with an arrow at the feature
+     (09 Overlays › Contextual overlays › Teaching bubble; also 10 Patterns › Coach mark).
+   Usage:
+     <TeachingBubble target={<Button icon="filter">Filters</Button>} open={tip} onDismiss={() => setTip(false)}
+       title="Saved filters" primaryAction={{ label: 'Got it', onClick: done }}>Save a set of filters and open it from here next time.</TeachingBubble>
+     <TeachingBubble target={…} open title="Share a board" step={{ current: 2, total: 3 }}
+       primaryAction={{ label: 'Next', onClick: next }} secondaryAction={{ label: 'Back', onClick: back }} onDismiss={end}>…</TeachingBubble>
+     <TeachingBubble target={…} open media={<Image src="board.png" alt="" ratio="16-9" />} wide title="Boards">…</TeachingBubble>
+   Props:
+     target: the element it points at (one element; it is not changed: it keeps its own role and actions)
+     open: whether it shows (the caller decides, and remembers that it was dismissed)
+     onDismiss(): runs from Close and Escape (the person is done with it)
+     title: the feature's name; it names the bubble
+     children: what the feature does for the person, then how: one or two sentences (about 25 words)
+     media: a picture above the title (an Image; decorative pictures take alt="")
+     step: { current, total }: the step count of a tour ("2 of 3")
+     primaryAction: { label, onClick }: the main action (Got it, Next, Try it)
+     secondaryAction: { label, onClick }: a second action (Back, Not now)
+     placement: where it sits against the target (default "bottom"; Popover's placements)
+     wide: the wide bubble (400px) for a picture or a longer step (default false: 320px)
+     focusOnOpen: focus moves into it when it opens (default false: a bubble that appears by itself leaves focus where it
+       is; set it when a tour step opens it after an action)
+     strings: the words it shows and announces, for other languages: { close: "Close", step: "{current} of {total}" }
+       ({…} are filled with the numbers, set in the data font)
+     className: more classes on the bubble
+   Behavior:
+     It opens only by the open prop (Popover's manual trigger) and stays open until an action or Close; a click outside
+       does not close it. Escape and Close run onDismiss and return focus to the target.
+     It is a non-modal dialog named by its title: the page stays usable; Tab reaches its actions after the target.
+     The arrow points at the target; the bubble keeps its side so the arrow stays true.
+   Notes:
+     One at a time, and only for something new or easily missed; never for errors or what people must know to finish a
+       task. It uses the popover's surface (the overlay surface and border): there is no emphasized teaching color.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { useUid } from '../../utils/layer.js';
+import { Button } from '../Button/Button.jsx';
+import { Text } from '../Text/Text.jsx';
+import { Popover } from '../Popover/Popover.jsx';
+
+const STRINGS = { close: 'Close', step: '{current} of {total}' };
+
+// a string with {name} places filled by numbers in the data font (counts are technical values)
+const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
+  const m = /^\{(\w+)\}$/.exec(part);
+  return m && values[m[1]] !== undefined ? <Text key={i} variant="data">{values[m[1]]}</Text> : part;
+});
+
+export function TeachingBubble({ target, open = false, onDismiss, title, children, media, step, primaryAction, secondaryAction, placement = 'bottom',
+  wide = false, focusOnOpen = false, strings, className }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = useUid('plx-teaching-bubble');
+  const actions = primaryAction || secondaryAction;
+  return (
+    <Popover trigger={React.Children.only(target)} triggerOn="manual" open={!!open} onOpenChange={(v) => { if (!v && onDismiss) onDismiss(); }}
+      placement={placement} size={wide ? 'lg' : 'md'} arrow focusOnOpen={focusOnOpen} aria-labelledby={id + 't'}
+      className={cx('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)}>
+      {media ? <div className="plx-teaching-bubble__media">{media}</div> : null}
+      <div className="plx-teaching-bubble__header">
+        <h2 id={id + 't'} className="plx-teaching-bubble__title">{title}</h2>
+        {onDismiss ? <Button variant="ghost" size="xs" iconOnly icon="close" label={t.close} className="plx-teaching-bubble__close" onClick={onDismiss} /> : null}
+      </div>
+      <p className="plx-teaching-bubble__text">{children}</p>
+      {step || actions ? (
+        <div className="plx-teaching-bubble__footer">
+          {step ? <span className="plx-teaching-bubble__step">{fill(t.step, step)}</span> : null}
+          {actions ? (
+            <span className="plx-teaching-bubble__actions">
+              {secondaryAction ? <Button onClick={secondaryAction.onClick}>{secondaryAction.label}</Button> : null}
+              {primaryAction ? <Button variant="primary" onClick={primaryAction.onClick}>{primaryAction.label}</Button> : null}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+    </Popover>
+  );
+}

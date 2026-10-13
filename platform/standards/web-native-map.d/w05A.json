@@ -1,0 +1,15 @@
+{
+  "$description": "Library part w05A (wave 5, lane A): the iOS and Android counterparts of Popover (and Popup, Inline dialog, Hover card), Contextual help and Contextual education, Teaching bubble and Coach mark, Popconfirm and Mega menu. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "overlays|Popover": { "ios": ["ios-overlays|Popovers"], "android": ["android-overlays|Tooltip", "android-overlays|ModalBottomSheet"] },
+    "overlays|Popup": { "ios": ["ios-overlays|Popovers"], "android": ["android-overlays|Tooltip", "android-overlays|ModalBottomSheet"] },
+    "overlays|Inline dialog": { "ios": ["ios-overlays|Popovers"], "android": ["android-overlays|Tooltip"] },
+    "overlays|Hover card": { "ios": ["ios-overlays|Popovers"], "android": ["android-overlays|Tooltip"] },
+    "overlays|Contextual help": { "ios": ["ios-patterns|Offering help", "ios-overlays|Popovers"], "android": ["android-overlays|Consistent help", "android-overlays|Tooltip"] },
+    "patterns|Contextual education": { "ios": ["ios-patterns|Offering help"], "android": ["android-overlays|Consistent help"] },
+    "overlays|Teaching bubble": { "ios": ["ios-overlays|Popovers", "ios-patterns|Onboarding"], "android": ["android-overlays|Tooltip", "android-patterns|Onboarding"] },
+    "patterns|Coach mark": { "ios": ["ios-patterns|Onboarding"], "android": ["android-patterns|Onboarding"] },
+    "overlays|Popconfirm": { "ios": ["ios-overlays|Popovers", "ios-overlays|Action sheets"], "android": ["android-patterns|Confirmation", "android-overlays|AlertDialog"] },
+    "navigation|Mega menu": { "ios": ["ios-navigation|Sidebars", "ios-actions|Menus"], "android": ["android-navigation|Expanded navigation rail", "android-actions|Menu"] }
+  }
+}

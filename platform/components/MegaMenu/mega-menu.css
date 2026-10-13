@@ -1,0 +1,14 @@
+/* Plenix · MegaMenu (platform/components/MegaMenu). The button is a ghost Button with its caret; the panel is a Popover
+   (size auto) whose columns wrap when the window is narrower than the row: each group a muted heading over its links
+   (standalone Links) and their descriptions, then the featured area on the sunken surface. The accordion is the button
+   over a NavList with folding groups. Anatomy and API: MegaMenu.jsx. */
+.plx-mega-menu{display:inline-flex;vertical-align:middle;}
+.plx-mega-menu--accordion{align-items:stretch;display:flex;flex-direction:column;}
+.plx-mega-menu__sections{margin-block-start:var(--plx-comp-mega-menu-sections-margin-block-start);}
+.plx-mega-menu__columns{column-gap:var(--plx-comp-mega-menu-column-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-mega-menu-row-gap);}
+.plx-mega-menu__group{inline-size:var(--plx-comp-mega-menu-column-width);min-inline-size:0;}
+.plx-mega-menu__heading{color:var(--plx-comp-mega-menu-heading-text);font-family:var(--plx-comp-mega-menu-heading-font-family);font-size:var(--plx-comp-mega-menu-heading-font-size);font-weight:var(--plx-comp-mega-menu-heading-font-weight);line-height:var(--plx-comp-mega-menu-heading-line-height);margin-block-end:var(--plx-comp-mega-menu-heading-margin-block-end);margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+.plx-mega-menu__links{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-mega-menu-link-gap);}
+.plx-mega-menu__item{display:flex;flex-direction:column;min-inline-size:0;}
+.plx-mega-menu__description{color:var(--plx-comp-mega-menu-description-text);font-size:var(--plx-comp-mega-menu-description-font-size);line-height:var(--plx-comp-mega-menu-description-line-height);margin-block-end:0;margin-block-start:0;}
+.plx-mega-menu__feature{background-color:var(--plx-comp-mega-menu-feature-background);border-end-end-radius:var(--plx-comp-mega-menu-feature-radius);border-end-start-radius:var(--plx-comp-mega-menu-feature-radius);border-start-end-radius:var(--plx-comp-mega-menu-feature-radius);border-start-start-radius:var(--plx-comp-mega-menu-feature-radius);box-sizing:border-box;inline-size:var(--plx-comp-mega-menu-feature-width);padding-block-end:var(--plx-comp-mega-menu-feature-padding);padding-block-start:var(--plx-comp-mega-menu-feature-padding);padding-inline-end:var(--plx-comp-mega-menu-feature-padding);padding-inline-start:var(--plx-comp-mega-menu-feature-padding);}

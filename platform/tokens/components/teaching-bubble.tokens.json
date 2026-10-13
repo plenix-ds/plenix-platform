@@ -1,0 +1,18 @@
+{
+  "$description": "TeachingBubble (platform/components/TeachingBubble, library wave 5, lane A): its component tokens. The surface, arrow and widths are Popover's (md, lg when wide); the buttons are Button's.",
+  "plx-comp": {
+    "teaching-bubble-media-margin-block-end": { "$value": "{plx-sys.space-stack-md}", "$type": "dimension", "$description": "TeachingBubble: the space under the picture." },
+    "teaching-bubble-header-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "TeachingBubble: the gap between the title and Close." },
+    "teaching-bubble-header-min-height": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "TeachingBubble: the header is at least as tall as Close (the inline-action role)." },
+    "teaching-bubble-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "TeachingBubble: the title's color." },
+    "teaching-bubble-title-font-family": { "$value": "{plx-sys.font-heading}", "$type": "fontFamily", "$description": "TeachingBubble: the title's face." },
+    "teaching-bubble-title-font-size": { "$value": "{plx-ref.font-size-14}", "$type": "dimension", "$description": "TeachingBubble: the title's size (Popover's title size)." },
+    "teaching-bubble-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "TeachingBubble: the title's weight." },
+    "teaching-bubble-title-line-height": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "TeachingBubble: the title line is as tall as Close (the inline-action role), so its first line centers on the button without an offset." },
+    "teaching-bubble-text-margin-block-start": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "TeachingBubble: the space between the header and the text." },
+    "teaching-bubble-footer-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "TeachingBubble: the gaps in the footer (between the actions, and before the step count)." },
+    "teaching-bubble-footer-margin-block-start": { "$value": "{plx-sys.space-stack-md}", "$type": "dimension", "$description": "TeachingBubble: the space above the footer." },
+    "teaching-bubble-step-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "TeachingBubble: the step count's color." },
+    "teaching-bubble-step-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "TeachingBubble: the step count's size." }
+  }
+}

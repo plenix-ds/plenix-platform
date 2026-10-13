@@ -1,0 +1,13 @@
+{
+  "$description": "ContextualHelp (platform/components/ContextualHelp, library wave 5, lane A): its component tokens. The info button is a ghost Button of the inline-action role and the popover is Popover's; these are the inline tip and the link's spacing.",
+  "plx-comp": {
+    "contextual-help-link-margin-block-start": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "ContextualHelp: the space between the explanation and its link in the popover." },
+    "contextual-help-inline-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Inline tip: the text color (muted, as helper text)." },
+    "contextual-help-inline-icon-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Inline tip: the info icon's color." },
+    "contextual-help-inline-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Inline tip: the title's color." },
+    "contextual-help-inline-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Inline tip: the title's weight." },
+    "contextual-help-inline-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Inline tip: the gap between the icon and the text." },
+    "contextual-help-inline-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Inline tip: the text size (the helper text size)." },
+    "contextual-help-inline-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "Inline tip: one text line, 20px; the icon's box is one line tall, so the icon centers on the first line." }
+  }
+}

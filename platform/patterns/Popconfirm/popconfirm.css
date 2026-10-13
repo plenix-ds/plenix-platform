@@ -1,0 +1,3 @@
+/* Plenix · Popconfirm (platform/patterns/Popconfirm). A Popover of size sm: the question is its title, the description
+   a muted sentence under it, Cancel and the verb in its footer. Only the description is the pattern's own. */
+.plx-popconfirm__description{color:var(--plx-comp-popconfirm-description-text);font-size:var(--plx-comp-popconfirm-description-font-size);line-height:var(--plx-comp-popconfirm-description-line-height);margin-block-end:0;margin-block-start:0;}
