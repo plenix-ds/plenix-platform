@@ -405,14 +405,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Icon = Icon;
+exports.StatusIcon = StatusIcon;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon
-   Summary: One icon of the Plenix set, drawn as a mask in the current text color.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
+   Summary: One icon of the Plenix set, drawn as a mask in the current text color. StatusIcon is a tone's icon in the
+     tone's color (info, success, warning, danger, neutral), alone or with a short label.
    Usage:
      <Icon name="folder" />
      <Icon name="star" size="sm" filled label="Favorite" />
+     <StatusIcon tone="warning" />
+     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
      name: the Plenix icon name (platform/icons/map.json)
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
@@ -420,16 +424,28 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      filled: the filled version (default false)
      label: the accessible name, when the icon alone carries meaning
      className: more classes on the icon
+     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
+       the info icon, in the neutral color)
+     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
+     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
+     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
+     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
+       danger: "Error", neutral: "Note" }
+     StatusIcon.className: more classes on the status icon
    Behavior:
      The filled version is also drawn automatically inside a current or selected element: aria-current, aria-pressed,
        aria-selected, .is-selected, .is-current.
      A pinned item shows the filled pin, not a filled row.
      Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
+     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
+       visible label the label carries the state and the icon is hidden from assistive technology.
    Notes:
      The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
      The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
        system adds none to make up for it.
      Other props pass through to the <span>.
+     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
+       keeps the text color and size of where it sits.
 */
 function Icon({
   name,
@@ -445,6 +461,44 @@ function Icon({
     "aria-label": label,
     "aria-hidden": label ? undefined : true
   }, rest));
+}
+
+// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
+const STATUS_ICONS = {
+  info: 'circle-info',
+  success: 'circle-check',
+  warning: 'warning',
+  danger: 'alert',
+  neutral: 'circle-info'
+};
+const STATUS_WORDS = {
+  info: 'Information',
+  success: 'Success',
+  warning: 'Warning',
+  danger: 'Error',
+  neutral: 'Note'
+};
+function StatusIcon({
+  tone = 'info',
+  size = 'md',
+  label,
+  children,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = STATUS_ICONS[tone] ? tone : 'info';
+  const words = Object.assign({}, STATUS_WORDS, strings);
+  const shown = children !== undefined && children !== null && children !== false;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
+  }, rest), /*#__PURE__*/_react.default.createElement(Icon, {
+    name: STATUS_ICONS[t],
+    className: "plx-status-icon__glyph",
+    label: shown ? undefined : label || words[t]
+  }), shown ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-icon__label"
+  }, children) : null);
 }
   } },
   "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -2414,6 +2468,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      <ColorSwatch color={category.color} />
      <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
+     <ColorSwatch color="green" label="Green" showLabel />
+     <ColorPicker palette="category" colors={['red', 'green', 'blue']} value={c} onChange={setC} />
    Props:
      color: a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
      category: instead of color, a category color by name (CATEGORY_COLORS: the category palette, its own tokens), set as
@@ -2423,6 +2479,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      shape: "square" (default: 2px corners, owner batch 291) | "round" (a circle)
      pressed: marks the chosen color (aria-pressed), with onClick
      label: the accessible name of the color, with onClick
+     showLabel: shows the label as text after the swatch (default false); with onClick the swatch and its label are one
+       button (wave 4)
      onClick(event): makes the swatch a button that picks the color
      className: more classes on the swatch
      ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
@@ -2431,11 +2489,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        ColorPicker.label: the group's accessible name (default "Color")
        ColorPicker.size: the swatches' size (default "md")
        ColorPicker.palette: "data" (default: the data hues) | "category" (the category colors: categories use these)
+       ColorPicker.colors: a custom set: the names to offer from the palette, in this order (unknown names are left out)
+         (wave 4)
        ColorPicker shows one row (owner, batch 290): the colors that do not fit are in a More menu at its end ("+n", or the
        chosen color when it is one of them), each with its swatch and name
        ColorPicker.className: more classes on the group
    Behavior:
      With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
+     With showLabel the color's name is text beside it, read as text; the swatch itself stays decorative.
      A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
        (Platforms Standard 3.1); with touch each swatch of a ColorPicker gets a slot that wide.
    Notes:
@@ -2451,10 +2512,32 @@ function ColorSwatch({
   shape = 'square',
   pressed,
   label,
+  showLabel = false,
   onClick,
   className,
   ...rest
 }) {
+  if (showLabel && label) {
+    // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
+    const chip = /*#__PURE__*/_react.default.createElement(ColorSwatch, {
+      color: color,
+      category: category,
+      tone: tone,
+      size: size,
+      shape: shape
+    });
+    const text = /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-color-swatch-label__text"
+    }, label);
+    return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
+      type: "button",
+      className: (0, _cx.cx)('plx-color-swatch-label', className),
+      "aria-pressed": !!pressed,
+      onClick: onClick
+    }, rest), chip, text) : /*#__PURE__*/_react.default.createElement("span", _extends({
+      className: (0, _cx.cx)('plx-color-swatch-label', className)
+    }, rest), chip, text);
+  }
   const cls = (0, _cx.cx)('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
   return onClick ? /*#__PURE__*/_react.default.createElement("button", _extends({
     type: "button",
@@ -2479,16 +2562,18 @@ function ColorPicker({
   label = 'Color',
   size = 'md',
   palette = 'data',
+  colors,
   invalid,
   required,
   className,
   ...rest
 }) {
   // invalid and required: from Field, not for a group
-  const list = palette === 'category' ? _categoryColors.CATEGORY_COLORS : _dataColors.DATA_COLORS;
+  const all = palette === 'category' ? _categoryColors.CATEGORY_COLORS : _dataColors.DATA_COLORS;
+  const list = Array.isArray(colors) ? colors.filter(h => all.indexOf(h) >= 0) : all;
   const cat = palette === 'category';
   const ref = _react.default.useRef(null);
-  const fit = (0, _overflow.useOverflow)(ref, list.length, palette + size);
+  const fit = (0, _overflow.useOverflow)(ref, list.length, palette + size + list.join());
   const hidden = list.slice(fit);
   const pick = h => {
     if (onChange) onChange(h);
@@ -5873,7 +5958,7 @@ function tokenMs(name, fallback = 0, el) {
   return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
 }
   } },
-  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5881,29 +5966,46 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ToastProvider = ToastProvider;
 exports.useToast = useToast;
+exports.useUndo = useUndo;
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
 var _tokenTime = require("../../utils/tokenTime.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ToastProvider, useToast
-   Summary: A short message about something that just happened, at the end of the screen.
+/* Plenix · ToastProvider, useToast, useUndo
+   Summary: A short message about something that just happened, at the end of the screen; with an action (Undo) it is the
+     undo pattern.
    Usage:
      <ToastProvider>…the application…</ToastProvider>
      const toast = useToast();
      toast.show('Saved', { tone: 'success' });
+     toast.show('Asset moved to Crosses', { action: { label: 'Undo', onAction: () => moveBack() } });
+     const undoable = useUndo();
+     undoable('3 assets archived', { onUndo: () => restore(ids), onCommit: () => purge(ids) });
    Props:
      ToastProvider.duration: the default milliseconds before a toast leaves by itself; default the --plx-comp-toast-duration token
      ToastProvider.children: the application
      toast.show(message, options): shows a toast and returns its id
      options.tone: "info" (default) | "success" | "warning" | "danger"
-     options.duration: milliseconds before it leaves by itself; 0 keeps it until dismissed
+     options.duration: milliseconds before it leaves by itself; 0 keeps it until dismissed or its action is used
+     options.action: { label, onAction() }: one action button in the toast (Undo, View); using it runs onAction and closes
+       the toast
+     options.onClose(reason): runs once when the toast leaves: "action" (its action was used), "dismiss" (the Dismiss
+       button or toast.dismiss) or "timeout"
      toast.dismiss(id): removes the toast with that id
+     useUndo(): returns undoable(message, options): a toast with an Undo action for something already done
+       options.onUndo(): puts it back (the Undo action was used)
+       options.onCommit(): runs when the toast leaves without Undo (timed out or dismissed): the moment to make it final
+       options.label: the action's label (default "Undo")
+       options.tone, options.duration: as toast.show
    Behavior:
      A danger toast stays until dismissed (unless a duration is given) and is announced at once (role="alert").
      The other toasts are announced politely.
      Every toast has a Dismiss button.
+     A toast with an action stays while the pointer is over it or focus is inside it, and starts its time again when they
+       leave, so the action is never taken away from someone reaching for it.
    Notes:
      Wrap the application once in ToastProvider; useToast needs it.
      Not for anything the person must act on: use a dialog or an inline message.
@@ -5922,29 +6024,54 @@ function ToastProvider({
   children
 }) {
   const [toasts, setToasts] = _react.default.useState([]);
+  const timers = _react.default.useRef(new Map()); // id -> { wait, timer, onClose }
   const remove = _react.default.useCallback(id => setToasts(all => all.filter(t => t.id !== id)), []);
-  const dismiss = _react.default.useCallback(id => {
-    setToasts(all => all.map(t => t.id === id ? {
-      ...t,
+  const dismiss = _react.default.useCallback((id, reason = 'dismiss') => {
+    const t = timers.current.get(id);
+    if (t) {
+      clearTimeout(t.timer);
+      timers.current.delete(id);
+      if (t.onClose) t.onClose(reason);
+    }
+    setToasts(all => all.map(x => x.id === id ? {
+      ...x,
       leaving: true
-    } : t));
+    } : x));
     setTimeout(() => remove(id), (0, _tokenTime.tokenMs)('--plx-comp-toast-animation-duration'));
   }, [remove]);
+  const start = _react.default.useCallback(id => {
+    const t = timers.current.get(id);
+    if (!t || !(t.wait > 0)) return;
+    clearTimeout(t.timer);
+    t.timer = setTimeout(() => dismiss(id, 'timeout'), t.wait);
+  }, [dismiss]);
+  const hold = _react.default.useCallback(id => {
+    const t = timers.current.get(id);
+    if (t) clearTimeout(t.timer);
+  }, []);
   const show = _react.default.useCallback((message, {
     tone = 'info',
-    duration: ms
+    duration: ms,
+    action,
+    onClose
   } = {}) => {
     const id = nextId++;
     const wait = ms !== undefined ? ms : tone === 'danger' ? 0 : duration !== undefined ? duration : (0, _tokenTime.tokenMs)('--plx-comp-toast-duration');
+    timers.current.set(id, {
+      wait,
+      timer: null,
+      onClose
+    });
     setToasts(all => all.concat({
       id,
       message,
       tone,
+      action,
       leaving: false
     }));
-    if (wait > 0) setTimeout(() => dismiss(id), wait);
+    start(id);
     return id;
-  }, [dismiss, duration]);
+  }, [start, duration]);
   const api = _react.default.useMemo(() => ({
     show,
     dismiss
@@ -5958,14 +6085,27 @@ function ToastProvider({
     key: t.id,
     role: t.tone === 'danger' ? 'alert' : undefined,
     className: (0, _cx.cx)('plx-toast', 'plx-toast--' + t.tone, t.leaving && 'is-leaving'),
-    onAnimationEnd: t.leaving ? () => remove(t.id) : undefined
+    onAnimationEnd: t.leaving ? () => remove(t.id) : undefined,
+    onPointerEnter: t.action ? () => hold(t.id) : undefined,
+    onPointerLeave: t.action ? () => start(t.id) : undefined,
+    onFocus: t.action ? () => hold(t.id) : undefined,
+    onBlur: t.action ? e => {
+      if (!e.currentTarget.contains(e.relatedTarget)) start(t.id);
+    } : undefined
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-toast__icon"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: TONE_ICON[t.tone] || TONE_ICON.info
   })), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-toast__message"
-  }, t.message), /*#__PURE__*/_react.default.createElement("button", {
+  }, t.message), t.action ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    className: "plx-toast__action",
+    onClick: () => {
+      if (t.action.onAction) t.action.onAction();
+      dismiss(t.id, 'action');
+    }
+  }, t.action.label) : null, /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-toast__close",
     "aria-label": "Dismiss",
@@ -5978,6 +6118,28 @@ function useToast() {
   const api = _react.default.useContext(ToastContext);
   if (!api) throw new Error('useToast needs a <ToastProvider> around the application');
   return api;
+}
+
+// the undo pattern: the action is already done; the toast offers Undo for as long as it shows, then the change is final
+function useUndo() {
+  const toast = useToast();
+  return _react.default.useCallback((message, {
+    onUndo,
+    onCommit,
+    label = 'Undo',
+    tone,
+    duration
+  } = {}) => toast.show(message, {
+    tone,
+    duration,
+    action: {
+      label,
+      onAction: onUndo
+    },
+    onClose: reason => {
+      if (reason !== 'action' && onCommit) onCommit();
+    }
+  }), [toast]);
 }
   } },
   "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -18170,7 +18332,403 @@ function VersionLabel({
   }, words[status]) : null);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Banner = Banner;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Banner
+   Summary: A message about the whole page or a whole pane, across its full width at its top: a system notice, an expiring
+     plan, a sync failure, read-only mode (08 Feedback › Messages › Banner). Notice is the message inside content.
+   Usage:
+     <Banner tone="warning" title="Your plan ends in 3 days">Renew it to keep sharing links active.</Banner>
+     <Banner tone="danger" actions={<Button size="sm">Retry</Button>} onDismiss={() => …}>The library could not sync.</Banner>
+     <Banner tone="info" placement="pane">This folder is read-only.</Banner>
+   Props:
+     tone: "info" (default) | "success" | "warning" | "danger" | "neutral": the soft fill, edge, text color and status icon
+     title: a short bold lead before the message (optional)
+     children: the message, one or two sentences
+     actions: one or two Buttons (size "sm") after the message (optional)
+     onDismiss(): shows a Dismiss button that runs it; the owner removes the banner (optional: without it the banner stays)
+     placement: "page" (default; the top of the page, under the app header) | "pane" (the top of a pane or a panel)
+     icon: an icon name in place of the tone's icon (optional)
+     strings: the words it shows and announces, for other languages: { dismiss: "Dismiss" } and the StatusIcon tone words
+     className: more classes on the banner
+   Behavior:
+     A danger banner is an alert (role="alert"): screen readers announce it when it appears. The other tones are a status
+       (role="status"), announced politely.
+     It spans the full width of its page or pane with an edge under it only; it has no corners and no shadow, and it pushes
+       the content down rather than covering it.
+     The message wraps; the actions and the Dismiss button stay on the first line's end at every width.
+   Notes:
+     One banner per page or pane at a time: show the most important one.
+     Other props pass through to the banner element.
+*/
+const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
+function Banner({
+  tone = 'info',
+  title,
+  children,
+  actions,
+  onDismiss,
+  placement = 'page',
+  icon,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
+  const words = Object.assign({
+    dismiss: 'Dismiss'
+  }, strings);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-banner', 'plx-banner--' + t, 'plx-banner--' + (placement === 'pane' ? 'pane' : 'page'), className),
+    role: t === 'danger' ? 'alert' : 'status'
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-banner__icon"
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--md')
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    className: "plx-status-icon__glyph"
+  })) : /*#__PURE__*/_react.default.createElement(_Icon.StatusIcon, {
+    tone: t,
+    strings: strings
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-banner__body"
+  }, title ? /*#__PURE__*/_react.default.createElement("strong", {
+    className: "plx-banner__title"
+  }, title) : null, children ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-banner__text"
+  }, children) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-banner__actions"
+  }, actions) : null, onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "sm",
+    iconOnly: true,
+    icon: "close",
+    label: words.dismiss,
+    className: "plx-banner__dismiss",
+    onClick: onDismiss
+  }) : null);
+}
+  } },
+  "platform/components/Scrim/Scrim.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/scrollLock.js":"platform/utils/scrollLock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Scrim = Scrim;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _scrollLock = require("../../utils/scrollLock.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Scrim
+   Summary: The translucent layer behind a modal layer or over a busy region that dims what is under it and takes its
+     clicks (09 Overlays › Layer behavior › Backdrop / scrim).
+   Usage:
+     <Scrim onClick={close} />                          a modal layer's backdrop over the window
+     <Scrim variant="light" contained />                 over one region (its positioned parent)
+     <Scrim variant="inverse" contained />              a veil in the page color, behind a loading indicator
+   Props:
+     variant: "modal" (default; the scrim role at the middle opacity: dialogs, drawers, sheets) | "light" (the scrim role at
+       the low opacity: a non-blocking dim, a drawer over a narrow window) | "inverse" (the canvas at the high opacity: a
+       veil that keeps the content faintly readable, behind a loading indicator)
+     contained: covers its nearest positioned parent instead of the window (default false)
+     lockScroll: stops the page scrolling while the scrim is shown (default: true over the window, false when contained)
+     onClick(event): runs on a click on the scrim (a modal layer closes when it is safe to); without it the click does nothing
+     className: more classes on the scrim
+   Behavior:
+     The scrim is decoration: it is hidden from assistive technology and is never a Tab stop. The modal layer above it makes
+       the page inert and traps focus (utils/layer.js); the scrim only shows that the page is unavailable and takes the
+       pointer.
+     It fades in with the modal layer (motion-fade-in at the fast duration); with reduced motion it appears at once.
+     Over the window it stops the page scrolling (utils/scrollLock.js) for as long as it is shown; locks are counted, so
+       nested layers release the page only when the last one closes.
+   Notes:
+     Never put text or controls on the scrim: they go in the layer above it. One scrim at a time.
+     Dialog, Drawer and Sheet draw their own backdrop today; they adopt Scrim in a later wave.
+     Other props pass through to the <div>.
+*/
+const VARIANTS = ['modal', 'light', 'inverse'];
+function Scrim({
+  variant = 'modal',
+  contained = false,
+  lockScroll,
+  onClick,
+  className,
+  ...rest
+}) {
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'modal';
+  (0, _scrollLock.useScrollLock)(lockScroll !== undefined ? !!lockScroll : !contained);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-scrim', 'plx-scrim--' + v, contained && 'plx-scrim--contained', className),
+    "aria-hidden": "true",
+    onClick: onClick
+  }, rest));
+}
+  } },
+  "platform/components/LoadingOverlay/LoadingOverlay.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LoadingOverlay = LoadingOverlay;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Scrim = require("../Scrim/Scrim.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LoadingOverlay
+   Summary: Covers a region (or the whole window) while it saves or refreshes: a veil over the content, a spinner or a
+     progress bar in its middle and a short message, so nobody edits what is about to change (08 Feedback › Loading and
+     progress › Loading overlay).
+   Usage:
+     <LoadingOverlay active={saving} message="Saving changes"><AssetTable … /></LoadingOverlay>
+     <LoadingOverlay active={importing} progress={42} message="Importing 120 assets" onCancel={stop}>…</LoadingOverlay>
+     <LoadingOverlay active fullPage message="Signing you in" />
+   Props:
+     active: covers the content while true (default true)
+     fullPage: covers the whole window instead of its own region, and stops the page scrolling (default false)
+     message: what is happening, in a few words ("Saving changes"); shown under the indicator and announced
+     progress: how much is done (0 to 100); with it a progress bar replaces the spinner
+     delay: milliseconds to wait before it shows, so a quick save does not flash (default 0)
+     onCancel(): shows a Cancel button under the indicator that runs it, for work that can stop (optional)
+     strings: the words it announces and shows, for other languages: { loading: "Loading", cancel: "Cancel" }
+     children: the region it covers
+     className: more classes on the region
+   Behavior:
+     While active the region is aria-busy and its content is inert: no pointer, no keyboard, no screen reader inside it.
+     Only the covered region is blocked; the rest of the page keeps working (fullPage blocks the window).
+     The indicator is a status: its message is announced politely when it shows (the Spinner's or the ProgressBar's name).
+     When the work ends, focus returns to the element inside the region that had it.
+     The veil is the inverse Scrim (the canvas at the high opacity): the content stays faintly visible, so nothing jumps.
+   Notes:
+     For content that loads the first time with a known layout, use skeletons; for work of minutes, run it in the
+       background and report it with a toast.
+     Other props pass through to the region element.
+*/
+function LoadingOverlay({
+  active = true,
+  fullPage = false,
+  message,
+  progress,
+  delay = 0,
+  onCancel,
+  strings,
+  children,
+  className,
+  ...rest
+}) {
+  const words = Object.assign({
+    loading: 'Loading',
+    cancel: 'Cancel'
+  }, strings);
+  const [shown, setShown] = _react.default.useState(active && !delay);
+  const content = _react.default.useRef(null);
+  const focused = _react.default.useRef(null);
+  _react.default.useEffect(() => {
+    if (!active) {
+      setShown(false);
+      return undefined;
+    }
+    if (!delay) {
+      setShown(true);
+      return undefined;
+    }
+    const t = setTimeout(() => setShown(true), delay);
+    return () => clearTimeout(t);
+  }, [active, delay]);
+  // the content is inert while covered; the element that had focus inside it gets it back afterwards
+  _react.default.useEffect(() => {
+    const el = content.current;
+    if (!el || !shown) return undefined;
+    const a = document.activeElement;
+    focused.current = a && el.contains(a) ? a : null;
+    el.inert = true;
+    return () => {
+      el.inert = false;
+      const back = focused.current;
+      focused.current = null;
+      if (back && back.isConnected && typeof back.focus === 'function') back.focus();
+    };
+  }, [shown]);
+  const name = message || words.loading;
+  const known = typeof progress === 'number' && !Number.isNaN(progress);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-loading-overlay', fullPage && 'plx-loading-overlay--page', className),
+    "aria-busy": shown ? true : undefined
+  }, rest), children !== undefined ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: content,
+    className: "plx-loading-overlay__content"
+  }, children) : null, shown ? /*#__PURE__*/_react.default.createElement(_Scrim.Scrim, {
+    variant: "inverse",
+    contained: !fullPage,
+    lockScroll: fullPage
+  }) : null, shown ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-loading-overlay__status"
+  }, known ? /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+    value: progress,
+    label: name,
+    showValue: true,
+    className: "plx-loading-overlay__progress"
+  }) : /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "lg",
+    label: name
+  }), message && !known ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-loading-overlay__message",
+    "aria-hidden": "true"
+  }, message) : null, onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    onClick: onCancel
+  }, words.cancel) : null) : null);
+}
+  } },
+  "platform/components/Time/Time.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Time = Time;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _tokenTime = require("../../utils/tokenTime.js");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Time
+   Summary: A date or a time as a technical value: a timestamp, a relative time ("5 minutes ago"), a date label ("Today",
+     "Yesterday", "Oct 8"), a date or a time alone, in the reader's locale and in DM Mono, on a <time> element with the
+     machine-readable value (03 Content › Metadata › Timestamp, Relative time, Date label).
+   Usage:
+     <Time value={asset.modified} />                                  Oct 8, 2026, 2:05 PM
+     <Time value={comment.created} format="relative" />               5 minutes ago (updates by itself)
+     <Time value={task.due} format="label" />                         Today · Yesterday · Oct 8
+     <Time value={invoice.date} format="date" dateStyle="long" />     October 8, 2026
+     <Time value={log.at} format="time" seconds />                    2:05:33 PM
+   Props:
+     value: the moment: a Date, an ISO 8601 string or milliseconds since 1970
+     format: "datetime" (default; the date and the time) | "relative" | "label" | "date" | "time"
+     dateStyle: the date's length, as formatDate: "short" | "medium" (default) | "long" | "full" (datetime and date)
+     seconds: shows the seconds (time; only when order within a minute matters) (default false)
+     timeZone: an IANA zone ("Europe/Lisbon") to show the moment in; default the reader's
+     timeZoneName: "short" names the zone after the time ("2:05 PM PST") (datetime and time)
+     tooltip: the full date and time with its zone in a tooltip, on hover and keyboard focus; default true for relative and
+       label, false otherwise
+     live: updates the text as time passes, every --plx-comp-time-refresh-interval (default true for relative and label)
+     now: the moment "now" is measured from (relative and label; for tests and previews)
+     strings: the words it shows, for other languages: { now: "Just now" }
+     locale: the language it is written in (default the page's language)
+     className: more classes on the <time>
+   Behavior:
+     Under a minute a relative time reads "Just now"; after 7 days (the Formats standard) it becomes the date.
+     A date label names the calendar day: "Today", "Yesterday" and "Tomorrow", else the short date (the year only when it
+       is not this year).
+     With the tooltip the <time> is a Tab stop, so keyboard users can reach the full value; the tooltip describes it.
+     The live text changes in place without moving the layout and is never announced (it is not a live region).
+     A value that is not a valid date renders nothing.
+   Notes:
+     The words and the order come from utils/format.js (Intl): never build a date by hand.
+     The <time> carries dateTime: the ISO 8601 moment, or the calendar day ("2026-10-08") for date and label.
+     It is set in the data font (DM Mono) at the size and line height of the text around it.
+     Other props pass through to the <time>.
+*/
+const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
+const toDate = v => {
+  if (v === undefined || v === null || v === '') return null;
+  const d = v instanceof Date ? v : new Date(v);
+  return isNaN(d.getTime()) ? null : d;
+};
+const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+const pad = n => (n < 10 ? '0' : '') + n;
+const calendarDay = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+
+// "Today", "Yesterday", "Tomorrow" (Intl, numeric auto), else the short date
+function dayLabel(d, now, o) {
+  const days = Math.round((dayStart(d) - dayStart(now)) / 86400000);
+  if (Math.abs(days) > 1) return (0, _format.formatDate)(d, {
+    dateStyle: 'short',
+    timeZone: o.timeZone,
+    locale: o.locale
+  });
+  const lang = o.locale || (0, _format.formatLocale)();
+  const w = new Intl.RelativeTimeFormat(lang, {
+    numeric: 'auto'
+  }).format(days, 'day');
+  return w.charAt(0).toLocaleUpperCase(lang) + w.slice(1);
+}
+function Time({
+  value,
+  format = 'datetime',
+  dateStyle,
+  seconds = false,
+  timeZone,
+  timeZoneName,
+  tooltip,
+  live,
+  now,
+  strings,
+  locale,
+  className,
+  ...rest
+}) {
+  const f = FORMATS.indexOf(format) >= 0 ? format : 'datetime';
+  const moving = f === 'relative' || f === 'label';
+  const ticking = live !== undefined ? !!live : moving;
+  const [, tick] = _react.default.useState(0);
+  _react.default.useEffect(() => {
+    if (!ticking || now) return undefined;
+    const t = setInterval(() => tick(n => n + 1), (0, _tokenTime.tokenMs)('--plx-comp-time-refresh-interval', 60000));
+    return () => clearInterval(t);
+  }, [ticking, now]);
+  const d = toDate(value);
+  if (!d) return null;
+  const words = Object.assign({
+    now: 'Just now'
+  }, strings);
+  const o = {
+    locale,
+    timeZone,
+    timeZoneName,
+    dateStyle,
+    seconds
+  };
+  const at = toDate(now) || new Date();
+  let text;
+  if (f === 'relative') text = Math.abs(d.getTime() - at.getTime()) < 60000 ? words.now : (0, _format.formatRelative)(d, {
+    now: at,
+    locale,
+    timeZone
+  });else if (f === 'label') text = dayLabel(d, at, o);else if (f === 'date') text = (0, _format.formatDate)(d, o);else if (f === 'time') text = (0, _format.formatTime)(d, o);else text = (0, _format.formatDateTime)(d, o);
+  const tip = tooltip !== undefined ? !!tooltip : moving;
+  const el = /*#__PURE__*/_react.default.createElement("time", _extends({
+    className: (0, _cx.cx)('plx-time', className),
+    dateTime: f === 'date' || f === 'label' ? calendarDay(d) : (0, _format.dateTimeAttr)(d),
+    tabIndex: tip ? 0 : undefined
+  }, rest), text);
+  return tip ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: (0, _format.formatDateTime)(d, {
+      locale,
+      timeZone,
+      dateStyle: 'long',
+      timeZoneName: 'short'
+    })
+  }, el) : el;
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18222,6 +18780,12 @@ Object.defineProperty(exports, "Badge", {
   enumerable: true,
   get: function () {
     return _Badge.Badge;
+  }
+});
+Object.defineProperty(exports, "Banner", {
+  enumerable: true,
+  get: function () {
+    return _Banner.Banner;
   }
 });
 Object.defineProperty(exports, "Barcode", {
@@ -18608,6 +19172,12 @@ Object.defineProperty(exports, "LiveRegion", {
     return _announce.LiveRegion;
   }
 });
+Object.defineProperty(exports, "LoadingOverlay", {
+  enumerable: true,
+  get: function () {
+    return _LoadingOverlay.LoadingOverlay;
+  }
+});
 Object.defineProperty(exports, "MediaCard", {
   enumerable: true,
   get: function () {
@@ -18824,6 +19394,12 @@ Object.defineProperty(exports, "RowButton", {
     return _RowButton.RowButton;
   }
 });
+Object.defineProperty(exports, "Scrim", {
+  enumerable: true,
+  get: function () {
+    return _Scrim.Scrim;
+  }
+});
 Object.defineProperty(exports, "SearchField", {
   enumerable: true,
   get: function () {
@@ -18956,6 +19532,12 @@ Object.defineProperty(exports, "StatusDot", {
     return _StatusDot.StatusDot;
   }
 });
+Object.defineProperty(exports, "StatusIcon", {
+  enumerable: true,
+  get: function () {
+    return _Icon.StatusIcon;
+  }
+});
 Object.defineProperty(exports, "Sticky", {
   enumerable: true,
   get: function () {
@@ -19032,6 +19614,12 @@ Object.defineProperty(exports, "Thumbnail", {
   enumerable: true,
   get: function () {
     return _Thumbnail.Thumbnail;
+  }
+});
+Object.defineProperty(exports, "Time", {
+  enumerable: true,
+  get: function () {
+    return _Time.Time;
   }
 });
 Object.defineProperty(exports, "TimeGrid", {
@@ -19670,6 +20258,12 @@ Object.defineProperty(exports, "useToast", {
     return _Toast.useToast;
   }
 });
+Object.defineProperty(exports, "useUndo", {
+  enumerable: true,
+  get: function () {
+    return _Toast.useUndo;
+  }
+});
 Object.defineProperty(exports, "useUnsavedGuard", {
   enumerable: true,
   get: function () {
@@ -19817,6 +20411,10 @@ var _ProgressCircle = require("./components/ProgressCircle/ProgressCircle.jsx");
 var _QRCode = require("./components/QRCode/QRCode.jsx");
 var _qr = require("./utils/qr.js");
 var _VersionLabel = require("./components/VersionLabel/VersionLabel.jsx");
+var _Banner = require("./components/Banner/Banner.jsx");
+var _Scrim = require("./components/Scrim/Scrim.jsx");
+var _LoadingOverlay = require("./components/LoadingOverlay/LoadingOverlay.jsx");
+var _Time = require("./components/Time/Time.jsx");
   } }
   };
   var cache = {};

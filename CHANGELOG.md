@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.49] - 2026-10-13
+
+### Added
+- The complete library, wave 4, lane C (10 inventory items):
+  - Status icon (info, success, warning, danger, neutral) and Banner (page or pane, five tones, actions, dismiss);
+  - Color swatch with its name, and the Swatch picker with a custom set from the palette;
+  - Scrim (modal, light, inverse; contained or over the window) and Loading overlay (spinner or progress, a message,
+    cancel; the covered region is busy and inert);
+  - Time: timestamp, relative time and date label in Mono, with the full date in a tooltip;
+  - the Undo pattern: Toast actions and useUndo.
+
 ## [0.31.48] - 2026-10-13
 
 ### Added
