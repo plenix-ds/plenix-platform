@@ -1,0 +1,11 @@
+{
+  "$description": "Time (library wave 4, lane C): a timestamp, a relative time or a date label in the data font, with the focus ring it shows as a tooltip's trigger.",
+  "plx-comp": {
+    "time-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Dates and times are technical values: the data font (DM Mono)." },
+    "time-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "The focus ring of a time with a tooltip." },
+    "time-focus-outline-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "The focus ring's distance from the text." },
+    "time-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "The focus ring's width." },
+    "time-focus-radius": { "$value": "{plx-sys.shape-2xs}", "$type": "dimension", "$description": "The focus ring's corners." },
+    "time-refresh-interval": { "$value": "60s", "$type": "duration", "$description": "How often a relative time and a date label rewrite themselves." }
+  }
+}

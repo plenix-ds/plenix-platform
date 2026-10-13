@@ -1,0 +1,8 @@
+/* Plenix · LoadingOverlay (platform/components/LoadingOverlay): the region is the positioned parent of its veil (an inverse
+   Scrim) and of the status in its middle: the spinner or the progress bar, the message and an optional Cancel button.
+   Full page: the veil and the status cover the window instead (fixed, on the overlay layer). */
+.plx-loading-overlay{position:relative;}
+.plx-loading-overlay__status{align-items:center;display:flex;flex-direction:column;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;justify-content:center;padding-block-end:var(--plx-comp-loading-overlay-padding);padding-block-start:var(--plx-comp-loading-overlay-padding);padding-inline-end:var(--plx-comp-loading-overlay-padding);padding-inline-start:var(--plx-comp-loading-overlay-padding);position:absolute;row-gap:var(--plx-comp-loading-overlay-gap);z-index:var(--plx-comp-loading-overlay-z-index);}
+.plx-loading-overlay--page .plx-loading-overlay__status{position:fixed;z-index:var(--plx-comp-loading-overlay-page-z-index);}
+.plx-loading-overlay__message{color:var(--plx-comp-loading-overlay-message-color);font-size:var(--plx-comp-loading-overlay-message-font-size);font-weight:var(--plx-comp-loading-overlay-message-font-weight);line-height:var(--plx-comp-loading-overlay-message-line-height);text-align:center;}
+.plx-loading-overlay__progress{inline-size:100%;max-inline-size:var(--plx-comp-loading-overlay-progress-max-width);}

@@ -3,6 +3,8 @@
    Usage:
      <ColorSwatch color={category.color} />
      <ColorSwatch color={category.color} label="Blue" pressed={picked === 'blue'} onClick={() => …} />
+     <ColorSwatch color="green" label="Green" showLabel />
+     <ColorPicker palette="category" colors={['red', 'green', 'blue']} value={c} onChange={setC} />
    Props:
      color: a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
      category: instead of color, a category color by name (CATEGORY_COLORS: the category palette, its own tokens), set as
@@ -12,6 +14,8 @@
      shape: "square" (default: 2px corners, owner batch 291) | "round" (a circle)
      pressed: marks the chosen color (aria-pressed), with onClick
      label: the accessible name of the color, with onClick
+     showLabel: shows the label as text after the swatch (default false); with onClick the swatch and its label are one
+       button (wave 4)
      onClick(event): makes the swatch a button that picks the color
      className: more classes on the swatch
      ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
@@ -20,11 +24,14 @@
        ColorPicker.label: the group's accessible name (default "Color")
        ColorPicker.size: the swatches' size (default "md")
        ColorPicker.palette: "data" (default: the data hues) | "category" (the category colors: categories use these)
+       ColorPicker.colors: a custom set: the names to offer from the palette, in this order (unknown names are left out)
+         (wave 4)
        ColorPicker shows one row (owner, batch 290): the colors that do not fit are in a More menu at its end ("+n", or the
        chosen color when it is one of them), each with its swatch and name
        ColorPicker.className: more classes on the group
    Behavior:
      With onClick it is a button that picks the color; without it the swatch is hidden from assistive technology.
+     With showLabel the color's name is text beside it, read as text; the swatch itself stays decorative.
      A swatch button's target is at least 24px (44px with touch) whatever its size: it extends invisibly past the swatch
        (Platforms Standard 3.1); with touch each swatch of a ColorPicker gets a slot that wide.
    Notes:
@@ -41,18 +48,26 @@ import { useOverflow, splitAt } from '../../utils/overflow.js';
 
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
-export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, onClick, className, ...rest }) {
+export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, onClick, className, ...rest }) {
+  if (showLabel && label) {
+    // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
+    const chip = <ColorSwatch color={color} category={category} tone={tone} size={size} shape={shape} />;
+    const text = <span className="plx-color-swatch-label__text">{label}</span>;
+    return onClick ? <button type="button" className={cx('plx-color-swatch-label', className)} aria-pressed={!!pressed} onClick={onClick} {...rest}>{chip}{text}</button>
+      : <span className={cx('plx-color-swatch-label', className)} {...rest}>{chip}{text}</span>;
+  }
   const cls = cx('plx-color-swatch', 'plx-color-swatch--' + size, shape === 'round' && 'plx-color-swatch--round', tone && 'plx-color-swatch--' + tone, className);
   return onClick ? <button type="button" className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} aria-pressed={!!pressed} aria-label={label} onClick={onClick} {...rest} />
     : <span className={cls} data-plx-color={color || undefined} data-plx-category={category || undefined} aria-hidden="true" {...rest} />;
 }
 
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
-export function ColorPicker({ value, onChange, label = 'Color', size = 'md', palette = 'data', invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
-  const list = palette === 'category' ? CATEGORY_COLORS : DATA_COLORS;
+export function ColorPicker({ value, onChange, label = 'Color', size = 'md', palette = 'data', colors, invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
+  const all = palette === 'category' ? CATEGORY_COLORS : DATA_COLORS;
+  const list = Array.isArray(colors) ? colors.filter((h) => all.indexOf(h) >= 0) : all;
   const cat = palette === 'category';
   const ref = React.useRef(null);
-  const fit = useOverflow(ref, list.length, palette + size);
+  const fit = useOverflow(ref, list.length, palette + size + list.join());
   const hidden = list.slice(fit);
   const pick = (h) => { if (onChange) onChange(h); };
   const swatch = (h, extra) => <ColorSwatch key={h} color={cat ? undefined : h} category={cat ? h : undefined} size={size} {...extra} />;

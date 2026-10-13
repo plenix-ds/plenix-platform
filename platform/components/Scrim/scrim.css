@@ -1,0 +1,7 @@
+/* Plenix · Scrim (platform/components/Scrim): a layer that covers the window (fixed, on the overlay layer) or its
+   positioned parent (contained), in the scrim role at an opacity of the scale, or in the canvas color for a veil. It
+   fades in with the layer above it. */
+.plx-scrim{animation-duration:var(--plx-comp-scrim-animation-duration);animation-name:motion-fade-in;animation-timing-function:var(--plx-comp-scrim-animation-timing-function);background-color:var(--plx-comp-scrim-background);inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;opacity:var(--plx-comp-scrim-opacity);position:fixed;z-index:var(--plx-comp-scrim-z-index);}
+.plx-scrim--light{opacity:var(--plx-comp-scrim-light-opacity);}
+.plx-scrim--inverse{background-color:var(--plx-comp-scrim-inverse-background);opacity:var(--plx-comp-scrim-inverse-opacity);}
+.plx-scrim--contained{position:absolute;z-index:var(--plx-comp-scrim-contained-z-index);}
