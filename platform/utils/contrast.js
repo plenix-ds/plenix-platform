@@ -65,7 +65,17 @@ export const CONTRAST_PAIRS = Object.freeze([
   { fg: 'feedback-info-solid', bg: 'surface-default', rule: N, use: 'Info marks (dots, icons)' },
   { fg: 'feedback-success-solid', bg: 'surface-default', rule: N, use: 'Success marks (dots, icons)' },
   { fg: 'feedback-warning-solid', bg: 'surface-default', rule: N, use: 'Warning marks (dots, icons)' },
-  { fg: 'feedback-danger-solid', bg: 'surface-default', rule: N, use: 'Danger marks (dots, icons)' }
+  { fg: 'feedback-danger-solid', bg: 'surface-default', rule: N, use: 'Danger marks (dots, icons)' },
+  // the brand and status roles (color groups, owner 2026-10-13)
+  { fg: 'brand-on-primary', bg: 'brand-primary', rule: T, use: 'Text and icons on the brand blue (a product tile)' },
+  { fg: 'status-online', bg: 'surface-default', rule: N, use: 'Presence: online (a dot)' },
+  { fg: 'status-away', bg: 'surface-default', rule: N, use: 'Presence: away (a dot)' },
+  { fg: 'status-busy', bg: 'surface-default', rule: N, use: 'Presence: busy (a dot)' },
+  { fg: 'status-offline', bg: 'surface-default', rule: N, use: 'Presence: offline (a dot)' },
+  { fg: 'status-done', bg: 'surface-default', rule: N, use: 'Workflow: done (a dot, an icon)' },
+  { fg: 'status-in-progress', bg: 'surface-default', rule: N, use: 'Workflow: in progress (a dot, an icon)' },
+  { fg: 'status-blocked', bg: 'surface-default', rule: N, use: 'Workflow: blocked (a dot, an icon)' },
+  { fg: 'status-not-started', bg: 'surface-default', rule: N, use: 'Workflow: not started (a dot, an icon)' }
 ]);
 
 export function parseColor(color) {

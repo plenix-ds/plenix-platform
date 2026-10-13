@@ -1,6 +1,7 @@
 // Plenix tests · keyboard behavior, with real key presses on the components' live examples in the design system:
 // a Toolbar is one Tab stop and its arrows follow reading order; Rating moves focus with the value; Tabs and
-// SegmentedControl arrows follow reading order (right to left reverses them); the Tree opens toward the reading end.
+// SegmentedControl arrows follow reading order (right to left reverses them); the Tree opens toward the reading end; a
+// collapsible settings section opens and closes with Enter and Space.
 //   node tests/keyboard.test.js
 const fs = require('fs');
 const path = require('path');
@@ -52,6 +53,19 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
     await page.keyboard.press('ArrowLeft'); await sleep(100); const t2 = await active();
     check('Tabs (right to left): Arrow Left moves to the next tab', t2 !== t1 && t2 !== t0, t1 + ' -> ' + t2);
   } else check('Tabs: a tab list is shown', false, 'none found');
+
+  // a collapsible settings section (SettingsSection collapsible, 2026-10-13): its header is one button; Enter and Space
+  // open and close it, aria-expanded follows and the rows are hidden with it
+  await open('#/page-structures/settings-page');
+  const sec = await page.evaluate(() => { const b = document.querySelector('main .plx-settings__section-toggle'); if (!b) return null; b.focus(); return { expanded: b.getAttribute('aria-expanded'), body: !!document.getElementById(b.getAttribute('aria-controls')) }; });
+  if (sec) {
+    const state = () => page.evaluate(() => { const b = document.activeElement; const body = document.getElementById(b.getAttribute('aria-controls')); return { cls: b.className, expanded: b.getAttribute('aria-expanded'), hidden: body ? body.hidden : null }; });
+    const s0 = await state(); await page.keyboard.press('Enter'); const s1 = await state();
+    check('Settings section: Enter closes an open section (aria-expanded false, rows hidden)', s0.expanded === 'true' && s1.expanded === 'false' && s1.hidden === true, JSON.stringify([s0, s1]));
+    await page.keyboard.press('Space'); const s2 = await state();
+    check('Settings section: Space opens it again', s2.expanded === 'true' && s2.hidden === false, JSON.stringify(s2));
+    check('Settings section: the header button names its rows (aria-controls)', sec.body, JSON.stringify(sec));
+  } else check('Settings section: a collapsible section is shown', false, 'none found');
 
   await browser.close(); server.close();
   const bad = results.filter((r) => !r[1]);

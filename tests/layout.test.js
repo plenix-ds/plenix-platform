@@ -45,7 +45,9 @@ const html = '<!doctype html><html lang="en" data-plx-theme="plenix" data-plx-mo
     await new Promise((ok) => setTimeout(ok, 300));
     const c = document.querySelector('.plx-settings__content'), m = document.querySelector('.plx-app-shell__main'), r = c.getBoundingClientRect(), q = m.getBoundingClientRect();
     const st = getComputedStyle(c), inner = r.width - parseFloat(st.paddingLeft) - parseFloat(st.paddingRight);
-    return { mode: document.querySelector('.plx-app-shell').getAttribute('data-plx-layout'), inner: Math.round(inner), center: Math.round(r.left + parseFloat(st.paddingLeft) + inner / 2), mainCenter: Math.round(q.left + q.width / 2) };
+    const sec = getComputedStyle(document.querySelector('.plx-settings__section'));
+    return { mode: document.querySelector('.plx-app-shell').getAttribute('data-plx-layout'), inner: Math.round(inner), center: Math.round(r.left + parseFloat(st.paddingLeft) + inner / 2), mainCenter: Math.round(q.left + q.width / 2),
+      card: sec.borderTopStyle === 'solid' && parseFloat(sec.borderTopWidth) > 0 && parseFloat(sec.borderTopLeftRadius) > 0 };
   });
   {
   }
@@ -68,6 +70,7 @@ const html = '<!doctype html><html lang="en" data-plx-theme="plenix" data-plx-mo
   check('standard: each page kind gets its mode', Object.keys(MODES).every((m) => out[m].mode === m), JSON.stringify(Object.keys(MODES).map((m) => out[m].mode)));
   check('standard: a SettingsLayout page is contained without saying so', claimed.mode === 'contained', claimed.mode);
   check('standard: its settings column is at most 960px and centered', claimed.inner <= 960 && Math.abs(claimed.center - claimed.mainCenter) <= 1, JSON.stringify(claimed));
+  check('settings: every section is a card (owner, 2026-10-13: the cards view)', claimed.card, JSON.stringify(claimed));
   const bad = res.filter((x) => !x[1]);
   res.forEach(([n, ok, d]) => console.log((ok ? '  ok   ' : '  FAIL ') + n + (ok ? '' : ' · ' + d)));
   console.log((bad.length ? 'LAYOUT_FAIL ' : 'LAYOUT_OK ') + (res.length - bad.length) + '/' + res.length);

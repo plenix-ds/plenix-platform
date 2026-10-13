@@ -920,7 +920,7 @@
   --plx-comp-app-header-accent-selected: var(--plx-sys-accent-state-hover);
   --plx-comp-app-header-accent-selected-content: var(--plx-sys-accent-content);
   --plx-comp-app-header-accent-surface: var(--plx-sys-accent-surface);
-  --plx-comp-app-header-frost-brand: var(--plx-sys-action-primary-background);
+  --plx-comp-app-header-frost-brand: var(--plx-sys-brand-primary);
   --plx-comp-app-header-frost-content: var(--plx-sys-content-muted);
   --plx-comp-app-header-frost-divider: var(--plx-sys-frost-border);
   --plx-comp-app-header-frost-edge: var(--plx-sys-frost-border);
@@ -2188,17 +2188,14 @@
   --plx-comp-settings-section-card-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-settings-section-card-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-settings-section-card-padding-inline: var(--plx-sys-space-inset-xl);
-  --plx-comp-settings-section-title-text: var(--plx-sys-content-muted);
+  --plx-comp-settings-section-title-text: var(--plx-sys-content-default);
   --plx-comp-settings-section-title-font-size: var(--plx-comp-section-heading-level-2-font-size);
+  --plx-comp-settings-section-title-font-family: var(--plx-sys-font-heading);
   --plx-comp-settings-section-title-level-3-font-size: var(--plx-comp-section-heading-level-3-font-size);
   --plx-comp-settings-section-title-level-4-font-size: var(--plx-comp-section-heading-level-4-font-size);
-  --plx-comp-settings-section-title-font-weight: var(--plx-sys-font-weight-bold);
-  --plx-comp-settings-section-title-letter-spacing: var(--plx-sys-letter-spacing-widest);
-  --plx-comp-settings-section-title-margin-block-end: var(--plx-sys-space-stack-sm);
-  --plx-comp-settings-section-title-margin-block-start: var(--plx-sys-space-stack-lg);
+  --plx-comp-settings-section-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-settings-section-description-text: var(--plx-sys-content-muted);
   --plx-comp-settings-section-description-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-settings-section-description-margin-block-end: var(--plx-sys-space-stack-sm);
   --plx-comp-settings-row-border-bottom-color: var(--plx-sys-border-divider);
   --plx-comp-settings-row-border-bottom-width: var(--plx-sys-border-width-thin);
   --plx-comp-settings-row-gap: var(--plx-sys-space-inline-lg);
@@ -2217,6 +2214,21 @@
   --plx-comp-settings-content-narrow-padding-inline: var(--plx-sys-space-layout-sm);
   --plx-comp-settings-field-inline-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-settings-section-card-action-bar-background: var(--plx-sys-surface-default);
+  --plx-comp-settings-section-header-padding-block: var(--plx-sys-space-inset-md);
+  --plx-comp-settings-section-header-border-bottom-color: var(--plx-sys-border-divider);
+  --plx-comp-settings-section-header-border-bottom-width: var(--plx-sys-border-width-thin);
+  --plx-comp-settings-section-description-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-settings-section-toggle-min-height: var(--plx-sys-control-height-standard);
+  --plx-comp-settings-section-toggle-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-settings-section-toggle-hover-text: var(--plx-sys-content-default);
+  --plx-comp-settings-section-toggle-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-settings-section-toggle-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-settings-section-toggle-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-settings-section-chevron-text: var(--plx-sys-content-muted);
+  --plx-comp-settings-section-chevron-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-settings-row-narrow-row-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-settings-section-block-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-settings-section-chevron-easing: var(--plx-sys-motion-ease-standard);
   --plx-comp-side-panel-background: var(--plx-sys-surface-default);
   --plx-comp-side-panel-shadow: inset var(--plx-sys-border-width-thin) 0 0 var(--plx-sys-border-default);
   --plx-comp-side-panel-header-gap: var(--plx-sys-space-inline-xs);
@@ -2437,10 +2449,10 @@
   --plx-comp-blockquote-pull-quote-line-height: var(--plx-ref-size-28px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-brand-mark-color: var(--plx-sys-feedback-info-solid);
+  --plx-comp-brand-mark-color: var(--plx-sys-brand-primary);
   --plx-comp-brand-name-color: var(--plx-sys-content-default);
-  --plx-comp-brand-tile-background: var(--plx-sys-feedback-info-solid);
-  --plx-comp-brand-tile-icon: var(--plx-sys-feedback-info-on-solid);
+  --plx-comp-brand-tile-background: var(--plx-sys-brand-primary);
+  --plx-comp-brand-tile-icon: var(--plx-sys-brand-on-primary);
   --plx-comp-brand-on-accent-color: var(--plx-sys-accent-content);
   --plx-comp-brand-on-accent-tile-background: var(--plx-sys-accent-content);
   --plx-comp-brand-on-accent-tile-icon: var(--plx-sys-accent-surface);

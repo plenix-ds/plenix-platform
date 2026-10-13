@@ -24,7 +24,11 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
   const ids = (await page.evaluate(() => Object.keys(window.DS.labs || {}).filter((id) => id !== 'button'))).filter((id) => !ONLY || ONLY.includes(id));
   const results = [];
   for (const id of ids) {
-    const r = await page.evaluate((id) => {
+    // one call per size and variant: a large lab in a single call ran past the protocol timeout (CI, 2026-10-13)
+    const axes = await page.evaluate((id) => { const spec = DS.labs[id]; return spec.sizes.flatMap(([size]) => spec.variants.map(([variant]) => [size, variant])); }, id);
+    const r = { checks: 0, tokens: 0, bad: [], nbad: 0 }; const seen = new Set();
+    for (const [onlySize, onlyVariant] of axes) {
+    const part = await page.evaluate((id, onlySize, onlyVariant) => {
       const spec = DS.labs[id];
       // the lab's documentation states: :hover, :focus-visible and :active copied onto .ds-hover / .ds-focus / .ds-pressed
       if (!window.__labStates) {
@@ -41,7 +45,7 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
       const host = document.createElement('div'); document.body.appendChild(host);
       const root = document.documentElement.style;
       let checks = 0; const bad = []; const tokens = new Set();
-      for (const [size] of spec.sizes) for (const [variant] of spec.variants) for (const [state] of spec.states) for (const [content] of spec.content) {
+      for (const [size] of spec.sizes.filter(([x]) => x === onlySize)) for (const [variant] of spec.variants.filter(([x]) => x === onlyVariant)) for (const [state] of spec.states) for (const [content] of spec.content) {
         host.innerHTML = spec.html(variant, size, state, 'lab-specimen', { size, variant, state, content });
         if (spec.after) spec.after(document);
         const el = host.querySelector('.lab-specimen');
@@ -59,8 +63,11 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
         }
       }
       host.remove();
-      return { checks, tokens: tokens.size, bad: bad.slice(0, 5), nbad: bad.length };
-    }, id);
+      return { checks, tokens: [...tokens], bad: bad.slice(0, 5), nbad: bad.length };
+    }, id, onlySize, onlyVariant);
+    r.checks += part.checks; part.tokens.forEach((t) => seen.add(t)); r.bad.push(...part.bad); r.nbad += part.nbad;
+    }
+    r.tokens = seen.size; r.bad = r.bad.slice(0, 5);
     results.push([id, r]);
   }
   await browser.close(); server.close();

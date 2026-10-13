@@ -4,22 +4,46 @@
     "focus-order-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color",
-      "$description": "Focus order overlay: the outline of each Tab stop, its number’s badge and the path between stops."
+      "$description": "Focus order overlay: the outline of each Tab stop, its number’s badge and the path between stops.",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The focus-order overlay (a developer tool): its numbers and path."
+        }
+      }
     },
     "focus-order-on-color": {
       "$value": "{plx-sys.feedback-info-on-solid}",
       "$type": "color",
-      "$description": "Focus order overlay: the number on a badge."
+      "$description": "Focus order overlay: the number on a badge.",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The focus-order overlay: text on its badges."
+        }
+      }
     },
     "focus-order-warning-color": {
       "$value": "{plx-sys.feedback-danger-solid}",
       "$type": "color",
-      "$description": "Focus order overlay: a stop reached out of reading order, or one with a positive tabindex."
+      "$description": "Focus order overlay: a stop reached out of reading order, or one with a positive tabindex.",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The focus-order overlay: a stop out of order."
+        }
+      }
     },
     "focus-order-warning-on-color": {
       "$value": "{plx-sys.feedback-danger-on-solid}",
       "$type": "color",
-      "$description": "Focus order overlay: the number on a warning badge."
+      "$description": "Focus order overlay: the number on a warning badge.",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The focus-order overlay: text on a warning badge."
+        }
+      }
     },
     "focus-order-stroke-width": {
       "$value": "{plx-sys.focus-ring-width}",

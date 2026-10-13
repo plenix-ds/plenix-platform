@@ -17,280 +17,779 @@
             "  color-scheme: light;",
             "  /* surfaces, states, content, borders, actions, feedback, focus */"
           ]
+        },
+        "plenix": {
+          "group": "surface",
+          "purpose": "The page background, behind every surface."
         }
       }
     },
     "surface-default": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The default surface: panels, cards, the content area."
+        }
+      }
     },
     "surface-raised": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "A surface raised above the default (a card with a shadow)."
+        }
+      }
     },
     "surface-overlay": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "Menus, popovers and dialogs above the page."
+        }
+      }
     },
     "surface-sunken": {
       "$value": "{plx-ref.color-gray-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "A surface set into the page: read-only fields, wells."
+        }
+      }
     },
     "surface-inverse": {
       "$value": "{plx-ref.color-gray-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The inverse surface: dark in light mode, light in dark mode."
+        }
+      }
     },
     "surface-dialog-chrome": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The title area of a dialog window."
+        }
+      }
     },
     "state-hover": {
       "$value": "{plx-ref.color-gray-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "An item under the pointer."
+        }
+      }
     },
     "state-pressed": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "An item being pressed."
+        }
+      }
     },
     "scrollbar-thumb": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The scrollbar’s thumb."
+        }
+      }
     },
     "state-selected": {
       "$value": "{plx-ref.color-blue-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "A selected item: rows, list items, tabs."
+        }
+      }
     },
     "state-selected-pressed": {
       "$value": "{plx-ref.color-blue-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "A selected item being pressed."
+        }
+      }
     },
     "state-hover-border": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The edge of a control under the pointer."
+        }
+      }
     },
     "state-selected-border": {
       "$value": "{plx-ref.color-blue-250}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The edge of a selected item."
+        }
+      }
     },
     "content-default": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Body text and icons."
+        }
+      }
     },
     "content-muted": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Secondary text: metadata, descriptions."
+        }
+      }
     },
     "content-subtle": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Tertiary text: hints, counts."
+        }
+      }
     },
     "content-disabled": {
       "$value": "{plx-ref.color-gray-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Text and icons of a disabled control."
+        }
+      }
     },
     "content-inverse": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Text on the inverse surface."
+        }
+      }
     },
     "content-link": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Links."
+        }
+      }
     },
     "content-link-visited": {
       "$value": "{plx-ref.color-purple-visited}",
       "$type": "color",
-      "$description": "A visited link: the standard visited purple, 11.0:1 on surface-default (owner, 2026-10-12)."
+      "$description": "A visited link: the standard visited purple, 11.0:1 on surface-default (owner, 2026-10-12).",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Visited links."
+        }
+      }
     },
     "border-default": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "The default edge of cards, panels and fields."
+        }
+      }
     },
     "border-subtle": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "Light separators inside a surface."
+        }
+      }
     },
     "border-strong": {
       "$value": "{plx-ref.color-gray-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "Strong edges that must be seen (3:1): control edges, outlines."
+        }
+      }
     },
     "action-primary-background": {
       "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The primary button."
+        }
+      }
     },
     "action-primary-border": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The edge of the primary button."
+        }
+      }
     },
     "action-primary-background-hover": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The primary button under the pointer."
+        }
+      }
     },
     "action-primary-background-pressed": {
       "$value": "{plx-ref.color-blue-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The primary button being pressed."
+        }
+      }
     },
     "action-primary-content": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The label and icon of the primary button."
+        }
+      }
     },
     "action-danger-background": {
       "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The danger button (destructive actions)."
+        }
+      }
     },
     "action-danger-content": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The label and icon of the danger button."
+        }
+      }
     },
     "focus-ring-color": {
       "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The focus indicator (a focused field’s border, the focus outline)."
+        }
+      }
     },
     "feedback-neutral-solid": {
       "$value": "{plx-ref.color-gray-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The neutral solid: dots, bars and marks."
+        }
+      }
     },
     "feedback-neutral-on-solid": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Text and icons on the neutral solid."
+        }
+      }
     },
     "feedback-neutral-solid-label": {
       "$value": "{plx-ref.color-gray-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The fill of a solid neutral badge or count pill."
+        }
+      }
     },
     "feedback-neutral-solid-border": {
       "$value": "{plx-ref.color-gray-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of a solid neutral badge."
+        }
+      }
     },
     "feedback-neutral-soft": {
       "$value": "{plx-ref.color-gray-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The soft neutral fill: notices, soft badges."
+        }
+      }
     },
     "feedback-neutral-soft-border": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of the soft neutral fill."
+        }
+      }
     },
     "feedback-neutral-content": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Neutral text on the soft neutral fill."
+        }
+      }
     },
     "feedback-info-solid": {
       "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The information solid: dots, bars and marks."
+        }
+      }
     },
     "feedback-info-on-solid": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Text and icons on the information solid."
+        }
+      }
     },
     "feedback-info-solid-label": {
       "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The fill of a solid information badge or count pill."
+        }
+      }
     },
     "feedback-info-solid-border": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of a solid information badge."
+        }
+      }
     },
     "feedback-info-soft": {
       "$value": "{plx-ref.color-blue-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The soft information fill: notices, soft badges."
+        }
+      }
     },
     "feedback-info-soft-border": {
       "$value": "{plx-ref.color-blue-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of the soft information fill."
+        }
+      }
     },
     "feedback-info-content": {
       "$value": "{plx-ref.color-blue-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Information text on the soft information fill."
+        }
+      }
     },
     "feedback-success-solid": {
       "$value": "{plx-ref.color-green-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The success solid: dots, bars and marks."
+        }
+      }
     },
     "feedback-success-on-solid": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Text and icons on the success solid."
+        }
+      }
     },
     "feedback-success-solid-label": {
       "$value": "{plx-ref.color-green-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The fill of a solid success badge or count pill."
+        }
+      }
     },
     "feedback-success-solid-border": {
       "$value": "{plx-ref.color-green-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of a solid success badge."
+        }
+      }
     },
     "feedback-success-soft": {
       "$value": "{plx-ref.color-green-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The soft success fill: notices, soft badges."
+        }
+      }
     },
     "feedback-success-soft-border": {
       "$value": "{plx-ref.color-green-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of the soft success fill."
+        }
+      }
     },
     "feedback-success-content": {
       "$value": "{plx-ref.color-green-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Success text on the soft success fill."
+        }
+      }
     },
     "feedback-warning-solid": {
       "$value": "{plx-ref.color-brown-800}",
       "$type": "color",
-      "$description": "The warning solid (dots, bars, marks; white text on it): brown-800, 8.3:1 with white (owner, 2026-10-12)."
+      "$description": "The warning solid (dots, bars, marks; white text on it): brown-800, 8.3:1 with white (owner, 2026-10-12).",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The warning solid: dots, bars and marks."
+        }
+      }
     },
     "feedback-warning-on-solid": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Text and icons on the warning solid."
+        }
+      }
     },
     "feedback-warning-solid-label": {
       "$value": "{plx-ref.color-brown-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The fill of a solid warning badge or count pill."
+        }
+      }
     },
     "feedback-warning-solid-border": {
       "$value": "{plx-ref.color-brown-950}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of a solid warning badge."
+        }
+      }
     },
     "feedback-warning-soft": {
       "$value": "{plx-ref.color-brown-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The soft warning fill: notices, soft badges."
+        }
+      }
     },
     "feedback-warning-soft-border": {
       "$value": "{plx-ref.color-brown-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of the soft warning fill."
+        }
+      }
     },
     "feedback-warning-content": {
       "$value": "{plx-ref.color-brown-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Warning text on the soft warning fill."
+        }
+      }
     },
     "feedback-danger-solid": {
       "$value": "{plx-ref.color-red-700}",
       "$type": "color",
-      "$description": "The danger solid (dots, bars, marks; white text on it): red-700, 7.0:1 with white (owner, 2026-10-12)."
+      "$description": "The danger solid (dots, bars, marks; white text on it): red-700, 7.0:1 with white (owner, 2026-10-12).",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The danger solid: dots, bars and marks."
+        }
+      }
     },
     "feedback-danger-on-solid": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Text and icons on the danger solid."
+        }
+      }
     },
     "feedback-danger-solid-label": {
       "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The fill of a solid danger badge or count pill."
+        }
+      }
     },
     "feedback-danger-solid-border": {
       "$value": "{plx-ref.color-red-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of a solid danger badge."
+        }
+      }
     },
     "feedback-danger-soft": {
       "$value": "{plx-ref.color-red-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The soft danger fill: notices, soft badges."
+        }
+      }
     },
     "feedback-danger-soft-border": {
       "$value": "{plx-ref.color-red-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "The edge of the soft danger fill."
+        }
+      }
     },
     "feedback-danger-content": {
       "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Danger text on the soft danger fill."
+        }
+      }
     },
     "feedback-danger-soft-content": {
       "$value": "{plx-ref.color-red-700}",
       "$type": "color",
-      "$description": "Danger text on the soft danger fill (soft badges, danger notices): 4.5:1 against that fill in each theme (batch 322)"
+      "$description": "Danger text on the soft danger fill (soft badges, danger notices): 4.5:1 against that fill in each theme (batch 322)",
+      "$extensions": {
+        "plenix": {
+          "group": "semantic",
+          "purpose": "Danger text on the soft danger fill (soft badges, danger notices)."
+        }
+      }
+    },
+    "status-online": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color",
+      "$description": "Online: green-500, the success solid (owner, 2026-10-13).",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* status: presence and workflow state (owner, 2026-10-13) */"
+          ]
+        },
+        "plenix": {
+          "group": "status",
+          "purpose": "Presence: the person is online and available."
+        }
+      }
+    },
+    "status-away": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$description": "Away: brown-800, the warning solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Presence: the person is away (idle)."
+        }
+      }
+    },
+    "status-busy": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color",
+      "$description": "Busy: red-700, the danger solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Presence: the person is busy (do not disturb)."
+        }
+      }
+    },
+    "status-offline": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color",
+      "$description": "Offline: gray-600, the neutral solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Presence: the person is offline."
+        }
+      }
+    },
+    "status-done": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color",
+      "$description": "Done: green-500, the success solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Workflow: the work is done."
+        }
+      }
+    },
+    "status-in-progress": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color",
+      "$description": "In progress: blue-400, the information solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Workflow: the work is in progress."
+        }
+      }
+    },
+    "status-blocked": {
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color",
+      "$description": "Blocked: red-700, the danger solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Workflow: the work is blocked."
+        }
+      }
+    },
+    "status-not-started": {
+      "$value": "{plx-ref.color-gray-600}",
+      "$type": "color",
+      "$description": "Not started: gray-600, the neutral solid.",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Workflow: the work has not started."
+        }
+      }
     },
     "shadow-sm": {
       "$value": "0 0 2px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
@@ -365,121 +864,320 @@
             "",
             "  /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */"
           ]
+        },
+        "plenix": {
+          "group": "neutral",
+          "purpose": "The neutral fill: secondary buttons, chips, tags."
         }
       }
     },
     "fill-neutral-hover": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "neutral",
+          "purpose": "The neutral fill under the pointer."
+        }
+      }
     },
     "fill-neutral-border": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "neutral",
+          "purpose": "The edge of the neutral fill."
+        }
+      }
     },
     "fill-neutral-pressed": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "neutral",
+          "purpose": "The neutral fill being pressed."
+        }
+      }
     },
     "fill-neutral-content": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "neutral",
+          "purpose": "Text and icons on the neutral fill."
+        }
+      }
     },
     "border-divider": {
       "$value": "{plx-ref.color-gray-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "Dividers between the items of a list."
+        }
+      }
     },
     "control-background": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The background of fields and controls."
+        }
+      }
     },
     "control-border": {
       "$value": "{plx-ref.color-gray-500}",
       "$type": "color",
-      "$description": "The edge of a field or control: gray-500, 3.2:1 on the control background (WCAG 1.4.11; owner, 2026-10-12)."
+      "$description": "The edge of a field or control: gray-500, 3.2:1 on the control background (WCAG 1.4.11; owner, 2026-10-12).",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The edge of a field or control (3:1)."
+        }
+      }
     },
     "avatar-background": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The fill of an avatar with initials."
+        }
+      }
     },
     "avatar-content": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The initials on an avatar."
+        }
+      }
+    },
+    "brand-primary": {
+      "$value": "{plx-ref.color-blue-400}",
+      "$type": "color",
+      "$description": "The brand blue, blue-400 in light and dark (owner, 2026-10-13).",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* brand: the Plenix brand color (owner, 2026-10-13) */"
+          ]
+        },
+        "plenix": {
+          "group": "brand",
+          "purpose": "The Plenix brand blue: the logo, the brand mark, product tiles and the accent header band where it shows the brand."
+        }
+      }
+    },
+    "brand-on-primary": {
+      "$value": "{plx-ref.color-white}",
+      "$type": "color",
+      "$description": "White on the brand blue: 4.8:1 (owner, 2026-10-13).",
+      "$extensions": {
+        "plenix": {
+          "group": "brand",
+          "purpose": "Text and icons on the brand blue (an application icon on a product tile)."
+        }
+      }
     },
     "accent-surface": {
-      "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$value": "{plx-sys.brand-primary}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "The accent surface: the app header band (the brand blue in light mode, black in dark mode)."
+        }
+      }
     },
     "accent-surface-raised": {
       "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "A surface raised on the accent: header buttons, the accent code block."
+        }
+      }
     },
     "accent-border": {
       "$value": "{plx-ref.color-blue-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "Borders and edges drawn on the accent surface."
+        }
+      }
     },
     "accent-content": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "Text and icons on the accent surface."
+        }
+      }
     },
     "accent-content-muted": {
       "$value": "{plx-ref.color-blue-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "Secondary text on the accent surface."
+        }
+      }
     },
     "skeleton-base": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The loading placeholder (skeleton)."
+        }
+      }
     },
     "skeleton-highlight": {
       "$value": "{plx-ref.color-gray-75}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The highlight that moves across a skeleton."
+        }
+      }
     },
     "rating-active": {
       "$value": "{plx-ref.color-brown-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "A filled rating star."
+        }
+      }
     },
     "rating-inactive": {
       "$value": "{plx-ref.color-gray-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "An empty rating star."
+        }
+      }
     },
     "selected-border": {
       "$value": "{plx-ref.color-blue-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The edge of a selected card or tile."
+        }
+      }
     },
     "selected-content": {
       "$value": "{plx-ref.color-blue-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "Text of a selected row or item."
+        }
+      }
     },
     "action-danger-background-hover": {
       "$value": "{plx-ref.color-red-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The danger button under the pointer."
+        }
+      }
     },
     "action-danger-background-pressed": {
       "$value": "{plx-ref.color-red-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The danger button being pressed."
+        }
+      }
     },
     "accent-field-background": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "A field on the accent surface (the header search)."
+        }
+      }
     },
     "accent-field-border": {
       "$value": "{plx-ref.color-blue-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "The edge of a field on the accent surface."
+        }
+      }
     },
     "accent-field-placeholder": {
       "$value": "{plx-ref.color-blue-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "Placeholder text in a field on the accent surface."
+        }
+      }
     },
     "field-placeholder": {
       "$value": "{plx-ref.color-gray-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Placeholder text in a field."
+        }
+      }
     },
     "tooltip-background": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The tooltip’s fill."
+        }
+      }
     },
     "tooltip-content": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The tooltip’s text."
+        }
+      }
     },
     "border-dialog-chrome": {
       "$value": "{plx-ref.color-gray-300}",
@@ -489,24 +1187,52 @@
           "before": [
             "  /* overlays and structure (batch 107) */"
           ]
+        },
+        "plenix": {
+          "group": "border",
+          "purpose": "The edge of the title area of a dialog window."
         }
       }
     },
     "content-dialog-chrome": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Text in the title area of a dialog window."
+        }
+      }
     },
     "scrim": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The layer that dims the page behind a modal (with the scrim opacity)."
+        }
+      }
     },
     "toast-background": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The toast’s fill."
+        }
+      }
     },
     "toast-content": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The toast’s text and icons."
+        }
+      }
     },
     "code-keyword": {
       "$value": "{plx-ref.color-blue-700}",
@@ -516,70 +1242,164 @@
           "before": [
             "  /* code: the usual editor colors for keywords, strings, comments… (CodeBlock) */"
           ]
+        },
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: keywords."
         }
       }
     },
     "code-string": {
       "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: strings."
+        }
+      }
     },
     "code-comment": {
       "$value": "{plx-ref.color-green-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: comments."
+        }
+      }
     },
     "code-number": {
       "$value": "{plx-ref.color-green-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: numbers."
+        }
+      }
     },
     "code-function": {
       "$value": "{plx-ref.color-brown-800}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: function names."
+        }
+      }
     },
     "code-tag": {
       "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: markup tags."
+        }
+      }
     },
     "code-attribute": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: attributes."
+        }
+      }
     },
     "code-variable": {
       "$value": "{plx-ref.color-blue-650}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: variables."
+        }
+      }
     },
     "code-selector": {
       "$value": "{plx-ref.color-brown-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Code highlighting: CSS selectors."
+        }
+      }
     },
     "header-card-tint": {
       "$value": "{plx-ref.color-brown-100}",
       "$type": "color",
-      "$description": "the warm end of the header card gradient: the hue opposite the brand blue"
+      "$description": "the warm end of the header card gradient: the hue opposite the brand blue",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The warm end of the header card gradient."
+        }
+      }
     },
     "header-card-media-content": {
       "$value": "{plx-ref.color-blue-600}",
       "$type": "color",
-      "$description": "the header card icon"
+      "$description": "the header card icon",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The header card’s icon."
+        }
+      }
     },
     "surface-media": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "Behind media: the media viewer, video."
+        }
+      }
     },
     "surface-media-raised": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "Panels and controls raised on the media surface."
+        }
+      }
     },
     "border-media": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "Edges on the media surface."
+        }
+      }
     },
     "content-on-media": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Text and icons on the media surface."
+        }
+      }
     },
     "content-on-media-muted": {
       "$value": "{plx-ref.color-gray-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "Secondary text on the media surface."
+        }
+      }
     },
     "accent-edge": {
       "$value": "{plx-ref.color-blue-700}",
@@ -589,32 +1409,72 @@
           "before": [
             "  /* app header tones (batch 108) */"
           ]
+        },
+        "plenix": {
+          "group": "accent",
+          "purpose": "The edge under the accent header."
         }
       }
     },
     "accent-state-hover": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "An item under the pointer on the accent surface."
+        }
+      }
     },
     "accent-state-pressed": {
       "$value": "{plx-ref.color-blue-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "An item being pressed on the accent surface."
+        }
+      }
     },
     "frost-surface": {
       "$value": "{plx-ref.color-blue-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "The frost header: the light tone of the accent."
+        }
+      }
     },
     "frost-border": {
       "$value": "{plx-ref.color-blue-250}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "Borders on the frost surface."
+        }
+      }
     },
     "frost-field-background": {
       "$value": "{plx-ref.color-blue-50}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "A field on the frost surface."
+        }
+      }
     },
     "frost-state-selected": {
       "$value": "{plx-ref.color-blue-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "accent",
+          "purpose": "A selected item on the frost surface."
+        }
+      }
     },
     "status-bar-background": {
       "$value": "{plx-ref.color-black}",
@@ -624,100 +1484,242 @@
           "before": [
             "  /* status bar (batch 111) */"
           ]
+        },
+        "plenix": {
+          "group": "component",
+          "purpose": "The status bar at the foot of an application."
         }
       }
     },
     "status-bar-content": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Text in the status bar."
+        }
+      }
     },
     "status-bar-edge": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The edge above the status bar."
+        }
+      }
     },
     "data-table-surface": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: the surface."
+        }
+      }
     },
     "table-surface": {
       "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): the surface."
+        }
+      }
     },
     "data-table-header-background": {
       "$value": "{plx-ref.color-gray-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: the header row’s fill."
+        }
+      }
     },
     "table-header-background": {
       "$value": "{plx-ref.color-gray-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): the header row’s fill."
+        }
+      }
     },
     "data-table-header-line": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: the line under the header."
+        }
+      }
     },
     "table-header-line": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): the line under the header."
+        }
+      }
     },
     "data-table-line": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: the lines between cells."
+        }
+      }
     },
     "table-line": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): the lines between cells."
+        }
+      }
     },
     "data-table-border": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: the outer edge."
+        }
+      }
     },
     "table-border": {
       "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): the outer edge."
+        }
+      }
     },
     "data-table-text": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: cell text."
+        }
+      }
     },
     "table-text": {
       "$value": "{plx-ref.color-black}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): cell text."
+        }
+      }
     },
     "data-table-text-muted": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: secondary cell text."
+        }
+      }
     },
     "table-text-muted": {
       "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "Table (static): secondary cell text."
+        }
+      }
     },
     "data-table-text-subtle": {
       "$value": "{plx-ref.color-gray-500}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: tertiary cell text."
+        }
+      }
     },
     "data-table-row-hover": {
       "$value": "{plx-ref.color-gray-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: a row under the pointer."
+        }
+      }
     },
     "data-table-row-selected": {
       "$value": "{plx-ref.color-blue-100}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: a selected row."
+        }
+      }
     },
     "data-table-row-selected-hover": {
       "$value": "{plx-ref.color-blue-200}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: a selected row under the pointer."
+        }
+      }
     },
     "data-table-row-selected-text": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: text of a selected row."
+        }
+      }
     },
     "data-table-accent": {
       "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: the sort indicator and accents."
+        }
+      }
     },
     "data-table-danger": {
       "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataTable: an error in a cell."
+        }
+      }
     },
     "data-table-menu-shadow": {
       "$value": "0 {plx-ref.space-8px} {plx-ref.space-24px} {plx-ref.color-black-alpha-14}",
@@ -726,292 +1728,640 @@
     "data-color-blue": {
       "$value": "{plx-ref.color-blue-400}",
       "$type": "color",
-      "$description": "A data color (batch 280): blue, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"blue\"] applies it."
+      "$description": "A data color (batch 280): blue, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"blue\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, blue: solid (an edge, a dot, a bar); the data names the hue."
+        }
+      }
     },
     "data-color-blue-soft": {
       "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
-      "$description": "A data color (batch 280): blue, a soft fill (an avatar)."
+      "$description": "A data color (batch 280): blue, a soft fill (an avatar).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, blue: a soft fill (an avatar)."
+        }
+      }
     },
     "data-color-blue-on-soft": {
       "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
-      "$description": "A data color (batch 280): blue, text on its soft fill."
+      "$description": "A data color (batch 280): blue, text on its soft fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, blue: text on its soft fill."
+        }
+      }
     },
     "data-color-green": {
       "$value": "{plx-ref.color-green-500}",
       "$type": "color",
-      "$description": "A data color (batch 280): green, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"green\"] applies it."
+      "$description": "A data color (batch 280): green, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"green\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, green: solid (an edge, a dot, a bar); the data names the hue."
+        }
+      }
     },
     "data-color-green-soft": {
       "$value": "{plx-ref.color-green-100}",
       "$type": "color",
-      "$description": "A data color (batch 280): green, a soft fill (an avatar)."
+      "$description": "A data color (batch 280): green, a soft fill (an avatar).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, green: a soft fill (an avatar)."
+        }
+      }
     },
     "data-color-green-on-soft": {
       "$value": "{plx-ref.color-green-700}",
       "$type": "color",
-      "$description": "A data color (batch 280): green, text on its soft fill."
+      "$description": "A data color (batch 280): green, text on its soft fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, green: text on its soft fill."
+        }
+      }
     },
     "data-color-purple": {
       "$value": "{plx-ref.color-blue-650}",
       "$type": "color",
-      "$description": "A data color (batch 280): purple, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"purple\"] applies it."
+      "$description": "A data color (batch 280): purple, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"purple\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, purple: solid (an edge, a dot, a bar); the data names the hue."
+        }
+      }
     },
     "data-color-purple-soft": {
       "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
-      "$description": "A data color (batch 280): purple, a soft fill (an avatar)."
+      "$description": "A data color (batch 280): purple, a soft fill (an avatar).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, purple: a soft fill (an avatar)."
+        }
+      }
     },
     "data-color-purple-on-soft": {
       "$value": "{plx-ref.color-blue-900}",
       "$type": "color",
-      "$description": "A data color (batch 280): purple, text on its soft fill."
+      "$description": "A data color (batch 280): purple, text on its soft fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, purple: text on its soft fill."
+        }
+      }
     },
     "data-color-red": {
       "$value": "{plx-ref.color-red-500}",
       "$type": "color",
-      "$description": "A data color (batch 280): red, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"red\"] applies it."
+      "$description": "A data color (batch 280): red, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"red\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, red: solid (an edge, a dot, a bar); the data names the hue."
+        }
+      }
     },
     "data-color-red-soft": {
       "$value": "{plx-ref.color-red-100}",
       "$type": "color",
-      "$description": "A data color (batch 280): red, a soft fill (an avatar)."
+      "$description": "A data color (batch 280): red, a soft fill (an avatar).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, red: a soft fill (an avatar)."
+        }
+      }
     },
     "data-color-red-on-soft": {
       "$value": "{plx-ref.color-red-700}",
       "$type": "color",
-      "$description": "A data color (batch 280): red, text on its soft fill."
+      "$description": "A data color (batch 280): red, text on its soft fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, red: text on its soft fill."
+        }
+      }
     },
     "data-color-brown": {
       "$value": "{plx-ref.color-brown-500}",
       "$type": "color",
-      "$description": "A data color (batch 280): brown, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"brown\"] applies it."
+      "$description": "A data color (batch 280): brown, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"brown\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, brown: solid (an edge, a dot, a bar); the data names the hue."
+        }
+      }
     },
     "data-color-brown-soft": {
       "$value": "{plx-ref.color-brown-100}",
       "$type": "color",
-      "$description": "A data color (batch 280): brown, a soft fill (an avatar)."
+      "$description": "A data color (batch 280): brown, a soft fill (an avatar).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, brown: a soft fill (an avatar)."
+        }
+      }
     },
     "data-color-brown-on-soft": {
       "$value": "{plx-ref.color-brown-800}",
       "$type": "color",
-      "$description": "A data color (batch 280): brown, text on its soft fill."
+      "$description": "A data color (batch 280): brown, text on its soft fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, brown: text on its soft fill."
+        }
+      }
     },
     "data-color-gray": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
-      "$description": "A data color (batch 280): gray, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"gray\"] applies it."
+      "$description": "A data color (batch 280): gray, solid (an edge, a dot, a bar). The data names the hue; [data-plx-color=\"gray\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, gray: solid (an edge, a dot, a bar); the data names the hue."
+        }
+      }
     },
     "data-color-gray-soft": {
       "$value": "{plx-ref.color-gray-100}",
       "$type": "color",
-      "$description": "A data color (batch 280): gray, a soft fill (an avatar)."
+      "$description": "A data color (batch 280): gray, a soft fill (an avatar).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, gray: a soft fill (an avatar)."
+        }
+      }
     },
     "data-color-gray-on-soft": {
       "$value": "{plx-ref.color-gray-800}",
       "$type": "color",
-      "$description": "A data color (batch 280): gray, text on its soft fill."
+      "$description": "A data color (batch 280): gray, text on its soft fill.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A data hue, gray: text on its soft fill."
+        }
+      }
     },
     "category-red": {
       "$value": "{plx-ref.color-category-red}",
       "$type": "color",
-      "$description": "A category color (batch 290): red. The same in every theme, so a category is always recognized. [data-plx-category=\"red\"] applies it."
+      "$description": "A category color (batch 290): red. The same in every theme, so a category is always recognized. [data-plx-category=\"red\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, red: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-red-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the red category color (black: the stronger contrast)."
+      "$description": "Text on the red category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the red category color."
+        }
+      }
     },
     "category-green": {
       "$value": "{plx-ref.color-category-green}",
       "$type": "color",
-      "$description": "A category color (batch 290): green. The same in every theme, so a category is always recognized. [data-plx-category=\"green\"] applies it."
+      "$description": "A category color (batch 290): green. The same in every theme, so a category is always recognized. [data-plx-category=\"green\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, green: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-green-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the green category color (black: the stronger contrast)."
+      "$description": "Text on the green category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the green category color."
+        }
+      }
     },
     "category-yellow": {
       "$value": "{plx-ref.color-category-yellow}",
       "$type": "color",
-      "$description": "A category color (batch 290): yellow. The same in every theme, so a category is always recognized. [data-plx-category=\"yellow\"] applies it."
+      "$description": "A category color (batch 290): yellow. The same in every theme, so a category is always recognized. [data-plx-category=\"yellow\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, yellow: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-yellow-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the yellow category color (black: the stronger contrast)."
+      "$description": "Text on the yellow category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the yellow category color."
+        }
+      }
     },
     "category-blue": {
       "$value": "{plx-ref.color-category-blue}",
       "$type": "color",
-      "$description": "A category color (batch 290): blue. The same in every theme, so a category is always recognized. [data-plx-category=\"blue\"] applies it."
+      "$description": "A category color (batch 290): blue. The same in every theme, so a category is always recognized. [data-plx-category=\"blue\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, blue: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-blue-on": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",
-      "$description": "Text on the blue category color (white: the stronger contrast)."
+      "$description": "Text on the blue category color (white: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the blue category color."
+        }
+      }
     },
     "category-orange": {
       "$value": "{plx-ref.color-category-orange}",
       "$type": "color",
-      "$description": "A category color (batch 290): orange. The same in every theme, so a category is always recognized. [data-plx-category=\"orange\"] applies it."
+      "$description": "A category color (batch 290): orange. The same in every theme, so a category is always recognized. [data-plx-category=\"orange\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, orange: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-orange-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the orange category color (black: the stronger contrast)."
+      "$description": "Text on the orange category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the orange category color."
+        }
+      }
     },
     "category-purple": {
       "$value": "{plx-ref.color-category-purple}",
       "$type": "color",
-      "$description": "A category color (batch 290): purple. The same in every theme, so a category is always recognized. [data-plx-category=\"purple\"] applies it."
+      "$description": "A category color (batch 290): purple. The same in every theme, so a category is always recognized. [data-plx-category=\"purple\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, purple: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-purple-on": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",
-      "$description": "Text on the purple category color (white: the stronger contrast)."
+      "$description": "Text on the purple category color (white: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the purple category color."
+        }
+      }
     },
     "category-cyan": {
       "$value": "{plx-ref.color-category-cyan}",
       "$type": "color",
-      "$description": "A category color (batch 290): cyan. The same in every theme, so a category is always recognized. [data-plx-category=\"cyan\"] applies it."
+      "$description": "A category color (batch 290): cyan. The same in every theme, so a category is always recognized. [data-plx-category=\"cyan\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, cyan: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-cyan-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the cyan category color (black: the stronger contrast)."
+      "$description": "Text on the cyan category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the cyan category color."
+        }
+      }
     },
     "category-magenta": {
       "$value": "{plx-ref.color-category-magenta}",
       "$type": "color",
-      "$description": "A category color (batch 290): magenta. The same in every theme, so a category is always recognized. [data-plx-category=\"magenta\"] applies it."
+      "$description": "A category color (batch 290): magenta. The same in every theme, so a category is always recognized. [data-plx-category=\"magenta\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, magenta: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-magenta-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the magenta category color (black: the stronger contrast)."
+      "$description": "Text on the magenta category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the magenta category color."
+        }
+      }
     },
     "category-lime": {
       "$value": "{plx-ref.color-category-lime}",
       "$type": "color",
-      "$description": "A category color (batch 290): lime. The same in every theme, so a category is always recognized. [data-plx-category=\"lime\"] applies it."
+      "$description": "A category color (batch 290): lime. The same in every theme, so a category is always recognized. [data-plx-category=\"lime\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, lime: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-lime-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the lime category color (black: the stronger contrast)."
+      "$description": "Text on the lime category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the lime category color."
+        }
+      }
     },
     "category-pink": {
       "$value": "{plx-ref.color-category-pink}",
       "$type": "color",
-      "$description": "A category color (batch 290): pink. The same in every theme, so a category is always recognized. [data-plx-category=\"pink\"] applies it."
+      "$description": "A category color (batch 290): pink. The same in every theme, so a category is always recognized. [data-plx-category=\"pink\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, pink: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-pink-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the pink category color (black: the stronger contrast)."
+      "$description": "Text on the pink category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the pink category color."
+        }
+      }
     },
     "category-teal": {
       "$value": "{plx-ref.color-category-teal}",
       "$type": "color",
-      "$description": "A category color (batch 290): teal. The same in every theme, so a category is always recognized. [data-plx-category=\"teal\"] applies it."
+      "$description": "A category color (batch 290): teal. The same in every theme, so a category is always recognized. [data-plx-category=\"teal\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, teal: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-teal-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the teal category color (black: the stronger contrast)."
+      "$description": "Text on the teal category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the teal category color."
+        }
+      }
     },
     "category-lavender": {
       "$value": "{plx-ref.color-category-lavender}",
       "$type": "color",
-      "$description": "A category color (batch 290): lavender. The same in every theme, so a category is always recognized. [data-plx-category=\"lavender\"] applies it."
+      "$description": "A category color (batch 290): lavender. The same in every theme, so a category is always recognized. [data-plx-category=\"lavender\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, lavender: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-lavender-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the lavender category color (black: the stronger contrast)."
+      "$description": "Text on the lavender category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the lavender category color."
+        }
+      }
     },
     "category-brown": {
       "$value": "{plx-ref.color-category-brown}",
       "$type": "color",
-      "$description": "A category color (batch 290): brown. The same in every theme, so a category is always recognized. [data-plx-category=\"brown\"] applies it."
+      "$description": "A category color (batch 290): brown. The same in every theme, so a category is always recognized. [data-plx-category=\"brown\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, brown: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-brown-on": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",
-      "$description": "Text on the brown category color (white: the stronger contrast)."
+      "$description": "Text on the brown category color (white: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the brown category color."
+        }
+      }
     },
     "category-beige": {
       "$value": "{plx-ref.color-category-beige}",
       "$type": "color",
-      "$description": "A category color (batch 290): beige. The same in every theme, so a category is always recognized. [data-plx-category=\"beige\"] applies it."
+      "$description": "A category color (batch 290): beige. The same in every theme, so a category is always recognized. [data-plx-category=\"beige\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, beige: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-beige-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the beige category color (black: the stronger contrast)."
+      "$description": "Text on the beige category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the beige category color."
+        }
+      }
     },
     "category-maroon": {
       "$value": "{plx-ref.color-category-maroon}",
       "$type": "color",
-      "$description": "A category color (batch 290): maroon. The same in every theme, so a category is always recognized. [data-plx-category=\"maroon\"] applies it."
+      "$description": "A category color (batch 290): maroon. The same in every theme, so a category is always recognized. [data-plx-category=\"maroon\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, maroon: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-maroon-on": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",
-      "$description": "Text on the maroon category color (white: the stronger contrast)."
+      "$description": "Text on the maroon category color (white: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the maroon category color."
+        }
+      }
     },
     "category-mint": {
       "$value": "{plx-ref.color-category-mint}",
       "$type": "color",
-      "$description": "A category color (batch 290): mint. The same in every theme, so a category is always recognized. [data-plx-category=\"mint\"] applies it."
+      "$description": "A category color (batch 290): mint. The same in every theme, so a category is always recognized. [data-plx-category=\"mint\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, mint: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-mint-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the mint category color (black: the stronger contrast)."
+      "$description": "Text on the mint category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the mint category color."
+        }
+      }
     },
     "category-olive": {
       "$value": "{plx-ref.color-category-olive}",
       "$type": "color",
-      "$description": "A category color (batch 290): olive. The same in every theme, so a category is always recognized. [data-plx-category=\"olive\"] applies it."
+      "$description": "A category color (batch 290): olive. The same in every theme, so a category is always recognized. [data-plx-category=\"olive\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, olive: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-olive-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the olive category color (black: the stronger contrast)."
+      "$description": "Text on the olive category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the olive category color."
+        }
+      }
     },
     "category-apricot": {
       "$value": "{plx-ref.color-category-apricot}",
       "$type": "color",
-      "$description": "A category color (batch 290): apricot. The same in every theme, so a category is always recognized. [data-plx-category=\"apricot\"] applies it."
+      "$description": "A category color (batch 290): apricot. The same in every theme, so a category is always recognized. [data-plx-category=\"apricot\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, apricot: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-apricot-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the apricot category color (black: the stronger contrast)."
+      "$description": "Text on the apricot category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the apricot category color."
+        }
+      }
     },
     "category-navy": {
       "$value": "{plx-ref.color-category-navy}",
       "$type": "color",
-      "$description": "A category color (batch 290): navy. The same in every theme, so a category is always recognized. [data-plx-category=\"navy\"] applies it."
+      "$description": "A category color (batch 290): navy. The same in every theme, so a category is always recognized. [data-plx-category=\"navy\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, navy: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-navy-on": {
       "$value": "{plx-ref.color-white}",
       "$type": "color",
-      "$description": "Text on the navy category color (white: the stronger contrast)."
+      "$description": "Text on the navy category color (white: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the navy category color."
+        }
+      }
     },
     "category-grey": {
       "$value": "{plx-ref.color-category-grey}",
       "$type": "color",
-      "$description": "A category color (batch 290): grey. The same in every theme, so a category is always recognized. [data-plx-category=\"grey\"] applies it."
+      "$description": "A category color (batch 290): grey. The same in every theme, so a category is always recognized. [data-plx-category=\"grey\"] applies it.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category color, grey: the same in every theme, so a category is always recognized."
+        }
+      }
     },
     "category-grey-on": {
       "$value": "{plx-ref.color-black}",
       "$type": "color",
-      "$description": "Text on the grey category color (black: the stronger contrast)."
+      "$description": "Text on the grey category color (black: the stronger contrast).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Text on the grey category color."
+        }
+      }
     }
   }
 }

@@ -4,147 +4,321 @@
     "dataviz-categorical-1": {
       "$value": "{plx-sys.data-color-blue}",
       "$type": "color",
-      "$description": "Categorical color 1 of 6: the data color blue. Unrelated series take the categorical colors in this order."
+      "$description": "Categorical color 1 of 6: the data color blue. Unrelated series take the categorical colors in this order.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart series 1 (categorical: unrelated series, in order)."
+        }
+      }
     },
     "dataviz-categorical-2": {
       "$value": "{plx-sys.data-color-green}",
       "$type": "color",
-      "$description": "Categorical color 2 of 6: the data color green. Unrelated series take the categorical colors in this order."
+      "$description": "Categorical color 2 of 6: the data color green. Unrelated series take the categorical colors in this order.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart series 2 (categorical: unrelated series, in order)."
+        }
+      }
     },
     "dataviz-categorical-3": {
       "$value": "{plx-sys.data-color-purple}",
       "$type": "color",
-      "$description": "Categorical color 3 of 6: the data color purple. Unrelated series take the categorical colors in this order."
+      "$description": "Categorical color 3 of 6: the data color purple. Unrelated series take the categorical colors in this order.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart series 3 (categorical: unrelated series, in order)."
+        }
+      }
     },
     "dataviz-categorical-4": {
       "$value": "{plx-sys.data-color-red}",
       "$type": "color",
-      "$description": "Categorical color 4 of 6: the data color red. Unrelated series take the categorical colors in this order."
+      "$description": "Categorical color 4 of 6: the data color red. Unrelated series take the categorical colors in this order.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart series 4 (categorical: unrelated series, in order)."
+        }
+      }
     },
     "dataviz-categorical-5": {
       "$value": "{plx-sys.data-color-brown}",
       "$type": "color",
-      "$description": "Categorical color 5 of 6: the data color brown. Unrelated series take the categorical colors in this order."
+      "$description": "Categorical color 5 of 6: the data color brown. Unrelated series take the categorical colors in this order.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart series 5 (categorical: unrelated series, in order)."
+        }
+      }
     },
     "dataviz-categorical-6": {
       "$value": "{plx-sys.data-color-gray}",
       "$type": "color",
-      "$description": "Categorical color 6 of 6: the data color gray. Unrelated series take the categorical colors in this order."
+      "$description": "Categorical color 6 of 6: the data color gray. Unrelated series take the categorical colors in this order.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart series 6 (categorical: unrelated series, in order)."
+        }
+      }
     },
     "dataviz-sequential-1": {
       "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
-      "$description": "Sequential step 1 of 7 (one hue, blue 100): ordered values, the low end lightest."
+      "$description": "Sequential step 1 of 7 (one hue, blue 100): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 1 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-sequential-2": {
       "$value": "{plx-ref.color-blue-200}",
       "$type": "color",
-      "$description": "Sequential step 2 of 7 (one hue, blue 200): ordered values, the low end lightest."
+      "$description": "Sequential step 2 of 7 (one hue, blue 200): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 2 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-sequential-3": {
       "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
-      "$description": "Sequential step 3 of 7 (one hue, blue 300): ordered values, the low end lightest."
+      "$description": "Sequential step 3 of 7 (one hue, blue 300): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 3 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-sequential-4": {
       "$value": "{plx-ref.color-blue-400}",
       "$type": "color",
-      "$description": "Sequential step 4 of 7 (one hue, blue 400): ordered values, the low end lightest."
+      "$description": "Sequential step 4 of 7 (one hue, blue 400): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 4 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-sequential-5": {
       "$value": "{plx-ref.color-blue-600}",
       "$type": "color",
-      "$description": "Sequential step 5 of 7 (one hue, blue 600): ordered values, the low end lightest."
+      "$description": "Sequential step 5 of 7 (one hue, blue 600): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 5 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-sequential-6": {
       "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
-      "$description": "Sequential step 6 of 7 (one hue, blue 700): ordered values, the low end lightest."
+      "$description": "Sequential step 6 of 7 (one hue, blue 700): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 6 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-sequential-7": {
       "$value": "{plx-ref.color-blue-900}",
       "$type": "color",
-      "$description": "Sequential step 7 of 7 (one hue, blue 900): ordered values, the low end lightest."
+      "$description": "Sequential step 7 of 7 (one hue, blue 900): ordered values, the low end lightest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Sequential scale, step 7 of 7 (ordered values, the lowest lightest)."
+        }
+      }
     },
     "dataviz-diverging-1": {
       "$value": "{plx-ref.color-red-800}",
       "$type": "color",
-      "$description": "Diverging step 1 of 7 (red 800): below the midpoint, the far end darkest."
+      "$description": "Diverging step 1 of 7 (red 800): below the midpoint, the far end darkest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 1 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-diverging-2": {
       "$value": "{plx-ref.color-red-500}",
       "$type": "color",
-      "$description": "Diverging step 2 of 7 (red 500): below the midpoint, the far end darkest."
+      "$description": "Diverging step 2 of 7 (red 500): below the midpoint, the far end darkest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 2 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-diverging-3": {
       "$value": "{plx-ref.color-red-200}",
       "$type": "color",
-      "$description": "Diverging step 3 of 7 (red 200): below the midpoint, the far end darkest."
+      "$description": "Diverging step 3 of 7 (red 200): below the midpoint, the far end darkest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 3 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-diverging-4": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color",
-      "$description": "Diverging step 4 of 7 (gray 200): the neutral midpoint."
+      "$description": "Diverging step 4 of 7 (gray 200): the neutral midpoint.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 4 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-diverging-5": {
       "$value": "{plx-ref.color-blue-200}",
       "$type": "color",
-      "$description": "Diverging step 5 of 7 (blue 200): above the midpoint, the far end darkest."
+      "$description": "Diverging step 5 of 7 (blue 200): above the midpoint, the far end darkest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 5 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-diverging-6": {
       "$value": "{plx-ref.color-blue-400}",
       "$type": "color",
-      "$description": "Diverging step 6 of 7 (blue 400): above the midpoint, the far end darkest."
+      "$description": "Diverging step 6 of 7 (blue 400): above the midpoint, the far end darkest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 6 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-diverging-7": {
       "$value": "{plx-ref.color-blue-700}",
       "$type": "color",
-      "$description": "Diverging step 7 of 7 (blue 700): above the midpoint, the far end darkest."
+      "$description": "Diverging step 7 of 7 (blue 700): above the midpoint, the far end darkest.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Diverging scale, step 7 of 7 (step 4 is the neutral midpoint)."
+        }
+      }
     },
     "dataviz-status-positive": {
       "$value": "{plx-sys.feedback-success-solid}",
       "$type": "color",
-      "$description": "Status for charts: positive (the theme’s success mark). Only where the data is a status, never for ordinary series."
+      "$description": "Status for charts: positive (the theme’s success mark). Only where the data is a status, never for ordinary series.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart data that is a status: positive."
+        }
+      }
     },
     "dataviz-status-caution": {
       "$value": "{plx-sys.feedback-warning-solid}",
       "$type": "color",
-      "$description": "Status for charts: caution (the theme’s warning mark). Only where the data is a status, never for ordinary series."
+      "$description": "Status for charts: caution (the theme’s warning mark). Only where the data is a status, never for ordinary series.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart data that is a status: caution."
+        }
+      }
     },
     "dataviz-status-negative": {
       "$value": "{plx-sys.feedback-danger-solid}",
       "$type": "color",
-      "$description": "Status for charts: negative (the theme’s danger mark). Only where the data is a status, never for ordinary series."
+      "$description": "Status for charts: negative (the theme’s danger mark). Only where the data is a status, never for ordinary series.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart data that is a status: negative."
+        }
+      }
     },
     "dataviz-status-informative": {
       "$value": "{plx-sys.feedback-info-solid}",
       "$type": "color",
-      "$description": "Status for charts: informative (the theme’s info mark). Only where the data is a status, never for ordinary series."
+      "$description": "Status for charts: informative (the theme’s info mark). Only where the data is a status, never for ordinary series.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart data that is a status: informative."
+        }
+      }
     },
     "dataviz-status-neutral": {
       "$value": "{plx-sys.feedback-neutral-solid}",
       "$type": "color",
-      "$description": "Status for charts: neutral (the theme’s neutral mark). Only where the data is a status, never for ordinary series."
+      "$description": "Status for charts: neutral (the theme’s neutral mark). Only where the data is a status, never for ordinary series.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "Chart data that is a status: neutral."
+        }
+      }
     },
     "dataviz-alert-warning": {
       "$value": "{plx-sys.feedback-warning-solid}",
       "$type": "color",
-      "$description": "A threshold line or band a value should not cross (warning)."
+      "$description": "A threshold line or band a value should not cross (warning).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A chart threshold or alert: warning."
+        }
+      }
     },
     "dataviz-alert-critical": {
       "$value": "{plx-sys.feedback-danger-solid}",
       "$type": "color",
-      "$description": "A threshold a value must not cross, or an alert on a point (critical)."
+      "$description": "A threshold a value must not cross, or an alert on a point (critical).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A chart threshold or alert: critical."
+        }
+      }
     },
     "dataviz-grid-line": {
       "$value": "{plx-sys.border-subtle}",
       "$type": "color",
-      "$description": "The chart grid and axis lines."
+      "$description": "The chart grid and axis lines.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A chart’s grid lines and axes."
+        }
+      }
     },
     "dataviz-label": {
       "$value": "{plx-sys.content-muted}",
       "$type": "color",
-      "$description": "Axis labels, tick values and the legend."
+      "$description": "Axis labels, tick values and the legend.",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A chart’s axis labels and legend."
+        }
+      }
     }
   }
 }

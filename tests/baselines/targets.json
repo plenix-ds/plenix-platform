@@ -2,8 +2,11 @@
  "dam/index.html": {
   "coarse": 6
  },
+ "dam/settings-myaccount.html#/preferences": {
+  "coarse": 3
+ },
  "dam/settings-system.html": {
-  "coarse": 6
+  "coarse": 2
  },
  "design-system #/actions/button": {
   "coarse": 1

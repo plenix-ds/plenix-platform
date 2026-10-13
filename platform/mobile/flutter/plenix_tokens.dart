@@ -112,6 +112,14 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color feedbackDangerSoftBorder;
   final Color feedbackDangerContent;
   final Color feedbackDangerSoftContent;
+  final Color statusOnline;
+  final Color statusAway;
+  final Color statusBusy;
+  final Color statusOffline;
+  final Color statusDone;
+  final Color statusInProgress;
+  final Color statusBlocked;
+  final Color statusNotStarted;
   final Color fillNeutral;
   final Color fillNeutralHover;
   final Color fillNeutralBorder;
@@ -122,6 +130,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color controlBorder;
   final Color avatarBackground;
   final Color avatarContent;
+  final Color brandPrimary;
+  final Color brandOnPrimary;
   final Color accentSurface;
   final Color accentSurfaceRaised;
   final Color accentBorder;
@@ -357,6 +367,14 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.feedbackDangerSoftBorder,
     required this.feedbackDangerContent,
     required this.feedbackDangerSoftContent,
+    required this.statusOnline,
+    required this.statusAway,
+    required this.statusBusy,
+    required this.statusOffline,
+    required this.statusDone,
+    required this.statusInProgress,
+    required this.statusBlocked,
+    required this.statusNotStarted,
     required this.fillNeutral,
     required this.fillNeutralHover,
     required this.fillNeutralBorder,
@@ -367,6 +385,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.controlBorder,
     required this.avatarBackground,
     required this.avatarContent,
+    required this.brandPrimary,
+    required this.brandOnPrimary,
     required this.accentSurface,
     required this.accentSurfaceRaised,
     required this.accentBorder,
@@ -603,6 +623,14 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     feedbackDangerSoftBorder: Color(0xFFE96060),
     feedbackDangerContent: Color(0xFFB70000),
     feedbackDangerSoftContent: Color(0xFFB70000),
+    statusOnline: Color(0xFF107C10),
+    statusAway: Color(0xFF7D3C00),
+    statusBusy: Color(0xFFB70000),
+    statusOffline: Color(0xFF6E6E6E),
+    statusDone: Color(0xFF107C10),
+    statusInProgress: Color(0xFF2A6FDB),
+    statusBlocked: Color(0xFFB70000),
+    statusNotStarted: Color(0xFF6E6E6E),
     fillNeutral: Color(0xFFF3F3F3),
     fillNeutralHover: Color(0xFFE8E9EC),
     fillNeutralBorder: Color(0xFFD0D0D0),
@@ -613,6 +641,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     controlBorder: Color(0xFF8E9094),
     avatarBackground: Color(0xFF1F5BB8),
     avatarContent: Color(0xFFFFFFFF),
+    brandPrimary: Color(0xFF2A6FDB),
+    brandOnPrimary: Color(0xFFFFFFFF),
     accentSurface: Color(0xFF2A6FDB),
     accentSurfaceRaised: Color(0xFF2A6FDB),
     accentBorder: Color(0xFFA2C0E3),
@@ -849,6 +879,14 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     feedbackDangerSoftBorder: Color(0xFF444444),
     feedbackDangerContent: Color(0xFFFDE7E7),
     feedbackDangerSoftContent: Color(0xFFFDE7E7),
+    statusOnline: Color(0xFF58AD58),
+    statusAway: Color(0xFFDFAA7C),
+    statusBusy: Color(0xFFF8ACA2),
+    statusOffline: Color(0xFFA3A6AD),
+    statusDone: Color(0xFF58AD58),
+    statusInProgress: Color(0xFFA2C0E3),
+    statusBlocked: Color(0xFFF8ACA2),
+    statusNotStarted: Color(0xFFA3A6AD),
     fillNeutral: Color(0xFF444444),
     fillNeutralHover: Color(0xFF56585E),
     fillNeutralBorder: Color(0xFF34363B),
@@ -859,6 +897,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     controlBorder: Color(0xFFA3A6AD),
     avatarBackground: Color(0xFFA2C0E3),
     avatarContent: Color(0xFF000000),
+    brandPrimary: Color(0xFFA2C0E3),
+    brandOnPrimary: Color(0xFF1E1F22),
     accentSurface: Color(0xFF000000),
     accentSurfaceRaised: Color(0xFF444444),
     accentBorder: Color(0xFF8E9094),

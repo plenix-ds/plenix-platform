@@ -3744,9 +3744,9 @@
       "$description": "The accent app header's surface"
     },
     "app-header-frost-brand": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.brand-primary}",
       "$type": "color",
-      "$description": "The frost app header's brand"
+      "$description": "The frost app header's brand: the brand role (brand-primary)"
     },
     "app-header-frost-content": {
       "$value": "{plx-sys.content-muted}",
@@ -8871,13 +8871,19 @@
       "$type": "dimension"
     },
     "settings-section-title-text": {
-      "$value": "{plx-sys.content-muted}",
-      "$type": "color"
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Settings: a section title, the h2 heading of its card (owner, 2026-10-13: no eyebrow style)."
     },
     "settings-section-title-font-size": {
       "$value": "{plx-comp.section-heading-level-2-font-size}",
       "$type": "dimension",
       "$description": "Settings: the size of a section title at level 2 (the default): the level 2 section heading size, 13px (owner, 2026-10-12: the titles grow with the heading levels)."
+    },
+    "settings-section-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "Settings: the family of a section title, as a panel title."
     },
     "settings-section-title-level-3-font-size": {
       "$value": "{plx-comp.section-heading-level-3-font-size}",
@@ -8890,20 +8896,9 @@
       "$description": "Settings: the size of a section title at level 4 (headingLevel 4): the level 4 section heading size, 10px."
     },
     "settings-section-title-font-weight": {
-      "$value": "{plx-sys.font-weight-bold}",
-      "$type": "fontWeight"
-    },
-    "settings-section-title-letter-spacing": {
-      "$value": "{plx-sys.letter-spacing-widest}",
-      "$type": "dimension"
-    },
-    "settings-section-title-margin-block-end": {
-      "$value": "{plx-sys.space-stack-sm}",
-      "$type": "dimension"
-    },
-    "settings-section-title-margin-block-start": {
-      "$value": "{plx-sys.space-stack-lg}",
-      "$type": "dimension"
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Settings: the weight of a section title, as a panel title."
     },
     "settings-section-description-text": {
       "$value": "{plx-sys.content-muted}",
@@ -8911,10 +8906,6 @@
     },
     "settings-section-description-font-size": {
       "$value": "{plx-ref.font-size-12}",
-      "$type": "dimension"
-    },
-    "settings-section-description-margin-block-end": {
-      "$value": "{plx-sys.space-stack-sm}",
       "$type": "dimension"
     },
     "settings-row-border-bottom-color": {
@@ -8988,6 +8979,81 @@
     "settings-section-card-action-bar-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color"
+    },
+    "settings-section-header-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "Settings: the space above and below a section card's header (title and description)."
+    },
+    "settings-section-header-border-bottom-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "Settings: the line between a section card's header and its rows."
+    },
+    "settings-section-header-border-bottom-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Settings: the width of the line between a section card's header and its rows."
+    },
+    "settings-section-description-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Settings: the space between a section title and its description."
+    },
+    "settings-section-toggle-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "Settings: the least height of a collapsible section's header button (its target)."
+    },
+    "settings-section-toggle-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "Settings: the space between a collapsible section's title and its chevron."
+    },
+    "settings-section-toggle-hover-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Settings: the chevron of a collapsible section's header under the pointer."
+    },
+    "settings-section-toggle-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Settings: the focus ring of a collapsible section's header button."
+    },
+    "settings-section-toggle-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "Settings: the space between the header button and its focus ring."
+    },
+    "settings-section-toggle-focus-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "Settings: the width of the header button's focus ring."
+    },
+    "settings-section-chevron-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Settings: the chevron at the end of a collapsible section's header (down when open)."
+    },
+    "settings-section-chevron-duration": {
+      "$value": "{plx-sys.motion-duration-fast}",
+      "$type": "duration",
+      "$description": "Settings: how long the chevron takes to turn."
+    },
+    "settings-row-narrow-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Settings: in a narrow section the control moves under its label; the space between them."
+    },
+    "settings-section-block-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Settings: the space above and below a block in a card that is not a row (a table, a toolbar, a list)."
+    },
+    "settings-section-chevron-easing": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$type": "cubicBezier",
+      "$description": "Settings: the easing of the chevron's turn."
     },
     "side-panel-background": {
       "$value": "{plx-sys.surface-default}",

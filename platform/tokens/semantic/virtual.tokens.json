@@ -14,7 +14,13 @@
     "virtual-sticky-background": {
       "$value": "{plx-sys.surface-default}",
       "$type": "color",
-      "$description": "The surface behind a sticky group header of a virtualized list, so the items do not show through it"
+      "$description": "The surface behind a sticky group header of a virtualized list, so the items do not show through it",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The background of a sticky item in a virtualized list."
+        }
+      }
     }
   }
 }

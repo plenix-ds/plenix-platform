@@ -4,17 +4,35 @@
     "read-only-background": {
       "$value": "{plx-sys.surface-sunken}",
       "$type": "color",
-      "$description": "The fill of a read-only field or select: the sunken surface, so it reads as not editable without dimming its value (a read-only Input uses the same surface)."
+      "$description": "The fill of a read-only field or select: the sunken surface, so it reads as not editable without dimming its value (a read-only Input uses the same surface).",
+      "$extensions": {
+        "plenix": {
+          "group": "surface",
+          "purpose": "The background of a read-only control."
+        }
+      }
     },
     "read-only-content": {
       "$value": "{plx-sys.content-default}",
       "$type": "color",
-      "$description": "The value of a read-only control: full content contrast (4.5:1), never the disabled color, because people must read and copy it."
+      "$description": "The value of a read-only control: full content contrast (4.5:1), never the disabled color, because people must read and copy it.",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "The value of a read-only control."
+        }
+      }
     },
     "read-only-border": {
       "$value": "{plx-sys.border-subtle}",
       "$type": "color",
-      "$description": "The edge of a read-only field: the subtle border, quieter than an editable control's border, which tells it takes no input."
+      "$description": "The edge of a read-only field: the subtle border, quieter than an editable control's border, which tells it takes no input.",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "The edge of a read-only control."
+        }
+      }
     }
   }
 }

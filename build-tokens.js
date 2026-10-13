@@ -16,7 +16,7 @@
 // platform/system/themes/ — the themes are listed in platform/standards/themes.json)
 // are generated: edit the JSON, never the CSS. platform/tokens/tokens.index.json is written for the design spec: every
 // token with its tier, set values, references, the values it resolves to in light and dark at each density, where it
-// is written (file and line) and what uses it.
+// is written (file and line), what uses it and, for a color role, its group and purpose ($extensions.plenix).
 const fs = require('fs');
 const path = require('path');
 
@@ -182,6 +182,9 @@ function index(manifest, written) {
     t.sets.push({ file: s.file, output: s.output, selector: s.selector, value: toCss(token.$value) });
     for (const r of refsOf(token.$value)) if (!t.refs.includes(r)) t.refs.push(r);
     if (!t.type && token.$type) t.type = token.$type;
+    // a color role's group and purpose ($extensions.plenix, the color groups of 2026-10-13; check-system rule color-groups)
+    const px = token.$extensions && token.$extensions.plenix;
+    if (px && px.group && !t.group) { t.group = px.group; t.purpose = px.purpose || ''; }
   }
   for (const w of written) { const t = byName[w.name]; (t.written = t.written || []).push({ file: w.file, line: w.line, selector: w.selector }); }
   for (const t of Object.values(byName)) for (const r of t.refs) if (byName[r] && !byName[r].referencedBy.includes(t.name)) byName[r].referencedBy.push(t.name);

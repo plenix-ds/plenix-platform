@@ -1,23 +1,31 @@
 /* Plenix · SettingsLayout, SettingsSection, SettingsRow
-   Summary: Navigation beside the settings form. SettingsSection is a titled group of rows; SettingsRow puts the label and
-     description at the start and the control at the end.
+   Summary: Navigation beside the settings form. SettingsSection is a card: a titled group of rows, static or collapsible;
+     SettingsRow puts the label and description at the start and the control at the end.
    Usage:
      <SettingsLayout nav={<NavList…/>}>
        <SettingsSection title="Regional" description="…">
          <SettingsRow label="Date format" description="…">{control}</SettingsRow>
        </SettingsSection>
+       <SettingsSection title="Advanced" collapsible defaultExpanded={false}>…</SettingsSection>
      </SettingsLayout>
    Props:
      nav: the navigation (a NavList), drawn in a NavPane beside the content
      className: more classes
      children: the settings sections
-     SettingsSection.title: the section's heading; it names the section landmark
+     SettingsSection.title: the section's heading (an h2 by default); it names the section landmark
      SettingsSection.description: a paragraph under the title
-     SettingsSection.card: true draws it as a bordered card (asset-app style) for a form that needs grouping; default false
+     SettingsSection.collapsible: true makes the header a toggle that shows and hides the rows (default false: static)
+     SettingsSection.defaultExpanded: whether a collapsible section starts open when nothing is remembered (default true)
+     SettingsSection.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
+     SettingsSection.onToggle(next): runs when a collapsible section opens or closes
+     SettingsSection.stateKey: the name its open state is remembered under on this page (default the title); give one
+       when two sections of the page share a title
+     SettingsSection.remember: false keeps the open state for this visit only (default true)
      SettingsSection.actions: the form's buttons, drawn in an ActionBar under the rows (on the right, kept in view at the
        bottom while the page scrolls): the primary action last
      SettingsSection.headingLevel: the title's heading level (default 2); its size follows the level, as SectionHeading's
        (level 2 13px, level 3 11px, level 4 10px)
+     SettingsSection.strings: the words it announces, for other languages: { section: "section" } (the actions' name)
      SettingsSection.className: more classes
      SettingsSection.children: the rows
      SettingsRow.label: the row's label, at the start
@@ -26,20 +34,31 @@
      SettingsRow.className: more classes
      SettingsRow.children: the control, at the end
    Behavior:
+     Every section is a card (owner, 2026-10-13: "all the settings pages to have the cards view"): static, or collapsible.
+     A collapsible section's whole header is one button inside the heading (the disclosure pattern): Enter or Space, or a
+       click anywhere on the title row, opens and closes it; aria-expanded tells its state and aria-controls names the
+       body. Its open state is remembered per page and section in the page's view state (useViewState,
+       plenix.<page>-settings.view), so the page opens as the person left it; a parent that controls it (expanded) keeps
+       it instead.
      Each row is divided from the next.
      On a narrow layout the navigation stacks above the content.
      It is a settings page: inside an AppShell it claims the page kind "settings", so the layout standard lays it out
        (contained: one centered column at the form width).
    Notes:
      Fields (layout="inline" or "row") can be rows too.
-     Give the control the row's label as its own accessible name.
+     Give the control the row's label as its own accessible name, or htmlFor with the control's id.
+     A section with no title is a static card (a collapsible one needs a title to press).
 */
 import React from 'react';
 import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
+import { useViewState, readView } from '../../providers/ScreenLocation.js';
+import { Icon } from '../../components/Icon/Icon.jsx';
 import { NavPane } from '../NavPane/NavPane.jsx';
 import { ActionBar } from '../ActionBar/ActionBar.jsx';
+
+const SECTION_STRINGS = { section: 'section' };
 
 export function SettingsLayout({ nav, className, children }) {
   // a settings page: the layout standard (providers/pageLayouts.js) lays it out, through the shell (batch 218)
@@ -56,15 +75,62 @@ export function SettingsLayout({ nav, className, children }) {
   );
 }
 
-export function SettingsSection({ title, description, card = false, actions, headingLevel = 2, className, children }) {
+// the view state a page's section states are kept in: its file ("settings-system-settings"), or its folder for an index
+// page ("settings-settings")
+function pageOf() {
+  if (typeof location === 'undefined') return 'page-settings';
+  const parts = location.pathname.split('/').filter(Boolean);
+  let last = parts.pop() || 'page';
+  if (/^index\.html?$/.test(last)) last = parts.pop() || 'page';
+  return last.replace(/\.html?$/, '') + '-settings';
+}
+
+// the open state of a collapsible section: controlled (expanded), or its own, remembered in the page's view state
+function useOpen(collapsible, defaultExpanded, expanded, onToggle, key, remember) {
+  const page = React.useMemo(pageOf, []);
+  const [view, update] = useViewState(page);
+  const kept = remember && key && view.sections ? view.sections[key] : undefined;
+  const [own, setOwn] = React.useState(typeof kept === 'boolean' ? kept : defaultExpanded);
+  const open = !collapsible || (expanded === undefined ? own : expanded);
+  const toggle = () => {
+    const next = !open;
+    if (expanded === undefined) setOwn(next);
+    // the stored map is read afresh, so the sections of one page never overwrite each other's state
+    if (remember && key) update(() => ({ sections: Object.assign({}, readView(page).sections, { [key]: next }) }));
+    if (onToggle) onToggle(next);
+  };
+  return [open, toggle];
+}
+
+export function SettingsSection({ title, description, collapsible = false, defaultExpanded = true, expanded, onToggle, stateKey, remember = true,
+  actions, headingLevel = 2, strings, className, children }) {
+  const t = Object.assign({}, SECTION_STRINGS, strings);
   const id = useUid('plx-set');
+  const canCollapse = !!(collapsible && title);
+  const [open, toggle] = useOpen(canCollapse, defaultExpanded, expanded, onToggle, stateKey || (typeof title === 'string' ? title : null), remember);
   const H = 'h' + headingLevel;
+  const descId = description ? id + '-d' : undefined;
   return (
-    <section aria-labelledby={title ? id : undefined} className={cx('plx-settings__section', card && 'plx-settings__section--card', className)}>
-      {title ? <H id={id} className={cx('plx-settings__section-title', headingLevel !== 2 && 'plx-settings__section-title--level-' + headingLevel)}>{title}</H> : null}
-      {description ? <p className="plx-settings__section-description">{description}</p> : null}
-      <div className="plx-settings__rows">{children}</div>
-      {actions ? <ActionBar label={(title ? title + ': ' : '') + 'actions'}>{actions}</ActionBar> : null}
+    <section aria-labelledby={title ? id : undefined} className={cx('plx-settings__section', canCollapse && 'plx-settings__section--collapsible', canCollapse && !open && 'is-collapsed', className)}>
+      {title || description ? (
+        <div className="plx-settings__section-header">
+          {title ? (
+            <H className={cx('plx-settings__section-title', headingLevel !== 2 && 'plx-settings__section-title--level-' + headingLevel)}>
+              {canCollapse ? (
+                <button type="button" id={id} className="plx-settings__section-toggle" aria-expanded={open} aria-controls={id + '-body'} aria-describedby={descId} onClick={toggle}>
+                  <span className="plx-settings__section-label">{title}</span>
+                  <Icon name="chevron-down" className="plx-settings__section-chevron" />
+                </button>
+              ) : <span id={id}>{title}</span>}
+            </H>
+          ) : null}
+          {description ? <p id={descId} className="plx-settings__section-description">{description}</p> : null}
+        </div>
+      ) : null}
+      <div id={id + '-body'} hidden={!open} className="plx-settings__section-body">
+        <div className="plx-settings__rows">{children}</div>
+        {actions ? <ActionBar label={(typeof title === 'string' ? title : t.section) + ': actions'}>{actions}</ActionBar> : null}
+      </div>
     </section>
   );
 }

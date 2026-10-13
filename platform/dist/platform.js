@@ -10663,6 +10663,417 @@ function NotificationList({
   }, t.viewAll) : null) : null);
 }
   } },
+  "platform/providers/UnsavedGuard.jsx": { deps: {"react":null,"react-dom/client":null,"../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx"}, externals: { "react": function () { return window.React; }, "react-dom/client": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.confirmLeave = confirmLeave;
+exports.hasUnsaved = hasUnsaved;
+exports.leavePage = leavePage;
+exports.useUnsavedGuard = useUnsavedGuard;
+var _react = _interopRequireDefault(require("react"));
+var _client = require("react-dom/client");
+var _Dialog = require("../components/Dialog/Dialog.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useUnsavedGuard, confirmLeave, hasUnsaved, leavePage
+   Summary: Protects unsaved work (Platforms Standard 4.3, Guard): while a screen, a form or a dialog has unsaved changes,
+     leaving it asks first, with a Plenix confirmation dialog ("Leave without saving?"), never the browser's confirm().
+   Usage:
+     const guard = useUnsavedGuard(dirty, 'Your changes to this note will be lost.');
+     <Dialog onClose={guard(onClose)} …>                    // closing the dialog asks while it is dirty
+     useUnsavedGuard(dirty, message, { keeps: (next) => true });   // sections that stay mounted: only leaving the page asks
+     leavePage('../settings/index.html#/general');           // a page change from code, asked like a link
+   Props:
+     useUnsavedGuard(dirty, message, options): dirty: true while there are unsaved changes; message: the explanation in the
+       dialog (default "Your changes will be lost."); options.keeps(next): true when the next screen (useScreenLocation's
+       { path, parts, params }) still shows this work, so changing to it does not ask; options.strings: { title, leave,
+       stay } for other languages. Returns guard(fn): fn wrapped so that, while dirty, it runs only after the person
+       chooses Leave (for a dialog's Close and Cancel)
+     hasUnsaved(next): true when a dirty guard would lose its work by changing to next (null: another page)
+     confirmLeave(next): resolves true when nothing unsaved is in the way of the screen change (next: the next screen, or
+       null for another page), or when the person chose Leave; false when they stay
+     leavePage(url): goes to another page, asking first while something is unsaved
+   Behavior:
+     While anything is dirty:
+     - closing or reloading the tab asks (beforeunload; the browser words that question itself);
+     - a link to another page (the header's applications, a navigation pane's links, a Button with href) asks with the
+       Plenix dialog: Leave follows the link, Keep editing stays;
+     - a screen change through useScreenLocation (opening a screen, Back, Forward, the parent control) asks the same, and
+       Back or Forward is undone when the person stays.
+     The dialog is a destructive ConfirmDialog: it starts on Keep editing, Escape and the veil keep editing.
+     Only one question shows at a time; a second request while it is open waits for the same answer.
+   Notes:
+     The dialog renders in its own root on document.body, so a guard works on any page, with or without an AppShell.
+     A link that opens a new tab or window (target, Ctrl, Shift, the middle button) never asks: nothing is lost.
+*/
+
+const STRINGS = {
+  title: 'Leave without saving?',
+  message: 'Your changes will be lost.',
+  leave: 'Leave',
+  stay: 'Keep editing'
+};
+const guards = new Set(); // every mounted guard: a ref to { dirty, message, options }
+let leaving = false; // the person chose Leave: the page may unload without asking again
+let pending = null; // the question on screen, if any (one at a time)
+
+// the first dirty guard that the next screen would lose (next null: another page)
+function blocking(next) {
+  for (const g of guards) {
+    const c = g.current;
+    if (c.dirty && !(next && c.options.keeps && c.options.keeps(next))) return c;
+  }
+  return null;
+}
+
+// asks with the Plenix dialog in a root of its own; resolves true for Leave
+function ask(c) {
+  if (pending) return pending;
+  const t = Object.assign({}, STRINGS, c.options.strings);
+  pending = new Promise(resolve => {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    const root = (0, _client.createRoot)(el);
+    const done = ok => {
+      queueMicrotask(() => {
+        root.unmount();
+        el.remove();
+        pending = null;
+        resolve(ok);
+      });
+    };
+    root.render(/*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
+      open: true,
+      destructive: true,
+      title: t.title,
+      message: c.message || t.message,
+      confirmLabel: t.leave,
+      cancelLabel: t.stay,
+      onConfirm: () => done(true),
+      onCancel: () => done(false)
+    }));
+  });
+  return pending;
+}
+function hasUnsaved(next) {
+  return !!blocking(next === undefined ? null : next);
+}
+function confirmLeave(next) {
+  const c = blocking(next === undefined ? null : next);
+  return c ? ask(c) : Promise.resolve(true);
+}
+function leavePage(url) {
+  return confirmLeave(null).then(ok => {
+    if (ok) {
+      leaving = true;
+      location.href = url;
+    }
+    return ok;
+  });
+}
+
+// the page-wide listeners, installed with the first guard
+let installed = false;
+function install() {
+  if (installed || typeof window === 'undefined') return;
+  installed = true;
+  window.addEventListener('beforeunload', e => {
+    if (leaving || !blocking(null)) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+  // a link to another page: ask before following it (capture: before the link's own handlers navigate)
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || a.target && a.target !== '_self' || a.hasAttribute('download')) return;
+    const to = new URL(a.href, location.href);
+    if (to.origin === location.origin && to.pathname === location.pathname && to.search === location.search) return; // this page: a screen (useScreenLocation)
+    if (!blocking(null)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    leavePage(to.href);
+  }, true);
+}
+function useUnsavedGuard(dirty, message, options) {
+  const ref = _react.default.useRef(null);
+  ref.current = {
+    dirty: !!dirty,
+    message,
+    options: options || {}
+  };
+  _react.default.useEffect(() => {
+    install();
+    guards.add(ref);
+    return () => {
+      guards.delete(ref);
+    };
+  }, []);
+  return _react.default.useCallback(fn => (...args) => {
+    const c = ref.current;
+    if (!c.dirty) return fn && fn(...args);
+    return ask(c).then(ok => ok && fn ? fn(...args) : undefined);
+  }, []);
+}
+  } },
+  "platform/providers/ScreenLocation.js": { deps: {"react":null,"./UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.goToParent = goToParent;
+exports.navigate = navigate;
+exports.parseScreen = parseScreen;
+exports.readView = readView;
+exports.screenHref = screenHref;
+exports.useScreenLocation = useScreenLocation;
+exports.useViewState = useViewState;
+var _react = _interopRequireDefault(require("react"));
+var _UnsavedGuard = require("./UnsavedGuard.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useScreenLocation, navigate, goToParent, screenHref, parseScreen, useViewState
+   Summary: A URL for every screen inside an application (Platforms Standard 4.3: destination, history, back, parent, deep
+     link, restoration): hash routes such as #/note/42, #/project/3/tasks or #/search?q=mail. Opening a screen pushes a
+     history entry, the browser's Back and Forward bring the screens back, an address opens its screen directly, and the
+     header's parent control goes to the logical parent.
+   Usage:
+     const loc = useScreenLocation({ app: 'notes' });
+     loc.parts                          // ['note', '42'] at #/note/42; [] at the start screen
+     loc.params.q                       // 'mail' at #/search?q=mail
+     loc.navigate(['note', 42])         // push a history entry and show the note (a string path works too: '/note/42')
+     loc.parent('/')                    // the logical parent (the header's parent control, a list-detail Back)
+     const [view, updateView] = useViewState('notes');   // { paneWidth, scroll, … } kept in localStorage plenix.notes.view
+   Props:
+     useScreenLocation(options): the current screen; re-renders when it changes. options.app: the application id: the
+       last screen is kept in its view state (plenix.<app>.view, screen) and opened on load when the address names no
+       screen; options.legacy(hash): maps an older address (#t-3, #account) to a screen path; it is rewritten in place on
+       load (the same screen, not a move). The first call on a page sets them.
+     returns { path, parts, params, href, navigate(path, params, { replace }), parent(path, params), hrefOf(path, params) }
+     navigate(path, params, options): opens a screen from outside React; resolves true when the screen changed (false when
+       the person kept unsaved work); options.replace: replace the entry (a correction of the same screen, never a move)
+     goToParent(path, params): Back when the previous entry is that parent (the history follows the hierarchy), else a
+       new entry for it (after a deep link)
+     screenHref(path, params): the address of a screen ("#/note/42?tab=files"); path: a string or a list of parts
+       (each part is encoded)
+     parseScreen(hash): { path, parts, params, href } of an address
+     useViewState(app): [view, update(patch)]: what an application keeps between visits (the pane width, the list's
+       scroll position, the last screen); update merges the patch and stores it
+   Behavior:
+     A new screen is a new history entry (pushState); the history is never rewritten where the person moved, and an
+       address opened from outside is opened alone (no padded entries).
+     Back and Forward (popstate, hashchange) show the screen of the entry; a link to "#/…" works the same way.
+     A screen change asks the unsaved-changes guards first (useUnsavedGuard): when the person keeps editing, Back or
+       Forward is undone (the history returns to the entry they were on) and a link or navigate() does nothing.
+     An address that is not a screen (the skip link's #main) changes nothing.
+     Stored values are read and written in try/catch: without storage everything works for this visit.
+   Notes:
+     The start screen is "#/" (or no hash). The entries the hook made carry their place in history.state (plxScreen), so
+     a traversal knows how far it went and can be undone.
+*/
+
+const KEY = 'plxScreen';
+const isScreen = hash => !hash || hash === '#' || hash.indexOf('#/') === 0;
+function screenHref(path, params) {
+  const parts = Array.isArray(path) ? path.map(p => encodeURIComponent(String(p))) : String(path || '/').split('/').filter(Boolean);
+  const q = new URLSearchParams();
+  Object.keys(params || {}).forEach(k => {
+    const v = params[k];
+    if (v !== undefined && v !== null && v !== '') q.append(k, String(v));
+  });
+  const query = q.toString();
+  return '#/' + parts.join('/') + (query ? '?' + query : '');
+}
+function parseScreen(hash) {
+  const h = hash && hash.indexOf('#/') === 0 ? hash.slice(1) : '/';
+  const at = h.indexOf('?');
+  const parts = (at >= 0 ? h.slice(0, at) : h).split('/').filter(Boolean).map(p => {
+    try {
+      return decodeURIComponent(p);
+    } catch (e) {
+      return p;
+    }
+  });
+  const params = {};
+  if (at >= 0) new URLSearchParams(h.slice(at + 1)).forEach((v, k) => {
+    params[k] = v;
+  });
+  return {
+    path: '/' + parts.join('/'),
+    parts,
+    params,
+    href: screenHref(parts, params)
+  };
+}
+
+/* ── the view state: plenix.<app>.view ── */
+const viewKey = app => 'plenix.' + app + '.view';
+function readView(app) {
+  try {
+    const v = JSON.parse(localStorage.getItem(viewKey(app)));
+    return v && typeof v === 'object' ? v : {};
+  } catch (e) {
+    return {};
+  }
+}
+function writeView(app, patch) {
+  try {
+    localStorage.setItem(viewKey(app), JSON.stringify(Object.assign(readView(app), patch)));
+  } catch (e) {/* not stored: it lasts for this visit */}
+}
+function useViewState(app) {
+  const [view, setView] = _react.default.useState(() => readView(app));
+  const update = _react.default.useCallback(patch => {
+    setView(v => {
+      const p = typeof patch === 'function' ? patch(v) : patch;
+      writeView(app, p);
+      return Object.assign({}, v, p);
+    });
+  }, [app]);
+  return [view, update];
+}
+
+/* ── the page's screen: one per page, shared by every component that asks ── */
+let current = null; // the screen shown: parseScreen(…)
+let at = 0; // the place of the current entry in this tab's history (history.state.plxScreen)
+const trail = []; // trail[i]: the screen of entry i, as far as this page knows
+let app = null; // the application whose last screen is kept
+let undoTo = null; // a traversal being undone: the entry it returns to
+let passing = false; // the person chose Leave: the next traversal goes through
+const subscribers = new Set();
+const urlOf = href => location.pathname + location.search + href;
+const placeOf = state => state && typeof state[KEY] === 'number' ? state[KEY] : null;
+const tag = i => {
+  try {
+    history.replaceState(Object.assign({}, history.state, {
+      [KEY]: i
+    }), '', location.href);
+  } catch (e) {/* no history API */}
+};
+function show(next, i) {
+  at = i;
+  trail[i] = next.href;
+  if (current && next.href === current.href) return;
+  current = next;
+  if (app) writeView(app, {
+    screen: next.href
+  });
+  subscribers.forEach(f => f(next));
+}
+function start(options) {
+  if (current) {
+    if (options.app && !app) app = options.app;
+    return;
+  }
+  app = options.app || null;
+  const hash = location.hash;
+  // an older address (#t-3): the same screen under its new address, in place
+  const old = !isScreen(hash) && options.legacy ? options.legacy(hash) : null;
+  if (old) history.replaceState(history.state, '', urlOf(screenHref(old)));
+  // no screen named: the last screen of this application (restoration), in place
+  else if (!hash && app) {
+    const last = readView(app).screen;
+    if (last && isScreen(last)) history.replaceState(history.state, '', urlOf(parseScreen(last).href));
+  }
+  current = parseScreen(isScreen(location.hash) ? location.hash : '');
+  const place = placeOf(history.state);
+  at = place === null ? 0 : place;
+  if (place === null) tag(at);
+  trail[at] = current.href;
+  window.addEventListener('popstate', onTraverse);
+  window.addEventListener('hashchange', onTraverse);
+}
+
+// Back, Forward, or a link to "#/…" (the browser has already moved: show the entry, or undo the move and ask)
+function onTraverse() {
+  const place = placeOf(history.state);
+  if (undoTo !== null) {
+    if (place === undoTo) undoTo = null;
+    return;
+  }
+  const to = place === null ? at + 1 : place; // an entry the browser added (a link) comes after this one
+  if (place === null) tag(to);
+  if (!isScreen(location.hash)) {
+    at = to;
+    trail[to] = current.href;
+    return;
+  } // #main and the like: the same screen
+  const next = parseScreen(location.hash);
+  if (next.href === current.href) {
+    at = to;
+    trail[to] = next.href;
+    return;
+  }
+  if (passing || !(0, _UnsavedGuard.hasUnsaved)(next)) {
+    passing = false;
+    show(next, to);
+    return;
+  }
+  // unsaved work: the page stays where it was while the question is open (the move is undone), and Leave redoes it
+  const from = at;
+  if (to === from) {
+    // nothing to undo: put the address of the shown screen back if the person stays
+    (0, _UnsavedGuard.confirmLeave)(next).then(ok => {
+      if (ok) show(next, to);else history.replaceState(history.state, '', urlOf(current.href));
+    });
+    return;
+  }
+  undoTo = from;
+  history.go(from - to);
+  (0, _UnsavedGuard.confirmLeave)(next).then(ok => {
+    if (ok) {
+      passing = true;
+      history.go(to - from);
+    }
+  });
+}
+function navigate(path, params, options) {
+  start({});
+  const next = parseScreen(screenHref(path, params));
+  if (next.href === current.href) return Promise.resolve(true);
+  return (0, _UnsavedGuard.confirmLeave)(next).then(ok => {
+    if (!ok) return false;
+    if (options && options.replace) history.replaceState(Object.assign({}, history.state, {
+      [KEY]: at
+    }), '', urlOf(next.href));else {
+      trail.length = at + 1;
+      history.pushState({
+        [KEY]: at + 1
+      }, '', urlOf(next.href));
+      at += 1;
+    }
+    show(next, at);
+    return true;
+  });
+}
+function goToParent(path, params) {
+  start({});
+  const href = parseScreen(screenHref(path, params)).href;
+  if (at > 0 && trail[at - 1] === href) {
+    history.back();
+    return Promise.resolve(true);
+  }
+  return navigate(path, params);
+}
+function useScreenLocation(options) {
+  start(options || {});
+  const [loc, setLoc] = _react.default.useState(current);
+  _react.default.useEffect(() => {
+    subscribers.add(setLoc);
+    if (loc !== current) setLoc(current);
+    return () => {
+      subscribers.delete(setLoc);
+    };
+  }, []);
+  return _react.default.useMemo(() => Object.assign({}, loc, {
+    navigate,
+    parent: goToParent,
+    hrefOf: screenHref
+  }), [loc]);
+}
+  } },
   "platform/patterns/ToolRail/ToolRail.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -10997,7 +11408,7 @@ function NavPane({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11010,29 +11421,39 @@ var _react = _interopRequireDefault(require("react"));
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
+var _ScreenLocation = require("../../providers/ScreenLocation.js");
+var _Icon = require("../../components/Icon/Icon.jsx");
 var _NavPane = require("../NavPane/NavPane.jsx");
 var _ActionBar = require("../ActionBar/ActionBar.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SettingsLayout, SettingsSection, SettingsRow
-   Summary: Navigation beside the settings form. SettingsSection is a titled group of rows; SettingsRow puts the label and
-     description at the start and the control at the end.
+   Summary: Navigation beside the settings form. SettingsSection is a card: a titled group of rows, static or collapsible;
+     SettingsRow puts the label and description at the start and the control at the end.
    Usage:
      <SettingsLayout nav={<NavList…/>}>
        <SettingsSection title="Regional" description="…">
          <SettingsRow label="Date format" description="…">{control}</SettingsRow>
        </SettingsSection>
+       <SettingsSection title="Advanced" collapsible defaultExpanded={false}>…</SettingsSection>
      </SettingsLayout>
    Props:
      nav: the navigation (a NavList), drawn in a NavPane beside the content
      className: more classes
      children: the settings sections
-     SettingsSection.title: the section's heading; it names the section landmark
+     SettingsSection.title: the section's heading (an h2 by default); it names the section landmark
      SettingsSection.description: a paragraph under the title
-     SettingsSection.card: true draws it as a bordered card (asset-app style) for a form that needs grouping; default false
+     SettingsSection.collapsible: true makes the header a toggle that shows and hides the rows (default false: static)
+     SettingsSection.defaultExpanded: whether a collapsible section starts open when nothing is remembered (default true)
+     SettingsSection.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
+     SettingsSection.onToggle(next): runs when a collapsible section opens or closes
+     SettingsSection.stateKey: the name its open state is remembered under on this page (default the title); give one
+       when two sections of the page share a title
+     SettingsSection.remember: false keeps the open state for this visit only (default true)
      SettingsSection.actions: the form's buttons, drawn in an ActionBar under the rows (on the right, kept in view at the
        bottom while the page scrolls): the primary action last
      SettingsSection.headingLevel: the title's heading level (default 2); its size follows the level, as SectionHeading's
        (level 2 13px, level 3 11px, level 4 10px)
+     SettingsSection.strings: the words it announces, for other languages: { section: "section" } (the actions' name)
      SettingsSection.className: more classes
      SettingsSection.children: the rows
      SettingsRow.label: the row's label, at the start
@@ -11041,15 +11462,25 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      SettingsRow.className: more classes
      SettingsRow.children: the control, at the end
    Behavior:
+     Every section is a card (owner, 2026-10-13: "all the settings pages to have the cards view"): static, or collapsible.
+     A collapsible section's whole header is one button inside the heading (the disclosure pattern): Enter or Space, or a
+       click anywhere on the title row, opens and closes it; aria-expanded tells its state and aria-controls names the
+       body. Its open state is remembered per page and section in the page's view state (useViewState,
+       plenix.<page>-settings.view), so the page opens as the person left it; a parent that controls it (expanded) keeps
+       it instead.
      Each row is divided from the next.
      On a narrow layout the navigation stacks above the content.
      It is a settings page: inside an AppShell it claims the page kind "settings", so the layout standard lays it out
        (contained: one centered column at the form width).
    Notes:
      Fields (layout="inline" or "row") can be rows too.
-     Give the control the row's label as its own accessible name.
+     Give the control the row's label as its own accessible name, or htmlFor with the control's id.
+     A section with no title is a static card (a collapsible one needs a title to press).
 */
 
+const SECTION_STRINGS = {
+  section: 'section'
+};
 function SettingsLayout({
   nav,
   className,
@@ -11070,30 +11501,92 @@ function SettingsLayout({
     className: "plx-settings__content"
   }, children)));
 }
+
+// the view state a page's section states are kept in: its file ("settings-system-settings"), or its folder for an index
+// page ("settings-settings")
+function pageOf() {
+  if (typeof location === 'undefined') return 'page-settings';
+  const parts = location.pathname.split('/').filter(Boolean);
+  let last = parts.pop() || 'page';
+  if (/^index\.html?$/.test(last)) last = parts.pop() || 'page';
+  return last.replace(/\.html?$/, '') + '-settings';
+}
+
+// the open state of a collapsible section: controlled (expanded), or its own, remembered in the page's view state
+function useOpen(collapsible, defaultExpanded, expanded, onToggle, key, remember) {
+  const page = _react.default.useMemo(pageOf, []);
+  const [view, update] = (0, _ScreenLocation.useViewState)(page);
+  const kept = remember && key && view.sections ? view.sections[key] : undefined;
+  const [own, setOwn] = _react.default.useState(typeof kept === 'boolean' ? kept : defaultExpanded);
+  const open = !collapsible || (expanded === undefined ? own : expanded);
+  const toggle = () => {
+    const next = !open;
+    if (expanded === undefined) setOwn(next);
+    // the stored map is read afresh, so the sections of one page never overwrite each other's state
+    if (remember && key) update(() => ({
+      sections: Object.assign({}, (0, _ScreenLocation.readView)(page).sections, {
+        [key]: next
+      })
+    }));
+    if (onToggle) onToggle(next);
+  };
+  return [open, toggle];
+}
 function SettingsSection({
   title,
   description,
-  card = false,
+  collapsible = false,
+  defaultExpanded = true,
+  expanded,
+  onToggle,
+  stateKey,
+  remember = true,
   actions,
   headingLevel = 2,
+  strings,
   className,
   children
 }) {
+  const t = Object.assign({}, SECTION_STRINGS, strings);
   const id = (0, _layer.useUid)('plx-set');
+  const canCollapse = !!(collapsible && title);
+  const [open, toggle] = useOpen(canCollapse, defaultExpanded, expanded, onToggle, stateKey || (typeof title === 'string' ? title : null), remember);
   const H = 'h' + headingLevel;
+  const descId = description ? id + '-d' : undefined;
   return /*#__PURE__*/_react.default.createElement("section", {
     "aria-labelledby": title ? id : undefined,
-    className: (0, _cx.cx)('plx-settings__section', card && 'plx-settings__section--card', className)
+    className: (0, _cx.cx)('plx-settings__section', canCollapse && 'plx-settings__section--collapsible', canCollapse && !open && 'is-collapsed', className)
+  }, title || description ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-settings__section-header"
   }, title ? /*#__PURE__*/_react.default.createElement(H, {
-    id: id,
     className: (0, _cx.cx)('plx-settings__section-title', headingLevel !== 2 && 'plx-settings__section-title--level-' + headingLevel)
-  }, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
+  }, canCollapse ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    id: id,
+    className: "plx-settings__section-toggle",
+    "aria-expanded": open,
+    "aria-controls": id + '-body',
+    "aria-describedby": descId,
+    onClick: toggle
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-settings__section-label"
+  }, title), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down",
+    className: "plx-settings__section-chevron"
+  })) : /*#__PURE__*/_react.default.createElement("span", {
+    id: id
+  }, title)) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
+    id: descId,
     className: "plx-settings__section-description"
-  }, description) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, description) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+    id: id + '-body',
+    hidden: !open,
+    className: "plx-settings__section-body"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-settings__rows"
   }, children), actions ? /*#__PURE__*/_react.default.createElement(_ActionBar.ActionBar, {
-    label: (title ? title + ': ' : '') + 'actions'
-  }, actions) : null);
+    label: (typeof title === 'string' ? title : t.section) + ': actions'
+  }, actions) : null));
 }
 function SettingsRow({
   label,
@@ -11579,417 +12072,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 function useInteraction() {
   const ctx = _react.default.useContext(_ThemeProvider.ThemeContext);
   return ctx ? ctx.interaction : document.documentElement.getAttribute('data-plx-interaction') || 'pointer';
-}
-  } },
-  "platform/providers/UnsavedGuard.jsx": { deps: {"react":null,"react-dom/client":null,"../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx"}, externals: { "react": function () { return window.React; }, "react-dom/client": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.confirmLeave = confirmLeave;
-exports.hasUnsaved = hasUnsaved;
-exports.leavePage = leavePage;
-exports.useUnsavedGuard = useUnsavedGuard;
-var _react = _interopRequireDefault(require("react"));
-var _client = require("react-dom/client");
-var _Dialog = require("../components/Dialog/Dialog.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useUnsavedGuard, confirmLeave, hasUnsaved, leavePage
-   Summary: Protects unsaved work (Platforms Standard 4.3, Guard): while a screen, a form or a dialog has unsaved changes,
-     leaving it asks first, with a Plenix confirmation dialog ("Leave without saving?"), never the browser's confirm().
-   Usage:
-     const guard = useUnsavedGuard(dirty, 'Your changes to this note will be lost.');
-     <Dialog onClose={guard(onClose)} …>                    // closing the dialog asks while it is dirty
-     useUnsavedGuard(dirty, message, { keeps: (next) => true });   // sections that stay mounted: only leaving the page asks
-     leavePage('../settings/index.html#/general');           // a page change from code, asked like a link
-   Props:
-     useUnsavedGuard(dirty, message, options): dirty: true while there are unsaved changes; message: the explanation in the
-       dialog (default "Your changes will be lost."); options.keeps(next): true when the next screen (useScreenLocation's
-       { path, parts, params }) still shows this work, so changing to it does not ask; options.strings: { title, leave,
-       stay } for other languages. Returns guard(fn): fn wrapped so that, while dirty, it runs only after the person
-       chooses Leave (for a dialog's Close and Cancel)
-     hasUnsaved(next): true when a dirty guard would lose its work by changing to next (null: another page)
-     confirmLeave(next): resolves true when nothing unsaved is in the way of the screen change (next: the next screen, or
-       null for another page), or when the person chose Leave; false when they stay
-     leavePage(url): goes to another page, asking first while something is unsaved
-   Behavior:
-     While anything is dirty:
-     - closing or reloading the tab asks (beforeunload; the browser words that question itself);
-     - a link to another page (the header's applications, a navigation pane's links, a Button with href) asks with the
-       Plenix dialog: Leave follows the link, Keep editing stays;
-     - a screen change through useScreenLocation (opening a screen, Back, Forward, the parent control) asks the same, and
-       Back or Forward is undone when the person stays.
-     The dialog is a destructive ConfirmDialog: it starts on Keep editing, Escape and the veil keep editing.
-     Only one question shows at a time; a second request while it is open waits for the same answer.
-   Notes:
-     The dialog renders in its own root on document.body, so a guard works on any page, with or without an AppShell.
-     A link that opens a new tab or window (target, Ctrl, Shift, the middle button) never asks: nothing is lost.
-*/
-
-const STRINGS = {
-  title: 'Leave without saving?',
-  message: 'Your changes will be lost.',
-  leave: 'Leave',
-  stay: 'Keep editing'
-};
-const guards = new Set(); // every mounted guard: a ref to { dirty, message, options }
-let leaving = false; // the person chose Leave: the page may unload without asking again
-let pending = null; // the question on screen, if any (one at a time)
-
-// the first dirty guard that the next screen would lose (next null: another page)
-function blocking(next) {
-  for (const g of guards) {
-    const c = g.current;
-    if (c.dirty && !(next && c.options.keeps && c.options.keeps(next))) return c;
-  }
-  return null;
-}
-
-// asks with the Plenix dialog in a root of its own; resolves true for Leave
-function ask(c) {
-  if (pending) return pending;
-  const t = Object.assign({}, STRINGS, c.options.strings);
-  pending = new Promise(resolve => {
-    const el = document.createElement('div');
-    document.body.appendChild(el);
-    const root = (0, _client.createRoot)(el);
-    const done = ok => {
-      queueMicrotask(() => {
-        root.unmount();
-        el.remove();
-        pending = null;
-        resolve(ok);
-      });
-    };
-    root.render(/*#__PURE__*/_react.default.createElement(_Dialog.ConfirmDialog, {
-      open: true,
-      destructive: true,
-      title: t.title,
-      message: c.message || t.message,
-      confirmLabel: t.leave,
-      cancelLabel: t.stay,
-      onConfirm: () => done(true),
-      onCancel: () => done(false)
-    }));
-  });
-  return pending;
-}
-function hasUnsaved(next) {
-  return !!blocking(next === undefined ? null : next);
-}
-function confirmLeave(next) {
-  const c = blocking(next === undefined ? null : next);
-  return c ? ask(c) : Promise.resolve(true);
-}
-function leavePage(url) {
-  return confirmLeave(null).then(ok => {
-    if (ok) {
-      leaving = true;
-      location.href = url;
-    }
-    return ok;
-  });
-}
-
-// the page-wide listeners, installed with the first guard
-let installed = false;
-function install() {
-  if (installed || typeof window === 'undefined') return;
-  installed = true;
-  window.addEventListener('beforeunload', e => {
-    if (leaving || !blocking(null)) return;
-    e.preventDefault();
-    e.returnValue = '';
-  });
-  // a link to another page: ask before following it (capture: before the link's own handlers navigate)
-  document.addEventListener('click', e => {
-    if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-    if (!a || a.target && a.target !== '_self' || a.hasAttribute('download')) return;
-    const to = new URL(a.href, location.href);
-    if (to.origin === location.origin && to.pathname === location.pathname && to.search === location.search) return; // this page: a screen (useScreenLocation)
-    if (!blocking(null)) return;
-    e.preventDefault();
-    e.stopPropagation();
-    leavePage(to.href);
-  }, true);
-}
-function useUnsavedGuard(dirty, message, options) {
-  const ref = _react.default.useRef(null);
-  ref.current = {
-    dirty: !!dirty,
-    message,
-    options: options || {}
-  };
-  _react.default.useEffect(() => {
-    install();
-    guards.add(ref);
-    return () => {
-      guards.delete(ref);
-    };
-  }, []);
-  return _react.default.useCallback(fn => (...args) => {
-    const c = ref.current;
-    if (!c.dirty) return fn && fn(...args);
-    return ask(c).then(ok => ok && fn ? fn(...args) : undefined);
-  }, []);
-}
-  } },
-  "platform/providers/ScreenLocation.js": { deps: {"react":null,"./UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.goToParent = goToParent;
-exports.navigate = navigate;
-exports.parseScreen = parseScreen;
-exports.readView = readView;
-exports.screenHref = screenHref;
-exports.useScreenLocation = useScreenLocation;
-exports.useViewState = useViewState;
-var _react = _interopRequireDefault(require("react"));
-var _UnsavedGuard = require("./UnsavedGuard.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useScreenLocation, navigate, goToParent, screenHref, parseScreen, useViewState
-   Summary: A URL for every screen inside an application (Platforms Standard 4.3: destination, history, back, parent, deep
-     link, restoration): hash routes such as #/note/42, #/project/3/tasks or #/search?q=mail. Opening a screen pushes a
-     history entry, the browser's Back and Forward bring the screens back, an address opens its screen directly, and the
-     header's parent control goes to the logical parent.
-   Usage:
-     const loc = useScreenLocation({ app: 'notes' });
-     loc.parts                          // ['note', '42'] at #/note/42; [] at the start screen
-     loc.params.q                       // 'mail' at #/search?q=mail
-     loc.navigate(['note', 42])         // push a history entry and show the note (a string path works too: '/note/42')
-     loc.parent('/')                    // the logical parent (the header's parent control, a list-detail Back)
-     const [view, updateView] = useViewState('notes');   // { paneWidth, scroll, … } kept in localStorage plenix.notes.view
-   Props:
-     useScreenLocation(options): the current screen; re-renders when it changes. options.app: the application id: the
-       last screen is kept in its view state (plenix.<app>.view, screen) and opened on load when the address names no
-       screen; options.legacy(hash): maps an older address (#t-3, #account) to a screen path; it is rewritten in place on
-       load (the same screen, not a move). The first call on a page sets them.
-     returns { path, parts, params, href, navigate(path, params, { replace }), parent(path, params), hrefOf(path, params) }
-     navigate(path, params, options): opens a screen from outside React; resolves true when the screen changed (false when
-       the person kept unsaved work); options.replace: replace the entry (a correction of the same screen, never a move)
-     goToParent(path, params): Back when the previous entry is that parent (the history follows the hierarchy), else a
-       new entry for it (after a deep link)
-     screenHref(path, params): the address of a screen ("#/note/42?tab=files"); path: a string or a list of parts
-       (each part is encoded)
-     parseScreen(hash): { path, parts, params, href } of an address
-     useViewState(app): [view, update(patch)]: what an application keeps between visits (the pane width, the list's
-       scroll position, the last screen); update merges the patch and stores it
-   Behavior:
-     A new screen is a new history entry (pushState); the history is never rewritten where the person moved, and an
-       address opened from outside is opened alone (no padded entries).
-     Back and Forward (popstate, hashchange) show the screen of the entry; a link to "#/…" works the same way.
-     A screen change asks the unsaved-changes guards first (useUnsavedGuard): when the person keeps editing, Back or
-       Forward is undone (the history returns to the entry they were on) and a link or navigate() does nothing.
-     An address that is not a screen (the skip link's #main) changes nothing.
-     Stored values are read and written in try/catch: without storage everything works for this visit.
-   Notes:
-     The start screen is "#/" (or no hash). The entries the hook made carry their place in history.state (plxScreen), so
-     a traversal knows how far it went and can be undone.
-*/
-
-const KEY = 'plxScreen';
-const isScreen = hash => !hash || hash === '#' || hash.indexOf('#/') === 0;
-function screenHref(path, params) {
-  const parts = Array.isArray(path) ? path.map(p => encodeURIComponent(String(p))) : String(path || '/').split('/').filter(Boolean);
-  const q = new URLSearchParams();
-  Object.keys(params || {}).forEach(k => {
-    const v = params[k];
-    if (v !== undefined && v !== null && v !== '') q.append(k, String(v));
-  });
-  const query = q.toString();
-  return '#/' + parts.join('/') + (query ? '?' + query : '');
-}
-function parseScreen(hash) {
-  const h = hash && hash.indexOf('#/') === 0 ? hash.slice(1) : '/';
-  const at = h.indexOf('?');
-  const parts = (at >= 0 ? h.slice(0, at) : h).split('/').filter(Boolean).map(p => {
-    try {
-      return decodeURIComponent(p);
-    } catch (e) {
-      return p;
-    }
-  });
-  const params = {};
-  if (at >= 0) new URLSearchParams(h.slice(at + 1)).forEach((v, k) => {
-    params[k] = v;
-  });
-  return {
-    path: '/' + parts.join('/'),
-    parts,
-    params,
-    href: screenHref(parts, params)
-  };
-}
-
-/* ── the view state: plenix.<app>.view ── */
-const viewKey = app => 'plenix.' + app + '.view';
-function readView(app) {
-  try {
-    const v = JSON.parse(localStorage.getItem(viewKey(app)));
-    return v && typeof v === 'object' ? v : {};
-  } catch (e) {
-    return {};
-  }
-}
-function writeView(app, patch) {
-  try {
-    localStorage.setItem(viewKey(app), JSON.stringify(Object.assign(readView(app), patch)));
-  } catch (e) {/* not stored: it lasts for this visit */}
-}
-function useViewState(app) {
-  const [view, setView] = _react.default.useState(() => readView(app));
-  const update = _react.default.useCallback(patch => {
-    setView(v => {
-      const p = typeof patch === 'function' ? patch(v) : patch;
-      writeView(app, p);
-      return Object.assign({}, v, p);
-    });
-  }, [app]);
-  return [view, update];
-}
-
-/* ── the page's screen: one per page, shared by every component that asks ── */
-let current = null; // the screen shown: parseScreen(…)
-let at = 0; // the place of the current entry in this tab's history (history.state.plxScreen)
-const trail = []; // trail[i]: the screen of entry i, as far as this page knows
-let app = null; // the application whose last screen is kept
-let undoTo = null; // a traversal being undone: the entry it returns to
-let passing = false; // the person chose Leave: the next traversal goes through
-const subscribers = new Set();
-const urlOf = href => location.pathname + location.search + href;
-const placeOf = state => state && typeof state[KEY] === 'number' ? state[KEY] : null;
-const tag = i => {
-  try {
-    history.replaceState(Object.assign({}, history.state, {
-      [KEY]: i
-    }), '', location.href);
-  } catch (e) {/* no history API */}
-};
-function show(next, i) {
-  at = i;
-  trail[i] = next.href;
-  if (current && next.href === current.href) return;
-  current = next;
-  if (app) writeView(app, {
-    screen: next.href
-  });
-  subscribers.forEach(f => f(next));
-}
-function start(options) {
-  if (current) {
-    if (options.app && !app) app = options.app;
-    return;
-  }
-  app = options.app || null;
-  const hash = location.hash;
-  // an older address (#t-3): the same screen under its new address, in place
-  const old = !isScreen(hash) && options.legacy ? options.legacy(hash) : null;
-  if (old) history.replaceState(history.state, '', urlOf(screenHref(old)));
-  // no screen named: the last screen of this application (restoration), in place
-  else if (!hash && app) {
-    const last = readView(app).screen;
-    if (last && isScreen(last)) history.replaceState(history.state, '', urlOf(parseScreen(last).href));
-  }
-  current = parseScreen(isScreen(location.hash) ? location.hash : '');
-  const place = placeOf(history.state);
-  at = place === null ? 0 : place;
-  if (place === null) tag(at);
-  trail[at] = current.href;
-  window.addEventListener('popstate', onTraverse);
-  window.addEventListener('hashchange', onTraverse);
-}
-
-// Back, Forward, or a link to "#/…" (the browser has already moved: show the entry, or undo the move and ask)
-function onTraverse() {
-  const place = placeOf(history.state);
-  if (undoTo !== null) {
-    if (place === undoTo) undoTo = null;
-    return;
-  }
-  const to = place === null ? at + 1 : place; // an entry the browser added (a link) comes after this one
-  if (place === null) tag(to);
-  if (!isScreen(location.hash)) {
-    at = to;
-    trail[to] = current.href;
-    return;
-  } // #main and the like: the same screen
-  const next = parseScreen(location.hash);
-  if (next.href === current.href) {
-    at = to;
-    trail[to] = next.href;
-    return;
-  }
-  if (passing || !(0, _UnsavedGuard.hasUnsaved)(next)) {
-    passing = false;
-    show(next, to);
-    return;
-  }
-  // unsaved work: the page stays where it was while the question is open (the move is undone), and Leave redoes it
-  const from = at;
-  if (to === from) {
-    // nothing to undo: put the address of the shown screen back if the person stays
-    (0, _UnsavedGuard.confirmLeave)(next).then(ok => {
-      if (ok) show(next, to);else history.replaceState(history.state, '', urlOf(current.href));
-    });
-    return;
-  }
-  undoTo = from;
-  history.go(from - to);
-  (0, _UnsavedGuard.confirmLeave)(next).then(ok => {
-    if (ok) {
-      passing = true;
-      history.go(to - from);
-    }
-  });
-}
-function navigate(path, params, options) {
-  start({});
-  const next = parseScreen(screenHref(path, params));
-  if (next.href === current.href) return Promise.resolve(true);
-  return (0, _UnsavedGuard.confirmLeave)(next).then(ok => {
-    if (!ok) return false;
-    if (options && options.replace) history.replaceState(Object.assign({}, history.state, {
-      [KEY]: at
-    }), '', urlOf(next.href));else {
-      trail.length = at + 1;
-      history.pushState({
-        [KEY]: at + 1
-      }, '', urlOf(next.href));
-      at += 1;
-    }
-    show(next, at);
-    return true;
-  });
-}
-function goToParent(path, params) {
-  start({});
-  const href = parseScreen(screenHref(path, params)).href;
-  if (at > 0 && trail[at - 1] === href) {
-    history.back();
-    return Promise.resolve(true);
-  }
-  return navigate(path, params);
-}
-function useScreenLocation(options) {
-  start(options || {});
-  const [loc, setLoc] = _react.default.useState(current);
-  _react.default.useEffect(() => {
-    subscribers.add(setLoc);
-    if (loc !== current) setLoc(current);
-    return () => {
-      subscribers.delete(setLoc);
-    };
-  }, []);
-  return _react.default.useMemo(() => Object.assign({}, loc, {
-    navigate,
-    parent: goToParent,
-    hrefOf: screenHref
-  }), [loc]);
 }
   } },
   "platform/patterns/TimeGrid/TimeGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","../../components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -14335,6 +14417,53 @@ const CONTRAST_PAIRS = exports.CONTRAST_PAIRS = Object.freeze([{
   bg: 'surface-default',
   rule: N,
   use: 'Danger marks (dots, icons)'
+},
+// the brand and status roles (color groups, owner 2026-10-13)
+{
+  fg: 'brand-on-primary',
+  bg: 'brand-primary',
+  rule: T,
+  use: 'Text and icons on the brand blue (a product tile)'
+}, {
+  fg: 'status-online',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Presence: online (a dot)'
+}, {
+  fg: 'status-away',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Presence: away (a dot)'
+}, {
+  fg: 'status-busy',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Presence: busy (a dot)'
+}, {
+  fg: 'status-offline',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Presence: offline (a dot)'
+}, {
+  fg: 'status-done',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Workflow: done (a dot, an icon)'
+}, {
+  fg: 'status-in-progress',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Workflow: in progress (a dot, an icon)'
+}, {
+  fg: 'status-blocked',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Workflow: blocked (a dot, an icon)'
+}, {
+  fg: 'status-not-started',
+  bg: 'surface-default',
+  rule: N,
+  use: 'Workflow: not started (a dot, an icon)'
 }]);
 function parseColor(color) {
   const s = String(color || '').trim().toLowerCase();

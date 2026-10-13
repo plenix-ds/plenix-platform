@@ -1,0 +1,13 @@
+{
+  "$description": "Library part w00C: the color group pages (owner, 2026-10-13) mapped to their iOS and Android pages. Semantic colors is named by the iOS Color page already (native-guidance.json).",
+  "map": {
+    "foundations|Neutral colors": { "ios": ["ios-foundations|Color"], "android": ["android-foundations|Themes and color roles"] },
+    "foundations|Brand colors": { "ios": ["ios-foundations|Branding", "ios-foundations|Color"], "android": ["android-foundations|Themes and color roles"] },
+    "foundations|Accent colors": { "ios": ["ios-foundations|Color"], "android": ["android-foundations|Themes and color roles"] },
+    "foundations|Surface colors": { "ios": ["ios-foundations|Color", "ios-foundations|Materials"], "android": ["android-foundations|Themes and color roles", "android-foundations|Elevation"] },
+    "foundations|Text colors": { "ios": ["ios-foundations|Color"], "android": ["android-foundations|Themes and color roles", "android-foundations|Contrast"] },
+    "foundations|Border colors": { "ios": ["ios-foundations|Color"], "android": ["android-foundations|Themes and color roles", "android-foundations|Borders"] },
+    "foundations|Interactive colors": { "ios": ["ios-foundations|Color"], "android": ["android-foundations|Themes and color roles"] },
+    "foundations|Status colors": { "ios": ["ios-foundations|Color"], "android": ["android-foundations|Themes and color roles", "android-foundations|Color alone"] }
+  }
+}

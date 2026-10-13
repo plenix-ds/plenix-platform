@@ -124,6 +124,15 @@
   --plx-sys-feedback-danger-soft-border: var(--plx-ref-color-red-300);
   --plx-sys-feedback-danger-content: var(--plx-ref-color-red-700);
   --plx-sys-feedback-danger-soft-content: var(--plx-ref-color-red-700);
+  /* status: presence and workflow state (owner, 2026-10-13) */
+  --plx-sys-status-online: var(--plx-ref-color-green-500);
+  --plx-sys-status-away: var(--plx-ref-color-brown-800);
+  --plx-sys-status-busy: var(--plx-ref-color-red-700);
+  --plx-sys-status-offline: var(--plx-ref-color-gray-600);
+  --plx-sys-status-done: var(--plx-ref-color-green-500);
+  --plx-sys-status-in-progress: var(--plx-ref-color-blue-400);
+  --plx-sys-status-blocked: var(--plx-ref-color-red-700);
+  --plx-sys-status-not-started: var(--plx-ref-color-gray-600);
   /* elevation recipes (the shadow-* classes) and roles */
   --plx-sys-shadow-sm: 0 0 2px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
   --plx-sys-shadow-md: 0 0 8px var(--plx-ref-color-black-alpha-14), 0 0 2px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
@@ -150,7 +159,10 @@
   --plx-sys-control-border: var(--plx-ref-color-gray-500);
   --plx-sys-avatar-background: var(--plx-ref-color-blue-600);
   --plx-sys-avatar-content: var(--plx-ref-color-white);
-  --plx-sys-accent-surface: var(--plx-ref-color-blue-400);
+  /* brand: the Plenix brand color (owner, 2026-10-13) */
+  --plx-sys-brand-primary: var(--plx-ref-color-blue-400);
+  --plx-sys-brand-on-primary: var(--plx-ref-color-white);
+  --plx-sys-accent-surface: var(--plx-sys-brand-primary);
   --plx-sys-accent-surface-raised: var(--plx-ref-color-blue-400);
   --plx-sys-accent-border: var(--plx-ref-color-blue-300);
   --plx-sys-accent-content: var(--plx-ref-color-white);
@@ -356,6 +368,15 @@
   --plx-sys-feedback-danger-soft-border: var(--plx-ref-color-gray-800);
   --plx-sys-feedback-danger-content: var(--plx-ref-color-red-100);
   --plx-sys-feedback-danger-soft-content: var(--plx-ref-color-red-100);
+  /* status: presence and workflow state (owner, 2026-10-13) */
+  --plx-sys-status-online: var(--plx-ref-color-green-300);
+  --plx-sys-status-away: var(--plx-ref-color-brown-300);
+  --plx-sys-status-busy: var(--plx-ref-color-red-200);
+  --plx-sys-status-offline: var(--plx-ref-color-gray-400);
+  --plx-sys-status-done: var(--plx-ref-color-green-300);
+  --plx-sys-status-in-progress: var(--plx-ref-color-blue-300);
+  --plx-sys-status-blocked: var(--plx-ref-color-red-200);
+  --plx-sys-status-not-started: var(--plx-ref-color-gray-400);
   /* elevation recipes (the shadow-* classes) and roles */
   --plx-sys-shadow-sm: 0 0 2px var(--plx-ref-color-black), 0 0 0 1px var(--plx-ref-color-gray-700);
   --plx-sys-shadow-md: 0 0 8px var(--plx-ref-color-black), 0 0 0 1px var(--plx-ref-color-gray-700);
@@ -382,6 +403,9 @@
   --plx-sys-control-border: var(--plx-ref-color-gray-400);
   --plx-sys-avatar-background: var(--plx-ref-color-blue-300);
   --plx-sys-avatar-content: var(--plx-ref-color-black);
+  /* brand: the Plenix brand color (owner, 2026-10-13) */
+  --plx-sys-brand-primary: var(--plx-ref-color-blue-300);
+  --plx-sys-brand-on-primary: var(--plx-ref-color-gray-950);
   --plx-sys-accent-surface: var(--plx-ref-color-black);
   --plx-sys-accent-surface-raised: var(--plx-ref-color-gray-800);
   --plx-sys-accent-border: var(--plx-ref-color-gray-500);

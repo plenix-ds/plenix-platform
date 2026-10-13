@@ -2444,21 +2444,24 @@ function CatEditModal({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FeatureDrawer = void 0;
+exports.FeatureRow = void 0;
 exports.Settings = Settings;
 var _plenixPlatform = require("plenix-platform");
 var _shared = require("../suite/shared.jsx");
 var _classification = require("../suite/classification.jsx");
-/* Plenix · Settings (settings/settings.jsx): the settings page of the suite. Split out of app/plenix.jsx in batch 113;
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Settings (settings/settings.jsx): the settings page of the suite. Split out of app/plenix.jsx in batch 113;
    its own application folder since batch 149. Rebuilt from Platform components: the sections in the shell's NavPane as
-   NavLists, each settings screen as SettingsSections of SettingsRows, categories as collapsible Panels with ColorSwatches,
-   tags and project types as renamable Tags, the header style as RadioTiles; the documentation pages from Text,
-   SectionHeadings, PropertyLists, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style guide now points at
-   the design system (../platform/design-system/), the point of truth. */
-
+   NavLists, every screen as SettingsSection cards (owner, 2026-10-13: "all the settings pages to have the cards view"):
+   static cards for the groups people use, collapsible cards for long or rarely used ones (their open state is remembered
+   per page). Rows are SettingsRows whose controls are the Platform's own (Select, SegmentedControl, Switch, Input at a
+   field width, ColorPicker, RadioTiles, ChoiceList); categories, tags and project types are cards of rows and renamable
+   Tags; the documentation pages are cards of Text, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style
+   guide points at the design system (../platform/design-system/), the point of truth. */
 const {
   useState
 } = React;
+// the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session; an action, so a Button
+const SIGN_OUT = "/outpost.goauthentik.io/sign_out";
 // a name/value table as a static Table (batches 229, 234: every table runs on Tabulator): rows [name, value, technical?]; the names
 // are the row header, values wrap, a value may be any React content
 // name/value facts as the defined data table, with a header row (owner, 2026-10-09: all name/value lists in the DataTable's look)
@@ -2513,42 +2516,185 @@ const capBadge = s => {
   }, m[1]);
 };
 
-/* Expandable feature drawer: a collapsible Panel with the status as a Badge */
-const FeatureDrawer = ({
+/* One feature as a settings row: its name and what it does, its status at the end */
+const FeatureRow = ({
   item
 }) => {
   const s = FEATURE_STATUS[item.status] || FEATURE_STATUS.planned;
-  return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    collapsible: true,
-    defaultExpanded: false,
-    headingLevel: 3,
-    title: item.label,
-    actions: /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-      tone: s[0]
-    }, s[1])
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "p",
-    variant: "secondary"
-  }, item.desc));
+  return /*#__PURE__*/React.createElement(_plenixPlatform.SettingsRow, {
+    label: item.label,
+    description: item.desc
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
+    tone: s[0]
+  }, s[1]));
 };
 
-/* A titled part of a documentation page */
-exports.FeatureDrawer = FeatureDrawer;
-const DocSection = ({
+/* ── the screen and its cards ── */
+// the screen a card belongs to: its open state is remembered under "<screen>:<title>"
+exports.FeatureRow = FeatureRow;
+const ScreenKey = React.createContext("");
+// a settings screen: a way back (lead), its title (the h1) and actions, then its cards
+const Screen = ({
+  id,
+  lead,
   title,
+  desc,
+  actions,
   children
-}) => /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-  gap: "sm"
-}, /*#__PURE__*/React.createElement(_plenixPlatform.SectionHeading, {
-  level: 2
-}, title), children);
+}) => /*#__PURE__*/React.createElement(ScreenKey.Provider, {
+  value: id || title
+}, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+  gap: "lg"
+}, lead || null, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  title: title,
+  description: desc,
+  actions: actions
+}), /*#__PURE__*/React.createElement("div", null, children)));
+// a card of the screen: SettingsSection, static or collapsible, remembered per screen
+const Section = ({
+  stateKey,
+  ...p
+}) => {
+  const screen = React.useContext(ScreenKey);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, _extends({
+    stateKey: screen + ":" + (stateKey || p.title)
+  }, p));
+};
+// a row and its control, named by the row's label
+const RowLabel = React.createContext(null);
+const Row = ({
+  label,
+  desc,
+  htmlFor,
+  children
+}) => /*#__PURE__*/React.createElement(RowLabel.Provider, {
+  value: label
+}, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsRow, {
+  label: label,
+  description: desc,
+  htmlFor: htmlFor
+}, children));
+const Toggle = ({
+  val,
+  onChange,
+  label,
+  disabled
+}) => {
+  const row = React.useContext(RowLabel);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Switch, {
+    checked: !!val,
+    disabled: disabled,
+    onChange: e => onChange(e.target.checked),
+    label: label || row || "On",
+    labelHidden: true
+  });
+};
+const Seg = ({
+  opts,
+  val,
+  onChange,
+  label
+}) => {
+  const row = React.useContext(RowLabel);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.SegmentedControl, {
+    label: label || row,
+    value: val,
+    onChange: onChange,
+    options: opts.map(o => ({
+      value: o.v,
+      label: o.l
+    }))
+  });
+};
+const Choose = ({
+  opts,
+  val,
+  onChange,
+  id,
+  label,
+  defaultValue
+}) => {
+  const row = React.useContext(RowLabel);
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+    id: id,
+    "aria-label": id ? undefined : label || row,
+    value: val,
+    defaultValue: defaultValue,
+    onChange: onChange ? e => onChange(e.target.value) : undefined,
+    options: opts.map(o => ({
+      value: o.v,
+      label: o.l
+    }))
+  });
+};
+// the shared "Display density" choice (platform/providers/theme-boot.js): the same control and storage on every page
+const DensityChoice = () => {
+  const [d, setD] = (0, _plenixPlatform.useDensity)();
+  const opts = window.PlenixWorkspace ? window.PlenixWorkspace.densities() : [];
+  return /*#__PURE__*/React.createElement(_plenixPlatform.ChoiceList, {
+    legend: "Display density",
+    value: d,
+    onChange: setD,
+    options: opts
+  });
+};
+// the theme: the themes the design system defines (THEMES); the choice is kept for every page (batch 219)
+const ThemeChoice = ({
+  id
+}) => {
+  const {
+    theme,
+    setTheme,
+    themes
+  } = (0, _plenixPlatform.useTheme)();
+  return /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+    id: id,
+    value: theme,
+    onChange: e => setTheme(e.target.value),
+    options: themes.map(t => ({
+      value: t.name,
+      label: t.label
+    }))
+  });
+};
+// a new-item row (a tag, a project type): a labeled field with Add and Cancel
+const AddRow = ({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder,
+  onAdd,
+  onCancel
+}) => /*#__PURE__*/React.createElement(Row, {
+  label: label,
+  htmlFor: id
+}, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+  gap: "sm",
+  wrap: true
+}, /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
+  id: id,
+  width: "lg",
+  autoFocus: true,
+  autoComplete: "off",
+  enterKeyHint: "done",
+  value: value,
+  onChange: onChange,
+  placeholder: placeholder,
+  onKeyDown: e => {
+    if (e.key === "Enter") onAdd();
+    if (e.key === "Escape") onCancel();
+  }
+}), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+  variant: "primary",
+  onClick: onAdd,
+  size: "sm"
+}, "Add"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+  onClick: onCancel,
+  size: "sm"
+}, "Cancel")));
 
-/* Wraps content in n nested indented Stacks (the layer hierarchy) */
-const indent = (n, el) => n > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-  indent: true
-}, indent(n - 1, el)) : el;
-
-/* The full documentation of one capability */
+/* The full documentation of one capability: a card per part, the long ones collapsible */
 function CapDoc({
   cap,
   backLabel,
@@ -2576,6 +2722,7 @@ function CapDoc({
     }, f.desc))))
   }, {
     title: "Use cases",
+    long: true,
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
     }, (cap.useCases || []).map(uc => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
@@ -2595,13 +2742,15 @@ function CapDoc({
       gap: "sm",
       align: "baseline"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "accent"
+      variant: "data"
     }, i + 1, "."), /*#__PURE__*/React.createElement(_plenixPlatform.Text, null, step)))))))))
   }, {
     title: "Functionality",
+    long: true,
     content: facts("Functionality", (cap.functionality || []).map(f => [f.feature, f.behavior]))
   }, {
     title: "Scenarios",
+    long: true,
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: "Scenarios",
       data: (cap.scenarios || []).map((r, i) => ({
@@ -2622,6 +2771,7 @@ function CapDoc({
     })
   }, {
     title: "Specification",
+    long: true,
     content: /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
@@ -2662,9 +2812,9 @@ function CapDoc({
     }, "id \xB7 createdAt \xB7 updatedAt")), (spec.rules || []).length > 0 && /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "xs"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "eyebrow"
-    }, "Rules & Constraints"), /*#__PURE__*/React.createElement(_plenixPlatform.List, {
-      label: "Rules & Constraints",
+      variant: "label"
+    }, "Rules and constraints"), /*#__PURE__*/React.createElement(_plenixPlatform.List, {
+      label: "Rules and constraints",
       items: spec.rules.map(r => ({
         icon: "chevron-right",
         tone: "info",
@@ -2673,9 +2823,11 @@ function CapDoc({
     })))
   }, {
     title: "Enablers",
+    long: true,
     content: facts("Enablers", (cap.enablers || []).map(e => [e.name, e.desc]))
   }, {
     title: "UI",
+    long: true,
     content: facts("UI", [ui.screen && ui.screen !== "Not started" && ["Screen", ui.screen, true], (ui.components || []).length > 0 && ["Components", /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "xs"
     }, ui.components.map((c, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
@@ -2688,6 +2840,7 @@ function CapDoc({
     }, w)))]])
   }, {
     title: "Modules",
+    long: true,
     content: /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
       label: "Modules"
     }, (cap.modules || []).map((m, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
@@ -2696,93 +2849,86 @@ function CapDoc({
       variant: "danger"
     }, m) : m)))
   }, {
-    title: "Entity / Schema",
-    content: /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
-      tone: "info"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+    title: "Entity and schema",
+    long: true,
+    content: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "sm",
       wrap: true
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "eyebrow"
+      variant: "label"
     }, "Entity"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
     }, "SCHEMA.types.", cap.entity), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "secondary"
     }, "+"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
-    }, "SCHEMA.anchors")))
+    }, "SCHEMA.anchors"))
   }];
-  return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    gap: "sm"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "ghost",
-    size: "xs",
-    icon: "arrow-left",
-    onClick: onBack
-  }, backLabel), crumb ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "caption"
-  }, "Capabilities \u2192"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "label"
-  }, cap.label)) : null), /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/React.createElement(Screen, {
+    id: "capability",
     title: cap.label,
-    description: cap.purpose,
-    size: "md",
-    surface: "card",
-    meta: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+    desc: cap.purpose,
+    lead: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+      gap: "sm"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+      variant: "ghost",
+      size: "sm",
+      icon: "arrow-left",
+      onClick: onBack
+    }, backLabel), crumb ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "caption"
+    }, "Capabilities \u2192"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "label"
+    }, cap.label)) : null),
+    actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Badge, null, cap.layer), cap.stub ? /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
       tone: "danger"
     }, "Not started") : null)
-  }), sections.map(s => /*#__PURE__*/React.createElement(DocSection, {
+  }, sections.map(s => /*#__PURE__*/React.createElement(Section, {
     key: s.title,
-    title: s.title
+    title: s.title,
+    collapsible: !!s.long
   }, s.content)));
 }
+
+/* The documentation pages: each one a screen of cards */
 function DocsPanel({
   docSection,
   setDocSection
 }) {
   const [selCap, setSelCap] = useState(null);
   /* About */
-  if (docSection === "about") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  if (docSection === "about") return /*#__PURE__*/React.createElement(Screen, {
+    id: "docs-about",
     title: "About Plenix",
-    description: "The product, the name, and the vision behind it."
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    desc: "The product, the name, and the vision behind it."
+  }, /*#__PURE__*/React.createElement(Section, {
     title: "Plenix",
-    description: '"The completor" -- that which makes whole.',
-    actions: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "data"
-    }, "/PLEN-iks/")
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList, null, (window.PV_NAME_ROWS || []).map(r => /*#__PURE__*/React.createElement(_plenixPlatform.PropertyList.Item, {
-    key: r.k,
-    label: r.k
-  }, r.v)))), /*#__PURE__*/React.createElement(DocSection, {
+    description: '"The completor" -- that which makes whole. Pronounced /PLEN-iks/.'
+  }, facts("Plenix", (window.PV_NAME_ROWS || []).map(r => [r.k, r.v]))), /*#__PURE__*/React.createElement(Section, {
     title: "Why it fits this product"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
-  }, "The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness."), facts("Why Plenix fits", (window.PV_FIT || []).map(p => [p.principle, p.meaning]))), /*#__PURE__*/React.createElement(DocSection, {
+  }, "The entire vision of Plenix is about solving fragmentation. Context is lost. Data is duplicated. Retrieval fails. The result is an incomplete picture of your own information. Plenix is the answer to that incompleteness."), facts("Why Plenix fits", (window.PV_FIT || []).map(p => [p.principle, p.meaning]))), /*#__PURE__*/React.createElement(Section, {
     title: "Core data model"
-  }, facts("Core data model", (window.PV_MODEL || []).map(m => [m.name, m.desc]))), /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
+  }, facts("Core data model", (window.PV_MODEL || []).map(m => [m.name, m.desc]))), /*#__PURE__*/React.createElement(Section, {
+    title: "Documentation figures"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
     label: "Documentation figures"
   }, [["Capabilities", 74], ["Features documented", 807], ["PRDs with content", 50], ["Project types", (window.ALL_PROJ_TYPES || []).length]].map(s => /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
     key: s[0],
     value: s[1],
     label: s[0]
-  }))));
-  if (docSection === "product-vision") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  })))));
+  if (docSection === "product-vision") return /*#__PURE__*/React.createElement(Screen, {
+    id: "docs-vision",
     title: "Product vision",
-    description: "The founding document. Why Plenix exists, what it solves, and how it works."
-  }), /*#__PURE__*/React.createElement(DocSection, {
-    title: "The problem"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "p"
-  }, "Modern digital life is fragmented. A single person may use 8-12+ separate tools daily just to stay organized. This creates three core pain points:"), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    desc: "The founding document. Why Plenix exists, what it solves, and how it works."
+  }, /*#__PURE__*/React.createElement(Section, {
+    title: "The problem",
+    description: "Modern digital life is fragmented. A single person may use 8-12+ separate tools daily just to stay organized. This creates three core pain points:"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "xs"
   }, (window.PV_PROBLEMS || []).map(p => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
     key: p.label,
@@ -2790,18 +2936,13 @@ function DocsPanel({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
-  }, p.desc))))), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
+  }, p.desc))))), /*#__PURE__*/React.createElement(Section, {
+    title: "The vision"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
     tone: "info"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "xs"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "eyebrow"
-  }, "The vision"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "p",
-    variant: "strong"
-  }, "A single, AI-powered ecosystem that unifies how a person captures, organizes, connects, communicates, retrieves, and acts on all forms of personal information -- without duplicating data or replacing the heavy-duty tools they already use."))), /*#__PURE__*/React.createElement(DocSection, {
+  }, "A single, AI-powered ecosystem that unifies how a person captures, organizes, connects, communicates, retrieves, and acts on all forms of personal information -- without duplicating data or replacing the heavy-duty tools they already use.")), /*#__PURE__*/React.createElement(Section, {
     title: "Core philosophy"
-  }, facts("Core philosophy", (window.PV_PHILOSOPHY || []).map(ph => [ph.p, ph.d]))), /*#__PURE__*/React.createElement(DocSection, {
+  }, facts("Core philosophy", (window.PV_PHILOSOPHY || []).map(ph => [ph.p, ph.d]))), /*#__PURE__*/React.createElement(Section, {
     title: "What the platform unifies"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
     label: "What the platform unifies",
@@ -2821,31 +2962,31 @@ function DocsPanel({
       field: "unified",
       kind: "wrap"
     }]
-  })), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Unified messaging hub"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "p"
-  }, "A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure."), facts("Unified messaging hub", (window.PV_MESSAGING || []).map(s => [s.label, s.desc]))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Smart File Naming"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    title: "Example",
-    headingLevel: 3
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "sm"
+  })), /*#__PURE__*/React.createElement(Section, {
+    title: "Unified messaging hub",
+    collapsible: true,
+    description: "A single interface aggregating SMS, MMS, WhatsApp, and future channels. Messages sent and received through native platforms -- Plenix is the interface, not the infrastructure."
+  }, facts("Unified messaging hub", (window.PV_MESSAGING || []).map(s => [s.label, s.desc]))), /*#__PURE__*/React.createElement(Section, {
+    title: "Smart file naming",
+    collapsible: true,
+    description: "Derived from: date + linked project + OCR content + identified contact. User always has final say."
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
     gap: "sm",
     wrap: true
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "danger"
-  }, /*#__PURE__*/React.createElement("s", null, "IMG_4891.png")), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+  }, /*#__PURE__*/React.createElement("s", null, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+    variant: "data"
+  }, "IMG_4891.png"))), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "secondary",
     "aria-hidden": "true"
   }, "\u2192"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "success"
-  }, "2025-03-02_KitchenReno_ContractorQuote_ABCPlumbing.png")), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "caption"
-  }, "Derived from: date + linked project + OCR content + identified contact. User always has final say.")))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Project home"
+    variant: "data"
+  }, "2025-03-02_KitchenReno_ContractorQuote_ABCPlumbing.png"))), /*#__PURE__*/React.createElement(Section, {
+    title: "Project home",
+    collapsible: true
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    gap: "sm"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
     label: "Project home"
   }, ["Linked files", "Notes", "Tasks & calendar events", "Bookmarks & media", "Contacts", "Message threads", "Virtual meeting launcher"].map(i => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
@@ -2858,10 +2999,12 @@ function DocsPanel({
     variant: "strong"
   }, "The presentation use case"), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p"
-  }, "Today a user presenting on Zoom alt-tabs frantically between PowerPoint, a spreadsheet, file explorer, and notes. With Project Home, all linked resources are accessible from one workspace. The project view becomes the cockpit for the meeting -- everything is one click away, not five windows deep.")))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "Key use cases"
-  }, facts("Key use cases", (window.PV_USECASES || []).map((u, i) => [i + 1 + ". " + u.uc, u.d]))), /*#__PURE__*/React.createElement(DocSection, {
-    title: "What Plenix is not"
+  }, "Today a user presenting on Zoom alt-tabs frantically between PowerPoint, a spreadsheet, file explorer, and notes. With Project Home, all linked resources are accessible from one workspace. The project view becomes the cockpit for the meeting -- everything is one click away, not five windows deep."))))), /*#__PURE__*/React.createElement(Section, {
+    title: "Key use cases",
+    collapsible: true
+  }, facts("Key use cases", (window.PV_USECASES || []).map((u, i) => [i + 1 + ". " + u.uc, u.d]))), /*#__PURE__*/React.createElement(Section, {
+    title: "What Plenix is not",
+    collapsible: true
   }, /*#__PURE__*/React.createElement(_plenixPlatform.List, {
     label: "What Plenix is not",
     items: (window.PV_NOT || []).map(n => ({
@@ -2870,16 +3013,7 @@ function DocsPanel({
       children: n
     }))
   })));
-  if (docSection === "terminology") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
-    title: "Terminology",
-    description: "Plenix mapped to standard software development structure. Use these definitions consistently across design, development, and documentation."
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
-    label: "Layers"
-  }, ["1 Product", "2 Feature", "3 Usage", "4 Behavior", "5 Scenario", "6 Spec", "7 Enabler", "8 UI", "9 Architecture", "10 Data"].map(l => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
-    key: l
-  }, l))), (window.TERM_LAYERS || []).map(layer => {
+  if (docSection === "terminology") {
     // a layer's table: its headers as Tabulator columns (c0, c1…), its rows as grid rows; the first column names the row
     const tableColumns = t => t.headers.map((h, j) => ({
       title: h,
@@ -2893,10 +3027,22 @@ function DocsPanel({
     }, ...r.map((v, j) => ({
       ["c" + j]: v
     }))));
-    return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+    return /*#__PURE__*/React.createElement(Screen, {
+      id: "docs-terminology",
+      title: "Terminology",
+      desc: "Plenix mapped to standard software development structure. Use these definitions consistently across design, development, and documentation."
+    }, /*#__PURE__*/React.createElement(Section, {
+      title: "Layers"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
+      label: "Layers"
+    }, ["1 Product", "2 Feature", "3 Usage", "4 Behavior", "5 Scenario", "6 Spec", "7 Enabler", "8 UI", "9 Architecture", "10 Data"].map(l => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
+      key: l
+    }, l)))), (window.TERM_LAYERS || []).map((layer, li) => /*#__PURE__*/React.createElement(Section, {
       key: layer.num,
       title: layer.num + ". " + layer.term,
-      description: layer.name
+      description: layer.name,
+      collapsible: true,
+      defaultExpanded: li === 0
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
@@ -2921,41 +3067,41 @@ function DocsPanel({
       variant: "strong"
     }, "Note: "), layer.correction), layer.schemaNote && /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
       tone: "info"
-    }, layer.schemaNote)));
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    title: "How the layers relate"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "xs"
-  }, (window.TERM_HIERARCHY || []).map(item => /*#__PURE__*/React.createElement(React.Fragment, {
-    key: item.label
-  }, indent(item.indent || 0, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    gap: "sm",
-    align: "baseline"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: item.indent === 0 ? "strong" : "body"
-  }, item.label), item.note && /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    variant: "caption"
-  }, "\u2014 ", item.note))))))), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    title: "Fully mapped example"
-  }, facts("Fully mapped example", window.TERM_EXAMPLE ? Object.entries(window.TERM_EXAMPLE).map(entry => {
-    const labels = {
-      capability: "Capability",
-      feature: "Feature",
-      useCase: "Use case",
-      functionality: "Functionality",
-      scenario: "Scenario",
-      specification: "Specification",
-      enabler: "Enabler",
-      ui: "UI",
-      module: "Module",
-      entity: "Entity",
-      schema: "Schema"
-    };
-    const k = entry[0];
-    const v = entry[1];
-    const technical = v.includes("SCHEMA") || v.includes("Screen") || v.includes("Widget") || v.includes("Module");
-    return [labels[k] || k, v, technical];
-  }) : [])));
+    }, layer.schemaNote)))), /*#__PURE__*/React.createElement(Section, {
+      title: "How the layers relate"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+      gap: "xs"
+    }, (window.TERM_HIERARCHY || []).map(item => /*#__PURE__*/React.createElement(React.Fragment, {
+      key: item.label
+    }, indent(item.indent || 0, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+      gap: "sm",
+      align: "baseline"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: item.indent === 0 ? "strong" : "body"
+    }, item.label), item.note && /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "caption"
+    }, "\u2014 ", item.note))))))), /*#__PURE__*/React.createElement(Section, {
+      title: "Fully mapped example"
+    }, facts("Fully mapped example", window.TERM_EXAMPLE ? Object.entries(window.TERM_EXAMPLE).map(entry => {
+      const labels = {
+        capability: "Capability",
+        feature: "Feature",
+        useCase: "Use case",
+        functionality: "Functionality",
+        scenario: "Scenario",
+        specification: "Specification",
+        enabler: "Enabler",
+        ui: "UI",
+        module: "Module",
+        entity: "Entity",
+        schema: "Schema"
+      };
+      const k = entry[0];
+      const v = entry[1];
+      const technical = v.includes("SCHEMA") || v.includes("Screen") || v.includes("Widget") || v.includes("Module");
+      return [labels[k] || k, v, technical];
+    }) : [])));
+  }
   if (docSection === "capabilities") {
     const cap = selCap && (window.CAP_DOCS || {})[selCap];
     if (cap) return /*#__PURE__*/React.createElement(CapDoc, {
@@ -2964,28 +3110,23 @@ function DocsPanel({
       crumb: true,
       onBack: () => setSelCap(null)
     });
-    /* Capability list */
-    return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      gap: "lg"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+    /* Capability list: a card per layer */
+    return /*#__PURE__*/React.createElement(Screen, {
+      id: "docs-capabilities",
       title: "Capabilities",
-      description: "73 capabilities across 3 layers. Click any capability to view its full documentation."
-    }), (window.CAP_LAYERS || []).map(layer => {
+      desc: "73 capabilities across 3 layers. Choose any capability to view its full documentation."
+    }, (window.CAP_LAYERS || []).map(layer => {
       const groups = (window.CAPABILITY_GROUPS || []).filter(g => g.layer === layer.id);
       const total = groups.reduce((s, g) => s + g.items.length, 0);
-      return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+      return /*#__PURE__*/React.createElement(Section, {
         key: layer.id,
-        gap: "sm"
-      }, /*#__PURE__*/React.createElement(_plenixPlatform.SectionHeading, {
-        level: 2,
-        actions: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-          variant: "secondary"
-        }, total, " capabilities")
-      }, layer.label), groups.map(grp => /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+        title: layer.label,
+        description: total + " capabilities"
+      }, groups.map(grp => /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
         key: grp.id,
         gap: "xs"
       }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-        variant: "eyebrow"
+        variant: "label"
       }, grp.group), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
         gap: "xs",
         wrap: true
@@ -3002,11 +3143,11 @@ function DocsPanel({
           }
         }, c.label, isStub && /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
           variant: "danger"
-        }, "Not started"));
+        }, " · Not started"));
       })))));
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
       tone: "info"
-    }, "\u2713 = documented \xB7 Not started = needs documentation. Click any capability to view or start documenting it."));
+    }, "\u2713 = documented \xB7 Not started = needs documentation. Choose any capability to view or start documenting it."));
   }
 
   /* Data Model */
@@ -3016,19 +3157,16 @@ function DocsPanel({
       types: {}
     };
     const types = schema.types || {};
-    return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      gap: "lg"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+    return /*#__PURE__*/React.createElement(Screen, {
+      id: "docs-data-model",
       title: "Data model",
-      description: "Every item type in Plenix and the fields it carries. All types extend the 4 Anchor fields."
-    }), /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      desc: "Every item type in Plenix and the fields it carries. All types extend the 4 Anchor fields."
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Anchors",
-      description: 'UI label: "Classification"'
+      description: 'UI label: "Classification". The 4 universal fields present on every item in every capability. They connect items to the rest of the system — to projects, categories, and tags — enabling cross-cutting views, filtering, and retrieval.'
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
       gap: "sm"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      as: "p"
-    }, "The 4 universal fields present on every item in every capability. They connect items to the rest of the system \u2014 to projects, categories, and tags \u2014 enabling cross-cutting views, filtering, and retrieval."), /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
       label: "Anchor fields",
       data: [["projectType", "string | null", "Dropdown — single select from Settings > Project Types"], ["projects[]", "string[]", "Search-to-select with create — many-to-many"], ["categories[]", "string[]", "Grouped search-to-select with create — shows hierarchy"], ["tags[]", "string[]", "Grouped search-to-select with create — auto-lowercase-hyphen"]].map((r, i) => ({
         id: i,
@@ -3059,32 +3197,31 @@ function DocsPanel({
       variant: "data"
     }, "createdAt"), " \xB7 ", /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
-    }, "updatedAt")))), /*#__PURE__*/React.createElement(DocSection, {
-      title: "Anchors applied to " + (schema.anchorsApplied || []).length + " capabilities"
+    }, "updatedAt")))), /*#__PURE__*/React.createElement(Section, {
+      title: "Anchors applied to " + (schema.anchorsApplied || []).length + " capabilities",
+      stateKey: "anchors-applied"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
       label: "Capabilities with anchors"
     }, (schema.anchorsApplied || []).map(c => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
       key: c
-    }, c)))), /*#__PURE__*/React.createElement(DocSection, {
-      title: "Item Types (" + Object.keys(types).length + ")"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      gap: "sm"
-    }, Object.entries(types).map(entry => {
+    }, c)))), Object.entries(types).map(entry => {
       const key = entry[0];
       const type = entry[1];
       const fields = Object.entries(type.fields || {});
       const fieldCount = fields.length;
-      return /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      return /*#__PURE__*/React.createElement(Section, {
         key: key,
-        flush: true,
-        headingLevel: 3,
         title: type.label,
-        description: type.desc,
-        actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-          gap: "sm"
+        stateKey: "type-" + key,
+        collapsible: true,
+        defaultExpanded: false,
+        description: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+          as: "span",
+          gap: "sm",
+          wrap: true
         }, /*#__PURE__*/React.createElement(_shared.Ico, {
           n: type.icon || "file"
-        }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, null, type.desc), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
           variant: "data"
         }, fieldCount, " own field", fieldCount !== 1 ? "s" : ""), /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, type.capability))
       }, /*#__PURE__*/React.createElement(_plenixPlatform.Table, {
@@ -3112,7 +3249,7 @@ function DocsPanel({
           kind: "wrap"
         }]
       }));
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
+    }), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
       tone: "info"
     }, "* Required field. All item types also inherit the 4 Anchor fields + id + createdAt + updatedAt."));
   }
@@ -3134,12 +3271,13 @@ function DocsPanel({
   }
 
   /* Overview */
-  if (!docSection || docSection === "overview") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  if (!docSection || docSection === "overview") return /*#__PURE__*/React.createElement(Screen, {
+    id: "docs-overview",
     title: "Documentation",
-    description: "Living documentation for Plenix -- architecture, features, and design system. Auto-generated from the codebase. Select a section from the sidebar."
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
+    desc: "Living documentation for Plenix -- architecture, features, and design system. Auto-generated from the codebase. Select a section from the sidebar."
+  }, /*#__PURE__*/React.createElement(Section, {
+    title: "Start here"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "lg",
     label: "Documentation"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
@@ -3154,7 +3292,7 @@ function DocsPanel({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
-  }, window.FEATURES.length + " areas, " + window.FEATURES.reduce((s, a) => s + a.items.length, 0) + " features documented."))), /*#__PURE__*/React.createElement(DocSection, {
+  }, window.FEATURES.length + " areas, " + window.FEATURES.reduce((s, a) => s + a.items.length, 0) + " features documented.")))), /*#__PURE__*/React.createElement(Section, {
     title: "Feature areas"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "md",
@@ -3165,28 +3303,32 @@ function DocsPanel({
     return /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
       key: area.area,
       title: area.area,
-      meta: pct + "%",
+      meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, pct + "%"),
       accent: area.color,
       onOpen: () => setDocSection("feat-" + area.area)
     });
   }))));
 
   /* Style Guide: the design system is the point of truth */
-  if (docSection === "style-guide") return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  if (docSection === "style-guide") return /*#__PURE__*/React.createElement(Screen, {
+    id: "docs-style-guide",
     title: "Style guide",
-    description: "Design tokens, typography, color, spacing and component patterns live in the Plenix design system."
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
-    tone: "info"
-  }, "The design system is the point of truth for every token and component in Plenix. This page no longer copies its values."), /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
+    desc: "Design tokens, typography, color, spacing and component patterns live in the Plenix design system."
+  }, /*#__PURE__*/React.createElement(Section, {
     title: "Plenix Design System",
+    description: "The design system is the point of truth for every token and component in Plenix. This page no longer copies its values."
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
+    title: "Open the design system",
     href: "../platform/design-system/",
-    meta: "../platform/design-system/"
+    meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, "../platform/design-system/")
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
-  }, "Tokens, typography, color palette, spacing, shadows and every Platform component, with their code.")));
+  }, "Tokens, typography, color palette, spacing, shadows and every Platform component, with their code."))));
 
   /* Feature area doc page */
   if (docSection && docSection.startsWith("feat-")) {
@@ -3201,7 +3343,12 @@ function DocsPanel({
   return null;
 }
 
-/* One feature area: its figures, its progress and its features */
+/* Wraps content in n nested indented Stacks (the layer hierarchy) */
+const indent = (n, el) => n > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+  indent: true
+}, indent(n - 1, el)) : el;
+
+/* One feature area: its figures and progress in one card, its features as rows in another */
 function FeatureArea({
   area,
   stats
@@ -3210,14 +3357,18 @@ function FeatureArea({
   const pct = Math.round(done / area.items.length * 100);
   const planned = area.items.filter(i => i.status === "planned").length;
   const inprog = area.items.filter(i => i.status === "in-progress").length;
-  return /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/React.createElement(Screen, {
+    id: "feature-" + area.area,
     title: area.area,
-    meta: stats ? null : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+    actions: stats ? null : /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
     }, done, "/", area.items.length, " done")
-  }), stats ? /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
+  }, /*#__PURE__*/React.createElement(Section, {
+    title: "Progress",
+    stateKey: "progress"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+    gap: "md"
+  }, stats ? /*#__PURE__*/React.createElement(_plenixPlatform.Metric.Group, {
     label: area.area + " figures"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Metric, {
     value: area.items.length,
@@ -3240,30 +3391,14 @@ function FeatureArea({
     size: "sm",
     label: pct + "% complete",
     labelHidden: !!stats
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "xs"
-  }, area.items.map((item, i) => /*#__PURE__*/React.createElement(FeatureDrawer, {
+  }))), /*#__PURE__*/React.createElement(Section, {
+    title: "Features",
+    stateKey: "features",
+    description: area.items.length + " features, each with its status"
+  }, area.items.map((item, i) => /*#__PURE__*/React.createElement(FeatureRow, {
     key: i,
     item: item
   }))));
-}
-
-// the theme: the themes the design system defines (THEMES); the choice is kept for every page (batch 219)
-function ThemeChoice() {
-  const {
-    theme,
-    setTheme,
-    themes
-  } = (0, _plenixPlatform.useTheme)();
-  return /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
-    "aria-label": "Theme",
-    value: theme,
-    onChange: e => setTheme(e.target.value),
-    options: themes.map(t => ({
-      value: t.name,
-      label: t.label
-    }))
-  });
 }
 function Settings({
   prefs,
@@ -3356,7 +3491,6 @@ function Settings({
     subs: []
   }]);
   const [catEdit, setCatEdit] = useState(null);
-  const [expandedCats, setExpandedCats] = useState(new Set([1, 2, 3]));
   const saveEdit = () => {
     if (!catEdit || !catEdit.name.trim()) return;
     if (catEdit.type === 'cat') {
@@ -3394,11 +3528,6 @@ function Settings({
     ...c,
     subs: c.subs.filter(s => s.id !== subId)
   } : c));
-  const toggleExpand = id => setExpandedCats(prev => {
-    const n = new Set(prev);
-    n.has(id) ? n.delete(id) : n.add(id);
-    return n;
-  });
 
   /* ── Tags state ── */
   const [tags, setTags] = useState([{
@@ -3573,145 +3702,43 @@ function Settings({
     label: "Tasks",
     icon: "circle-check"
   }];
-  const RowLabel = React.createContext(null);
-  const Row = ({
-    label,
-    desc,
-    children
-  }) => /*#__PURE__*/React.createElement(RowLabel.Provider, {
-    value: label
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsRow, {
-    label: label,
-    description: desc
-  }, children));
-  const Toggle = ({
-    val,
-    onChange,
-    label
-  }) => {
-    const row = React.useContext(RowLabel);
-    return /*#__PURE__*/React.createElement(_plenixPlatform.Switch, {
-      checked: !!val,
-      onChange: e => onChange(e.target.checked),
-      label: label || row || "On",
-      labelHidden: true
-    });
-  };
-  const Seg = ({
-    opts,
-    val,
-    onChange,
-    label
-  }) => {
-    const row = React.useContext(RowLabel);
-    return /*#__PURE__*/React.createElement(_plenixPlatform.SegmentedControl, {
-      label: label || row,
-      value: val,
-      onChange: onChange,
-      options: opts.map(o => ({
-        value: o.v,
-        label: o.l
-      }))
-    });
-  };
-  // the shared "Display density" choice (platform/providers/theme-boot.js): the same control and storage on every page
-  const DensityChoice = () => {
-    const [d, setD] = (0, _plenixPlatform.useDensity)();
-    const opts = window.PlenixWorkspace ? window.PlenixWorkspace.densities() : [];
-    return /*#__PURE__*/React.createElement(_plenixPlatform.ChoiceList, {
-      legend: "Display density",
-      value: d,
-      onChange: setD,
-      options: opts
-    });
-  };
-  // a settings screen: its title, then its sections
-  const Screen = ({
-    title,
-    desc,
-    children
-  }) => /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
-    title: title,
-    description: desc
-  }), children);
-  // a new-item row (a tag, a project type): a field with Add and Cancel
-  const AddRow = ({
-    label,
-    value,
-    onChange,
-    placeholder,
-    onAdd,
-    onCancel
-  }) => /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
-    title: label,
-    headingLevel: 2
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    gap: "sm"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    grow: true
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
-    autoFocus: true,
-    autoComplete: "off",
-    enterKeyHint: "done",
-    "aria-label": label,
-    value: value,
-    onChange: onChange,
-    placeholder: placeholder,
-    onKeyDown: e => {
-      if (e.key === "Enter") onAdd();
-      if (e.key === "Escape") onCancel();
-    }
-  })), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "primary",
-    onClick: onAdd,
-    size: "sm"
-  }, "Add"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    onClick: onCancel,
-    size: "sm"
-  }, "Cancel")));
-  // the accent colors to choose from: data handed to ColorSwatch (prefs.accent keeps the chosen value)
 
+  // the accent colors to choose from: data handed to ColorSwatch (prefs.accent keeps the chosen value)
   const accent = _plenixPlatform.DATA_COLORS.indexOf(prefs.accent) >= 0 ? prefs.accent : _plenixPlatform.DATA_COLORS[0];
   const visibleTags = tags.filter(t => !tagSearch || t.name.includes(tagSearch.toLowerCase()));
   const panels = {
     categories: /*#__PURE__*/React.createElement(Screen, {
+      id: "categories",
       title: "Categories",
-      desc: "Organize your projects, tasks, and content with custom categories and subcategories."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-      justify: "end"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      variant: "primary",
-      icon: "plus",
-      onClick: () => setCatEdit({
-        type: "cat",
-        isNew: true,
-        name: "",
-        color: "blue",
-        icon: null
-      })
-    }, "New category")), /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      gap: "xs"
-    }, cats.map(cat => /*#__PURE__*/React.createElement(_plenixPlatform.Panel, {
+      desc: "Organize your projects, tasks, and content with custom categories and subcategories.",
+      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+        variant: "primary",
+        icon: "plus",
+        onClick: () => setCatEdit({
+          type: "cat",
+          isNew: true,
+          name: "",
+          color: "blue",
+          icon: null
+        })
+      }, "New category")
+    }, cats.map(cat => /*#__PURE__*/React.createElement(Section, {
       key: cat.id,
+      stateKey: "category-" + cat.id,
       collapsible: true,
-      headingLevel: 2,
+      defaultExpanded: cat.id <= 3,
       title: cat.name,
-      expanded: expandedCats.has(cat.id),
-      onToggle: () => toggleExpand(cat.id),
-      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-        gap: "xs"
-      }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
-        category: cat.color,
-        size: "sm"
-      }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-        variant: "secondary"
-      }, cat.subs.length, " sub"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-        size: "xs",
-        iconOnly: true,
+      description: cat.subs.length === 1 ? "1 subcategory" : cat.subs.length + " subcategories",
+      actions: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+        size: "sm",
+        variant: "danger-secondary",
+        icon: "trash",
+        onClick: () => {
+          if (window.confirm('Delete "' + cat.name + '"?')) deleteCat(cat.id);
+        }
+      }, "Delete category"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+        size: "sm",
         icon: "pencil",
-        label: "Edit " + cat.name,
         onClick: () => setCatEdit({
           type: "cat",
           catId: cat.id,
@@ -3720,27 +3747,31 @@ function Settings({
           color: cat.color,
           icon: cat.icon || null
         })
-      }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-        size: "xs",
-        iconOnly: true,
-        icon: "trash",
-        label: "Delete " + cat.name,
-        onClick: () => {
-          if (window.confirm('Delete "' + cat.name + '"?')) deleteCat(cat.id);
-        }
-      }))
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      gap: "xs"
-    }, cat.subs.length === 0 && /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+      }, "Edit category"), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+        size: "sm",
+        icon: "plus",
+        onClick: () => setCatEdit({
+          type: "sub",
+          catId: cat.id,
+          isNew: true,
+          name: ""
+        })
+      }, "Add subcategory"))
+    }, /*#__PURE__*/React.createElement(Row, {
+      label: "Color"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
+      category: cat.color,
+      size: "sm"
+    })), cat.subs.length === 0 && /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
       title: "No subcategories yet"
-    }), cat.subs.map(sub => /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+    }), cat.subs.map(sub => /*#__PURE__*/React.createElement(Row, {
       key: sub.id,
+      label: sub.name
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      grow: true
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, null, sub.name)), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       variant: "ghost",
-      size: "xs",
+      size: "sm",
       iconOnly: true,
       icon: "pencil",
       label: "Edit " + sub.name,
@@ -3753,49 +3784,50 @@ function Settings({
       })
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       variant: "ghost",
-      size: "xs",
+      size: "sm",
       iconOnly: true,
       icon: "trash",
       label: "Delete " + sub.name,
       onClick: () => deleteSub(cat.id, sub.id)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      variant: "ghost",
-      size: "xs",
-      icon: "plus",
-      onClick: () => setCatEdit({
-        type: "sub",
-        catId: cat.id,
-        isNew: true,
-        name: ""
-      })
-    }, "Add subcategory")))))), catEdit && /*#__PURE__*/React.createElement(_classification.CatEditModal, {
+    })))))), catEdit && /*#__PURE__*/React.createElement(_classification.CatEditModal, {
       catEdit: catEdit,
       setCatEdit: setCatEdit,
       saveEdit: saveEdit
     })),
     tags: /*#__PURE__*/React.createElement(Screen, {
+      id: "tags",
       title: "Tags",
-      desc: "Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-      gap: "sm"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      grow: true
+      desc: "Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere.",
+      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+        variant: "primary",
+        icon: "plus",
+        onClick: () => {
+          setTagAdding(true);
+          setTagEditVal("");
+        }
+      }, "New tag")
+    }, /*#__PURE__*/React.createElement(Section, {
+      title: "All tags",
+      description: visibleTags.length + " of " + tags.length + " tags"
+    }, /*#__PURE__*/React.createElement(Row, {
+      label: "Search tags",
+      htmlFor: "settings-tag-search"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
+      id: "settings-tag-search",
       value: tagSearch,
       onChange: e => setTagSearch(e.target.value),
       onClear: () => setTagSearch(""),
       placeholder: "Search tags...",
       label: "Search tags"
-    })), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      variant: "primary",
-      icon: "plus",
-      onClick: () => {
-        setTagAdding(true);
-        setTagEditVal("");
-      }
-    }, "New tag")), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "secondary"
-    }, visibleTags.length, " of ", tags.length, " tags"), visibleTags.length > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
+    })), tagAdding && /*#__PURE__*/React.createElement(AddRow, {
+      id: "settings-new-tag",
+      label: "New tag name",
+      value: tagEditVal,
+      onChange: e => setTagEditVal(e.target.value.toLowerCase().replace(/\s+/g, "-")),
+      placeholder: "tag-name",
+      onAdd: addTag,
+      onCancel: cancelTag
+    }), visibleTags.length > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
       label: "Tags"
     }, [...visibleTags].sort((a, b) => a.name.localeCompare(b.name)).map(tag => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
       key: tag.id,
@@ -3805,54 +3837,66 @@ function Settings({
       removeLabel: "Delete tag " + tag.name
     }, tag.name))) : /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
       title: "No tags match."
-    }), tagAdding && /*#__PURE__*/React.createElement(AddRow, {
-      label: "New tag name",
-      value: tagEditVal,
-      onChange: e => setTagEditVal(e.target.value.toLowerCase().replace(/\s+/g, "-")),
-      placeholder: "tag-name",
-      onAdd: addTag,
-      onCancel: cancelTag
-    }), /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
+    })), /*#__PURE__*/React.createElement(Section, {
+      title: "How tags work",
+      collapsible: true,
+      defaultExpanded: false
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
       tone: "info"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "strong"
-    }, "How tags work:"), " Tags are flat keywords -- no hierarchy. Click any tag name to rename it inline. Tags apply to images, notes, contacts, bookmarks, tasks, files, and any other item. Use them to describe content: ", /*#__PURE__*/React.createElement("em", null, "mountain, snow, supplier, VIP, Q2, typography, inspiration"), ".")),
+    }, "Tags are flat keywords -- no hierarchy. Choose any tag name to rename it inline. Tags apply to images, notes, contacts, bookmarks, tasks, files, and any other item. Use them to describe content: ", /*#__PURE__*/React.createElement("em", null, "mountain, snow, supplier, VIP, Q2, typography, inspiration"), "."))),
     projtypes: /*#__PURE__*/React.createElement(Screen, {
+      id: "projtypes",
       title: "Project types",
-      desc: "Define the types of projects in your workspace. Applied when creating a project."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-      gap: "sm"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      grow: true
+      desc: "Define the types of projects in your workspace. Applied when creating a project.",
+      actions: /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
+        variant: "primary",
+        icon: "plus",
+        onClick: () => {
+          setPtAdding(true);
+          setPtEditVal("");
+        }
+      }, "New type")
+    }, /*#__PURE__*/React.createElement(Section, {
+      title: "Find a project type",
+      description: projTypes.length + " project types defined"
+    }, /*#__PURE__*/React.createElement(Row, {
+      label: "Search project types",
+      htmlFor: "settings-type-search"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.SearchField, {
+      id: "settings-type-search",
       value: ptSearch,
       onChange: e => setPtSearch(e.target.value),
       onClear: () => setPtSearch(""),
       placeholder: "Search project types...",
       label: "Search project types"
-    })), /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-      variant: "primary",
-      icon: "plus",
-      onClick: () => {
-        setPtAdding(true);
-        setPtEditVal("");
-      }
-    }, "New type")), (() => {
+    })), ptAdding && /*#__PURE__*/React.createElement(AddRow, {
+      id: "settings-new-type",
+      label: "New project type name",
+      value: ptEditVal,
+      onChange: e => setPtEditVal(e.target.value),
+      placeholder: "e.g. Product Launch",
+      onAdd: addPT,
+      onCancel: cancelPT
+    })), (() => {
       const filtered = projTypes.filter(t => !ptSearch || t.name.toLowerCase().includes(ptSearch.toLowerCase()));
       const groups = {};
       filtered.forEach(t => {
         if (!groups[t.group]) groups[t.group] = [];
         groups[t.group].push(t);
       });
-      if (filtered.length === 0) return /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+      if (filtered.length === 0) return /*#__PURE__*/React.createElement(Section, {
+        title: "No results",
+        stateKey: "none"
+      }, /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
         title: "No project types match."
-      });
-      return Object.entries(groups).map(([grp, items]) => /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
+      }));
+      // one collapsible card per group of types
+      return Object.entries(groups).map(([grp, items]) => /*#__PURE__*/React.createElement(Section, {
         key: grp,
-        gap: "sm"
-      }, /*#__PURE__*/React.createElement(_plenixPlatform.SectionHeading, {
-        level: 2
-      }, grp), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
+        title: grp,
+        collapsible: true,
+        description: items.length === 1 ? "1 type" : items.length + " types"
+      }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
         label: grp
       }, items.sort((a, b) => a.name.localeCompare(b.name)).map(pt => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
         key: pt.id,
@@ -3861,20 +3905,12 @@ function Settings({
         onRemove: () => deletePT(pt.id),
         removeLabel: "Delete project type " + pt.name
       }, pt.name)))));
-    })(), ptAdding && /*#__PURE__*/React.createElement(AddRow, {
-      label: "New project type name",
-      value: ptEditVal,
-      onChange: e => setPtEditVal(e.target.value),
-      placeholder: "e.g. Product Launch",
-      onAdd: addPT,
-      onCancel: cancelPT
-    }), /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-      variant: "secondary"
-    }, projTypes.length, " project types defined")),
+    })()),
     general: /*#__PURE__*/React.createElement(Screen, {
+      id: "general",
       title: "General",
       desc: "Language, regional formats and core behavior."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Regional"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Date format"
@@ -3904,40 +3940,50 @@ function Settings({
       val: prefs.timeFmt || "12",
       onChange: v => set("timeFmt", v)
     })), /*#__PURE__*/React.createElement(Row, {
-      label: "Language"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
-      value: prefs.lang || "en",
-      onChange: e => set("lang", e.target.value),
-      "aria-label": "Language"
-    }, /*#__PURE__*/React.createElement("option", {
-      value: "en"
-    }, "English"), /*#__PURE__*/React.createElement("option", {
-      value: "fr"
-    }, "French"), /*#__PURE__*/React.createElement("option", {
-      value: "de"
-    }, "German"), /*#__PURE__*/React.createElement("option", {
-      value: "es"
-    }, "Spanish")))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+      label: "Language",
+      htmlFor: "settings-language"
+    }, /*#__PURE__*/React.createElement(Choose, {
+      id: "settings-language",
+      opts: [{
+        v: "en",
+        l: "English"
+      }, {
+        v: "fr",
+        l: "French"
+      }, {
+        v: "de",
+        l: "German"
+      }, {
+        v: "es",
+        l: "Spanish"
+      }],
+      val: prefs.lang || "en",
+      onChange: v => set("lang", v)
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Behavior"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Animations",
-      desc: "Disable for reduced motion"
+      desc: "Turn off for reduced motion"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.animations !== false,
       onChange: v => set("animations", v)
     })), /*#__PURE__*/React.createElement(Row, {
-      label: "Keyboard shortcut",
-      desc: "Open command palette"
+      label: "Command palette",
+      desc: "The keyboard shortcut that opens it"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Kbd, null, "Ctrl K")))),
     appearance: /*#__PURE__*/React.createElement(Screen, {
+      id: "appearance",
       title: "Appearance",
-      desc: "Theme, header style, accent color and typography."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+      desc: "Theme, display density, header style, accent color and typography."
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Theme"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Theme",
+      htmlFor: "settings-theme",
       desc: "The look of every Plenix application; themes are defined in the design system"
-    }, /*#__PURE__*/React.createElement(ThemeChoice, null)), /*#__PURE__*/React.createElement(Row, {
+    }, /*#__PURE__*/React.createElement(ThemeChoice, {
+      id: "settings-theme"
+    })), /*#__PURE__*/React.createElement(Row, {
       label: "Mode",
       desc: "System follows the light or dark setting of your device"
     }, /*#__PURE__*/React.createElement(Seg, {
@@ -3953,8 +3999,14 @@ function Settings({
       }],
       val: prefs.theme || "system",
       onChange: v => set("theme", v)
-    }))), /*#__PURE__*/React.createElement(DensityChoice, null), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Header and accent"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Display",
+      description: "How much fits on a screen, the same choice on every page."
+    }, /*#__PURE__*/React.createElement(DensityChoice, null)), /*#__PURE__*/React.createElement(Section, {
+      title: "Header and accent",
+      collapsible: true,
+      defaultExpanded: false,
+      description: "The header bar, the tint behind an open item and the accent color."
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Header bar style"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.RadioTiles, {
@@ -3984,8 +4036,10 @@ function Settings({
       }]
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Page header background",
+      htmlFor: "settings-header-tint",
       desc: "The soft tint behind the header of an open item (a contact, a project, a note)"
-    }, /*#__PURE__*/React.createElement(Seg, {
+    }, /*#__PURE__*/React.createElement(Choose, {
+      id: "settings-header-tint",
       opts: [{
         v: "none",
         l: "None"
@@ -4029,7 +4083,7 @@ function Settings({
       label: "Accent color",
       value: accent,
       onChange: h => set("accent", h)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Typography"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Font size"
@@ -4048,9 +4102,10 @@ function Settings({
       onChange: v => set("fontSize", v)
     })))),
     dashboard: /*#__PURE__*/React.createElement(Screen, {
+      id: "dashboard",
       title: "Dashboard",
       desc: "Widget layout, columns and what appears on the home screen."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Layout"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Column proportions"
@@ -4067,25 +4122,26 @@ function Settings({
       }],
       val: prefs.dashCols || "2-1-1",
       onChange: v => set("dashCols", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Widgets"
     }, /*#__PURE__*/React.createElement(Row, {
-      label: "Show date/time strip",
+      label: "Show date and time strip",
       desc: "Compact live clock above widgets"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.showDateStrip !== false,
       onChange: v => set("showDateStrip", v)
     })), /*#__PURE__*/React.createElement(Row, {
-      label: "Drag-to-rearrange",
+      label: "Drag to rearrange",
       desc: "Drag handle on top of each widget card"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.draggable !== false,
       onChange: v => set("draggable", v)
     })))),
     projects: /*#__PURE__*/React.createElement(Screen, {
+      id: "projects",
       title: "Projects",
       desc: "Card layout, visible fields and filtering options."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Layout"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Default view"
@@ -4099,7 +4155,7 @@ function Settings({
       }],
       val: prefs.projDensity || "card",
       onChange: v => set("projDensity", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Visible fields"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Category"
@@ -4126,8 +4182,10 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.projDesc || false,
       onChange: v => set("projDesc", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Filtering"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Filtering",
+      collapsible: true,
+      defaultExpanded: false
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Show archived projects"
     }, /*#__PURE__*/React.createElement(Toggle, {
@@ -4140,9 +4198,10 @@ function Settings({
       onChange: v => set("projPaused", v)
     })))),
     calendar: /*#__PURE__*/React.createElement(Screen, {
+      id: "calendar",
       title: "Calendar",
       desc: "Default view, week start and event display preferences."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Display"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Default view"
@@ -4176,8 +4235,10 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.calDuration !== false,
       onChange: v => set("calDuration", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Filtering"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Filtering",
+      collapsible: true,
+      defaultExpanded: false
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Show declined events"
     }, /*#__PURE__*/React.createElement(Toggle, {
@@ -4185,16 +4246,17 @@ function Settings({
       onChange: v => set("calDeclined", v)
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Widget shows today only",
-      desc: "Off = show next 3 days"
+      desc: "Off shows the next 3 days"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.calTodayOnly !== false,
       onChange: v => set("calTodayOnly", v)
     })))),
     tasks: /*#__PURE__*/React.createElement(Screen, {
+      id: "tasks",
       title: "Tasks",
       desc: "Sort order, display fields and widget quantity."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Sorting & Filtering"
+    }, /*#__PURE__*/React.createElement(Section, {
+      title: "Sorting and filtering"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Sort by"
     }, /*#__PURE__*/React.createElement(Seg, {
@@ -4215,7 +4277,7 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.taskShowDone || false,
       onChange: v => set("taskShowDone", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Visible fields"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Priority dot"
@@ -4232,8 +4294,10 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.taskDue !== false,
       onChange: v => set("taskDue", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Widget"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Widget",
+      collapsible: true,
+      defaultExpanded: false
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Max tasks shown"
     }, /*#__PURE__*/React.createElement(Seg, {
@@ -4251,9 +4315,10 @@ function Settings({
       onChange: v => set("taskMax", v)
     })))),
     notes: /*#__PURE__*/React.createElement(Screen, {
+      id: "notes",
       title: "Notes",
       desc: "Editor preferences and default folder behavior."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Display"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Default sort"
@@ -4280,25 +4345,31 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.noteTags !== false,
       onChange: v => set("noteTags", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Editor (Planned)"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Editor",
+      collapsible: true,
+      defaultExpanded: false,
+      description: "Planned: these options arrive with the next editor."
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Toolbar",
-      desc: "Format bar above note editor -- coming soon"
+      desc: "Format bar above the note editor"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: false,
+      disabled: true,
       onChange: () => {}
     })), /*#__PURE__*/React.createElement(Row, {
       label: "Word count",
-      desc: "Live word/char count -- coming soon"
+      desc: "Live word and character count"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: false,
+      disabled: true,
       onChange: () => {}
     })))),
     files: /*#__PURE__*/React.createElement(Screen, {
+      id: "files",
       title: "Files",
       desc: "Browser layout, column visibility and cloud storage."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Display"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Default sort"
@@ -4330,22 +4401,30 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.fileFolder !== false,
       onChange: v => set("fileFolder", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Cloud storage"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Cloud storage",
+      collapsible: true,
+      defaultExpanded: false
     }, /*#__PURE__*/React.createElement(Row, {
-      label: "Storage provider"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+      label: "Storage provider",
+      htmlFor: "settings-storage"
+    }, /*#__PURE__*/React.createElement(Choose, {
+      id: "settings-storage",
       defaultValue: "onedrive",
-      "aria-label": "Storage provider"
-    }, /*#__PURE__*/React.createElement("option", {
-      value: "onedrive"
-    }, "OneDrive"), /*#__PURE__*/React.createElement("option", {
-      value: "gdrive"
-    }, "Google Drive"), /*#__PURE__*/React.createElement("option", {
-      value: "dropbox"
-    }, "Dropbox"), /*#__PURE__*/React.createElement("option", {
-      value: "icloud"
-    }, "iCloud"))), /*#__PURE__*/React.createElement(Row, {
+      opts: [{
+        v: "onedrive",
+        l: "OneDrive"
+      }, {
+        v: "gdrive",
+        l: "Google Drive"
+      }, {
+        v: "dropbox",
+        l: "Dropbox"
+      }, {
+        v: "icloud",
+        l: "iCloud"
+      }]
+    })), /*#__PURE__*/React.createElement(Row, {
       label: "Auto-organize on upload",
       desc: "AI suggests folder and filename"
     }, /*#__PURE__*/React.createElement(Toggle, {
@@ -4353,9 +4432,10 @@ function Settings({
       onChange: v => set("fileAutoOrg", v)
     })))),
     email: /*#__PURE__*/React.createElement(Screen, {
+      id: "email",
       title: "Email",
       desc: "Inbox display, signature and sync settings."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Display"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Show avatar in widget"
@@ -4373,18 +4453,22 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.emailTime !== false,
       onChange: v => set("emailTime", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Sync"
     }, /*#__PURE__*/React.createElement(Row, {
-      label: "Connected account"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+      label: "Connected account",
+      htmlFor: "settings-email-account"
+    }, /*#__PURE__*/React.createElement(Choose, {
+      id: "settings-email-account",
       defaultValue: "outlook",
-      "aria-label": "Connected account"
-    }, /*#__PURE__*/React.createElement("option", {
-      value: "outlook"
-    }, "Outlook"), /*#__PURE__*/React.createElement("option", {
-      value: "gmail"
-    }, "Gmail"))), /*#__PURE__*/React.createElement(Row, {
+      opts: [{
+        v: "outlook",
+        l: "Outlook"
+      }, {
+        v: "gmail",
+        l: "Gmail"
+      }]
+    })), /*#__PURE__*/React.createElement(Row, {
       label: "Sync frequency"
     }, /*#__PURE__*/React.createElement(Seg, {
       opts: [{
@@ -4401,9 +4485,10 @@ function Settings({
       onChange: v => set("emailSync", v)
     })))),
     contacts: /*#__PURE__*/React.createElement(Screen, {
+      id: "contacts",
       title: "Contacts",
       desc: "Widget layout and field visibility."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Widget"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Show avatar"
@@ -4420,7 +4505,7 @@ function Settings({
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.contactCall !== false,
       onChange: v => set("contactCall", v)
-    }))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "List view"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Show role"
@@ -4439,9 +4524,10 @@ function Settings({
       onChange: v => set("contactTime", v)
     })))),
     account: /*#__PURE__*/React.createElement(Screen, {
+      id: "account",
       title: "Account",
       desc: "Profile, integrations and connected services."
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }, /*#__PURE__*/React.createElement(Section, {
       title: "Profile",
       actions: acctDirty ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
         onClick: () => setAcct(acctSaved)
@@ -4453,7 +4539,8 @@ function Settings({
       label: "Picture"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "sm",
-      align: "center"
+      align: "center",
+      wrap: true
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
       name: account.name,
       src: account.src,
@@ -4469,68 +4556,80 @@ function Settings({
       variant: "ghost",
       onClick: () => setPicture(null)
     }, "Remove") : null)), /*#__PURE__*/React.createElement(Row, {
-      label: "Name"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      width: "sm"
+      label: "Name",
+      htmlFor: "settings-account-name"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
+      id: "settings-account-name",
+      width: "lg",
       value: acct.name,
       onChange: e => setAcct({
         ...acct,
         name: e.target.value
       }),
-      "aria-label": "Name",
       autoComplete: "name",
       autoCapitalize: "words",
       enterKeyHint: "next"
-    }))), /*#__PURE__*/React.createElement(Row, {
-      label: "Email"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-      width: "md"
+    })), /*#__PURE__*/React.createElement(Row, {
+      label: "Email",
+      htmlFor: "settings-account-email"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Input, {
+      id: "settings-account-email",
+      width: "lg",
       type: "email",
       value: acct.email,
       onChange: e => setAcct({
         ...acct,
         email: e.target.value
       }),
-      "aria-label": "Email",
       autoComplete: "email",
       enterKeyHint: "done"
-    })))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
+    }))), /*#__PURE__*/React.createElement(Section, {
       title: "Integrations"
     }, /*#__PURE__*/React.createElement(Row, {
-      label: "Calendar source"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+      label: "Calendar source",
+      htmlFor: "settings-calendar-source"
+    }, /*#__PURE__*/React.createElement(Choose, {
+      id: "settings-calendar-source",
       defaultValue: "outlook",
-      "aria-label": "Calendar source"
-    }, /*#__PURE__*/React.createElement("option", {
-      value: "outlook"
-    }, "Outlook Calendar"), /*#__PURE__*/React.createElement("option", {
-      value: "gcal"
-    }, "Google Calendar"), /*#__PURE__*/React.createElement("option", {
-      value: "apple"
-    }, "Apple Calendar"))), /*#__PURE__*/React.createElement(Row, {
-      label: "Email source"
-    }, /*#__PURE__*/React.createElement(_plenixPlatform.Select, {
+      opts: [{
+        v: "outlook",
+        l: "Outlook Calendar"
+      }, {
+        v: "gcal",
+        l: "Google Calendar"
+      }, {
+        v: "apple",
+        l: "Apple Calendar"
+      }]
+    })), /*#__PURE__*/React.createElement(Row, {
+      label: "Email source",
+      htmlFor: "settings-email-source"
+    }, /*#__PURE__*/React.createElement(Choose, {
+      id: "settings-email-source",
       defaultValue: "outlook",
-      "aria-label": "Email source"
-    }, /*#__PURE__*/React.createElement("option", {
-      value: "outlook"
-    }, "Outlook"), /*#__PURE__*/React.createElement("option", {
-      value: "gmail"
-    }, "Gmail")))), /*#__PURE__*/React.createElement(_plenixPlatform.SettingsSection, {
-      title: "Security"
+      opts: [{
+        v: "outlook",
+        l: "Outlook"
+      }, {
+        v: "gmail",
+        l: "Gmail"
+      }]
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Notifications"
     }, /*#__PURE__*/React.createElement(Row, {
       label: "Browser notifications"
     }, /*#__PURE__*/React.createElement(Toggle, {
       val: prefs.notifs !== false,
       onChange: v => set("notifs", v)
-    })), /*#__PURE__*/React.createElement(Row, {
-      label: "Sign out"
+    }))), /*#__PURE__*/React.createElement(Section, {
+      title: "Session"
+    }, /*#__PURE__*/React.createElement(Row, {
+      label: "Sign out",
+      desc: "Ends your session on this device"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       variant: "danger-secondary",
       icon: "sign-out",
-      href: "/outpost.goauthentik.io/sign_out"
+      onClick: () => (0, _plenixPlatform.leavePage)(SIGN_OUT)
     }, "Sign out"))))
   };
 
@@ -4542,12 +4641,14 @@ function Settings({
     return area ? /*#__PURE__*/React.createElement(FeatureArea, {
       area: area
     }) : null;
-  })() : /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
-    gap: "lg"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.RecordPage.Header, {
+  })() : /*#__PURE__*/React.createElement(Screen, {
+    id: "features",
     title: "Features to build progress",
-    description: "Every significant feature in Plenix -- what it does, how it works, and what's planned. Select an area from the sidebar to explore it."
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
+    desc: "Every significant feature in Plenix -- what it does, how it works, and what is planned. Select an area from the sidebar to explore it."
+  }, /*#__PURE__*/React.createElement(Section, {
+    title: "Feature areas",
+    description: window.FEATURES.length + " areas"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "md",
     label: "Feature areas"
   }, window.FEATURES.map(area => {
@@ -4556,7 +4657,9 @@ function Settings({
     return /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
       key: area.area,
       title: area.area,
-      meta: done + "/" + area.items.length,
+      meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, done + "/" + area.items.length),
       accent: area.color,
       onOpen: () => setFeatArea(area.area)
     }, /*#__PURE__*/React.createElement(_plenixPlatform.ProgressBar, {
@@ -4566,15 +4669,18 @@ function Settings({
       label: area.area + " progress",
       labelHidden: true
     }));
-  }))) : isDocs ? /*#__PURE__*/React.createElement(DocsPanel, {
+  })))) : isDocs ? /*#__PURE__*/React.createElement(DocsPanel, {
     docSection: docSection,
     setDocSection: setDocSection
   }) : panels[cat] || /*#__PURE__*/React.createElement(Screen, {
+    id: cat,
     title: SETTINGS_CATS.find(c => c.id === cat)?.label || cat,
     desc: "Settings controls for this section are planned."
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Notice, {
-    tone: "info"
-  }, "Full configuration options coming in a future update."));
+  }, /*#__PURE__*/React.createElement(Section, {
+    title: "Coming soon"
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+    title: "Full configuration options come in a future update."
+  })));
 
   /* The documentation pages in the side navigation */
   const docGroups = [{

@@ -440,7 +440,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix asset app · My Account (app/pages/MyAccountPage.jsx): profile and personal preferences.
    Replaces the HTML of settings-myaccount.html (batch 109). Sections: Profile, Preferences; each is a screen with its
    address (#/profile, #/preferences; the older #preferences opens the same) and a history entry (Platforms Standard 4.3).
-   Both stay mounted, so unsaved edits survive switching; leaving the page with unsaved edits asks (useUnsavedGuard). */
+   Both stay mounted, so unsaved edits survive switching; leaving the page with unsaved edits asks (useUnsavedGuard).
+   Each screen is SettingsSection cards (owner, 2026-10-13: "all the settings pages to have the cards view"): Profile one
+   static card; Preferences a static Display card and a Notifications card, with the rarely read Activity card collapsible. */
 // DATA: the saved preferences and the page-size choices come from the back end; sample values until then. The profile is
 // the signed-in person, from the Platform session.
 const PAGE_SIZES = ['6', '8', '12', '15', '20', '30', '36', '50', '100', '200'];
@@ -509,7 +511,8 @@ function Profile() {
     description: "Edit your account details and update your password.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true,
+    title: "Account details",
+    stateKey: "profile",
     actions: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
       onClick: () => toast.show('Change password')
     }, "Change password"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
@@ -521,6 +524,7 @@ function Profile() {
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "firstName",
+    width: "lg",
     autoComplete: "given-name",
     enterKeyHint: "next"
   }, field('firstName')))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
@@ -528,6 +532,7 @@ function Profile() {
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "lastName",
+    width: "lg",
     autoComplete: "family-name",
     enterKeyHint: "next"
   }, field('lastName')))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
@@ -535,6 +540,7 @@ function Profile() {
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
     name: "email",
+    width: "lg",
     type: "email",
     inputMode: "email",
     autoComplete: "email",
@@ -596,34 +602,36 @@ function Preferences() {
     description: "Your personal display and notification preferences.",
     headingLevel: 2
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true,
-    actions: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      type: "submit",
-      variant: "primary"
-    }, "Save preferences")
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    title: "Display",
+    stateKey: "display",
+    description: "Your mode and density apply at once, on every page."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
     label: "Mode",
-    layout: "inline",
-    info: "System follows the light or dark setting of your device"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Select, {
-    name: "mode",
+    description: "System follows the light or dark setting of your device"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SegmentedControl, {
+    label: "Mode",
     value: mode,
-    onChange: e => setMode(e.target.value)
-  }, /*#__PURE__*/_react.default.createElement("option", {
-    value: "system"
-  }, "System"), /*#__PURE__*/_react.default.createElement("option", {
-    value: "light"
-  }, "Light"), /*#__PURE__*/_react.default.createElement("option", {
-    value: "dark"
-  }, "Dark"))), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ChoiceList, {
+    onChange: setMode,
+    options: [{
+      value: 'system',
+      label: 'System'
+    }, {
+      value: 'light',
+      label: 'Light'
+    }, {
+      value: 'dark',
+      label: 'Dark'
+    }]
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ChoiceList, {
     legend: "Display density",
     value: density,
     onChange: setDensity,
     options: window.PlenixWorkspace ? window.PlenixWorkspace.densities() : []
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Assets per Page",
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
+    title: "Results and dates",
+    stateKey: "results"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Assets per page",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
     options: sizes,
@@ -632,7 +640,7 @@ function Preferences() {
     creatable: true,
     onCreate: create('assets')
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Rows per Page",
+    label: "Rows per page",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
     options: sizes,
@@ -641,41 +649,56 @@ function Preferences() {
     creatable: true,
     onCreate: create('rows')
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Receive album notifications",
-    layout: "row"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
-    label: "Receive album notifications",
-    labelHidden: true,
-    checked: prefs.album,
-    onChange: e => set('album')(e.target.checked)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-    label: "Receive Approval / Rejection Notifications",
-    layout: "row"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
-    label: "Receive Approval / Rejection Notifications",
-    labelHidden: true,
-    checked: prefs.approval,
-    onChange: e => set('approval')(e.target.checked)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "Preferred date format",
     layout: "inline",
     info: "Accepted formats: yyyy-MM-dd, MM-dd-yyyy, dd-MM-yyyy"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
     name: "preferredDateFormat",
+    width: "lg",
+    data: true,
     autoComplete: "off",
     autoCapitalize: "off",
     spellCheck: false,
     enterKeyHint: "done",
-    placeholder: "Preferred date format",
+    placeholder: "yyyy-MM-dd",
     value: prefs.dateFormat,
     onChange: e => set('dateFormat')(e.target.value)
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+  }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
+    title: "Notifications",
+    stateKey: "notifications"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
+    label: "Album notifications",
+    description: "When assets are added to or removed from an album you follow"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
+    label: "Album notifications",
+    labelHidden: true,
+    checked: prefs.album,
+    onChange: e => set('album')(e.target.checked)
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
+    label: "Approval and rejection notifications",
+    description: "When your assets are approved or rejected"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
+    label: "Approval and rejection notifications",
+    labelHidden: true,
+    checked: prefs.approval,
+    onChange: e => set('approval')(e.target.checked)
+  }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
+    title: "Activity",
+    stateKey: "activity",
+    collapsible: true,
+    defaultExpanded: false
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "Last viewed application",
     layout: "inline"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     as: "output",
     variant: "data"
-  }, LAST_VIEWED))));
+  }, LAST_VIEWED))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActionBar, {
+    label: "Preferences actions"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    type: "submit",
+    variant: "primary"
+  }, "Save preferences")));
 }
 function MyAccountPage() {
   const [section, go] = useSection();
@@ -811,7 +834,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Replaces the HTML of settings-system.html (batch 110). Each section is a screen with its address (#/properties,
    #/users, …; the older #users opens the same) and a history entry (Platforms Standard 4.3); every section stays mounted,
    so unsaved edits survive switching, and leaving the page while a form has unsaved edits asks (useUnsavedGuard). Actions
-   that have no back end yet confirm with a toast, as the HTML page did. */
+   that have no back end yet confirm with a toast, as the HTML page did.
+   Every screen is a column of SettingsSection cards (owner, 2026-10-13: "all the settings pages to have the cards view"):
+   static cards for what people use, collapsible cards for long or rarely used parts (one per asset type, group and
+   permission area; the views, publishing, events and scripts not built yet); their open state is remembered per page.
+   Fields are Fields (a visible label) with their control at a standard width; tables are DataTables; technical values
+   (templates, paths, keys, numbers) are in the data font. */
 const NAV = [{
   heading: 'Content',
   collapsible: true,
@@ -883,31 +911,57 @@ const NAV = [{
 }];
 const IDS = NAV.reduce((all, g) => all.concat(g.items.map(i => i.id)), []);
 
-/* ── small parts shared by the sections ── */
+/* ── the screen and its cards ── */
+// the screen a card belongs to: every screen stays mounted, so a card's open state is remembered as "<screen>:<title>"
+const ScreenKey = /*#__PURE__*/_react.default.createContext('');
+const Screen = ({
+  id,
+  title,
+  description,
+  actions,
+  children
+}) => /*#__PURE__*/_react.default.createElement(ScreenKey.Provider, {
+  value: id
+}, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  title: title,
+  description: description,
+  actions: actions,
+  headingLevel: 2
+}), children);
+const Section = ({
+  stateKey,
+  ...p
+}) => {
+  const screen = _react.default.useContext(ScreenKey);
+  return /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, _extends({
+    stateKey: screen + ':' + (stateKey || p.title)
+  }, p));
+};
+// a part not built yet: a collapsible card, closed, that says so
+const Planned = ({
+  title,
+  children
+}) => /*#__PURE__*/_react.default.createElement(Section, {
+  title: title,
+  collapsible: true,
+  defaultExpanded: false,
+  description: children
+}, /*#__PURE__*/_react.default.createElement(_plenixPlatform.EmptyState, {
+  title: "Not configured yet"
+}));
+// how many of how many: the figures are technical values
 const CountNote = ({
-  children
+  shown,
+  total,
+  what
 }) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
   as: "p",
-  variant: "secondary",
-  className: "plx-u-mt-stack-sm"
-}, children);
-const Lead = ({
-  children
-}) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-  as: "p",
-  variant: "secondary",
-  className: "plx-u-mb-stack-md"
-}, children);
-// a group title: the first in its panel sits at the top; the others keep space above them
-const Sub = ({
-  first,
-  flush,
-  children
-}) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-  as: "h3",
-  variant: "heading",
-  className: flush ? undefined : first ? 'plx-u-mb-stack-sm' : 'plx-u-mt-stack-lg plx-u-mb-stack-sm'
-}, children);
+  variant: "secondary"
+}, 'Showing ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+  variant: "data"
+}, shown), ' of ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+  variant: "data"
+}, total), ' ' + what);
 function useAct() {
   const toast = (0, _plenixPlatform.useToast)();
   return (label, tone = 'success') => () => toast.show(label, {
@@ -931,8 +985,7 @@ const Bar = ({
   children,
   label
 }) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Toolbar, {
-  label: label,
-  className: "plx-u-gap-cluster-sm plx-u-mb-stack-md"
+  label: label
 }, children);
 const Search = ({
   value,
@@ -975,6 +1028,28 @@ function useToggles(list) {
     toggle: () => setOn(on.map((v, j) => j === i ? !v : v))
   }));
 }
+// a name/value list as a table with a header (owner, 2026-10-09: every name/value list in the DataTable's look); values are technical
+const facts = (label, list) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Table, {
+  label: label,
+  headerMenu: false,
+  data: list.map(([k, v], i) => ({
+    id: i,
+    name: k,
+    value: v
+  })),
+  columns: [{
+    title: 'Name',
+    field: 'name',
+    kind: 'name',
+    rowLabel: true,
+    headerSort: false
+  }, {
+    title: 'Value',
+    field: 'value',
+    kind: 'data',
+    headerSort: false
+  }]
+});
 // the form's buttons: in an ActionBar (on the right, sticky at the bottom), a destructive action first, the primary last
 const Actions = ({
   act,
@@ -1013,6 +1088,12 @@ const Form = ({
     }
   }, children);
 };
+// configuration values: no autofill; a path or a template is technical (the data font) and gets no capitals or spell check
+const PATH = {
+  autoCapitalize: 'off',
+  spellCheck: false,
+  data: true
+};
 
 /* ── Content ── */
 function Properties({
@@ -1034,14 +1115,10 @@ function Properties({
     autoComplete: 'off',
     ...extra
   });
-  const path = {
-    autoCapitalize: 'off',
-    spellCheck: false,
-    inputMode: 'url'
-  };
-  const sw = (k, label) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+  // a switch is a settings row: the label at the start, the switch (named by it) at the end
+  const sw = (k, label, description) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
     label: label,
-    layout: "row"
+    description: description
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Switch, {
     label: label,
     labelHidden: true,
@@ -1064,197 +1141,214 @@ function Properties({
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
     saved: "Save"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  }, /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "properties",
     title: "Files properties",
-    description: "Module-level configuration for the asset table.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: "Files properties",
-    items: [{
-      value: 'props',
-      label: 'Properties',
-      content: /*#__PURE__*/_react.default.createElement("div", {
-        className: "plx-settings__rows"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Default record label",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('defaultRecordLabel'))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Tab ordering",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('tabOrdering'))), sw('enableUploading', 'Enable uploading'), sw('enableOnSearch', 'Enable on search'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Default results view",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
-        options: views,
-        value: p.defaultResultsView,
-        onChange: v => setP({
+    description: "Module-level configuration for the asset table."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Properties"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Default record label",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('defaultRecordLabel', PATH))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Tab ordering",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
+    width: "sm"
+  }, text('tabOrdering', {
+    inputMode: 'numeric',
+    data: true
+  })))), sw('enableUploading', 'Enable uploading'), sw('enableOnSearch', 'Enable on search'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Default results view",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
+    options: views,
+    value: p.defaultResultsView,
+    onChange: v => setP({
+      ...p,
+      defaultResultsView: v
+    }),
+    creatable: true,
+    onCreate: t => {
+      const v = t.trim();
+      if (v) {
+        setViews(views.concat({
+          value: v,
+          label: v
+        }));
+        setP({
           ...p,
           defaultResultsView: v
-        }),
-        creatable: true,
-        onCreate: t => {
-          const v = t.trim();
-          if (v) {
-            setViews(views.concat({
-              value: v,
-              label: v
-            }));
-            setP({
-              ...p,
-              defaultResultsView: v
-            });
-          }
-        }
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Default sort field",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('defaultSortField', {
-        placeholder: 'Default sort field'
-      }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Upload sourcepath",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('uploadSourcepath', path))), sw('autoCreateEntities', 'Auto create entities'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Root folder path",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('rootFolderPath', {
-        placeholder: 'Root folder path',
-        ...path
-      }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Auto create at folder level",
-        layout: "inline",
-        info: "Scan deep A/B/C, B = 2"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('autoCreateAtFolderLevel', {
-        inputMode: 'numeric',
-        enterKeyHint: 'done'
-      }))), sw('semanticEnabled', 'Semantic enabled'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "AI search prompt",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchPrompt', {
-        placeholder: 'AI search prompt'
-      }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "AI search contains",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchContains', {
-        placeholder: 'AI search contains'
-      }))))
+        });
+      }
+    }
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Default sort field",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
+    width: "lg"
+  }, text('defaultSortField', {
+    placeholder: 'Default sort field',
+    ...PATH
+  })))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Upload source path",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('uploadSourcepath', {
+    inputMode: 'url',
+    ...PATH
+  })))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Folders and search",
+    description: "How folders become entities, and how the AI search reads a query."
+  }, sw('autoCreateEntities', 'Auto create entities'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Root folder path",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, text('rootFolderPath', {
+    placeholder: 'Root folder path',
+    inputMode: 'url',
+    ...PATH
+  }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Auto create at folder level",
+    layout: "inline",
+    info: "Scan deep A/B/C, B = 2"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
+    width: "sm"
+  }, text('autoCreateAtFolderLevel', {
+    inputMode: 'numeric',
+    enterKeyHint: 'done',
+    data: true
+  })))), sw('semanticEnabled', 'Semantic search'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "AI search prompt",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchPrompt', {
+    placeholder: 'AI search prompt'
+  }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "AI search contains",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, text('aiSearchContains', {
+    placeholder: 'AI search contains'
+  })))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Enabled for",
+    collapsible: true,
+    description: "Groups and roles that can use this module."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "Enabled for",
+    data: enabled,
+    columns: [roleCol, switchCol('Enabled')]
+  })), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Actions",
+    collapsible: true,
+    defaultExpanded: false,
+    description: "The actions of this module and the roles that may run them."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "Actions",
+    data: rowsOf(D.ACTIONS, ['name', 'roles']),
+    columns: [{
+      title: 'Action',
+      field: 'name',
+      kind: 'name',
+      frozen: true,
+      filter: true
     }, {
-      value: 'enabled',
-      label: 'Enabled for',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "Enabled for",
-        data: enabled,
-        columns: [roleCol, switchCol('Enabled')]
-      })
+      title: 'Roles',
+      field: 'roles',
+      filter: true
     }, {
-      value: 'actions',
-      label: 'Actions',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "Actions",
-        data: rowsOf(D.ACTIONS, ['name', 'roles']),
-        columns: [{
-          title: 'Action',
-          field: 'name',
-          kind: 'name',
-          frozen: true,
-          filter: true
-        }, {
-          title: 'Roles',
-          field: 'roles',
-          filter: true
-        }, {
-          title: 'Status',
-          field: 'status',
-          kind: 'center',
-          headerSort: false,
-          render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
-            tone: "success"
-          }, "Active")
-        }]
-      })
-    }, {
-      value: 'view-all',
-      label: 'View all folders',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can view all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "View all folders",
-        data: viewAll,
-        columns: [roleCol, switchCol('View all')]
-      }))
-    }, {
-      value: 'edit-all',
-      label: 'Edit all folders',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Lead, null, "Groups and roles that can edit all folders for this module."), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "Edit all folders",
-        data: editAll,
-        columns: [roleCol, switchCol('Edit all')]
-      }))
+      title: 'Status',
+      field: 'status',
+      kind: 'center',
+      headerSort: false,
+      render: () => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
+        tone: "success"
+      }, "Active")
     }]
-  }), /*#__PURE__*/_react.default.createElement(Actions, {
+  })), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "View all folders",
+    collapsible: true,
+    defaultExpanded: false,
+    description: "Groups and roles that can view all folders for this module."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "View all folders",
+    data: viewAll,
+    columns: [roleCol, switchCol('View all')]
+  })), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Edit all folders",
+    collapsible: true,
+    defaultExpanded: false,
+    description: "Groups and roles that can edit all folders for this module."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "Edit all folders",
+    data: editAll,
+    columns: [roleCol, switchCol('Edit all')]
+  })), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act
-  }));
+  })));
 }
 function Fields({
   act
 }) {
   const [q, setQ] = _react.default.useState('');
   const rows = rowsOf(D.FIELDS.filter(r => match(q, r)), ['name', 'id2', 'type']);
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "fields",
     title: "Fields",
-    description: "The metadata field registry for assets \u2014 every field's name, internal ID, and type.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
+    description: "The metadata field registry for assets \u2014 every field's name, internal ID, and type."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "New field"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
+    label: "Field name",
+    htmlFor: "system-new-field"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+    gap: "sm",
+    wrap: true
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
+    id: "system-new-field",
+    name: "newFieldName",
+    autoComplete: "off",
+    enterKeyHint: "done",
+    width: "lg",
+    placeholder: "New field name..."
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "add",
+    label: "Add field",
+    act: act
+  })))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "All fields",
+    description: D.FIELD_TOTAL + ' fields in the registry'
+  }, /*#__PURE__*/_react.default.createElement(Bar, {
+    label: "Field actions"
+  }, /*#__PURE__*/_react.default.createElement(Search, {
+    value: q,
+    onChange: setQ,
+    label: 'Search ' + D.FIELD_TOTAL + ' fields'
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: "Fields",
-    items: [{
-      value: 'fields',
-      label: 'Fields',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Bar, {
-        label: "Field actions"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-        name: "newFieldName",
-        autoComplete: "off",
-        enterKeyHint: "done",
-        width: "lg",
-        placeholder: "New field name...",
-        "aria-label": "New field name"
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "add",
-        label: "Add field",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(Search, {
-        value: q,
-        onChange: setQ,
-        label: 'Search ' + D.FIELD_TOTAL + ' fields'
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "Fields",
-        data: rows,
-        empty: "No fields match",
-        columns: [{
-          title: 'Field name',
-          field: 'name',
-          kind: 'name',
-          frozen: true,
-          filter: true
-        }, {
-          title: 'ID',
-          field: 'id2',
-          kind: 'data'
-        }, {
-          title: 'Field type',
-          field: 'type',
-          filter: 'list'
-        }]
-      }), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.FIELD_TOTAL + ' fields'))
+    data: rows,
+    empty: "No fields match",
+    columns: [{
+      title: 'Field name',
+      field: 'name',
+      kind: 'name',
+      frozen: true,
+      filter: true
     }, {
-      value: 'edit-views',
-      label: 'Edit views',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure which fields appear on the asset edit form, and in what order.")
+      title: 'ID',
+      field: 'id2',
+      kind: 'data'
     }, {
-      value: 'app-views',
-      label: 'Application views',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure which fields appear in application-wide views such as search results and tables.")
+      title: 'Field type',
+      field: 'type',
+      kind: 'data',
+      filter: 'list'
     }]
-  }));
+  }), /*#__PURE__*/_react.default.createElement(CountNote, {
+    shown: rows.length,
+    total: D.FIELD_TOTAL,
+    what: "fields"
+  })), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Edit views"
+  }, "Configure which fields appear on the asset edit form, and in what order."), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Application views"
+  }, "Configure which fields appear in application-wide views such as search results and tables."));
 }
 function AssetTypes({
   act
@@ -1272,108 +1366,98 @@ function AssetTypes({
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
     saved: "Save changes"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  }, /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "asset-types",
     title: "Asset types",
     description: "The file-format categories assets are classified under, used to route transcoding and preview generation.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(Bar, {
-    label: "Asset type actions"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "add",
-    label: "Add asset type",
-    act: act
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: "Asset types",
-    items: types.map((t, i) => ({
-      value: String(i),
-      label: D.ASSET_TYPES[i][0],
-      content: /*#__PURE__*/_react.default.createElement("div", {
-        className: "plx-settings__rows"
-      }, /*#__PURE__*/_react.default.createElement(Sub, {
-        first: true
-      }, "Properties"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Name",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-        name: "name",
-        autoComplete: "off",
-        value: t.name,
-        onChange: edit(i, 'name')
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Extensions",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, {
-        name: "extensions",
-        autoComplete: "off",
-        autoCapitalize: "off",
-        spellCheck: false,
-        value: t.ext,
-        onChange: edit(i, 'ext')
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Paths",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-        name: "paths",
-        autoComplete: "off",
-        autoCapitalize: "off",
-        spellCheck: false,
-        placeholder: "Paths",
-        value: t.paths,
-        onChange: edit(i, 'paths')
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Ordering",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-        name: "ordering",
-        inputMode: "numeric",
-        autoComplete: "off",
-        enterKeyHint: "done",
-        width: "sm",
-        value: t.order,
-        onChange: edit(i, 'order')
-      })))
-    }))
-  }), /*#__PURE__*/_react.default.createElement(Actions, {
+    actions: /*#__PURE__*/_react.default.createElement(B, {
+      icon: "add",
+      label: "Add asset type",
+      act: act
+    })
+  }, types.map((t, i) => /*#__PURE__*/_react.default.createElement(Section, {
+    key: i,
+    title: D.ASSET_TYPES[i][0],
+    stateKey: 'type-' + i,
+    collapsible: true,
+    defaultExpanded: i === 0
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Name",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
+    name: "name",
+    autoComplete: "off",
+    width: "lg",
+    value: t.name,
+    onChange: edit(i, 'name')
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Extensions",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Textarea, {
+    name: "extensions",
+    autoComplete: "off",
+    autoCapitalize: "off",
+    spellCheck: false,
+    className: "plx-font-data",
+    value: t.ext,
+    onChange: edit(i, 'ext')
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Paths",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, _extends({
+    name: "paths",
+    autoComplete: "off",
+    placeholder: "Paths",
+    value: t.paths,
+    onChange: edit(i, 'paths')
+  }, PATH))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Ordering",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
+    name: "ordering",
+    inputMode: "numeric",
+    autoComplete: "off",
+    enterKeyHint: "done",
+    width: "sm",
+    data: true,
+    value: t.order,
+    onChange: edit(i, 'order')
+  })))), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act,
     save: "Save changes"
-  }));
+  })));
 }
 function HotFolders({
   act
 }) {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "hot-folders",
     title: "Hot folders",
     description: "Watched folders that are automatically scanned and imported as assets.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true
-  }, /*#__PURE__*/_react.default.createElement(Bar, {
-    label: "Hot folder actions"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "add",
-    label: "Add hot folder",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "schedule",
-    label: "Schedule importing",
-    act: act
-  })), D.HOT_FOLDERS.map(f => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+    actions: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+      gap: "sm"
+    }, /*#__PURE__*/_react.default.createElement(B, {
+      icon: "schedule",
+      label: "Schedule importing",
+      act: act
+    }), /*#__PURE__*/_react.default.createElement(B, {
+      icon: "add",
+      label: "Add hot folder",
+      act: act
+    }))
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Watched folders"
+  }, D.HOT_FOLDERS.map(f => /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
     key: f.name,
-    gap: "md"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
-    name: "folder",
-    size: "lg"
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, {
-    gap: "none",
-    grow: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-    variant: "strong"
-  }, f.name), f.enabled ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
-    tone: "success"
-  }, "Enabled") : null), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-    variant: "secondary"
-  }, f.meta)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    label: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+      gap: "sm"
+    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
+      name: "folder"
+    }), /*#__PURE__*/_react.default.createElement("span", null, f.name), f.enabled ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
+      tone: "success"
+    }, "Enabled") : null),
+    description: f.meta
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     iconOnly: true,
     icon: "pencil",
@@ -1384,55 +1468,46 @@ function HotFolders({
 function Transcoding({
   act
 }) {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "transcoding",
     title: "Transcoding",
     description: "Conversion presets generated for each uploaded asset, by media type.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: "Transcoding",
-    items: [{
-      value: 'presets',
-      label: 'Preset configuration',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Bar, {
-        label: "Conversion actions"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "add",
-        label: "Add new conversion",
-        act: act
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "Conversion presets",
-        data: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
-        columns: [{
-          title: 'Conversion',
-          field: 'name',
-          kind: 'name',
-          frozen: true,
-          filter: true
-        }, {
-          title: 'Generated file',
-          field: 'file',
-          kind: 'data'
-        }, {
-          title: 'System defined',
-          field: 'system',
-          filter: 'list'
-        }, {
-          title: 'On import',
-          field: 'onImport',
-          filter: 'list'
-        }, {
-          title: 'Media type',
-          field: 'media',
-          filter: 'list'
-        }]
-      }))
+    actions: /*#__PURE__*/_react.default.createElement(B, {
+      icon: "add",
+      label: "Add new conversion",
+      act: act
+    })
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Preset configuration"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "Conversion presets",
+    data: rowsOf(D.CONVERSIONS, ['name', 'file', 'system', 'onImport', 'media']),
+    columns: [{
+      title: 'Conversion',
+      field: 'name',
+      kind: 'name',
+      frozen: true,
+      filter: true
     }, {
-      value: 'publishing',
-      label: 'Publishing',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure which conversions are pushed to publishing targets.")
+      title: 'Generated file',
+      field: 'file',
+      kind: 'data'
+    }, {
+      title: 'System defined',
+      field: 'system',
+      filter: 'list'
+    }, {
+      title: 'On import',
+      field: 'onImport',
+      filter: 'list'
+    }, {
+      title: 'Media type',
+      field: 'media',
+      filter: 'list'
     }]
-  }));
+  })), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Publishing"
+  }, "Configure which conversions are pushed to publishing targets."));
 }
 
 /* ── People & Access ── */
@@ -1440,19 +1515,20 @@ function Users({
   act
 }) {
   const [q, setQ] = _react.default.useState('');
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "users",
     title: "Users",
     description: "Manage user accounts and view login activity.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true
+    actions: /*#__PURE__*/_react.default.createElement(B, {
+      icon: "add",
+      label: "Create user",
+      act: act
+    })
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "All users"
   }, /*#__PURE__*/_react.default.createElement(Bar, {
     label: "User actions"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "add",
-    label: "Create user",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
     label: "Maintenance"
   }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "import",
@@ -1511,41 +1587,34 @@ function Groups({
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
     saved: "Save changes"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  }, /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "groups",
     title: "Groups",
-    description: "Groups a user can be assigned to. Permissions are configured separately under Site Permissions.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(Bar, {
-    label: "Group actions"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "add",
-    label: "Add group",
-    act: act
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: "Groups",
-    items: D.GROUPS.map((g, i) => ({
-      value: String(i),
-      label: g,
-      content: /*#__PURE__*/_react.default.createElement("div", {
-        className: "plx-settings__rows"
-      }, /*#__PURE__*/_react.default.createElement(Sub, {
-        first: true
-      }, "Properties"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
-        label: "Name",
-        layout: "inline"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
-        name: "name",
-        autoComplete: "off",
-        value: names[i],
-        onChange: e => setNames(names.map((n, j) => j === i ? e.target.value : n))
-      })))
-    }))
-  }), /*#__PURE__*/_react.default.createElement(Actions, {
+    description: "Groups a user can be assigned to. Permissions are configured separately under Site permissions.",
+    actions: /*#__PURE__*/_react.default.createElement(B, {
+      icon: "add",
+      label: "Add group",
+      act: act
+    })
+  }, D.GROUPS.map((g, i) => /*#__PURE__*/_react.default.createElement(Section, {
+    key: g,
+    title: g,
+    collapsible: true,
+    defaultExpanded: i === 0
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
+    label: "Name",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Input, {
+    name: "name",
+    autoComplete: "off",
+    width: "lg",
+    value: names[i],
+    onChange: e => setNames(names.map((n, j) => j === i ? e.target.value : n))
+  })))), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act,
     save: "Save changes",
     del: "Delete group"
-  }));
+  })));
 }
 function Permissions({
   act
@@ -1557,15 +1626,13 @@ function Permissions({
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
     saved: "Save"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  }, /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "permissions",
     title: "Site permissions",
-    description: "Individually named permissions, grouped by area, assigned per role.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true,
-    headingLevel: 3,
-    title: "Select a Role",
-    description: "Choose the role you want to configure. The permissions below apply only to that role \u2014 use View to narrow the list to a single area, or leave it on Show All to see everything at once."
+    description: "Individually named permissions, grouped by area, assigned per role."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Role",
+    description: "Choose the role to configure. The permissions below apply only to that role; View narrows the list to one area."
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "Role",
     layout: "inline"
@@ -1573,7 +1640,7 @@ function Permissions({
     name: "role",
     value: role,
     onChange: e => setRole(e.target.value)
-  }, D.PERMISSION_ROLES.concat('+ Add New Role').map(r => /*#__PURE__*/_react.default.createElement("option", {
+  }, D.PERMISSION_ROLES.concat('+ Add new role').map(r => /*#__PURE__*/_react.default.createElement("option", {
     key: r
   }, r)))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "View",
@@ -1584,43 +1651,45 @@ function Permissions({
     onChange: e => setArea(e.target.value)
   }, ['Show all'].concat(D.PERMISSION_AREAS.map(a => a.label)).map(r => /*#__PURE__*/_react.default.createElement("option", {
     key: r
-  }, r))))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    key: area,
-    variant: "contained",
-    label: 'Permissions for ' + role,
-    items: areas.map(a => ({
-      value: a.id,
-      label: a.label,
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, a.items.map(it => {
-        const k = a.id + ':' + it[0];
-        return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Checkbox, {
-          key: k,
-          name: k,
-          label: it[0],
-          description: it[1],
-          checked: !!checked[k],
-          onChange: e => setChecked({
-            ...checked,
-            [k]: e.target.checked
-          })
-        });
-      })), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + a.items.length + ' of ' + a.total + ' permissions in this view'))
-    }))
-  }), /*#__PURE__*/_react.default.createElement(Actions, {
+  }, r))))), areas.map((a, i) => /*#__PURE__*/_react.default.createElement(Section, {
+    key: a.id,
+    title: a.label,
+    stateKey: a.id,
+    collapsible: true,
+    defaultExpanded: i === 0,
+    description: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, 'Showing ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, a.items.length), ' of ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, a.total), ' permissions for ' + role)
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, null, a.items.map(it => {
+    const k = a.id + ':' + it[0];
+    return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Checkbox, {
+      key: k,
+      name: k,
+      label: it[0],
+      description: it[1],
+      checked: !!checked[k],
+      onChange: e => setChecked({
+        ...checked,
+        [k]: e.target.checked
+      })
+    });
+  })))), /*#__PURE__*/_react.default.createElement(Actions, {
     act: act
-  }));
+  })));
 }
 
 /* ── System ── */
 function EmailTemplates({
   act
 }) {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "email-templates",
     title: "Email templates",
-    description: "The notification emails the catalog sends, and the template file behind each one.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true
+    description: "The notification emails the catalog sends, and the template file behind each one."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Templates"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
     label: "Email templates",
     data: rowsOf(D.EMAIL_TEMPLATES, ['name', 'file']),
@@ -1656,120 +1725,143 @@ function CatalogParameters({
   return /*#__PURE__*/_react.default.createElement(Form, {
     act: act,
     saved: "Save changes"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  }, /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "catalog-parameters",
     title: "Catalog parameters",
-    description: "Catalog-wide configuration keys \u2014 storage, AI providers, and access defaults.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true,
-    actions: null
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    wrap: true,
-    className: "plx-u-gap-cluster-sm plx-u-mb-stack-md"
+    description: "Catalog-wide configuration keys \u2014 storage, AI providers, and access defaults."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Parameters",
+    description: D.CATALOG_TOTAL + ' catalog settings'
+  }, /*#__PURE__*/_react.default.createElement(Bar, {
+    label: "Parameter actions"
   }, /*#__PURE__*/_react.default.createElement(Search, {
     value: q,
     onChange: setQ,
     label: "Search catalog settings"
-  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList, null, rows.map(([label, id, value, kind]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList.Item, {
-    key: id,
-    label: label,
-    description: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-      variant: "data"
-    }, id),
-    data: kind !== 'text'
-  }, value))), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Showing ' + rows.length + ' of ' + D.CATALOG_TOTAL + ' catalog settings')), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActionBar, {
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "Catalog parameters",
+    empty: "No settings match",
+    data: rows.map(([label, id, value, kind]) => ({
+      id,
+      label,
+      key: id,
+      value,
+      kind
+    })),
+    columns: [{
+      title: 'Setting',
+      field: 'label',
+      kind: 'name',
+      frozen: true,
+      filter: true
+    }, {
+      title: 'Key',
+      field: 'key',
+      kind: 'data',
+      filter: true
+    }, {
+      title: 'Value',
+      field: 'value',
+      render: r => r.kind !== 'text' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, r.value) : r.value
+    }]
+  }), /*#__PURE__*/_react.default.createElement(CountNote, {
+    shown: rows.length,
+    total: D.CATALOG_TOTAL,
+    what: "catalog settings"
+  })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ActionBar, {
     label: "Form actions"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     type: "submit",
     variant: "primary"
-  }, "Save changes")));
+  }, "Save changes"))));
 }
 function Server({
   act
 }) {
-  const kv = list => /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList, null, list.map(([k, v]) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.PropertyList.Item, {
-    key: k,
-    label: k,
-    data: true
-  }, v)));
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "server",
     title: "Server",
-    description: "Database cluster status, software versions, and application logs.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: "Server",
-    items: [{
-      value: 'database',
-      label: 'Database',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Sub, {
-        first: true
-      }, "Server status"), kv(D.SERVER_STATUS), /*#__PURE__*/_react.default.createElement("div", {
-        className: "plx-u-mt-stack-md"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-        label: "Server status actions"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "refresh",
-        label: "Clear cached data",
-        tone: "info",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "database",
-        label: "Change Elasticsearch database master",
-        tone: "info",
-        act: act
-      }))), /*#__PURE__*/_react.default.createElement(Sub, null, "Data management"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-        label: "Data management"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "refresh",
-        label: "Reindex",
-        tone: "info",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "alert",
-        label: "View mapping conflicts",
-        tone: "info",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "list-bullets",
-        label: "View basic mappings",
-        tone: "info",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "import",
-        label: "Reload sets",
-        tone: "info",
-        act: act
-      })), /*#__PURE__*/_react.default.createElement(Sub, null, "Database snapshots"), /*#__PURE__*/_react.default.createElement(Lead, null, "Snapshots are used by Elasticsearch to store and restore database data."), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "snapshot",
-        label: "View snapshots",
-        tone: "info",
-        act: act
-      })), /*#__PURE__*/_react.default.createElement(Sub, null, "Data entities"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-        label: "Data entities"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "add",
-        label: "Create",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "save-doc",
-        label: "Save all modules",
-        act: act
-      })))
-    }, {
-      value: 'versions',
-      label: 'Versions',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, kv(D.VERSIONS), /*#__PURE__*/_react.default.createElement(CountNote, null, "Full dependency list runs to 100+ jars \xB7 ", /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-        size: "xs",
-        variant: "ghost",
-        onClick: act('View all', 'info')
-      }, "View all")))
-    }, {
-      value: 'logs',
-      label: 'Logs',
-      content: /*#__PURE__*/_react.default.createElement(_plenixPlatform.CodeBlock, null, D.LOG_PATH)
-    }]
-  }));
+    description: "Database cluster status, software versions, and application logs."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Server status"
+  }, facts('Server status', D.SERVER_STATUS), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+    label: "Server status actions"
+  }, /*#__PURE__*/_react.default.createElement(B, {
+    icon: "refresh",
+    label: "Clear cached data",
+    tone: "info",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "database",
+    label: "Change Elasticsearch database master",
+    tone: "info",
+    act: act
+  }))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Data management"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+    label: "Data management"
+  }, /*#__PURE__*/_react.default.createElement(B, {
+    icon: "refresh",
+    label: "Reindex",
+    tone: "info",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "alert",
+    label: "View mapping conflicts",
+    tone: "info",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "list-bullets",
+    label: "View basic mappings",
+    tone: "info",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "import",
+    label: "Reload sets",
+    tone: "info",
+    act: act
+  }))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Database snapshots",
+    collapsible: true,
+    defaultExpanded: false,
+    description: "Snapshots are used by Elasticsearch to store and restore database data."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsRow, {
+    label: "Snapshots"
+  }, /*#__PURE__*/_react.default.createElement(B, {
+    icon: "snapshot",
+    label: "View snapshots",
+    tone: "info",
+    act: act
+  }))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Data entities",
+    collapsible: true,
+    defaultExpanded: false
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+    label: "Data entities"
+  }, /*#__PURE__*/_react.default.createElement(B, {
+    icon: "add",
+    label: "Create",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "save-doc",
+    label: "Save all modules",
+    act: act
+  }))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Versions",
+    collapsible: true,
+    defaultExpanded: false,
+    description: "The full dependency list runs to 100+ jars."
+  }, facts('Versions', D.VERSIONS), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    size: "sm",
+    onClick: act('View all', 'info')
+  }, "View all"))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Logs",
+    collapsible: true,
+    defaultExpanded: false,
+    description: "Where the application writes its log."
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.CodeBlock, null, D.LOG_PATH)));
 }
 function Database({
   act
@@ -1795,141 +1887,131 @@ function Database({
     columns: columns,
     empty: "No records match"
   });
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "database",
     title: "Database",
     description: "Browse, edit, import, or export any underlying data table.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    justify: "between",
-    wrap: true,
-    className: "plx-u-gap-cluster-sm plx-u-mb-stack-md"
-  }, /*#__PURE__*/_react.default.createElement(Sub, {
-    flush: true
-  }, 'Table: ' + table), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Stack, {
-    className: "plx-u-w-200px"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
+    actions: /*#__PURE__*/_react.default.createElement(B, {
+      icon: "add",
+      label: "New table",
+      tone: "info",
+      act: act
+    })
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Table"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Field, {
     label: "Table",
+    layout: "inline"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Combobox, {
     options: D.DB_TABLES.map(t => ({
       value: t,
       label: t
     })),
     value: table,
     onChange: setTable
-  })), /*#__PURE__*/_react.default.createElement(B, {
+  }))), /*#__PURE__*/_react.default.createElement(Section, {
+    title: 'Records in ' + table,
+    stateKey: "records",
+    description: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, 'Found ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, D.DB_TOTAL.records), ' records · page ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, "1"), ' of ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+      variant: "data"
+    }, D.DB_TOTAL.pages))
+  }, /*#__PURE__*/_react.default.createElement(Bar, {
+    label: "Record actions"
+  }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "add",
-    label: "New table",
+    label: "Add new",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
+    label: "Transfer"
+  }, /*#__PURE__*/_react.default.createElement(B, {
+    icon: "refresh",
+    label: "Reindex",
     tone: "info",
     act: act
-  }))), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: 'Table ' + table,
-    items: [{
-      value: 'data',
-      label: 'Data',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Bar, {
-        label: "Record actions"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "add",
-        label: "Add new",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-        label: "Transfer"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "refresh",
-        label: "Reindex",
-        tone: "info",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "import",
-        label: "Import",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "export",
-        label: "Export",
-        tone: "info",
-        act: act
-      })), /*#__PURE__*/_react.default.createElement(B, {
-        icon: "doc-text",
-        label: "Export text",
-        tone: "info",
-        act: act
-      }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-        size: "sm",
-        iconOnly: true,
-        icon: "close",
-        label: "Reset settings",
-        onClick: act('Settings reset', 'info')
-      }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
-        label: "Delete",
-        trigger: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-          size: "sm",
-          variant: "danger-secondary",
-          icon: "trash",
-          caret: true
-        }, "Delete")
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
-        icon: "trash",
-        danger: true,
-        onSelect: act('Delete ' + D.DB_TOTAL.records + ' Records', 'warning')
-      }, 'Delete ' + D.DB_TOTAL.records + ' Records'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
-        icon: "trash",
-        danger: true,
-        onSelect: act('Delete table', 'warning')
-      }, "Delete table")), /*#__PURE__*/_react.default.createElement(Search, {
-        value: q,
-        onChange: setQ,
-        label: "Search"
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-        justify: "end",
-        className: "plx-u-mb-stack-sm"
-      }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-        size: "sm",
-        icon: "expand",
-        onClick: () => setExpanded(true)
-      }, "Expand")), grid('Table: ' + table), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Found ' + D.DB_TOTAL.records + ' Records · Page 1 of ' + D.DB_TOTAL.pages + ' · ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-        size: "xs",
-        variant: "ghost",
-        onClick: act('Forward', 'info')
-      }, "Forward \xBB")), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
-        open: expanded,
-        onClose: () => setExpanded(false),
-        title: 'Table: ' + table,
-        icon: "expand",
-        size: "full"
-      }, grid('Table: ' + table + ', expanded')))
-    }, {
-      value: 'fields',
-      label: 'Customize fields',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure the fields available on this table \u2014 the same editor as Files > Fields, scoped to this table.")
-    }, {
-      value: 'views',
-      label: 'Customize views',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Configure how records in this table are displayed in lists and edit forms.")
-    }, {
-      value: 'elastic',
-      label: 'Elastic system info',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Raw Elasticsearch mapping and index info for this table.")
-    }]
-  })));
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "import",
+    label: "Import",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "export",
+    label: "Export",
+    tone: "info",
+    act: act
+  })), /*#__PURE__*/_react.default.createElement(B, {
+    icon: "doc-text",
+    label: "Export text",
+    tone: "info",
+    act: act
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    size: "sm",
+    iconOnly: true,
+    icon: "close",
+    label: "Reset settings",
+    onClick: act('Settings reset', 'info')
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
+    label: "Delete",
+    trigger: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+      size: "sm",
+      variant: "danger-secondary",
+      icon: "trash",
+      caret: true
+    }, "Delete")
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
+    icon: "trash",
+    danger: true,
+    onSelect: act('Delete ' + D.DB_TOTAL.records + ' records', 'warning')
+  }, 'Delete ' + D.DB_TOTAL.records + ' records'), /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
+    icon: "trash",
+    danger: true,
+    onSelect: act('Delete table', 'warning')
+  }, "Delete table")), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    size: "sm",
+    icon: "expand",
+    onClick: () => setExpanded(true)
+  }, "Expand"), /*#__PURE__*/_react.default.createElement(Search, {
+    value: q,
+    onChange: setQ,
+    label: "Search"
+  })), grid('Table: ' + table), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
+    justify: "end"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
+    size: "sm",
+    iconEnd: "chevron-right",
+    onClick: act('Forward', 'info')
+  }, "Next page")), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
+    open: expanded,
+    onClose: () => setExpanded(false),
+    title: 'Table: ' + table,
+    icon: "expand",
+    size: "full"
+  }, grid('Table: ' + table + ', expanded'))), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Customize fields"
+  }, "Configure the fields available on this table \u2014 the same editor as Files > Fields, scoped to this table."), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Customize views"
+  }, "Configure how records in this table are displayed in lists and edit forms."), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Elastic system info"
+  }, "Raw Elasticsearch mapping and index info for this table."));
 }
 function Customizations({
   act
 }) {
   const rows = rowsOf(D.CUSTOMIZATIONS, ['type', 'name', 'modules', 'date']);
   const [sel, setSel] = _react.default.useState(rows.map(r => r.id));
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "customizations",
     title: "Customizations",
-    description: "Track configuration changes across modules, and export or import them between environments.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.SettingsSection, {
-    card: true
+    description: "Track configuration changes across modules, and export or import them between environments."
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Changes"
   }, /*#__PURE__*/_react.default.createElement(Bar, {
     label: "Customization actions"
   }, /*#__PURE__*/_react.default.createElement(B, {
     icon: "refresh",
-    label: "Scan for Changes",
+    label: "Scan for changes",
     tone: "info",
     act: act
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
@@ -1978,52 +2060,41 @@ function Customizations({
 function Scheduler({
   act
 }) {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.RecordPage.Header, {
+  return /*#__PURE__*/_react.default.createElement(Screen, {
+    id: "scheduler",
     title: "Scheduler",
     description: "Recurring background tasks, the events that trigger them, and the scripts they run.",
-    headingLevel: 2
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tabs, {
-    variant: "contained",
-    label: "Scheduler",
-    items: [{
-      value: 'scheduled',
-      label: 'Scheduled',
-      content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(Bar, {
-        label: "Scheduled task actions"
-      }, /*#__PURE__*/_react.default.createElement(B, {
-        icon: "refresh",
-        label: "Refresh",
-        tone: "info",
-        act: act
-      })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
-        label: "Scheduled tasks",
-        data: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
-        columns: [{
-          title: 'Name',
-          field: 'name',
-          kind: 'name',
-          frozen: true,
-          filter: true
-        }, {
-          title: 'Path',
-          field: 'path',
-          kind: 'data'
-        }, {
-          title: 'Status',
-          field: 'status',
-          filter: 'list'
-        }]
-      }))
+    actions: /*#__PURE__*/_react.default.createElement(B, {
+      icon: "refresh",
+      label: "Refresh",
+      tone: "info",
+      act: act
+    })
+  }, /*#__PURE__*/_react.default.createElement(Section, {
+    title: "Scheduled tasks"
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    label: "Scheduled tasks",
+    data: rowsOf(D.SCHEDULED, ['name', 'path', 'status']),
+    columns: [{
+      title: 'Name',
+      field: 'name',
+      kind: 'name',
+      frozen: true,
+      filter: true
     }, {
-      value: 'events',
-      label: 'Events',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Events that trigger scripts to run, such as an asset upload or a metadata change.")
+      title: 'Path',
+      field: 'path',
+      kind: 'data'
     }, {
-      value: 'scripts',
-      label: 'Scripts',
-      content: /*#__PURE__*/_react.default.createElement(Lead, null, "Groovy scripts that scheduled tasks and events run.")
+      title: 'Status',
+      field: 'status',
+      filter: 'list'
     }]
-  }));
+  })), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Events"
+  }, "Events that trigger scripts to run, such as an asset upload or a metadata change."), /*#__PURE__*/_react.default.createElement(Planned, {
+    title: "Scripts"
+  }, "Groovy scripts that scheduled tasks and events run."));
 }
 const SECTIONS = {
   properties: Properties,

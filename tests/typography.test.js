@@ -26,7 +26,10 @@ const PORT = +process.env.TYPO_PORT || 8861, BASE = 'http://127.0.0.1:' + PORT +
 const BASELINE = path.join(__dirname, 'baselines', 'typography.json');
 const ONLY = process.env.TYPO_ONLY ? new RegExp(process.env.TYPO_ONLY) : null;
 const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
-  .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html']);
+  .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'])
+  // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
+  .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
+    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']);
 // design-system pages: the first item of each group (section and subgroup), and these, where tables of tokens, sizes and
 // values are
 const DS_TITLES = ['Typography', 'Design tokens', 'Color', 'Spacing', 'Radius', 'Text', 'Table', 'Data table', 'Property list', 'Code block', 'Keyboard shortcut', 'Metric', 'Activity list', 'File list', 'Button', 'Badge'];

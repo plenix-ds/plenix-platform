@@ -6,6 +6,23 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.45] - 2026-10-13
+
+### Changed
+- Settings pages are built from cards (owner): every section is a SettingsSection card, either static or
+  collapsible (Enter, Space or a click; the open state is kept per page). Plenix Settings, DAM System settings and DAM
+  My account follow it, and every control matches its design-system page (labeled fields, Select for the header
+  color, Sign out as a danger button, data values in Mono). A new check rejects non-card sections, native fields and
+  unlabeled controls on settings pages.
+- Color groups (owner): Brand, Accent, Semantic, Surface, Text, Border, Interactive and Status roles are defined, all
+  pointing at existing palette colors. In dark, the brand is blue-300 with gray-950 on it, and status offline and
+  not-started are gray-400.
+- Group pages state "Chosen with" in one short line.
+- The component labs test runs one size and variant per browser call, so a large lab no longer times out.
+### Added
+- Every covered library item opens its own page: 21 open their variant page and 208 have their own page with text, a
+  live example and code. Ten items not in Plenix yet are listed as needs building.
+
 ## [0.31.44] - 2026-10-13
 
 ### Changed
