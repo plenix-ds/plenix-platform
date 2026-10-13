@@ -13,19 +13,24 @@
 // Known findings are kept in tests/baselines/targets.json (page -> mode -> number of elements); the test fails only on a
 // page and mode with more findings than recorded, so they can only go down.
 //   node tests/targets.test.js            compare
-//   node tests/targets.test.js --update   record the current findings as the baseline (after fixing some, to lower it)
+//   node tests/targets.test.js --update   record the current findings as the baseline (after fixing some, to lower it; TEST_SCOPE=full only)
+//   TEST_SCOPE=full node tests/targets.test.js   every page (default: the pages of what changed, tests/changed.js)
 //   TARGETS_VERBOSE=1 node tests/targets.test.js   list every finding
-//   TARGETS_PORT=8853 node tests/targets.test.js   another port (several runs side by side)
+//   TARGETS_PORT=8853 (or TEST_PORT) node tests/targets.test.js   another port (several runs side by side)
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep } = require('./lib.js');
-const PORT = +process.env.TARGETS_PORT || 8843, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const { serve, launch, sleep, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.TARGETS_PORT || +process.env.TEST_PORT || 8843, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'targets.json');
-const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
+const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'])
   // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
   .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
-    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']);
+    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']));
+const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+changed.noPartialUpdate();
+if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('TARGETS_OK undersized targets coarse 0 of 0, fine 0 of 0 on 0 pages');
 
 // runs in the page: the undersized targets for a minimum size (44 coarse, 24 fine with the spacing rule)
 function measure(min, spacing) {
@@ -113,14 +118,15 @@ function measure(min, spacing) {
       const r = await page.evaluate(measure, M.min, M.spacing);
       (found[key] = found[key] || {})[M.mode] = r;
     };
-    for (const a of APP_PAGES) { await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(800); await take(a); }
-    const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+    for (const a of APP_PAGES) { at(M.mode + ' ' + a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(800); await take(a); }
     if (!HAS_DS && M.mode === 'coarse') console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-    if (HAS_DS) {
-      await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); await take('design-system home');
-      const routes = await page.evaluate(() => { const seen = {}; return window.DSInventory.filter((r) => !seen[r.sec] && (seen[r.sec] = true)).map((r) => '#/' + r.sec + '/' + r.id); });
-      for (const r of routes) { await page.evaluate((h) => { location.hash = h; }, r); await sleep(900); await take('design-system ' + r); }
-    }
+    if (HAS_DS && changed.anyDS()) {
+      at(M.mode + ' design-system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); if (changed.dsHome()) await take('design-system home');
+      const sample = await page.evaluate(() => { const seen = {}; return window.DSInventory.filter((r) => !seen[r.sec] && (seen[r.sec] = true)).map((r) => '#/' + r.sec + '/' + r.id); });
+      const routes = await changed.routesIn(page, sample);
+      if (M.mode === 'coarse') changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + sample.length + ' sampled design-system pages');
+      for (const r of routes) { at(M.mode + ' design-system ' + r); await page.evaluate((h) => { location.hash = h; }, r); await sleep(900); await take('design-system ' + r); }
+    } else if (M.mode === 'coarse') changed.report(APP_PAGES.length + ' app pages, 0 design-system pages');
     await page.close();
   }
   await browser.close(); server.close();

@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.join(__dirname, '..');
 const TOK = path.join(ROOT, 'platform', 'tokens');

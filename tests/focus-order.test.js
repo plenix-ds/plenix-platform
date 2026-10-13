@@ -9,15 +9,23 @@
 // Known findings are kept in tests/baselines/focus-order.json (page -> check -> number); the test fails only when a page
 // has more findings than recorded, so they can only go down.
 //   node tests/focus-order.test.js            compare
-//   node tests/focus-order.test.js --update   record the current findings as the baseline
-//   FOCUS_PORT=8834 node tests/focus-order.test.js   another port
+//   node tests/focus-order.test.js --update   record the current findings as the baseline (TEST_SCOPE=full only)
+//   FOCUS_PORT=8834 (or TEST_PORT) node tests/focus-order.test.js   another port
+//   TEST_SCOPE=full: every page; by default (tests/changed.js) the app pages that changed, the dialog when the Dialog or its
+//   page changed, the fixture when the overlay (platform/dev, a global file) or this test changed
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep, APPS } = require('./lib.js');
-const PORT = +process.env.FOCUS_PORT || 8798, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const { serve, launch, sleep, APPS, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.FOCUS_PORT || +process.env.TEST_PORT || 8798, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'focus-order.json');
 const UPDATE = process.argv.includes('--update');
 const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+changed.noPartialUpdate();
+const PAGES = changed.pages(APPS.map((a) => a + '/index.html'));
+const FIXTURE = changed.wants({}), DIALOG = HAS_DS && changed.wants({ ids: ['focus-order'], units: ['components/Dialog'] });
+if (!PAGES.length && !FIXTURE && !DIALOG) changed.none('FOCUS_ORDER_OK (0 checks)');
+changed.report(PAGES.length + ' app pages' + (DIALOG ? ', the dialog' : '') + (FIXTURE ? ', the fixture' : ''));
 
 (async () => {
   const server = await serve(PORT);
@@ -28,6 +36,8 @@ const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-syst
   const overlay = async () => { if (!(await page.evaluate(() => !!window.PlenixFocusOrder))) await page.addScriptTag({ url: BASE + 'platform/dev/focus-order.js' }); };
 
   // ---- the fixture: what the overlay must find
+  if (FIXTURE) {
+  at('the fixture');
   await page.goto(BASE + 'platform/dev/', { waitUntil: 'domcontentloaded' }).catch(() => {});
   await page.setContent('<!doctype html><html lang="en"><body>'
     + '<a class="plx-app-shell__skip" href="#main">Skip to main content</a>'
@@ -45,12 +55,13 @@ const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-syst
   check('fixture: a row drawn in reverse is out of reading order', fx.c.outOfOrder.length >= 1 && fx.c.stops.filter((s) => s.outOfOrder).some((s) => s.name === 'Four'), JSON.stringify(fx.c.outOfOrder));
   check('fixture: the skip link is not first (a positive tabindex goes ahead of it)', fx.c.skipLinkFirst === false, String(fx.c.skipLinkFirst));
   check('fixture: the overlay draws one numbered badge per stop', fx.badges === fx.c.stops.length, fx.badges + ' badges, ' + fx.c.stops.length + ' stops');
+  }
 
   // ---- every application page
   const base = fs.existsSync(BASELINE) ? JSON.parse(fs.readFileSync(BASELINE, 'utf8')) : {};
   const found = {};
-  for (const app of APPS) {
-    const url = app + '/index.html';
+  for (const url of PAGES) {
+    at(url);
     await page.goto(BASE + url, { waitUntil: 'networkidle0' }).catch(() => {}); await sleep(800);
     await overlay();
     const c = await page.evaluate(() => window.PlenixFocusOrder.check());
@@ -65,8 +76,8 @@ const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-syst
   }
 
   // ---- focus moves into an overlay and back (the Focus order page's dialog)
-  if (HAS_DS) {
-    await page.goto(BASE + 'platform/design-system/index.html#/interaction/focus-order', { waitUntil: 'networkidle0' }); await sleep(1500);
+  if (DIALOG) {
+    at('the dialog'); await page.goto(BASE + 'platform/design-system/index.html#/interaction/focus-order', { waitUntil: 'networkidle0' }); await sleep(1500);
     const opened = await page.evaluate(() => { const b = [...document.querySelectorAll('main button')].find((x) => x.textContent.trim() === 'Rename project'); if (!b) return false; b.focus(); b.click(); return true; });
     await sleep(400);
     const inside = await page.evaluate(() => !!document.activeElement && !!document.activeElement.closest('[role="dialog"],dialog'));
@@ -74,7 +85,7 @@ const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-syst
     const back = await page.evaluate(() => (document.activeElement && document.activeElement.textContent || '').trim());
     check('dialog: focus moves into it when it opens', opened && inside, 'opened ' + opened);
     check('dialog: focus returns to its trigger when it closes', back === 'Rename project', back);
-  } else console.log('NOTE: platform/design-system is not checked out; the dialog check is skipped');
+  } else if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; the dialog check is skipped');
 
   if (UPDATE) { fs.writeFileSync(BASELINE, JSON.stringify(found, null, 2) + '\n'); console.log('baseline written: ' + path.relative(process.cwd(), BASELINE)); }
   await browser.close(); server.close();

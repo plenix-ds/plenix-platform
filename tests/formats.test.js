@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 const Babel = require('@babel/standalone');
+require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.join(__dirname, '..');
 const src = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'format.js'), 'utf8');

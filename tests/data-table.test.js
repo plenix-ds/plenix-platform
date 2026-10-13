@@ -6,9 +6,12 @@
 // (a grid in its error state counts as built: it shows what failed and Retry instead of its rows)
 // (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
 // component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
-//   node tests/data-table.test.js
-const { serve, launch, sleep } = require('./lib.js');
-const PORT = 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+//   node tests/data-table.test.js            (TEST_PORT: another port)
+//   TEST_SCOPE=full: every view; by default (tests/changed.js) the views of the apps and design-system pages that changed,
+//   and every view when the DataTable or Table changed
+const { serve, launch, sleep, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.TEST_PORT || 8809, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 // [page, the steps first (a control's visible text to press, or #section to go to without reloading), the grids expected]
 const ONLY = process.env.DT_ONLY ? new RegExp(process.env.DT_ONLY) : null;
 const STATES = [
@@ -41,6 +44,18 @@ const STATES = [
   ['platform/design-system/index.html#/actions/button', [], 1],
 ];
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
+// in scope: a view whose app or design-system page changed (the record's component too: #/sec/data-table -> DataTable)
+const GRIDS = ['components/DataTable', 'components/Table'];
+const APP_URLS = changed.pages(STATES.map((s) => s[0]).filter((u) => u.indexOf('platform/') !== 0));
+const inScope = (url) => {
+  if (changed.wants({ units: GRIDS })) return true;
+  const ds = /^platform\/design-system\/index\.html#\/[\w-]+\/([\w-]+)/.exec(url);
+  if (ds) return changed.wants({ ids: [ds[1]], units: ['components/' + ds[1].replace(/(^|-)(\w)/g, (m, a, c) => c.toUpperCase())] });
+  return APP_URLS.includes(url);
+};
+const VIEWS = STATES.filter((s) => inScope(s[0]));
+if (!VIEWS.length) changed.none('DATA_TABLES_OK 0/0 table views');
+changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
 
 (async () => {
   const server = await serve(PORT);
@@ -50,10 +65,11 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
   // the design system is a submodule (plenix-design-system): without it (CI without DS_TOKEN), its views are skipped
   const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its table views are skipped');
-  for (const [url, steps, want] of STATES) {
+  for (const [url, steps, want] of VIEWS) {
     if (ONLY && !ONLY.test(url)) continue;   // DT_ONLY=<pattern>: only the views whose address matches
     if (!HAS_DS && url.indexOf('platform/design-system/') === 0) continue;
     const name = url + (steps.length ? ' › ' + steps.join(' › ') : '');
+    at(name);
     // each view from a fresh start: the apps restore their last screen (plenix.<app>.view), which would change the steps
     await page.goto('about:blank'); await page.goto(BASE + url, { waitUntil: 'networkidle0' });
     await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });

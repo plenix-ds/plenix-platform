@@ -10,7 +10,9 @@
     "build:docs": "node build-docs.js",
     "build:packages": "node build-packages.js",
     "release:build": "node build-app.js && node build-usage.js && node check-system.js && node build-packages.js",
-    "test": "node tests/visual.test.js && node tests/density.test.js && node tests/layout.test.js && node tests/theme.test.js && node tests/pages.test.js && node tests/keyboard.test.js && node tests/a11y.test.js && node tests/data-table.test.js && node tests/typography.test.js && node tests/labs.test.js && node tests/reflow.test.js && node tests/targets.test.js && node tests/contrast.test.js && node tests/formats.test.js && node tests/utilities.test.js && node tests/high-contrast.test.js && node tests/focus-order.test.js && node tests/semantic-html.test.js && node tests/brand-rules.test.js && node tests/login.test.js",
+    "test": "node tests/run.js",
+    "test:full": "node tests/run.js --full",
+    "test:scope": "node tests/changed.js",
     "test:visual": "node tests/visual.test.js",
     "test:pages": "node tests/pages.test.js",
     "test:a11y": "node tests/a11y.test.js",
@@ -29,7 +31,9 @@
     "test:high-contrast": "node tests/high-contrast.test.js",
     "test:focus-order": "node tests/focus-order.test.js",
     "test:semantic-html": "node tests/semantic-html.test.js",
-    "test:brand-rules": "node tests/brand-rules.test.js"
+    "test:brand-rules": "node tests/brand-rules.test.js",
+    "test:data-table": "node tests/data-table.test.js",
+    "test:navigation": "node tests/navigation.test.js"
   },
   "devDependencies": {
     "@babel/standalone": "^7.29.9",

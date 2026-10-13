@@ -3,8 +3,12 @@
 // steps are the tokens' values; each clear space is on the 4px grid and at least the rules' share of its mark; the files
 // brand.json names exist. No browser: it reads the token source.
 //   node tests/brand-rules.test.js
+//   TEST_SCOPE=full: always; by default (tests/changed.js) when platform/brand, the brand tokens, a global file or this test changed
 const fs = require('fs');
 const path = require('path');
+const changed = require('./changed.js');
+require('./limit.js');
+if (!changed.wants({ units: ['brand', 'components/Brand'] })) changed.none('BRAND_RULES_OK 0 checks');
 
 const ROOT = path.join(__dirname, '..');
 const BRAND = path.join(ROOT, 'platform', 'brand');

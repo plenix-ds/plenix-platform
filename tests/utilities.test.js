@@ -1,10 +1,14 @@
 // Plenix · tests/utilities.test.js: the behavioral utilities work in Chrome, on their own design-system pages:
 // virtualization (only the view rendered, true scroll length, positions, focus kept, grid columns, no style written),
 // hotkeys (single key, sequence, scope, ignored in fields), live regions (announce) and the clipboard (Copied, announced).
-//   node tests/utilities.test.js       (UTILITIES_PORT picks the port; default 8831)   → UTILITIES_OK
+//   node tests/utilities.test.js       (UTILITIES_PORT or TEST_PORT picks the port; default 8831)   → UTILITIES_OK
+//   TEST_SCOPE=full: always; by default (tests/changed.js) when a utility, its page, a global file or this test changed
 const { serve, launch, sleep } = require('./lib.js');
+const changed = require('./changed.js');
 
-const PORT = Number(process.env.UTILITIES_PORT || 8831);
+const PORT = Number(process.env.UTILITIES_PORT || process.env.TEST_PORT || 8831);
+if (!changed.wants({ ids: ['virtualization', 'hotkey', 'live-regions', 'clipboard'], units: ['hooks/useVirtualizer.js', 'utils/hotkey.js', 'utils/announce.jsx', 'utils/clipboard.js'] })) changed.none('UTILITIES_OK (0 checks)');
+changed.report('every utility');
 const BASE = 'http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/index.html';
 let failed = 0, passed = 0;
 const check = (name, ok, info) => { if (ok) passed++; else { failed++; console.log('FAIL ' + name + (info !== undefined ? ': ' + JSON.stringify(info) : '')); } };

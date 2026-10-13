@@ -4,10 +4,12 @@
 // Edit dialog would edit the wrong token. Button is checked by tests/visual.test.js (its lab is too large to run here).
 //   node tests/labs.test.js
 //   LABS_ONLY=tabs,toast LABS_PORT=8821 node tests/labs.test.js   only those labs, on another port (several runs side by side)
+//   TEST_SCOPE=full node tests/labs.test.js   every lab (default: the labs of what changed, tests/changed.js)   TEST_PORT: another port
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep } = require('./lib.js');
-const PORT = +process.env.LABS_PORT || 8811;
+const { serve, launch, sleep, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.LABS_PORT || +process.env.TEST_PORT || 8811;
 const ONLY = process.env.LABS_ONLY ? process.env.LABS_ONLY.split(',') : null;
 
 if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'))) {
@@ -15,15 +17,19 @@ if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'inde
   console.log('LABS_OK 0 labs (skipped)');
   process.exit(0);
 }
+if (!ONLY && !changed.anyDS()) changed.none('LABS_OK 0/0 labs');
 
 (async () => {
   const server = await serve(PORT);
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   await page.goto('http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/index.html', { waitUntil: 'networkidle0' }); await sleep(1500);
-  const ids = (await page.evaluate(() => Object.keys(window.DS.labs || {}).filter((id) => id !== 'button'))).filter((id) => !ONLY || ONLY.includes(id));
+  const every = (await page.evaluate(() => Object.keys(window.DS.labs || {}).filter((id) => id !== 'button'))).filter((id) => !ONLY || ONLY.includes(id));
+  const ids = ONLY ? every : await changed.labsIn(page, every);
+  changed.report(ids.length + ' of ' + every.length + ' labs');
   const results = [];
   for (const id of ids) {
+    at('lab ' + id);
     // one call per size and variant: a large lab in a single call ran past the protocol timeout (CI, 2026-10-13)
     const axes = await page.evaluate((id) => { const spec = DS.labs[id]; return spec.sizes.flatMap(([size]) => spec.variants.map(([variant]) => [size, variant])); }, id);
     const r = { checks: 0, tokens: 0, bad: [], nbad: 0 }; const seen = new Set();

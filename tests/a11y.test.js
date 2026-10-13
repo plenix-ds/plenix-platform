@@ -2,19 +2,25 @@
 // for the built components. Known issues are kept in tests/baselines/a11y.json (page → rule → number of elements); the
 // test fails only on a rule that is new on a page or affects more elements than recorded, so issues can only go down.
 //   node tests/a11y.test.js            compare
-//   node tests/a11y.test.js --update   record the current issues as the baseline (after fixing some, to lower it)
+//   node tests/a11y.test.js --update   record the current issues as the baseline (after fixing some, to lower it; TEST_SCOPE=full only)
+//   TEST_SCOPE=full node tests/a11y.test.js   every page (default: the pages of what changed, tests/changed.js)   TEST_PORT: another port
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep } = require('./lib.js');
-const PORT = 8791, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const { serve, launch, sleep, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.TEST_PORT || 8791, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'a11y.json');
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
-const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
+const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'])
   // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
   .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
-    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']);
+    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']));
+// the design system is a submodule (plenix-design-system): without it, only the apps are tested
+const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+changed.noPartialUpdate();
+if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('A11Y_OK 0 known elements on 0 pages');
 
 (async () => {
   const server = await serve(PORT);
@@ -31,14 +37,15 @@ const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 
     }, TAGS);
   };
   const found = {};
-  for (const a of APP_PAGES) { await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(800); found[a] = await run(); }
-  // the design system is a submodule (plenix-design-system): without it, only the apps are tested
-  const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+  for (const a of APP_PAGES) { at(a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(800); found[a] = await run(); }
   if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-  if (HAS_DS) await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); if (HAS_DS) await sleep(1500);
-  if (HAS_DS) found['design-system home'] = await run();
-  const routes = !HAS_DS ? [] : await page.evaluate(() => window.DSInventory.map((r) => '#/' + r.sec + '/' + r.id));
-  for (const r of routes) { await page.evaluate((h) => { location.hash = h; }, r); await sleep(500); found['design-system ' + r] = await run(); }
+  const DS_OPEN = HAS_DS && changed.anyDS();
+  if (DS_OPEN) { at('design-system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); }
+  if (DS_OPEN && changed.dsHome()) found['design-system home'] = await run();
+  const all = !DS_OPEN ? [] : await page.evaluate(() => window.DSInventory.map((r) => '#/' + r.sec + '/' + r.id));
+  const routes = DS_OPEN ? await changed.routesIn(page, all) : [];
+  changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + all.length + ' design-system pages');
+  for (const r of routes) { at('design-system ' + r); await page.evaluate((h) => { location.hash = h; }, r); await sleep(500); found['design-system ' + r] = await run(); }
   await browser.close(); server.close();
 
   const total = Object.values(found).reduce((n, p) => n + Object.values(p).reduce((m, v) => m + v.n, 0), 0);

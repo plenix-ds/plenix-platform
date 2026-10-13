@@ -17,9 +17,14 @@
 //   search view   at Narrow the header search shows the recent searches and the results; choosing a result opens its
 //                 screen in place of the view's entry
 //   node tests/navigation.test.js            run
-//   NAV_PORT=8855 node tests/navigation.test.js   another port (several runs side by side)
+//   NAV_PORT=8855 (or TEST_PORT) node tests/navigation.test.js   another port (several runs side by side)
+//   TEST_SCOPE=full: always; by default (tests/changed.js) when one of its apps (or what they use) changed
 const { serve, launch, sleep } = require('./lib.js');
-const PORT = +process.env.NAV_PORT || 8845, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const changed = require('./changed.js');
+const PORT = +process.env.NAV_PORT || +process.env.TEST_PORT || 8845, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const NAV_APPS = changed.pages(['notes', 'messages', 'contacts', 'calendar', 'settings', 'dam'].map((a) => a + '/index.html'));
+if (!NAV_APPS.length) changed.none('NAVIGATION_OK');
+changed.report('every check (' + NAV_APPS.map((p) => p.split('/')[0]).join(', ') + ' changed)');
 
 let failed = 0;
 const check = (name, ok, detail) => { console.log((ok ? 'ok   ' : 'FAIL ') + name + (ok || !detail ? '' : '  (' + detail + ')')); if (!ok) failed++; };

@@ -6,9 +6,13 @@
 //   multi-pane: the main region does not scroll as a whole; each pane scrolls on its own
 //   focus: the navigation and the inspector are hidden; the header and the footer stay
 //   node tests/layout.test.js
+//   TEST_SCOPE=full: always; by default (tests/changed.js) only when the AppShell, the SettingsLayout, a global file or this test changed
 const fs = require('fs');
 const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
+const changed = require('./changed.js');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout'] })) changed.none('LAYOUT_OK 0/0');
+changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
 const MODES = { fluid: 'workspace', contained: 'settings', hybrid: 'detail', 'multi-pane': 'master-detail', focus: 'editor' };

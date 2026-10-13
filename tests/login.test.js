@@ -1,7 +1,11 @@
 // Plenix tests · the login service (services/login): the server on a temporary DATA folder, two accounts made by the CLI with
 // generated passwords (piped to its prompt), then HTTP checks of the sign-in, the session cookie and Nginx's /auth/check.
 // Also the save service's /api/session with the X-Plenix-* headers (it must work after the cutover from Authentik).
-//   node tests/login.test.js
+//   node tests/login.test.js            (LOGIN_PORT: another port, and the next one for the save service)
+//   TEST_SCOPE=full: always; by default (tests/changed.js) when services/login or services/save, a global file or this test changed
+const changed = require('./changed.js');
+require('./limit.js');
+if (!changed.wants({ units: ['services/login'] })) changed.none('PASS login: 0 passed, 0 failed');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');

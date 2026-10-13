@@ -3,11 +3,15 @@
 // alone has a name, there is at most one level 1 heading, and headings never skip a level going down. The static rule
 // (clickable elements without a role) is check-system.rules/semantic-html.js; this test reads the rendered pages.
 //   node tests/semantic-html.test.js                 SEMANTIC_HTML_PAGES_OK, or the findings and exit 1
-//   SEMANTIC_PORT=8835 node tests/semantic-html.test.js   another port
-const { serve, launch, sleep } = require('./lib.js');
-const PORT = +process.env.SEMANTIC_PORT || 8798, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
-const PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
-  .concat(['dam/index.html']);
+//   SEMANTIC_PORT=8835 (or TEST_PORT) node tests/semantic-html.test.js   another port
+//   TEST_SCOPE=full node tests/semantic-html.test.js   every page (default: the pages of what changed, tests/changed.js)
+const { serve, launch, sleep, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.SEMANTIC_PORT || +process.env.TEST_PORT || 8798, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
+  .concat(['dam/index.html']));
+if (!PAGES.length) changed.none('SEMANTIC_HTML_PAGES_OK (0 pages)');
+changed.report(PAGES.length + ' app pages');
 // known findings, each to be fixed in its application (then removed here): a page listed here fails only on another finding
 const KNOWN = {
   'calendar/index.html': /^heading levels skipped: h1 → h3$/,
@@ -20,7 +24,7 @@ const KNOWN = {
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const found = [];
   for (const p of PAGES) {
-    await page.goto(BASE + p, { waitUntil: 'networkidle0' }); await sleep(800);
+    at(p); await page.goto(BASE + p, { waitUntil: 'networkidle0' }); await sleep(800);
     const r = await page.evaluate(() => {
       const visible = (el) => !el.closest('[hidden],[aria-hidden="true"],[inert]') && el.getClientRects().length > 0;
       const all = (sel) => Array.from(document.querySelectorAll(sel)).filter(visible);

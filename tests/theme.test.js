@@ -3,11 +3,16 @@
 // palette colors), builds it, and checks: the theme's stylesheet and the theme list are generated; a theme that writes a
 // color literal, or leaves out a role, is rejected; in a page, switching data-plx-theme changes the roles (light and dark)
 // and PlenixWorkspace.setTheme is remembered for the next page. The repository itself is never changed.
-//   node tests/theme.test.js
+//   node tests/theme.test.js            (TEST_PORT: another port)
+//   TEST_SCOPE=full: always; by default (tests/changed.js) only when a global file (the tokens, the builders, the providers) or this test changed
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { ROOT, serve, launch, sleep } = require('./lib.js');
+const changed = require('./changed.js');
+if (!changed.wants({ units: ['components/Button'] })) changed.none('THEME_OK 0/0');
+changed.report('every check');
+const PORT = +process.env.TEST_PORT || 8800;
 
 const res = [], check = (n, ok, d) => res.push([n, ok, d]);
 const copyDir = (a, b) => { fs.mkdirSync(b, { recursive: true }); for (const e of fs.readdirSync(a, { withFileTypes: true })) { const s = path.join(a, e.name), t = path.join(b, e.name); if (e.isDirectory()) copyDir(s, t); else fs.copyFileSync(s, t); } };
@@ -74,10 +79,10 @@ const fails = (T) => { try { require(path.join(T, 'build-tokens.js'))(T); return
   const page = path.join(__dirname, '.theme-test.html');
   fs.writeFileSync(page, '<!doctype html><html lang="en"><head><meta charset="utf-8"><script src="../platform/providers/theme-boot.js"></script>'
     + '<link rel="stylesheet" href="../platform/platform.css"><link rel="stylesheet" href=".theme-sample.css"></head><body><p>Theme</p><button class="plx-button plx-button--secondary" id="b"><span class="plx-button__label">Save</span></button></body></html>');
-  const server = await serve(8800);
+  const server = await serve(PORT);
   const browser = await launch();
   const p = await browser.newPage();
-  const url = 'http://127.0.0.1:8800/Plenix/tests/.theme-test.html';
+  const url = 'http://127.0.0.1:' + PORT + '/Plenix/tests/.theme-test.html';
   await p.goto(url, { waitUntil: 'networkidle0' }); await sleep(300);
   const read = () => p.evaluate(() => { const s = getComputedStyle(document.documentElement), b = getComputedStyle(document.getElementById('b')); return { theme: document.documentElement.getAttribute('data-plx-theme'), link: s.getPropertyValue('--plx-sys-content-link').trim(), canvas: s.getPropertyValue('--plx-sys-surface-canvas').trim(), radius: b.borderTopLeftRadius, weight: b.fontWeight }; });
   const d0 = await read();

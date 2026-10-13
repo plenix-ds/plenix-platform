@@ -4,9 +4,13 @@
 // holds on Windows and on the Linux CI runner alike.
 //   node tests/visual.test.js            compare (fails on any difference)
 //   node tests/visual.test.js --update   write a new baseline (only after a change that is meant to look different)
+//   TEST_SCOPE=full: always; by default (tests/changed.js) only when the Button, a global file or this test changed
 const fs = require('fs');
 const path = require('path');
 const { ROOT, launch } = require('./lib.js');
+const changed = require('./changed.js');
+if (!changed.wants({ units: ['components/Button'] })) changed.none('VISUAL_OK 0 values (0 buttons)');
+changed.report('every Button');
 const BASELINE = path.join(__dirname, 'baselines', 'button.json');
 const PLAT = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 const VARIANTS = ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary'];

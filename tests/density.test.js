@@ -3,9 +3,13 @@
 // would freeze the page's value (a custom property is computed where it is declared), so this guards every component
 // that has been moved to component tokens.
 //   node tests/density.test.js
+//   TEST_SCOPE=full: always; by default (tests/changed.js) only when a sample's component, a global file or this test changed
 const fs = require('fs');
 const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
+const changed = require('./changed.js');
+if (!changed.wants({ units: ['components/Button', 'components/Input', 'components/Checkbox'] })) changed.none('DENSITY_OK 0/0');
+changed.report('every sample');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // the samples: each drawn once per density region; the expected height is the density's control role ('min': at least
 // the role, for a sample whose content may be taller)

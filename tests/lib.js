@@ -4,6 +4,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer-core');
+const limit = require('./limit.js');   // every test's hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.resolve(__dirname, '..');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.jsx': 'text/plain; charset=utf-8',
@@ -40,4 +41,5 @@ const launch = async () => {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'];
 
-module.exports = { ROOT, serve, launch, sleep, APPS };
+// at(step): the step a timeout names
+module.exports = { ROOT, serve, launch, sleep, APPS, at: limit.at };

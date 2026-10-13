@@ -15,21 +15,26 @@
 // Known findings are kept in tests/baselines/typography.json (page -> mode -> check -> number); the test fails only when
 // a page and mode has more findings than recorded, so they can only go down (aim: none).
 //   node tests/typography.test.js            compare
-//   node tests/typography.test.js --update   record the current findings as the baseline
+//   node tests/typography.test.js --update   record the current findings as the baseline (TEST_SCOPE=full only)
+//   TEST_SCOPE=full node tests/typography.test.js   every page (default: the pages of what changed, tests/changed.js)
 //   TYPO_VERBOSE=1 node tests/typography.test.js   list every finding
 //   TYPO_ONLY=<pattern> node tests/typography.test.js   only the pages whose name matches
-//   TYPO_PORT=8863 node tests/typography.test.js   another port
+//   TYPO_PORT=8863 (or TEST_PORT) node tests/typography.test.js   another port
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep } = require('./lib.js');
-const PORT = +process.env.TYPO_PORT || 8861, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+const { serve, launch, sleep, at } = require('./lib.js');
+const changed = require('./changed.js');
+const PORT = +process.env.TYPO_PORT || +process.env.TEST_PORT || 8861, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'typography.json');
 const ONLY = process.env.TYPO_ONLY ? new RegExp(process.env.TYPO_ONLY) : null;
-const APP_PAGES = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
+const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'])
   // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
   .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
-    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']);
+    'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']));
+const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+changed.noPartialUpdate();
+if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0 on 0 pages');
 // design-system pages: the first item of each group (section and subgroup), and these, where tables of tokens, sizes and
 // values are
 const DS_TITLES = ['Typography', 'Design tokens', 'Color', 'Spacing', 'Radius', 'Text', 'Table', 'Data table', 'Property list', 'Code block', 'Keyboard shortcut', 'Metric', 'Activity list', 'File list', 'Button', 'Badge'];
@@ -131,17 +136,18 @@ async function inspect() {
     };
     for (const a of APP_PAGES) {
       if (ONLY && !ONLY.test(a)) continue;
-      await page.goto(BASE + a, { waitUntil: 'networkidle0' });
+      at(mode + ' ' + a); await page.goto(BASE + a, { waitUntil: 'networkidle0' });
       await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
       await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(900); await take(a);
     }
-    const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
     if (!HAS_DS && mode === 'light') console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-    if (HAS_DS && (!ONLY || ONLY.test('design-system'))) {
-      await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); await take('design-system home');
-      const routes = await page.evaluate((TITLES) => { const seen = {}; return window.DSInventory.filter((r) => { const k = r.sec + '/' + (r.sub || ''); return (!seen[k] && (seen[k] = true)) || TITLES.indexOf(r.title) >= 0; }).map((r) => '#/' + r.sec + '/' + r.id); }, DS_TITLES);
-      for (const r of routes) { await page.evaluate((h) => { location.hash = h; }, r); await sleep(1000); await take('design-system ' + r); }
-    }
+    if (HAS_DS && changed.anyDS() && (!ONLY || ONLY.test('design-system'))) {
+      at(mode + ' design-system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); if (changed.dsHome()) await take('design-system home');
+      const sample = await page.evaluate((TITLES) => { const seen = {}; return window.DSInventory.filter((r) => { const k = r.sec + '/' + (r.sub || ''); return (!seen[k] && (seen[k] = true)) || TITLES.indexOf(r.title) >= 0; }).map((r) => '#/' + r.sec + '/' + r.id); }, DS_TITLES);
+      const routes = await changed.routesIn(page, sample);
+      if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + sample.length + ' sampled design-system pages');
+      for (const r of routes) { at(mode + ' design-system ' + r); await page.evaluate((h) => { location.hash = h; }, r); await sleep(1000); await take('design-system ' + r); }
+    } else if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, 0 design-system pages');
     await page.close();
   }
   await browser.close(); server.close();
