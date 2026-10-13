@@ -2587,6 +2587,16 @@
   --plx-comp-content-grid-ratio-9-16: 0.5625;
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-contextual-help-link-margin-block-start: var(--plx-sys-space-stack-sm);
+  --plx-comp-contextual-help-inline-text: var(--plx-sys-content-muted);
+  --plx-comp-contextual-help-inline-icon-color: var(--plx-sys-content-muted);
+  --plx-comp-contextual-help-inline-title-text: var(--plx-sys-content-default);
+  --plx-comp-contextual-help-inline-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-contextual-help-inline-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-contextual-help-inline-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-contextual-help-inline-line-height: var(--plx-sys-label-height-20px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-empty-state-warning-icon-text: var(--plx-sys-feedback-warning-solid);
   --plx-comp-empty-state-success-icon-text: var(--plx-sys-feedback-success-solid);
 }
@@ -2736,6 +2746,26 @@
   --plx-comp-loading-overlay-progress-max-width: var(--plx-ref-size-240px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-mega-menu-sections-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-mega-menu-column-gap: var(--plx-sys-space-inline-lg);
+  --plx-comp-mega-menu-row-gap: var(--plx-sys-space-stack-lg);
+  --plx-comp-mega-menu-column-width: var(--plx-ref-size-200px);
+  --plx-comp-mega-menu-heading-text: var(--plx-sys-content-muted);
+  --plx-comp-mega-menu-heading-font-family: var(--plx-sys-font-heading);
+  --plx-comp-mega-menu-heading-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-mega-menu-heading-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-mega-menu-heading-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-mega-menu-heading-margin-block-end: var(--plx-sys-space-stack-sm);
+  --plx-comp-mega-menu-link-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-mega-menu-description-text: var(--plx-sys-content-muted);
+  --plx-comp-mega-menu-description-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-mega-menu-description-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-mega-menu-feature-background: var(--plx-sys-surface-sunken);
+  --plx-comp-mega-menu-feature-radius: var(--plx-sys-radius-card-6px);
+  --plx-comp-mega-menu-feature-width: var(--plx-ref-size-240px);
+  --plx-comp-mega-menu-feature-padding: var(--plx-sys-space-inset-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-notice-body-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-notice-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-notice-actions-gap: var(--plx-sys-space-cluster-sm);
@@ -2775,6 +2805,48 @@
   --plx-comp-pictogram-64-icon-size: var(--plx-ref-size-40px);
   --plx-comp-pictogram-96-size: var(--plx-ref-size-96px);
   --plx-comp-pictogram-96-icon-size: var(--plx-ref-size-64px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-popconfirm-description-text: var(--plx-sys-content-muted);
+  --plx-comp-popconfirm-description-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-popconfirm-description-line-height: var(--plx-ref-line-height-normal);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-popover-background: var(--plx-sys-surface-overlay);
+  --plx-comp-popover-text: var(--plx-sys-content-default);
+  --plx-comp-popover-border-color: var(--plx-sys-border-default);
+  --plx-comp-popover-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-popover-focus-border-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-popover-radius: var(--plx-sys-radius-menu-8px);
+  --plx-comp-popover-shadow: var(--plx-sys-elevation-menu);
+  --plx-comp-popover-font-family: var(--plx-sys-font-body);
+  --plx-comp-popover-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-popover-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-popover-padding: var(--plx-sys-space-inset-md);
+  --plx-comp-popover-sm-width: var(--plx-ref-size-240px);
+  --plx-comp-popover-md-width: var(--plx-ref-size-320px);
+  --plx-comp-popover-lg-width: var(--plx-ref-size-400px);
+  --plx-comp-popover-max-width: calc(100vw - var(--plx-sys-floating-viewport-margin) * 2);
+  --plx-comp-popover-header-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-popover-header-margin-block-end: var(--plx-sys-space-stack-sm);
+  --plx-comp-popover-header-min-height: var(--plx-sys-control-height-inline);
+  --plx-comp-popover-title-text: var(--plx-sys-content-default);
+  --plx-comp-popover-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-popover-title-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-popover-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-popover-title-line-height: var(--plx-ref-line-height-snug);
+  --plx-comp-popover-footer-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-popover-footer-margin-block-start: var(--plx-sys-space-stack-md);
+  --plx-comp-popover-arrow-size: var(--plx-ref-size-8px);
+  --plx-comp-popover-arrow-border-color: var(--plx-sys-border-default);
+  --plx-comp-popover-arrow-fill: var(--plx-sys-surface-overlay);
+  --plx-comp-popover-arrow-outset: calc(100% + var(--plx-sys-border-width-thin));
+  --plx-comp-popover-arrow-fill-offset: var(--plx-sys-border-width-thin);
+  --plx-comp-popover-arrow-fill-center: calc(var(--plx-ref-size-8px) * -1);
+  --plx-comp-popover-arrow-inset: var(--plx-sys-space-inset-sm);
+  --plx-comp-popover-arrow-middle: calc(50% - var(--plx-ref-size-8px));
+  --plx-comp-popover-hover-open-delay: var(--plx-ref-motion-delay-long-press);
+  --plx-comp-popover-hover-close-delay: var(--plx-sys-motion-duration-slow);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-preview-ratio-1-1: var(--plx-ref-ratio-1-1);
@@ -2928,6 +3000,21 @@
   --plx-comp-sticky-safe-area-bottom: var(--plx-sys-safe-area-bottom);
   --plx-comp-sticky-safe-area-start: var(--plx-sys-safe-area-start);
   --plx-comp-sticky-safe-area-end: var(--plx-sys-safe-area-end);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-teaching-bubble-media-margin-block-end: var(--plx-sys-space-stack-md);
+  --plx-comp-teaching-bubble-header-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-teaching-bubble-header-min-height: var(--plx-sys-control-height-inline);
+  --plx-comp-teaching-bubble-title-text: var(--plx-sys-content-default);
+  --plx-comp-teaching-bubble-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-teaching-bubble-title-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-teaching-bubble-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-teaching-bubble-title-line-height: var(--plx-sys-control-height-inline);
+  --plx-comp-teaching-bubble-text-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-teaching-bubble-footer-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-teaching-bubble-footer-margin-block-start: var(--plx-sys-space-stack-md);
+  --plx-comp-teaching-bubble-step-text: var(--plx-sys-content-muted);
+  --plx-comp-teaching-bubble-step-font-size: var(--plx-ref-font-size-12);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-text-display-text: var(--plx-sys-content-default);

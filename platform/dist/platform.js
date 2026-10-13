@@ -18742,7 +18742,754 @@ function Time({
   }, el) : el;
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Popover = Popover;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _floating = require("../../utils/floating.js");
+var _Button = require("../Button/Button.jsx");
+var _Sheet = require("../Sheet/Sheet.jsx");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
+   Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
+     a short form, a filter, details or an explanation (09 Overlays › Contextual overlays › Popover; also Popup, Inline
+     dialog and, opened on hover, Hover card). It opens in the browser's top layer and is placed beside the trigger by CSS
+     anchor positioning (utils/floating.js), so no card, pane or scroll area can cover or clip it.
+   Usage:
+     <Popover trigger={<Button caret>Filter</Button>} title="Filter">…</Popover>
+     <Popover trigger={<Button>Share</Button>} title="Share" footer={<Button variant="primary" size="sm">Send</Button>} closeButton>…</Popover>
+     <Popover trigger={<Link href="/people/maya">Maya Chen</Link>} triggerOn="hover" label="Maya Chen" size="sm">…</Popover>
+     <Popover trigger={target} triggerOn="manual" open={open} onOpenChange={setOpen} arrow placement="bottom">…</Popover>
+   Props:
+     trigger: the element that opens it (one element; it gets the ref, and for a click popover aria-haspopup="dialog",
+       aria-expanded and aria-controls)
+     triggerOn: "click" (default: click, Enter or Space on the trigger) | "hover" (a hover card: opens after
+       --plx-comp-popover-hover-open-delay on pointer hover and on keyboard focus, and stays open while the pointer is in
+       it) | "manual" (only the open prop opens it: a teaching bubble pointing at its target)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onOpenChange(open): runs when it opens or closes
+     title: the title in its header; it names the popover
+     label: the accessible name when there is no title
+     footer: a row of actions at the bottom, at the end edge
+     closeButton: a Close button at the end of the header (default false; Escape and a click outside always close it)
+     placement: where it sits against the trigger: "bottom-start" (default) | "bottom" | "bottom-end" | "top" | "top-start"
+       | "top-end" | "start" | "start-top" | "start-bottom" | "end" | "end-top" | "end-bottom" (start and end follow the
+       writing direction)
+     size: "md" (default; 320px wide) | "sm" (240px) | "lg" (400px) | "auto" (as wide as its content); never wider than
+       the window less its margins
+     arrow: a caret on the edge that faces the trigger, pointing at it (default false)
+     role: "dialog" (default) | "alertdialog" (a question that needs an answer: Popconfirm) | null (a disclosure panel of
+       links, MegaMenu: no popup role, and the trigger is a plain disclosure button with aria-expanded)
+     initialFocus: a ref to the element that takes focus when it opens (default: the first control in its body, else its
+       first control (Close, a footer action), else the popover)
+     focusOnOpen: focus moves into it when it opens (default true for a click popover, false for hover and manual)
+     sheetOnNarrow: at the Narrow window class a click popover opens as a bottom Sheet instead (default true; a hover
+       card never does)
+     strings: the words it shows and announces, for other languages: { close: "Close" }
+     className: more classes on the popover
+     children: the content
+     Other props pass through to the popover's <div> (aria-describedby).
+   Behavior:
+     Click: the trigger opens and closes it; focus moves into it (initialFocus, else the first control in its body, else
+       its first control, else the popover) and returns to the trigger when Escape closes it, or when it closes while
+       focus is inside it (Close, an action). Escape, a click outside, and Tab out of it close it. It is not modal: the
+       page stays usable and focus is not trapped.
+     Hover: opens after the open delay on pointer hover, and at once on keyboard focus of the trigger; closes
+       --plx-comp-popover-hover-close-delay after the pointer leaves both, on blur, and with Escape. Touch has no hover:
+       a tap follows the trigger (a link), so a hover card holds nothing that is only there.
+     Manual: opens and closes only by the open prop (a click outside does not close it); Escape asks to close it
+       (onOpenChange(false)) and returns focus to the trigger.
+     Placement: by CSS anchor positioning it flips to the other side and shifts its alignment to stay in the window, and
+       follows the trigger on scroll and resize; without it, it is drawn inside the trigger's wrapper on its side. With an
+       arrow it keeps its side and alignment, so the arrow always points at the trigger.
+     At the Narrow window class (under --plx-sys-shell-phone-below) a click popover is a bottom Sheet: the same title,
+       content and footer, modal, with the sheet's own close.
+   Notes:
+     One popover at a time; never a popover inside a popover. A hint of a few words is a Tooltip; a decision that blocks
+       the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
+     ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
+*/
+const STRINGS = {
+  close: 'Close'
+};
+const SIZES = ['sm', 'md', 'lg', 'auto'];
+
+// the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// a duration token ("0.5s", "250ms") in milliseconds, read from the element's computed style (as Tooltip)
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+function Popover({
+  trigger,
+  triggerOn = 'click',
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  title,
+  label,
+  footer,
+  closeButton = false,
+  placement = 'bottom-start',
+  size = 'md',
+  arrow = false,
+  role = 'dialog',
+  initialFocus,
+  focusOnOpen,
+  sheetOnNarrow = true,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-popover');
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const setOpen = _react.default.useCallback(v => {
+    if (!controlled) setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  }, [controlled, onOpenChange]);
+  const wrap = _react.default.useRef(null),
+    panel = _react.default.useRef(null),
+    anchor = _react.default.useRef(null),
+    timer = _react.default.useRef(null);
+  const hover = triggerOn === 'hover',
+    click = triggerOn === 'click';
+  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
+  const asSheet = click && sheetOnNarrow && narrow;
+  const floating = open && !asSheet;
+  const where = _floating.PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const {
+    placement: used
+  } = (0, _floating.useFloating)(anchor, panel, {
+    open: floating,
+    placement: where,
+    offset: arrow ? 'md' : 'xs',
+    flip: !arrow,
+    shift: !arrow
+  });
+  const [side, align] = used.split('-');
+  const close = _react.default.useCallback(refocus => {
+    setOpen(false);
+    if (refocus && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [setOpen]);
+  (0, _layer.useLayer)(panel, floating, {
+    onEscape: () => close(!hover)
+  });
+
+  // into the top layer as soon as it is in the page, before focus moves in
+  _react.default.useLayoutEffect(() => {
+    const el = panel.current;
+    if (floating && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [floating]);
+  // a click popover takes focus (and a manual one that asks for it); a click outside closes a click popover
+  const takeFocus = focusOnOpen !== undefined ? !!focusOnOpen : click;
+  _react.default.useEffect(() => {
+    if (!floating) return undefined;
+    if (takeFocus) {
+      const root = panel.current;
+      const wanted = initialFocus && initialFocus.current;
+      const first = wanted || (0, _layer.focusables)(root.querySelector('.plx-popover__body'))[0] || (0, _layer.focusables)(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    if (!click) return undefined;
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', outside);
+    return () => document.removeEventListener('mousedown', outside);
+  }, [floating]);
+  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
+  // closed while focus was inside it (Close, an action, the open prop): focus goes back to the trigger, not the page
+  const inside = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (floating || !inside.current) return;
+    inside.current = false;
+    const a = document.activeElement;
+    if ((!a || a === document.body) && anchor.current && anchor.current.focus) anchor.current.focus();
+  }, [floating]);
+
+  // the hover card's timers: open after the open delay, close after the close delay (cancelled by coming back)
+  const later = v => {
+    clearTimeout(timer.current);
+    const el = wrap.current;
+    timer.current = setTimeout(() => setOpen(v), ms(el, v ? '--plx-comp-popover-hover-open-delay' : '--plx-comp-popover-hover-close-delay'));
+  };
+  const hoverProps = hover ? {
+    onPointerEnter: e => {
+      if (e.pointerType !== 'touch') later(true);
+    },
+    onPointerLeave: e => {
+      if (e.pointerType !== 'touch') later(false);
+    },
+    onFocus: e => {
+      if (e.target === anchor.current && e.target.matches(':focus-visible')) {
+        clearTimeout(timer.current);
+        setOpen(true);
+      }
+    },
+    onBlur: e => {
+      if (!wrap.current.contains(e.relatedTarget)) {
+        clearTimeout(timer.current);
+        setOpen(false);
+      }
+    }
+  } : click ? {
+    // Tab out of the popover (or the trigger) to somewhere else closes it; a click on its text does not (no related target)
+    onBlur: e => {
+      if (floating && e.relatedTarget && !wrap.current.contains(e.relatedTarget)) setOpen(false);
+    } // the sheet is a portal: not while it shows
+  } : {};
+  const child = _react.default.Children.only(trigger);
+  const triggerEl = /*#__PURE__*/_react.default.cloneElement(child, click ? {
+    ref: anchor,
+    'aria-haspopup': role ? 'dialog' : undefined,
+    'aria-expanded': open,
+    'aria-controls': open ? id : undefined,
+    expanded: undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  } : {
+    ref: anchor
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const titleId = id + 't';
+  const header = title || closeButton ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__header"
+  }, title ? /*#__PURE__*/_react.default.createElement("h2", {
+    id: titleId,
+    className: "plx-popover__title"
+  }, title) : null, closeButton ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.close,
+    className: "plx-popover__close",
+    onClick: () => close(true)
+  }) : null) : null;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    ref: wrap,
+    className: "plx-popover-anchor"
+  }, hoverProps), triggerEl, floating ? /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: panel,
+    id: id,
+    role: role || undefined,
+    "aria-labelledby": role && title ? titleId : undefined,
+    "aria-label": role && !title ? label : undefined,
+    tabIndex: -1,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "data-plx-popover-side": side,
+    "data-plx-popover-align": align || 'center',
+    className: (0, _cx.cx)('plx-popover', 'plx-popover--' + s, arrow && 'plx-popover--arrow', hover && 'plx-popover--hover', className),
+    onFocus: () => {
+      inside.current = true;
+    },
+    onBlur: e => {
+      inside.current = !!(panel.current && panel.current.contains(e.relatedTarget));
+    }
+  }, rest), arrow ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-popover__arrow",
+    "aria-hidden": "true"
+  }) : null, header, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__body"
+  }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-popover__footer"
+  }, footer) : null) : null, asSheet ? /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
+    open: open,
+    onClose: () => setOpen(false),
+    title: title || label,
+    footer: footer,
+    form: "bottom",
+    initialFocus: initialFocus,
+    closeLabel: t.close
+  }, children) : null);
+}
+  } },
+  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ContextualHelp = ContextualHelp;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Link = require("../Link/Link.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ContextualHelp
+   Summary: Help where the question comes up: an info button beside a label, heading or setting that opens a short
+     explanation in a Popover (09 Overlays › Contextual help), or the same explanation shown in place as an inline tip
+     (10 Patterns › Contextual education).
+   Usage:
+     <Field label={<>Retention <ContextualHelp title="Retention">Deleted files stay in the trash for 30 days.</ContextualHelp></>}>…</Field>
+     <ContextualHelp title="Storage" link={{ href: '../help/storage.html', label: 'About storage' }}>Originals count toward your quota; previews do not.</ContextualHelp>
+     <ContextualHelp variant="inline" title="Tip">Drop files anywhere on the page to upload them.</ContextualHelp>
+   Props:
+     title: the explanation's title (the popover's title; bold before the text of an inline tip)
+     children: the explanation: one to three sentences
+     link: { href, label }: a link to more help after the explanation (optional): on its own line in the popover, at the
+       end of the sentence in an inline tip
+     variant: "info" (default: the info button and its popover) | "inline" (an inline tip: the explanation shown in place,
+       after the info icon, in the muted color)
+     label: the info button's accessible name (default strings.more with the title: "More about Retention")
+     placement: where the popover opens (default "bottom-start"; Popover's placements)
+     size: the popover's width: "sm" (default; 240px) | "md" | "lg"
+     strings: the words it announces, for other languages: { more: "More about {title}", moreUntitled: "More information" }
+     className: more classes on the wrapper
+   Behavior:
+     Info: the button opens the popover on click, Enter or Space (never on hover) and focus moves into it; Escape returns
+       focus to the button, and a click outside or Tab away closes it. At the Narrow window class it opens as a bottom
+       sheet (Popover's sheetOnNarrow).
+     Inline: plain text in the page, read in order; the link is one Tab stop.
+   Notes:
+     The button is the inline-action role (a 24px target) and ghost, so it sits on the label's line without weight.
+     Help that everyone needs is helper text, not hidden help; errors and warnings are never contextual help.
+*/
+
+const STRINGS = {
+  more: 'More about {title}',
+  moreUntitled: 'More information'
+};
+function ContextualHelp({
+  title,
+  children,
+  link,
+  variant = 'info',
+  label,
+  placement = 'bottom-start',
+  size = 'sm',
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const more = v => link && link.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: link.href,
+    variant: v,
+    className: "plx-contextual-help__link"
+  }, link.label) : null;
+  if (variant === 'inline') {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-contextual-help', 'plx-contextual-help--inline', className)
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-contextual-help__icon",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "info-circle",
+      size: "sm"
+    })), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-contextual-help__tip"
+    }, title ? /*#__PURE__*/_react.default.createElement("strong", {
+      className: "plx-contextual-help__title"
+    }, title) : null, title ? ' ' : null, children, link ? ' ' : null, more('inline')));
+  }
+  const name = label || (typeof title === 'string' && title ? t.more.split('{title}').join(title) : t.moreUntitled);
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-contextual-help', 'plx-contextual-help--info', className)
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "xs",
+      iconOnly: true,
+      icon: "info-circle",
+      label: name
+    }),
+    title: title,
+    label: name,
+    placement: placement,
+    size: size
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-contextual-help__text"
+  }, children), link && link.href ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-contextual-help__more"
+  }, more('standalone')) : null));
+}
+  } },
+  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TeachingBubble = TeachingBubble;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · TeachingBubble
+   Summary: A callout that points at a feature to introduce it once, or leads a short tour step by step: a title, one or
+     two sentences, an optional picture, a step count and its actions, in a Popover with an arrow at the feature
+     (09 Overlays › Contextual overlays › Teaching bubble; also 10 Patterns › Coach mark).
+   Usage:
+     <TeachingBubble target={<Button icon="filter">Filters</Button>} open={tip} onDismiss={() => setTip(false)}
+       title="Saved filters" primaryAction={{ label: 'Got it', onClick: done }}>Save a set of filters and open it from here next time.</TeachingBubble>
+     <TeachingBubble target={…} open title="Share a board" step={{ current: 2, total: 3 }}
+       primaryAction={{ label: 'Next', onClick: next }} secondaryAction={{ label: 'Back', onClick: back }} onDismiss={end}>…</TeachingBubble>
+     <TeachingBubble target={…} open media={<Image src="board.png" alt="" ratio="16-9" />} wide title="Boards">…</TeachingBubble>
+   Props:
+     target: the element it points at (one element; it is not changed: it keeps its own role and actions)
+     open: whether it shows (the caller decides, and remembers that it was dismissed)
+     onDismiss(): runs from Close and Escape (the person is done with it)
+     title: the feature's name; it names the bubble
+     children: what the feature does for the person, then how: one or two sentences (about 25 words)
+     media: a picture above the title (an Image; decorative pictures take alt="")
+     step: { current, total }: the step count of a tour ("2 of 3")
+     primaryAction: { label, onClick }: the main action (Got it, Next, Try it)
+     secondaryAction: { label, onClick }: a second action (Back, Not now)
+     placement: where it sits against the target (default "bottom"; Popover's placements)
+     wide: the wide bubble (400px) for a picture or a longer step (default false: 320px)
+     focusOnOpen: focus moves into it when it opens (default false: a bubble that appears by itself leaves focus where it
+       is; set it when a tour step opens it after an action)
+     strings: the words it shows and announces, for other languages: { close: "Close", step: "{current} of {total}" }
+       ({…} are filled with the numbers, set in the data font)
+     className: more classes on the bubble
+   Behavior:
+     It opens only by the open prop (Popover's manual trigger) and stays open until an action or Close; a click outside
+       does not close it. Escape and Close run onDismiss and return focus to the target.
+     It is a non-modal dialog named by its title: the page stays usable; Tab reaches its actions after the target.
+     The arrow points at the target; the bubble keeps its side so the arrow stays true.
+   Notes:
+     One at a time, and only for something new or easily missed; never for errors or what people must know to finish a
+       task. It uses the popover's surface (the overlay surface and border): there is no emphasized teaching color.
+*/
+
+const STRINGS = {
+  close: 'Close',
+  step: '{current} of {total}'
+};
+
+// a string with {name} places filled by numbers in the data font (counts are technical values)
+const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
+  const m = /^\{(\w+)\}$/.exec(part);
+  return m && values[m[1]] !== undefined ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    key: i,
+    variant: "data"
+  }, values[m[1]]) : part;
+});
+function TeachingBubble({
+  target,
+  open = false,
+  onDismiss,
+  title,
+  children,
+  media,
+  step,
+  primaryAction,
+  secondaryAction,
+  placement = 'bottom',
+  wide = false,
+  focusOnOpen = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-teaching-bubble');
+  const actions = primaryAction || secondaryAction;
+  return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: _react.default.Children.only(target),
+    triggerOn: "manual",
+    open: !!open,
+    onOpenChange: v => {
+      if (!v && onDismiss) onDismiss();
+    },
+    placement: placement,
+    size: wide ? 'lg' : 'md',
+    arrow: true,
+    focusOnOpen: focusOnOpen,
+    "aria-labelledby": id + 't',
+    className: (0, _cx.cx)('plx-teaching-bubble', wide && 'plx-teaching-bubble--wide', className)
+  }, media ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-teaching-bubble__media"
+  }, media) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-teaching-bubble__header"
+  }, /*#__PURE__*/_react.default.createElement("h2", {
+    id: id + 't',
+    className: "plx-teaching-bubble__title"
+  }, title), onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.close,
+    className: "plx-teaching-bubble__close",
+    onClick: onDismiss
+  }) : null), /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-teaching-bubble__text"
+  }, children), step || actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-teaching-bubble__footer"
+  }, step ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-teaching-bubble__step"
+  }, fill(t.step, step)) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-teaching-bubble__actions"
+  }, secondaryAction ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: secondaryAction.onClick
+  }, secondaryAction.label) : null, primaryAction ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    onClick: primaryAction.onClick
+  }, primaryAction.label) : null) : null) : null);
+}
+  } },
+  "platform/patterns/Popconfirm/Popconfirm.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Popconfirm = Popconfirm;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Popconfirm
+   Summary: A one-sentence question in a Popover beside the action it guards, with Cancel and the action's verb: a light
+     check before a moderately risky action on one item (09 Overlays › Overlay surfaces › Popconfirm). Built from
+     Popover and Button only.
+   Usage:
+     <Popconfirm trigger={<Button size="xs" icon="trash" iconOnly label="Remove tag" />} title="Remove this tag?"
+       confirmLabel="Remove" tone="danger" onConfirm={remove} />
+     <Popconfirm trigger={<Button>Publish</Button>} title="Publish 3 changes?" description="People with the link see them at once."
+       confirmLabel="Publish" onConfirm={publish} />
+   Props:
+     trigger: the action's button (one element); it opens the question instead of running the action
+     title: the question, naming the action and the object ("Remove this tag?")
+     description: one more sentence when the consequence needs it (optional)
+     confirmLabel: the confirm button's verb ("Remove", "Publish"; never "Yes")
+     cancelLabel: the cancel button's text (default strings.cancel)
+     tone: "default" (the primary button) | "danger" (the danger button: removing or undoing something)
+     onConfirm(): runs the action; the question closes first
+     onCancel(): runs when the question closes without the action (Cancel, Escape, a click outside)
+     placement: where the question opens (default "bottom-start"; Popover's placements)
+     strings: the words it shows, for other languages: { cancel: "Cancel" }
+     className: more classes on the popover
+   Behavior:
+     The trigger opens the question (Popover, role alertdialog, named by the question and described by the description);
+       focus moves to Cancel, so Enter never runs the action by accident.
+     Confirm runs onConfirm and closes; Cancel, Escape and a click outside close without it; focus returns to the trigger
+       from Cancel, Escape and Confirm.
+     At the Narrow window class the question opens as a bottom sheet with the same two buttons.
+   Notes:
+     Irreversible or high-impact actions take a confirmation Dialog; actions that can be undone run at once and offer Undo
+       (the toast's action) instead of asking first.
+*/
+
+const STRINGS = {
+  cancel: 'Cancel'
+};
+function Popconfirm({
+  trigger,
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
+  tone = 'default',
+  onConfirm,
+  onCancel,
+  placement = 'bottom-start',
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-popconfirm');
+  const [open, setOpen] = _react.default.useState(false);
+  const cancelRef = _react.default.useRef(null);
+  const danger = tone === 'danger';
+  const onOpenChange = v => {
+    setOpen(v);
+    if (!v && onCancel) onCancel();
+  };
+  const cancel = () => {
+    setOpen(false);
+    if (onCancel) onCancel();
+  }; // Popover returns focus to the trigger
+  const confirm = () => {
+    setOpen(false);
+    if (onConfirm) onConfirm();
+  };
+  const child = _react.default.Children.only(trigger);
+  const footer = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: cancelRef,
+    onClick: cancel
+  }, cancelLabel || t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: danger ? 'danger' : 'primary',
+    onClick: confirm
+  }, confirmLabel));
+  return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: child,
+    title: title,
+    footer: footer,
+    role: "alertdialog",
+    size: "sm",
+    placement: placement,
+    initialFocus: cancelRef,
+    open: open,
+    onOpenChange: onOpenChange,
+    "aria-describedby": description ? id : undefined,
+    className: (0, _cx.cx)('plx-popconfirm', danger && 'plx-popconfirm--danger', className)
+  }, description ? /*#__PURE__*/_react.default.createElement("p", {
+    id: id,
+    className: "plx-popconfirm__description"
+  }, description) : null);
+}
+  } },
+  "platform/components/MegaMenu/MegaMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MegaMenu = MegaMenu;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../Button/Button.jsx");
+var _Link = require("../Link/Link.jsx");
+var _NavList = require("../NavList/NavList.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · MegaMenu
+   Summary: A top navigation item that opens a large panel of grouped links, column by column with an optional featured
+     area (06 Navigation › Hierarchical navigation › Mega menu). It is a disclosure of links, not a menu: a button with
+     aria-expanded and a panel of headings and lists of links, in a Popover beside the button. At the Narrow window class
+     it is an accordion in place: the button opens the groups as a NavList whose headings fold.
+   Usage:
+     <nav aria-label="Main">
+       <MegaMenu label="Guides" groups={[{ title: 'Start', links: [{ label: 'Upload files', href: 'upload.html', description: 'Add files to a project' }] }]} />
+       <MegaMenu label="Products" groups={groups} featured={<Card …/>} />
+     </nav>
+     <MegaMenu label="Guides" groups={groups} layout="accordion" />   always the accordion (a narrow side area)
+   Props:
+     label: the button's text (the top navigation item)
+     groups: the columns: [{ title, links: [{ label, href, description?, current? }] }]: a heading and its links;
+       description is a short line under the link; current marks the page people are on (aria-current="page")
+     featured: an area after the columns that highlights one item (a Card, a picture with a link); optional
+     layout: "auto" (default: columns, the accordion at the Narrow window class) | "columns" | "accordion"
+     placement: where the panel opens (default "bottom-start"; Popover's placements)
+     className: more classes on the wrapper
+   Behavior:
+     Columns: the button opens and closes the panel on click, Enter or Space (never on hover); focus stays on the button
+       and Tab moves into the links in order. Escape closes it and returns focus to the button; a click outside, Tab past
+       the last link, or following a link closes it.
+     Accordion: the button shows the groups in place, below it; each group heading is a disclosure that folds its links
+       (NavList's collapsible groups, closed at first unless one holds the current page).
+     The panel is never wider than the window; columns wrap under each other when they do not fit.
+   Notes:
+     For a site or documentation with many sections. Task-focused apps use the NavPane and NavList.
+     Group headings are short; link names do not repeat the button's text.
+*/
+
+function MegaMenu({
+  label,
+  groups = [],
+  featured,
+  layout = 'auto',
+  placement = 'bottom-start',
+  className
+}) {
+  const id = (0, _layer.useUid)('plx-mega-menu');
+  const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
+  const accordion = layout === 'accordion' || layout === 'auto' && narrow;
+  const [open, setOpen] = _react.default.useState(false);
+  if (accordion) {
+    const current = g => g.links.some(l => l.current);
+    const navGroups = groups.map(g => ({
+      heading: g.title,
+      defaultExpanded: current(g),
+      items: g.links.map((l, i) => ({
+        id: l.href || String(i),
+        label: l.label,
+        href: l.href
+      }))
+    }));
+    const value = (groups.flatMap(g => g.links).find(l => l.current) || {}).href;
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-mega-menu', 'plx-mega-menu--accordion', className)
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      caret: true,
+      expanded: open,
+      "aria-controls": id,
+      onClick: () => setOpen(!open),
+      className: "plx-mega-menu__toggle"
+    }, label), open ? /*#__PURE__*/_react.default.createElement("div", {
+      id: id,
+      className: "plx-mega-menu__sections"
+    }, /*#__PURE__*/_react.default.createElement(_NavList.NavList, {
+      label: label,
+      groups: navGroups,
+      value: value
+    })) : null);
+  }
+
+  // following a link closes the panel (the page may stay: a link to a place on it)
+  const follow = () => setOpen(false);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-mega-menu', 'plx-mega-menu--columns', featured && 'plx-mega-menu--featured', className)
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      caret: true
+    }, label),
+    role: null,
+    open: open,
+    onOpenChange: setOpen,
+    focusOnOpen: false,
+    sheetOnNarrow: false,
+    size: "auto",
+    placement: placement,
+    className: "plx-mega-menu__panel"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-mega-menu__columns"
+  }, groups.map((g, gi) => /*#__PURE__*/_react.default.createElement("section", {
+    key: gi,
+    className: "plx-mega-menu__group",
+    "aria-labelledby": id + 'h' + gi
+  }, /*#__PURE__*/_react.default.createElement("h2", {
+    id: id + 'h' + gi,
+    className: "plx-mega-menu__heading"
+  }, g.title), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-mega-menu__links"
+  }, g.links.map((l, li) => /*#__PURE__*/_react.default.createElement("li", {
+    key: li,
+    className: "plx-mega-menu__item"
+  }, /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: l.href,
+    variant: "standalone",
+    "aria-current": l.current ? 'page' : undefined,
+    onClick: follow,
+    className: "plx-mega-menu__link"
+  }, l.label), l.description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-mega-menu__description"
+  }, l.description) : null))))), featured ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-mega-menu__feature"
+  }, featured) : null)));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18956,6 +19703,12 @@ Object.defineProperty(exports, "ContentGrid", {
   enumerable: true,
   get: function () {
     return _ContentGrid.ContentGrid;
+  }
+});
+Object.defineProperty(exports, "ContextualHelp", {
+  enumerable: true,
+  get: function () {
+    return _ContextualHelp.ContextualHelp;
   }
 });
 Object.defineProperty(exports, "Count", {
@@ -19204,6 +19957,12 @@ Object.defineProperty(exports, "MediaViewer", {
     return _MediaViewer.MediaViewer;
   }
 });
+Object.defineProperty(exports, "MegaMenu", {
+  enumerable: true,
+  get: function () {
+    return _MegaMenu.MegaMenu;
+  }
+});
 Object.defineProperty(exports, "Menu", {
   enumerable: true,
   get: function () {
@@ -19298,6 +20057,18 @@ Object.defineProperty(exports, "Pictogram", {
   enumerable: true,
   get: function () {
     return _Pictogram.Pictogram;
+  }
+});
+Object.defineProperty(exports, "Popconfirm", {
+  enumerable: true,
+  get: function () {
+    return _Popconfirm.Popconfirm;
+  }
+});
+Object.defineProperty(exports, "Popover", {
+  enumerable: true,
+  get: function () {
+    return _Popover.Popover;
   }
 });
 Object.defineProperty(exports, "Portal", {
@@ -19598,6 +20369,12 @@ Object.defineProperty(exports, "TagList", {
   enumerable: true,
   get: function () {
     return _Tag.TagList;
+  }
+});
+Object.defineProperty(exports, "TeachingBubble", {
+  enumerable: true,
+  get: function () {
+    return _TeachingBubble.TeachingBubble;
   }
 });
 Object.defineProperty(exports, "Text", {
@@ -20429,6 +21206,11 @@ var _Banner = require("./components/Banner/Banner.jsx");
 var _Scrim = require("./components/Scrim/Scrim.jsx");
 var _LoadingOverlay = require("./components/LoadingOverlay/LoadingOverlay.jsx");
 var _Time = require("./components/Time/Time.jsx");
+var _Popover = require("./components/Popover/Popover.jsx");
+var _ContextualHelp = require("./components/ContextualHelp/ContextualHelp.jsx");
+var _TeachingBubble = require("./components/TeachingBubble/TeachingBubble.jsx");
+var _Popconfirm = require("./patterns/Popconfirm/Popconfirm.jsx");
+var _MegaMenu = require("./components/MegaMenu/MegaMenu.jsx");
   } }
   };
   var cache = {};

@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.51] - 2026-10-13
+
+### Added
+- The complete library, wave 5, lane A (12 inventory items):
+  - Popover: a non-modal anchored dialog in the top layer, placed by CSS anchor positioning; click, hover (the hover
+    card) or manual; title, close, footer, arrow, sizes; a bottom sheet at Narrow; popup and inline dialog pages;
+  - Contextual help (an info button with a small popover, or an inline tip) and contextual education;
+  - Teaching bubble (picture, title, step count, actions) and coach marks;
+  - Popconfirm (a question with Cancel and the verb; focus starts on Cancel);
+  - Mega menu (a disclosure of link columns; an accordion at Narrow).
+
 ## [0.31.50] - 2026-10-13
 
 ### Changed
