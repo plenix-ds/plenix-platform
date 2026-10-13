@@ -6,6 +6,15 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.46] - 2026-10-13
+
+### Changed
+- Tests run only what changed (owner): `npm test` maps the changed files to the pages, records and labs they affect;
+  a change with nothing relevant passes in seconds. `npm run test:full` runs everything. Every test has a hard time
+  limit and names the step where it stopped.
+- CI on every push runs the quick checks and the changed-only browser tests in six parallel jobs. The full suite is a
+  manual workflow, the final gate once everything is complete.
+
 ## [0.31.45] - 2026-10-13
 
 ### Changed
