@@ -1,0 +1,65 @@
+{
+  "$description": "Barcode (platform/components/Barcode): its tokens (library wave 4).",
+  "plx-comp": {
+    "barcode-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "Barcode: the surface behind the bars, the quiet zone and the line under them."
+    },
+    "barcode-bar": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Barcode: the color of the bars, the text color, the highest contrast with the surface."
+    },
+    "barcode-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Barcode: the human-readable line under the bars."
+    },
+    "barcode-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "Barcode: the human-readable line is a technical value, in the data font."
+    },
+    "barcode-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Barcode: the size of the human-readable line and of the invalid-value message."
+    },
+    "barcode-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "Barcode: the line height of the human-readable line."
+    },
+    "barcode-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Barcode: the space between the bars and the line under them."
+    },
+    "barcode-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Barcode: the surface above the bars and below the line (the quiet zone at the sides is part of the drawing)."
+    },
+    "barcode-sm-height": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "Barcode: the height of the bars at size sm (a dense label)."
+    },
+    "barcode-md-height": {
+      "$value": "{plx-ref.size-64px}",
+      "$type": "dimension",
+      "$description": "Barcode: the height of the bars at size md, the default (a narrow bar of 2px)."
+    },
+    "barcode-lg-height": {
+      "$value": "{plx-ref.size-96px}",
+      "$type": "dimension",
+      "$description": "Barcode: the height of the bars at size lg (a code scanned from the screen)."
+    },
+    "barcode-error-text": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Barcode: the message for a value the format cannot hold, in the danger color on the surface (as the error empty state’s icon)."
+    }
+  }
+}

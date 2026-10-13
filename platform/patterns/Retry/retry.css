@@ -1,0 +1,2 @@
+/* Plenix · Retry (platform/patterns/Retry): the status line of RetryNotice under the message (the wait, the attempt) */
+.plx-retry__status{column-gap:var(--plx-comp-retry-status-gap);display:flex;flex-wrap:wrap;margin-block-start:var(--plx-comp-retry-status-margin-block-start);row-gap:0;}
