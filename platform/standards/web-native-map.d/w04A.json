@@ -1,0 +1,9 @@
+{
+  "$description": "Library part w04A (wave 4, lane A): the iOS and Android counterparts of Barcode, the section message, the Error state and the Retry pattern. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "content|Barcode": { "ios": ["ios-content|Image views"], "android": ["android-content|Images"] },
+    "feedback|Section message": { "ios": ["ios-feedback|Feedback"], "android": ["android-feedback|Inline message"] },
+    "feedback|Error state": { "ios": ["ios-feedback|Feedback"], "android": ["android-feedback|Error state", "android-feedback|App state"] },
+    "feedback|Retry pattern": { "ios": ["ios-feedback|Feedback"], "android": ["android-feedback|Error state"] }
+  }
+}

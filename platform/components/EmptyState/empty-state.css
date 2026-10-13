@@ -10,3 +10,7 @@
 .plx-empty-state__icon .plx-icon{--plx-comp-icon-size:var(--plx-ref-size-24px);}
 /* the error tone (platforms.md 5.5): the icon in the danger color; the title says what failed */
 .plx-empty-state--error .plx-empty-state__icon{color:var(--plx-comp-empty-state-error-icon-text);}
+/* the warning and success tones (library wave 4): the icon in the tone's solid color, on the surface; the words say what
+   needs care or what is done, so color is never the only sign */
+.plx-empty-state--warning .plx-empty-state__icon{color:var(--plx-comp-empty-state-warning-icon-text);}
+.plx-empty-state--success .plx-empty-state__icon{color:var(--plx-comp-empty-state-success-icon-text);}

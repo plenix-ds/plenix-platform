@@ -1,0 +1,24 @@
+/* Plenix · Persona (platform/components/Persona). The avatar, then the name (with a role badge) over one detail; the
+   named size steps the avatar, the gap and both text sizes together. Anatomy and API: Persona.jsx. */
+.plx-persona{align-items:center;display:flex;min-inline-size:0;}
+.plx-persona__text{display:flex;flex-direction:column;min-inline-size:0;}
+.plx-persona__primary{align-items:center;column-gap:var(--plx-comp-persona-role-gap);display:flex;min-inline-size:0;}
+.plx-persona .plx-persona__name{color:var(--plx-comp-persona-name-color);font-weight:var(--plx-comp-persona-name-font-weight);line-height:var(--plx-comp-persona-line-height);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-persona__role{flex-shrink:0;}
+.plx-persona__secondary{color:var(--plx-comp-persona-secondary-color);line-height:var(--plx-comp-persona-line-height);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* sizes: the gap after the avatar and the two text sizes */
+.plx-persona--xs{column-gap:var(--plx-comp-persona-xs-gap);}
+.plx-persona--xs .plx-persona__name{font-size:var(--plx-comp-persona-xs-name-font-size);}
+.plx-persona--xs .plx-persona__secondary{font-size:var(--plx-comp-persona-xs-secondary-font-size);}
+.plx-persona--sm{column-gap:var(--plx-comp-persona-sm-gap);}
+.plx-persona--sm .plx-persona__name{font-size:var(--plx-comp-persona-sm-name-font-size);}
+.plx-persona--sm .plx-persona__secondary{font-size:var(--plx-comp-persona-sm-secondary-font-size);}
+.plx-persona--md{column-gap:var(--plx-comp-persona-md-gap);}
+.plx-persona--md .plx-persona__name{font-size:var(--plx-comp-persona-md-name-font-size);}
+.plx-persona--md .plx-persona__secondary{font-size:var(--plx-comp-persona-md-secondary-font-size);}
+.plx-persona--lg{column-gap:var(--plx-comp-persona-lg-gap);}
+.plx-persona--lg .plx-persona__name{font-size:var(--plx-comp-persona-lg-name-font-size);}
+.plx-persona--lg .plx-persona__secondary{font-size:var(--plx-comp-persona-lg-secondary-font-size);}
+.plx-persona--xl{column-gap:var(--plx-comp-persona-xl-gap);}
+.plx-persona--xl .plx-persona__name{font-size:var(--plx-comp-persona-xl-name-font-size);}
+.plx-persona--xl .plx-persona__secondary{font-size:var(--plx-comp-persona-xl-secondary-font-size);}

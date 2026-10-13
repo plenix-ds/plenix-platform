@@ -1,0 +1,25 @@
+{
+  "$description": "Retry (platform/patterns/Retry): the status line of RetryNotice and the waits of useRetry (library wave 4).",
+  "plx-comp": {
+    "retry-status-gap": {
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension",
+      "$description": "Retry: the space between the wait (Retrying in …) and the attempt (Attempt 2 of 3) on the status line."
+    },
+    "retry-status-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Retry: the space between the message and the status line under it."
+    },
+    "retry-delay": {
+      "$value": "2s",
+      "$type": "duration",
+      "$description": "Retry: the first wait before useRetry tries again by itself (auto); each later wait doubles (behavior, read by tokenMs like toast-duration)."
+    },
+    "retry-delay-max": {
+      "$value": "30s",
+      "$type": "duration",
+      "$description": "Retry: the longest wait between two automatic attempts, however many have failed."
+    }
+  }
+}

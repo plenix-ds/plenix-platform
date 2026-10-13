@@ -531,7 +531,7 @@ function RadioTiles({
   })));
 }
   } },
-  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -541,31 +541,58 @@ exports.StatusDot = StatusDot;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
-   Summary: A 6px dot that marks a state (active, paused, priority).
+   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy,
+     offline) in the Status colors.
    Usage:
      <StatusDot tone="success" label="Active" />
+     <StatusDot tone="busy" label="Busy" />
+     <StatusDot tone="away" size="md" icon label="Away" />
    Props:
-     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"
+     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
+       roles of the Status colors, library wave 4): "online" | "away" | "busy" (do not disturb) | "offline"
+     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
+     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
+       clock, busy a bar, offline a cross (default false; presence tones only)
      label: the state in words, read by assistive technology
      className: more classes on the dot
      ...rest: other attributes go on the dot element
    Behavior:
      Without a label the dot is decorative and hidden from assistive technology.
+     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
    Notes:
      Without a label, pair the dot with visible text.
+     Avatar's presence prop draws this dot at the avatar's corner.
 */
+const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const GLYPHS = {
+  online: 'check',
+  away: 'clock',
+  offline: 'close-2'
+}; // busy is a bar, drawn by the stylesheet
+const SIZES = ['md', 'lg'];
 function StatusDot({
   tone = 'neutral',
+  size = 'sm',
+  icon = false,
   label,
   className,
   ...rest
 }) {
+  const s = SIZES.indexOf(size) >= 0 ? size : null;
+  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0;
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, className),
+    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
     "aria-hidden": label ? undefined : true
-  }, rest), label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
+  }, rest), glyph ? GLYPHS[tone] ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: GLYPHS[tone],
+    className: "plx-status-dot__glyph"
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-dot__bar",
+    "aria-hidden": "true"
+  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
   "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -995,7 +1022,7 @@ function Kbd({
   }, rest), children);
 }
   } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1005,6 +1032,7 @@ exports.Avatar = Avatar;
 exports.initialsOf = initialsOf;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _StatusDot = require("../StatusDot/StatusDot.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
    Summary: A person's picture, or their initials, in a rounded square (never a circle).
@@ -1023,13 +1051,19 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        black or white text (batch 290)
      label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
        assistive technology
+     presence: the person's availability (library wave 4): "online" | "away" | "busy" (do not disturb) | "offline", a
+       StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
+       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
+       availability's glyph (check, clock, bar, cross) so it never rests on color alone
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy", offline: "Offline" }
      className: more classes on the avatar
    Behavior:
      A picture that fails to load falls back to the initials.
      The corner and the text size follow the size.
      Initials are the first letters of the first and last name ("Raphael Maher" → RM).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
-     With a label the avatar is an image (role="img") named by the label.
+     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
+     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
    Notes:
      Other props pass through to the <span>.
      initialsOf(name) is also exported for pages that need the same initials.
@@ -1044,6 +1078,23 @@ const NAMED = {
   lg: 40,
   xl: 48,
   '2xl': 64
+};
+// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
+const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const DOT = {
+  20: 'sm',
+  24: 'sm',
+  28: 'sm',
+  32: 'sm',
+  40: 'md',
+  48: 'md',
+  64: 'lg'
+};
+const STRINGS = {
+  online: 'Online',
+  away: 'Away',
+  busy: 'Busy',
+  offline: 'Offline'
 };
 
 // first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped
@@ -1062,31 +1113,41 @@ function Avatar({
   color,
   category,
   label,
+  presence,
+  strings,
   className,
   ...rest
 }) {
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
+  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
+  const words = Object.assign({}, STRINGS, strings);
+  const named = label && p ? label + ', ' + words[p] : label;
   // a picture that fails to load falls back to the initials (batch 215)
   const [failed, setFailed] = _react.default.useState(false);
   _react.default.useEffect(() => {
     setFailed(false);
   }, [src]);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, className),
+    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', className),
     "data-plx-avatar": "",
     "data-plx-color": color || undefined,
     "data-plx-category": category || undefined,
     role: label ? 'img' : undefined,
-    "aria-label": label,
+    "aria-label": named,
     "aria-hidden": label ? undefined : true
   }, rest), src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
     className: "plx-avatar__image",
     src: src,
     alt: "",
     onError: () => setFailed(true)
-  }) : text);
+  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
+    tone: p,
+    size: DOT[s],
+    icon: DOT[s] !== 'sm',
+    className: "plx-avatar__presence"
+  }) : null);
 }
   } },
   "platform/components/Divider/Divider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -1746,7 +1807,7 @@ function Thumbnail({
   }));
 }
   } },
-  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1756,20 +1817,32 @@ exports.Notice = Notice;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Notice
-   Summary: A short message inside a page, a panel or a dialog (an inline message).
+   Summary: A short message inside a page, a panel or a dialog (an inline message); with a title, actions or a dismiss
+     button it is a section message: a message about one section of the page that people can act on or put away.
      It shows its tone's soft surface and content color, an icon and the text.
    Usage:
      <Notice tone="warning">This folder is shared with 3 people.</Notice>
+     <Notice tone="danger" title="The export failed" actions={<Button size="xs" onClick={retry}>Try again</Button>}
+       onDismiss={() => setShown(false)}>The server did not answer.</Notice>
    Props:
      tone: "info" (default) | "success" | "warning" | "danger"
      icon: an icon name; the tone's icon unless given
+     title: a short heading above the text, which names the message (a section message)
+     actions: buttons under the text (one or two, size "xs"), the next steps the message offers
+     onDismiss(event): shows a dismiss button at the end; called when it is pressed (the page hides the notice)
+     strings: the words it announces, for other languages: { dismiss: "Dismiss" } (the dismiss button's name)
      className: more classes on the notice
      children: the message text
      ...rest: other attributes go on the notice element
    Behavior:
      A danger notice has role="alert", so screen readers announce it.
+     The dismiss button is the last Tab stop of the notice; the page decides what happens to focus after it hides the
+       notice (it moves to the next thing in the section).
+   Notes:
+     Without a title, actions or onDismiss the markup is the plain inline message (the icon and the text).
 */
 const ICONS = {
   info: 'info-circle',
@@ -1777,21 +1850,46 @@ const ICONS = {
   warning: 'warning',
   danger: 'alert'
 };
+const STRINGS = {
+  dismiss: 'Dismiss'
+};
 function Notice({
   tone = 'info',
   icon,
+  title,
+  actions,
+  onDismiss,
+  strings,
   className,
   children,
   ...rest
 }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const section = title || actions;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-notice', 'plx-notice--' + tone, className),
     role: tone === 'danger' ? 'alert' : undefined
   }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: icon || ICONS[tone]
-  }), /*#__PURE__*/_react.default.createElement("div", {
+  }), section ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__body"
+  }, title ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__title"
+  }, title) : null, children ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-notice__text"
-  }, children));
+  }, children) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__actions"
+  }, actions) : null) : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__text"
+  }, children), onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    className: "plx-notice__dismiss",
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.dismiss,
+    onClick: onDismiss
+  }) : null);
 }
   } },
   "platform/providers/apps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -3449,53 +3547,134 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EmptyState
-   Summary: What a region shows when it has nothing yet, and how to add the first item; or, in the error tone, what failed
-     and the one action that recovers (platforms.md 5.5).
+   Summary: What a region shows when it has nothing yet, and how to add the first item; in a tone, what failed, what needs
+     care or what went well, and the one action that follows (platforms.md 5.5); with a kind, the common system states
+     (offline, degraded, permission denied, not found, maintenance, completion) with their icon, tone and words.
    Usage:
      <EmptyState size="page" icon="folder" title="No assets yet" action={<Button variant="primary">Upload</Button>}>
        Upload files to start.</EmptyState>
      <EmptyState tone="error" title="The assets could not load" action={<Button icon="refresh" onClick={reload}>Retry</Button>}>
        The server did not answer.</EmptyState>
+     <EmptyState kind="offline" action={<Button icon="refresh" onClick={reload}>Try again</Button>} />
+     <EmptyState kind="permission-denied" title="You can’t open this project">Ask its owner to share it with you.</EmptyState>
    Props:
      size: "inline" (default; a line inside a list or table area) | "page" (a whole view)
      tone: "neutral" (default; empty) | "error" (the content could not load: the title names the problem, the action
-       recovers; announced as an alert, the icon in the danger color)
-     icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the error tone's default is "warning"
-     title: the main line
-     action: a button (one: the action that fills the region, or that recovers from the error)
-     children: the explaining text
+       recovers; announced as an alert, the icon in the danger color) | "warning" (something needs care before the region
+       works fully: the icon in the warning color) | "success" (the work here is finished: the icon in the success color);
+       warning and success are announced politely (role="status")
+     kind: a system state that brings its icon, tone, title and text (each still overridable by the props):
+       "offline" (warning) | "degraded" (warning) | "permission-denied" (neutral) | "not-found" (neutral)
+       | "maintenance" (neutral) | "completion" (success)
+     icon: an icon name or an <Icon> (or other mark); hidden from assistive technology; the default comes from the kind,
+       else from the tone (error and warning "warning", success "circle-check")
+     title: the main line (the kind's title unless given)
+     action: a button (one: the action that fills the region, recovers from the error or moves on)
+     children: the explaining text (the kind's text unless given)
+     strings: the kinds' words, for other languages: { offline: { title, text }, degraded: { … }, … } (merged over the defaults)
      className: more classes on the region
    Behavior:
-     The error tone is a live alert (role="alert"): a screen reader says it when it appears. Its words carry the meaning;
-       the danger color on the icon is never the only sign (WCAG 1.4.1).
+     The error tone is a live alert (role="alert"): a screen reader says it when it appears. Warning and success are a
+       status (role="status"), read when the reader is idle. The neutral tone is not announced.
+     Its words carry the meaning; the tone color on the icon is never the only sign (WCAG 1.4.1).
    Notes:
      Other props pass through to the <div>.
+     A kind sets defaults only: an explicit tone, icon, title or children wins.
 */
+// the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
+const KINDS = {
+  offline: {
+    tone: 'warning',
+    icon: 'warning'
+  },
+  degraded: {
+    tone: 'warning',
+    icon: 'warning'
+  },
+  'permission-denied': {
+    tone: 'neutral',
+    icon: 'lock'
+  },
+  'not-found': {
+    tone: 'neutral',
+    icon: 'doc-search'
+  },
+  maintenance: {
+    tone: 'neutral',
+    icon: 'settings-maintenance'
+  },
+  completion: {
+    tone: 'success',
+    icon: 'circle-check'
+  }
+};
+const STRINGS = {
+  offline: {
+    title: 'You’re offline',
+    text: 'Check your connection. This page updates when you’re back online.'
+  },
+  degraded: {
+    title: 'Some features aren’t working',
+    text: 'A service is slow or not responding, so what you see may be out of date.'
+  },
+  'permission-denied': {
+    title: 'You don’t have access',
+    text: 'Ask the owner to share it with you.'
+  },
+  'not-found': {
+    title: 'This page doesn’t exist',
+    text: 'It may have been moved or deleted. Check the address or go back.'
+  },
+  maintenance: {
+    title: 'Down for maintenance',
+    text: 'This service is being updated. Try again in a few minutes.'
+  },
+  completion: {
+    title: 'All done',
+    text: 'There’s nothing left to do here.'
+  }
+};
+const TONE_ICONS = {
+  error: 'warning',
+  warning: 'warning',
+  success: 'circle-check'
+};
+const ROLES = {
+  error: 'alert',
+  warning: 'status',
+  success: 'status'
+};
 function EmptyState({
   size = 'inline',
-  tone = 'neutral',
+  tone,
+  kind,
   icon,
   title,
   action,
+  strings,
   className,
   children,
   ...rest
 }) {
-  const error = tone === 'error';
-  const mark = icon === undefined && error ? 'warning' : icon;
+  const preset = KINDS[kind];
+  const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
+  const t = tone || (preset ? preset.tone : 'neutral');
+  const mark = icon !== undefined ? icon : preset ? preset.icon : TONE_ICONS[t];
+  const head = title !== undefined ? title : words ? words.title : null;
+  const text = children !== undefined && children !== null ? children : words ? words.text : null;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-empty-state', 'plx-empty-state--' + size, error && 'plx-empty-state--error', className),
-    role: error ? 'alert' : undefined
+    className: (0, _cx.cx)('plx-empty-state', 'plx-empty-state--' + size, t !== 'neutral' && 'plx-empty-state--' + t, className),
+    role: ROLES[t]
   }, rest), mark ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__icon",
     "aria-hidden": "true"
   }, typeof mark === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: mark
-  }) : mark) : null, title ? /*#__PURE__*/_react.default.createElement("div", {
+  }) : mark) : null, head ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__title"
-  }, title) : null, children ? /*#__PURE__*/_react.default.createElement("div", {
+  }, head) : null, text ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__text"
-  }, children) : null, action ? /*#__PURE__*/_react.default.createElement("div", {
+  }, text) : null, action ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-empty-state__action"
   }, action) : null);
 }
@@ -16746,7 +16925,1252 @@ function Figure({
   }, credit)) : null);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/barcode.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BARCODE_QUIET_ZONE = void 0;
+exports.barcodeCheckDigit = barcodeCheckDigit;
+exports.encodeBarcode = encodeBarcode;
+/* Plenix · Barcode encoding (platform/utils/barcode.js)
+   Summary: Turns a value into the bars of a one-dimensional barcode: Code 128 (any printable ASCII text), EAN-13 and
+     UPC-A (retail numbers, with their check digit). The Barcode component draws the result; nothing here touches the page.
+   Usage:
+     encodeBarcode('PLX-2026-0042')                 // { format: 'code128', modules: 167, bars: [[0, 2], …], text: 'PLX-2026-0042' }
+     encodeBarcode('400638133393', 'ean13')         // the check digit is added: text '4 006381 333931'
+     encodeBarcode('03600029145', 'upca')           // text '0 36000 29145 2'
+     barcodeCheckDigit('400638133393')              // 1
+   Props:
+     encodeBarcode(value, format): format "code128" (default) | "ean13" | "upca"; returns { format, value, modules (the
+       width in narrow bars), bars ([start, width] pairs in modules), text (the human-readable line) } or null when the
+       value cannot be written in that format (letters in an EAN, a wrong check digit, text outside printable ASCII)
+     barcodeCheckDigit(digits): the EAN / UPC check digit of 11 (UPC-A) or 12 (EAN-13) digits
+     BARCODE_QUIET_ZONE: the empty modules kept on each side (10), so a scanner finds the first bar
+   Behavior:
+     Code 128 uses code set C (two digits per symbol) when the whole value is an even number of four or more digits, else
+       code set B. The symbol check character is added.
+     EAN-13 takes 12 digits (the check digit is computed) or 13 (the check digit must match); UPC-A takes 11 or 12, and
+       is drawn as the EAN-13 with a leading 0, which is the same pattern.
+   Notes:
+     The bars are geometry for an SVG viewBox in modules: the stylesheet sets the height and the width follows.
+*/
+
+// Code 128: the bar and space widths of symbols 0–106 (106 is the stop, with its final bar)
+const C128 = ('212222 222122 222221 121223 121322 131222 122213 122312 132212 221213 221312 231212 112232 122132 122231 113222 ' + '123122 123221 223211 221132 221231 213212 223112 312131 311222 321122 321221 312212 322112 322211 212123 212321 232121 ' + '111323 131123 131321 112313 132113 132311 211313 231113 231311 112133 112331 132131 113123 113321 133121 313121 211331 ' + '231131 213113 213311 213131 311123 311321 331121 312113 312311 332111 314111 221411 431111 111224 111422 121124 121421 ' + '141122 141221 112214 112412 122114 122411 142112 142211 241211 221114 413111 241112 134111 111242 121142 121241 114212 ' + '124112 124211 411212 421112 421211 212141 214121 412121 111143 111341 131141 114113 114311 411113 411311 113141 114131 ' + '311141 411131 211412 211214 211232 2331112').split(' ');
+const START_B = 104,
+  START_C = 105,
+  STOP = 106;
+
+// EAN: the left odd (L) patterns; R is L inverted, G is R reversed; the first digit sets the left half's L/G parity
+const L = ['0001101', '0011001', '0010011', '0111101', '0100011', '0110001', '0101111', '0111011', '0110111', '0001011'];
+const R = L.map(p => p.replace(/./g, b => b === '1' ? '0' : '1'));
+const G = R.map(p => p.split('').reverse().join(''));
+const PARITY = ['LLLLLL', 'LLGLGG', 'LLGGLG', 'LLGGGL', 'LGLLGG', 'LGGLLG', 'LGGGLL', 'LGLGLG', 'LGLGGL', 'LGGLGL'];
+const BARCODE_QUIET_ZONE = exports.BARCODE_QUIET_ZONE = 10;
+
+// widths ("212222", bar first) to [start, width] bars from a module offset
+function widthsToBars(widths, at, out) {
+  let x = at;
+  for (let i = 0; i < widths.length; i++) {
+    const w = +widths[i];
+    if (i % 2 === 0) out.push([x, w]);
+    x += w;
+  }
+  return x;
+}
+// a module string ("1011…") to [start, width] bars
+function modulesToBars(bits) {
+  const out = [];
+  for (let i = 0; i < bits.length; i++) {
+    if (bits[i] !== '1') continue;
+    let j = i;
+    while (bits[j + 1] === '1') j++;
+    out.push([i, j - i + 1]);
+    i = j;
+  }
+  return out;
+}
+function code128(value) {
+  const text = String(value);
+  if (!text.length || !/^[\x20-\x7E]+$/.test(text)) return null;
+  const digits = /^\d+$/.test(text) && text.length >= 4 && text.length % 2 === 0;
+  const codes = digits ? [START_C] : [START_B];
+  if (digits) for (let i = 0; i < text.length; i += 2) codes.push(+text.slice(i, i + 2));else for (const ch of text) codes.push(ch.charCodeAt(0) - 32);
+  const check = codes.reduce((sum, c, i) => sum + c * (i || 1), 0) % 103;
+  codes.push(check, STOP);
+  const bars = [];
+  let x = 0;
+  codes.forEach(c => {
+    x = widthsToBars(C128[c], x, bars);
+  });
+  return {
+    format: 'code128',
+    value: text,
+    modules: x,
+    bars,
+    text
+  };
+}
+function barcodeCheckDigit(digits) {
+  const d = String(digits).split('').map(Number);
+  // weights from the right: 3, 1, 3, … (the digit next to the check digit weighs 3)
+  const sum = d.reverse().reduce((s, n, i) => s + n * (i % 2 === 0 ? 3 : 1), 0);
+  return (10 - sum % 10) % 10;
+}
+function ean13(value, upc) {
+  const raw = String(value).replace(/\s+/g, '');
+  const len = upc ? 11 : 12;
+  if (!/^\d+$/.test(raw) || raw.length !== len && raw.length !== len + 1) return null;
+  const body = raw.slice(0, len);
+  const check = barcodeCheckDigit(body);
+  if (raw.length === len + 1 && +raw[len] !== check) return null;
+  const full = (upc ? '0' : '') + body + check; // UPC-A is EAN-13 with a leading 0
+  const parity = PARITY[+full[0]];
+  let bits = '101';
+  for (let i = 1; i <= 6; i++) bits += (parity[i - 1] === 'L' ? L : G)[+full[i]];
+  bits += '01010';
+  for (let i = 7; i <= 12; i++) bits += R[+full[i]];
+  bits += '101';
+  const shown = upc ? full.slice(1) : full;
+  const text = upc ? shown[0] + ' ' + shown.slice(1, 6) + ' ' + shown.slice(6, 11) + ' ' + shown[11] : full[0] + ' ' + full.slice(1, 7) + ' ' + full.slice(7);
+  return {
+    format: upc ? 'upca' : 'ean13',
+    value: shown,
+    modules: bits.length,
+    bars: modulesToBars(bits),
+    text
+  };
+}
+function encodeBarcode(value, format = 'code128') {
+  if (value === undefined || value === null) return null;
+  if (format === 'ean13') return ean13(value, false);
+  if (format === 'upca') return ean13(value, true);
+  return code128(value);
+}
+  } },
+  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Barcode = Barcode;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _barcode = require("../../utils/barcode.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Barcode
+   Summary: A one-dimensional barcode drawn as SVG from a value (Code 128, EAN-13 or UPC-A), with the value printed under
+     the bars for people to read and type: an asset tag, a product number, a shipment label.
+   Usage:
+     <Barcode value="PLX-2026-0042" />
+     <Barcode value="400638133393" format="ean13" />
+     <Barcode value="03600029145" format="upca" size="lg" showText={false} />
+   Props:
+     value: the text (Code 128: printable ASCII) or the digits (EAN-13: 12 or 13, UPC-A: 11 or 12; the check digit is
+       computed, or checked when given)
+     format: "code128" (default) | "ean13" | "upca"
+     size: "md" (default; the bars 64px high) | "sm" (48px, a dense label) | "lg" (96px, a code to scan from the screen);
+       the width follows the value's length at the same narrow-bar width
+     showText: the human-readable line under the bars, in the data font (default true)
+     label: the accessible name (default strings.label filled with the format and the value)
+     strings: the words it uses, for other languages: { label: "Barcode {format}: {value}", invalid: "Not a valid {format} code",
+       formats: { code128: "Code 128", ean13: "EAN-13", upca: "UPC-A" } }
+     className: more classes on the barcode
+   Behavior:
+     The barcode is one image (role="img") named by its format and value; the bars and the line under them are hidden from
+       assistive technology, which reads the name.
+     A value the format cannot hold draws no bars: the line says it is not valid, in the danger color.
+     The bars keep a quiet zone of ten narrow bars on each side, on the barcode's background, so scanners find the start.
+   Notes:
+     Encoding is platform/utils/barcode.js (encodeBarcode). Other props pass through to the outer <div>.
+*/
+// the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox
+const HEIGHT_MODULES = 32;
+const STRINGS = {
+  label: 'Barcode {format}: {value}',
+  invalid: 'Not a valid {format} code',
+  formats: {
+    code128: 'Code 128',
+    ean13: 'EAN-13',
+    upca: 'UPC-A'
+  }
+};
+const fill = (s, v) => s.replace(/\{(\w+)\}/g, (all, k) => v[k] !== undefined ? v[k] : all);
+function Barcode({
+  value,
+  format = 'code128',
+  size = 'md',
+  showText = true,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings, {
+    formats: Object.assign({}, STRINGS.formats, strings && strings.formats)
+  });
+  const code = _react.default.useMemo(() => (0, _barcode.encodeBarcode)(value, format), [value, format]);
+  const name = t.formats[format] || format;
+  if (!code) {
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      className: (0, _cx.cx)('plx-barcode', 'plx-barcode--' + size, className)
+    }, rest), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-barcode__error"
+    }, fill(t.invalid, {
+      format: name
+    })));
+  }
+  const width = code.modules + _barcode.BARCODE_QUIET_ZONE * 2;
+  const path = code.bars.map(([x, w]) => 'M' + (x + _barcode.BARCODE_QUIET_ZONE) + ' 0h' + w + 'v' + HEIGHT_MODULES + 'h-' + w + 'z').join('');
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-barcode', 'plx-barcode--' + size, className),
+    role: "img",
+    "aria-label": label || fill(t.label, {
+      format: name,
+      value: code.value
+    })
+  }, rest), /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-barcode__svg",
+    viewBox: '0 0 ' + width + ' ' + HEIGHT_MODULES,
+    preserveAspectRatio: "xMidYMid meet",
+    shapeRendering: "crispEdges",
+    "aria-hidden": "true",
+    focusable: "false"
+  }, /*#__PURE__*/_react.default.createElement("rect", {
+    className: "plx-barcode__background",
+    x: "0",
+    y: "0",
+    width: width,
+    height: HEIGHT_MODULES
+  }), /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-barcode__bars",
+    d: path
+  })), showText ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-barcode__text",
+    "aria-hidden": "true"
+  }, code.text) : null);
+}
+  } },
+  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RetryNotice = RetryNotice;
+exports.useRetry = useRetry;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _tokenTime = require("../../utils/tokenTime.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Retry (useRetry, RetryNotice)
+   Summary: Recovering from a failed load or save: useRetry runs a task, counts its attempts and, when asked, tries again by
+     itself after a growing wait (backoff); RetryNotice is the danger Notice that says what failed, how long until the next
+     attempt and which attempt it is, with the Retry button.
+   Usage:
+     const load = useRetry(() => fetchAssets(), { auto: true, attempts: 3 });
+     <RetryNotice retry={load} title="The assets could not load" showCount>The server did not answer.</RetryNotice>
+     {load.status === 'done' ? <AssetGrid items={load.result} /> : null}
+   Props:
+     useRetry(task, options): task() returns a promise (or a value); options:
+       attempts: the attempts in one series, the first included (default 3)
+       auto: after a failure, try again by itself until the series ends (default false: only the Retry button does)
+       delay: the first wait in milliseconds (default the --plx-comp-retry-delay token); each next wait doubles
+       maxDelay: the longest wait in milliseconds (default the --plx-comp-retry-delay-max token)
+       immediate: run the task when the component mounts (default true)
+     useRetry returns { status, attempt, attempts, seconds, error, result, retry, cancel }:
+       status: "idle" | "running" | "waiting" (auto: counting down to the next attempt) | "failed" | "done"
+       attempt: the number of the current or last attempt (1 is the first); seconds: the seconds left while waiting
+       retry(): runs the task now (from a failure, a wait or a finished series; after the last attempt it starts a new series)
+       cancel(): stops the countdown; the status becomes "failed"
+     RetryNotice.retry: what useRetry returned
+     RetryNotice.title: what failed, in a few words (default strings.title)
+     RetryNotice.children: why, or what people can do meanwhile
+     RetryNotice.tone: "danger" (default) | "warning" (a failure that leaves the page usable)
+     RetryNotice.showCount: show which attempt it is ("Attempt 2 of 3") (default false)
+     RetryNotice.onDismiss(event): a dismiss button, for a failure people may leave as it is
+     RetryNotice.strings: { title: "Couldn’t load", retry: "Retry", retryNow: "Retry now", retrying: "Retrying…",
+       waiting: "Retrying in {time}", attempt: "Attempt {attempt} of {attempts}", stopped: "Stopped after {attempts} attempts",
+       dismiss: "Dismiss" } ({…} are filled with the values, set in the data font)
+     RetryNotice.className: more classes on the notice
+   Behavior:
+     RetryNotice shows only while there is a failure: from the first failed attempt until an attempt succeeds. While an
+       attempt runs the Retry button shows its spinner and does nothing more; while waiting it reads Retry now.
+     A danger notice is an alert when it appears; each later wait and each failure after the first are announced
+       politely (announce), never every second of the countdown.
+     The wait doubles after each failed attempt (2, 4, 8 … seconds with the default tokens), up to maxDelay; the timer and
+       a late answer are dropped when the component unmounts.
+   Notes:
+     A whole region that could not load uses EmptyState tone="error" with useRetry's retry as its action; RetryNotice is
+       for a message beside content that is still there (a list that could not refresh, a save that failed).
+     Other props of RetryNotice pass through to the Notice.
+*/
+function useRetry(task, {
+  attempts = 3,
+  auto = false,
+  delay,
+  maxDelay,
+  immediate = true
+} = {}) {
+  const [state, setState] = _react.default.useState({
+    status: immediate ? 'running' : 'idle',
+    attempt: immediate ? 1 : 0,
+    seconds: 0,
+    error: null,
+    result: undefined
+  });
+  const live = _react.default.useRef({
+    run: 0,
+    timer: null,
+    tick: null,
+    mounted: true
+  });
+  const taskRef = _react.default.useRef(task);
+  taskRef.current = task;
+  const opts = _react.default.useRef({});
+  opts.current = {
+    attempts,
+    auto,
+    delay,
+    maxDelay
+  };
+  const stopTimers = () => {
+    clearTimeout(live.current.timer);
+    clearInterval(live.current.tick);
+    live.current.timer = null;
+    live.current.tick = null;
+  };
+  const run = _react.default.useCallback(attempt => {
+    stopTimers();
+    const id = ++live.current.run;
+    setState(s => Object.assign({}, s, {
+      status: 'running',
+      attempt,
+      seconds: 0
+    }));
+    Promise.resolve().then(() => taskRef.current()).then(result => {
+      if (!live.current.mounted || id !== live.current.run) return;
+      setState({
+        status: 'done',
+        attempt,
+        seconds: 0,
+        error: null,
+        result
+      });
+    }, error => {
+      if (!live.current.mounted || id !== live.current.run) return;
+      const o = opts.current;
+      if (!o.auto || attempt >= o.attempts) {
+        setState(s => Object.assign({}, s, {
+          status: 'failed',
+          attempt,
+          seconds: 0,
+          error
+        }));
+        return;
+      }
+      const first = o.delay !== undefined ? o.delay : (0, _tokenTime.tokenMs)('--plx-comp-retry-delay', 2000);
+      const most = o.maxDelay !== undefined ? o.maxDelay : (0, _tokenTime.tokenMs)('--plx-comp-retry-delay-max', 30000);
+      const wait = Math.min(first * Math.pow(2, attempt - 1), most);
+      const until = Date.now() + wait;
+      setState(s => Object.assign({}, s, {
+        status: 'waiting',
+        attempt,
+        seconds: Math.ceil(wait / 1000),
+        error
+      }));
+      live.current.tick = setInterval(() => {
+        if (live.current.mounted) setState(s => Object.assign({}, s, {
+          seconds: Math.max(0, Math.ceil((until - Date.now()) / 1000))
+        }));
+      }, 1000);
+      live.current.timer = setTimeout(() => run(attempt + 1), wait);
+    });
+  }, []);
+  _react.default.useEffect(() => {
+    live.current.mounted = true;
+    if (immediate) run(1);
+    return () => {
+      live.current.mounted = false;
+      stopTimers();
+    };
+  }, []);
+  const current = _react.default.useRef(state);
+  current.current = state;
+  const retry = _react.default.useCallback(() => {
+    const s = current.current;
+    if (s.status === 'running') return;
+    run(s.status === 'done' || s.attempt === 0 || s.attempt >= opts.current.attempts ? 1 : s.attempt + 1);
+  }, [run]);
+  const cancel = _react.default.useCallback(() => {
+    stopTimers();
+    live.current.run++;
+    setState(s => s.status === 'waiting' ? Object.assign({}, s, {
+      status: 'failed',
+      seconds: 0
+    }) : s);
+  }, []);
+  return Object.assign({}, state, {
+    attempts,
+    retry,
+    cancel
+  });
+}
+const STRINGS = {
+  title: 'Couldn’t load',
+  retry: 'Retry',
+  retryNow: 'Retry now',
+  retrying: 'Retrying…',
+  waiting: 'Retrying in {time}',
+  attempt: 'Attempt {attempt} of {attempts}',
+  stopped: 'Stopped after {attempts} attempts',
+  dismiss: 'Dismiss'
+};
+
+// a string with {name} places filled by values in the data font (numbers and durations are technical values)
+const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
+  const m = /^\{(\w+)\}$/.exec(part);
+  return m && values[m[1]] !== undefined ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    key: i,
+    variant: "data"
+  }, values[m[1]]) : part;
+});
+const plain = (template, values) => template.replace(/\{(\w+)\}/g, (all, k) => values[k] !== undefined ? String(values[k]) : all);
+function RetryNotice({
+  retry,
+  title,
+  tone = 'danger',
+  showCount = false,
+  onDismiss,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const r = retry || {};
+  const failing = r.status === 'failed' || r.status === 'waiting' || r.status === 'running' && r.attempt > 1;
+  const values = {
+    attempt: r.attempt,
+    attempts: r.attempts,
+    time: (0, _format.formatDuration)(r.seconds || 0)
+  };
+  const shown = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (!failing) {
+      shown.current = false;
+      return;
+    }
+    if (!shown.current) {
+      shown.current = true;
+      return;
+    } // the notice's own alert says the first failure
+    if (r.status === 'waiting') (0, _announce.announce)(plain(t.waiting, values));else if (r.status === 'failed') (0, _announce.announce)((title || t.title) + '. ' + plain(r.attempt >= r.attempts ? t.stopped : t.attempt, values));
+  }, [r.status, r.attempt]);
+  if (!failing) return null;
+  const stopped = r.status === 'failed' && r.attempt >= r.attempts;
+  const status = r.status === 'waiting' ? fill(t.waiting, values) : r.status === 'running' ? t.retrying : stopped && showCount ? fill(t.stopped, values) : null;
+  const count = showCount && !stopped ? fill(t.attempt, values) : null;
+  return /*#__PURE__*/_react.default.createElement(_Notice.Notice, _extends({
+    className: (0, _cx.cx)('plx-retry', className),
+    tone: tone,
+    title: title || t.title,
+    onDismiss: onDismiss,
+    strings: {
+      dismiss: t.dismiss
+    },
+    actions: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      icon: "refresh",
+      loading: r.status === 'running',
+      onClick: r.retry
+    }, r.status === 'waiting' ? t.retryNow : t.retry)
+  }, rest), children, status || count ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-retry__status"
+  }, status ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-retry__wait"
+  }, status) : null, count ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-retry__count"
+  }, count) : null) : null);
+}
+  } },
+  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AvatarGroup = AvatarGroup;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../Avatar/Avatar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AvatarGroup
+   Summary: The people of one item (owners, collaborators, assignees) as a row of avatars: overlapped in a stack or spaced
+     in a grid, up to a maximum, then a +N tile for the rest (03 Content & Identity › Identity › Avatar group).
+   Usage:
+     <AvatarGroup label="Collaborators" people={[{ name: 'Maya Chen' }, { name: 'Alex Kim', presence: 'away' }]} />
+     <AvatarGroup label="Assignees" people={team} max={3} size="md" onMore={() => setOpen(true)} />
+     <AvatarGroup label="Members" people={team} layout="grid" max={12} />
+   Props:
+     people: [{ id, name, src, color, presence }]: each person as an Avatar (name gives the initials and the accessible
+       name; src a picture; color a data color; presence "online" | "away" | "busy" | "offline")
+     label: the group's accessible name, by role ("Collaborators", "Assignees")
+     max: how many avatars show before the rest collapse into +N (default 4)
+     size: "xs" (24px) | "sm" (28px, default) | "md" (32px) | "lg" (40px): every avatar of a group has the same size
+     layout: "stack" (default: overlapped, each ringed in the surface color) | "grid" (spaced, wrapping to more rows)
+     onMore: called when the +N tile is pressed (open the full list); without it the tile is a count, not a control
+     strings: the words, for other languages: { more: "+{n}", moreLabel: "{n} more", online, away, busy, offline }
+     className: more classes on the group
+   Behavior:
+     The group is one named group (role="group"); each avatar is an image named by the person (and their presence).
+     With onMore the +N tile is a button: Enter or Space opens the full list; its focus changes the tile's ring to the
+       focus color.
+     People keep the order they are given (put the owner first).
+   Notes:
+     The count is a number: DM Mono (the data font), like other technical values.
+     Other props pass through to the wrapper.
+*/
+const SIZES = ['xs', 'sm', 'md', 'lg'];
+const STRINGS = {
+  more: '+{n}',
+  moreLabel: '{n} more'
+};
+function AvatarGroup({
+  people = [],
+  label,
+  max = 4,
+  size = 'sm',
+  layout = 'stack',
+  onMore,
+  strings,
+  className,
+  ...rest
+}) {
+  const s = SIZES.indexOf(size) >= 0 ? size : 'sm';
+  const l = layout === 'grid' ? 'grid' : 'stack';
+  const words = Object.assign({}, STRINGS, strings);
+  const limit = Math.max(1, max | 0);
+  const shown = people.length > limit ? people.slice(0, limit) : people;
+  const rest_ = people.length - shown.length;
+  const fill = t => t.replace('{n}', String(rest_));
+  const more = rest_ > 0 ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    initials: fill(words.more),
+    size: s,
+    label: onMore ? undefined : fill(words.moreLabel),
+    className: "plx-avatar-group__more"
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-avatar-group', 'plx-avatar-group--' + l, 'plx-avatar-group--' + s, className),
+    role: "group",
+    "aria-label": label
+  }, rest), shown.map((p, i) => /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    key: p.id != null ? p.id : i,
+    name: p.name,
+    src: p.src,
+    color: p.color,
+    presence: p.presence,
+    size: s,
+    label: p.name,
+    strings: strings,
+    className: "plx-avatar-group__avatar"
+  })), more && onMore ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-avatar-group__more-button",
+    "aria-label": fill(words.moreLabel),
+    onClick: onMore
+  }, more) : more);
+}
+  } },
+  "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Persona = Persona;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _Link = require("../Link/Link.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Persona
+   Summary: A person in one compact line: their avatar, their name and one detail (a role, a team, an email), with their
+     presence and a role badge when they help (03 Content & Identity › Identity › Profile summary).
+   Usage:
+     <Persona name="Maya Chen" />
+     <Persona name="Maya Chen" secondary="Designer · Brand team" presence="online" />
+     <Persona name="Alex Kim" secondary="alex.kim@example.org" role="Owner" size="lg" href="../contacts/?id=12" />
+   Props:
+     name: the person's display name (the name they chose); the avatar's initials come from it
+     src: the person's picture; color: their data color (Avatar's color)
+     secondary: one detail under the name: a role, a team or an email
+     role: a short role on a neutral badge after the name ("Owner", "Admin")
+     presence: "online" | "away" | "busy" | "offline": the dot on the avatar, and the state in words for assistive technology
+     size: "xs" (24px avatar) | "sm" (28px) | "md" (32px, default) | "lg" (40px) | "xl" (48px): the avatar and the text
+       sizes step together
+     href: the person's profile: the name becomes a link to it
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy", offline: "Offline" }
+     className: more classes on the wrapper
+   Behavior:
+     The avatar is decorative (the name is next to it); the presence state is read after the name ("Maya Chen, Online").
+     A long name or detail is cut with an ellipsis; its full text is in the title, shown on hover.
+     Not interactive itself; with href the name is a link (one Tab stop).
+   Notes:
+     Other props pass through to the wrapper.
+*/
+const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
+const PRESENCE = ['online', 'away', 'busy', 'offline'];
+const STRINGS = {
+  online: 'Online',
+  away: 'Away',
+  busy: 'Busy',
+  offline: 'Offline'
+};
+function Persona({
+  name,
+  src,
+  color,
+  secondary,
+  role,
+  presence,
+  size = 'md',
+  href,
+  strings,
+  className,
+  ...rest
+}) {
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
+  const words = Object.assign({}, STRINGS, strings);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-persona', 'plx-persona--' + s, className)
+  }, rest), /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: name,
+    src: src,
+    color: color,
+    presence: p || undefined,
+    size: s,
+    className: "plx-persona__avatar"
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-persona__text"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-persona__primary"
+  }, href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: href,
+    variant: "standalone",
+    className: "plx-persona__name",
+    title: name
+  }, name) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-persona__name",
+    title: name
+  }, name), p ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + words[p]) : null, role ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    variant: "soft",
+    size: "sm",
+    className: "plx-persona__role"
+  }, role) : null), secondary ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-persona__secondary",
+    title: typeof secondary === 'string' ? secondary : undefined
+  }, secondary) : null));
+}
+  } },
+  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProgressCircle = ProgressCircle;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressCircle
+   Summary: How far a task has come, as a ring: a faint track and an arc in a tone that fills clockwise from the top, or
+     turns while the amount is unknown (08 Feedback & System State › Loading and progress › Circular progress).
+   Usage:
+     <ProgressCircle value={62} label="Uploading 3 files" />
+     <ProgressCircle label="Loading assets" size="sm" />
+     <ProgressCircle value={7} max={12} tone="success" size="lg" showValue label="Tasks done" />
+   Props:
+     value: how much is done; leave it out while the amount is unknown (the ring then turns: indeterminate)
+     max: the whole (default 100)
+     label: what is progressing: the accessible name (required; say what loads, "Loading assets")
+     size: "sm" (16px, inside a control or beside a line of text) | "md" (24px, default) | "lg" (48px, a panel; it can show
+       the value)
+     tone: "info" (default) | "success" | "warning" | "danger" | "neutral": the arc's color, as ProgressBar's tones
+     showValue: the whole percent in the ring's center, in the data font ("62%"); size lg only (default false)
+     locale: the language the percent is formatted in (default: the page's language)
+     className: more classes on the ring
+   Behavior:
+     role="progressbar" named by label; a known amount reports aria-valuenow (the percent) with aria-valuemin 0 and
+       aria-valuemax 100; an unknown amount reports no value.
+     The arc is drawn as SVG geometry from the amount (no style is written); its width is the size's stroke token and
+       stays the same however the ring is scaled.
+     People who ask their system for less motion see the indeterminate arc still.
+   Notes:
+     Use a ProgressBar where there is room for a bar and a label; the ring is for tight places and short waits.
+     Other props pass through to the wrapper.
+*/
+const SIZES = ['sm', 'md', 'lg'];
+const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
+// the geometry in the 48-unit box: the ring's center and radius (the strokes do not scale, so they fit at every size)
+const C = 24,
+  R = 21;
+const round = n => Math.round(n * 100) / 100;
+// an arc from the top, clockwise, over pct percent of the ring
+function arc(pct) {
+  const a = Math.min(pct, 99.99) / 100 * 2 * Math.PI;
+  const x = round(C + R * Math.sin(a)),
+    y = round(C - R * Math.cos(a));
+  return 'M ' + C + ' ' + (C - R) + ' A ' + R + ' ' + R + ' 0 ' + (pct > 50 ? 1 : 0) + ' 1 ' + x + ' ' + y;
+}
+function ProgressCircle({
+  value,
+  max = 100,
+  label,
+  size = 'md',
+  tone = 'info',
+  showValue = false,
+  locale,
+  className,
+  ...rest
+}) {
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
+  const known = typeof value === 'number' && !Number.isNaN(value);
+  const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
+  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className),
+    role: "progressbar",
+    "aria-label": label,
+    "aria-valuemin": known ? 0 : undefined,
+    "aria-valuemax": known ? 100 : undefined,
+    "aria-valuenow": known ? Math.round(pct) : undefined
+  }, rest), /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-progress-circle__svg",
+    viewBox: "0 0 48 48",
+    focusable: "false",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("circle", {
+    className: "plx-progress-circle__track",
+    cx: C,
+    cy: C,
+    r: R
+  }), known && pct >= 100 ? /*#__PURE__*/_react.default.createElement("circle", {
+    className: "plx-progress-circle__indicator",
+    cx: C,
+    cy: C,
+    r: R
+  }) : known ? pct > 0 ? /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-progress-circle__indicator",
+    d: arc(pct)
+  }) : null : /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-progress-circle__indicator",
+    d: arc(25)
+  })), showValue && known && s === 'lg' ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-progress-circle__value",
+    "aria-hidden": "true"
+  }, new Intl.NumberFormat(loc, {
+    style: 'percent',
+    maximumFractionDigits: 0
+  }).format(pct / 100)) : null);
+}
+  } },
+  "platform/utils/qr.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.qrEncode = qrEncode;
+/* Plenix · qrEncode
+   Summary: The Plenix QR code encoder (ISO/IEC 18004, model 2): a text becomes the matrix of dark and light modules that
+     QRCode draws. Plenix's own code, no dependency.
+   Usage:
+     const qr = qrEncode('https://plenix.lighthouseway.org/notes/', { level: 'M' });
+     qr.size            // 29 (modules per side, without the quiet zone)
+     qr.modules[y][x]   // true = a dark module
+   Props:
+     text: the value to encode, as UTF-8 bytes (byte mode)
+     options.level: the error correction level: "L" (7%) | "M" (15%, default) | "Q" (25%) | "H" (30%)
+     options.mask: a mask pattern 0..7; without it the encoder scores all eight and keeps the best
+     options.minVersion, options.maxVersion: the versions to search (1..40); the smallest that holds the text wins
+   Behavior:
+     Returns { version, size, level, mask, modules } or throws a RangeError when the text does not fit in version 40.
+     Function patterns (finders, timing, alignment, format and version information) follow the standard; the data is
+       split into Reed-Solomon blocks over GF(256) (polynomial 0x11D) and interleaved.
+   Notes:
+     The quiet zone (four light modules on every side) is the drawing's job (QRCode adds it).
+*/
+
+const LEVELS = {
+  L: {
+    bits: 1,
+    i: 0
+  },
+  M: {
+    bits: 0,
+    i: 1
+  },
+  Q: {
+    bits: 3,
+    i: 2
+  },
+  H: {
+    bits: 2,
+    i: 3
+  }
+};
+// error correction codewords per block, and the number of blocks, by level (L, M, Q, H) and version (index 1..40)
+const ECC_PER_BLOCK = [[-1, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30], [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28], [-1, 13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26, 24, 20, 30, 24, 28, 28, 26, 30, 28, 30, 30, 30, 30, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30], [-1, 17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28, 22, 24, 24, 30, 28, 28, 26, 28, 30, 24, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]];
+const BLOCKS = [[-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25], [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49], [-1, 1, 1, 2, 2, 4, 4, 6, 6, 8, 8, 8, 10, 12, 16, 12, 17, 16, 18, 21, 20, 23, 23, 25, 27, 29, 34, 34, 35, 38, 40, 43, 45, 48, 51, 53, 56, 59, 62, 65, 68], [-1, 1, 1, 2, 4, 4, 4, 5, 6, 8, 8, 11, 11, 16, 16, 18, 16, 19, 21, 25, 25, 25, 34, 30, 32, 35, 37, 40, 42, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 77, 81]];
+const bit = (x, i) => (x >>> i & 1) !== 0;
+
+// the modules a version has for data and error correction (everything but the function patterns)
+function rawModules(ver) {
+  let n = (16 * ver + 128) * ver + 64;
+  if (ver >= 2) {
+    const align = Math.floor(ver / 7) + 2;
+    n -= (25 * align - 10) * align - 55;
+    if (ver >= 7) n -= 36;
+  }
+  return n;
+}
+const dataCodewords = (ver, li) => Math.floor(rawModules(ver) / 8) - ECC_PER_BLOCK[li][ver] * BLOCKS[li][ver];
+
+// GF(256) with the QR polynomial 0x11D
+function mul(x, y) {
+  let z = 0;
+  for (let i = 7; i >= 0; i--) {
+    z = z << 1 ^ (z >>> 7) * 0x11d;
+    z ^= (y >>> i & 1) * x;
+  }
+  return z & 0xff;
+}
+function divisor(degree) {
+  const out = new Array(degree).fill(0);
+  out[degree - 1] = 1;
+  let root = 1;
+  for (let i = 0; i < degree; i++) {
+    for (let j = 0; j < out.length; j++) {
+      out[j] = mul(out[j], root);
+      if (j + 1 < out.length) out[j] ^= out[j + 1];
+    }
+    root = mul(root, 0x02);
+  }
+  return out;
+}
+function remainder(data, div) {
+  const out = new Array(div.length).fill(0);
+  for (const b of data) {
+    const f = b ^ out.shift();
+    out.push(0);
+    div.forEach((c, i) => {
+      out[i] ^= mul(c, f);
+    });
+  }
+  return out;
+}
+function utf8(text) {
+  return Array.from(new TextEncoder().encode(String(text)));
+}
+function alignmentPositions(ver, size) {
+  if (ver === 1) return [];
+  const n = Math.floor(ver / 7) + 2;
+  const step = ver === 32 ? 26 : Math.ceil((ver * 4 + 4) / (n * 2 - 2)) * 2;
+  const out = [6];
+  for (let pos = size - 7; out.length < n; pos -= step) out.splice(1, 0, pos);
+  return out;
+}
+function penalty(m, size) {
+  let score = 0;
+  const line = get => {
+    for (let a = 0; a < size; a++) {
+      let run = 1,
+        s = '';
+      for (let b = 0; b < size; b++) {
+        const v = get(a, b);
+        s += v ? '1' : '0';
+        if (b > 0 && v === get(a, b - 1)) {
+          run++;
+          if (run === 5) score += 3;else if (run > 5) score += 1;
+        } else run = 1;
+      }
+      // a finder-like pattern with four light modules on one side
+      for (const p of ['10111010000', '00001011101']) {
+        let i = s.indexOf(p);
+        while (i >= 0) {
+          score += 40;
+          i = s.indexOf(p, i + 1);
+        }
+      }
+    }
+  };
+  line((y, x) => m[y][x]);
+  line((x, y) => m[y][x]);
+  for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) {
+    const c = m[y][x];
+    if (c === m[y][x + 1] && c === m[y + 1][x] && c === m[y + 1][x + 1]) score += 3;
+  }
+  let dark = 0;
+  m.forEach(row => row.forEach(v => {
+    if (v) dark++;
+  }));
+  score += Math.floor(Math.abs(dark * 100 / (size * size) - 50) / 5) * 10;
+  return score;
+}
+const MASKS = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, x => x % 3 === 0, (x, y) => (x + y) % 3 === 0, (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => x * y % 2 + x * y % 3 === 0, (x, y) => (x * y % 2 + x * y % 3) % 2 === 0, (x, y) => ((x + y) % 2 + x * y % 3) % 2 === 0];
+function qrEncode(text, options = {}) {
+  const level = LEVELS[options.level] ? options.level : 'M';
+  const li = LEVELS[level].i;
+  const bytes = utf8(text);
+  const minV = Math.max(1, options.minVersion || 1),
+    maxV = Math.min(40, options.maxVersion || 40);
+  let ver = minV;
+  for (; ver <= maxV; ver++) if (4 + (ver < 10 ? 8 : 16) + bytes.length * 8 <= dataCodewords(ver, li) * 8) break;
+  if (ver > maxV) throw new RangeError('qrEncode: the text is too long for a QR code at level ' + level);
+  const size = ver * 4 + 17;
+
+  // the data bits: byte mode, the count, the bytes, the terminator, then the pad codewords
+  const bits = [];
+  const put = (val, len) => {
+    for (let i = len - 1; i >= 0; i--) bits.push(val >>> i & 1);
+  };
+  put(4, 4);
+  put(bytes.length, ver < 10 ? 8 : 16);
+  bytes.forEach(b => put(b, 8));
+  const capacity = dataCodewords(ver, li) * 8;
+  put(0, Math.min(4, capacity - bits.length));
+  put(0, (8 - bits.length % 8) % 8);
+  for (let pad = 0xec; bits.length < capacity; pad ^= 0xec ^ 0x11) put(pad, 8);
+  const data = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    let b = 0;
+    for (let j = 0; j < 8; j++) b = b << 1 | bits[i + j];
+    data.push(b);
+  }
+
+  // the blocks with their error correction, interleaved
+  const nBlocks = BLOCKS[li][ver],
+    eccLen = ECC_PER_BLOCK[li][ver],
+    raw = Math.floor(rawModules(ver) / 8);
+  const nShort = nBlocks - raw % nBlocks,
+    shortLen = Math.floor(raw / nBlocks);
+  const div = divisor(eccLen),
+    blocks = [];
+  for (let i = 0, k = 0; i < nBlocks; i++) {
+    const dat = data.slice(k, k + shortLen - eccLen + (i < nShort ? 0 : 1));
+    k += dat.length;
+    const ecc = remainder(dat, div);
+    if (i < nShort) dat.push(0);
+    blocks.push(dat.concat(ecc));
+  }
+  const codewords = [];
+  for (let i = 0; i < blocks[0].length; i++) blocks.forEach((b, j) => {
+    if (i !== shortLen - eccLen || j >= nShort) codewords.push(b[i]);
+  });
+
+  // the function patterns
+  const modules = Array.from({
+    length: size
+  }, () => new Array(size).fill(false));
+  const fixed = Array.from({
+    length: size
+  }, () => new Array(size).fill(false));
+  const set = (x, y, dark) => {
+    modules[y][x] = dark;
+    fixed[y][x] = true;
+  };
+  for (let i = 0; i < size; i++) {
+    set(6, i, i % 2 === 0);
+    set(i, 6, i % 2 === 0);
+  }
+  [[3, 3], [size - 4, 3], [3, size - 4]].forEach(([cx, cy]) => {
+    for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+      const d = Math.max(Math.abs(dx), Math.abs(dy)),
+        x = cx + dx,
+        y = cy + dy;
+      if (x >= 0 && x < size && y >= 0 && y < size) set(x, y, d !== 2 && d !== 4);
+    }
+  });
+  const al = alignmentPositions(ver, size),
+    last = al.length - 1;
+  al.forEach((ay, i) => al.forEach((ax, j) => {
+    if (i === 0 && j === 0 || i === 0 && j === last || i === last && j === 0) return;
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(ax + dx, ay + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+  }));
+  const drawFormat = mask => {
+    const d = LEVELS[level].bits << 3 | mask;
+    let r = d;
+    for (let i = 0; i < 10; i++) r = r << 1 ^ (r >>> 9) * 0x537;
+    const f = (d << 10 | r) ^ 0x5412;
+    for (let i = 0; i <= 5; i++) set(8, i, bit(f, i));
+    set(8, 7, bit(f, 6));
+    set(8, 8, bit(f, 7));
+    set(7, 8, bit(f, 8));
+    for (let i = 9; i < 15; i++) set(14 - i, 8, bit(f, i));
+    for (let i = 0; i < 8; i++) set(size - 1 - i, 8, bit(f, i));
+    for (let i = 8; i < 15; i++) set(8, size - 15 + i, bit(f, i));
+    set(8, size - 8, true);
+  };
+  drawFormat(0);
+  if (ver >= 7) {
+    let r = ver;
+    for (let i = 0; i < 12; i++) r = r << 1 ^ (r >>> 11) * 0x1f25;
+    const v = ver << 12 | r;
+    for (let i = 0; i < 18; i++) {
+      const a = size - 11 + i % 3,
+        b = Math.floor(i / 3);
+      set(a, b, bit(v, i));
+      set(b, a, bit(v, i));
+    }
+  }
+
+  // the codewords, in two-module columns from the bottom right, zigzagging up and down
+  let n = 0;
+  for (let right = size - 1; right >= 1; right -= 2) {
+    if (right === 6) right = 5;
+    for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) {
+      const x = right - j,
+        up = (right + 1 & 2) === 0,
+        y = up ? size - 1 - vert : vert;
+      if (!fixed[y][x] && n < codewords.length * 8) {
+        modules[y][x] = bit(codewords[n >>> 3], 7 - (n & 7));
+        n++;
+      }
+    }
+  }
+
+  // the mask: the one asked for, or the one with the lowest penalty
+  const apply = mask => {
+    const f = MASKS[mask];
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!fixed[y][x] && f(x, y)) modules[y][x] = !modules[y][x];
+  };
+  let mask = options.mask;
+  if (!(mask >= 0 && mask <= 7)) {
+    let best = Infinity;
+    for (let k = 0; k < 8; k++) {
+      apply(k);
+      drawFormat(k);
+      const p = penalty(modules, size);
+      if (p < best) {
+        best = p;
+        mask = k;
+      }
+      apply(k);
+    }
+  }
+  apply(mask);
+  drawFormat(mask);
+  return {
+    version: ver,
+    size,
+    level,
+    mask,
+    modules
+  };
+}
+  } },
+  "platform/components/QRCode/QRCode.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/qr.js":"platform/utils/qr.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QRCode = QRCode;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _qr = require("../../utils/qr.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · QRCode
+   Summary: A QR code that moves a link or a short value from the screen to a phone camera: dark modules on a light plate
+     with its quiet zone, in both modes, with what scanning does and the value as text (03 Content & Identity › Images and
+     media › QR code).
+   Usage:
+     <QRCode value="https://plenix.lighthouseway.org/notes/" label="QR code: open Notes on your phone" />
+     <QRCode value={shareUrl} label="QR code for the shared folder" caption="Scan to open the folder on your phone" showValue />
+     <QRCode value={url} label="QR code: sign in on your phone" level="H" logo={<BrandMark size="lg" label="Plenix" />} />
+   Props:
+     value: the text to encode (a URL or a short value), as UTF-8
+     label: the image's accessible name: what the code is for (required)
+     level: the error correction: "L" (7%) | "M" (15%, default) | "Q" (25%) | "H" (30%); a higher level survives damage
+       and glare but makes a denser code
+     size: "sm" (96px) | "md" (160px, default) | "lg" (240px), quiet zone included
+     logo: a mark for the center: the modules under it are left out and the code is encoded at level H, so it still scans
+     caption: what scanning does, under the code ("Scan to open on your phone")
+     showValue: the encoded value as text under the code, in the data font, so people can copy or type it (default false)
+     onAccent: the caption and value in the accent colors, for an accent surface; the code keeps its light plate (default false)
+     className: more classes on the wrapper
+   Behavior:
+     The matrix comes from qrEncode (platform/utils/qr.js): byte mode, the smallest version that holds the value, the mask
+       with the lowest penalty. It is one SVG path drawn on the plate; the quiet zone is four modules on every side.
+     The plate and the modules keep their colors in dark mode: scanners read dark on light.
+     A value too long for a QR code draws nothing and warns in the console.
+   Notes:
+     Always offer the value another way (showValue, or a copy action next to it): not everyone can scan.
+     Other props pass through to the wrapper.
+*/
+const SIZES = ['sm', 'md', 'lg'];
+const QUIET = 4; // the quiet zone, in modules
+const LOGO_SHARE = 0.25; // the share of the code's width the logo's clear square takes
+
+function QRCode({
+  value,
+  label,
+  level = 'M',
+  size = 'md',
+  logo,
+  caption,
+  showValue = false,
+  onAccent = false,
+  className,
+  ...rest
+}) {
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const lv = logo ? 'H' : level;
+  const code = _react.default.useMemo(() => {
+    try {
+      return (0, _qr.qrEncode)(value == null ? '' : String(value), {
+        level: lv
+      });
+    } catch (e) {
+      console.warn('QRCode: ' + e.message);
+      return null;
+    }
+  }, [value, lv]);
+  const d = _react.default.useMemo(() => {
+    if (!code) return '';
+    const n = code.size;
+    let clear = 0;
+    if (logo) {
+      clear = Math.round(n * LOGO_SHARE);
+      if (clear % 2 === 0) clear++;
+    }
+    const lo = (n - clear) / 2,
+      hi = lo + clear;
+    const out = [];
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!code.modules[y][x]) continue;
+      if (clear && x >= lo && x < hi && y >= lo && y < hi) continue;
+      out.push('M' + (x + QUIET) + ' ' + (y + QUIET) + 'h1v1h-1z');
+    }
+    return out.join('');
+  }, [code, logo]);
+  if (!code) return null;
+  const box = code.size + QUIET * 2;
+  return /*#__PURE__*/_react.default.createElement("figure", _extends({
+    className: (0, _cx.cx)('plx-qr-code', 'plx-qr-code--' + s, onAccent && 'plx-qr-code--on-accent', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-qr-code__frame"
+  }, /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-qr-code__svg",
+    viewBox: '0 0 ' + box + ' ' + box,
+    role: "img",
+    "aria-label": label,
+    focusable: "false",
+    "data-plx-qr-version": code.version,
+    "data-plx-qr-level": code.level
+  }, /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-qr-code__modules",
+    d: d
+  })), logo ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-qr-code__logo"
+  }, logo) : null), caption || showValue ? /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: "plx-qr-code__caption"
+  }, caption ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-qr-code__text"
+  }, caption) : null, showValue ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-qr-code__value"
+  }, String(value)) : null) : null);
+}
+  } },
+  "platform/components/VersionLabel/VersionLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VersionLabel = VersionLabel;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Badge = require("../Badge/Badge.jsx");
+var _Link = require("../Link/Link.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VersionLabel
+   Summary: Which version of an item this is: a number ("v12") or a semantic version ("2.1.0") in the data font, with a
+     qualifier when it helps ("Latest", "Draft") (03 Content & Identity › Metadata › Version label).
+   Usage:
+     <VersionLabel version={12} />
+     <VersionLabel version="2.1.0" status="latest" />
+     <VersionLabel version={3} status="draft" size="sm" href="#history" />
+   Props:
+     version: a whole number (drawn "v12") or a semantic version string (drawn as it is, "2.1.0"); never both mixed
+     status: "latest" | "draft": the qualifier on a neutral badge after the number; leave it out for any other version
+     size: "md" (default: 12px text and a 20px badge) | "sm" (compact: 11px text and a 16px badge, for table rows and
+       dense lists)
+     href: the version history: the number becomes a link to it
+     strings: the words, for other languages: { version: "Version", prefix: "v", latest: "Latest", draft: "Draft" }
+     className: more classes on the label
+   Behavior:
+     Read as "Version 12" (the prefix "v" is hidden from assistive technology and the word is said instead), then the
+       qualifier.
+     Not interactive itself; with href the number is a link (one Tab stop).
+   Notes:
+     One format across the product: numbers for an item's saved versions, semantic versions for releases.
+     Mark only one version "Latest" at a time.
+     Other props pass through to the <span>.
+*/
+const STRINGS = {
+  version: 'Version',
+  prefix: 'v',
+  latest: 'Latest',
+  draft: 'Draft'
+};
+const STATUSES = ['latest', 'draft'];
+function VersionLabel({
+  version,
+  status,
+  size = 'md',
+  href,
+  strings,
+  className,
+  ...rest
+}) {
+  const words = Object.assign({}, STRINGS, strings);
+  const s = size === 'sm' ? 'sm' : 'md';
+  const numbered = typeof version === 'number' || /^\d+$/.test(String(version));
+  const number = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, words.version + ' '), numbered ? /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, words.prefix) : null, String(version));
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-version-label', 'plx-version-label--' + s, className)
+  }, rest), href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: href,
+    className: "plx-version-label__number"
+  }, number) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-version-label__number"
+  }, number), STATUSES.indexOf(status) >= 0 ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    variant: "soft",
+    size: s === 'sm' ? 'sm' : 'md',
+    className: "plx-version-label__status"
+  }, words[status]) : null);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16782,10 +18206,28 @@ Object.defineProperty(exports, "Avatar", {
     return _Avatar.Avatar;
   }
 });
+Object.defineProperty(exports, "AvatarGroup", {
+  enumerable: true,
+  get: function () {
+    return _AvatarGroup.AvatarGroup;
+  }
+});
+Object.defineProperty(exports, "BARCODE_QUIET_ZONE", {
+  enumerable: true,
+  get: function () {
+    return _barcode.BARCODE_QUIET_ZONE;
+  }
+});
 Object.defineProperty(exports, "Badge", {
   enumerable: true,
   get: function () {
     return _Badge.Badge;
+  }
+});
+Object.defineProperty(exports, "Barcode", {
+  enumerable: true,
+  get: function () {
+    return _Barcode.Barcode;
   }
 });
 Object.defineProperty(exports, "Bleed", {
@@ -17262,6 +18704,12 @@ Object.defineProperty(exports, "Panel", {
     return _Card.Panel;
   }
 });
+Object.defineProperty(exports, "Persona", {
+  enumerable: true,
+  get: function () {
+    return _Persona.Persona;
+  }
+});
 Object.defineProperty(exports, "Pictogram", {
   enumerable: true,
   get: function () {
@@ -17286,10 +18734,22 @@ Object.defineProperty(exports, "ProgressBar", {
     return _ProgressBar.ProgressBar;
   }
 });
+Object.defineProperty(exports, "ProgressCircle", {
+  enumerable: true,
+  get: function () {
+    return _ProgressCircle.ProgressCircle;
+  }
+});
 Object.defineProperty(exports, "PropertyList", {
   enumerable: true,
   get: function () {
     return _PropertyList.PropertyList;
+  }
+});
+Object.defineProperty(exports, "QRCode", {
+  enumerable: true,
+  get: function () {
+    return _QRCode.QRCode;
   }
 });
 Object.defineProperty(exports, "RTL_LANGUAGES", {
@@ -17344,6 +18804,12 @@ Object.defineProperty(exports, "RecordPage", {
   enumerable: true,
   get: function () {
     return _RecordPage.RecordPage;
+  }
+});
+Object.defineProperty(exports, "RetryNotice", {
+  enumerable: true,
+  get: function () {
+    return _Retry.RetryNotice;
   }
 });
 Object.defineProperty(exports, "RichText", {
@@ -17610,6 +19076,12 @@ Object.defineProperty(exports, "VIRTUAL_STICKY_CLASS", {
     return _useVirtualizer.VIRTUAL_STICKY_CLASS;
   }
 });
+Object.defineProperty(exports, "VersionLabel", {
+  enumerable: true,
+  get: function () {
+    return _VersionLabel.VersionLabel;
+  }
+});
 Object.defineProperty(exports, "VirtualGap", {
   enumerable: true,
   get: function () {
@@ -17656,6 +19128,12 @@ Object.defineProperty(exports, "arrowStep", {
   enumerable: true,
   get: function () {
     return _direction.arrowStep;
+  }
+});
+Object.defineProperty(exports, "barcodeCheckDigit", {
+  enumerable: true,
+  get: function () {
+    return _barcode.barcodeCheckDigit;
   }
 });
 Object.defineProperty(exports, "below", {
@@ -17728,6 +19206,12 @@ Object.defineProperty(exports, "directionOf", {
   enumerable: true,
   get: function () {
     return _direction.directionOf;
+  }
+});
+Object.defineProperty(exports, "encodeBarcode", {
+  enumerable: true,
+  get: function () {
+    return _barcode.encodeBarcode;
   }
 });
 Object.defineProperty(exports, "flingDistance", {
@@ -17976,6 +19460,12 @@ Object.defineProperty(exports, "physicalSide", {
     return _direction.physicalSide;
   }
 });
+Object.defineProperty(exports, "qrEncode", {
+  enumerable: true,
+  get: function () {
+    return _qr.qrEncode;
+  }
+});
 Object.defineProperty(exports, "regionName", {
   enumerable: true,
   get: function () {
@@ -18136,6 +19626,12 @@ Object.defineProperty(exports, "useReadOnly", {
   enumerable: true,
   get: function () {
     return _ReadOnly.useReadOnly;
+  }
+});
+Object.defineProperty(exports, "useRetry", {
+  enumerable: true,
+  get: function () {
+    return _Retry.useRetry;
   }
 });
 Object.defineProperty(exports, "useScreenLocation", {
@@ -18312,6 +19808,15 @@ var _Illustration = require("./components/Illustration/Illustration.jsx");
 var _illustrations = require("./components/Illustration/illustrations.js");
 var _Image = require("./components/Image/Image.jsx");
 var _Figure = require("./components/Figure/Figure.jsx");
+var _Barcode = require("./components/Barcode/Barcode.jsx");
+var _barcode = require("./utils/barcode.js");
+var _Retry = require("./patterns/Retry/Retry.jsx");
+var _AvatarGroup = require("./components/AvatarGroup/AvatarGroup.jsx");
+var _Persona = require("./components/Persona/Persona.jsx");
+var _ProgressCircle = require("./components/ProgressCircle/ProgressCircle.jsx");
+var _QRCode = require("./components/QRCode/QRCode.jsx");
+var _qr = require("./utils/qr.js");
+var _VersionLabel = require("./components/VersionLabel/VersionLabel.jsx");
   } }
   };
   var cache = {};

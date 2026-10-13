@@ -5,3 +5,18 @@
 .plx-status-dot--success{background-color:var(--plx-comp-status-dot-success-background);}
 .plx-status-dot--warning{background-color:var(--plx-comp-status-dot-warning-background);}
 .plx-status-dot--danger{background-color:var(--plx-comp-status-dot-danger-background);}
+/* availability (library wave 4): the presence roles of the Status colors */
+.plx-status-dot--online{background-color:var(--plx-comp-status-dot-online-background);}
+.plx-status-dot--away{background-color:var(--plx-comp-status-dot-away-background);}
+.plx-status-dot--busy{background-color:var(--plx-comp-status-dot-busy-background);}
+.plx-status-dot--offline{background-color:var(--plx-comp-status-dot-offline-background);}
+/* the larger dots (on an avatar, or with a glyph) */
+.plx-status-dot--md{block-size:var(--plx-comp-status-dot-md-size);inline-size:var(--plx-comp-status-dot-md-size);}
+.plx-status-dot--lg{block-size:var(--plx-comp-status-dot-lg-size);inline-size:var(--plx-comp-status-dot-lg-size);}
+/* the glyph: the availability's shape cut out of the dot in the surface color, so it never rests on color alone */
+.plx-status-dot--glyph{align-items:center;color:var(--plx-comp-status-dot-glyph-color);display:inline-flex;justify-content:center;}
+.plx-status-dot--md .plx-status-dot__glyph{block-size:var(--plx-comp-status-dot-md-size);inline-size:var(--plx-comp-status-dot-md-size);}
+.plx-status-dot--lg .plx-status-dot__glyph{block-size:var(--plx-comp-status-dot-lg-size);inline-size:var(--plx-comp-status-dot-lg-size);}
+.plx-status-dot__bar{background-color:var(--plx-comp-status-dot-glyph-color);block-size:var(--plx-comp-status-dot-bar-height);border-bottom-left-radius:var(--plx-comp-status-dot-bar-radius);border-bottom-right-radius:var(--plx-comp-status-dot-bar-radius);border-top-left-radius:var(--plx-comp-status-dot-bar-radius);border-top-right-radius:var(--plx-comp-status-dot-bar-radius);display:block;flex-shrink:0;}
+.plx-status-dot--md .plx-status-dot__bar{inline-size:var(--plx-comp-status-dot-md-bar-width);}
+.plx-status-dot--lg .plx-status-dot__bar{inline-size:var(--plx-comp-status-dot-lg-bar-width);}

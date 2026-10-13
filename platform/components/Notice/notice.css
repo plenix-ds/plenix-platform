@@ -6,3 +6,8 @@
 .plx-notice--success{background-color:var(--plx-comp-notice-success-background);box-shadow:inset 0 0 0 var(--plx-comp-notice-border-width) var(--plx-comp-notice-success-border);color:var(--plx-comp-notice-success-text);}
 .plx-notice--warning{background-color:var(--plx-comp-notice-warning-background);box-shadow:inset 0 0 0 var(--plx-comp-notice-border-width) var(--plx-comp-notice-warning-border);color:var(--plx-comp-notice-warning-text);}
 .plx-notice--danger{background-color:var(--plx-comp-notice-danger-background);box-shadow:inset 0 0 0 var(--plx-comp-notice-border-width) var(--plx-comp-notice-danger-border);color:var(--plx-comp-notice-danger-text);}
+/* the section message (library wave 4): a title above the text, actions under it and a dismiss button at the end */
+.plx-notice__body{column-gap:0;display:flex;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-notice-body-row-gap);}
+.plx-notice__title{font-weight:var(--plx-comp-notice-title-font-weight);}
+.plx-notice__actions{column-gap:var(--plx-comp-notice-actions-gap);display:flex;flex-wrap:wrap;margin-block-start:var(--plx-comp-notice-actions-margin-block-start);row-gap:var(--plx-comp-notice-actions-gap);}
+.plx-notice__dismiss{flex-shrink:0;}

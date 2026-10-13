@@ -1,0 +1,22 @@
+{
+  "$description": "ProgressCircle (platform/components/ProgressCircle, library wave 4, lane B): its component tokens. The tones are ProgressBar's roles.",
+  "plx-comp": {
+    "progress-circle-sm-size": { "$value": "{plx-ref.size-16px}", "$type": "dimension", "$description": "ProgressCircle size sm: the ring's box (16px)." },
+    "progress-circle-md-size": { "$value": "{plx-ref.size-24px}", "$type": "dimension", "$description": "ProgressCircle size md: the ring's box (24px, the default)." },
+    "progress-circle-lg-size": { "$value": "{plx-ref.size-48px}", "$type": "dimension", "$description": "ProgressCircle size lg: the ring's box (48px)." },
+    "progress-circle-sm-stroke-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "ProgressCircle size sm: the track's and the arc's width." },
+    "progress-circle-md-stroke-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "ProgressCircle size md: the track's and the arc's width." },
+    "progress-circle-lg-stroke-width": { "$value": "{plx-sys.border-width-heavy}", "$type": "dimension", "$description": "ProgressCircle size lg: the track's and the arc's width." },
+    "progress-circle-track-color": { "$value": "{plx-sys.fill-neutral}", "$type": "color", "$description": "ProgressCircle: the faint full ring under the arc (ProgressBar's track)." },
+    "progress-circle-info-color": { "$value": "{plx-sys.feedback-info-solid}", "$type": "color", "$description": "ProgressCircle info: the arc (work under way; the default)." },
+    "progress-circle-success-color": { "$value": "{plx-sys.feedback-success-solid}", "$type": "color", "$description": "ProgressCircle success: the arc." },
+    "progress-circle-warning-color": { "$value": "{plx-sys.feedback-warning-solid}", "$type": "color", "$description": "ProgressCircle warning: the arc." },
+    "progress-circle-danger-color": { "$value": "{plx-sys.feedback-danger-solid}", "$type": "color", "$description": "ProgressCircle danger: the arc." },
+    "progress-circle-neutral-color": { "$value": "{plx-sys.feedback-neutral-solid}", "$type": "color", "$description": "ProgressCircle neutral: the arc." },
+    "progress-circle-animation-duration": { "$value": "{plx-sys.motion-duration-loop-fast}", "$type": "duration", "$description": "ProgressCircle indeterminate: one turn of the arc (the spinner's loop)." },
+    "progress-circle-value-color": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "ProgressCircle lg: the percent in the center." },
+    "progress-circle-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "ProgressCircle lg: the percent's face (the data font)." },
+    "progress-circle-value-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "ProgressCircle lg: the percent's size (11px, as ProgressBar's value)." },
+    "progress-circle-value-line-height": { "$value": "{plx-ref.line-height-none}", "$type": "number", "$description": "ProgressCircle lg: the percent's line height." }
+  }
+}

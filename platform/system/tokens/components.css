@@ -2427,6 +2427,38 @@
   --plx-comp-dialog-padding: var(--plx-ref-space-16px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-avatar-presence-ring-color: var(--plx-sys-surface-default);
+  --plx-comp-avatar-presence-ring-width: var(--plx-sys-border-width-medium);
+  --plx-comp-avatar-presence-offset: calc(-1 * var(--plx-sys-border-width-medium));
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-avatar-group-ring: 0 0 0 var(--plx-sys-border-width-medium) var(--plx-sys-surface-default);
+  --plx-comp-avatar-group-focus-ring: 0 0 0 var(--plx-sys-border-width-medium) var(--plx-sys-focus-ring-color);
+  --plx-comp-avatar-group-xs-overlap: calc(-1 * var(--plx-ref-size-4px));
+  --plx-comp-avatar-group-sm-overlap: calc(-1 * var(--plx-ref-size-4px));
+  --plx-comp-avatar-group-md-overlap: calc(-1 * var(--plx-ref-size-8px));
+  --plx-comp-avatar-group-lg-overlap: calc(-1 * var(--plx-ref-size-8px));
+  --plx-comp-avatar-group-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-avatar-group-more-background: var(--plx-sys-fill-neutral);
+  --plx-comp-avatar-group-more-background-hover: var(--plx-sys-fill-neutral-hover);
+  --plx-comp-avatar-group-more-text: var(--plx-sys-fill-neutral-content);
+  --plx-comp-avatar-group-more-font-family: var(--plx-sys-font-data);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-barcode-background: var(--plx-sys-surface-default);
+  --plx-comp-barcode-bar: var(--plx-sys-content-default);
+  --plx-comp-barcode-text: var(--plx-sys-content-default);
+  --plx-comp-barcode-font-family: var(--plx-sys-font-data);
+  --plx-comp-barcode-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-barcode-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-barcode-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-barcode-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-barcode-sm-height: var(--plx-ref-size-48px);
+  --plx-comp-barcode-md-height: var(--plx-ref-size-64px);
+  --plx-comp-barcode-lg-height: var(--plx-ref-size-96px);
+  --plx-comp-barcode-error-text: var(--plx-sys-feedback-danger-solid);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-blockquote-rule-color: var(--plx-sys-border-strong);
   --plx-comp-blockquote-rule-width: var(--plx-sys-border-width-thick);
   --plx-comp-blockquote-padding-inline-start: var(--plx-sys-space-inline-md);
@@ -2518,6 +2550,10 @@
   --plx-comp-content-grid-ratio-21-9: 2.3333;
   --plx-comp-content-grid-ratio-3-4: 0.75;
   --plx-comp-content-grid-ratio-9-16: 0.5625;
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-empty-state-warning-icon-text: var(--plx-sys-feedback-warning-solid);
+  --plx-comp-empty-state-success-icon-text: var(--plx-sys-feedback-success-solid);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-entity-header-tile-surface-background: var(--plx-sys-surface-default);
@@ -2654,6 +2690,34 @@
   --plx-comp-list-nested-gap: var(--plx-sys-space-stack-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-notice-body-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-notice-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-notice-actions-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-notice-actions-margin-block-start: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-persona-name-color: var(--plx-sys-content-default);
+  --plx-comp-persona-name-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-persona-secondary-color: var(--plx-sys-content-muted);
+  --plx-comp-persona-line-height: var(--plx-ref-line-height-snug);
+  --plx-comp-persona-role-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-persona-xs-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-persona-xs-name-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-persona-xs-secondary-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-persona-sm-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-persona-sm-name-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-persona-sm-secondary-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-persona-md-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-persona-md-name-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-persona-md-secondary-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-persona-lg-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-persona-lg-name-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-persona-lg-secondary-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-persona-xl-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-persona-xl-name-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-persona-xl-secondary-font-size: var(--plx-ref-font-size-13);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-pictogram-radius: var(--plx-sys-shape-pill);
   --plx-comp-pictogram-background: var(--plx-sys-surface-sunken);
   --plx-comp-pictogram-text: var(--plx-sys-content-muted);
@@ -2674,6 +2738,52 @@
   --plx-comp-preview-ratio-21-9: var(--plx-ref-ratio-21-9);
   --plx-comp-preview-ratio-3-4: var(--plx-ref-ratio-3-4);
   --plx-comp-preview-ratio-9-16: var(--plx-ref-ratio-9-16);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-progress-circle-sm-size: var(--plx-ref-size-16px);
+  --plx-comp-progress-circle-md-size: var(--plx-ref-size-24px);
+  --plx-comp-progress-circle-lg-size: var(--plx-ref-size-48px);
+  --plx-comp-progress-circle-sm-stroke-width: var(--plx-sys-border-width-medium);
+  --plx-comp-progress-circle-md-stroke-width: var(--plx-sys-border-width-medium);
+  --plx-comp-progress-circle-lg-stroke-width: var(--plx-sys-border-width-heavy);
+  --plx-comp-progress-circle-track-color: var(--plx-sys-fill-neutral);
+  --plx-comp-progress-circle-info-color: var(--plx-sys-feedback-info-solid);
+  --plx-comp-progress-circle-success-color: var(--plx-sys-feedback-success-solid);
+  --plx-comp-progress-circle-warning-color: var(--plx-sys-feedback-warning-solid);
+  --plx-comp-progress-circle-danger-color: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-progress-circle-neutral-color: var(--plx-sys-feedback-neutral-solid);
+  --plx-comp-progress-circle-animation-duration: var(--plx-sys-motion-duration-loop-fast);
+  --plx-comp-progress-circle-value-color: var(--plx-sys-content-default);
+  --plx-comp-progress-circle-value-font-family: var(--plx-sys-font-data);
+  --plx-comp-progress-circle-value-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-progress-circle-value-line-height: var(--plx-ref-line-height-none);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-qr-code-plate-color: var(--plx-sys-content-on-media);
+  --plx-comp-qr-code-module-color: var(--plx-sys-surface-media);
+  --plx-comp-qr-code-plate-radius: var(--plx-sys-radius-media-4px);
+  --plx-comp-qr-code-sm-size: var(--plx-ref-size-96px);
+  --plx-comp-qr-code-md-size: var(--plx-ref-size-160px);
+  --plx-comp-qr-code-lg-size: var(--plx-ref-size-240px);
+  --plx-comp-qr-code-sm-logo-size: var(--plx-ref-size-16px);
+  --plx-comp-qr-code-md-logo-size: var(--plx-ref-size-24px);
+  --plx-comp-qr-code-lg-logo-size: var(--plx-ref-size-40px);
+  --plx-comp-qr-code-caption-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-qr-code-value-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-qr-code-caption-color: var(--plx-sys-content-default);
+  --plx-comp-qr-code-caption-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-qr-code-caption-line-height: var(--plx-ref-line-height-snug);
+  --plx-comp-qr-code-value-color: var(--plx-sys-content-muted);
+  --plx-comp-qr-code-value-font-family: var(--plx-sys-font-data);
+  --plx-comp-qr-code-value-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-qr-code-on-accent-caption-color: var(--plx-sys-accent-content);
+  --plx-comp-qr-code-on-accent-value-color: var(--plx-sys-accent-content-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-retry-status-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-retry-status-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-retry-delay: 2s;
+  --plx-comp-retry-delay-max: 30s;
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-rich-text-text: var(--plx-sys-content-default);
@@ -2730,6 +2840,19 @@
   --plx-comp-bleed-xl-margin-block: calc(-1 * var(--plx-comp-layout-inset-xl-padding-block));
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-status-dot-online-background: var(--plx-sys-status-online);
+  --plx-comp-status-dot-away-background: var(--plx-sys-status-away);
+  --plx-comp-status-dot-busy-background: var(--plx-sys-status-busy);
+  --plx-comp-status-dot-offline-background: var(--plx-sys-status-offline);
+  --plx-comp-status-dot-md-size: var(--plx-ref-size-12px);
+  --plx-comp-status-dot-lg-size: var(--plx-ref-size-16px);
+  --plx-comp-status-dot-glyph-color: var(--plx-sys-surface-default);
+  --plx-comp-status-dot-bar-height: var(--plx-sys-border-width-medium);
+  --plx-comp-status-dot-bar-radius: var(--plx-sys-shape-pill);
+  --plx-comp-status-dot-md-bar-width: var(--plx-ref-glyph-size-6px);
+  --plx-comp-status-dot-lg-bar-width: var(--plx-ref-size-8px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-sticky-z-index: var(--plx-sys-layer-sticky);
   --plx-comp-sticky-background: var(--plx-sys-surface-default);
   --plx-comp-sticky-text: var(--plx-sys-content-default);
@@ -2756,4 +2879,12 @@
   --plx-comp-text-lines-3: 3;
   --plx-comp-text-lines-4: 4;
   --plx-comp-text-expand-gap: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-version-label-color: var(--plx-sys-content-default);
+  --plx-comp-version-label-font-family: var(--plx-sys-font-data);
+  --plx-comp-version-label-line-height: var(--plx-ref-line-height-snug);
+  --plx-comp-version-label-md-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-version-label-sm-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-version-label-gap: var(--plx-sys-space-inline-xs);
 }

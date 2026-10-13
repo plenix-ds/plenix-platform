@@ -126,4 +126,13 @@ export { ILLUSTRATIONS, illustrationByName } from './components/Illustration/ill
 export { Image } from './components/Image/Image.jsx';
 export { Figure } from './components/Figure/Figure.jsx';
 export { ThemeZone } from './providers/ThemeProvider.jsx';
+export { Barcode } from './components/Barcode/Barcode.jsx';
+export { encodeBarcode, barcodeCheckDigit, BARCODE_QUIET_ZONE } from './utils/barcode.js';
+export { useRetry, RetryNotice } from './patterns/Retry/Retry.jsx';
+export { AvatarGroup } from './components/AvatarGroup/AvatarGroup.jsx';
+export { Persona } from './components/Persona/Persona.jsx';
+export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.jsx';
+export { QRCode } from './components/QRCode/QRCode.jsx';
+export { qrEncode } from './utils/qr.js';
+export { VersionLabel } from './components/VersionLabel/VersionLabel.jsx';
 /* END library parts */

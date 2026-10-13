@@ -1,0 +1,15 @@
+{
+  "$description": "EmptyState (platform/components/EmptyState): the tokens of its warning and success tones (library wave 4); its other tokens are in components.tokens.json.",
+  "plx-comp": {
+    "empty-state-warning-icon-text": {
+      "$value": "{plx-sys.feedback-warning-solid}",
+      "$type": "color",
+      "$description": "EmptyState: the icon of the warning tone (offline, degraded), in the warning solid on the surface; the title says what needs care, so color is never the only sign."
+    },
+    "empty-state-success-icon-text": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color",
+      "$description": "EmptyState: the icon of the success tone (completion), in the success solid on the surface; the title says what is done."
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$description": "Notice (platform/components/Notice): the tokens of the section message, its title, actions and dismiss button (library wave 4); its tone and box tokens are in components.tokens.json.",
+  "plx-comp": {
+    "notice-body-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Notice: the space between the title, the text and the actions of a section message."
+    },
+    "notice-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Notice: the weight of a section message’s title, at the notice’s size and in its tone’s content color."
+    },
+    "notice-actions-gap": {
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension",
+      "$description": "Notice: the space between a section message’s action buttons."
+    },
+    "notice-actions-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Notice: the extra space above a section message’s actions, which sets them apart from the text."
+    }
+  }
+}
