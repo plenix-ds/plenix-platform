@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.48] - 2026-10-13
+
+### Added
+- The complete library, wave 4, lanes A and B (23 inventory items):
+  - Barcode (Code 128, EAN-13, UPC-A) and QR code (levels L to H, versions 1 to 40), each with its own encoder;
+  - Section message (Notice with a title, actions and dismiss); error, warning, success, offline, degraded,
+    permission-denied, not-found, maintenance and completion states (EmptyState kinds);
+  - the Retry pattern (manual or automatic with a growing wait, the attempt count);
+  - availability indicator (online, away, busy, offline, each with its own shape), presence on Avatar, Avatar group,
+    Profile summary (Persona), Circular progress and Version label.
+
 ## [0.31.47] - 2026-10-13
 
 ### Fixed
