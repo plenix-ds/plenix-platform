@@ -22,10 +22,10 @@ const STATES = [
   ['dam/index.html', ['Fields'], 1],
   ['dam/index.html', ['Table'], 1],
   ['dam/index.html', ['Branding(326)', 'Table'], 1],
-  ['dam/settings-system.html#properties', ['Enabled for'], 1],
+  ['dam/settings-system.html#properties', ['open:Enabled for'], 1],
   ['dam/settings-system.html#properties', ['Actions'], 1],
   ['dam/settings-system.html#fields', [], 1],
-  ['dam/settings-system.html#transcoding', ['Preset configuration'], 1],
+  ['dam/settings-system.html#transcoding', [], 1],
   ['dam/settings-system.html#users', [], 1],
   ['dam/settings-system.html#email-templates', [], 1],
   ['dam/settings-system.html#database', [], 1],
@@ -35,8 +35,8 @@ const STATES = [
   ['dam/settings-system.html#fields', ['#users'], 1],
   ['dam/settings-system.html#fields', ['#scheduler'], 1],
   ['settings/index.html', ['Documentation', 'Product vision'], 1],
-  ['settings/index.html', ['Documentation', 'Terminology'], 3],
-  ['settings/index.html', ['Documentation', 'Data model'], 2],
+  ['settings/index.html', ['Documentation', 'Terminology', 'open:*'], 3],
+  ['settings/index.html', ['Documentation', 'Data model', 'open:*'], 2],
   ['settings/index.html', ['Documentation', 'Capabilities', 'main:Notes'], 2],
   // the design system's reference tables (props, states, classes, tokens), where token and class names sit in cells
   ['platform/design-system/index.html#/data-display/data-table', [], 1],
@@ -86,6 +86,9 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       }
       const ok = await page.evaluate((text) => {
         if (text.charAt(0) === '#') { location.hash = text.slice(1); return true; }
+        // "open:Title" opens the collapsed settings card with that title; "open:*" opens every collapsed card on the page
+        if (text.indexOf('open:') === 0) { const t = text.slice(5); const all = Array.from(document.querySelectorAll('.plx-settings__section-toggle')).filter((b) => b.offsetParent && (t === '*' || b.textContent.trim().indexOf(t) === 0));
+          all.filter((b) => b.getAttribute('aria-expanded') === 'false').forEach((b) => b.click()); return all.length > 0; }
         // "main:Text": a control inside the page's main area only (the same name can also be in the navigation)
         const inMain = text.indexOf('main:') === 0, name = inMain ? text.slice(5) : text;
         const el = Array.from((inMain ? document.querySelector('main') : document).querySelectorAll('button, [role="tab"], [role="radio"], a, label')).find((e) => (e.textContent.trim() === name || e.getAttribute('aria-label') === name) && e.offsetParent);

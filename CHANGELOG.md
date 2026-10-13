@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.47] - 2026-10-13
+
+### Fixed
+- The data-table test opens collapsed settings cards before it checks their tables (Settings › Documentation, DAM
+  Properties); the DAM Transcoding table sits in a static card. 25 of 25 table views pass.
+
 ## [0.31.46] - 2026-10-13
 
 ### Changed
