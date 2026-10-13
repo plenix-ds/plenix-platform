@@ -1,0 +1,14 @@
+{
+  "$description": "StatusIcon (library wave 4, lane C; components/Icon/status-icon.css): a tone's icon in the tone's content color at three sizes, with an optional label.",
+  "plx-comp": {
+    "status-icon-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "The space between the icon and its label." },
+    "status-icon-sm-size": { "$value": "{plx-sys.icon-size-sm}", "$type": "dimension", "$description": "The small icon's square (16px): dense rows and table cells." },
+    "status-icon-md-size": { "$value": "{plx-sys.icon-size-md}", "$type": "dimension", "$description": "The default icon's square (20px)." },
+    "status-icon-lg-size": { "$value": "{plx-sys.icon-size-lg}", "$type": "dimension", "$description": "The large icon's square (24px): banners and headings." },
+    "status-icon-info-color": { "$value": "{plx-sys.feedback-info-content}", "$type": "color", "$description": "The info icon: the info content color." },
+    "status-icon-success-color": { "$value": "{plx-sys.feedback-success-content}", "$type": "color", "$description": "The success icon: the success content color." },
+    "status-icon-warning-color": { "$value": "{plx-sys.feedback-warning-content}", "$type": "color", "$description": "The warning icon: the warning content color." },
+    "status-icon-danger-color": { "$value": "{plx-sys.feedback-danger-content}", "$type": "color", "$description": "The danger icon: the danger content color." },
+    "status-icon-neutral-color": { "$value": "{plx-sys.feedback-neutral-content}", "$type": "color", "$description": "The neutral icon: the neutral content color." }
+  }
+}

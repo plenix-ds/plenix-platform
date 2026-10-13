@@ -14,3 +14,5 @@
 .plx-toast__close.is-hover{opacity:1;}
 .plx-toast__close:focus-visible,
 .plx-toast__close.is-focus-visible{outline-color:var(--plx-comp-toast-close-focus-outline-color);outline-offset:var(--plx-comp-toast-close-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-toast-close-focus-outline-width);}
+/* the action (Undo, View): a Platform Button (size xs) between the message and the Dismiss button (wave 4) */
+.plx-toast__action{flex-shrink:0;}

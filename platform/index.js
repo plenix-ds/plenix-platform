@@ -135,4 +135,10 @@ export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.jsx';
 export { QRCode } from './components/QRCode/QRCode.jsx';
 export { qrEncode } from './utils/qr.js';
 export { VersionLabel } from './components/VersionLabel/VersionLabel.jsx';
+export { StatusIcon } from './components/Icon/Icon.jsx';
+export { Banner } from './components/Banner/Banner.jsx';
+export { Scrim } from './components/Scrim/Scrim.jsx';
+export { LoadingOverlay } from './components/LoadingOverlay/LoadingOverlay.jsx';
+export { Time } from './components/Time/Time.jsx';
+export { useUndo } from './components/Toast/Toast.jsx';
 /* END library parts */

@@ -1,0 +1,16 @@
+/* Plenix · Banner (platform/components/Banner): a full-width message at the top of a page or a pane, in its tone's soft
+   fill and content color, with an edge under it (two shades darker than the fill, like every tone's edge) and no corners.
+   The icon, the message, the actions and the Dismiss button sit on one row; the message wraps. */
+.plx-banner{align-items:center;border-block-end-style:solid;border-block-end-width:var(--plx-comp-banner-border-width);box-sizing:border-box;column-gap:var(--plx-comp-banner-gap);display:flex;font-size:var(--plx-comp-banner-font-size);inline-size:100%;line-height:var(--plx-comp-banner-line-height);padding-block-end:var(--plx-comp-banner-padding-block);padding-block-start:var(--plx-comp-banner-padding-block);}
+.plx-banner--page{padding-inline-end:var(--plx-comp-banner-page-padding-inline);padding-inline-start:var(--plx-comp-banner-page-padding-inline);}
+.plx-banner--pane{padding-inline-end:var(--plx-comp-banner-pane-padding-inline);padding-inline-start:var(--plx-comp-banner-pane-padding-inline);}
+.plx-banner__icon{display:inline-flex;flex-shrink:0;}
+.plx-banner__body{column-gap:var(--plx-comp-banner-body-gap);display:flex;flex-basis:0%;flex-grow:1;flex-wrap:wrap;min-inline-size:0;}
+.plx-banner__title{font-weight:var(--plx-comp-banner-title-font-weight);}
+.plx-banner__actions{align-items:center;column-gap:var(--plx-comp-banner-actions-gap);display:flex;flex-shrink:0;}
+.plx-banner__dismiss{flex-shrink:0;}
+.plx-banner--info{background-color:var(--plx-comp-banner-info-background);border-block-end-color:var(--plx-comp-banner-info-border);color:var(--plx-comp-banner-info-text);}
+.plx-banner--success{background-color:var(--plx-comp-banner-success-background);border-block-end-color:var(--plx-comp-banner-success-border);color:var(--plx-comp-banner-success-text);}
+.plx-banner--warning{background-color:var(--plx-comp-banner-warning-background);border-block-end-color:var(--plx-comp-banner-warning-border);color:var(--plx-comp-banner-warning-text);}
+.plx-banner--danger{background-color:var(--plx-comp-banner-danger-background);border-block-end-color:var(--plx-comp-banner-danger-border);color:var(--plx-comp-banner-danger-text);}
+.plx-banner--neutral{background-color:var(--plx-comp-banner-neutral-background);border-block-end-color:var(--plx-comp-banner-neutral-border);color:var(--plx-comp-banner-neutral-text);}

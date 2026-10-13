@@ -1,0 +1,30 @@
+{
+  "$description": "Banner (library wave 4, lane C): a full-width message at the top of a page or a pane, in its tone's soft fill with an edge under it.",
+  "plx-comp": {
+    "banner-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "The space between the icon, the message, the actions and the Dismiss button." },
+    "banner-body-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "The space between the bold title and the message on one line." },
+    "banner-actions-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "The space between two actions." },
+    "banner-font-size": { "$value": "{plx-ref.font-size-13}", "$type": "dimension", "$description": "The message: the body size." },
+    "banner-line-height": { "$value": "{plx-ref.line-height-normal}", "$type": "number", "$description": "The message's line height, for a message that wraps." },
+    "banner-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "The title's weight: semibold." },
+    "banner-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "The edge under the banner." },
+    "banner-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "The space above and below the row." },
+    "banner-page-padding-inline": { "$value": "{plx-sys.space-inset-lg}", "$type": "dimension", "$description": "The space at both ends of a page banner." },
+    "banner-pane-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "The space at both ends of a pane banner." },
+    "banner-info-background": { "$value": "{plx-sys.feedback-info-soft}", "$type": "color", "$description": "The info banner's fill." },
+    "banner-info-text": { "$value": "{plx-sys.feedback-info-content}", "$type": "color", "$description": "The info banner's text." },
+    "banner-info-border": { "$value": "{plx-sys.feedback-info-soft-border}", "$type": "color", "$description": "The info banner's edge." },
+    "banner-success-background": { "$value": "{plx-sys.feedback-success-soft}", "$type": "color", "$description": "The success banner's fill." },
+    "banner-success-text": { "$value": "{plx-sys.feedback-success-content}", "$type": "color", "$description": "The success banner's text." },
+    "banner-success-border": { "$value": "{plx-sys.feedback-success-soft-border}", "$type": "color", "$description": "The success banner's edge." },
+    "banner-warning-background": { "$value": "{plx-sys.feedback-warning-soft}", "$type": "color", "$description": "The warning banner's fill." },
+    "banner-warning-text": { "$value": "{plx-sys.feedback-warning-content}", "$type": "color", "$description": "The warning banner's text." },
+    "banner-warning-border": { "$value": "{plx-sys.feedback-warning-soft-border}", "$type": "color", "$description": "The warning banner's edge." },
+    "banner-danger-background": { "$value": "{plx-sys.feedback-danger-soft}", "$type": "color", "$description": "The danger banner's fill." },
+    "banner-danger-text": { "$value": "{plx-sys.feedback-danger-soft-content}", "$type": "color", "$description": "The danger banner's text." },
+    "banner-danger-border": { "$value": "{plx-sys.feedback-danger-soft-border}", "$type": "color", "$description": "The danger banner's edge." },
+    "banner-neutral-background": { "$value": "{plx-sys.feedback-neutral-soft}", "$type": "color", "$description": "The neutral banner's fill." },
+    "banner-neutral-text": { "$value": "{plx-sys.feedback-neutral-content}", "$type": "color", "$description": "The neutral banner's text." },
+    "banner-neutral-border": { "$value": "{plx-sys.feedback-neutral-soft-border}", "$type": "color", "$description": "The neutral banner's edge." }
+  }
+}

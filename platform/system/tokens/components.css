@@ -2445,6 +2445,33 @@
   --plx-comp-avatar-group-more-font-family: var(--plx-sys-font-data);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-banner-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-banner-body-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-banner-actions-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-banner-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-banner-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-banner-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-banner-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-banner-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-banner-page-padding-inline: var(--plx-sys-space-inset-lg);
+  --plx-comp-banner-pane-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-banner-info-background: var(--plx-sys-feedback-info-soft);
+  --plx-comp-banner-info-text: var(--plx-sys-feedback-info-content);
+  --plx-comp-banner-info-border: var(--plx-sys-feedback-info-soft-border);
+  --plx-comp-banner-success-background: var(--plx-sys-feedback-success-soft);
+  --plx-comp-banner-success-text: var(--plx-sys-feedback-success-content);
+  --plx-comp-banner-success-border: var(--plx-sys-feedback-success-soft-border);
+  --plx-comp-banner-warning-background: var(--plx-sys-feedback-warning-soft);
+  --plx-comp-banner-warning-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-banner-warning-border: var(--plx-sys-feedback-warning-soft-border);
+  --plx-comp-banner-danger-background: var(--plx-sys-feedback-danger-soft);
+  --plx-comp-banner-danger-text: var(--plx-sys-feedback-danger-soft-content);
+  --plx-comp-banner-danger-border: var(--plx-sys-feedback-danger-soft-border);
+  --plx-comp-banner-neutral-background: var(--plx-sys-feedback-neutral-soft);
+  --plx-comp-banner-neutral-text: var(--plx-sys-feedback-neutral-content);
+  --plx-comp-banner-neutral-border: var(--plx-sys-feedback-neutral-soft-border);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-barcode-background: var(--plx-sys-surface-default);
   --plx-comp-barcode-bar: var(--plx-sys-content-default);
   --plx-comp-barcode-text: var(--plx-sys-content-default);
@@ -2532,6 +2559,13 @@
   --plx-comp-code-padding-inline: var(--plx-sys-space-inline-xs);
   --plx-comp-code-on-accent-background: var(--plx-sys-accent-surface-raised);
   --plx-comp-code-on-accent-text: var(--plx-sys-accent-content);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-color-swatch-label-text: var(--plx-sys-content-default);
+  --plx-comp-color-swatch-label-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-color-swatch-label-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-color-swatch-label-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-color-swatch-label-min-height: var(--plx-sys-control-target-min);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-columns-sidebar-start-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -2690,6 +2724,17 @@
   --plx-comp-list-nested-gap: var(--plx-sys-space-stack-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-loading-overlay-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-loading-overlay-padding: var(--plx-sys-space-inset-lg);
+  --plx-comp-loading-overlay-z-index: var(--plx-sys-layer-raised);
+  --plx-comp-loading-overlay-page-z-index: var(--plx-sys-layer-overlay);
+  --plx-comp-loading-overlay-message-color: var(--plx-sys-content-default);
+  --plx-comp-loading-overlay-message-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-loading-overlay-message-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-loading-overlay-message-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-loading-overlay-progress-max-width: var(--plx-ref-size-240px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-notice-body-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-notice-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-notice-actions-gap: var(--plx-sys-space-cluster-sm);
@@ -2824,6 +2869,17 @@
   --plx-comp-rich-text-caption-font-size: var(--plx-ref-font-size-12);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-scrim-background: var(--plx-sys-scrim);
+  --plx-comp-scrim-opacity: var(--plx-sys-opacity-mid);
+  --plx-comp-scrim-light-opacity: var(--plx-sys-opacity-low);
+  --plx-comp-scrim-inverse-background: var(--plx-sys-surface-canvas);
+  --plx-comp-scrim-inverse-opacity: var(--plx-sys-opacity-high);
+  --plx-comp-scrim-z-index: var(--plx-sys-layer-overlay);
+  --plx-comp-scrim-contained-z-index: var(--plx-sys-layer-raised);
+  --plx-comp-scrim-animation-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-scrim-animation-timing-function: var(--plx-sys-motion-ease-standard);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-center-sm-max-width: var(--plx-ref-size-400px);
   --plx-comp-center-md-max-width: var(--plx-ref-size-600px);
   --plx-comp-center-lg-max-width: var(--plx-ref-size-900px);
@@ -2853,6 +2909,17 @@
   --plx-comp-status-dot-lg-bar-width: var(--plx-ref-size-8px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-status-icon-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-status-icon-sm-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-status-icon-md-size: var(--plx-sys-icon-size-md);
+  --plx-comp-status-icon-lg-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-status-icon-info-color: var(--plx-sys-feedback-info-content);
+  --plx-comp-status-icon-success-color: var(--plx-sys-feedback-success-content);
+  --plx-comp-status-icon-warning-color: var(--plx-sys-feedback-warning-content);
+  --plx-comp-status-icon-danger-color: var(--plx-sys-feedback-danger-content);
+  --plx-comp-status-icon-neutral-color: var(--plx-sys-feedback-neutral-content);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-sticky-z-index: var(--plx-sys-layer-sticky);
   --plx-comp-sticky-background: var(--plx-sys-surface-default);
   --plx-comp-sticky-text: var(--plx-sys-content-default);
@@ -2879,6 +2946,14 @@
   --plx-comp-text-lines-3: 3;
   --plx-comp-text-lines-4: 4;
   --plx-comp-text-expand-gap: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-time-font-family: var(--plx-sys-font-data);
+  --plx-comp-time-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-time-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-time-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-time-focus-radius: var(--plx-sys-shape-2xs);
+  --plx-comp-time-refresh-interval: 60s;
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-version-label-color: var(--plx-sys-content-default);

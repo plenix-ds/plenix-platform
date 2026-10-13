@@ -1,0 +1,14 @@
+{
+  "$description": "Scrim (library wave 4, lane C): the translucent layer behind a modal layer or over a busy region, in the scrim role or the canvas color at an opacity of the scale.",
+  "plx-comp": {
+    "scrim-background": { "$value": "{plx-sys.scrim}", "$type": "color", "$description": "The modal and light scrim: the scrim role." },
+    "scrim-opacity": { "$value": "{plx-sys.opacity-mid}", "$type": "number", "$description": "The modal scrim: the middle opacity, as the dialog's backdrop." },
+    "scrim-light-opacity": { "$value": "{plx-sys.opacity-low}", "$type": "number", "$description": "The light scrim: the low opacity." },
+    "scrim-inverse-background": { "$value": "{plx-sys.surface-canvas}", "$type": "color", "$description": "The inverse scrim (a veil): the canvas color." },
+    "scrim-inverse-opacity": { "$value": "{plx-sys.opacity-high}", "$type": "number", "$description": "The inverse scrim: the high opacity, so the content under it stays faintly readable." },
+    "scrim-z-index": { "$value": "{plx-sys.layer-overlay}", "$type": "number", "$description": "A scrim over the window: the overlay layer, under the modal layer it backs." },
+    "scrim-contained-z-index": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "A scrim over one region: one layer over the region's content." },
+    "scrim-animation-duration": { "$value": "{plx-sys.motion-duration-fast}", "$type": "duration", "$description": "The fade in." },
+    "scrim-animation-timing-function": { "$value": "{plx-sys.motion-ease-standard}", "$type": "dimension", "$description": "The fade's easing." }
+  }
+}
