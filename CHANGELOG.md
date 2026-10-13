@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.50] - 2026-10-13
+
+### Changed
+- Wave 4 decisions (owner):
+  - Barcode is black on white in both themes, as the QR code, so scanners read it;
+  - new icons from the set: wifi-off and cloud-off (the offline and degraded states), remove and do-not-disturb;
+  - Do not disturb is a fifth presence state (the busy red, told apart by shape): online a check, away a clock, busy a
+    solid dot, do not disturb a minus, offline a cross;
+  - the retry waits (2 s doubling to 30 s) and the state tones stay as built.
+- Sidebar group labels keep acronyms and real plurals ("All QR codes", "All retries", "All presence").
+
 ## [0.31.49] - 2026-10-13
 
 ### Added
