@@ -72,7 +72,7 @@ Tools, AI agents and other systems read the rules from here.
 
 ### Checks
 
-`npm test` runs the visual snapshot (Button), every page, and the accessibility scan (axe-core; known issues in `tests/baselines/a11y.json` may only go down). GitHub runs them, with the build and the system and spec checks, on every push (`.github/workflows/ci.yml`).
+`npm test` runs the checks for what changed (`tests/changed.js` maps the diff since the previous commit, and the working tree, to the pages, design-system records and labs each test loads; `npm run test:scope` prints it): the visual snapshot (Button), the pages, the accessibility scan (axe-core; known issues in `tests/baselines/a11y.json` may only go down) and the rest. GitHub runs them in changed mode, with the build and the system and spec checks, on every push (`.github/workflows/ci.yml`). `npm run test:full` runs every test on every page: the final gate when everything is marked complete, also run by hand on GitHub (`.github/workflows/full.yml`), never per push or per release. Every test has a time limit (`TEST_TIMEOUT_MS`).
 
 ### Releasing a version
 

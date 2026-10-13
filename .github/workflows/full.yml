@@ -1,0 +1,102 @@
+# Plenix full suite: the final gate (owner, 2026-10-13), run by hand (Actions › Full suite › Run workflow) only when
+# everything is marked complete; never per push and never per release. Every test on every page (TEST_SCOPE=full), split
+# into parallel jobs: the long tests in shards (TEST_SHARD=<i>/<n>: every n-th page, route and lab), each job with a time
+# limit. The design system (platform/design-system) is checked out with the DS_TOKEN secret.
+name: Full suite
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CHROME_PATH: /usr/bin/google-chrome
+  TEST_SCOPE: full
+
+jobs:
+  checks:
+    name: Build and checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Design system (submodule)
+        env:
+          DS_TOKEN: ${{ secrets.DS_TOKEN }}
+        run: |
+          if [ -n "$DS_TOKEN" ]; then
+            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
+            git submodule update --init --depth 1
+          else
+            echo "::warning::DS_TOKEN is not set: the design system is not tested, so this is not a full run"
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build, system and spec checks, release build
+        run: |
+          node build-app.js
+          node build-usage.js
+          node check-system.js
+          if [ -f platform/design-system/inventory.js ]; then node check-spec.js; fi
+          node build-packages.js
+
+      - name: "Tests without a browser (contrast, formats, brand rules, login)"
+        run: node tests/run.js contrast formats brand-rules login
+
+  browser:
+    name: Full ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: 'pages 1/4', tests: pages, shard: 1/4 }
+          - { name: 'pages 2/4', tests: pages, shard: 2/4 }
+          - { name: 'pages 3/4', tests: pages, shard: 3/4 }
+          - { name: 'pages 4/4', tests: pages, shard: 4/4 }
+          - { name: 'accessibility 1/2', tests: a11y, shard: 1/2 }
+          - { name: 'accessibility 2/2', tests: a11y, shard: 2/2 }
+          - { name: 'labs 1/2', tests: labs, shard: 1/2 }
+          - { name: 'labs 2/2', tests: labs, shard: 2/2 }
+          - { name: typography, tests: typography, shard: '' }
+          - { name: 'targets and reflow', tests: targets reflow, shard: '' }
+          - { name: fixtures, tests: visual density layout theme high-contrast utilities keyboard, shard: '' }
+          - { name: behavior, tests: data-table focus-order semantic-html navigation, shard: '' }
+    env:
+      TEST_SHARD: ${{ matrix.shard }}
+      TEST_TIMEOUT_MS: '5400000'
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Design system (submodule)
+        env:
+          DS_TOKEN: ${{ secrets.DS_TOKEN }}
+        run: |
+          if [ -n "$DS_TOKEN" ]; then
+            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
+            git submodule update --init --depth 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: |
+          node build-app.js
+          node build-usage.js
+
+      - name: Tests (${{ matrix.tests }}), every page
+        run: node tests/run.js --full ${{ matrix.tests }}

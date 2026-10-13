@@ -11,7 +11,7 @@
 //                                                                design-system pages and labs
 //   global files (platform.css's foundations, system/, the semantic and reference tokens, providers, vendor, fonts, icons,
 //   dev/, tests/lib.js, this file, the builders)               → a small fixed slice: each app's first page, the first two
-//                                                                records of each design-system section, every fifth lab
+//                                                                records of each design-system section, every 40th lab
 //   a test's own file or baseline                              → that test on the slice
 //   nothing relevant                                           → each test prints its OK line with 0 and exits 0
 //   TEST_SCOPE=changed (default) | full     full: every page, as before
@@ -287,11 +287,12 @@ module.exports = {
     const s = scope(), m = await matched(page), first = dsSlice(test) || m.broad ? firstTwo(list) : new Set();
     return shard(list.filter((r) => m.ids.has(routeId(r)) || s.dsRoutes.has(r) || first.has(r)));
   },
-  // the component labs to run (a lab's id is its record's), with the design system open in the page; the slice: every fifth lab
+  // the component labs to run (a lab's id is its record's), with the design system open in the page; the slice: every 40th
+  // lab (a lab takes about half a minute)
   async labsIn(page, ids, test) {
     if (FULL) return shard(ids);
     const m = await matched(page), slice = dsSlice(test) || m.broad;
-    return shard(ids.filter((id, i) => m.ids.has(id) || (slice && i % 5 === 0)));
+    return shard(ids.filter((id, i) => m.ids.has(id) || (slice && i % 40 === 0)));
   },
   // a test of fixed fixtures: does anything it covers change? { units: ['components/Button'], apps: ['settings'], ids: ['toolbar'] }
   wants(what, test) {

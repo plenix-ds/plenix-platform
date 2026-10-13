@@ -1,5 +1,8 @@
-# Plenix checks: on every push and pull request. Build, the system and spec checks, the release build, the visual
-# snapshot, every page, the accessibility scan, typography, reflow at 320px and target sizes (known issues may only go down).
+# Plenix checks: on every push and pull request, only the checks for what changed (owner, 2026-10-13: the full suite runs
+# only as the manual final gate, full.yml; a per-push run of everything took almost two hours). The build job: build, the
+# system and spec checks, the release build and the tests without a browser. The browser tests run in changed mode
+# (tests/changed.js: the push's before-SHA, or the pull request's base, to this commit) in parallel jobs, each its own
+# checkout and build (the build takes seconds, faster than passing it on as an artifact), each with a time limit.
 # The design system (platform/design-system) is a private submodule: with the DS_TOKEN secret (a token that can read
 # plenix-ds/plenix-design-system) it is checked out and tested too; without it, the apps and the Platform are tested.
 name: Checks
@@ -12,13 +15,26 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CHROME_PATH: /usr/bin/google-chrome
+  TEST_SCOPE: changed
+  # what to compare with: the pull request's base, or the commit before the push (zeros for a new branch: tests/changed.js
+  # then compares with where the branch left main)
+  CHANGED_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+
 jobs:
-  checks:
+  build:
+    name: Build and checks
     runs-on: ubuntu-latest
-    env:
-      CHROME_PATH: /usr/bin/google-chrome
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Design system (submodule)
         env:
@@ -35,6 +51,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          cache: npm
 
       - run: npm ci
 
@@ -53,59 +70,61 @@ jobs:
       - name: Release build
         run: node build-packages.js
 
-      - name: Visual snapshot (Button)
-        run: node tests/visual.test.js
+      - name: What changed (the scope of the browser tests)
+        run: node tests/changed.js
 
-      - name: Regional density
-        run: node tests/density.test.js
+      - name: "Tests without a browser (contrast, formats, brand rules, login)"
+        run: node tests/run.js contrast formats brand-rules login
 
-      - name: Layout modes
-        run: node tests/layout.test.js
+  browser:
+    name: Browser tests (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: pages
+            tests: pages
+          - name: accessibility
+            tests: a11y
+          - name: typography
+            tests: typography
+          - name: targets and reflow
+            tests: targets reflow
+          - name: labs and fixtures
+            tests: labs visual density layout theme
+          - name: behavior
+            tests: data-table keyboard high-contrast focus-order semantic-html utilities navigation
+    env:
+      TEST_TIMEOUT_MS: '1200000'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
-      - name: Themes
-        run: node tests/theme.test.js
+      - name: Design system (submodule)
+        env:
+          DS_TOKEN: ${{ secrets.DS_TOKEN }}
+        run: |
+          if [ -n "$DS_TOKEN" ]; then
+            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
+            git submodule update --init --depth 1
+          else
+            echo "::notice::DS_TOKEN is not set: the design system's pages are skipped"
+          fi
 
-      - name: Every page
-        run: node tests/pages.test.js
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
 
-      - name: Keyboard behavior
-        run: node tests/keyboard.test.js
+      - run: npm ci
 
-      - name: Accessibility (axe-core)
-        run: node tests/a11y.test.js
+      - name: Build
+        run: |
+          node build-app.js
+          node build-usage.js
 
-      - name: "Data tables (every DataTable view: built, axe, style audit, row height, typography)"
-        run: node tests/data-table.test.js
-
-      - name: "Typography (DM Sans for interface text, DM Mono for code and technical values, one baseline; known findings may only go down)"
-        run: node tests/typography.test.js
-
-      - name: "Component labs (each Edit dialog field moves its own property)"
-        run: node tests/labs.test.js
-
-      - name: "Reflow at 320px (WCAG 1.4.10; two-dimensional content exempt; known findings may only go down)"
-        run: node tests/reflow.test.js
-
-      - name: "Target sizes (coarse pointer 44x44, fine pointer 24x24 or spacing; known findings may only go down)"
-        run: node tests/targets.test.js
-
-      - name: "Contrast of the theme roles (WCAG 1.4.3, 1.4.11; pending pairs may only go down)"
-        run: node tests/contrast.test.js
-
-      - name: "Formats (numbers, dates, currency, names) match the Formats standard"
-        run: node tests/formats.test.js
-
-      - name: "Utilities (virtualizer, hotkeys, live regions, clipboard)"
-        run: node tests/utilities.test.js
-
-      - name: "High contrast, more contrast and reduced motion (forced colors)"
-        run: node tests/high-contrast.test.js
-
-      - name: "Focus order follows the reading order (WCAG 2.4.3; known findings may only go down)"
-        run: node tests/focus-order.test.js
-
-      - name: "Landmarks and heading order on the app pages (known findings may only go down)"
-        run: node tests/semantic-html.test.js
-
-      - name: "Brand rules match the brand tokens (clear space, minimum sizes, backgrounds)"
-        run: node tests/brand-rules.test.js
+      - name: Tests (${{ matrix.tests }}), changed mode
+        run: node tests/run.js ${{ matrix.tests }}
