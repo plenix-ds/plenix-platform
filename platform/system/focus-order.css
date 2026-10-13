@@ -1,0 +1,13 @@
+/* Plenix · Focus order overlay (platform/system/focus-order.css): what platform/dev/focus-order.js (?focus-order) draws over
+   a page: each Tab stop outlined, its number in a badge at its start corner, a path joining the stops in order; a stop out
+   of reading order (or with a positive tabindex) in the warning color; the focused stop's outline doubled. Above
+   everything, never takes a click. Tokens: platform/tokens/semantic/focus-order.tokens.json. */
+.plx-focus-order{block-size:100%;inline-size:100%;inset-block-start:0;inset-inline-start:0;overflow-x:visible;overflow-y:visible;pointer-events:none;position:fixed;z-index:var(--plx-sys-layer-critical);}
+.plx-focus-order__line{fill:none;opacity:var(--plx-sys-focus-order-path-opacity);stroke:var(--plx-sys-focus-order-color);stroke-dasharray:var(--plx-sys-focus-order-stroke-width) var(--plx-sys-focus-order-stroke-width);stroke-width:var(--plx-sys-focus-order-stroke-width);}
+.plx-focus-order__outline{fill:none;stroke:var(--plx-sys-focus-order-color);stroke-width:var(--plx-sys-focus-order-stroke-width);}
+.plx-focus-order__badge{fill:var(--plx-sys-focus-order-color);r:var(--plx-sys-focus-order-badge-radius);}
+.plx-focus-order__number{fill:var(--plx-sys-focus-order-on-color);font-family:var(--plx-sys-focus-order-font-family);font-size:var(--plx-sys-focus-order-font-size);font-variant-numeric:tabular-nums;font-weight:var(--plx-sys-focus-order-font-weight);}
+.plx-focus-order__stop--warning>.plx-focus-order__outline{stroke:var(--plx-sys-focus-order-warning-color);}
+.plx-focus-order__stop--warning>.plx-focus-order__badge{fill:var(--plx-sys-focus-order-warning-color);}
+.plx-focus-order__stop--warning>.plx-focus-order__number{fill:var(--plx-sys-focus-order-warning-on-color);}
+.plx-focus-order__stop.is-current>.plx-focus-order__outline{stroke-width:calc(var(--plx-sys-focus-order-stroke-width) * 2);}

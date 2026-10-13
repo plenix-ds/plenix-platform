@@ -1,0 +1,6 @@
+/* Plenix · Writing direction (platform/system/direction.css): the region a DirectionProvider wraps adds no box of its own;
+   a picture or drawing that points somewhere (a directional illustration) mirrors in right-to-left with .plx-mirror-rtl.
+   The icon set mirrors its own directional icons (components/Icon/icon.css). Everything else mirrors through logical
+   properties (check-system rule logical-properties). */
+.plx-direction{display:contents;}
+.plx-mirror-rtl:dir(rtl){scale:-1 1;}

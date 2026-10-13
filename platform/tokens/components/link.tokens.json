@@ -1,0 +1,90 @@
+{
+  "$description": "Link (platform/components/Link): its component tokens.",
+  "plx-comp": {
+    "link-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "Link: the text and underline color of an inline or standalone link."
+    },
+    "link-visited-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "Link: the color of a visited inline link (:visited). The same role as an unvisited link until a visited role is chosen."
+    },
+    "link-subtle-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Link: the subtle link, in the text color (footers, fine print)."
+    },
+    "link-on-accent-text": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "Link: a link on the accent surface (the blue header)."
+    },
+    "link-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "Link: the weight of an inline link (the weight of the text around it)."
+    },
+    "link-standalone-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "Link: the weight of a standalone or back link, which stands on its own."
+    },
+    "link-underline-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Link: the underline thickness at rest."
+    },
+    "link-hover-underline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "Link: the underline thickness on hover."
+    },
+    "link-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension",
+      "$description": "Link: the corners of the focus ring around the text."
+    },
+    "link-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Link: the focus ring color (keyboard focus)."
+    },
+    "link-focus-outline-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension",
+      "$description": "Link: the focus ring width."
+    },
+    "link-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "Link: the gap between the text and the focus ring."
+    },
+    "link-on-accent-focus-outline-color": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "Link: the focus ring color on the accent surface."
+    },
+    "link-standalone-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Link: the gap between a standalone link’s text and its icon (back chevron, open icon)."
+    },
+    "link-standalone-min-height": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension",
+      "$description": "Link: a standalone or back link is at least the minimum target tall (24px with a pointer, 44px with touch)."
+    },
+    "link-icon-size": {
+      "$value": "{plx-sys.icon-size-sm}",
+      "$type": "dimension",
+      "$description": "Link: the size of the back chevron and the open icon."
+    },
+    "link-icon-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Link: the space before the open icon of an inline external link."
+    }
+  }
+}

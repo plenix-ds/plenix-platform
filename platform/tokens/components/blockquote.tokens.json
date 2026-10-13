@@ -1,0 +1,105 @@
+{
+  "$description": "Blockquote (platform/components/Blockquote): its component tokens.",
+  "plx-comp": {
+    "blockquote-rule-color": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color",
+      "$description": "Blockquote: the rule at the start side of a quote."
+    },
+    "blockquote-rule-width": {
+      "$value": "{plx-sys.border-width-thick}",
+      "$type": "dimension",
+      "$description": "Blockquote: the rule’s width."
+    },
+    "blockquote-padding-inline-start": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "Blockquote: the space between the rule and the quote."
+    },
+    "blockquote-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Blockquote: the space between the quote and its citation."
+    },
+    "blockquote-paragraph-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Blockquote: the space between the paragraphs of one quote."
+    },
+    "blockquote-quote-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Blockquote: the quote’s text color."
+    },
+    "blockquote-quote-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Blockquote: the quote’s font."
+    },
+    "blockquote-quote-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Blockquote: the quote’s size (the body size)."
+    },
+    "blockquote-quote-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "Blockquote: the quote’s weight."
+    },
+    "blockquote-quote-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "Blockquote: the quote’s line height."
+    },
+    "blockquote-citation-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Blockquote: the citation’s text color."
+    },
+    "blockquote-citation-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Blockquote: the citation’s font."
+    },
+    "blockquote-citation-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Blockquote: the citation’s size (the secondary size)."
+    },
+    "blockquote-citation-line-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "Blockquote: the citation’s line height."
+    },
+    "blockquote-pull-rule-color": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color",
+      "$description": "Blockquote: the rule of a pull quote (wider than the rule of a quote)."
+    },
+    "blockquote-pull-rule-width": {
+      "$value": "{plx-sys.border-width-heavy}",
+      "$type": "dimension",
+      "$description": "Blockquote: the pull quote’s rule width."
+    },
+    "blockquote-pull-quote-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "Blockquote: the pull quote’s font."
+    },
+    "blockquote-pull-quote-font-size": {
+      "$value": "{plx-ref.font-size-18}",
+      "$type": "dimension",
+      "$description": "Blockquote: the pull quote’s size."
+    },
+    "blockquote-pull-quote-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "Blockquote: the pull quote’s weight."
+    },
+    "blockquote-pull-quote-line-height": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "Blockquote: the pull quote’s line height."
+    }
+  }
+}

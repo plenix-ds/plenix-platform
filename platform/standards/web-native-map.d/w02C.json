@@ -1,0 +1,13 @@
+{
+  "$description": "Library part w02C (wave 2, lane C): the iOS and Android counterparts of the press, focus and selection hooks, the gestures and their motion, the read-only state and semantic HTML. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "interaction|Pressable": { "ios": ["ios-interaction|Gestures", "ios-interaction|Pointing devices"], "android": ["android-interaction|States", "android-interaction|Touch targets"] },
+    "interaction|Focusable": { "ios": ["ios-interaction|Focus and selection", "ios-interaction|Keyboards"], "android": ["android-interaction|Focus", "android-interaction|Keyboard"] },
+    "interaction|Selectable": { "ios": ["ios-interaction|Focus and selection"], "android": ["android-interaction|States"] },
+    "patterns|Single selection": { "ios": ["ios-forms|Pickers", "ios-forms|Segmented controls"], "android": ["android-forms|Radio group"] },
+    "interaction|Gesture interaction": { "ios": ["ios-interaction|Gestures"], "android": ["android-interaction|Gestures", "android-feedback|Pull to refresh"] },
+    "foundations|Gesture motion": { "ios": ["ios-foundations|Motion", "ios-interaction|Gestures"], "android": ["android-foundations|Transitions", "android-interaction|Gestures"] },
+    "feedback|Read-only state": { "ios": ["ios-forms|Text fields", "ios-forms|Entering data"], "android": ["android-forms|OutlinedTextField", "android-interaction|States"] },
+    "interaction|Semantic HTML": { "ios": ["ios-interaction|VoiceOver", "ios-interaction|Accessibility"], "android": ["android-interaction|TalkBack"] }
+  }
+}

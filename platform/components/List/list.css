@@ -8,3 +8,12 @@
 .plx-list__item--danger .plx-list__icon{color:var(--plx-comp-list-item-danger-icon-text);}
 .plx-list__item--info .plx-list__icon{color:var(--plx-comp-list-item-info-icon-text);}
 .plx-list__item--warning .plx-list__icon{color:var(--plx-comp-list-item-warning-icon-text);}
+/* ordered lists (library wave 2): the number (or letter) is the item's first box, at the line height, its width reserved so
+   the statements line up; steps draw the number in a circle the size of the line height; a nested list starts on its
+   statement's text line (one keyline). Tokens: platform/tokens/components/list.tokens.json. */
+.plx-list--ordered{counter-reset:plx-list;}
+.plx-list--ordered>.plx-list__item{counter-increment:plx-list;}
+.plx-list--ordered>.plx-list__item::before{color:var(--plx-comp-list-marker-text);content:counter(plx-list) ".";flex-shrink:0;font-variant-numeric:tabular-nums;min-inline-size:var(--plx-comp-list-marker-min-width);}
+.plx-list--alpha>.plx-list__item::before{content:counter(plx-list,lower-alpha) ".";}
+.plx-list--steps>.plx-list__item::before{align-items:center;background-color:var(--plx-comp-list-step-background);block-size:var(--plx-comp-list-step-size);border-block-end-color:var(--plx-comp-list-step-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-list-step-border-width);border-block-start-color:var(--plx-comp-list-step-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-list-step-border-width);border-inline-end-color:var(--plx-comp-list-step-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-list-step-border-width);border-inline-start-color:var(--plx-comp-list-step-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-list-step-border-width);border-end-end-radius:var(--plx-comp-list-step-radius);border-end-start-radius:var(--plx-comp-list-step-radius);border-start-end-radius:var(--plx-comp-list-step-radius);border-start-start-radius:var(--plx-comp-list-step-radius);box-sizing:border-box;color:var(--plx-comp-list-step-text);content:counter(plx-list);display:inline-flex;font-size:var(--plx-comp-list-step-font-size);font-weight:var(--plx-comp-list-step-font-weight);inline-size:var(--plx-comp-list-step-size);justify-content:center;min-inline-size:var(--plx-comp-list-step-size);}
+.plx-list__body{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-list-nested-gap);}

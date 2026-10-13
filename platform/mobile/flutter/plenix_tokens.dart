@@ -36,6 +36,13 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color datavizAlertCritical;
   final Color datavizGridLine;
   final Color datavizLabel;
+  final Color focusOrderColor;
+  final Color focusOrderOnColor;
+  final Color focusOrderWarningColor;
+  final Color focusOrderWarningOnColor;
+  final Color readOnlyBackground;
+  final Color readOnlyContent;
+  final Color readOnlyBorder;
   final Color virtualStickyBackground;
   final Color surfaceCanvas;
   final Color surfaceDefault;
@@ -273,6 +280,13 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.datavizAlertCritical,
     required this.datavizGridLine,
     required this.datavizLabel,
+    required this.focusOrderColor,
+    required this.focusOrderOnColor,
+    required this.focusOrderWarningColor,
+    required this.focusOrderWarningOnColor,
+    required this.readOnlyBackground,
+    required this.readOnlyContent,
+    required this.readOnlyBorder,
     required this.virtualStickyBackground,
     required this.surfaceCanvas,
     required this.surfaceDefault,
@@ -511,6 +525,13 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     datavizAlertCritical: Color(0xFFF60000),
     datavizGridLine: Color(0xFFE8E9EC),
     datavizLabel: Color(0xFF56585E),
+    focusOrderColor: Color(0xFF2A6FDB),
+    focusOrderOnColor: Color(0xFFFFFFFF),
+    focusOrderWarningColor: Color(0xFFF60000),
+    focusOrderWarningOnColor: Color(0xFFFFFFFF),
+    readOnlyBackground: Color(0xFFF3F3F3),
+    readOnlyContent: Color(0xFF000000),
+    readOnlyBorder: Color(0xFFE8E9EC),
     virtualStickyBackground: Color(0xFFFFFFFF),
     surfaceCanvas: Color(0xFFF7F7F8),
     surfaceDefault: Color(0xFFFFFFFF),
@@ -749,6 +770,13 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     datavizAlertCritical: Color(0xFFF60000),
     datavizGridLine: Color(0xFF56585E),
     datavizLabel: Color(0xFFD0D0D0),
+    focusOrderColor: Color(0xFF2A6FDB),
+    focusOrderOnColor: Color(0xFFFFFFFF),
+    focusOrderWarningColor: Color(0xFFF60000),
+    focusOrderWarningOnColor: Color(0xFFFFFFFF),
+    readOnlyBackground: Color(0xFF000000),
+    readOnlyContent: Color(0xFFE8E9EC),
+    readOnlyBorder: Color(0xFF56585E),
     virtualStickyBackground: Color(0xFF444444),
     surfaceCanvas: Color(0xFF000000),
     surfaceDefault: Color(0xFF444444),

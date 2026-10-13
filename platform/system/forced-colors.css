@@ -1,0 +1,51 @@
+/* Plenix · Forced colors and more contrast (platform/system/forced-colors.css; library wave 2, foundation forced-colors)
+   Two requests a person makes of their system, honored by every Platform page:
+   1. Forced colors (Windows High Contrast and other contrast themes; @media (forced-colors: active)): the browser
+      replaces every color with the person's few system colors and removes shadows and background images. Whatever the
+      Platform shows with a fill or a shadow alone is drawn again here with the system colors:
+        focus       the focus ring takes Highlight; a focused field (its border is the only sign) a Highlight border
+        selection   a selected, current or pressed item takes Highlight with HighlightText, as the system's own lists do
+        disabled    GrayText for the text and the border
+        boundaries  overlays and cards, which float on a shadow, get an outline in CanvasText
+        icons       an icon (a mask filled with a color) takes the system color of the text it sits in
+        on and off  a checked switch and a progress fill take Highlight; the spinner keeps its gap
+        data color  a color swatch keeps its real color (forced-color-adjust: none): the color is
+                    the content there
+   2. More contrast (@media (prefers-contrast: more)): the theme stays, its weakest roles step up: every border role
+      takes the strong border, and muted and subtle text take the default text color, light and dark.
+   Loaded after the components (the library block of platform.css), so its rules win at equal specificity. Colors are
+   the CSS system colors only (Canvas, CanvasText, Highlight, HighlightText, GrayText, LinkText): never a palette color. */
+@media (forced-colors: active){
+/* focus */
+:focus-visible,.is-focus-visible{outline-color:Highlight;}
+.plx-input:is(:focus,:focus-visible,.is-focused,.is-focus-visible),.plx-select.is-focused .plx-select__control,.plx-combobox__field:focus-within,.plx-search__input:is(:focus,.is-focused){border-bottom-color:Highlight;border-left-color:Highlight;border-right-color:Highlight;border-top-color:Highlight;}
+/* selection: items chosen in a list, a tree, tabs, a segmented control, navigation or a toggle */
+:is(button,a,[role="option"],[role="tab"],[role="treeitem"],[role="row"],[role="gridcell"],[role="menuitemradio"],[role="radio"]):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],[aria-current="true"],[aria-checked="true"],.is-selected,.is-current),
+.plx-tree__item.is-selected>.plx-tree__row,.plx-chip--selected{background-color:Highlight;color:HighlightText;}
+/* disabled */
+:is(button,input,select,textarea,a,[role="button"],[role="option"],[role="menuitem"],[role="tab"]):is(:disabled,[aria-disabled="true"]),.is-disabled{border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText;}
+/* boundaries: what floats on a shadow gets an outline */
+.plx-menu,.plx-combobox__list,.plx-dialog,.plx-sheet,.plx-tooltip,.plx-toast,.plx-card,.plx-media-card{outline-color:CanvasText;outline-style:solid;outline-width:var(--plx-sys-border-width-thin);}
+/* icons: an icon is a mask filled with a background color, which forced colors would turn to Canvas (an invisible icon):
+   it takes the system color of the text it sits in */
+.plx-icon{background-color:CanvasText;}
+:is(button,a,[role="option"],[role="tab"],[role="treeitem"],[role="row"],[role="gridcell"],[role="menuitemradio"],[role="radio"]):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],[aria-current="true"],[aria-checked="true"],.is-selected,.is-current) .plx-icon,
+.plx-tree__item.is-selected>.plx-tree__row .plx-icon,.plx-chip--selected .plx-icon{background-color:HighlightText;}
+:is(button,a,[role="button"],[role="option"],[role="menuitem"],[role="tab"]):is(:disabled,[aria-disabled="true"]) .plx-icon,.is-disabled .plx-icon{background-color:GrayText;}
+a:link .plx-icon,a:visited .plx-icon{background-color:LinkText;}
+/* on and off: a checked switch, a progress fill, the spinner's gap */
+.plx-switch__input:checked+.plx-switch__track,.plx-progress-bar__fill{background-color:Highlight;}
+.plx-spinner{border-top-color:Canvas;}
+/* data color: the color is the content */
+.plx-color-swatch{forced-color-adjust:none;}
+}
+@media (prefers-contrast: more){
+:root,:root[data-plx-mode],[data-plx-theme][data-plx-mode]{
+  --plx-sys-border-subtle:var(--plx-sys-border-strong);
+  --plx-sys-border-default:var(--plx-sys-border-strong);
+  --plx-sys-border-divider:var(--plx-sys-border-strong);
+  --plx-sys-control-border:var(--plx-sys-border-strong);
+  --plx-sys-content-muted:var(--plx-sys-content-default);
+  --plx-sys-content-subtle:var(--plx-sys-content-default);
+}
+}

@@ -18,6 +18,9 @@
 /* right to left: the fill starts at the inline start (the right), so it runs toward the left (batch 213) */
 @keyframes plx-progress-bar-run-rtl{from{transform:translateX(100%);}to{transform:translateX(-300%);}}
 .plx-progress-bar.is-indeterminate .plx-progress-bar__fill:dir(rtl){animation-name:plx-progress-bar-run-rtl;}
+/* less motion: the fill stands still at the start of its track (a jump to the last frame left it off the track,
+   invisible; batch 348) */
+@media(prefers-reduced-motion:reduce){.plx-progress-bar.is-indeterminate .plx-progress-bar__fill,.plx-progress-bar.is-indeterminate .plx-progress-bar__fill:dir(rtl){animation-name:none;}}
 /* a known amount: the browser's own <progress> (batch 280), its track and value drawn from the same tokens */
 .plx-progress-bar__meter{appearance:none;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;display:block;inline-size:100%;}
 .plx-progress-bar__meter::-webkit-progress-bar{background-color:var(--plx-comp-progress-bar-track-background);border-bottom-left-radius:var(--plx-comp-progress-bar-track-radius);border-bottom-right-radius:var(--plx-comp-progress-bar-track-radius);border-top-left-radius:var(--plx-comp-progress-bar-track-radius);border-top-right-radius:var(--plx-comp-progress-bar-track-radius);}

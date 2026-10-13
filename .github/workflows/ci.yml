@@ -97,3 +97,12 @@ jobs:
 
       - name: "Utilities (virtualizer, hotkeys, live regions, clipboard)"
         run: node tests/utilities.test.js
+
+      - name: "High contrast, more contrast and reduced motion (forced colors)"
+        run: node tests/high-contrast.test.js
+
+      - name: "Focus order follows the reading order (WCAG 2.4.3; known findings may only go down)"
+        run: node tests/focus-order.test.js
+
+      - name: "Landmarks and heading order on the app pages (known findings may only go down)"
+        run: node tests/semantic-html.test.js

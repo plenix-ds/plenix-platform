@@ -303,6 +303,18 @@
   --plx-sys-floating-viewport-margin: var(--plx-ref-space-8px);
 }
 :root {
+  --plx-sys-focus-order-color: var(--plx-sys-focus-ring-color);
+  --plx-sys-focus-order-on-color: var(--plx-sys-feedback-info-on-solid);
+  --plx-sys-focus-order-warning-color: var(--plx-sys-feedback-danger-solid);
+  --plx-sys-focus-order-warning-on-color: var(--plx-sys-feedback-danger-on-solid);
+  --plx-sys-focus-order-stroke-width: var(--plx-sys-focus-ring-width);
+  --plx-sys-focus-order-badge-radius: var(--plx-ref-size-12px);
+  --plx-sys-focus-order-font-family: var(--plx-sys-font-label);
+  --plx-sys-focus-order-font-size: var(--plx-ref-font-size-11);
+  --plx-sys-focus-order-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-sys-focus-order-path-opacity: var(--plx-sys-opacity-mid);
+}
+:root {
   --plx-sys-hotkey-sequence-timeout: 1s;
 }
 :root {
@@ -328,6 +340,32 @@
 }
 :root {
   --plx-sys-live-region-delay: 50ms;
+}
+:root {
+  --plx-sys-gesture-slop: var(--plx-ref-size-8px);
+  --plx-sys-gesture-swipe-distance: var(--plx-ref-size-48px);
+  --plx-sys-gesture-fling-velocity: 0.5;
+  --plx-sys-gesture-fling-decay: 0.998;
+  --plx-sys-gesture-long-press-delay: var(--plx-sys-touch-long-press-delay);
+  --plx-sys-gesture-pull-distance: var(--plx-ref-size-64px);
+  --plx-sys-gesture-pull-resistance: 0.5;
+  --plx-sys-gesture-pinch-max-scale: 4;
+  --plx-sys-gesture-settle-duration: var(--plx-ref-motion-duration-base);
+  --plx-sys-gesture-settle-easing: var(--plx-ref-motion-ease-out);
+}
+:root {
+  --plx-sys-motion-loading-spin-duration: var(--plx-sys-motion-duration-loop-fast);
+  --plx-sys-motion-loading-spin-easing: linear;
+  --plx-sys-motion-loading-shimmer-duration: var(--plx-sys-motion-duration-loop-slow);
+  --plx-sys-motion-loading-shimmer-easing: var(--plx-sys-motion-ease-standard);
+  --plx-sys-motion-loading-progress-duration: var(--plx-sys-motion-duration-loop-slow);
+  --plx-sys-motion-loading-progress-easing: var(--plx-sys-motion-ease-standard);
+  --plx-sys-motion-loading-delay: var(--plx-ref-motion-delay-long-press);
+}
+:root {
+  --plx-sys-read-only-background: var(--plx-sys-surface-sunken);
+  --plx-sys-read-only-content: var(--plx-sys-content-default);
+  --plx-sys-read-only-border: var(--plx-sys-border-subtle);
 }
 :root {
   --plx-sys-state-disabled-opacity: var(--plx-sys-opacity-mid);

@@ -1,0 +1,13 @@
+/* Plenix · Gesture (platform/system/gesture.css; library plan wave 2, foundation gesture): what an element that takes
+   gestures (hooks/useGesture.js) tells the browser, and the settle when a gesture ends. The distances and rates are
+   the gesture motion tokens (tokens/semantic/motion-gesture.tokens.json). */
+/* the element tracks every movement itself: no browser scroll, zoom or text selection while a finger is on it */
+.plx-gesture{touch-action:none;user-select:none;-webkit-user-select:none;}
+/* a horizontal gesture (swipe a row, page a carousel): vertical movement still scrolls the page */
+.plx-gesture--pan-x{touch-action:pan-y;}
+/* a vertical gesture (pull to refresh, drag a sheet): horizontal movement still scrolls */
+.plx-gesture--pan-y{touch-action:pan-x;}
+/* pinch to zoom handled by the element: the page itself does not zoom, one finger still scrolls */
+.plx-gesture--pinch{touch-action:pan-x pan-y;}
+/* the element settles where it lands, or springs back, when the finger lifts (the class is set after release) */
+.plx-gesture-settle{transition-duration:var(--plx-sys-gesture-settle-duration);transition-property:transform, opacity;transition-timing-function:var(--plx-sys-gesture-settle-easing);}

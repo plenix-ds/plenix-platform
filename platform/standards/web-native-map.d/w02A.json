@@ -1,0 +1,33 @@
+{
+  "$description": "Library part w02A (wave 2, lane A): the iOS and Android counterparts of Link, inline Code, Blockquote, the ordered List, RichText, the focus order and the writing direction. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "content|Inline link": {
+      "ios": ["ios-content|Text views"],
+      "android": ["android-content|Text roles"]
+    },
+    "content|Inline code": {
+      "ios": ["ios-content|Text views"],
+      "android": ["android-content|Text roles"]
+    },
+    "content|Blockquote": {
+      "ios": ["ios-content|Text views"],
+      "android": ["android-content|Text roles"]
+    },
+    "content|Ordered list": {
+      "ios": ["ios-content|Text views"],
+      "android": ["android-content|Text roles"]
+    },
+    "content|Rich text": {
+      "ios": ["ios-content|Text views", "ios-foundations|Typography"],
+      "android": ["android-content|Text roles", "android-content|Text expansion"]
+    },
+    "interaction|Focus order": {
+      "ios": ["ios-interaction|Focus and selection", "ios-interaction|Keyboards"],
+      "android": ["android-interaction|Focus", "android-interaction|Keyboard"]
+    },
+    "interaction|RTL / bidirectional UI": {
+      "ios": ["ios-foundations|Right to left"],
+      "android": ["android-content|Right to left"]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+/* Plenix · Read-only state (platform/system/read-only.css; library plan wave 2, foundation read-only-context): the
+   controls inside a read-only region (data-plx-readonly="true", set by <ReadOnly>, providers/ReadOnly.jsx) look like
+   values that can be read, selected and copied but not changed. The colors are the read-only roles
+   (tokens/semantic/read-only.tokens.json); the value keeps full content contrast (never the disabled color). */
+/* fields and selects: the sunken surface and the quiet border; hover does not invite typing; focus still shows */
+[data-plx-readonly="true"] .plx-input[readonly],
+[data-plx-readonly="true"] .plx-input[aria-readonly="true"]{background-color:var(--plx-sys-read-only-background);color:var(--plx-sys-read-only-content);}
+[data-plx-readonly="true"] .plx-input[readonly]:not(:focus),
+[data-plx-readonly="true"] .plx-input[aria-readonly="true"]:not(:focus){border-bottom-color:var(--plx-sys-read-only-border);border-left-color:var(--plx-sys-read-only-border);border-right-color:var(--plx-sys-read-only-border);border-top-color:var(--plx-sys-read-only-border);}
+/* choices, sliders and selects that cannot change: the arrow pointer, not the hand */
+[data-plx-readonly="true"] [aria-readonly="true"],
+[data-plx-readonly="true"] [data-plx-readonly-set="locked"],
+[data-plx-readonly="true"] label:has(> [data-plx-readonly-set]){cursor:default;}

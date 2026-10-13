@@ -6,6 +6,24 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.43] - 2026-10-13
+
+### Added
+- The complete library, wave 2 (33 inventory items):
+  - Link (inline, standalone, external, back), Code, Blockquote, RichText, ordered lists;
+  - type styles (display, lead, label, caption, truncation and line clamps, tabular figures);
+  - forced colors and more contrast, loading motion;
+  - press, focus and selection hooks, gestures, read-only regions;
+  - a focus-order overlay, a direction provider;
+  - the logical-properties and semantic HTML rules.
+- On this page shows one section at a time: choosing a section shows only that section, and "View all", the default,
+  shows the whole page.
+- New tests: high contrast and reduced motion, focus order, and landmarks and heading order.
+### Fixed
+- An indeterminate progress bar stays visible when the person asks for less motion.
+- The contained Tabs panel's first corner mirrors in right-to-left pages.
+- The design-system pages no longer break on states written inside :where() or :is().
+
 ## [0.31.42] - 2026-10-12
 
 ### Added

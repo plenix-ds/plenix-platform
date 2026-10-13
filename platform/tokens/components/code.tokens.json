@@ -1,0 +1,40 @@
+{
+  "$description": "Code (platform/components/Code, inline code): its component tokens.",
+  "plx-comp": {
+    "code-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "Code: the neutral fill behind inline code."
+    },
+    "code-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Code: the text color of inline code."
+    },
+    "code-font-family": {
+      "$value": "{plx-sys.font-code}",
+      "$type": "fontFamily",
+      "$description": "Code: the code font (DM Mono); its size and line height are those of the text around it."
+    },
+    "code-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension",
+      "$description": "Code: the corners of the fill."
+    },
+    "code-padding-inline": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Code: the space at the start and end of the fill."
+    },
+    "code-on-accent-background": {
+      "$value": "{plx-sys.accent-surface-raised}",
+      "$type": "color",
+      "$description": "Code: the fill of inline code on the accent surface."
+    },
+    "code-on-accent-text": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "Code: the text color of inline code on the accent surface."
+    }
+  }
+}

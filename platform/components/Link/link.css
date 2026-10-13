@@ -1,0 +1,14 @@
+/* Plenix · Link (platform/components/Link): inline (underlined, in running text), standalone and back (on their own line,
+   as tall as the minimum target), subtle (the text color), on the accent, external (the open icon after the text) and
+   visited (inline only). Focus: the focus ring around the text. Tokens: platform/tokens/components/link.tokens.json. */
+.plx-link{border-end-end-radius:var(--plx-comp-link-radius);border-end-start-radius:var(--plx-comp-link-radius);border-start-end-radius:var(--plx-comp-link-radius);border-start-start-radius:var(--plx-comp-link-radius);color:var(--plx-comp-link-text);cursor:pointer;font-weight:var(--plx-comp-link-font-weight);text-decoration-color:currentcolor;text-decoration-line:underline;text-decoration-style:solid;text-decoration-thickness:var(--plx-comp-link-underline-width);}
+.plx-link:hover,.plx-link.is-hover{text-decoration-thickness:var(--plx-comp-link-hover-underline-width);}
+.plx-link:focus-visible,.plx-link.is-focus-visible{outline-color:var(--plx-comp-link-focus-outline-color);outline-offset:var(--plx-comp-link-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-link-focus-outline-width);}
+.plx-link--inline:not(.plx-link--on-accent):visited,.plx-link--inline.is-visited:not(.plx-link--on-accent){color:var(--plx-comp-link-visited-text);}
+.plx-link--subtle{color:var(--plx-comp-link-subtle-text);}
+.plx-link--standalone{align-items:center;column-gap:var(--plx-comp-link-standalone-gap);display:inline-flex;font-weight:var(--plx-comp-link-standalone-font-weight);min-block-size:var(--plx-comp-link-standalone-min-height);text-decoration-line:none;}
+.plx-link--standalone:hover,.plx-link--standalone.is-hover{text-decoration-line:underline;}
+.plx-link--on-accent{color:var(--plx-comp-link-on-accent-text);}
+.plx-link--on-accent:focus-visible,.plx-link--on-accent.is-focus-visible{outline-color:var(--plx-comp-link-on-accent-focus-outline-color);}
+.plx-link__icon{--plx-comp-icon-size:var(--plx-comp-link-icon-size);}
+.plx-link--inline>.plx-link__icon,.plx-link--subtle>.plx-link__icon{margin-inline-start:var(--plx-comp-link-icon-gap);}

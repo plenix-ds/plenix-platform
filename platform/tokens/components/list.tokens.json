@@ -1,0 +1,60 @@
+{
+  "$description": "List (platform/components/List): the tokens of its ordered lists and steps (library wave 2); its icon list tokens are in components.tokens.json.",
+  "plx-comp": {
+    "list-marker-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "List: the color of an ordered list’s numbers and letters."
+    },
+    "list-marker-min-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "List: the width kept for a number or letter, so the statements line up."
+    },
+    "list-step-size": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "List: the circle of a step, the size of the line height."
+    },
+    "list-step-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "List: the fill of a step’s circle."
+    },
+    "list-step-border-color": {
+      "$value": "{plx-sys.fill-neutral-border}",
+      "$type": "color",
+      "$description": "List: the 1px border of a step’s circle, two shades darker than its fill."
+    },
+    "list-step-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "List: the width of a step’s border."
+    },
+    "list-step-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "List: the color of a step’s number."
+    },
+    "list-step-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "List: the size of a step’s number."
+    },
+    "list-step-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "List: the weight of a step’s number."
+    },
+    "list-step-radius": {
+      "$value": "{plx-sys.shape-pill}",
+      "$type": "dimension",
+      "$description": "List: the corners of a step’s circle (round)."
+    },
+    "list-nested-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "List: the space between a statement and the list nested under it."
+    }
+  }
+}

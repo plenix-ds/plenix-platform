@@ -1,0 +1,9 @@
+/* Plenix · Blockquote (platform/components/Blockquote): a figure with a rule at its start side, the quote and the citation
+   under it; pull: larger, medium weight, a stronger rule. Tokens: platform/tokens/components/blockquote.tokens.json. */
+.plx-blockquote{border-inline-start-color:var(--plx-comp-blockquote-rule-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-blockquote-rule-width);box-sizing:border-box;display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-inline-start:var(--plx-comp-blockquote-padding-inline-start);row-gap:var(--plx-comp-blockquote-gap);}
+.plx-blockquote__quote{color:var(--plx-comp-blockquote-quote-text);font-family:var(--plx-comp-blockquote-quote-font-family);font-size:var(--plx-comp-blockquote-quote-font-size);font-weight:var(--plx-comp-blockquote-quote-font-weight);line-height:var(--plx-comp-blockquote-quote-line-height);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+.plx-blockquote__quote>p{margin-block-end:0;margin-block-start:0;}
+.plx-blockquote__quote>p+p{margin-block-start:var(--plx-comp-blockquote-paragraph-gap);}
+.plx-blockquote__citation{color:var(--plx-comp-blockquote-citation-text);font-family:var(--plx-comp-blockquote-citation-font-family);font-size:var(--plx-comp-blockquote-citation-font-size);line-height:var(--plx-comp-blockquote-citation-line-height);}
+.plx-blockquote--pull{border-inline-start-color:var(--plx-comp-blockquote-pull-rule-color);border-inline-start-width:var(--plx-comp-blockquote-pull-rule-width);}
+.plx-blockquote--pull>.plx-blockquote__quote{font-family:var(--plx-comp-blockquote-pull-quote-font-family);font-size:var(--plx-comp-blockquote-pull-quote-font-size);font-weight:var(--plx-comp-blockquote-pull-quote-font-weight);line-height:var(--plx-comp-blockquote-pull-quote-line-height);}

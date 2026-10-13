@@ -24,3 +24,17 @@
    Standard 3.1, 3.2) */
 .plx-data-table__portal>a.plx-text--link:only-child{position:relative;}
 .plx-data-table__portal>a.plx-text--link:only-child::before{content:"";inset-block-end:var(--plx-comp-text-link-target-inset-block);inset-block-start:var(--plx-comp-text-link-target-inset-block);inset-inline-end:var(--plx-comp-text-link-target-inset-inline-end);inset-inline-start:0;position:absolute;}
+/* display and lead (library wave 2): the largest style, for one key figure or a sign-in heading; and body text one step
+   up, for the opening paragraph of a page */
+.plx-text--display{color:var(--plx-comp-text-display-text);font-family:var(--plx-comp-text-display-font-family);font-size:var(--plx-comp-text-display-font-size);font-weight:var(--plx-comp-text-display-font-weight);letter-spacing:var(--plx-comp-text-display-letter-spacing);line-height:var(--plx-comp-text-display-line-height);}
+.plx-text--lead{color:var(--plx-comp-text-lead-text);font-family:var(--plx-comp-text-lead-font-family);font-size:var(--plx-comp-text-lead-font-size);line-height:var(--plx-comp-text-lead-line-height);}
+/* tabular figures: digits of equal width, so numbers line up down a column and do not shift as they change */
+.plx-text--tabular{font-variant-numeric:tabular-nums;}
+/* lines={2|3|4}: at most that many lines, the last one cut with an ellipsis; the whole text stays in the page */
+.plx-text--lines-2,.plx-text--lines-3,.plx-text--lines-4{-webkit-box-orient:vertical;display:-webkit-box;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;}
+.plx-text--lines-2{-webkit-line-clamp:var(--plx-comp-text-lines-2);}
+.plx-text--lines-3{-webkit-line-clamp:var(--plx-comp-text-lines-3);}
+.plx-text--lines-4{-webkit-line-clamp:var(--plx-comp-text-lines-4);}
+/* expandable: the clamped text and its Show more button under it, at the start */
+.plx-text-expand{align-items:flex-start;display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-text-expand-gap);}
+.plx-text-expand>.plx-text{align-self:stretch;}

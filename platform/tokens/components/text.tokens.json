@@ -1,0 +1,75 @@
+{
+  "$description": "Text (library wave 2, extend): the tokens of the display and lead styles, the line clamp and the expandable text. The other text roles are in components.tokens.json.",
+  "plx-comp": {
+    "text-display-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Display: the text color (one key figure or a sign-in or welcome heading)."
+    },
+    "text-display-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "Display: the heading font."
+    },
+    "text-display-font-size": {
+      "$value": "{plx-ref.font-size-20}",
+      "$type": "dimension",
+      "$description": "Display: the top step of the type scale (20px today; a larger display step of the scale goes here when the scale gets one)."
+    },
+    "text-display-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Display: semibold."
+    },
+    "text-display-letter-spacing": {
+      "$value": "{plx-sys.letter-spacing-tight}",
+      "$type": "dimension",
+      "$description": "Display: tight letter spacing, as large type needs."
+    },
+    "text-display-line-height": {
+      "$value": "{plx-ref.line-height-tight}",
+      "$type": "number",
+      "$description": "Display: a tight line height, so a two-line statement stays one block."
+    },
+    "text-lead-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Lead (body-lg): the text color."
+    },
+    "text-lead-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "Lead: the body font."
+    },
+    "text-lead-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "Lead: one step above the body size."
+    },
+    "text-lead-line-height": {
+      "$value": "{plx-ref.line-height-relaxed}",
+      "$type": "number",
+      "$description": "Lead: a relaxed line height for an opening paragraph."
+    },
+    "text-lines-2": {
+      "$value": "2",
+      "$type": "number",
+      "$description": "lines={2}: the number of lines a clamped text shows."
+    },
+    "text-lines-3": {
+      "$value": "3",
+      "$type": "number",
+      "$description": "lines={3}: the number of lines a clamped text shows."
+    },
+    "text-lines-4": {
+      "$value": "4",
+      "$type": "number",
+      "$description": "lines={4}: the number of lines a clamped text shows."
+    },
+    "text-expand-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Expandable text: the space between the text and its Show more button."
+    }
+  }
+}

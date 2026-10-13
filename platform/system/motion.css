@@ -62,3 +62,24 @@
 :where(.plx-menu--top-end:dir(rtl)){transform-origin:bottom left;}
 :where(.plx-combobox__list){transform-origin:top center;}
 :where(.plx-modal-layer)::before{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-fade-in;animation-timing-function:var(--plx-sys-motion-ease-standard);}
+
+/* ── Loading motion (library wave 2, foundation loading-motion) ──
+   The three loading animations as classes, timed by the loading tokens (semantic/motion-loading.tokens.json):
+   plx-motion-spin turns a spinner at an even speed; plx-motion-shimmer sweeps a skeleton's gradient (its element brings
+   the gradient and its size); plx-motion-progress runs an indeterminate fill (a third of its track) from start to end,
+   toward the left in right-to-left pages. plx-motion-delayed, on a wrapper, keeps an indicator hidden for
+   --plx-sys-motion-loading-delay so a fast answer never flashes it.
+   Reduced motion: each one stands still (no animation at all, rather than one jump to its last frame): the spinner shows
+   its ring, the skeleton its flat fill and the indeterminate fill sits at the start of its track. A label says what is
+   loading either way. */
+@keyframes motion-progress-run{from{transform:translateX(-100%);}to{transform:translateX(300%);}}
+@keyframes motion-progress-run-rtl{from{transform:translateX(100%);}to{transform:translateX(-300%);}}
+.plx-motion-spin{animation-duration:var(--plx-sys-motion-loading-spin-duration);animation-iteration-count:infinite;animation-name:motion-spin;animation-timing-function:var(--plx-sys-motion-loading-spin-easing);}
+.plx-motion-shimmer{animation-duration:var(--plx-sys-motion-loading-shimmer-duration);animation-iteration-count:infinite;animation-name:motion-shimmer-forward;animation-timing-function:var(--plx-sys-motion-loading-shimmer-easing);}
+.plx-motion-shimmer:dir(rtl){animation-name:motion-shimmer-reverse;}
+.plx-motion-progress{animation-duration:var(--plx-sys-motion-loading-progress-duration);animation-iteration-count:infinite;animation-name:motion-progress-run;animation-timing-function:var(--plx-sys-motion-loading-progress-easing);}
+.plx-motion-progress:dir(rtl){animation-name:motion-progress-run-rtl;}
+.plx-motion-delayed{animation-delay:var(--plx-sys-motion-loading-delay);animation-duration:var(--plx-sys-motion-duration-instant);animation-fill-mode:both;animation-name:motion-fade-in;}
+@media(prefers-reduced-motion:reduce){
+.plx-motion-spin,.plx-motion-shimmer,.plx-motion-shimmer:dir(rtl),.plx-motion-progress,.plx-motion-progress:dir(rtl){animation-name:none;}
+}

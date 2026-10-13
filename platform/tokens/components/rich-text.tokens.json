@@ -1,0 +1,185 @@
+{
+  "$description": "RichText (platform/components/RichText): its component tokens (its links, inline code and quotes use the link, code and blockquote tokens).",
+  "plx-comp": {
+    "rich-text-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "RichText: the text color of prose."
+    },
+    "rich-text-font-family": {
+      "$value": "{plx-sys.font-body}",
+      "$type": "fontFamily",
+      "$description": "RichText: the font of prose."
+    },
+    "rich-text-article-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension",
+      "$description": "RichText: the size of article text (a page of reading)."
+    },
+    "rich-text-article-line-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "RichText: the line height of article text."
+    },
+    "rich-text-article-measure": {
+      "$value": "{plx-ref.size-600px}",
+      "$type": "dimension",
+      "$description": "RichText: the reading width of an article (about 80 characters)."
+    },
+    "rich-text-article-gap": {
+      "$value": "{plx-sys.space-stack-lg}",
+      "$type": "dimension",
+      "$description": "RichText: the space between the blocks of an article."
+    },
+    "rich-text-article-heading-gap": {
+      "$value": "{plx-sys.space-stack-xl}",
+      "$type": "dimension",
+      "$description": "RichText: the space above a heading in an article."
+    },
+    "rich-text-compact-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "RichText: the size of compact text (notes, comments, help in a panel)."
+    },
+    "rich-text-compact-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "RichText: the line height of compact text."
+    },
+    "rich-text-compact-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "RichText: the space between the blocks of compact text."
+    },
+    "rich-text-compact-heading-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "RichText: the space above a heading in compact text."
+    },
+    "rich-text-heading-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "RichText: the color of headings."
+    },
+    "rich-text-heading-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "RichText: the font of headings."
+    },
+    "rich-text-heading-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "RichText: the weight of headings."
+    },
+    "rich-text-h1-font-size": {
+      "$value": "{plx-ref.font-size-20}",
+      "$type": "dimension",
+      "$description": "RichText: the size of a first-level heading."
+    },
+    "rich-text-h1-line-height": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "RichText: the line height of a first-level heading."
+    },
+    "rich-text-h2-font-size": {
+      "$value": "{plx-ref.font-size-18}",
+      "$type": "dimension",
+      "$description": "RichText: the size of a second-level heading."
+    },
+    "rich-text-h2-line-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "RichText: the line height of a second-level heading."
+    },
+    "rich-text-h3-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "RichText: the size of a third-level heading."
+    },
+    "rich-text-h3-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "RichText: the line height of a third-level heading (a fourth level takes the text’s size)."
+    },
+    "rich-text-strong-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "RichText: the weight of strong text."
+    },
+    "rich-text-list-indent": {
+      "$value": "{plx-sys.space-inline-lg}",
+      "$type": "dimension",
+      "$description": "RichText: the indent of a list, where its markers sit."
+    },
+    "rich-text-list-item-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "RichText: the space between list items."
+    },
+    "rich-text-marker-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "RichText: the color of list markers."
+    },
+    "rich-text-pre-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "RichText: the fill of a code block."
+    },
+    "rich-text-pre-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "RichText: the text color of a code block."
+    },
+    "rich-text-pre-font-family": {
+      "$value": "{plx-sys.font-code}",
+      "$type": "fontFamily",
+      "$description": "RichText: the code font of a code block."
+    },
+    "rich-text-pre-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "RichText: the size of a code block’s code."
+    },
+    "rich-text-pre-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "RichText: the line height of a code block."
+    },
+    "rich-text-pre-padding": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "RichText: the space inside a code block."
+    },
+    "rich-text-pre-radius": {
+      "$value": "{plx-sys.radius-card-6px}",
+      "$type": "dimension",
+      "$description": "RichText: the corners of a code block."
+    },
+    "rich-text-pre-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "RichText: the focus ring of a code block that scrolls (keyboard focus)."
+    },
+    "rich-text-rule-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "RichText: the color of a rule (hr) between parts."
+    },
+    "rich-text-rule-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "RichText: the width of a rule."
+    },
+    "rich-text-caption-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "RichText: the color of a figure’s caption."
+    },
+    "rich-text-caption-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "RichText: the size of a figure’s caption."
+    }
+  }
+}

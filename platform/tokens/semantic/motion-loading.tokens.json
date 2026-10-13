@@ -1,0 +1,37 @@
+{
+  "$description": "Loading motion (library plan wave 2, foundation loading-motion): the timing of the three loading animations, the spinner's turn, the skeleton's shimmer and the indeterminate progress run, and the delay before an indicator shows. system/motion.css draws them (plx-motion-spin, plx-motion-shimmer, plx-motion-progress); with reduced motion each one stands still.",
+  "plx-sys": {
+    "motion-loading-spin-duration": {
+      "$value": "{plx-sys.motion-duration-loop-fast}",
+      "$type": "duration",
+      "$description": "Spinner: one full turn. A steady loop, never faster."
+    },
+    "motion-loading-spin-easing": {
+      "$value": "linear",
+      "$description": "Spinner: an even speed all the way round (no ease in or out, which reads as a stutter)."
+    },
+    "motion-loading-shimmer-duration": {
+      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$type": "duration",
+      "$description": "Skeleton: one sweep of the shimmer across the placeholder."
+    },
+    "motion-loading-shimmer-easing": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$description": "Skeleton: the shimmer's easing."
+    },
+    "motion-loading-progress-duration": {
+      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$type": "duration",
+      "$description": "Indeterminate progress: one run of the fill from the start of the track to its end."
+    },
+    "motion-loading-progress-easing": {
+      "$value": "{plx-sys.motion-ease-standard}",
+      "$description": "Indeterminate progress: the run's easing."
+    },
+    "motion-loading-delay": {
+      "$value": "{plx-ref.motion-delay-long-press}",
+      "$type": "duration",
+      "$description": "The wait before a loading indicator appears, half a second, so a fast answer never flashes it (plx-motion-delayed on its wrapper)."
+    }
+  }
+}

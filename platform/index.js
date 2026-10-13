@@ -105,4 +105,15 @@ export { contrastRatio, meetsContrast, relativeLuminance, parseColor, CONTRAST_M
 export { DATAVIZ_SCALES, DATAVIZ_STATUS, DATAVIZ_ALERT, datavizCategory, datavizStep, datavizToken } from './utils/dataviz.js';
 export { joinIds, useDescriptionId, useDescribedBy } from './utils/describedBy.js';
 export { lockScroll, useScrollLock, isScrollLocked, scrollLockCount } from './utils/scrollLock.js';
+export { Link } from './components/Link/Link.jsx';
+export { Code } from './components/Code/Code.jsx';
+export { Blockquote } from './components/Blockquote/Blockquote.jsx';
+export { RichText } from './components/RichText/RichText.jsx';
+export { DirectionProvider, DirectionContext, useDirection } from './providers/DirectionProvider.jsx';
+export { isRtl, getDirection, directionOf, physicalSide, arrowStep, RTL_LANGUAGES } from './utils/direction.js';
+export { usePressable } from './hooks/usePressable.js';
+export { useFocusable, useFocusGroup } from './hooks/useFocusable.js';
+export { useSelection } from './hooks/useSelection.js';
+export { useGesture, gestureTokens, flingDistance } from './hooks/useGesture.js';
+export { ReadOnly, ReadOnlyProvider, ReadOnlyContext, useReadOnly } from './providers/ReadOnly.jsx';
 /* END library parts */

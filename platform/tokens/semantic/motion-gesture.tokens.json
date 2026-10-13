@@ -1,0 +1,55 @@
+{
+  "$description": "Gesture motion (library plan wave 2, foundation gesture): the distances, times and rates that turn pointer and touch movement into gestures, and the motion an element makes when a gesture ends. hooks/useGesture.js reads them; system/gesture.css draws the settle.",
+  "plx-sys": {
+    "gesture-slop": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension",
+      "$description": "How far a pointer may move before a press becomes a pan: under it a tap or a long press, over it the movement is tracked (and a long press is canceled)."
+    },
+    "gesture-swipe-distance": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "The distance along the swipe's axis that commits a swipe when the pointer is released slowly; a release faster than the fling velocity commits it sooner."
+    },
+    "gesture-fling-velocity": {
+      "$value": "0.5",
+      "$type": "number",
+      "$description": "The release speed, in CSS pixels per millisecond, at and above which a pan ends as a fling (and commits a swipe whatever its distance)."
+    },
+    "gesture-fling-decay": {
+      "$value": "0.998",
+      "$type": "number",
+      "$description": "How much of its speed a flung element keeps each millisecond (the deceleration rate of a scroll view): the distance it travels is velocity × decay ÷ (1 − decay)."
+    },
+    "gesture-long-press-delay": {
+      "$value": "{plx-sys.touch-long-press-delay}",
+      "$type": "duration",
+      "$description": "How long a pointer is held still before a long press: the touch long-press delay, so every long press in the Platform waits the same."
+    },
+    "gesture-pull-distance": {
+      "$value": "{plx-ref.size-64px}",
+      "$type": "dimension",
+      "$description": "Pull to refresh: the pull (after resistance) at which releasing refreshes; under it the pull springs back."
+    },
+    "gesture-pull-resistance": {
+      "$value": "0.5",
+      "$type": "number",
+      "$description": "Pull to refresh: the share of the finger's movement the pulled content follows, so the pull feels heavier than a scroll."
+    },
+    "gesture-pinch-max-scale": {
+      "$value": "4",
+      "$type": "number",
+      "$description": "Pinch to zoom: the largest scale a pinch reaches (four times); the smallest is the element's fitted size, 1."
+    },
+    "gesture-settle-duration": {
+      "$value": "{plx-ref.motion-duration-base}",
+      "$type": "duration",
+      "$description": "When a gesture ends the element settles where it lands (committed) or springs back (canceled) over this time."
+    },
+    "gesture-settle-easing": {
+      "$value": "{plx-ref.motion-ease-out}",
+      "$type": "cubicBezier",
+      "$description": "The settle's easing: it leaves at the finger's speed and decelerates into place, without overshoot or bounce."
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "dashboard/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "projects/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "messages/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "contacts/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "calendar/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "tasks/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "notes/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "bookmarks/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "files/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "settings/index.html": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "dam/index.html": {
+    "positive": 0,
+    "order": 2,
+    "skip": 0
+  }
+}

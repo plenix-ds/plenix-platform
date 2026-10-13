@@ -1,0 +1,11 @@
+{
+  "$description": "Library part w02B (wave 2, lane B): the iOS and Android counterparts of the type styles (and their duplicate leaves Truncate / expand, Truncate and Clamp), the loading motion and high contrast. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Body styles": { "ios": ["ios-foundations|Typography", "ios-content|Labels"], "android": ["android-foundations|Text roles", "android-content|Text roles"] },
+    "foundations|Loading motion": { "ios": ["ios-foundations|Motion", "ios-feedback|Progress indicators"], "android": ["android-feedback|Progress indicators", "android-foundations|Reduced motion"] },
+    "overlays|Truncate / expand": { "ios": ["ios-content|Text views", "ios-overlays|Disclosure controls"], "android": ["android-content|Text roles"] },
+    "interaction|Truncate": { "ios": ["ios-content|Labels"], "android": ["android-content|Text roles"] },
+    "interaction|Clamp": { "ios": ["ios-content|Labels"], "android": ["android-content|Text roles"] },
+    "interaction|High contrast": { "ios": ["ios-interaction|Accessibility", "ios-foundations|Color"], "android": ["android-interaction|Contrast", "android-foundations|Contrast"] }
+  }
+}

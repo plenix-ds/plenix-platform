@@ -9,6 +9,14 @@ Owner: "I am building this as a cdn so that any app i build will use whatever is
 - [ ] Classify the 486 leaves with no record (component, pattern, extension of an existing one, foundation, template,
   package) and order them in waves (scratchpad library/plan.json).
 - [ ] Build every wave (the Every Variant recipe: tokens, lab, variant pages; native designs; tests); release each.
+  Done: wave 0 (0.31.41), wave 1 (0.31.42), wave 2 (0.31.43).
+- [ ] Adoption (after the waves that add foundations): RowButton, MediaCard and Tree on usePressable/useFocusable/useSelection;
+  Toolbar on useFocusGroup; Sheet and MediaViewer on useGesture; the form controls on useReadOnly; Skeleton, Spinner and
+  ProgressBar on the loading motion; Toast on announce; DataTable counts and the shortcuts dialog on announce and the hotkey
+  registry; layer.js on useScrollLock; Field and Tooltip on useDescribedBy; Menu, Tooltip and Popover on useFloating;
+  DirectionProvider at the app roots; Text variant=link uses to Link; the heading levels skipped on Calendar and Bookmarks.
+- [ ] Owner: visited links look the same as unvisited (a new color role would be needed); SectionHeading levels drawn from the
+  type scale (it would change Settings' headings).
 
 ## Native designs and the Plenix Platforms Standard on the web (added 2026-10-11)
 

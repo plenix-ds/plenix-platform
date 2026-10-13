@@ -1199,226 +1199,102 @@ function Inline(props) {
   });
 }
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Text = Text;
+exports.focusables = focusables;
+exports.useLayer = useLayer;
+exports.useUid = useUid;
 var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
-   Summary: A run of text in one of the system's text roles, from the type tokens.
-   Usage:
-     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
-   Props:
-     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
-       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
-       | "eyebrow" | "danger" | "link" | "title".
-       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, DM Mono, for technical values (IDs, file names and paths, versions, dates and
-       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
-       label: semibold 12px. strong: semibold, the current size.
-       heading: a group's title inside a page or dialog, semibold 13px.
-       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (an a element in running text).
-       title: a page title, the heading font, 20px, bold.
-     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
-     truncate: one line, cut with an ellipsis; default false
-     className: more classes on the text
-     children: the text
-     ...rest: other attributes go on the element
-   Notes:
-     Applications never set a font, size, weight or color themselves.
-     There are no margins in any case, whatever the element.
-*/
-function Text({
-  as: As = 'span',
-  variant = 'body',
-  truncate = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && 'plx-text--truncate', className)
-  }, rest), children);
+/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
+   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
+   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
+   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
+
+const stack = [];
+let modalCount = 0;
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function focusables(root) {
+  if (!root) return [];
+  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
 }
-  } },
-  "platform/components/Thumbnail/Thumbnail.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Thumbnail = Thumbnail;
-var _react = _interopRequireDefault(require("react"));
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Thumbnail
-   Summary: A small picture of a file or an item beside its name (a table's name cell, a list row).
-     It shows the picture, or an icon when there is none, in a 28px rounded square on the sunken surface.
-   Usage:
-     <Thumbnail src={asset.thumbUrl} icon="image" />
-   Props:
-     src: the picture's URL
-     alt: the picture's text alternative; default "" (empty when the name is next to it)
-     icon: the icon shown without src; default "document"
-   Behavior:
-     An image that fails to load falls back to the icon.
-     The picture loads lazily.
-     The icon is decorative and hidden from assistive technology.
-*/
-
-function Thumbnail({
-  src,
-  alt = '',
-  icon = 'document'
-}) {
-  // an image that fails to load falls back to the icon, as when there is none (batch 215)
-  const [failed, setFailed] = _react.default.useState(false);
+function useLayer(ref, open, {
+  modal = false,
+  onEscape,
+  initialFocus
+} = {}) {
+  const escape = _react.default.useRef(onEscape);
+  escape.current = onEscape;
   _react.default.useEffect(() => {
-    setFailed(false);
-  }, [src]);
-  return src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
-    className: "plx-thumbnail",
-    src: src,
-    alt: alt,
-    loading: "lazy",
-    onError: () => setFailed(true)
-  }) : /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-thumbnail plx-thumbnail--icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
-    size: "sm"
-  }));
+    if (!open) return undefined;
+    const entry = {
+      modal
+    };
+    stack.push(entry);
+    const opener = document.activeElement;
+    if (modal) {
+      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
+      modalCount += 1;
+      const root = ref.current;
+      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
+      const first = wanted || focusables(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    const onKey = e => {
+      if (stack[stack.length - 1] !== entry) return;
+      if (e.key === 'Escape') {
+        if (escape.current) {
+          e.preventDefault();
+          e.stopPropagation();
+          escape.current();
+        }
+        return;
+      }
+      if (!modal || e.key !== 'Tab') return;
+      const root = ref.current;
+      const items = focusables(root);
+      if (!items.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = items[0],
+        last = items[items.length - 1],
+        active = document.activeElement;
+      if (!root.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && (active === first || active === root)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      stack.splice(stack.indexOf(entry), 1);
+      if (modal) {
+        modalCount -= 1;
+        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
+        if (opener && opener.focus && document.contains(opener)) opener.focus({
+          preventScroll: true
+        });
+      }
+    };
+  }, [open]);
 }
-  } },
-  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Notice = Notice;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Notice
-   Summary: A short message inside a page, a panel or a dialog (an inline message).
-     It shows its tone's soft surface and content color, an icon and the text.
-   Usage:
-     <Notice tone="warning">This folder is shared with 3 people.</Notice>
-   Props:
-     tone: "info" (default) | "success" | "warning" | "danger"
-     icon: an icon name; the tone's icon unless given
-     className: more classes on the notice
-     children: the message text
-     ...rest: other attributes go on the notice element
-   Behavior:
-     A danger notice has role="alert", so screen readers announce it.
-*/
-const ICONS = {
-  info: 'info-circle',
-  success: 'circle-check',
-  warning: 'warning',
-  danger: 'alert'
-};
-function Notice({
-  tone = 'info',
-  icon,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-notice', 'plx-notice--' + tone, className),
-    role: tone === 'danger' ? 'alert' : undefined
-  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon || ICONS[tone]
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-notice__text"
-  }, children));
+function useUid(prefix) {
+  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
 }
-  } },
-  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BrandMark = BrandMark;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BrandMark
-   Summary: The Plenix mark, from the brand kit (platform/brand/), in the current text color.
-   Usage:
-     <BrandMark />                      decorative, beside the product name
-     <BrandMark label="Plenix" />       on its own, named
-   Props:
-     BrandMark.label: the accessible name; without it the mark is decorative (hidden from assistive technology)
-     BrandMark.className: more classes
-   Behavior:
-     The mark is the brand kit's file (platform/brand/brand.json files.mark), drawn as a mask in the current text color:
-       the tokens color it (white on the header's blue). Its square includes the kit's clear space.
-     Its size is the control icon size (--plx-comp-icon-size); a pattern sets another size by that property.
-   Notes:
-     Never redraw or recolor the mark by hand: replace the kit's files and build (build-brand.js).
-*/
-function BrandMark({
-  label,
-  className,
-  ...rest
-}) {
-  return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
-    role: "img",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-brand-mark', className)
-  }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
-    "aria-hidden": "true",
-    className: (0, _cx.cx)('plx-brand-mark', className)
-  }, rest));
-}
-  } },
-  "platform/components/ColorSwatch/dataColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DATA_COLORS = void 0;
-/* Plenix · DATA_COLORS
-   Summary: The data colors by name, GENERATED by build-steps.js from the --plx-sys-data-color-<hue> theme tokens (do not edit).
-   Usage:
-     import { DATA_COLORS } from 'plenix-platform';   // ["blue","green","purple","red","brown","gray"]
-     <ColorSwatch color={DATA_COLORS[0]} />
-   Props:
-     none: a list of hue names, in the order the theme defines them
-*/
-const DATA_COLORS = exports.DATA_COLORS = ["blue", "green", "purple", "red", "brown", "gray"];
-  } },
-  "platform/components/ColorSwatch/categoryColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CATEGORY_COLORS = void 0;
-/* Plenix · CATEGORY_COLORS
-   Summary: The category colors by name, GENERATED by build-steps.js from the --plx-sys-category-<name> tokens (do not edit):
-     Trubetskoy's 20 simple, distinct colors in his convenient order (take the first n for n categories).
-   Usage:
-     import { CATEGORY_COLORS } from 'plenix-platform';
-     <ColorPicker palette="category" value={category.color} onChange={…} />
-   Props:
-     none: a list of names
-*/
-const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "brown", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
   } },
   "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -1625,102 +1501,319 @@ function ButtonGroup({
   }, rest), children);
 }
   } },
-  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.focusables = focusables;
-exports.useLayer = useLayer;
-exports.useUid = useUid;
+exports.Text = Text;
 var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../Button/Button.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
-   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
-   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
-   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
+   Summary: A run of text in one of the system's text roles, from the type tokens.
+   Usage:
+     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
+     <Text variant="display" as="h1">1,284 assets</Text>
+     <Text as="p" lines={3} expandable>A long description…</Text>
+     <Text variant="secondary" tabular>12:40</Text>
+   Props:
+     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
+       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
+       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
+       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
+       data: the data font, DM Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
+       heading: a group's title inside a page or dialog, semibold 13px.
+       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
+       danger: the danger color (a required marker). link: the link color, normal weight (an a element in running text).
+       title: a page title, the heading font, 20px, bold.
+       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
+         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
+       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
+         empty state (body-lg; library wave 2).
+     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
+     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
+     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
+     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
+       "Show less" to fold it again; default false
+     defaultExpanded: an expandable text starts unfolded; default false
+     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
+       change; default false
+     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
+     className: more classes on the text
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
+       get all of it.
+     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
+       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
+     display and lead are type styles only: the element (as) gives the heading level.
+   Notes:
+     Applications never set a font, size, weight or color themselves.
+     There are no margins in any case, whatever the element.
+     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
+       label, down to show more and up to show less.
+*/
+const LINES = [2, 3, 4];
+const STRINGS = {
+  more: 'Show more',
+  less: 'Show less'
+};
 
-const stack = [];
-let modalCount = 0;
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
-function focusables(root) {
-  if (!root) return [];
-  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
+// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
+const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+function Text({
+  as: As = 'span',
+  variant = 'body',
+  truncate = false,
+  lines,
+  expandable = false,
+  defaultExpanded = false,
+  tabular = false,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
+  if (expandable && clamp) {
+    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
+      As: As,
+      variant: variant,
+      clamp: clamp,
+      defaultExpanded: defaultExpanded,
+      tabular: tabular,
+      strings: strings,
+      className: className,
+      rest: rest
+    }, children);
+  }
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: textClass(variant, truncate, clamp, false, tabular, className)
+  }, rest), children);
 }
-function useLayer(ref, open, {
-  modal = false,
-  onEscape,
-  initialFocus
-} = {}) {
-  const escape = _react.default.useRef(onEscape);
-  escape.current = onEscape;
+
+// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
+function ExpandableText({
+  As,
+  variant,
+  clamp,
+  defaultExpanded,
+  tabular,
+  strings,
+  className,
+  rest,
+  children
+}) {
+  const own = (0, _layer.useUid)('plx-text');
+  const id = rest.id || own;
+  const ref = _react.default.useRef(null);
+  const [open, setOpen] = _react.default.useState(defaultExpanded);
+  const [cut, setCut] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || open) return undefined;
+    const measure = () => setCut(el.scrollHeight > el.clientHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const watch = new ResizeObserver(measure);
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [open, children]);
+  const words = Object.assign({}, STRINGS, strings);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-text-expand"
+  }, /*#__PURE__*/_react.default.createElement(As, _extends({}, rest, {
+    ref: ref,
+    id: id,
+    className: textClass(variant, false, clamp, open, tabular, className)
+  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "2xs",
+    iconEnd: open ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": open,
+    "aria-controls": id,
+    onClick: () => setOpen(!open)
+  }, open ? words.less : words.more) : null);
+}
+  } },
+  "platform/components/Thumbnail/Thumbnail.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Thumbnail = Thumbnail;
+var _react = _interopRequireDefault(require("react"));
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Thumbnail
+   Summary: A small picture of a file or an item beside its name (a table's name cell, a list row).
+     It shows the picture, or an icon when there is none, in a 28px rounded square on the sunken surface.
+   Usage:
+     <Thumbnail src={asset.thumbUrl} icon="image" />
+   Props:
+     src: the picture's URL
+     alt: the picture's text alternative; default "" (empty when the name is next to it)
+     icon: the icon shown without src; default "document"
+   Behavior:
+     An image that fails to load falls back to the icon.
+     The picture loads lazily.
+     The icon is decorative and hidden from assistive technology.
+*/
+
+function Thumbnail({
+  src,
+  alt = '',
+  icon = 'document'
+}) {
+  // an image that fails to load falls back to the icon, as when there is none (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
   _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const entry = {
-      modal
-    };
-    stack.push(entry);
-    const opener = document.activeElement;
-    if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
-      const root = ref.current;
-      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
-      const first = wanted || focusables(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    const onKey = e => {
-      if (stack[stack.length - 1] !== entry) return;
-      if (e.key === 'Escape') {
-        if (escape.current) {
-          e.preventDefault();
-          e.stopPropagation();
-          escape.current();
-        }
-        return;
-      }
-      if (!modal || e.key !== 'Tab') return;
-      const root = ref.current;
-      const items = focusables(root);
-      if (!items.length) {
-        e.preventDefault();
-        root.focus();
-        return;
-      }
-      const first = items[0],
-        last = items[items.length - 1],
-        active = document.activeElement;
-      if (!root.contains(active)) {
-        e.preventDefault();
-        first.focus();
-      } else if (e.shiftKey && (active === first || active === root)) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKey, true);
-    return () => {
-      document.removeEventListener('keydown', onKey, true);
-      stack.splice(stack.indexOf(entry), 1);
-      if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
-        if (opener && opener.focus && document.contains(opener)) opener.focus({
-          preventScroll: true
-        });
-      }
-    };
-  }, [open]);
+    setFailed(false);
+  }, [src]);
+  return src && !failed ? /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-thumbnail",
+    src: src,
+    alt: alt,
+    loading: "lazy",
+    onError: () => setFailed(true)
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-thumbnail plx-thumbnail--icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    size: "sm"
+  }));
 }
-function useUid(prefix) {
-  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  } },
+  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Notice = Notice;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Notice
+   Summary: A short message inside a page, a panel or a dialog (an inline message).
+     It shows its tone's soft surface and content color, an icon and the text.
+   Usage:
+     <Notice tone="warning">This folder is shared with 3 people.</Notice>
+   Props:
+     tone: "info" (default) | "success" | "warning" | "danger"
+     icon: an icon name; the tone's icon unless given
+     className: more classes on the notice
+     children: the message text
+     ...rest: other attributes go on the notice element
+   Behavior:
+     A danger notice has role="alert", so screen readers announce it.
+*/
+const ICONS = {
+  info: 'info-circle',
+  success: 'circle-check',
+  warning: 'warning',
+  danger: 'alert'
+};
+function Notice({
+  tone = 'info',
+  icon,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-notice', 'plx-notice--' + tone, className),
+    role: tone === 'danger' ? 'alert' : undefined
+  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon || ICONS[tone]
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-notice__text"
+  }, children));
 }
+  } },
+  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BrandMark = BrandMark;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BrandMark
+   Summary: The Plenix mark, from the brand kit (platform/brand/), in the current text color.
+   Usage:
+     <BrandMark />                      decorative, beside the product name
+     <BrandMark label="Plenix" />       on its own, named
+   Props:
+     BrandMark.label: the accessible name; without it the mark is decorative (hidden from assistive technology)
+     BrandMark.className: more classes
+   Behavior:
+     The mark is the brand kit's file (platform/brand/brand.json files.mark), drawn as a mask in the current text color:
+       the tokens color it (white on the header's blue). Its square includes the kit's clear space.
+     Its size is the control icon size (--plx-comp-icon-size); a pattern sets another size by that property.
+   Notes:
+     Never redraw or recolor the mark by hand: replace the kit's files and build (build-brand.js).
+*/
+function BrandMark({
+  label,
+  className,
+  ...rest
+}) {
+  return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
+    role: "img",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-brand-mark', className)
+  }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
+    "aria-hidden": "true",
+    className: (0, _cx.cx)('plx-brand-mark', className)
+  }, rest));
+}
+  } },
+  "platform/components/ColorSwatch/dataColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DATA_COLORS = void 0;
+/* Plenix · DATA_COLORS
+   Summary: The data colors by name, GENERATED by build-steps.js from the --plx-sys-data-color-<hue> theme tokens (do not edit).
+   Usage:
+     import { DATA_COLORS } from 'plenix-platform';   // ["blue","green","purple","red","brown","gray"]
+     <ColorSwatch color={DATA_COLORS[0]} />
+   Props:
+     none: a list of hue names, in the order the theme defines them
+*/
+const DATA_COLORS = exports.DATA_COLORS = ["blue", "green", "purple", "red", "brown", "gray"];
+  } },
+  "platform/components/ColorSwatch/categoryColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CATEGORY_COLORS = void 0;
+/* Plenix · CATEGORY_COLORS
+   Summary: The category colors by name, GENERATED by build-steps.js from the --plx-sys-category-<name> tokens (do not edit):
+     Trubetskoy's 20 simple, distinct colors in his convenient order (take the first n for n categories).
+   Usage:
+     import { CATEGORY_COLORS } from 'plenix-platform';
+     <ColorPicker palette="category" value={category.color} onChange={…} />
+   Props:
+     none: a list of names
+*/
+const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "brown", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
   } },
   "platform/components/Menu/Menu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -2393,45 +2486,66 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · List, List.Item
-   Summary: A list of short statements, each with a leading icon in a tone (do and don't, features, requirements).
+   Summary: A list of short statements, each with a leading icon in a tone (do and don't, features, requirements); or an
+     ordered list, numbered (1, 2, 3) or lettered (a, b, c), or drawn as steps; lists nest one level inside an item.
    Usage:
      <List items={[{ icon: 'circle-check', tone: 'success', children: 'Use it for…' }]} />
      <List><List.Item icon="close" tone="danger">Avoid…</List.Item></List>
+     <List ordered items={[{ children: 'Create the project' }, { children: 'Upload the files', items: [{ children: 'Photos' }], ordered: 'alpha' }]} />
+     <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
    Props:
-     List.items: the statements: [{ icon, tone, children }]; or pass List.Item children
+     List.items: the statements: [{ icon, tone, children, items, ordered }]; or pass List.Item children
+     List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
+     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow
      List.label: names the list for assistive technology when its heading is not next to it
      List.children: List.Item elements, when there are no items
-     List.className: more classes on the <ul>
-     List.Item.icon: the icon name
+     List.className: more classes on the list
+     List.Item.icon: the icon name (icon lists)
      List.Item.tone: "neutral" (default) | "success" | "danger" | "info" | "warning"
+     List.Item.items: a nested list under the statement, of the same kind unless List.Item.ordered says otherwise
+     List.Item.ordered: the kind of the nested list: "decimal" | "alpha" | false (an icon list)
      List.Item.children: the statement
      List.Item.className: more classes on the <li>
    Behavior:
-     Items wrap; the icon sits on the first line.
-     The icon is decorative and hidden from assistive technology (the text carries the meaning).
+     Items wrap; the icon, number or step sits on the first line.
+     The icon is decorative and hidden from assistive technology (the text carries the meaning); an ordered list is an
+       <ol>, so its numbers are announced with the items.
+     A nested list starts under its statement's text (the same keyline); nest one level only (two at most).
 */
 
+const kindOf = ordered => ordered === 'alpha' ? 'alpha' : ordered ? 'decimal' : null;
 function List({
   items,
   label,
+  ordered,
+  variant = 'icons',
   className,
   children
 }) {
-  return /*#__PURE__*/_react.default.createElement("ul", {
+  const kind = kindOf(ordered || (variant === 'steps' ? 'decimal' : null));
+  const Tag = kind ? 'ol' : 'ul';
+  return /*#__PURE__*/_react.default.createElement(Tag, {
     "aria-label": label,
-    className: (0, _cx.cx)('plx-list', className)
+    className: (0, _cx.cx)('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', className)
   }, items ? items.map((it, i) => /*#__PURE__*/_react.default.createElement(List.Item, {
     key: i,
     icon: it.icon,
-    tone: it.tone
+    tone: it.tone,
+    items: it.items,
+    ordered: it.ordered === undefined ? kind : it.ordered
   }, it.children)) : children);
 }
 List.Item = function ListItem({
   icon,
   tone = 'neutral',
+  items,
+  ordered,
   className,
   children
 }) {
+  const text = /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-list__text"
+  }, children);
   return /*#__PURE__*/_react.default.createElement("li", {
     className: (0, _cx.cx)('plx-list__item', 'plx-list__item--' + tone, className)
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
@@ -2439,9 +2553,13 @@ List.Item = function ListItem({
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: icon
-  })) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-list__text"
-  }, children));
+  })) : null, items && items.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-list__body"
+  }, text, /*#__PURE__*/_react.default.createElement(List, {
+    items: items,
+    ordered: ordered,
+    className: "plx-list--nested"
+  })) : text);
 };
   } },
   "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -3282,21 +3400,51 @@ function Pagination({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.RTL_LANGUAGES = void 0;
 exports.arrowStep = arrowStep;
+exports.directionOf = directionOf;
+exports.getDirection = getDirection;
 exports.isRtl = isRtl;
+exports.physicalSide = physicalSide;
 /* Plenix · Writing direction (platform/utils/direction.js)
-   Summary: The arrow keys in reading order. In a right-to-left page Arrow Right moves back and Arrow Left forward, as the
-     eye reads; Up and Down are the same in both directions.
+   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
+     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
+     as the eye reads; Up and Down are the same in both directions.
    Usage:
      const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
      if (step) { e.preventDefault(); move(index + step); }
+     directionOf('ar-EG')          // "rtl"
+     physicalSide('start', 'rtl')  // "right"
    Props:
      isRtl(el): true when the element is laid out right to left (its computed direction)
      arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
        false, Up and Down are ignored (a horizontal-only control)
+     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
+     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
+       RTL_LANGUAGES), else "ltr"
+     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
+       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     RTL_LANGUAGES: the language subtags written right to left
+   Behavior:
+     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
+       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
+       computed direction only where it measures or handles arrow keys.
 */
+const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
 function isRtl(el) {
   return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function getDirection(el) {
+  if (typeof window === 'undefined') return 'ltr';
+  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
+}
+function directionOf(locale) {
+  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
+  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
+}
+function physicalSide(side, dir) {
+  if (side !== 'start' && side !== 'end') return side;
+  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
 }
 function arrowStep(event, el, opts) {
   const vertical = !opts || opts.vertical !== false;
@@ -14081,7 +14229,1463 @@ function useScrollLock(active, ref) {
   }, [active, ref]);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Link = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Link
+   Summary: A link to another page or place: inside a sentence (inline), on its own line (standalone), to another site
+     (external) or back to the page above (back).
+   Usage:
+     <Text as="p">Read the <Link href="../guides/upload.html">upload guide</Link> first.</Text>
+     <Link href="../projects/" variant="standalone">View all projects</Link>
+     <Link href="https://m3.material.io" external>Material guidelines</Link>
+     <Link href="../" back>Projects</Link>
+     <Link href="#" variant="subtle">Terms</Link>   <Link href="#" onAccent>Help</Link>
+   Props:
+     href: where it goes (required: a link without one is a button)
+     variant: "inline" (default: in running text, always underlined) | "standalone" (on its own: medium weight, underlined
+       on hover, as tall as the minimum target) | "subtle" (the text color, underlined: footers and fine print)
+     external: another site: opens in a new tab (target="_blank", rel="noopener noreferrer"), shows the open icon after
+       the text and tells assistive technology (strings.newTab)
+     back: the page above: a leading chevron that points back; it draws as standalone
+     onAccent: the version for the blue header and other accent surfaces (default false)
+     visited: draws the visited color in documentation (the browser draws it on its own with :visited)
+     as: another element or component that renders the anchor (a router's link); it gets href, className and the rest
+     strings: the words it announces, for other languages: { newTab: "opens in a new tab" }
+     children: the link text: says where it goes ("Upload guide"), never "click here"
+     className: more classes on the link
+   Behavior:
+     Enter follows the link; it is one Tab stop. Hover thickens the underline (inline, subtle, on accent) or draws it
+       (standalone, back).
+     Keyboard focus shows the focus ring around the text (:focus-visible); a click does not.
+     The back chevron mirrors in right-to-left pages (the icon set's bidirectional icons).
+   Notes:
+     The underline is the non-color sign of a link in running text (WCAG 1.4.1); standalone links are recognized by their
+       place and weight.
+     Use a Button for an action that changes data; a Link only goes somewhere.
+     Other props pass through to the <a>. forwardRef: the ref is the <a>.
+*/
+const STRINGS = {
+  newTab: 'opens in a new tab'
+};
+const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link({
+  href,
+  variant = 'inline',
+  external = false,
+  back = false,
+  onAccent = false,
+  visited = false,
+  as: Tag = 'a',
+  strings,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const s = Object.assign({}, STRINGS, strings);
+  const kind = back ? 'standalone' : variant;
+  const newTab = external ? {
+    target: '_blank',
+    rel: 'noopener noreferrer'
+  } : null;
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: ref,
+    href: href
+  }, newTab, rest, {
+    className: (0, _cx.cx)('plx-link', 'plx-link--' + kind, back && 'plx-link--back', external && 'plx-link--external', onAccent && 'plx-link--on-accent', visited && 'is-visited', className)
+  }), back ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-left",
+    className: "plx-link__icon"
+  }) : null, children, external ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "open",
+    className: "plx-link__icon"
+  }) : null, external ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, " (", s.newTab, ")") : null);
+});
+  } },
+  "platform/components/Code/Code.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Code = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Code
+   Summary: A short piece of code inside a sentence (inline code): a file name, a class, a command, a token name, in the
+     code font (DM Mono) on a neutral fill.
+   Usage:
+     <Text as="p">Add <Code>plx-link--standalone</Code> to the anchor.</Text>
+     <Code onAccent>Ctrl K</Code>
+     <Code truncate>platform/components/RichText/rich-text.css</Code>
+   Props:
+     onAccent: the version for the blue header and other accent surfaces (default false)
+     truncate: keep it to one line, cut with an ellipsis where its box ends; the whole value is its title (default false)
+     children: the code, as text
+     className: more classes on the <code>
+   Behavior:
+     It takes the size and line height of the text around it, so the code font and the text share a baseline.
+     A long value wraps anywhere rather than overflow its line; truncate keeps it to one line instead.
+     It is not focusable and has no actions: to copy code, use a CodeBlock.
+   Notes:
+     Code for code only: technical values that are not code (sizes, dates, IDs) use Text variant="data".
+     Other props pass through to the <code>. forwardRef: the ref is the <code>.
+*/
+const Code = exports.Code = /*#__PURE__*/_react.default.forwardRef(function Code({
+  onAccent = false,
+  truncate = false,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const title = truncate && typeof children === 'string' ? children : undefined;
+  return /*#__PURE__*/_react.default.createElement("code", _extends({
+    ref: ref,
+    title: title
+  }, rest, {
+    className: (0, _cx.cx)('plx-code', onAccent && 'plx-code--on-accent', truncate && 'plx-code--truncate', className)
+  }), children);
+});
+  } },
+  "platform/components/Blockquote/Blockquote.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Blockquote = Blockquote;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Blockquote
+   Summary: Words quoted from someone else (a person, a document, an earlier message), set apart from the text around it by
+     a leading rule, with the source under it.
+   Usage:
+     <Blockquote citation="Ana Ruiz, project lead">Every room gets its own folder before the first upload.</Blockquote>
+     <Blockquote cite="https://example.org/brief" citation="Kitchen brief, page 2">…</Blockquote>
+     <Blockquote variant="pull">The archive is the product.</Blockquote>
+   Props:
+     variant: "default" (a quote in reading text: the body size, a rule at its start) | "pull" (a short line lifted out of
+       the page to draw the eye: larger, medium weight, a stronger rule)
+     citation: who or what is quoted, shown under the quote (optional)
+     cite: the address of the source, for the blockquote's cite attribute (optional)
+     children: the quoted text (one or more paragraphs)
+     className: more classes on the <figure>
+   Behavior:
+     Not interactive. The quote keeps the reading width of its container and wraps.
+     The rule sits at the start side: on the left in left-to-right pages, on the right in right-to-left ones.
+   Notes:
+     The quote is a <blockquote> inside a <figure>; the citation is its <figcaption>, so it is read with the quote but is
+       not part of it.
+     Quote exactly; mark what is left out with an ellipsis. Use a Notice, not a quote, to make a point stand out.
+     Other props pass through to the <figure>.
+*/
+function Blockquote({
+  variant = 'default',
+  citation,
+  cite,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("figure", _extends({
+    className: (0, _cx.cx)('plx-blockquote', variant === 'pull' && 'plx-blockquote--pull', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("blockquote", {
+    className: "plx-blockquote__quote",
+    cite: cite
+  }, children), citation ? /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: "plx-blockquote__citation"
+  }, citation) : null);
+}
+  } },
+  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RichText = RichText;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichText
+   Summary: A block of formatted reading text (prose): paragraphs, headings, lists, links, quotes, inline code and code
+     blocks, from an editor's or a Markdown renderer's HTML or from JSX, in the Platform's type styles.
+   Usage:
+     <RichText>
+       <h2>Before you upload</h2>
+       <p>Name each file the way the <a href="../guides/naming.html">naming guide</a> says.</p>
+       <ul><li>Photos</li><li>Drawings</li></ul>
+     </RichText>
+     <RichText variant="compact" html={sanitizedHtml} />
+   Props:
+     variant: "article" (default: a page of reading: 14px text, 24px lines, a reading width of about 80 characters) |
+       "compact" (notes, comments and help in a panel: the body size, 20px lines, the container's width)
+     html: HTML to show, already sanitized by the application (see Notes); without it, the children
+     as: the element: "div" (default) | "article" | "section"
+     label: names the region for assistive technology when it is a landmark (as="section")
+     children: the content, as plain elements (h2, p, ul, ol, li, a, strong, em, code, pre, blockquote, hr, img, figure)
+     className: more classes on the container
+   Behavior:
+     Not interactive itself; links inside it are one Tab stop each and take the Link's look and focus ring.
+     Blocks are spaced by the variant's rhythm; a heading has more space above it than below.
+     Long words and addresses wrap; a code block (pre) scrolls sideways inside its box and is one Tab stop when it
+       overflows (give it tabindex="0" and a name in the content).
+     Lists take their markers from the writing direction; the quote's rule sits at the start side.
+   Notes:
+     It sanitizes nothing: HTML from people (comments, imported documents) must be cleaned by the application first (an
+       allow-list of the elements above, no scripts, no event attributes, no style attributes).
+     It uses the elements' own styles from Link, Code and Blockquote, so a link in prose looks like <Link>.
+     Tables are not prose: show a table from content with the DataTable.
+     Keep the real heading levels and list markup: screen readers move through them.
+     Other props pass through to the container.
+*/
+function RichText({
+  variant = 'article',
+  html,
+  as: Tag = 'div',
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  const content = html != null ? {
+    dangerouslySetInnerHTML: {
+      __html: html
+    }
+  } : null;
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    "aria-label": label
+  }, content, rest, {
+    className: (0, _cx.cx)('plx-rich-text', 'plx-rich-text--' + (variant === 'compact' ? 'compact' : 'article'), className)
+  }), html != null ? undefined : children);
+}
+  } },
+  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DirectionContext = void 0;
+exports.DirectionProvider = DirectionProvider;
+exports.useDirection = useDirection;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DirectionProvider, useDirection
+   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
+     React components which it is.
+   Usage:
+     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
+     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     const { dir, setDir } = useDirection();
+   Props:
+     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
+     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
+     lang: the lang attribute, when it is not the locale
+     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     children: the application root or the region it wraps
+     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
+       change it
+   Behavior:
+     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
+       it lays out in that direction, as the stylesheets use logical properties.
+     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
+     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
+   Notes:
+     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
+       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
+     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
+*/
+
+const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+function DirectionProvider({
+  dir,
+  locale,
+  lang,
+  root = false,
+  children
+}) {
+  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
+  const [own, setOwn] = _react.default.useState(wanted);
+  _react.default.useEffect(() => {
+    setOwn(wanted);
+  }, [wanted]);
+  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  const language = lang || locale || undefined;
+  _react.default.useLayoutEffect(() => {
+    if (!root) return undefined;
+    const html = document.documentElement,
+      before = {
+        dir: html.getAttribute('dir'),
+        lang: html.getAttribute('lang')
+      };
+    html.setAttribute('dir', current);
+    if (language) html.setAttribute('lang', language);
+    return () => {
+      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
+      if (language) {
+        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
+      }
+    };
+  }, [root, current, language]);
+  const value = _react.default.useMemo(() => ({
+    dir: current,
+    rtl: current === 'rtl',
+    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
+  }), [current]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-direction",
+    dir: current,
+    lang: language
+  }, children));
+}
+function useDirection() {
+  const ctx = _react.default.useContext(DirectionContext);
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    if (ctx) return undefined;
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    return () => observer.disconnect();
+  }, [ctx]);
+  if (ctx) return ctx;
+  return {
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  };
+}
+  } },
+  "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.usePressable = usePressable;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · usePressable
+   Summary: One press from every input: a mouse click, a tap, a pen, Enter or Space on the keyboard, and the click a
+     screen reader sends all call onPress once, with the kind of input that made it. While the press is held the element
+     is pressed, so it can show the pressed treatment (is-pressed, system/interaction.css).
+   Usage:
+     const { pressed, pressProps } = usePressable({ onPress: (e) => open(e.pointerType) });
+     <button type="button" className={cx('plx-state', pressed && 'is-pressed')} {...pressProps}>Open</button>
+     <div role="button" tabIndex={0} {...pressProps}>…</div>          // a custom surface: the role and the Tab stop are yours
+   Props:
+     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey }): the press, once; pointerType is
+       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click)
+     options.onPressStart({ pointerType }): the press begins (pointer down, or the key goes down)
+     options.onPressEnd({ pointerType }): the press ends, whether it was made or canceled
+     options.onPressChange(pressed): the pressed state changes
+     options.disabled (false): no press, no pressed state; the element keeps its focus behavior
+     options.handlers ({}): your own handlers of the same events (onClick, onKeyDown, …); they run first
+     returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
+       onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
+   Behavior:
+     Pointer: the press is made on release over the element (the browser's click), so sliding off before release cancels
+       it (WCAG 2.2, 2.5.2 Pointer cancellation); sliding back on while held presses it again. Only the primary button presses.
+     Keyboard: Enter presses when it goes down (as a native button does) and does not repeat while held; Space presses
+       when it comes up, and Escape or moving focus away while it is held cancels it. A link (a[href]) keeps Enter for itself.
+     A click with no pointer and no key (a screen reader activating the element) presses with pointerType "virtual".
+     Your own handlers of the same events still run: pass them in options.handlers and they run first; preventDefault
+       in one stops the press.
+   Notes:
+     It gives behavior, not semantics: put it on a native button whenever you can. A custom surface needs role="button"
+       (or the role of its widget), tabIndex 0 and a name; the check-system rule semantic-html rejects a clickable div
+       without a role.
+     Hover is not a press: hover treatment comes from :hover, which touch screens do not keep after a tap.
+*/
+
+const PRIMARY = 0;
+function usePressable(options = {}) {
+  const {
+    onPress,
+    onPressStart,
+    onPressEnd,
+    onPressChange,
+    disabled = false,
+    handlers = {}
+  } = options;
+  const [pressed, setPressedState] = _react.default.useState(false);
+  // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
+  const hold = _react.default.useRef(null);
+  const key = _react.default.useRef(null);
+  const lastPointer = _react.default.useRef(null);
+  const latest = _react.default.useRef(options);
+  latest.current = options;
+  const setPressed = on => {
+    setPressedState(on);
+    if (latest.current.onPressChange) latest.current.onPressChange(on);
+  };
+  const start = pointerType => {
+    hold.current = {
+      pointerType
+    };
+    setPressed(true);
+    if (onPressStart) onPressStart({
+      pointerType
+    });
+  };
+  const end = () => {
+    const was = hold.current;
+    hold.current = null;
+    setPressed(false);
+    if (was && onPressEnd) onPressEnd({
+      pointerType: was.pointerType
+    });
+  };
+  const fire = (e, pointerType) => {
+    if (onPress) onPress({
+      pointerType,
+      target: e.currentTarget,
+      shiftKey: !!e.shiftKey,
+      ctrlKey: !!e.ctrlKey,
+      metaKey: !!e.metaKey,
+      altKey: !!e.altKey
+    });
+  };
+  // the caller's own handler first; preventDefault in it stops the press
+  const chain = (name, own) => e => {
+    if (handlers[name]) handlers[name](e);
+    if (disabled || e.defaultPrevented) return;
+    own(e);
+  };
+  const isLink = el => el && el.tagName === 'A' && el.hasAttribute('href');
+  _react.default.useEffect(() => {
+    if (disabled && hold.current) end();
+  });
+  const pressProps = {
+    onPointerDown: chain('onPointerDown', e => {
+      if (e.button !== PRIMARY) return;
+      const el = e.currentTarget;
+      lastPointer.current = e.pointerType || 'mouse';
+      start(lastPointer.current);
+      // the release may happen anywhere: it ends the press; off the element it also cancels it (no click follows)
+      const up = u => {
+        window.removeEventListener('pointerup', up, true);
+        window.removeEventListener('pointercancel', up, true);
+        if (u.type === 'pointercancel' || !el.contains(u.target)) lastPointer.current = null;
+        if (hold.current && hold.current.pointerType !== 'keyboard') end();
+      };
+      window.addEventListener('pointerup', up, true);
+      window.addEventListener('pointercancel', up, true);
+    }),
+    onPointerUp: chain('onPointerUp', () => {
+      if (hold.current && hold.current.pointerType !== 'keyboard') end();
+    }),
+    onPointerCancel: chain('onPointerCancel', () => {
+      if (hold.current) end();
+      lastPointer.current = null;
+    }),
+    onPointerLeave: chain('onPointerLeave', () => {
+      if (hold.current && hold.current.pointerType !== 'keyboard') {
+        hold.current.left = true;
+        setPressed(false);
+      }
+    }),
+    onPointerEnter: chain('onPointerEnter', e => {
+      if (hold.current && hold.current.left && e.buttons & 1) {
+        hold.current.left = false;
+        setPressed(true);
+      }
+    }),
+    onKeyDown: chain('onKeyDown', e => {
+      lastPointer.current = null;
+      if (e.key === 'Escape' && key.current) {
+        key.current = null;
+        end();
+        return;
+      }
+      if (e.key === 'Enter' && !isLink(e.currentTarget)) {
+        e.preventDefault(); // the native button's own click would press twice
+        if (e.repeat) return;
+        start('keyboard');
+        fire(e, 'keyboard');
+        end();
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault(); // no page scroll, no native click
+        if (e.repeat || key.current) return;
+        key.current = ' ';
+        start('keyboard');
+      }
+    }),
+    onKeyUp: chain('onKeyUp', e => {
+      if ((e.key === ' ' || e.key === 'Spacebar') && key.current) {
+        e.preventDefault();
+        key.current = null;
+        fire(e, 'keyboard');
+        end();
+      }
+    }),
+    onBlur: chain('onBlur', () => {
+      if (key.current) {
+        key.current = null;
+        end();
+      }
+    }),
+    onClick: chain('onClick', e => {
+      const pointerType = lastPointer.current;
+      lastPointer.current = null;
+      if (pointerType) {
+        if (hold.current) end();
+        fire(e, pointerType);
+        return;
+      }
+      if (e.detail === 0) fire(e, 'virtual'); // a click with no pointer and no key: assistive technology or a script
+    })
+  };
+  // the caller's other handlers pass through untouched
+  Object.keys(handlers).forEach(name => {
+    if (!pressProps[name]) pressProps[name] = handlers[name];
+  });
+  return {
+    pressed: !disabled && pressed,
+    pressProps
+  };
+}
+  } },
+  "platform/hooks/useFocusable.js": { deps: {"react":null,"../utils/roving.js":"platform/utils/roving.js","../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useFocusGroup = useFocusGroup;
+exports.useFocusable = useFocusable;
+var _react = _interopRequireDefault(require("react"));
+var _roving = require("../utils/roving.js");
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFocusable, useFocusGroup
+   Summary: Focus for custom elements, the way native controls have it. useFocusable makes an element a Tab stop (or a
+     focus target only) and tells whether its focus came from the keyboard (focus-visible), so the focus treatment shows
+     for the keyboard and not after a click. useFocusGroup makes a group of controls one Tab stop whose items are reached
+     with the arrow keys (roving focus: a toolbar, a list of options, a grid of tiles).
+   Usage:
+     const { focused, focusVisible, focusProps } = useFocusable();
+     <div role="option" aria-selected={on} className={cx('plx-state', focusVisible && 'is-focus-visible')} {...focusProps}>…</div>
+     const ref = React.useRef(null);
+     const { groupProps } = useFocusGroup(ref, { orientation: 'vertical' });
+     <div ref={ref} role="listbox" aria-label="Folders" {...groupProps}>{options}</div>
+   Props:
+     useFocusable(options).tabStop ("tab"): "tab" puts it in the Tab order (tabIndex 0); "target" makes it focusable
+       only from code or a click (tabIndex -1, a skip-link target or a dialog's heading); "none" leaves tabIndex alone
+       (a native control, or an item of a focus group, whose tabIndex the group sets)
+     useFocusable(options).disabled (false): no Tab stop (an item that is disabled is skipped)
+     useFocusable(options).onFocusChange(focused, visible): the focus changes
+     useFocusable(options).handlers ({}): your own onFocus and onBlur; they run first
+     useFocusable returns { focused, focusVisible, focusProps } (tabIndex, onFocus, onBlur)
+     useFocusGroup(ref, options).orientation ("horizontal"): "horizontal" (Left and Right, in reading order),
+       "vertical" (Up and Down) or "both" (all four arrows: a grid read in order)
+     useFocusGroup(ref, options).loop (true): the last item's next is the first
+     useFocusGroup(ref, options).items (a selector): which descendants are items; default the enabled buttons, links,
+       inputs, selects and elements with a tabindex
+     useFocusGroup(ref, options).onKeyDown(event): runs first; preventDefault stops the group's own key handling
+     useFocusGroup returns { groupProps } (onKeyDown, onFocus) for the group element
+   Behavior:
+     focusVisible follows the browser's :focus-visible: true after Tab, an arrow key or focus moved by a keyboard command,
+       false after a mouse click or a tap on a non-text element. A text field is always focus-visible (it shows its caret).
+     A focus group has one Tab stop: the item focused last (else the first) has tabIndex 0 and the others -1 (the roving
+       focus of utils/roving.js), so Tab enters and leaves the group in one step. The arrows move to the next and previous
+       items in reading order (right to left reverses Left and Right), Home and End to the first and last. In a text field
+       Left and Right move the caret instead. Hidden items are skipped.
+   Notes:
+     Make only interactive elements focusable: a heading or a paragraph is not a Tab stop. A scroll area that holds no
+       control is the exception: give it tabStop "tab" and a name (role="region" with aria-label) so the keyboard can
+       scroll it.
+     The focus treatment is the system's (Focus treatment, system/interaction.css): a ring on controls, the border color
+       on fields; never remove it without the replacement.
+*/
+
+const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
+function isVisibleFocus(el) {
+  try {
+    return el.matches(':focus-visible');
+  } catch (e) {
+    return true;
+  } // a browser without :focus-visible shows it always
+}
+function useFocusable(options = {}) {
+  const {
+    tabStop = 'tab',
+    disabled = false,
+    onFocusChange,
+    handlers = {}
+  } = options;
+  const [state, setState] = _react.default.useState({
+    focused: false,
+    visible: false
+  });
+  const set = (focused, visible) => {
+    setState(s => s.focused === focused && s.visible === visible ? s : {
+      focused,
+      visible
+    });
+    if (onFocusChange) onFocusChange(focused, visible);
+  };
+  const focusProps = {
+    onFocus: e => {
+      if (handlers.onFocus) handlers.onFocus(e);
+      if (e.target === e.currentTarget) set(true, isVisibleFocus(e.currentTarget));
+    },
+    onBlur: e => {
+      if (handlers.onBlur) handlers.onBlur(e);
+      if (e.target === e.currentTarget) set(false, false);
+    }
+  };
+  if (tabStop !== 'none') focusProps.tabIndex = disabled ? undefined : tabStop === 'target' ? -1 : 0;
+  return {
+    focused: state.focused,
+    focusVisible: state.focused && state.visible,
+    focusProps
+  };
+}
+function useFocusGroup(ref, options = {}) {
+  const {
+    orientation = 'horizontal',
+    loop = true,
+    items: selector = ITEMS,
+    onKeyDown
+  } = options;
+  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), el => el.getClientRects().length > 0 && !el.closest('[hidden]')) : [];
+  (0, _roving.useRovingFocus)(ref, itemsOf);
+  const KEYS = orientation === 'vertical' ? ['ArrowUp', 'ArrowDown'] : orientation === 'both' ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
+  const groupProps = {
+    onKeyDown: e => {
+      if (onKeyDown) onKeyDown(e);
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
+      const t = e.target;
+      if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
+      const list = itemsOf();
+      const i = list.indexOf(document.activeElement);
+      if (i < 0 || !list.length) return;
+      let n;
+      if (e.key === 'Home') n = 0;else if (e.key === 'End') n = list.length - 1;else {
+        const step = (0, _direction.arrowStep)(e, ref.current, {
+          vertical: orientation !== 'horizontal'
+        });
+        if (!step) return;
+        n = i + step;
+        if (n < 0 || n >= list.length) {
+          if (!loop) return;
+          n = (n + list.length) % list.length;
+        }
+      }
+      e.preventDefault();
+      list[n].focus();
+    },
+    onFocus: e => {
+      (0, _roving.roveTo)(ref, itemsOf(), e.target);
+    }
+  };
+  return {
+    groupProps
+  };
+}
+  } },
+  "platform/hooks/useSelection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useSelection = useSelection;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useSelection
+   Summary: The selection of a collection (a list, a grid of tiles, a table's rows) as one model: single selection (one
+     item, choosing another replaces it) or multiple selection (toggle items, extend a range from the anchor, select all),
+     with the counts a select-all checkbox and a selection summary need.
+   Usage:
+     const sel = useSelection({ items: files.map((f) => f.id), mode: 'multiple' });
+     <Checkbox label="Select all" checked={sel.allSelected} indeterminate={sel.someSelected} onChange={sel.toggleAll} />
+     {files.map((f) => <Checkbox key={f.id} label={f.name} checked={sel.isSelected(f.id)} onChange={() => sel.toggle(f.id)} />)}
+     <RowButton selected={sel.isSelected(id)} onClick={(e) => sel.choose(id, e)}>…</RowButton>     // click, Shift, Ctrl or ⌘
+   Props:
+     options.items ([]): the keys of the items, in their order (the order a range follows)
+     options.mode ("multiple"): "single" | "multiple"
+     options.selected: the selected keys (controlled); with onChange
+     options.defaultSelected ([]): the keys selected at first (uncontrolled)
+     options.onChange(keys): the selection changes; keys in the items' order
+     options.disallowEmpty (false): single mode: choosing the selected item again keeps it (a radio group's rule)
+     options.behavior ("toggle"): multiple mode, what a plain choose(key) does: "toggle" adds or removes the item (a list
+       with checkboxes); "replace" selects only it, as a file manager does (Ctrl or ⌘ toggles, Shift extends)
+     options.disabledKeys ([]): keys that cannot be selected (select all skips them)
+     returns { selected (keys, in order), count, isSelected(key), select(key), deselect(key), toggle(key), extendTo(key),
+       choose(key, event), selectAll(), clear(), toggleAll(), setSelected(keys), allSelected, someSelected, anchor }
+   Behavior:
+     single: select, toggle and choose make the item the only one; toggle on the selected item clears it unless
+       disallowEmpty. selectAll and extendTo do nothing.
+     multiple: toggle adds or removes; extendTo selects every item from the anchor (the item chosen last without Shift)
+       to the key, keeping what was selected before the anchor's range; choose reads the event: Shift extends, Ctrl or ⌘
+       toggles, a plain choose follows behavior.
+     allSelected is true when every selectable item is selected; someSelected when some but not all are (the mixed state
+       of a select-all checkbox). Keys that leave items stay selected until the selection changes; then they are dropped.
+   Notes:
+     It holds the model, not the look or the keys: show selection with the selected treatment and a check (never color
+       alone), expose it with aria-selected (options, rows, tiles) or aria-checked (checkboxes), and move focus with
+       useFocusGroup. Space toggles the focused item; Shift with an arrow extends: call toggle and extendTo from the keys.
+     Announce bulk changes ("12 selected") with announce() from the live region utility.
+*/
+
+const ordered = (items, set) => items.filter(k => set.has(k));
+function useSelection(options = {}) {
+  const {
+    items = [],
+    mode = 'multiple',
+    selected: controlled,
+    defaultSelected = [],
+    onChange,
+    disallowEmpty = false,
+    behavior = 'toggle',
+    disabledKeys = []
+  } = options;
+  const [own, setOwn] = _react.default.useState(() => new Set(defaultSelected));
+  const anchor = _react.default.useRef(null);
+  const current = controlled ? new Set(controlled) : own;
+  const blocked = new Set(disabledKeys);
+  const selectable = items.filter(k => !blocked.has(k));
+  const commit = next => {
+    const keys = ordered(items, next);
+    if (!controlled) setOwn(new Set(keys));
+    if (onChange) onChange(keys);
+  };
+  const single = mode === 'single';
+  const isSelected = key => current.has(key);
+  const select = key => {
+    if (blocked.has(key)) return;
+    anchor.current = key;
+    if (single) {
+      if (!(current.size === 1 && current.has(key))) commit(new Set([key]));
+      return;
+    }
+    if (!current.has(key)) commit(new Set(current).add(key));
+  };
+  const deselect = key => {
+    if (!current.has(key) || single && disallowEmpty) return;
+    const next = new Set(current);
+    next.delete(key);
+    commit(next);
+  };
+  const toggle = key => {
+    if (blocked.has(key)) return;
+    if (current.has(key)) {
+      anchor.current = key;
+      deselect(key);
+    } else select(key);
+  };
+  const extendTo = key => {
+    if (single || blocked.has(key)) return;
+    const from = anchor.current != null && items.indexOf(anchor.current) >= 0 ? items.indexOf(anchor.current) : items.indexOf(key);
+    const to = items.indexOf(key);
+    if (to < 0) return;
+    const next = new Set(current);
+    items.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(k => {
+      if (!blocked.has(k)) next.add(k);
+    });
+    commit(next);
+  };
+  const choose = (key, e) => {
+    if (single) {
+      if (current.has(key) && !disallowEmpty && e && (e.ctrlKey || e.metaKey)) deselect(key);else select(key);
+      return;
+    }
+    if (e && e.shiftKey) {
+      extendTo(key);
+      return;
+    }
+    if (e && (e.ctrlKey || e.metaKey) || behavior === 'toggle') {
+      toggle(key);
+      return;
+    }
+    anchor.current = key;
+    if (!(current.size === 1 && current.has(key))) commit(new Set([key]));
+  };
+  const selectAll = () => {
+    if (!single) commit(new Set(selectable));
+  };
+  const clear = () => {
+    if (current.size && !(single && disallowEmpty)) commit(new Set());
+  };
+  const count = ordered(items, current).length;
+  const allSelected = selectable.length > 0 && selectable.every(k => current.has(k));
+  const someSelected = count > 0 && !allSelected;
+  const toggleAll = () => {
+    if (allSelected) clear();else selectAll();
+  };
+  const setSelected = keys => commit(new Set(single ? [].concat(keys).slice(0, 1) : keys));
+  return {
+    selected: ordered(items, current),
+    count,
+    isSelected,
+    select,
+    deselect,
+    toggle,
+    extendTo,
+    choose,
+    selectAll,
+    clear,
+    toggleAll,
+    setSelected,
+    allSelected,
+    someSelected,
+    anchor: anchor.current
+  };
+}
+  } },
+  "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.flingDistance = flingDistance;
+exports.gestureTokens = gestureTokens;
+exports.useGesture = useGesture;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useGesture
+   Summary: Touch, pen and mouse gestures from pointer events, on the gesture motion tokens: tap, long press, pan (drag),
+     swipe, fling, pinch to zoom and pull to refresh. It reports what the pointers do; the component decides what moves
+     and always offers the same action as a visible control (a button or a menu item).
+   Usage:
+     const ref = React.useRef(null);
+     useGesture(ref, { axis: 'x', onSwipe: (g) => { if (g.direction === 'left') archive(); } });          // swipe a row
+     useGesture(ref, { onLongPress: (g) => openMenuAt(g.x, g.y) });                                         // long press
+     useGesture(ref, { onPinch: (g) => setZoom(clamp(base * g.scale, 1, g.maxScale)) });                   // pinch to zoom
+     useGesture(listRef, { pull: true, onPull: (g) => setPull(g), onRefresh: reload });                      // pull to refresh
+     <div ref={ref} className="plx-gesture plx-gesture--pan-y">…</div>                                      // system/gesture.css
+   Props:
+     ref: a ref to the element that takes the gestures
+     options.axis ("both"): "x" | "y" | "both": the pan and swipe axis; movement mostly along the other axis is left to
+       the browser (the page still scrolls)
+     options.onTap({ x, y, pointerType }): a press released without moving past the slop and before the long-press delay
+     options.onLongPress({ x, y, pointerType }): held still for --plx-sys-gesture-long-press-delay
+     options.onPanStart(g), options.onPan(g), options.onPanEnd(g): a drag past --plx-sys-gesture-slop; g = { dx, dy (from
+       the start), vx, vy (px per ms), pointerType, canceled (onPanEnd: the pointer was canceled) }
+     options.onSwipe({ direction, inline, distance, velocity }): a pan released past --plx-sys-gesture-swipe-distance, or
+       faster than --plx-sys-gesture-fling-velocity; direction "left" | "right" | "up" | "down", inline "start" | "end"
+       (left and right in reading order) or null
+     options.onFling({ vx, vy, direction, travelX, travelY }): released faster than the fling velocity; travel is how
+       far it would coast on --plx-sys-gesture-fling-decay (flingDistance)
+     options.onPinch({ scale, originX, originY, maxScale, first }), options.onPinchEnd({ scale }): two pointers; scale is
+       relative to the pinch's start, maxScale the --plx-sys-gesture-pinch-max-scale token
+     options.pull (false): pull to refresh: a downward pan that starts with the element scrolled to its top
+     options.onPull({ distance, progress, ready, released }): the pull after --plx-sys-gesture-pull-resistance; ready
+       once it reaches --plx-sys-gesture-pull-distance; released when the finger lifts (distance 0)
+     options.onRefresh(): the pull was released while ready
+     options.disabled (false): no gestures
+     returns { active }: the gesture under way: null, "press", "pan", "pinch" or "pull" (to style the element)
+   Behavior:
+     Gestures end on release, so moving back before lifting cancels a swipe (WCAG 2.2, 2.5.2); a pointer that leaves the
+       window or is canceled by the system ends the pan with canceled true.
+     The pointer is captured once a pan starts, so it is followed outside the element; a tap on a child still clicks it.
+     Only the primary mouse button starts a gesture. A second finger turns a press or a pan into a pinch.
+     Every distance, time and rate is a token read when the gesture starts, so the density and interaction contexts apply.
+   Notes:
+     A gesture is a shortcut, never the only way: swipe to archive has an Archive button, pinch has zoom buttons, pull to
+       refresh has a Refresh button, a long press has the same menu on its button (WCAG 2.2, 2.5.1 and 2.5.7).
+     Give the element touch-action through system/gesture.css (plx-gesture, plx-gesture--pan-x, plx-gesture--pan-y) so
+       the browser does not scroll or zoom while the gesture is tracked.
+     Moving an element with the finger is the component's own stylesheet's work (steps through a data attribute); the
+       settle after it is .plx-gesture-settle (--plx-sys-gesture-settle-duration and -easing). Reduced motion settles at once.
+*/
+
+const VELOCITY_WINDOW = 100; // the last 100 ms of movement give the release velocity (a sampling window, not a look)
+
+// a token's value on the element: a length in px (rem converted), a time in ms, or a number
+function tokenOn(el, name) {
+  const cs = getComputedStyle(el),
+    v = cs.getPropertyValue(name).trim(),
+    n = parseFloat(v);
+  if (isNaN(n)) return NaN;
+  if (/rem$/.test(v)) return n * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  if (/ms$/.test(v)) return n;
+  if (/s$/.test(v)) return n * 1000;
+  return n;
+}
+
+// the gesture tokens as numbers, read from the element (or the page)
+function gestureTokens(el) {
+  const at = el || (typeof document !== 'undefined' ? document.documentElement : null);
+  const t = name => at ? tokenOn(at, '--plx-sys-gesture-' + name) : NaN;
+  return {
+    slop: t('slop'),
+    swipeDistance: t('swipe-distance'),
+    flingVelocity: t('fling-velocity'),
+    flingDecay: t('fling-decay'),
+    longPressDelay: t('long-press-delay'),
+    pullDistance: t('pull-distance'),
+    pullResistance: t('pull-resistance'),
+    pinchMaxScale: t('pinch-max-scale')
+  };
+}
+
+// how far something released at velocity v (px per ms) coasts when it keeps decay of its speed each millisecond
+function flingDistance(v, decay) {
+  if (!(decay > 0 && decay < 1)) return 0;
+  return v * decay / (1 - decay);
+}
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+function useGesture(ref, options = {}) {
+  const [active, setActive] = _react.default.useState(null);
+  const latest = _react.default.useRef(options);
+  latest.current = options;
+  const disabled = !!options.disabled;
+  _react.default.useEffect(() => {
+    const el = ref.current;
+    if (!el || disabled) return undefined;
+    const pointers = new Map();
+    let g = null; // the gesture: { mode, start, samples, tokens, timer, … }
+    const call = (name, arg) => {
+      const f = latest.current[name];
+      if (f) f(arg);
+    };
+    const mode = m => {
+      if (g) g.mode = m;
+      setActive(m);
+    };
+    const velocity = () => {
+      const s = g.samples,
+        last = s[s.length - 1];
+      let first = s[0];
+      for (let i = s.length - 1; i >= 0; i--) {
+        if (last.t - s[i].t > VELOCITY_WINDOW) break;
+        first = s[i];
+      }
+      const dt = last.t - first.t;
+      return dt > 0 ? {
+        vx: (last.x - first.x) / dt,
+        vy: (last.y - first.y) / dt
+      } : {
+        vx: 0,
+        vy: 0
+      };
+    };
+    const capture = e => {
+      if (el.setPointerCapture) {
+        try {
+          el.setPointerCapture(e.pointerId);
+        } catch (err) {/* the pointer is gone */}
+      }
+    };
+    const clearTimer = () => {
+      if (g && g.timer) {
+        clearTimeout(g.timer);
+        g.timer = null;
+      }
+    };
+    const finish = () => {
+      clearTimer();
+      g = null;
+      setActive(null);
+    };
+    const pinchState = () => {
+      const [a, b] = Array.from(pointers.values());
+      return {
+        a,
+        b,
+        d: dist(a, b),
+        cx: (a.x + b.x) / 2,
+        cy: (a.y + b.y) / 2
+      };
+    };
+    const onDown = e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pointers.set(e.pointerId, {
+        x: e.clientX,
+        y: e.clientY
+      });
+      const o = latest.current;
+      if (pointers.size === 2 && o.onPinch) {
+        clearTimer();
+        if (g && g.mode === 'pan') call('onPanEnd', {
+          dx: 0,
+          dy: 0,
+          vx: 0,
+          vy: 0,
+          pointerType: g.pointerType,
+          canceled: true
+        });
+        const p = pinchState();
+        g = Object.assign(g || {}, {
+          startDist: p.d || 1,
+          tokens: g && g.tokens || gestureTokens(el)
+        });
+        mode('pinch');
+        call('onPinch', {
+          scale: 1,
+          originX: p.cx,
+          originY: p.cy,
+          maxScale: g.tokens.pinchMaxScale,
+          first: true
+        });
+        return;
+      }
+      if (pointers.size > 1) return;
+      const tokens = gestureTokens(el);
+      g = {
+        mode: 'press',
+        pointerId: e.pointerId,
+        pointerType: e.pointerType || 'mouse',
+        start: {
+          x: e.clientX,
+          y: e.clientY,
+          t: e.timeStamp
+        },
+        samples: [{
+          x: e.clientX,
+          y: e.clientY,
+          t: e.timeStamp
+        }],
+        tokens,
+        timer: null,
+        long: false,
+        atTop: el.scrollTop <= 0
+      };
+      setActive('press');
+      if (o.onLongPress) {
+        g.timer = setTimeout(() => {
+          if (!g || g.mode !== 'press') return;
+          g.long = true;
+          g.timer = null;
+          call('onLongPress', {
+            x: g.start.x,
+            y: g.start.y,
+            pointerType: g.pointerType
+          });
+        }, tokens.longPressDelay || 0);
+      }
+    };
+    const onMove = e => {
+      if (!g || !pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, {
+        x: e.clientX,
+        y: e.clientY
+      });
+      const o = latest.current;
+      if (g.mode === 'pinch') {
+        if (pointers.size < 2) return;
+        const p = pinchState();
+        call('onPinch', {
+          scale: p.d / g.startDist,
+          originX: p.cx,
+          originY: p.cy,
+          maxScale: g.tokens.pinchMaxScale,
+          first: false
+        });
+        return;
+      }
+      if (e.pointerId !== g.pointerId) return;
+      g.samples.push({
+        x: e.clientX,
+        y: e.clientY,
+        t: e.timeStamp
+      });
+      if (g.samples.length > 32) g.samples.shift();
+      const dx = e.clientX - g.start.x,
+        dy = e.clientY - g.start.y;
+      if (g.mode === 'press') {
+        if (Math.hypot(dx, dy) < (g.tokens.slop || 0)) return;
+        clearTimer();
+        if (g.long) {
+          mode('none');
+          return;
+        } // moved after a long press: the long press stands, no pan
+        const vertical = Math.abs(dy) > Math.abs(dx);
+        if (o.pull && vertical && dy > 0 && g.atTop) {
+          mode('pull');
+          capture(e);
+        } else if (o.axis === 'x' && vertical || o.axis === 'y' && !vertical) {
+          mode('none');
+          return;
+        } // the browser scrolls
+        else if (o.onPan || o.onPanStart || o.onPanEnd || o.onSwipe || o.onFling) {
+          mode('pan');
+          capture(e);
+          call('onPanStart', {
+            dx,
+            dy,
+            vx: 0,
+            vy: 0,
+            pointerType: g.pointerType
+          });
+        } else {
+          mode('none');
+          return;
+        }
+      }
+      if (g.mode === 'pan') {
+        const v = velocity();
+        call('onPan', {
+          dx: o.axis === 'y' ? 0 : dx,
+          dy: o.axis === 'x' ? 0 : dy,
+          vx: v.vx,
+          vy: v.vy,
+          pointerType: g.pointerType
+        });
+      } else if (g.mode === 'pull') {
+        const distance = Math.max(0, dy) * (g.tokens.pullResistance || 0);
+        const target = g.tokens.pullDistance || 0;
+        g.ready = target > 0 && distance >= target;
+        call('onPull', {
+          distance,
+          progress: target > 0 ? Math.min(1, distance / target) : 0,
+          ready: g.ready,
+          released: false
+        });
+      }
+    };
+    const onUp = e => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.delete(e.pointerId);
+      if (!g) return;
+      const canceled = e.type === 'pointercancel';
+      if (g.mode === 'pinch') {
+        if (pointers.size < 2) {
+          call('onPinchEnd', {
+            scale: g.lastScale || 1
+          });
+          finish();
+          pointers.clear();
+        }
+        return;
+      }
+      if (e.pointerId !== g.pointerId) return;
+      const o = latest.current;
+      const dx = e.clientX - g.start.x,
+        dy = e.clientY - g.start.y;
+      if (g.mode === 'press' && !g.long && !canceled) call('onTap', {
+        x: e.clientX,
+        y: e.clientY,
+        pointerType: g.pointerType
+      });else if (g.mode === 'pan') {
+        const v = velocity(),
+          t = g.tokens;
+        const px = o.axis === 'y' ? 0 : dx,
+          py = o.axis === 'x' ? 0 : dy;
+        const vx = o.axis === 'y' ? 0 : v.vx,
+          vy = o.axis === 'x' ? 0 : v.vy;
+        call('onPanEnd', {
+          dx: px,
+          dy: py,
+          vx,
+          vy,
+          pointerType: g.pointerType,
+          canceled
+        });
+        if (!canceled) {
+          const horizontal = Math.abs(px) >= Math.abs(py);
+          const d = horizontal ? px : py,
+            vel = horizontal ? vx : vy;
+          const fast = Math.hypot(vx, vy) >= (t.flingVelocity || Infinity);
+          // a swipe ends moving the way it went: a pan dragged back toward its start does not commit
+          if ((Math.abs(d) >= t.swipeDistance || fast && Math.sign(vel) === Math.sign(d)) && d !== 0) {
+            const direction = horizontal ? d > 0 ? 'right' : 'left' : d > 0 ? 'down' : 'up';
+            const inline = horizontal ? d > 0 !== (0, _direction.isRtl)(el) ? 'end' : 'start' : null;
+            call('onSwipe', {
+              direction,
+              inline,
+              distance: Math.abs(d),
+              velocity: Math.abs(vel)
+            });
+          }
+          if (fast) {
+            const direction = horizontal ? vx > 0 ? 'right' : 'left' : vy > 0 ? 'down' : 'up';
+            call('onFling', {
+              vx,
+              vy,
+              direction,
+              travelX: flingDistance(vx, t.flingDecay),
+              travelY: flingDistance(vy, t.flingDecay)
+            });
+          }
+        }
+      } else if (g.mode === 'pull') {
+        const ready = g.ready && !canceled;
+        call('onPull', {
+          distance: 0,
+          progress: 0,
+          ready: false,
+          released: true
+        });
+        if (ready) call('onRefresh');
+      }
+      finish();
+    };
+
+    // the pinch's last scale, kept for onPinchEnd
+    const onPinchTrack = () => {
+      if (g && g.mode === 'pinch' && pointers.size === 2) g.lastScale = pinchState().d / g.startDist;
+    };
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointermove', onPinchTrack);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onUp);
+    window.addEventListener('pointerup', onUp);
+    return () => {
+      clearTimer();
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointermove', onPinchTrack);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('pointerup', onUp);
+    };
+  }, [ref, disabled]);
+  return {
+    active
+  };
+}
+  } },
+  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReadOnlyContext = exports.ReadOnly = void 0;
+exports.ReadOnlyProvider = ReadOnlyProvider;
+exports.useReadOnly = useReadOnly;
+var _react = _interopRequireDefault(require("react"));
+var _describedBy = require("../utils/describedBy.js");
+var _Icon = require("../components/Icon/Icon.jsx");
+var _Text = require("../components/Text/Text.jsx");
+var _Stack = require("../components/Stack/Stack.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
+   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
+     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
+     form that is locked after it was submitted, a setting an administrator controls.
+   Usage:
+     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
+     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
+     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
+     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
+   Props:
+     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
+     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
+     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
+       description (aria-describedby)
+     ReadOnly.className: more classes on the element
+     ReadOnly.children: the content; ...rest: other attributes go on the element
+     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
+       behavior (a component that draws its own read-only state)
+     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
+   Behavior:
+     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
+       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
+       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
+       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
+       it. A form inside a read-only region does not submit. Content editable text stops being editable.
+     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
+       control back exactly what it had.
+     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
+   Notes:
+     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
+       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
+       Delete) rather than disabling them.
+     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
+*/
+const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
+function ReadOnlyProvider({
+  readOnly = true,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: !!readOnly
+  }, children);
+}
+function useReadOnly(own) {
+  const ctx = _react.default.useContext(ReadOnlyContext);
+  return own === undefined || own === null ? ctx : !!own;
+}
+
+// what the region may lock: the controls whose value a person changes
+const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
+const NOT_VALUES = {
+  button: 1,
+  submit: 1,
+  reset: 1,
+  image: 1,
+  hidden: 1,
+  file: 0
+};
+const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
+// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
+const ARIA_READONLY = {
+  checkbox: 1,
+  switch: 1,
+  slider: 1,
+  spinbutton: 1,
+  combobox: 1,
+  listbox: 1,
+  textbox: 1,
+  radiogroup: 1
+};
+// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
+const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
+function roleOf(el) {
+  const r = el.getAttribute('role');
+  if (r) return r;
+  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
+  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
+  return 'textbox';
+}
+
+// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
+function lock(el) {
+  if (el.hasAttribute('data-plx-readonly-set')) return null;
+  const tag = el.tagName;
+  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
+  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
+    el.setAttribute('contenteditable', 'false');
+    el.setAttribute('data-plx-readonly-set', 'editable');
+    return () => {
+      el.setAttribute('contenteditable', 'true');
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
+    if (el.readOnly) return null;
+    el.readOnly = true;
+    el.setAttribute('data-plx-readonly-set', 'readonly');
+    return () => {
+      el.readOnly = false;
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
+  const role = roleOf(el);
+  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
+  if (aria) el.setAttribute('aria-readonly', 'true');
+  el.setAttribute('data-plx-readonly-set', 'locked');
+  return () => {
+    if (aria) el.removeAttribute('aria-readonly');
+    el.removeAttribute('data-plx-readonly-set');
+  };
+}
+
+// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
+function useLockRegion(ref, on) {
+  _react.default.useEffect(() => {
+    const root = ref.current;
+    if (!root || !on) return undefined;
+    const undo = new Map();
+    const mine = el => el.closest('[data-plx-readonly]') === root;
+    const apply = () => {
+      root.querySelectorAll(CONTROLS).forEach(el => {
+        if (!undo.has(el) && mine(el)) {
+          const u = lock(el);
+          if (u) undo.set(el, u);
+        }
+      });
+    };
+    apply();
+    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
+    if (observer) observer.observe(root, {
+      childList: true,
+      subtree: true
+    });
+    const locked = t => {
+      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
+      return el && mine(el) ? el : null;
+    };
+    const stop = e => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    const onClick = e => {
+      if (locked(e.target)) stop(e);
+    };
+    const onKey = e => {
+      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
+    };
+    const onPointer = e => {
+      const el = locked(e.target);
+      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
+        e.preventDefault();
+        el.focus();
+      }
+    };
+    const onSubmit = e => {
+      if (e.target === root || mine(e.target)) e.preventDefault();
+    };
+    root.addEventListener('click', onClick, true);
+    root.addEventListener('keydown', onKey, true);
+    root.addEventListener('mousedown', onPointer, true);
+    root.addEventListener('pointerdown', onPointer, true);
+    root.addEventListener('submit', onSubmit, true);
+    return () => {
+      if (observer) observer.disconnect();
+      root.removeEventListener('click', onClick, true);
+      root.removeEventListener('keydown', onKey, true);
+      root.removeEventListener('mousedown', onPointer, true);
+      root.removeEventListener('pointerdown', onPointer, true);
+      root.removeEventListener('submit', onSubmit, true);
+      undo.forEach(u => u());
+    };
+  }, [ref, on]);
+}
+const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
+  as = 'div',
+  readOnly = true,
+  reason,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  };
+  const on = !!readOnly;
+  useLockRegion(own, on);
+  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
+  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: on
+  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: setRef,
+    "data-plx-readonly": on ? 'true' : 'false',
+    className: className
+  }, rest, {
+    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
+  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "lock",
+    size: "sm"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    id: reasonId
+  }, reason)) : null, children));
+});
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14121,6 +15725,12 @@ Object.defineProperty(exports, "Badge", {
   enumerable: true,
   get: function () {
     return _Badge.Badge;
+  }
+});
+Object.defineProperty(exports, "Blockquote", {
+  enumerable: true,
+  get: function () {
+    return _Blockquote.Blockquote;
   }
 });
 Object.defineProperty(exports, "BrandMark", {
@@ -14199,6 +15809,12 @@ Object.defineProperty(exports, "ChoiceList", {
   enumerable: true,
   get: function () {
     return _Checkbox.ChoiceList;
+  }
+});
+Object.defineProperty(exports, "Code", {
+  enumerable: true,
+  get: function () {
+    return _Code.Code;
   }
 });
 Object.defineProperty(exports, "CodeBlock", {
@@ -14315,6 +15931,18 @@ Object.defineProperty(exports, "Dialog", {
     return _Dialog.Dialog;
   }
 });
+Object.defineProperty(exports, "DirectionContext", {
+  enumerable: true,
+  get: function () {
+    return _DirectionProvider.DirectionContext;
+  }
+});
+Object.defineProperty(exports, "DirectionProvider", {
+  enumerable: true,
+  get: function () {
+    return _DirectionProvider.DirectionProvider;
+  }
+});
 Object.defineProperty(exports, "Divider", {
   enumerable: true,
   get: function () {
@@ -14409,6 +16037,12 @@ Object.defineProperty(exports, "Kbd", {
   enumerable: true,
   get: function () {
     return _Kbd.Kbd;
+  }
+});
+Object.defineProperty(exports, "Link", {
+  enumerable: true,
+  get: function () {
+    return _Link.Link;
   }
 });
 Object.defineProperty(exports, "List", {
@@ -14543,6 +16177,12 @@ Object.defineProperty(exports, "PropertyList", {
     return _PropertyList.PropertyList;
   }
 });
+Object.defineProperty(exports, "RTL_LANGUAGES", {
+  enumerable: true,
+  get: function () {
+    return _direction.RTL_LANGUAGES;
+  }
+});
 Object.defineProperty(exports, "Radio", {
   enumerable: true,
   get: function () {
@@ -14567,10 +16207,34 @@ Object.defineProperty(exports, "Rating", {
     return _Rating.Rating;
   }
 });
+Object.defineProperty(exports, "ReadOnly", {
+  enumerable: true,
+  get: function () {
+    return _ReadOnly.ReadOnly;
+  }
+});
+Object.defineProperty(exports, "ReadOnlyContext", {
+  enumerable: true,
+  get: function () {
+    return _ReadOnly.ReadOnlyContext;
+  }
+});
+Object.defineProperty(exports, "ReadOnlyProvider", {
+  enumerable: true,
+  get: function () {
+    return _ReadOnly.ReadOnlyProvider;
+  }
+});
 Object.defineProperty(exports, "RecordPage", {
   enumerable: true,
   get: function () {
     return _RecordPage.RecordPage;
+  }
+});
+Object.defineProperty(exports, "RichText", {
+  enumerable: true,
+  get: function () {
+    return _RichText.RichText;
   }
 });
 Object.defineProperty(exports, "RowButton", {
@@ -14855,6 +16519,12 @@ Object.defineProperty(exports, "appHref", {
     return _apps.appHref;
   }
 });
+Object.defineProperty(exports, "arrowStep", {
+  enumerable: true,
+  get: function () {
+    return _direction.arrowStep;
+  }
+});
 Object.defineProperty(exports, "below", {
   enumerable: true,
   get: function () {
@@ -14919,6 +16589,18 @@ Object.defineProperty(exports, "dateTimeAttr", {
   enumerable: true,
   get: function () {
     return _format.dateTimeAttr;
+  }
+});
+Object.defineProperty(exports, "directionOf", {
+  enumerable: true,
+  get: function () {
+    return _direction.directionOf;
+  }
+});
+Object.defineProperty(exports, "flingDistance", {
+  enumerable: true,
+  get: function () {
+    return _useGesture.flingDistance;
   }
 });
 Object.defineProperty(exports, "formatAddress", {
@@ -15029,6 +16711,18 @@ Object.defineProperty(exports, "gapPieces", {
     return _useVirtualizer.gapPieces;
   }
 });
+Object.defineProperty(exports, "gestureTokens", {
+  enumerable: true,
+  get: function () {
+    return _useGesture.gestureTokens;
+  }
+});
+Object.defineProperty(exports, "getDirection", {
+  enumerable: true,
+  get: function () {
+    return _direction.getDirection;
+  }
+});
 Object.defineProperty(exports, "goToParent", {
   enumerable: true,
   get: function () {
@@ -15069,6 +16763,12 @@ Object.defineProperty(exports, "isMac", {
   enumerable: true,
   get: function () {
     return _hotkey.isMac;
+  }
+});
+Object.defineProperty(exports, "isRtl", {
+  enumerable: true,
+  get: function () {
+    return _direction.isRtl;
   }
 });
 Object.defineProperty(exports, "isScrollLocked", {
@@ -15129,6 +16829,12 @@ Object.defineProperty(exports, "parseScreen", {
   enumerable: true,
   get: function () {
     return _ScreenLocation.parseScreen;
+  }
+});
+Object.defineProperty(exports, "physicalSide", {
+  enumerable: true,
+  get: function () {
+    return _direction.physicalSide;
   }
 });
 Object.defineProperty(exports, "regionName", {
@@ -15227,10 +16933,34 @@ Object.defineProperty(exports, "useDescriptionId", {
     return _describedBy.useDescriptionId;
   }
 });
+Object.defineProperty(exports, "useDirection", {
+  enumerable: true,
+  get: function () {
+    return _DirectionProvider.useDirection;
+  }
+});
 Object.defineProperty(exports, "useFloating", {
   enumerable: true,
   get: function () {
     return _floating.useFloating;
+  }
+});
+Object.defineProperty(exports, "useFocusGroup", {
+  enumerable: true,
+  get: function () {
+    return _useFocusable.useFocusGroup;
+  }
+});
+Object.defineProperty(exports, "useFocusable", {
+  enumerable: true,
+  get: function () {
+    return _useFocusable.useFocusable;
+  }
+});
+Object.defineProperty(exports, "useGesture", {
+  enumerable: true,
+  get: function () {
+    return _useGesture.useGesture;
   }
 });
 Object.defineProperty(exports, "useHotkey", {
@@ -15257,6 +16987,18 @@ Object.defineProperty(exports, "useIntersection", {
     return _useIntersection.useIntersection;
   }
 });
+Object.defineProperty(exports, "usePressable", {
+  enumerable: true,
+  get: function () {
+    return _usePressable.usePressable;
+  }
+});
+Object.defineProperty(exports, "useReadOnly", {
+  enumerable: true,
+  get: function () {
+    return _ReadOnly.useReadOnly;
+  }
+});
 Object.defineProperty(exports, "useScreenLocation", {
   enumerable: true,
   get: function () {
@@ -15267,6 +17009,12 @@ Object.defineProperty(exports, "useScrollLock", {
   enumerable: true,
   get: function () {
     return _scrollLock.useScrollLock;
+  }
+});
+Object.defineProperty(exports, "useSelection", {
+  enumerable: true,
+  get: function () {
+    return _useSelection.useSelection;
   }
 });
 Object.defineProperty(exports, "useSession", {
@@ -15407,6 +17155,17 @@ var _contrast = require("./utils/contrast.js");
 var _dataviz = require("./utils/dataviz.js");
 var _describedBy = require("./utils/describedBy.js");
 var _scrollLock = require("./utils/scrollLock.js");
+var _Link = require("./components/Link/Link.jsx");
+var _Code = require("./components/Code/Code.jsx");
+var _Blockquote = require("./components/Blockquote/Blockquote.jsx");
+var _RichText = require("./components/RichText/RichText.jsx");
+var _DirectionProvider = require("./providers/DirectionProvider.jsx");
+var _direction = require("./utils/direction.js");
+var _usePressable = require("./hooks/usePressable.js");
+var _useFocusable = require("./hooks/useFocusable.js");
+var _useSelection = require("./hooks/useSelection.js");
+var _useGesture = require("./hooks/useGesture.js");
+var _ReadOnly = require("./providers/ReadOnly.jsx");
   } }
   };
   var cache = {};

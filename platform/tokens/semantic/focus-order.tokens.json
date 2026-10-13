@@ -1,0 +1,55 @@
+{
+  "$description": "Focus order (library plan wave 2, foundation focus-order): the dev overlay that numbers a page’s Tab stops in the order the keyboard reaches them (platform/dev/focus-order.js, ?focus-order). system/focus-order.css draws it.",
+  "plx-sys": {
+    "focus-order-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Focus order overlay: the outline of each Tab stop, its number’s badge and the path between stops."
+    },
+    "focus-order-on-color": {
+      "$value": "{plx-sys.feedback-info-on-solid}",
+      "$type": "color",
+      "$description": "Focus order overlay: the number on a badge."
+    },
+    "focus-order-warning-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Focus order overlay: a stop reached out of reading order, or one with a positive tabindex."
+    },
+    "focus-order-warning-on-color": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color",
+      "$description": "Focus order overlay: the number on a warning badge."
+    },
+    "focus-order-stroke-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension",
+      "$description": "Focus order overlay: the width of a stop’s outline and of the path."
+    },
+    "focus-order-badge-radius": {
+      "$value": "{plx-ref.size-12px}",
+      "$type": "dimension",
+      "$description": "Focus order overlay: the radius of a number’s badge (24px across)."
+    },
+    "focus-order-font-family": {
+      "$value": "{plx-sys.font-label}",
+      "$type": "fontFamily",
+      "$description": "Focus order overlay: the font of the numbers."
+    },
+    "focus-order-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "Focus order overlay: the size of the numbers."
+    },
+    "focus-order-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Focus order overlay: the weight of the numbers."
+    },
+    "focus-order-path-opacity": {
+      "$value": "{plx-sys.opacity-mid}",
+      "$type": "number",
+      "$description": "Focus order overlay: the path between consecutive stops is drawn at this opacity, under the badges."
+    }
+  }
+}
