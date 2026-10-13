@@ -1,0 +1,205 @@
+{
+  "$description": "IconTile (platform/components/IconTile): its component tokens (library wave 3, lane A).",
+  "plx-comp": {
+    "icon-tile-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "IconTile: the tile’s border width."
+    },
+    "icon-tile-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "IconTile: the border of a tile in a hue (the data colors and the surface)."
+    },
+    "icon-tile-sm-size": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension",
+      "$description": "IconTile size sm: the tile’s width and height (32px)."
+    },
+    "icon-tile-sm-radius": {
+      "$value": "{plx-sys.radius-avatar-6px}",
+      "$type": "dimension",
+      "$description": "IconTile size sm: the tile’s corners."
+    },
+    "icon-tile-sm-icon-size": {
+      "$value": "{plx-sys.icon-size-sm}",
+      "$type": "dimension",
+      "$description": "IconTile size sm: the icon (16px)."
+    },
+    "icon-tile-md-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "IconTile size md: the tile’s width and height (40px)."
+    },
+    "icon-tile-md-radius": {
+      "$value": "{plx-sys.radius-avatar-8px}",
+      "$type": "dimension",
+      "$description": "IconTile size md: the tile’s corners."
+    },
+    "icon-tile-md-icon-size": {
+      "$value": "{plx-sys.icon-size-md}",
+      "$type": "dimension",
+      "$description": "IconTile size md: the icon (20px)."
+    },
+    "icon-tile-lg-size": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "IconTile size lg: the tile’s width and height (48px)."
+    },
+    "icon-tile-lg-radius": {
+      "$value": "{plx-sys.radius-avatar-8px}",
+      "$type": "dimension",
+      "$description": "IconTile size lg: the tile’s corners."
+    },
+    "icon-tile-lg-icon-size": {
+      "$value": "{plx-sys.icon-size-lg}",
+      "$type": "dimension",
+      "$description": "IconTile size lg: the icon (24px)."
+    },
+    "icon-tile-blue-background": {
+      "$value": "{plx-sys.data-color-blue-soft}",
+      "$type": "color",
+      "$description": "IconTile hue blue: the tile’s fill (the soft data color)."
+    },
+    "icon-tile-blue-text": {
+      "$value": "{plx-sys.data-color-blue-on-soft}",
+      "$type": "color",
+      "$description": "IconTile hue blue: the icon (the data color’s on-soft content)."
+    },
+    "icon-tile-green-background": {
+      "$value": "{plx-sys.data-color-green-soft}",
+      "$type": "color",
+      "$description": "IconTile hue green: the tile’s fill (the soft data color)."
+    },
+    "icon-tile-green-text": {
+      "$value": "{plx-sys.data-color-green-on-soft}",
+      "$type": "color",
+      "$description": "IconTile hue green: the icon (the data color’s on-soft content)."
+    },
+    "icon-tile-purple-background": {
+      "$value": "{plx-sys.data-color-purple-soft}",
+      "$type": "color",
+      "$description": "IconTile hue purple: the tile’s fill (the soft data color)."
+    },
+    "icon-tile-purple-text": {
+      "$value": "{plx-sys.data-color-purple-on-soft}",
+      "$type": "color",
+      "$description": "IconTile hue purple: the icon (the data color’s on-soft content)."
+    },
+    "icon-tile-red-background": {
+      "$value": "{plx-sys.data-color-red-soft}",
+      "$type": "color",
+      "$description": "IconTile hue red: the tile’s fill (the soft data color)."
+    },
+    "icon-tile-red-text": {
+      "$value": "{plx-sys.data-color-red-on-soft}",
+      "$type": "color",
+      "$description": "IconTile hue red: the icon (the data color’s on-soft content)."
+    },
+    "icon-tile-brown-background": {
+      "$value": "{plx-sys.data-color-brown-soft}",
+      "$type": "color",
+      "$description": "IconTile hue brown: the tile’s fill (the soft data color)."
+    },
+    "icon-tile-brown-text": {
+      "$value": "{plx-sys.data-color-brown-on-soft}",
+      "$type": "color",
+      "$description": "IconTile hue brown: the icon (the data color’s on-soft content)."
+    },
+    "icon-tile-gray-background": {
+      "$value": "{plx-sys.data-color-gray-soft}",
+      "$type": "color",
+      "$description": "IconTile hue gray: the tile’s fill (the soft data color)."
+    },
+    "icon-tile-gray-text": {
+      "$value": "{plx-sys.data-color-gray-on-soft}",
+      "$type": "color",
+      "$description": "IconTile hue gray: the icon (the data color’s on-soft content)."
+    },
+    "icon-tile-surface-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "IconTile hue surface: the tile on the page surface (white in light, the panel color in dark)."
+    },
+    "icon-tile-surface-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "IconTile hue surface: the icon in the link blue, light on dark."
+    },
+    "icon-tile-neutral-background": {
+      "$value": "{plx-sys.feedback-neutral-soft}",
+      "$type": "color",
+      "$description": "IconTile tone neutral: the tile’s fill (the soft feedback color)."
+    },
+    "icon-tile-neutral-border-color": {
+      "$value": "{plx-sys.feedback-neutral-soft-border}",
+      "$type": "color",
+      "$description": "IconTile tone neutral: the tile’s border."
+    },
+    "icon-tile-neutral-text": {
+      "$value": "{plx-sys.feedback-neutral-content}",
+      "$type": "color",
+      "$description": "IconTile tone neutral: the icon."
+    },
+    "icon-tile-info-background": {
+      "$value": "{plx-sys.feedback-info-soft}",
+      "$type": "color",
+      "$description": "IconTile tone info: the tile’s fill (the soft feedback color)."
+    },
+    "icon-tile-info-border-color": {
+      "$value": "{plx-sys.feedback-info-soft-border}",
+      "$type": "color",
+      "$description": "IconTile tone info: the tile’s border."
+    },
+    "icon-tile-info-text": {
+      "$value": "{plx-sys.feedback-info-content}",
+      "$type": "color",
+      "$description": "IconTile tone info: the icon."
+    },
+    "icon-tile-success-background": {
+      "$value": "{plx-sys.feedback-success-soft}",
+      "$type": "color",
+      "$description": "IconTile tone success: the tile’s fill (the soft feedback color)."
+    },
+    "icon-tile-success-border-color": {
+      "$value": "{plx-sys.feedback-success-soft-border}",
+      "$type": "color",
+      "$description": "IconTile tone success: the tile’s border."
+    },
+    "icon-tile-success-text": {
+      "$value": "{plx-sys.feedback-success-content}",
+      "$type": "color",
+      "$description": "IconTile tone success: the icon."
+    },
+    "icon-tile-warning-background": {
+      "$value": "{plx-sys.feedback-warning-soft}",
+      "$type": "color",
+      "$description": "IconTile tone warning: the tile’s fill (the soft feedback color)."
+    },
+    "icon-tile-warning-border-color": {
+      "$value": "{plx-sys.feedback-warning-soft-border}",
+      "$type": "color",
+      "$description": "IconTile tone warning: the tile’s border."
+    },
+    "icon-tile-warning-text": {
+      "$value": "{plx-sys.feedback-warning-content}",
+      "$type": "color",
+      "$description": "IconTile tone warning: the icon."
+    },
+    "icon-tile-danger-background": {
+      "$value": "{plx-sys.feedback-danger-soft}",
+      "$type": "color",
+      "$description": "IconTile tone danger: the tile’s fill (the soft feedback color)."
+    },
+    "icon-tile-danger-border-color": {
+      "$value": "{plx-sys.feedback-danger-soft-border}",
+      "$type": "color",
+      "$description": "IconTile tone danger: the tile’s border."
+    },
+    "icon-tile-danger-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "IconTile tone danger: the icon."
+    }
+  }
+}

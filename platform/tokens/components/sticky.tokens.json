@@ -1,0 +1,15 @@
+{
+  "$description": "Sticky (platform/components/Sticky, library wave 3): a sticky or fixed region's layer, surface, stuck shadow and safe-area insets.",
+  "plx-comp": {
+    "sticky-z-index": { "$value": "{plx-sys.layer-sticky}", "$type": "number", "$description": "Sticky: the sticky layer, above the content that scrolls under it and below menus and overlays." },
+    "sticky-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Sticky: the region's surface, so content scrolling under it never shows through." },
+    "sticky-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Sticky: the region's text color." },
+    "sticky-stuck-shadow": { "$value": "{plx-sys.elevation-raised-shadow}", "$type": "shadow", "$description": "Sticky: the shadow (with its hairline) that separates the region from the content under it while it is stuck." },
+    "sticky-transition-duration": { "$value": "{plx-sys.motion-duration-fast}", "$type": "duration", "$description": "Sticky: how fast the shadow appears when the region sticks." },
+    "sticky-transition-easing": { "$value": "{plx-sys.motion-ease-standard}", "$type": "cubicBezier", "$description": "Sticky: the easing of the shadow." },
+    "sticky-safe-area-top": { "$value": "{plx-sys.safe-area-top}", "$type": "dimension", "$description": "Sticky: the top padding of a top region with safeArea (the notch, the status bar)." },
+    "sticky-safe-area-bottom": { "$value": "{plx-sys.safe-area-bottom}", "$type": "dimension", "$description": "Sticky: the bottom padding of a bottom region with safeArea (the home indicator)." },
+    "sticky-safe-area-start": { "$value": "{plx-sys.safe-area-start}", "$type": "dimension", "$description": "Sticky: the start padding with safeArea (a landscape notch)." },
+    "sticky-safe-area-end": { "$value": "{plx-sys.safe-area-end}", "$type": "dimension", "$description": "Sticky: the end padding with safeArea." }
+  }
+}

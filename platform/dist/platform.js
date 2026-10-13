@@ -1130,18 +1130,24 @@ function Divider({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Bleed = Bleed;
+exports.Center = Center;
 exports.Inline = Inline;
 exports.Stack = Stack;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline
-   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
+   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
+     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
    Usage:
      <Stack gap="md">
        <Inline gap="sm" justify="between">…</Inline>
        <Inline wrap>…</Inline>
      </Stack>
+     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
+     <Center maxWidth="sm" text><EmptyState … /></Center>
+     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
    Props:
      Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*)
      Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
@@ -1156,11 +1162,29 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
      Stack.indent: starts one inline step in (a nested group)
      Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
+     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
+     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
+     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
+     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
      Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
      Stack.className: more classes on the element
      Stack.children: the content to lay out
+     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
+       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
+     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
+     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
+     Center.text: centers the lines of text (short headings and messages only)
+     Center.as, Center.className: as for Stack
+     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
+     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
+     Bleed.as, Bleed.className: as for Stack
    Behavior:
      A scrolling Stack or Inline shows its scroll bar on hover.
+     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
+       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
+       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
+     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
+       keeps no inset (text stays out of a Bleed).
    Notes:
      Inline takes the same props as Stack.
      Any other prop reaches the element.
@@ -1179,12 +1203,16 @@ function layout(kind, {
   maxHeight,
   indent,
   push,
+  reverse,
+  reverseBelow,
+  order,
+  orderBelow,
   className,
   children,
   ...rest
 }, defaults) {
   return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', className)
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
   }, rest), children);
 }
 function Stack(props) {
@@ -1197,6 +1225,32 @@ function Inline(props) {
     gap: 'sm',
     align: 'center'
   });
+}
+function Center({
+  as: As = 'div',
+  maxWidth = 'md',
+  intrinsic,
+  vertical,
+  text,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
+  }, rest), children);
+}
+function Bleed({
+  as: As = 'div',
+  space = 'md',
+  sides = 'inline',
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
+  }, rest), children);
 }
   } },
   "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -1379,7 +1433,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
        hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover) | "link" (looks like link text)
+       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
      size: "md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
        role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
        tint on hover) | "lg" (the prominent role: page actions)
@@ -1530,7 +1584,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        label: semibold 12px. strong: semibold, the current size.
        heading: a group's title inside a page or dialog, semibold 13px.
        eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (an a element in running text).
+       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
        title: a page title, the heading font, 20px, bold.
        display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
          step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
@@ -1740,7 +1794,75 @@ function Notice({
   }, children));
 }
   } },
-  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/providers/apps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.appHref = exports.appById = exports.PLENIX_APPS = void 0;
+/* Plenix · applications (platform/providers/apps.js): every Plenix application, in one list for every product. The header
+   shows the pinned ones as links and the switcher shows them all (pinned first); the session keeps which are pinned.
+   id: the application's id. path: its page, relative to the Plenix folder, where every application has its own folder
+   beside platform/ (batch 149). appHref(app, root) turns it into a link from the current page, where root is the
+   relative path from that page to the Plenix folder ("../" from an application's page, "../../" from the spec). */
+const PLENIX_APPS = exports.PLENIX_APPS = [{
+  id: 'home',
+  label: 'Dashboard',
+  icon: 'home',
+  path: 'dashboard/index.html'
+}, {
+  id: 'projects',
+  label: 'Projects',
+  icon: 'briefcase',
+  path: 'projects/index.html'
+}, {
+  id: 'messaging',
+  label: 'Messages',
+  icon: 'message',
+  path: 'messages/index.html'
+}, {
+  id: 'contacts',
+  label: 'Contacts',
+  icon: 'settings-users',
+  path: 'contacts/index.html'
+}, {
+  id: 'calendar',
+  label: 'Calendar',
+  icon: 'calendar',
+  path: 'calendar/index.html'
+}, {
+  id: 'tasks',
+  label: 'Tasks',
+  icon: 'circle-check',
+  path: 'tasks/index.html'
+}, {
+  id: 'notes',
+  label: 'Notes',
+  icon: 'doc-text',
+  path: 'notes/index.html'
+}, {
+  id: 'bookmarks',
+  label: 'Bookmarks',
+  icon: 'bookmark',
+  path: 'bookmarks/index.html'
+}, {
+  id: 'files',
+  label: 'Files',
+  icon: 'folder',
+  path: 'files/index.html'
+}, {
+  id: 'assets',
+  label: 'Asset Manager',
+  icon: 'image-b',
+  path: 'dam/index.html'
+}];
+const appById = id => PLENIX_APPS.find(a => a.id === id);
+exports.appById = appById;
+const appHref = (app, root = '') => root + app.path.split('/').map(encodeURIComponent).join('/').replace(/%23/g, '#');
+exports.appHref = appHref;
+  } },
+  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1749,35 +1871,100 @@ Object.defineProperty(exports, "__esModule", {
 exports.BrandMark = BrandMark;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _apps = require("../../providers/apps.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BrandMark
-   Summary: The Plenix mark, from the brand kit (platform/brand/), in the current text color.
+   Summary: The Plenix brand from the brand kit (platform/brand/): the mark alone, the wordmark, the logo (mark and wordmark
+     in one lockup) and the product mark of each application, in the brand colors, in one color or on the accent.
    Usage:
-     <BrandMark />                      decorative, beside the product name
-     <BrandMark label="Plenix" />       on its own, named
+     <BrandMark />                                  the mark, decorative, beside the product name (the header)
+     <BrandMark label="Plenix" />                   the mark on its own, named
+     <BrandMark kind="logo" size="lg" />            the logo: the mark and the wordmark
+     <BrandMark kind="wordmark" tone="mono" />      the name alone, in the current text color
+     <BrandMark kind="product" app="notes" />       the product mark of an application (PLENIX_APPS)
+     <BrandMark kind="logo" tone="on-accent" />     on the blue header or another accent surface
    Props:
-     BrandMark.label: the accessible name; without it the mark is decorative (hidden from assistive technology)
+     BrandMark.kind: "mark" (default) | "wordmark" | "logo" (mark + wordmark) | "product" (the application's tile + its name)
+     BrandMark.tone: the colors. Without it the mark takes the current text color (as in the header); "brand" (the default of
+       the wordmark, the logo and the product mark) draws the mark in the brand blue and the name in the text color; "mono"
+       draws everything in the current text color; "on-accent" everything in the accent content color (the blue header)
+     BrandMark.size: "sm" (the minimum: a 16px mark) | "md" (20px) | "lg" (24px) | "xl" (32px); without it the mark takes
+       the control icon size and a lockup is "md"
+     BrandMark.app: kind="product": an application id from PLENIX_APPS ("notes") or an application ({ label, icon })
+     BrandMark.showName: kind="product": false draws the tile alone, named by the application (default true)
+     BrandMark.clearSpace: pads the lockup with the brand's clear space (brand-rules.json), for a logo that stands on its own
+     BrandMark.label: the accessible name of the mark alone (or of the product tile alone); without it the mark is decorative
+     BrandMark.strings: { name: "Plenix" } (the wordmark's text: the brand name of brand.json)
      BrandMark.className: more classes
    Behavior:
-     The mark is the brand kit's file (platform/brand/brand.json files.mark), drawn as a mask in the current text color:
-       the tokens color it (white on the header's blue). Its square includes the kit's clear space.
-     Its size is the control icon size (--plx-comp-icon-size); a pattern sets another size by that property.
+     The mark is the brand kit's file (platform/brand/brand.json files.mark), drawn as a mask in the color its tone gives:
+       its square includes the kit's clear space. The wordmark is live text in the heading face, at a size of the type
+       scale, so it is read as the brand name; the mark inside a lockup is decorative.
+     The product mark is the application's icon (PLENIX_APPS) on the brand tile, then the application's name.
+     The sizes stop at "sm": below it the mark loses its central cross (the minimum sizes of brand-rules.json).
    Notes:
-     Never redraw or recolor the mark by hand: replace the kit's files and build (build-brand.js).
+     Never redraw or recolor the mark by hand: replace the kit's files and build (build-brand.js). The brand rules (clear
+       space, minimum sizes, backgrounds, misuse) are platform/brand/brand-rules.json; the Brand application page shows them.
+     The brand blue comes from the brand tokens (tokens/components/brand.tokens.json), never from a palette color.
+     Other props pass through to the outer <span>.
 */
+const STRINGS = {
+  name: 'Plenix'
+};
 function BrandMark({
+  kind = 'mark',
+  tone,
+  size,
+  app,
+  showName = true,
+  clearSpace = false,
   label,
+  strings,
   className,
   ...rest
 }) {
-  return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
-    role: "img",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-brand-mark', className)
-  }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
+  const s = {
+    ...STRINGS,
+    ...strings
+  };
+  if (kind === 'mark') {
+    const cls = (0, _cx.cx)('plx-brand-mark', tone && 'plx-brand-mark--tone-' + tone, size && 'plx-brand-mark--size-' + size, className);
+    return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
+      role: "img",
+      "aria-label": label,
+      className: cls
+    }, rest)) : /*#__PURE__*/_react.default.createElement("span", _extends({
+      "aria-hidden": "true",
+      className: cls
+    }, rest));
+  }
+  const lockup = (0, _cx.cx)('plx-brand-lockup', 'plx-brand-lockup--' + kind, 'plx-brand-lockup--tone-' + (tone || 'brand'), 'plx-brand-lockup--size-' + (size || 'md'), clearSpace && 'plx-brand-lockup--clear', className);
+  if (kind === 'product') {
+    const a = typeof app === 'string' ? (0, _apps.appById)(app) : app;
+    const name = a ? a.label : s.name;
+    return /*#__PURE__*/_react.default.createElement("span", _extends({
+      className: lockup,
+      role: showName ? undefined : 'img',
+      "aria-label": showName ? undefined : label || name
+    }, rest), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-brand-lockup__tile",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: a ? a.icon : 'home',
+      className: "plx-brand-lockup__icon"
+    })), showName ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-brand-lockup__app"
+    }, name) : null);
+  }
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: lockup
+  }, rest), kind === 'logo' ? /*#__PURE__*/_react.default.createElement("span", {
     "aria-hidden": "true",
-    className: (0, _cx.cx)('plx-brand-mark', className)
-  }, rest));
+    className: "plx-brand-mark plx-brand-lockup__mark"
+  }) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-brand-lockup__name"
+  }, s.name));
 }
   } },
   "platform/components/ColorSwatch/dataColors.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -2311,34 +2498,51 @@ var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Preview
    Summary: The large picture of the item an inspector shows (or a placeholder with its icon and count).
-     It is the sunken surface, rounded, in a standard image shape (4:3 by default), with its content centered.
+     It is the sunken surface, rounded, in a shape of the aspect-ratio scale (4:3 by default), with its content centered.
    Usage:
+     <Preview ratio="16-9" fit="cover"><img className="plx-preview__media" src={src} alt="Kitchen, before" /></Preview>
      <Preview as="button" onClick={openViewer} topStart={<Tag>PNG</Tag>} bottomEnd={<Icon name="expand" />}>
        <img src={src} alt="" />
      </Preview>
    Props:
      as: "div" (default) | "button" (opens the item, e.g. the media viewer)
-     aspect: the shape, as a photo's: "4/3" (default) | "3/2" | "1/1" | "16/9" (as MediaCard's)
+     ratio: the shape, from the aspect-ratio scale (--plx-ref-ratio-*): "4-3" (default) | "1-1" | "3-2" | "16-9" | "21-9" |
+       "3-4" | "9-16" (the last two portrait)
+     aspect: the older name of ratio, as a photo's: "4/3" | "3/2" | "1/1" | "16/9" (as MediaCard's); ratio wins
+     fit: how a picture (.plx-preview__media) fills the frame: none (default: a thumbnail at its own size, centered) |
+       "cover" (it fills the frame and is cropped to it) | "contain" (it fills the frame, the whole picture showing)
      topStart: a small mark in the top-start corner (the type)
      bottomEnd: a small mark in the bottom-end corner (an expand icon)
      className: more classes on the preview
      children: the picture or placeholder
      ...rest: other attributes go on the preview element (onClick for a button)
+   Behavior:
+     The frame keeps its ratio at every width, so the space is reserved before the picture loads.
+     cover and contain never stretch the picture; cover crops what does not fit, contain leaves the sunken surface around it.
+   Notes:
+     A ratio outside the scale falls back to 4:3: add it to the scale (a token) first.
 */
+// the aspect-ratio scale (the Aspect-ratio scale foundation, platform/tokens/reference/ratio.tokens.json)
+const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
+const FITS = ['cover', 'contain'];
 function Preview({
   as: As = 'div',
+  ratio,
   aspect = '4/3',
+  fit,
   topStart,
   bottomEnd,
   className,
   children,
   ...rest
 }) {
+  const r = ratio || String(aspect).replace('/', '-');
   return /*#__PURE__*/_react.default.createElement(As, _extends({
     type: As === 'button' ? 'button' : undefined,
-    className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', className),
-    "data-plx-aspect": aspect
-  }, rest), children, topStart ? /*#__PURE__*/_react.default.createElement("span", {
+    "data-plx-ratio": RATIOS.indexOf(r) >= 0 ? r : '4-3'
+  }, rest, {
+    className: (0, _cx.cx)('plx-preview', As === 'button' && 'plx-preview--button', FITS.indexOf(fit) >= 0 && 'plx-preview--' + fit, className)
+  }), children, topStart ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-preview__corner plx-preview__corner--top-start"
   }, topStart) : null, bottomEnd ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-preview__corner plx-preview__corner--bottom-end"
@@ -2393,28 +2597,43 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Columns
-   Summary: Equal columns side by side (a two- or three-column layout inside a dialog or a page).
+   Summary: Equal columns side by side (a two- or three-column layout inside a dialog or a page), or a sidebar beside the
+     main column; they collapse into one column below a window class.
    Usage:
      <Columns count={3} divided><Stack>…</Stack><Stack>…</Stack><Stack>…</Stack></Columns>
+     <Columns ratio="sidebar-start" collapseBelow="wide"><Stack>Filters</Stack><Stack>Results</Stack></Columns>
    Props:
      count: 2 (default) | 3
      divided: a divider between the columns, each column padded (default false; the upload dialog's three steps)
      gap: "none" | "md" (default) | "lg", when not divided
+     ratio: "equal" (default) | "sidebar-start" (a narrow first column, one third) | "sidebar-end" (a narrow last
+       column); two columns only
+     collapseBelow: none (default: always side by side) | "medium" (one column in a Narrow window, under 600px) | "wide"
+       (one column in a Narrow or Medium window, under 840px)
      children: the columns; each child is one column (a Stack)
      className: more classes on the row
+   Behavior:
+     The window class is the main region's width (Platforms Standard 3.3), read by a container query on the shell's
+       main region (.plx-shell-main), so a page with an inspector open collapses sooner than the window would say.
+     Collapsed, the columns stack in their markup order with the layout gap between them; divided columns trade their
+       vertical lines for a line above each column after the first.
+     The reading and focus order are the markup order at every width.
    Notes:
+     Outside the shell's main region nothing collapses (there is no window class to read).
      Other props pass through to the <div>.
 */
 function Columns({
   count = 2,
   divided = false,
   gap = 'md',
+  ratio = 'equal',
+  collapseBelow,
   className,
   children,
   ...rest
 }) {
   return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-columns', 'plx-columns--' + count, divided ? 'plx-columns--divided' : 'plx-columns--gap-' + gap, className)
+    className: (0, _cx.cx)('plx-columns', 'plx-columns--' + count, divided ? 'plx-columns--divided' : 'plx-columns--gap-' + gap, count === 2 && ratio !== 'equal' ? 'plx-columns--' + ratio : null, collapseBelow ? 'plx-columns--collapse-below-' + collapseBelow : null, className)
   }, rest), children);
 }
   } },
@@ -2728,11 +2947,13 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SectionHeading
-   Summary: A small uppercase label that names a group (navigation sections, panel sections, settings).
+   Summary: A small uppercase heading that names a group (navigation sections, panel sections, settings), sized by its level.
    Usage:
      <SectionHeading collapsible expanded={open} onToggle={() => setOpen(!open)} controls="recent-body">Recent</SectionHeading>
+     <SectionHeading level={2}>Appearance</SectionHeading>
    Props:
-     level: the heading level; default 3; null for a plain label
+     level: the heading level; default 3; null for a plain label. Each level takes its own size from the type scale: 2 (13px)
+       is larger than 3 (11px), which is larger than 4 (10px); a plain label and levels 5 and 6 are 10px
      collapsible: renders a button that shows or hides the section; default false
      expanded: whether the section is shown (collapsible only); default true
      onToggle(event): runs when the button is clicked (collapsible only)
@@ -2743,9 +2964,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      ...rest: other attributes go on the heading element
    Behavior:
      The chevron turns with expanded.
+     The size follows the level (plx-section-heading--level-2, -3, -4), so pick the level from the outline, never for a size.
    Notes:
      It sets no outer margin: the list or panel it sits in spaces it.
 */
+// the levels with their own size (section-heading.css); the others keep the base size
+const LEVELS = [2, 3, 4];
 function SectionHeading({
   level = 3,
   collapsible = false,
@@ -2758,9 +2982,10 @@ function SectionHeading({
   ...rest
 }) {
   const Tag = level ? 'h' + level : 'div';
+  const sized = LEVELS.indexOf(level) >= 0 && 'plx-section-heading--level-' + level;
   if (collapsible) {
     return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-      className: (0, _cx.cx)('plx-section-heading', 'plx-section-heading--collapsible', className)
+      className: (0, _cx.cx)('plx-section-heading', sized, 'plx-section-heading--collapsible', className)
     }, rest), /*#__PURE__*/_react.default.createElement("button", {
       type: "button",
       className: "plx-section-heading__toggle",
@@ -2777,7 +3002,7 @@ function SectionHeading({
     }, actions) : null);
   }
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: (0, _cx.cx)('plx-section-heading', className)
+    className: (0, _cx.cx)('plx-section-heading', sized, className)
   }, rest), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-section-heading__label"
   }, children), actions ? /*#__PURE__*/_react.default.createElement("span", {
@@ -4775,9 +5000,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AppShell = AppShell;
+exports.Hide = Hide;
 exports.LayoutContext = void 0;
 exports.PageContent = PageContent;
 exports.PanelSplitter = PanelSplitter;
+exports.Show = Show;
 exports.SideNavPortal = SideNavPortal;
 exports.useAppLayout = exports.tokenValue = exports.tokenPx = exports.readPref = exports.below = void 0;
 exports.useMedia = useMedia;
@@ -4791,7 +5018,7 @@ var _pageLayouts = require("../../providers/pageLayouts.js");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal, Show, Hide
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
      navigation (left), the main region and the inspector panel (right), then the footer across the bottom.
    Usage:
@@ -4799,6 +5026,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        <PageContent>…</PageContent>
      </AppShell>
      <SideNavPortal><NavPane…/></SideNavPortal>
+     <Show above="wide"><Text variant="data">2.4 MB</Text></Show>      <Hide below="medium"><Toolbar…/></Hide>
+     <Show print><Text>Printed 12 October 2026</Text></Show>          <Hide print><ActionBar…/></Hide>
    Props:
      header: the header across the top (AppHeader)
      sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
@@ -4818,6 +5047,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PageContent.className: more classes on the column
      PageContent.children: the page's parts
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
+     Show / Hide (responsive visibility, the Hide / show page): show or hide their children by the window class, or on paper:
+       above: a breakpoint: Show is there from it up (Hide removes it there): "medium" (600px, --plx-sys-shell-phone-below),
+         "wide" (840px, --plx-sys-shell-rail-below), "inspector" (1024px, --plx-sys-shell-inspector-overlay-below), or any
+         breakpoint token's name
+       below: a breakpoint: Show is there only under it (Hide removes it there); with above too, both must hold
+       print: Show only on paper; Hide never on paper (the window class does not apply)
+       fallback: what is drawn where the children are not (the place a hidden action moved to, e.g. a menu item; default none)
+       children: what is shown or hidden
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
        { mode, open, expanded, width, setWidth, toggle, close, small, narrow, barEl, parentEl, hasSideNav, page, layout,
          claimPage(kind), parentRow, claimParentRow(), detailBack, claimBack({ label, onBack, ref }) }; mode is "inline",
@@ -4855,6 +5092,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      SideNavPortal is for a screen that owns its navigation's state (a settings screen, a project list): it hands the
        navigation to the shell's navigation area from inside the main content, where it then behaves as above.
      Outside an AppShell, SideNavPortal renders its children in place.
+     Show and Hide work anywhere (inside an AppShell or not). Off screen means not rendered at all: what is hidden by width
+       leaves the page, the Tab order and the accessibility tree; on paper they toggle display (the content stays in the
+       page for screen readers). Every hidden action needs a place where it still is (fallback, a menu, the detail view).
 */
 const STRINGS = {
   skip: 'Skip to main content'
@@ -5132,6 +5372,46 @@ function SideNavPortal({
   _react.default.useEffect(() => layout && layout.registerPortal ? layout.registerPortal() : undefined, []);
   if (!layout || !layout.registerPortal) return children; // outside an AppShell: render in place
   return layout.slotEl ? /*#__PURE__*/(0, _reactDom.createPortal)(children, layout.slotEl) : null;
+}
+
+/* <Show> and <Hide>: responsive visibility by the window class (the breakpoint tokens), or on paper; see the header. */
+const BREAKPOINTS = {
+  medium: '--plx-sys-shell-phone-below',
+  wide: '--plx-sys-shell-rail-below',
+  inspector: '--plx-sys-shell-inspector-overlay-below'
+};
+const breakpointQuery = b => b ? below(BREAKPOINTS[b] || b) : 'not all';
+// true where the window is at or above "above" and under "below" (an omitted bound always holds)
+function useWithin(above, under) {
+  const underAbove = useMedia(breakpointQuery(above));
+  const underBelow = useMedia(breakpointQuery(under));
+  return (!above || !underAbove) && (!under || underBelow);
+}
+function Show({
+  above,
+  below: under,
+  print = false,
+  fallback = null,
+  children
+}) {
+  const within = useWithin(above, under);
+  if (print) return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-visibility plx-visibility--print-only"
+  }, children);
+  return within ? children : fallback;
+}
+function Hide({
+  above,
+  below: under,
+  print = false,
+  fallback = null,
+  children
+}) {
+  const within = useWithin(above, under);
+  if (print) return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-visibility plx-visibility--no-print"
+  }, children);
+  return (above || under) && within ? fallback : children;
 }
 
 /* <PageContent>: the content column of a page inside the main region; see the header comment. */
@@ -8357,74 +8637,6 @@ function useSession() {
   };
 }
   } },
-  "platform/providers/apps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.appHref = exports.appById = exports.PLENIX_APPS = void 0;
-/* Plenix · applications (platform/providers/apps.js): every Plenix application, in one list for every product. The header
-   shows the pinned ones as links and the switcher shows them all (pinned first); the session keeps which are pinned.
-   id: the application's id. path: its page, relative to the Plenix folder, where every application has its own folder
-   beside platform/ (batch 149). appHref(app, root) turns it into a link from the current page, where root is the
-   relative path from that page to the Plenix folder ("../" from an application's page, "../../" from the spec). */
-const PLENIX_APPS = exports.PLENIX_APPS = [{
-  id: 'home',
-  label: 'Dashboard',
-  icon: 'home',
-  path: 'dashboard/index.html'
-}, {
-  id: 'projects',
-  label: 'Projects',
-  icon: 'briefcase',
-  path: 'projects/index.html'
-}, {
-  id: 'messaging',
-  label: 'Messages',
-  icon: 'message',
-  path: 'messages/index.html'
-}, {
-  id: 'contacts',
-  label: 'Contacts',
-  icon: 'settings-users',
-  path: 'contacts/index.html'
-}, {
-  id: 'calendar',
-  label: 'Calendar',
-  icon: 'calendar',
-  path: 'calendar/index.html'
-}, {
-  id: 'tasks',
-  label: 'Tasks',
-  icon: 'circle-check',
-  path: 'tasks/index.html'
-}, {
-  id: 'notes',
-  label: 'Notes',
-  icon: 'doc-text',
-  path: 'notes/index.html'
-}, {
-  id: 'bookmarks',
-  label: 'Bookmarks',
-  icon: 'bookmark',
-  path: 'bookmarks/index.html'
-}, {
-  id: 'files',
-  label: 'Files',
-  icon: 'folder',
-  path: 'files/index.html'
-}, {
-  id: 'assets',
-  label: 'Asset Manager',
-  icon: 'image-b',
-  path: 'dam/index.html'
-}];
-const appById = id => PLENIX_APPS.find(a => a.id === id);
-exports.appById = appById;
-const appHref = (app, root = '') => root + app.path.split('/').map(encodeURIComponent).join('/').replace(/%23/g, '#');
-exports.appHref = appHref;
-  } },
   "platform/providers/themes.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -8450,7 +8662,7 @@ const THEMES = exports.THEMES = [{
 }];
 const DEFAULT_THEME = exports.DEFAULT_THEME = "default";
   } },
-  "platform/providers/ThemeProvider.jsx": { deps: {"react":null,"./themes.js":"platform/providers/themes.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/providers/ThemeProvider.jsx": { deps: {"react":null,"./themes.js":"platform/providers/themes.js","../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8458,38 +8670,57 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ThemeContext = void 0;
 exports.ThemeProvider = ThemeProvider;
+exports.ThemeZone = ThemeZone;
 exports.useTheme = useTheme;
 var _react = _interopRequireDefault(require("react"));
 var _themes = require("./themes.js");
+var _cx = require("../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ThemeProvider, useTheme
-   Summary: Gives React components the theme, density and interaction context.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ThemeProvider, useTheme, ThemeZone
+   Summary: Gives React components the theme, density and interaction context; a theme zone gives one region of a page
+     another mode (or theme).
    Usage:
      <ThemeProvider>{app}</ThemeProvider>
-     const { theme, setTheme, themes } = useTheme();
+     const { theme, mode, setTheme, themes } = useTheme();
+     <ThemeZone mode="dark"><MediaViewer … /></ThemeZone>
+     <ThemeZone mode="light" surface="default">…</ThemeZone>
    Props:
      children: the application root or React island it wraps
-     useTheme(): { theme, setTheme(name), themes } — the current theme's name, a way to change it (kept for every page), and
-       the themes the design system defines (THEMES, from platform/standards/themes.json)
+     useTheme(): { theme, mode, setTheme(name), themes, zone } — the current theme's name and mode ("light" | "dark"), a
+       way to change the page's theme (kept for every page), the themes the design system defines (THEMES, from
+       platform/standards/themes.json), and whether it is read inside a ThemeZone
+     ThemeZone: a region with its own mode (or theme)
+       mode: "light" | "dark" | none (default: the mode around it)
+       theme: a theme name of THEMES | none (default: the theme around it)
+       surface: "canvas" (default: the zone's canvas fill) | "default" (the default surface) | "none" (no fill of its own)
+       as: the element (default "div"); label: names the region (with as="section", a landmark)
+       className: more classes on the zone
    Behavior:
-     It reads the theme, density and interaction attributes on <html> and follows their changes.
+     It reads the theme, mode, density and interaction attributes on <html> and follows their changes.
      It sends changes back through the same runtime (window.PlenixWorkspace), so a person's saved choice is never reset.
      Outside a ThemeProvider, useTheme still reads and changes the theme on <html>.
+     A ThemeZone writes data-plx-theme and data-plx-mode on its element, so every color role inside
+       it resolves to that theme and mode; it also writes the density around it (data-plx-density), so the component
+       tokens are resolved again inside it. Menus and dialogs opened from inside a zone keep its theme and mode (Portal).
+     Nested zones work: the innermost decides.
    Notes:
      The attributes on <html> are set before the page draws by platform/providers/theme-boot.js (loaded in <head>, with
        the same saved preference keys as before).
      Wrap an application root, or a React island, in ThemeProvider.
      Read it with useTheme, useDensity and useInteraction.
-     The themes are defined in the design system (platform/standards/themes.json); the current look is the "default" theme.
+     The themes are defined in the design system (platform/standards/themes.json); today "default", the Plenix look.
+     A zone is for a region with a reason (a dark media viewer, a code panel, the shell header); never many small zones on
+       one page, and never colors set by hand on components inside one.
+     Other ThemeZone props pass through to its element.
 */
-
 const ThemeContext = exports.ThemeContext = /*#__PURE__*/_react.default.createContext(null);
 function readRoot() {
   const root = document.documentElement;
   return {
     theme: root.getAttribute('data-plx-theme') || _themes.DEFAULT_THEME,
     density: root.getAttribute('data-plx-density') || 'standard',
-    interaction: root.getAttribute('data-plx-interaction') || 'pointer'
+    interaction: root.getAttribute('data-plx-interaction') || 'pointer',
+    mode: root.getAttribute('data-plx-mode') === 'dark' ? 'dark' : 'light'
   };
 }
 // the theme is changed through the runtime when it is there (it remembers the choice), else on <html> directly
@@ -8505,41 +8736,101 @@ function ThemeProvider({
     const observer = new MutationObserver(() => setState(readRoot()));
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-plx-theme', 'data-plx-density', 'data-plx-interaction']
+      attributeFilter: ['data-plx-theme', 'data-plx-density', 'data-plx-interaction', 'data-plx-mode']
     });
     return () => observer.disconnect();
   }, []);
   const value = _react.default.useMemo(() => ({
     theme: state.theme,
+    mode: state.mode,
     setTheme: changeTheme,
     themes: _themes.THEMES,
     density: state.density,
     interaction: state.interaction,
+    zone: false,
     setDensity: d => {
       if (window.PlenixWorkspace) window.PlenixWorkspace.setDensity(d);
     }
-  }), [state.theme, state.density, state.interaction]);
+  }), [state.theme, state.mode, state.density, state.interaction]);
   return /*#__PURE__*/_react.default.createElement(ThemeContext.Provider, {
     value: value
   }, children);
 }
 function useTheme() {
   const ctx = _react.default.useContext(ThemeContext);
-  const [own, setOwn] = _react.default.useState(() => ctx ? null : readRoot().theme);
+  const [own, setOwn] = _react.default.useState(() => ctx ? null : readRoot());
   _react.default.useEffect(() => {
     if (ctx) return undefined;
-    const observer = new MutationObserver(() => setOwn(readRoot().theme));
+    const observer = new MutationObserver(() => setOwn(readRoot()));
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-plx-theme']
+      attributeFilter: ['data-plx-theme', 'data-plx-mode']
     });
     return () => observer.disconnect();
   }, [ctx]);
   return {
-    theme: ctx ? ctx.theme : own,
+    theme: ctx ? ctx.theme : own.theme,
+    mode: ctx ? ctx.mode : own.mode,
     setTheme: changeTheme,
-    themes: _themes.THEMES
+    themes: _themes.THEMES,
+    zone: ctx ? !!ctx.zone : false
   };
+}
+const SURFACES = ['canvas', 'default', 'none'];
+function ThemeZone({
+  mode,
+  theme,
+  surface = 'canvas',
+  as = 'div',
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  const outer = _react.default.useContext(ThemeContext);
+  const ref = _react.default.useRef(null);
+  const [root, setRoot] = _react.default.useState(readRoot);
+  const [density, setDensity] = _react.default.useState(null);
+  // the density around the zone (the nearest region that sets one, else <html>) and the page's theme and mode, followed
+  _react.default.useEffect(() => {
+    const read = () => {
+      const up = ref.current && ref.current.parentElement,
+        near = up && up.closest('[data-plx-density]');
+      setDensity(near ? near.getAttribute('data-plx-density') : null);
+      setRoot(readRoot());
+    };
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-plx-density', 'data-plx-theme', 'data-plx-mode']
+    });
+    return () => observer.disconnect();
+  }, []);
+  const base = outer || root;
+  const t = theme && _themes.THEMES.some(x => x.name === theme) ? theme : base.theme;
+  const m = mode === 'light' || mode === 'dark' ? mode : base.mode;
+  const value = _react.default.useMemo(() => Object.assign({
+    setTheme: changeTheme,
+    themes: _themes.THEMES,
+    density: density || root.density,
+    interaction: root.interaction
+  }, outer, {
+    theme: t,
+    mode: m,
+    zone: true
+  }), [outer, t, m, density, root]);
+  const Tag = as;
+  return /*#__PURE__*/_react.default.createElement(ThemeContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: ref,
+    className: (0, _cx.cx)('plx-theme-zone', 'plx-theme-zone--' + (SURFACES.indexOf(surface) >= 0 ? surface : 'canvas'), className),
+    "data-plx-theme": t,
+    "data-plx-mode": m,
+    "data-plx-density": density || undefined,
+    "aria-label": label
+  }, rest), children));
 }
   } },
   "platform/hooks/useDensity.js": { deps: {"react":null,"../providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9478,7 +9769,7 @@ function SearchWorkspace({
     })
   }, c.text)), onClearAll ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "xs",
-    variant: "link",
+    variant: "ghost",
     onClick: onClearAll
   }, t.clearAll) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-search-ws__bar"
@@ -9649,7 +9940,7 @@ function SelectionSummary({
     "aria-live": "polite"
   }, words), onSelectAll && total !== undefined && count < total ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
-    variant: "link",
+    variant: "ghost",
     onClick: onSelectAll
   }, t.selectAll(total)) : null, onClear && count ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
@@ -9754,31 +10045,53 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ContentGrid
-   Summary: A responsive grid of cards.
+   Summary: A responsive grid of cards, a masonry of pictures of mixed heights, or justified rows of pictures.
    Usage:
      <ContentGrid size="md" label="Assets"><Card…/><Card…/></ContentGrid>
+     <ContentGrid layout="masonry" size="sm" label="Photos"><Image…/><Image…/></ContentGrid>
+     <ContentGrid layout="justified" label="Photos"><Image ratio="16-9" …/><Image ratio="3-4" …/></ContentGrid>
    Props:
-     size: "xs" | "sm" | "md" (default) | "lg"; sets the smallest card width (100, 140, 180, 240px)
+     size: "xs" | "sm" | "md" (default) | "lg"; sets the smallest card width (100, 140, 180, 240px), and in justified rows
+       the row height
+     layout: "grid" (default: rows of equal cells) | "masonry" (columns of the card width; each item keeps its own height)
+       | "justified" (rows of the size's height that fill the width; each item as wide as its ratio)
      label: names the list
      className: more classes on the grid
-     children: the cards; each child is one list item (null, undefined and false are skipped)
+     children: the cards; each child is one list item (null, undefined and false are skipped). In justified rows each
+       child's ratio prop ("1-1", "4-3", "3-2", "16-9", "21-9", "3-4", "9-16"; the aspect-ratio scale) sets its width;
+       a child without one is 4:3
    Behavior:
      Columns fill the width.
      The gap follows the density (--plx-sys-card-grid-gap).
+     Masonry fills each column from top to bottom in the markup order, so reading and Tab go down the first column, then
+       the next; where the browser lays out a masonry grid (grid-template-rows: masonry) it fills row by row instead.
+       An item never breaks across two columns.
+     Justified rows keep the row height and widen each item by its ratio until the row is full; the last row keeps its
+       items at their own width. Pictures in it fill their cell (cover), so a few pixels of their edges may be cropped.
+   Notes:
+     Masonry and justified rows are for browsing pictures; when the order matters (sorted results) use the grid.
 */
 
+const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
 function ContentGrid({
   size = 'md',
+  layout = 'grid',
   label,
   className,
   children
 }) {
+  const justified = layout === 'justified';
   return /*#__PURE__*/_react.default.createElement("ul", {
     "aria-label": label,
-    className: (0, _cx.cx)('plx-content-grid', 'plx-content-grid--' + size, className)
-  }, _react.default.Children.map(children, c => c === null || c === undefined || c === false ? null : /*#__PURE__*/_react.default.createElement("li", {
-    className: "plx-content-grid__item"
-  }, c)));
+    className: (0, _cx.cx)('plx-content-grid', 'plx-content-grid--' + size, layout !== 'grid' ? 'plx-content-grid--' + layout : null, className)
+  }, _react.default.Children.map(children, c => {
+    if (c === null || c === undefined || c === false) return null;
+    const ratio = justified ? c.props && RATIOS.indexOf(c.props.ratio) >= 0 ? c.props.ratio : '4-3' : undefined;
+    return /*#__PURE__*/_react.default.createElement("li", {
+      className: "plx-content-grid__item",
+      "data-plx-ratio": ratio
+    }, c);
+  }));
 }
   } },
   "platform/patterns/PropertyList/PropertyList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9968,7 +10281,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Props:
      title: the entity's name; 18px bold; a long name wraps, never cut off
      media: the entity's picture, always shown: { person, src, color } draws an Avatar (48px); { icon, hue } a generic icon for
-       the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray); or an element
+       the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray), or on the surface (hue: surface, a white tile); or an element
      context: the line above the title (optional; not a breadcrumb): a placeholder such as the item's category, or a control
        that places the entity (a period navigator); what it holds is still to be defined per capability
      status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: neutral, info, success,
@@ -9997,7 +10310,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Not for settings screens or section titles: use RecordPage.Header.
 */
 
-const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
+const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 function Media({
   media
 }) {
@@ -10718,7 +11031,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      SettingsSection.card: true draws it as a bordered card (asset-app style) for a form that needs grouping; default false
      SettingsSection.actions: the form's buttons, drawn in an ActionBar under the rows (on the right, kept in view at the
        bottom while the page scrolls): the primary action last
-     SettingsSection.headingLevel: the title's heading level (default 2)
+     SettingsSection.headingLevel: the title's heading level (default 2); its size follows the level, as SectionHeading's
+       (level 2 13px, level 3 11px, level 4 10px)
      SettingsSection.className: more classes
      SettingsSection.children: the rows
      SettingsRow.label: the row's label, at the start
@@ -10772,7 +11086,7 @@ function SettingsSection({
     className: (0, _cx.cx)('plx-settings__section', card && 'plx-settings__section--card', className)
   }, title ? /*#__PURE__*/_react.default.createElement(H, {
     id: id,
-    className: "plx-settings__section-title"
+    className: (0, _cx.cx)('plx-settings__section-title', headingLevel !== 2 && 'plx-settings__section-title--level-' + headingLevel)
   }, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-settings__section-description"
   }, description) : null, /*#__PURE__*/_react.default.createElement("div", {
@@ -13872,6 +14186,11 @@ const CONTRAST_PAIRS = exports.CONTRAST_PAIRS = Object.freeze([{
   rule: T,
   use: 'Links on a surface'
 }, {
+  fg: 'content-link-visited',
+  bg: 'surface-default',
+  rule: T,
+  use: 'Visited links on a surface'
+}, {
   fg: 'content-inverse',
   bg: 'surface-inverse',
   rule: T,
@@ -15685,7 +16004,620 @@ const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(funct
   }, reason)) : null, children));
 });
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.IconTile = IconTile;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · IconTile
+   Summary: An icon on a tinted, rounded square: the marker of an object type, a category or an integration in lists,
+     cards and headers (the entity's kind in EntityHeader's { icon, hue } media).
+   Usage:
+     <IconTile icon="briefcase" hue="blue" />
+     <IconTile icon="alert" tone="warning" size="sm" label="Overdue" />
+     <IconTile icon="sparkle" hue="purple" size="lg" filled />
+   Props:
+     icon: the Plenix icon name (platform/icons/map.json)
+     hue: the tile's data color: "blue" | "green" | "purple" | "red" | "brown" | "gray" (default) | "surface" (the page
+       surface with the icon in the link blue)
+     tone: a status tone instead of a hue: "neutral" | "info" | "success" | "warning" | "danger"; it wins over hue
+     size: "sm" (a 32px tile, 16px icon) | "md" (40px, 20px; default) | "lg" (48px, 24px; EntityHeader's tile)
+     filled: the filled version of the icon (default false)
+     label: the accessible name, when the tile alone carries meaning; without it the tile is decorative
+     className: more classes on the tile
+   Behavior:
+     Not interactive: no hover, no focus. A tile that opens something sits inside the row, card or button that does.
+     The tile and its icon size together by the named size, on the 4px grid; the icon is centered.
+     Hues are the data colors (the same in light and dark); tones are the feedback roles, which follow the theme.
+   Notes:
+     The icon is the Plenix set (Material Symbols, unedited); no letters or numbers in a tile.
+     Other props pass through to the <span>.
+*/
+const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
+const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
+const SIZES = ['sm', 'md', 'lg'];
+function IconTile({
+  icon,
+  hue = 'gray',
+  tone,
+  size = 'md',
+  filled = false,
+  label,
+  className,
+  ...rest
+}) {
+  const look = TONES.indexOf(tone) >= 0 ? tone : HUES.indexOf(hue) >= 0 ? hue : 'gray';
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-icon-tile', 'plx-icon-tile--' + s, 'plx-icon-tile--' + look, className),
+    role: label ? 'img' : undefined,
+    "aria-label": label,
+    "aria-hidden": label ? undefined : true
+  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    size: s,
+    filled: filled,
+    className: "plx-icon-tile__icon"
+  }));
+}
+  } },
+  "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Pictogram = Pictogram;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pictogram
+   Summary: A large symbol for a concept (not an action) in a round frame: the picture of an empty state, a feature card
+     or an onboarding step, when a full illustration is too much.
+   Usage:
+     <Pictogram icon="upload" />
+     <Pictogram icon="folder-open" size="96" twoTone />
+   Props:
+     icon: the Plenix icon name (platform/icons/map.json): the set's own symbol, drawn large and never edited
+     size: "48" | "64" (default) | "96": the frame's width and height; the symbol is two thirds of it on the 4px grid
+       (32, 40, 64px)
+     twoTone: the filled symbol on a blue tint instead of the outline on the sunken surface (default false)
+     label: the accessible name, when no heading or text next to it says the same; without it the pictogram is decorative
+     className: more classes on the frame
+   Behavior:
+     Not interactive: never a button or a link, never an action icon.
+     The symbol uses the icon files drawn for 24px and up (optical size 24), outline or filled.
+   Notes:
+     One size and one tone per view; always next to a heading or text that names the concept.
+     Other props pass through to the <span>.
+*/
+const SIZES = ['48', '64', '96'];
+function Pictogram({
+  icon,
+  size = '64',
+  twoTone = false,
+  label,
+  className,
+  ...rest
+}) {
+  const s = SIZES.indexOf(String(size)) >= 0 ? String(size) : '64';
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-pictogram', 'plx-pictogram--' + s, twoTone && 'plx-pictogram--two-tone', className),
+    role: label ? 'img' : undefined,
+    "aria-label": label,
+    "aria-hidden": label ? undefined : true
+  }, rest), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    size: "xl",
+    filled: twoTone,
+    className: "plx-pictogram__icon"
+  }));
+}
+  } },
+  "platform/components/Sticky/Sticky.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Sticky = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Sticky
+   Summary: A region that scrolls with its content until it reaches the top or bottom edge of its scroll area, then stays there
+     (a sticky header, a form's action bar), or one fixed to an edge of the window; it draws a separating shadow while stuck.
+   Usage:
+     <Stack scroll>
+       <Sticky label="Project header"><EntityHeader … /></Sticky>
+       …long content…
+       <Sticky edge="bottom" label="Actions"><Inline justify="end"><Button>Cancel</Button><Button variant="primary">Save</Button></Inline></Sticky>
+     </Stack>
+     <Sticky fixed edge="bottom" safeArea label="Selection">…</Sticky>      fixed to the window's bottom edge, clear of the home indicator
+   Props:
+     Sticky.edge: "top" (default) | "bottom": the edge of the scroll area (or the window) it stays at
+     Sticky.fixed: fixed to that edge of the window instead of sticking inside its scroll area (position: fixed)
+     Sticky.shadow: "stuck" (default: the shadow and the separator show only while it is stuck) | "always" | "none"
+     Sticky.safeArea: pads the stuck edge and both sides by the device's safe-area insets (a notch, the home indicator)
+     Sticky.stuck: draws it as stuck (documentation and tests; the browser decides otherwise)
+     Sticky.label: names the region (role="region"); without it the element has no role of its own
+     Sticky.as: the element; "div" by default (header, footer, section, …)
+     Sticky.className, Sticky.children: more classes; the content
+   Behavior:
+     It sticks inside its nearest scroll area (a Stack with scroll, the main region): never to the page behind a fixed shell.
+     While stuck it lies on the sticky layer (--plx-sys-layer-sticky) on the surface, with a shadow and its hairline
+       around it. The browser reports the stuck state (a scroll-state container query); where a browser does not, the
+       region still sticks, without the shadow.
+     A fixed region leaves the flow: the page reserves its space (AppShell's regions do this for the header and the bars).
+   Notes:
+     Keep it short: two sticky regions in one scroll area at most, and none taller than a toolbar on a narrow window.
+     Other props pass through to the element.
+*/
+const Sticky = exports.Sticky = /*#__PURE__*/_react.default.forwardRef(function Sticky({
+  as: As = 'div',
+  edge = 'top',
+  fixed = false,
+  shadow = 'stuck',
+  safeArea = false,
+  stuck = false,
+  label,
+  className,
+  children,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    ref: ref,
+    role: label ? 'region' : undefined,
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-sticky', 'plx-sticky--' + edge, fixed && 'plx-sticky--fixed', 'plx-sticky--shadow-' + shadow, safeArea && 'plx-sticky--safe-area', stuck && 'is-stuck', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-sticky__body"
+  }, children));
+});
+  } },
+  "platform/components/Illustration/illustrations.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.illustrationByName = exports.ILLUSTRATIONS = void 0;
+/* Plenix · ILLUSTRATIONS
+   Summary: The Plenix illustration set: each drawing as data (its shapes and the color role of each), for Illustration to
+     draw in the theme's colors. Two sets: the empty states and the errors.
+   Usage:
+     import { ILLUSTRATIONS, illustrationByName } from './illustrations.js';
+     ILLUSTRATIONS.filter((x) => x.set === 'error').map((x) => x.name)     // error, offline, not-found, no-access
+   Props:
+     ILLUSTRATIONS[i].name: the name Illustration takes ("no-results")
+     ILLUSTRATIONS[i].set: "empty" (an empty state) | "error" (an error state)
+     ILLUSTRATIONS[i].title: what it shows, in words (its accessible name when it is not decorative)
+     ILLUSTRATIONS[i].parts: [role, element, attributes]: the role picks the color (back, shape, stroke, ghost, accent,
+       accent-stroke, knock, danger, danger-stroke, danger-knock); element is circle, rect or path; the attributes are the
+       geometry on a 120-unit square
+   Behavior:
+     The geometry is drawing data, not styling: every color, stroke width and size comes from the illustration tokens.
+   Notes:
+     The drawings follow the brand mark: square corners and ends, straight strokes, one accent. Add a drawing here (on the
+       120-unit square, 4-unit steps) and it is in the set; never color a part by hand.
+*/
+const BACK = ['back', 'circle', {
+  cx: 60,
+  cy: 60,
+  r: 52
+}];
+const ILLUSTRATIONS = exports.ILLUSTRATIONS = [{
+  name: 'empty-folder',
+  set: 'empty',
+  title: 'An empty folder',
+  parts: [BACK, ['shape', 'path', {
+    d: 'M20 36h28l8 8h44v48H20z'
+  }], ['shape', 'path', {
+    d: 'M20 52h80v40H20z'
+  }], ['accent-stroke', 'path', {
+    d: 'M52 72h16'
+  }]]
+}, {
+  name: 'no-results',
+  set: 'empty',
+  title: 'A magnifier that found nothing',
+  parts: [BACK, ['stroke', 'path', {
+    d: 'M69 69l23 23'
+  }], ['shape', 'circle', {
+    cx: 52,
+    cy: 52,
+    r: 24
+  }], ['accent-stroke', 'path', {
+    d: 'M44 52h16'
+  }]]
+}, {
+  name: 'inbox-zero',
+  set: 'empty',
+  title: 'An empty tray, all done',
+  parts: [BACK, ['shape', 'path', {
+    d: 'M20 64l12-28h56l12 28v28H20z'
+  }], ['stroke', 'path', {
+    d: 'M20 64h24l4 8h24l4-8h24'
+  }], ['accent', 'circle', {
+    cx: 84,
+    cy: 32,
+    r: 12
+  }], ['knock', 'path', {
+    d: 'M78 32l4 4l8-8'
+  }]]
+}, {
+  name: 'no-data',
+  set: 'empty',
+  title: 'A chart with no data yet',
+  parts: [BACK, ['ghost', 'rect', {
+    x: 36,
+    y: 60,
+    width: 12,
+    height: 32
+  }], ['ghost', 'rect', {
+    x: 56,
+    y: 44,
+    width: 12,
+    height: 48
+  }], ['ghost', 'rect', {
+    x: 76,
+    y: 68,
+    width: 12,
+    height: 24
+  }], ['stroke', 'path', {
+    d: 'M24 24v68h72'
+  }]]
+}, {
+  name: 'get-started',
+  set: 'empty',
+  title: 'A new page with a plus',
+  parts: [BACK, ['shape', 'rect', {
+    x: 32,
+    y: 20,
+    width: 52,
+    height: 72
+  }], ['stroke', 'path', {
+    d: 'M44 40h28M44 52h28M44 64h16'
+  }], ['accent', 'circle', {
+    cx: 84,
+    cy: 84,
+    r: 16
+  }], ['knock', 'path', {
+    d: 'M84 76v16M76 84h16'
+  }]]
+}, {
+  name: 'error',
+  set: 'error',
+  title: 'A window with a warning',
+  parts: [BACK, ['shape', 'rect', {
+    x: 20,
+    y: 28,
+    width: 80,
+    height: 60
+  }], ['stroke', 'path', {
+    d: 'M20 40h80'
+  }], ['danger', 'path', {
+    d: 'M60 48l18 32H42z'
+  }], ['danger-knock', 'path', {
+    d: 'M60 58v10M60 72v2'
+  }]]
+}, {
+  name: 'offline',
+  set: 'error',
+  title: 'A cloud with no connection',
+  parts: [BACK, ['shape', 'path', {
+    d: 'M36 84h48a16 16 0 0 0 0-32a24 24 0 0 0-46-6a20 20 0 0 0-2 38z'
+  }], ['danger-stroke', 'path', {
+    d: 'M28 28l64 64'
+  }]]
+}, {
+  name: 'not-found',
+  set: 'error',
+  title: 'A page that is not there',
+  parts: [BACK, ['shape', 'path', {
+    d: 'M36 20h36l16 16v56H36z'
+  }], ['stroke', 'path', {
+    d: 'M72 20v16h16'
+  }], ['accent-stroke', 'path', {
+    d: 'M52 50a8 8 0 1 1 12 7l-4 3v6'
+  }], ['accent', 'circle', {
+    cx: 60,
+    cy: 76,
+    r: 3
+  }]]
+}, {
+  name: 'no-access',
+  set: 'error',
+  title: 'A closed lock',
+  parts: [BACK, ['stroke', 'path', {
+    d: 'M44 56V44a16 16 0 0 1 32 0v12'
+  }], ['shape', 'rect', {
+    x: 36,
+    y: 56,
+    width: 48,
+    height: 36
+  }], ['danger', 'circle', {
+    cx: 60,
+    cy: 70,
+    r: 5
+  }], ['danger', 'rect', {
+    x: 58,
+    y: 72,
+    width: 4,
+    height: 10
+  }]]
+}];
+const illustrationByName = name => ILLUSTRATIONS.find(x => x.name === name) || null;
+exports.illustrationByName = illustrationByName;
+  } },
+  "platform/components/Illustration/Illustration.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./illustrations.js":"platform/components/Illustration/illustrations.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Illustration = Illustration;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _illustrations = require("./illustrations.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Illustration
+   Summary: A drawing from the Plenix illustration set that supports a message: an empty state, a first run or an error page.
+     Drawn in the theme's colors (no colors of its own), so it follows light and dark mode and sits on the accent.
+   Usage:
+     <Stack align="center"><Illustration name="no-results" size="sm" /><EmptyState title="No results" … /></Stack>
+     <Center maxWidth="sm" text intrinsic><Illustration name="offline" size="lg" /><Text>…</Text></Center>
+     <Illustration name="get-started" tone="on-accent" />                  on the accent surface
+   Props:
+     Illustration.name: a drawing of the set (ILLUSTRATIONS): the empty states "empty-folder" | "no-results" | "inbox-zero" |
+       "no-data" | "get-started"; the errors "error" | "offline" | "not-found" | "no-access"
+     Illustration.size: "sm" (64px: a spot beside a short message) | "md" (default, 120px: a scene) | "lg" (200px: a full-page state)
+     Illustration.tone: "default" | "on-accent" (on the blue header, an accent banner or a welcome panel)
+     Illustration.label: names the drawing (role="img"); true uses its title. Without it the drawing is decorative: the
+       message beside it says everything
+     Illustration.className: more classes
+   Behavior:
+     Each part of a drawing has a color role (backdrop, shape, line, accent, danger): the illustration tokens give each
+       role a theme role, so nothing in a drawing is a color of its own. Lines keep their width at every size.
+     It never shrinks below its size; a narrow container takes the smaller size (sm) instead.
+   Notes:
+     One illustration per view, in empty, first-run and error states: never in tables, forms or dense work areas. The
+       heading and text beside it carry the message; the drawing adds no information and holds no words.
+     The set and its geometry are in illustrations.js; other props pass through to the <svg>.
+*/
+function Illustration({
+  name,
+  size = 'md',
+  tone = 'default',
+  label,
+  className,
+  ...rest
+}) {
+  const art = (0, _illustrations.illustrationByName)(name);
+  if (!art) return null;
+  const named = label === true ? art.title : label;
+  return /*#__PURE__*/_react.default.createElement("svg", _extends({
+    viewBox: "0 0 120 120",
+    xmlns: "http://www.w3.org/2000/svg",
+    focusable: "false",
+    className: (0, _cx.cx)('plx-illustration', 'plx-illustration--' + size, tone !== 'default' && 'plx-illustration--' + tone, className),
+    role: named ? 'img' : undefined,
+    "aria-label": named || undefined,
+    "aria-hidden": named ? undefined : true,
+    "data-plx-illustration": art.name
+  }, rest), art.parts.map(([role, el, attrs], i) => /*#__PURE__*/_react.default.createElement(el, {
+    key: i,
+    className: 'plx-illustration__' + role,
+    ...attrs
+  })));
+}
+  } },
+  "platform/components/Image/Image.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Image = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Image
+   Summary: A picture in a frame of a fixed ratio and fit: an asset preview, a photo or a screenshot, with a placeholder
+     while it loads and a fallback when it cannot load.
+   Usage:
+     <Image src="kitchen.jpg" alt="The finished kitchen, oak cabinets" ratio="4-3" />
+     <Image src="hero-1600.jpg" srcSet="hero-800.jpg 800w, hero-1600.jpg 1600w" sizes="(max-width: 600px) 100vw, 50vw"
+       alt="…" ratio="16-9" placeholder="blur" placeholderSrc="hero-24.jpg" />
+     <Image sources={[{ media: '(max-width: 599px)', srcSet: 'hero-square.jpg' }]} src="hero-wide.jpg" alt="…" />
+   Props:
+     src: the picture's address (required)
+     alt: the text alternative (required): what the picture shows or is for; "" for a decorative picture
+     ratio: "auto" (default: the picture's own shape; give width and height) | "1-1" | "4-3" | "3-2" | "16-9" | "21-9" |
+       "3-4" | "9-16" (the aspect-ratio scale)
+     fit: "cover" (default: fills the frame, cropping the edges) | "contain" (the whole picture, on the frame's fill)
+     srcSet: the responsive sources of the same picture, by width (800w) or density (2x); the browser picks one
+     sizes: how wide the picture is drawn at each window width, for srcSet by width
+     sources: art direction, [{ media, srcSet, sizes?, type? }]: other crops or formats by media query, drawn as a <picture>
+     loading: "lazy" (default: loads when it nears the screen) | "eager"
+     priority: the picture people see first (eager, fetched first); never more than one or two on a page
+     placeholder: "color" (default: the neutral fill until it loads) | "blur" (placeholderSrc, a tiny copy, blurred) | "none"
+     placeholderSrc: the tiny copy for placeholder="blur"
+     rounded: the media corners (default false: square, for a picture inside a card or a preview that clips it)
+     width, height: the picture's size in pixels, so its space is kept before it loads (ratio="auto")
+     fallback: what shows when it cannot load (default: the image icon and strings.error)
+     strings: { error: "Image not available" }
+     onLoad: called when the picture has loaded
+     onError: called when it cannot load
+     className: more classes on the frame
+   Behavior:
+     The frame keeps its space before the picture arrives (a ratio, or width and height), so nothing moves when it loads.
+     While loading the frame shows its placeholder; the picture fades in over it once loaded (no fade with reduced motion).
+     When the picture fails, the frame keeps its size and shows the fallback; a picture that loaded from the cache shows
+       at once.
+     Every source is the same picture: the alt text is the same for all of them.
+   Notes:
+     Not for icons (Icon) or illustrations of the Plenix set (Illustration), and never for text.
+     Other props pass through to the <img>.
+*/
+const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
+const STRINGS = {
+  error: 'Image not available'
+};
+const Image = exports.Image = /*#__PURE__*/_react.default.forwardRef(function Image({
+  src,
+  alt,
+  ratio = 'auto',
+  fit = 'cover',
+  srcSet,
+  sizes,
+  sources,
+  loading = 'lazy',
+  priority = false,
+  placeholder = 'color',
+  placeholderSrc,
+  rounded = false,
+  width,
+  height,
+  fallback,
+  strings,
+  onLoad,
+  onError,
+  className,
+  ...rest
+}, ref) {
+  const s = Object.assign({}, STRINGS, strings);
+  const own = _react.default.useRef(null);
+  const [status, setStatus] = _react.default.useState('loading');
+  const setRef = el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  };
+  // a new source starts over; a picture already in the cache is complete before React listens
+  _react.default.useEffect(() => {
+    const el = own.current;
+    if (el && el.complete && el.currentSrc) setStatus(el.naturalWidth > 0 ? 'loaded' : 'error');else setStatus('loading');
+  }, [src, srcSet]);
+  const img = /*#__PURE__*/_react.default.createElement("img", _extends({
+    ref: setRef,
+    className: "plx-image__img",
+    src: src,
+    srcSet: srcSet,
+    sizes: sizes,
+    alt: alt,
+    width: width,
+    height: height,
+    loading: priority ? 'eager' : loading,
+    decoding: "async",
+    fetchpriority: priority ? 'high' : undefined,
+    onLoad: e => {
+      setStatus('loaded');
+      if (onLoad) onLoad(e);
+    },
+    onError: e => {
+      setStatus('error');
+      if (onError) onError(e);
+    }
+  }, rest));
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-image', 'plx-image--' + fit, 'plx-image--placeholder-' + placeholder, rounded && 'plx-image--rounded', RATIOS.indexOf(ratio) >= 0 ? 'plx-ratio-' + ratio : null, 'is-' + status, className)
+  }, placeholder === 'blur' && placeholderSrc && status !== 'loaded' ? /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-image__placeholder",
+    src: placeholderSrc,
+    alt: "",
+    "aria-hidden": "true"
+  }) : null, sources && sources.length ? /*#__PURE__*/_react.default.createElement("picture", {
+    className: "plx-image__picture"
+  }, sources.map((x, i) => /*#__PURE__*/_react.default.createElement("source", {
+    key: i,
+    media: x.media,
+    srcSet: x.srcSet,
+    sizes: x.sizes,
+    type: x.type
+  })), img) : img, status === 'error' ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image__fallback",
+    role: alt ? 'img' : undefined,
+    "aria-label": alt || undefined,
+    "aria-hidden": alt ? undefined : true
+  }, fallback || /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "image-a-2",
+    className: "plx-image__fallback-icon"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image__fallback-text"
+  }, s.error))) : null);
+});
+  } },
+  "platform/components/Figure/Figure.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Figure = Figure;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Figure
+   Summary: A picture, chart or diagram with the caption that explains it, and the credit or data source when it has one.
+   Usage:
+     <Figure caption="The kitchen after the remodel, with the oak finish the client chose." credit="Photo: Ana Ruiz">
+       <Image src="kitchen.jpg" alt="The finished kitchen" ratio="4-3" />
+     </Figure>
+     <Figure caption="Uploads per week" credit="Source: Plenix storage report, October"><LineChart … /></Figure>
+     <Figure captionPosition="overlay" caption="Lisbon office, east wing"><Image … /></Figure>
+   Props:
+     children: the media: an Image, a chart, a diagram or a code block (required)
+     caption: one sentence that says what the media shows and why it is there (a string or nodes)
+     credit: who made it or where the data comes from, after the caption ("Photo: Ana Ruiz", "Source: …")
+     captionPosition: "below" (default) | "overlay" (on the bottom of a picture, over a dark scrim; short captions only)
+     className: more classes on the <figure>
+   Behavior:
+     The caption stays next to the media at every width; it wraps under it and never moves away from it.
+     An overlay caption sits on the picture's bottom edge on the media scrim, in the content-on-media color; a credit
+       below an overlay caption moves under the picture.
+     The <figure> and <figcaption> tie the caption to the media for assistive technology.
+   Notes:
+     A decorative picture needs no figure: use the Image with alt="".
+     The caption adds to the alt text, never repeats it.
+     Other props pass through to the <figure>.
+*/
+function Figure({
+  children,
+  caption,
+  credit,
+  captionPosition = 'below',
+  className,
+  ...rest
+}) {
+  const overlay = captionPosition === 'overlay' && caption;
+  return /*#__PURE__*/_react.default.createElement("figure", _extends({
+    className: (0, _cx.cx)('plx-figure', 'plx-figure--' + (overlay ? 'overlay' : 'below'), credit && 'plx-figure--credited', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-figure__media"
+  }, children, overlay ? /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: "plx-figure__caption plx-figure__caption--overlay"
+  }, caption) : null), !overlay && (caption || credit) ? /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: "plx-figure__caption"
+  }, caption ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-figure__text"
+  }, caption) : null, credit ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-figure__credit"
+  }, credit) : null) : null, overlay && credit ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-figure__caption"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-figure__credit"
+  }, credit)) : null);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15725,6 +16657,12 @@ Object.defineProperty(exports, "Badge", {
   enumerable: true,
   get: function () {
     return _Badge.Badge;
+  }
+});
+Object.defineProperty(exports, "Bleed", {
+  enumerable: true,
+  get: function () {
+    return _Stack.Bleed;
   }
 });
 Object.defineProperty(exports, "Blockquote", {
@@ -15785,6 +16723,12 @@ Object.defineProperty(exports, "Card", {
   enumerable: true,
   get: function () {
     return _Card.Card;
+  }
+});
+Object.defineProperty(exports, "Center", {
+  enumerable: true,
+  get: function () {
+    return _Stack.Center;
   }
 });
 Object.defineProperty(exports, "Chat", {
@@ -16003,10 +16947,28 @@ Object.defineProperty(exports, "Fieldset", {
     return _Fieldset.Fieldset;
   }
 });
+Object.defineProperty(exports, "Figure", {
+  enumerable: true,
+  get: function () {
+    return _Figure.Figure;
+  }
+});
 Object.defineProperty(exports, "FilterBar", {
   enumerable: true,
   get: function () {
     return _FilterBar.FilterBar;
+  }
+});
+Object.defineProperty(exports, "Hide", {
+  enumerable: true,
+  get: function () {
+    return _AppShell.Hide;
+  }
+});
+Object.defineProperty(exports, "ILLUSTRATIONS", {
+  enumerable: true,
+  get: function () {
+    return _illustrations.ILLUSTRATIONS;
   }
 });
 Object.defineProperty(exports, "IMAGE_EDITOR_STEPS", {
@@ -16019,6 +16981,24 @@ Object.defineProperty(exports, "Icon", {
   enumerable: true,
   get: function () {
     return _Icon.Icon;
+  }
+});
+Object.defineProperty(exports, "IconTile", {
+  enumerable: true,
+  get: function () {
+    return _IconTile.IconTile;
+  }
+});
+Object.defineProperty(exports, "Illustration", {
+  enumerable: true,
+  get: function () {
+    return _Illustration.Illustration;
+  }
+});
+Object.defineProperty(exports, "Image", {
+  enumerable: true,
+  get: function () {
+    return _Image.Image;
   }
 });
 Object.defineProperty(exports, "Inline", {
@@ -16151,6 +17131,12 @@ Object.defineProperty(exports, "Panel", {
   enumerable: true,
   get: function () {
     return _Card.Panel;
+  }
+});
+Object.defineProperty(exports, "Pictogram", {
+  enumerable: true,
+  get: function () {
+    return _Pictogram.Pictogram;
   }
 });
 Object.defineProperty(exports, "Portal", {
@@ -16315,6 +17301,12 @@ Object.defineProperty(exports, "Sheet", {
     return _Sheet.Sheet;
   }
 });
+Object.defineProperty(exports, "Show", {
+  enumerable: true,
+  get: function () {
+    return _AppShell.Show;
+  }
+});
 Object.defineProperty(exports, "ShowMore", {
   enumerable: true,
   get: function () {
@@ -16367,6 +17359,12 @@ Object.defineProperty(exports, "StatusDot", {
   enumerable: true,
   get: function () {
     return _StatusDot.StatusDot;
+  }
+});
+Object.defineProperty(exports, "Sticky", {
+  enumerable: true,
+  get: function () {
+    return _Sticky.Sticky;
   }
 });
 Object.defineProperty(exports, "Switch", {
@@ -16427,6 +17425,12 @@ Object.defineProperty(exports, "ThemeProvider", {
   enumerable: true,
   get: function () {
     return _ThemeProvider.ThemeProvider;
+  }
+});
+Object.defineProperty(exports, "ThemeZone", {
+  enumerable: true,
+  get: function () {
+    return _ThemeProvider.ThemeZone;
   }
 });
 Object.defineProperty(exports, "Thumbnail", {
@@ -16751,6 +17755,12 @@ Object.defineProperty(exports, "hotkeyList", {
   enumerable: true,
   get: function () {
     return _hotkey.hotkeyList;
+  }
+});
+Object.defineProperty(exports, "illustrationByName", {
+  enumerable: true,
+  get: function () {
+    return _illustrations.illustrationByName;
   }
 });
 Object.defineProperty(exports, "initialsOf", {
@@ -17166,6 +18176,13 @@ var _useFocusable = require("./hooks/useFocusable.js");
 var _useSelection = require("./hooks/useSelection.js");
 var _useGesture = require("./hooks/useGesture.js");
 var _ReadOnly = require("./providers/ReadOnly.jsx");
+var _IconTile = require("./components/IconTile/IconTile.jsx");
+var _Pictogram = require("./components/Pictogram/Pictogram.jsx");
+var _Sticky = require("./components/Sticky/Sticky.jsx");
+var _Illustration = require("./components/Illustration/Illustration.jsx");
+var _illustrations = require("./components/Illustration/illustrations.js");
+var _Image = require("./components/Image/Image.jsx");
+var _Figure = require("./components/Figure/Figure.jsx");
   } }
   };
   var cache = {};

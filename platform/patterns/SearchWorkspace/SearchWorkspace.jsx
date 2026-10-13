@@ -108,7 +108,7 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
       {chips.length ? (
         <div className="plx-search-ws__active" role="group" aria-label={t.activeFilters}>
           {chips.map((c) => <Chip key={c.f.id + ':' + c.v} selected onRemove={c.remove} removeLabel={fill(t.remove, { text: c.text })}>{c.text}</Chip>)}
-          {onClearAll ? <Button size="xs" variant="link" onClick={onClearAll}>{t.clearAll}</Button> : null}
+          {onClearAll ? <Button size="xs" variant="ghost" onClick={onClearAll}>{t.clearAll}</Button> : null}
         </div>
       ) : null}
       <div className="plx-search-ws__bar">

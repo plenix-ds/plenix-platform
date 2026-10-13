@@ -36,24 +36,10 @@ const resolveIn = (set, v, depth = 0) => {
   return resolveIn(set, m[1] === 'ref' ? refValue(m[2]) : (set[m[2]] || {}).$value, depth + 1);
 };
 
-// pairs the themes do not meet yet (measured 2026-10-11, wave 1 of the library plan): reported, not failed, until the
-// owner remaps the role in that theme and mode (palette-contrast rule: remap per theme, never add a color, never loosen the
+// pairs the themes do not meet yet: reported, not failed, until the owner remaps the role in that theme and mode. Empty
+// since 2026-10-12 (the owner remapped the 13 pairs of 2026-10-11); a new pending pair needs the owner (palette-contrast rule: remap per theme, never add a color, never loosen the
 // rule). A pending pair that starts to pass fails the test until it is removed here, so the list only shrinks.
-const PENDING = new Set([
-  'default light: feedback-warning-on-solid on feedback-warning-solid',
-  'default light: feedback-danger-on-solid on feedback-danger-solid',
-  'default light: control-border on control-background',
-  'default dark: feedback-success-content on feedback-success-soft',
-  'default dark: feedback-danger-content on feedback-danger-soft',
-  'default dark: feedback-warning-on-solid on feedback-warning-solid',
-  'default dark: feedback-danger-on-solid on feedback-danger-solid',
-  'default dark: control-border on control-background',
-  'default dark: focus-ring-color on surface-default',
-  'default dark: feedback-info-solid on surface-default',
-  'default dark: feedback-success-solid on surface-default',
-  'default dark: feedback-warning-solid on surface-default',
-  'default dark: feedback-danger-solid on surface-default'
-]);
+const PENDING = new Set([]);
 const pending = [];
 
 const themes = JSON.parse(fs.readFileSync(path.join(ROOT, 'platform', 'standards', 'themes.json'), 'utf8')).themes;

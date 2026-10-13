@@ -50,3 +50,12 @@
 @media (width < 600px){
   .plx-app-shell{overflow-x:clip;overflow-y:clip;}
 }
+
+/* responsive visibility (Show / Hide): by width they render or not; on paper their box toggles. The box adds nothing to
+   the layout (display: contents) */
+.plx-visibility{display:contents;}
+.plx-visibility--print-only{display:none;}
+@media print{
+  .plx-visibility--print-only{display:contents;}
+  .plx-visibility--no-print{display:none;}
+}

@@ -1,4 +1,4 @@
-// Plenix tests · visual snapshot: the computed styles of every Button (7 variants × 5 sizes × 7 states × 4 forms) in
+// Plenix tests · visual snapshot: the computed styles of every Button (6 variants × 5 sizes × 7 states × 4 forms) in
 // light and dark and in the three densities, compared with the committed baseline (tests/baselines/button.json).
 // Only values that do not depend on the operating system's fonts are compared (no measured widths), so the baseline
 // holds on Windows and on the Linux CI runner alike.
@@ -9,7 +9,7 @@ const path = require('path');
 const { ROOT, launch } = require('./lib.js');
 const BASELINE = path.join(__dirname, 'baselines', 'button.json');
 const PLAT = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
-const VARIANTS = ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'link'];
+const VARIANTS = ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary'];
 const SIZES = ['md', 'sm', 'xs', '2xs', 'lg'];
 const STATES = ['rest', 'hover', 'selected', 'focus', 'disabled', 'loading', 'expanded'];
 const FORMS = ['label', 'icon', 'icon-only', 'caret'];

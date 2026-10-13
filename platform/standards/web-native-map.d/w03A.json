@@ -1,0 +1,29 @@
+{
+  "$description": "Library part w03A (wave 3, lane A): the iOS and Android counterparts of IconTile, Pictogram, Preview's aspect ratios, the one-column and full-screen arrangements of the shell and responsive visibility (Show / Hide). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Icon tile": {
+      "ios": ["ios-foundations|Icons", "ios-foundations|SF Symbols"],
+      "android": ["android-foundations|Material Symbols"]
+    },
+    "foundations|Pictograms": {
+      "ios": ["ios-foundations|SF Symbols"],
+      "android": ["android-foundations|Material Symbols", "android-foundations|Images"]
+    },
+    "layout|Aspect ratio": {
+      "ios": ["ios-content|Image views", "ios-content|Images"],
+      "android": ["android-content|Images"]
+    },
+    "layout|One-column layout": {
+      "ios": ["ios-layout|Layout"],
+      "android": ["android-layout|Window classes"]
+    },
+    "layout|Full-screen workspace": {
+      "ios": ["ios-page-structures|Going full screen"],
+      "android": ["android-screen-structures|Full-screen viewer"]
+    },
+    "layout|Hide / show": {
+      "ios": ["ios-layout|Layout"],
+      "android": ["android-layout|Window classes", "android-layout|Reflow"]
+    }
+  }
+}

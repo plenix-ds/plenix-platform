@@ -113,19 +113,13 @@
   --plx-comp-button-danger-hover-text: var(--plx-sys-action-danger-content);
   --plx-comp-button-danger-pressed-background: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-pressed-border: var(--plx-sys-action-danger-background-pressed);
-  --plx-comp-button-danger-secondary-border: var(--plx-sys-feedback-danger-content);
-  --plx-comp-button-danger-secondary-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-button-danger-secondary-border: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-button-danger-secondary-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-button-danger-secondary-hover-background: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-secondary-hover-border: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-secondary-hover-text: var(--plx-sys-action-danger-content);
   --plx-comp-button-danger-secondary-pressed-background: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-secondary-pressed-border: var(--plx-sys-action-danger-background-pressed);
-  --plx-comp-button-link-background: transparent;
-  --plx-comp-button-link-text: var(--plx-sys-content-link);
-  --plx-comp-button-link-hover-background: transparent;
-  --plx-comp-button-link-hover-text: var(--plx-sys-content-link);
-  --plx-comp-button-link-underline-offset: var(--plx-sys-focus-ring-offset);
-  --plx-comp-button-link-hover-underline-thickness: var(--plx-sys-border-width-medium);
   /* states: selected (its border and text come from the size), disabled, focus */
   --plx-comp-button-selected-background: var(--plx-sys-state-selected);
   --plx-comp-button-disabled-background: var(--plx-sys-fill-neutral);
@@ -183,7 +177,7 @@
   --plx-comp-input-placeholder-text: var(--plx-sys-field-placeholder);
   --plx-comp-input-hover-border-color: var(--plx-sys-border-strong);
   --plx-comp-input-focus-border-color: var(--plx-sys-focus-ring-color);
-  --plx-comp-input-invalid-border-color: var(--plx-sys-feedback-danger-content);
+  --plx-comp-input-invalid-border-color: var(--plx-sys-feedback-danger-solid);
   --plx-comp-input-disabled-background: var(--plx-sys-fill-neutral);
   --plx-comp-input-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-input-readonly-background: var(--plx-sys-surface-sunken);
@@ -293,11 +287,11 @@
   --plx-comp-field-label-line-height: var(--plx-ref-size-16px);
   --plx-comp-field-row-label-font-size: var(--plx-ref-font-size-13);
   --plx-comp-field-row-label-line-height: var(--plx-ref-size-20px);
-  --plx-comp-field-required-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-field-required-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-field-description-text: var(--plx-sys-content-subtle);
   --plx-comp-field-description-font-size: var(--plx-ref-font-size-11);
   --plx-comp-field-row-description-font-size: var(--plx-ref-font-size-12);
-  --plx-comp-field-error-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-field-error-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-field-error-font-size: var(--plx-ref-font-size-11);
   --plx-comp-field-info-background: var(--plx-sys-border-default);
   --plx-comp-field-info-height: var(--plx-ref-size-16px);
@@ -553,7 +547,7 @@
   --plx-comp-tag-remove-before-inset-block-start: calc(var(--plx-sys-space-inset-xs) * -1);
   --plx-comp-tag-remove-before-inset-inline-end: calc(var(--plx-sys-space-inset-xs) * -1);
   --plx-comp-tag-remove-before-inset-inline-start: calc(var(--plx-sys-space-inset-xs) * -1);
-  --plx-comp-tag-remove-hover-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-tag-remove-hover-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-chip-selected-tag-remove-opacity: var(--plx-sys-opacity-high);
   --plx-comp-chip-target-inset: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-tag-list-gap: var(--plx-sys-space-cluster-xs);
@@ -902,7 +896,7 @@
   --plx-comp-menu-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-menu-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-menu-item-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-menu-item-danger-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-menu-item-danger-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-menu-item-disabled-text: var(--plx-sys-content-disabled);
   --plx-comp-menu-check-height: var(--plx-ref-size-16px);
   --plx-comp-menu-check-width: var(--plx-ref-size-16px);
@@ -1370,7 +1364,7 @@
   --plx-comp-empty-state-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-empty-state-text-max-width: var(--plx-ref-size-400px);
   --plx-comp-empty-state-action-margin-block-start: var(--plx-sys-space-stack-xs);
-  --plx-comp-empty-state-error-icon-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-empty-state-error-icon-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-event-chip-background: var(--plx-sys-surface-sunken);
   --plx-comp-event-chip-radius: var(--plx-sys-radius-compact-4px);
   --plx-comp-event-chip-border-inline-start-width: var(--plx-sys-border-width-thick);
@@ -1419,7 +1413,7 @@
   --plx-comp-list-icon-height: var(--plx-ref-size-20px);
   --plx-comp-list-item-neutral-icon-text: var(--plx-sys-content-muted);
   --plx-comp-list-item-success-icon-text: var(--plx-sys-feedback-success-content);
-  --plx-comp-list-item-danger-icon-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-list-item-danger-icon-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-list-item-info-icon-text: var(--plx-sys-feedback-info-content);
   --plx-comp-list-item-warning-icon-text: var(--plx-sys-feedback-warning-content);
   --plx-comp-media-viewer-background: var(--plx-sys-surface-media);
@@ -1478,7 +1472,7 @@
   --plx-comp-metric-change-font-size: var(--plx-ref-font-size-11);
   --plx-comp-metric-change-neutral-text: var(--plx-sys-content-muted);
   --plx-comp-metric-change-success-text: var(--plx-sys-feedback-success-content);
-  --plx-comp-metric-change-danger-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-metric-change-danger-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-metric-label-text: var(--plx-sys-content-muted);
   --plx-comp-metric-label-font-size: var(--plx-ref-font-size-12);
   --plx-comp-metric-description-text: var(--plx-sys-content-subtle);
@@ -1533,7 +1527,7 @@
   --plx-comp-nav-list-pin-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-nav-list-pin-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-nav-list-pin-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-nav-list-item-muted-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-nav-list-item-muted-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-nav-list-item-muted-icon-text: var(--plx-sys-content-subtle);
   --plx-comp-nav-list-item-group-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-nav-list-item-group-icon-text: var(--plx-sys-content-muted);
@@ -1676,6 +1670,9 @@
   --plx-comp-section-heading-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-section-heading-font-family: var(--plx-sys-font-label);
   --plx-comp-section-heading-font-size: var(--plx-ref-font-size-10);
+  --plx-comp-section-heading-level-2-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-section-heading-level-3-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-section-heading-level-4-font-size: var(--plx-ref-font-size-10);
   --plx-comp-section-heading-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-section-heading-letter-spacing: var(--plx-sys-letter-spacing-widest);
   --plx-comp-section-heading-line-height: var(--plx-ref-line-height-tight);
@@ -1804,7 +1801,7 @@
   --plx-comp-text-eyebrow-font-size: var(--plx-ref-font-size-11);
   --plx-comp-text-eyebrow-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-text-eyebrow-letter-spacing: var(--plx-sys-letter-spacing-widest);
-  --plx-comp-text-danger-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-text-danger-text: var(--plx-sys-feedback-danger-solid);
   --plx-comp-text-success-text: var(--plx-sys-feedback-success-content);
   --plx-comp-text-accent-text: var(--plx-sys-content-link);
   --plx-comp-text-accent-font-weight: var(--plx-sys-font-weight-medium);
@@ -2192,7 +2189,9 @@
   --plx-comp-settings-section-card-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-settings-section-card-padding-inline: var(--plx-sys-space-inset-xl);
   --plx-comp-settings-section-title-text: var(--plx-sys-content-muted);
-  --plx-comp-settings-section-title-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-settings-section-title-font-size: var(--plx-comp-section-heading-level-2-font-size);
+  --plx-comp-settings-section-title-level-3-font-size: var(--plx-comp-section-heading-level-3-font-size);
+  --plx-comp-settings-section-title-level-4-font-size: var(--plx-comp-section-heading-level-4-font-size);
   --plx-comp-settings-section-title-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-settings-section-title-letter-spacing: var(--plx-sys-letter-spacing-widest);
   --plx-comp-settings-section-title-margin-block-end: var(--plx-sys-space-stack-sm);
@@ -2438,6 +2437,50 @@
   --plx-comp-blockquote-pull-quote-line-height: var(--plx-ref-size-28px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-brand-mark-color: var(--plx-sys-feedback-info-solid);
+  --plx-comp-brand-name-color: var(--plx-sys-content-default);
+  --plx-comp-brand-tile-background: var(--plx-sys-feedback-info-solid);
+  --plx-comp-brand-tile-icon: var(--plx-sys-feedback-info-on-solid);
+  --plx-comp-brand-on-accent-color: var(--plx-sys-accent-content);
+  --plx-comp-brand-on-accent-tile-background: var(--plx-sys-accent-content);
+  --plx-comp-brand-on-accent-tile-icon: var(--plx-sys-accent-surface);
+  --plx-comp-brand-mono-tile-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-brand-name-font-family: var(--plx-sys-font-heading);
+  --plx-comp-brand-name-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-brand-name-letter-spacing: var(--plx-sys-letter-spacing-tight);
+  --plx-comp-brand-name-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-brand-app-font-family: var(--plx-sys-font-heading);
+  --plx-comp-brand-app-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-brand-sm-mark-size: var(--plx-ref-size-16px);
+  --plx-comp-brand-sm-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-brand-sm-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-brand-sm-tile-size: var(--plx-ref-size-16px);
+  --plx-comp-brand-sm-icon-size: var(--plx-ref-size-12px);
+  --plx-comp-brand-sm-tile-radius: var(--plx-sys-shape-2xs);
+  --plx-comp-brand-sm-clear-space: var(--plx-sys-space-inset-xs);
+  --plx-comp-brand-md-mark-size: var(--plx-ref-size-20px);
+  --plx-comp-brand-md-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-brand-md-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-brand-md-tile-size: var(--plx-ref-size-20px);
+  --plx-comp-brand-md-icon-size: var(--plx-ref-size-16px);
+  --plx-comp-brand-md-tile-radius: var(--plx-sys-shape-xs);
+  --plx-comp-brand-md-clear-space: var(--plx-sys-space-inset-xs);
+  --plx-comp-brand-lg-mark-size: var(--plx-ref-size-24px);
+  --plx-comp-brand-lg-font-size: var(--plx-ref-font-size-18);
+  --plx-comp-brand-lg-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-brand-lg-tile-size: var(--plx-ref-size-24px);
+  --plx-comp-brand-lg-icon-size: var(--plx-ref-size-16px);
+  --plx-comp-brand-lg-tile-radius: var(--plx-sys-shape-xs);
+  --plx-comp-brand-lg-clear-space: var(--plx-sys-space-inset-sm);
+  --plx-comp-brand-xl-mark-size: var(--plx-ref-size-32px);
+  --plx-comp-brand-xl-font-size: var(--plx-ref-font-size-20);
+  --plx-comp-brand-xl-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-brand-xl-tile-size: var(--plx-ref-size-32px);
+  --plx-comp-brand-xl-icon-size: var(--plx-ref-size-24px);
+  --plx-comp-brand-xl-tile-radius: var(--plx-sys-shape-sm);
+  --plx-comp-brand-xl-clear-space: var(--plx-sys-space-inset-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-code-background: var(--plx-sys-fill-neutral);
   --plx-comp-code-text: var(--plx-sys-content-default);
   --plx-comp-code-font-family: var(--plx-sys-font-code);
@@ -2447,8 +2490,126 @@
   --plx-comp-code-on-accent-text: var(--plx-sys-accent-content);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-columns-sidebar-start-columns: minmax(0, 1fr) minmax(0, 2fr);
+  --plx-comp-columns-sidebar-end-columns: minmax(0, 2fr) minmax(0, 1fr);
+  --plx-comp-columns-collapse-row-gap: var(--plx-sys-space-layout-sm);
+  --plx-comp-columns-collapse-divider-color: var(--plx-sys-border-divider);
+  --plx-comp-columns-collapse-divider-width: var(--plx-sys-border-width-thin);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-content-grid-masonry-row-gap: var(--plx-sys-card-grid-gap);
+  --plx-comp-content-grid-justified-last-row-grow: 1000;
+  --plx-comp-content-grid-ratio-1-1: 1;
+  --plx-comp-content-grid-ratio-4-3: 1.3333;
+  --plx-comp-content-grid-ratio-3-2: 1.5;
+  --plx-comp-content-grid-ratio-16-9: 1.7778;
+  --plx-comp-content-grid-ratio-21-9: 2.3333;
+  --plx-comp-content-grid-ratio-3-4: 0.75;
+  --plx-comp-content-grid-ratio-9-16: 0.5625;
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-entity-header-tile-surface-background: var(--plx-sys-surface-default);
+  --plx-comp-entity-header-tile-surface-text: var(--plx-sys-content-link);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-figure-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-figure-caption-text: var(--plx-sys-content-muted);
+  --plx-comp-figure-caption-font-family: var(--plx-sys-font-body);
+  --plx-comp-figure-caption-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-figure-caption-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-figure-caption-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-figure-caption-max-width: var(--plx-ref-size-560px);
+  --plx-comp-figure-credit-text: var(--plx-sys-content-subtle);
+  --plx-comp-figure-credit-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-figure-overlay-background: var(--plx-sys-surface-media-raised);
+  --plx-comp-figure-overlay-text: var(--plx-sys-content-on-media);
+  --plx-comp-figure-overlay-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-figure-overlay-padding-inline: var(--plx-sys-space-inset-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-icon-tile-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-icon-tile-border-color: var(--plx-sys-border-default);
+  --plx-comp-icon-tile-sm-size: var(--plx-ref-size-32px);
+  --plx-comp-icon-tile-sm-radius: var(--plx-sys-radius-avatar-6px);
+  --plx-comp-icon-tile-sm-icon-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-icon-tile-md-size: var(--plx-ref-size-40px);
+  --plx-comp-icon-tile-md-radius: var(--plx-sys-radius-avatar-8px);
+  --plx-comp-icon-tile-md-icon-size: var(--plx-sys-icon-size-md);
+  --plx-comp-icon-tile-lg-size: var(--plx-ref-size-48px);
+  --plx-comp-icon-tile-lg-radius: var(--plx-sys-radius-avatar-8px);
+  --plx-comp-icon-tile-lg-icon-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-icon-tile-blue-background: var(--plx-sys-data-color-blue-soft);
+  --plx-comp-icon-tile-blue-text: var(--plx-sys-data-color-blue-on-soft);
+  --plx-comp-icon-tile-green-background: var(--plx-sys-data-color-green-soft);
+  --plx-comp-icon-tile-green-text: var(--plx-sys-data-color-green-on-soft);
+  --plx-comp-icon-tile-purple-background: var(--plx-sys-data-color-purple-soft);
+  --plx-comp-icon-tile-purple-text: var(--plx-sys-data-color-purple-on-soft);
+  --plx-comp-icon-tile-red-background: var(--plx-sys-data-color-red-soft);
+  --plx-comp-icon-tile-red-text: var(--plx-sys-data-color-red-on-soft);
+  --plx-comp-icon-tile-brown-background: var(--plx-sys-data-color-brown-soft);
+  --plx-comp-icon-tile-brown-text: var(--plx-sys-data-color-brown-on-soft);
+  --plx-comp-icon-tile-gray-background: var(--plx-sys-data-color-gray-soft);
+  --plx-comp-icon-tile-gray-text: var(--plx-sys-data-color-gray-on-soft);
+  --plx-comp-icon-tile-surface-background: var(--plx-sys-surface-default);
+  --plx-comp-icon-tile-surface-text: var(--plx-sys-content-link);
+  --plx-comp-icon-tile-neutral-background: var(--plx-sys-feedback-neutral-soft);
+  --plx-comp-icon-tile-neutral-border-color: var(--plx-sys-feedback-neutral-soft-border);
+  --plx-comp-icon-tile-neutral-text: var(--plx-sys-feedback-neutral-content);
+  --plx-comp-icon-tile-info-background: var(--plx-sys-feedback-info-soft);
+  --plx-comp-icon-tile-info-border-color: var(--plx-sys-feedback-info-soft-border);
+  --plx-comp-icon-tile-info-text: var(--plx-sys-feedback-info-content);
+  --plx-comp-icon-tile-success-background: var(--plx-sys-feedback-success-soft);
+  --plx-comp-icon-tile-success-border-color: var(--plx-sys-feedback-success-soft-border);
+  --plx-comp-icon-tile-success-text: var(--plx-sys-feedback-success-content);
+  --plx-comp-icon-tile-warning-background: var(--plx-sys-feedback-warning-soft);
+  --plx-comp-icon-tile-warning-border-color: var(--plx-sys-feedback-warning-soft-border);
+  --plx-comp-icon-tile-warning-text: var(--plx-sys-feedback-warning-content);
+  --plx-comp-icon-tile-danger-background: var(--plx-sys-feedback-danger-soft);
+  --plx-comp-icon-tile-danger-border-color: var(--plx-sys-feedback-danger-soft-border);
+  --plx-comp-icon-tile-danger-text: var(--plx-sys-feedback-danger-content);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-illustration-sm-size: var(--plx-ref-size-64px);
+  --plx-comp-illustration-md-size: var(--plx-ref-size-120px);
+  --plx-comp-illustration-lg-size: var(--plx-ref-size-200px);
+  --plx-comp-illustration-stroke-width: var(--plx-sys-border-width-medium);
+  --plx-comp-illustration-sm-stroke-width: var(--plx-sys-border-width-thin);
+  --plx-comp-illustration-back: var(--plx-sys-surface-sunken);
+  --plx-comp-illustration-shape: var(--plx-sys-surface-default);
+  --plx-comp-illustration-line: var(--plx-sys-content-subtle);
+  --plx-comp-illustration-ghost: var(--plx-sys-skeleton-base);
+  --plx-comp-illustration-accent: var(--plx-comp-brand-mark-color);
+  --plx-comp-illustration-knock: var(--plx-sys-feedback-info-on-solid);
+  --plx-comp-illustration-danger: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-illustration-danger-knock: var(--plx-sys-feedback-danger-on-solid);
+  --plx-comp-illustration-on-accent-back: var(--plx-sys-accent-surface-raised);
+  --plx-comp-illustration-on-accent-shape: var(--plx-sys-accent-surface);
+  --plx-comp-illustration-on-accent-line: var(--plx-sys-accent-content);
+  --plx-comp-illustration-on-accent-ghost: var(--plx-sys-accent-content-muted);
+  --plx-comp-illustration-on-accent-accent: var(--plx-sys-accent-content);
+  --plx-comp-illustration-on-accent-knock: var(--plx-sys-accent-surface);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-image-placeholder-background: var(--plx-sys-fill-neutral);
+  --plx-comp-image-placeholder-blur: var(--plx-ref-size-16px);
+  --plx-comp-image-placeholder-scale: 1.1;
+  --plx-comp-image-contain-background: var(--plx-sys-surface-sunken);
+  --plx-comp-image-radius: var(--plx-sys-radius-media-4px);
+  --plx-comp-image-fade-duration: var(--plx-sys-motion-duration-base);
+  --plx-comp-image-fade-easing: var(--plx-sys-motion-ease-standard);
+  --plx-comp-image-fallback-background: var(--plx-sys-fill-neutral);
+  --plx-comp-image-fallback-text: var(--plx-sys-content-muted);
+  --plx-comp-image-fallback-font-family: var(--plx-sys-font-body);
+  --plx-comp-image-fallback-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-image-fallback-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-image-fallback-icon-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-image-fallback-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-image-fallback-padding: var(--plx-sys-space-inset-sm);
+  --plx-comp-image-fallback-min-height: var(--plx-ref-size-96px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-link-text: var(--plx-sys-content-link);
-  --plx-comp-link-visited-text: var(--plx-sys-content-link);
+  --plx-comp-link-visited-text: var(--plx-sys-content-link-visited);
   --plx-comp-link-subtle-text: var(--plx-sys-content-default);
   --plx-comp-link-on-accent-text: var(--plx-sys-accent-content);
   --plx-comp-link-font-weight: var(--plx-sys-font-weight-regular);
@@ -2464,6 +2625,8 @@
   --plx-comp-link-standalone-min-height: var(--plx-sys-control-target-min);
   --plx-comp-link-icon-size: var(--plx-sys-icon-size-sm);
   --plx-comp-link-icon-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-link-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-link-target-inset-inline-end: min(0px, calc(100% - var(--plx-sys-control-target-min)));
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-list-marker-text: var(--plx-sys-content-muted);
@@ -2477,6 +2640,28 @@
   --plx-comp-list-step-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-list-step-radius: var(--plx-sys-shape-pill);
   --plx-comp-list-nested-gap: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-pictogram-radius: var(--plx-sys-shape-pill);
+  --plx-comp-pictogram-background: var(--plx-sys-surface-sunken);
+  --plx-comp-pictogram-text: var(--plx-sys-content-muted);
+  --plx-comp-pictogram-two-tone-background: var(--plx-sys-data-color-blue-soft);
+  --plx-comp-pictogram-two-tone-text: var(--plx-sys-data-color-blue-on-soft);
+  --plx-comp-pictogram-48-size: var(--plx-ref-size-48px);
+  --plx-comp-pictogram-48-icon-size: var(--plx-ref-size-32px);
+  --plx-comp-pictogram-64-size: var(--plx-ref-size-64px);
+  --plx-comp-pictogram-64-icon-size: var(--plx-ref-size-40px);
+  --plx-comp-pictogram-96-size: var(--plx-ref-size-96px);
+  --plx-comp-pictogram-96-icon-size: var(--plx-ref-size-64px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-preview-ratio-1-1: var(--plx-ref-ratio-1-1);
+  --plx-comp-preview-ratio-4-3: var(--plx-ref-ratio-4-3);
+  --plx-comp-preview-ratio-3-2: var(--plx-ref-ratio-3-2);
+  --plx-comp-preview-ratio-16-9: var(--plx-ref-ratio-16-9);
+  --plx-comp-preview-ratio-21-9: var(--plx-ref-ratio-21-9);
+  --plx-comp-preview-ratio-3-4: var(--plx-ref-ratio-3-4);
+  --plx-comp-preview-ratio-9-16: var(--plx-ref-ratio-9-16);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-rich-text-text: var(--plx-sys-content-default);
@@ -2515,6 +2700,34 @@
   --plx-comp-rich-text-rule-width: var(--plx-sys-border-width-thin);
   --plx-comp-rich-text-caption-text: var(--plx-sys-content-muted);
   --plx-comp-rich-text-caption-font-size: var(--plx-ref-font-size-12);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-center-sm-max-width: var(--plx-ref-size-400px);
+  --plx-comp-center-md-max-width: var(--plx-ref-size-600px);
+  --plx-comp-center-lg-max-width: var(--plx-ref-size-900px);
+  --plx-comp-center-page-max-width: var(--plx-sys-layout-grid-contained-max);
+  --plx-comp-bleed-xs-margin-inline: calc(-1 * var(--plx-comp-layout-inset-xs-padding-inline));
+  --plx-comp-bleed-xs-margin-block: calc(-1 * var(--plx-comp-layout-inset-xs-padding-block));
+  --plx-comp-bleed-sm-margin-inline: calc(-1 * var(--plx-comp-layout-inset-sm-padding-inline));
+  --plx-comp-bleed-sm-margin-block: calc(-1 * var(--plx-comp-layout-inset-sm-padding-block));
+  --plx-comp-bleed-md-margin-inline: calc(-1 * var(--plx-comp-layout-inset-md-padding-inline));
+  --plx-comp-bleed-md-margin-block: calc(-1 * var(--plx-comp-layout-inset-md-padding-block));
+  --plx-comp-bleed-lg-margin-inline: calc(-1 * var(--plx-comp-layout-inset-lg-padding-inline));
+  --plx-comp-bleed-lg-margin-block: calc(-1 * var(--plx-comp-layout-inset-lg-padding-block));
+  --plx-comp-bleed-xl-margin-inline: calc(-1 * var(--plx-comp-layout-inset-xl-padding-inline));
+  --plx-comp-bleed-xl-margin-block: calc(-1 * var(--plx-comp-layout-inset-xl-padding-block));
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-sticky-z-index: var(--plx-sys-layer-sticky);
+  --plx-comp-sticky-background: var(--plx-sys-surface-default);
+  --plx-comp-sticky-text: var(--plx-sys-content-default);
+  --plx-comp-sticky-stuck-shadow: var(--plx-sys-elevation-raised-shadow);
+  --plx-comp-sticky-transition-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-sticky-transition-easing: var(--plx-sys-motion-ease-standard);
+  --plx-comp-sticky-safe-area-top: var(--plx-sys-safe-area-top);
+  --plx-comp-sticky-safe-area-bottom: var(--plx-sys-safe-area-bottom);
+  --plx-comp-sticky-safe-area-start: var(--plx-sys-safe-area-start);
+  --plx-comp-sticky-safe-area-end: var(--plx-sys-safe-area-end);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-text-display-text: var(--plx-sys-content-default);

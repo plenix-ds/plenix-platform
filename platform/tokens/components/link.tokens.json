@@ -7,9 +7,9 @@
       "$description": "Link: the text and underline color of an inline or standalone link."
     },
     "link-visited-text": {
-      "$value": "{plx-sys.content-link}",
+      "$value": "{plx-sys.content-link-visited}",
       "$type": "color",
-      "$description": "Link: the color of a visited inline link (:visited). The same role as an unvisited link until a visited role is chosen."
+      "$description": "Link: the color of a visited link (:visited), the standard visited purple (owner, 2026-10-12)."
     },
     "link-subtle-text": {
       "$value": "{plx-sys.content-default}",
@@ -85,6 +85,16 @@
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension",
       "$description": "Link: the space before the open icon of an inline external link."
+    },
+    "link-target-inset-block": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension",
+      "$description": "Link: a link that is a table cell's only content reaches the minimum target with an invisible extension: its inset above and below (centered on the text; 0 when the text is already tall enough)."
+    },
+    "link-target-inset-inline-end": {
+      "$value": "min(0px, calc(100% - {plx-sys.control-target-min}))",
+      "$type": "dimension",
+      "$description": "Link: the same extension's inset at the inline end (toward the cell's end; 0 when the link is already wide enough)."
     }
   }
 }

@@ -451,12 +451,14 @@
       "$type": "color"
     },
     "button-danger-secondary-border": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "button-danger-secondary-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "button-danger-secondary-hover-background": {
       "$value": "{plx-sys.action-danger-background}",
@@ -477,30 +479,6 @@
     "button-danger-secondary-pressed-border": {
       "$value": "{plx-sys.action-danger-background-pressed}",
       "$type": "color"
-    },
-    "button-link-background": {
-      "$value": "transparent",
-      "$type": "color"
-    },
-    "button-link-text": {
-      "$value": "{plx-sys.content-link}",
-      "$type": "color"
-    },
-    "button-link-hover-background": {
-      "$value": "transparent",
-      "$type": "color"
-    },
-    "button-link-hover-text": {
-      "$value": "{plx-sys.content-link}",
-      "$type": "color"
-    },
-    "button-link-underline-offset": {
-      "$value": "{plx-sys.focus-ring-offset}",
-      "$type": "dimension"
-    },
-    "button-link-hover-underline-thickness": {
-      "$value": "{plx-sys.border-width-medium}",
-      "$type": "dimension"
     },
     "button-selected-background": {
       "$value": "{plx-sys.state-selected}",
@@ -748,8 +726,9 @@
       "$type": "color"
     },
     "input-invalid-border-color": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "input-disabled-background": {
       "$value": "{plx-sys.fill-neutral}",
@@ -1192,8 +1171,9 @@
       "$type": "number"
     },
     "field-required-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "field-description-text": {
       "$value": "{plx-sys.content-subtle}",
@@ -1208,8 +1188,9 @@
       "$type": "dimension"
     },
     "field-error-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "field-error-font-size": {
       "$value": "{plx-ref.font-size-11}",
@@ -2244,8 +2225,9 @@
       "$type": "dimension"
     },
     "tag-remove-hover-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "chip-selected-tag-remove-opacity": {
       "$value": "{plx-sys.opacity-high}",
@@ -3657,8 +3639,9 @@
       "$type": "dimension"
     },
     "menu-item-danger-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "menu-item-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
@@ -5565,9 +5548,9 @@
       "$type": "dimension"
     },
     "empty-state-error-icon-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
+      "$value": "{plx-sys.feedback-danger-solid}",
       "$type": "color",
-      "$description": "The error tone (platforms.md 5.5: it names the problem, one action recovers): the icon in the danger color; the words say what failed, so color is never the only sign."
+      "$description": "The error tone (platforms.md 5.5: it names the problem, one action recovers): the icon in the danger color; the words say what failed, so color is never the only sign. Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "event-chip-background": {
       "$value": "{plx-sys.surface-sunken}",
@@ -5762,8 +5745,9 @@
       "$type": "color"
     },
     "list-item-danger-icon-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "list-item-info-icon-text": {
       "$value": "{plx-sys.feedback-info-content}",
@@ -5998,8 +5982,9 @@
       "$type": "color"
     },
     "metric-change-danger-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "metric-label-text": {
       "$value": "{plx-sys.content-muted}",
@@ -6218,8 +6203,9 @@
       "$type": "dimension"
     },
     "nav-list-item-muted-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "nav-list-item-muted-icon-text": {
       "$value": "{plx-sys.content-subtle}",
@@ -6787,7 +6773,23 @@
     },
     "section-heading-font-size": {
       "$value": "{plx-ref.font-size-10}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$description": "Section heading: the size of a plain label (level null) and of levels 5 and 6: 10px, the smallest step of the type scale a heading takes."
+    },
+    "section-heading-level-2-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Section heading: the size of a level 2 heading (h2: a page's sections, Settings' section titles): 13px from the type scale, larger than level 3 (owner, 2026-10-12)."
+    },
+    "section-heading-level-3-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "Section heading: the size of a level 3 heading (h3, the default: navigation and panel groups): 11px from the type scale, between level 2 and level 4 (owner, 2026-10-12)."
+    },
+    "section-heading-level-4-font-size": {
+      "$value": "{plx-ref.font-size-10}",
+      "$type": "dimension",
+      "$description": "Section heading: the size of a level 4 heading (h4: a part inside a section): 10px from the type scale, smaller than level 3 (owner, 2026-10-12)."
     },
     "section-heading-font-weight": {
       "$value": "{plx-sys.font-weight-bold}",
@@ -7303,8 +7305,9 @@
       "$type": "dimension"
     },
     "text-danger-text": {
-      "$value": "{plx-sys.feedback-danger-content}",
-      "$type": "color"
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Danger on a surface (not on the soft fill): the danger solid, red-700 in light and red-200 in dark, at least 4.5:1 on the surfaces; feedback-danger-content is the text on the soft danger fill (2026-10-12: kept red when that role moved to red-100 in dark)."
     },
     "text-success-text": {
       "$value": "{plx-sys.feedback-success-content}",
@@ -8872,8 +8875,19 @@
       "$type": "color"
     },
     "settings-section-title-font-size": {
-      "$value": "{plx-ref.font-size-11}",
-      "$type": "dimension"
+      "$value": "{plx-comp.section-heading-level-2-font-size}",
+      "$type": "dimension",
+      "$description": "Settings: the size of a section title at level 2 (the default): the level 2 section heading size, 13px (owner, 2026-10-12: the titles grow with the heading levels)."
+    },
+    "settings-section-title-level-3-font-size": {
+      "$value": "{plx-comp.section-heading-level-3-font-size}",
+      "$type": "dimension",
+      "$description": "Settings: the size of a section title at level 3 (headingLevel 3): the level 3 section heading size, 11px."
+    },
+    "settings-section-title-level-4-font-size": {
+      "$value": "{plx-comp.section-heading-level-4-font-size}",
+      "$type": "dimension",
+      "$description": "Settings: the size of a section title at level 4 (headingLevel 4): the level 4 section heading size, 10px."
     },
     "settings-section-title-font-weight": {
       "$value": "{plx-sys.font-weight-bold}",

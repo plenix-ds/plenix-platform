@@ -1641,7 +1641,7 @@ function EmailTemplates({
       headerSort: false,
       render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
-        variant: "link",
+        variant: "ghost",
         "aria-label": 'Edit ' + r.name,
         onClick: act('Edit ' + r.file, 'info')
       }, "Edit")
@@ -1761,7 +1761,7 @@ function Server({
       label: 'Versions',
       content: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, kv(D.VERSIONS), /*#__PURE__*/_react.default.createElement(CountNote, null, "Full dependency list runs to 100+ jars \xB7 ", /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
-        variant: "link",
+        variant: "ghost",
         onClick: act('View all', 'info')
       }, "View all")))
     }, {
@@ -1890,7 +1890,7 @@ function Database({
         onClick: () => setExpanded(true)
       }, "Expand")), grid('Table: ' + table), /*#__PURE__*/_react.default.createElement(CountNote, null, 'Found ' + D.DB_TOTAL.records + ' Records · Page 1 of ' + D.DB_TOTAL.pages + ' · ', /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
         size: "xs",
-        variant: "link",
+        variant: "ghost",
         onClick: act('Forward', 'info')
       }, "Forward \xBB")), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
         open: expanded,
@@ -2766,11 +2766,11 @@ function AssetDetail({
         meta: v.date + ' · ' + v.user,
         actions: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
           size: "xs",
-          variant: "link",
+          variant: "ghost",
           onClick: act('Download', 'info')
         }, "Download"), v.current ? null : /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
           size: "xs",
-          variant: "link",
+          variant: "ghost",
           onClick: act('Restore', 'info')
         }, "Restore"))
       })))
@@ -4545,7 +4545,7 @@ function MetaGroup({
   }))), extra > 0 ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-u-flex"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ShowMore, {
-    variant: "link",
+    variant: "ghost",
     size: "sm",
     expanded: expanded,
     count: '+' + extra,

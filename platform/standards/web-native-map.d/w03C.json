@@ -1,0 +1,48 @@
+{
+  "$description": "Library part w03C (wave 3, lane C): the iOS and Android counterparts of theme zones, the Masonry layout, Collapse, Image and Figure. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Theme zones": {
+      "ios": [
+        "ios-foundations|Dark Mode"
+      ],
+      "android": [
+        "android-foundations|Appearance"
+      ]
+    },
+    "layout|Masonry layout": {
+      "ios": [
+        "ios-data-display|Collections"
+      ],
+      "android": [
+        "android-layout|Lazy grids"
+      ]
+    },
+    "layout|Collapse": {
+      "ios": [
+        "ios-layout|Split views",
+        "ios-layout|Layout"
+      ],
+      "android": [
+        "android-layout|Window classes"
+      ]
+    },
+    "content|Image": {
+      "ios": [
+        "ios-content|Image views",
+        "ios-content|Images"
+      ],
+      "android": [
+        "android-content|Images",
+        "android-content|Image loading"
+      ]
+    },
+    "content|Figure": {
+      "ios": [
+        "ios-content|Images"
+      ],
+      "android": [
+        "android-content|Images"
+      ]
+    }
+  }
+}

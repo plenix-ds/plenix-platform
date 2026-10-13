@@ -1,0 +1,30 @@
+/* Plenix · Illustration (platform/components/Illustration): a drawing of the set, every part colored by its role through the
+   illustration tokens (theme roles only); lines keep their width at every size; square corners and ends, as the brand mark. */
+.plx-illustration{block-size:var(--plx-comp-illustration-md-size);display:block;flex-shrink:0;inline-size:var(--plx-comp-illustration-md-size);overflow:visible;}
+.plx-illustration--sm{block-size:var(--plx-comp-illustration-sm-size);inline-size:var(--plx-comp-illustration-sm-size);}
+.plx-illustration--md{block-size:var(--plx-comp-illustration-md-size);inline-size:var(--plx-comp-illustration-md-size);}
+.plx-illustration--lg{block-size:var(--plx-comp-illustration-lg-size);inline-size:var(--plx-comp-illustration-lg-size);}
+.plx-illustration__shape,.plx-illustration__stroke,.plx-illustration__accent-stroke,.plx-illustration__knock,.plx-illustration__danger-stroke,.plx-illustration__danger-knock{stroke-linecap:square;stroke-linejoin:miter;stroke-width:var(--plx-comp-illustration-stroke-width);vector-effect:non-scaling-stroke;}
+.plx-illustration--sm .plx-illustration__shape,.plx-illustration--sm .plx-illustration__stroke,.plx-illustration--sm .plx-illustration__accent-stroke,.plx-illustration--sm .plx-illustration__knock,.plx-illustration--sm .plx-illustration__danger-stroke,.plx-illustration--sm .plx-illustration__danger-knock{stroke-width:var(--plx-comp-illustration-sm-stroke-width);}
+/* the roles */
+.plx-illustration__back{fill:var(--plx-comp-illustration-back);}
+.plx-illustration__shape{fill:var(--plx-comp-illustration-shape);stroke:var(--plx-comp-illustration-line);}
+.plx-illustration__stroke{fill:none;stroke:var(--plx-comp-illustration-line);}
+.plx-illustration__ghost{fill:var(--plx-comp-illustration-ghost);}
+.plx-illustration__accent{fill:var(--plx-comp-illustration-accent);}
+.plx-illustration__accent-stroke{fill:none;stroke:var(--plx-comp-illustration-accent);}
+.plx-illustration__knock{fill:none;stroke:var(--plx-comp-illustration-knock);}
+.plx-illustration__danger{fill:var(--plx-comp-illustration-danger);}
+.plx-illustration__danger-stroke{fill:none;stroke:var(--plx-comp-illustration-danger);}
+.plx-illustration__danger-knock{fill:none;stroke:var(--plx-comp-illustration-danger-knock);}
+/* on the accent: the same roles from the accent's colors */
+.plx-illustration--on-accent .plx-illustration__back{fill:var(--plx-comp-illustration-on-accent-back);}
+.plx-illustration--on-accent .plx-illustration__shape{fill:var(--plx-comp-illustration-on-accent-shape);stroke:var(--plx-comp-illustration-on-accent-line);}
+.plx-illustration--on-accent .plx-illustration__stroke{stroke:var(--plx-comp-illustration-on-accent-line);}
+.plx-illustration--on-accent .plx-illustration__ghost{fill:var(--plx-comp-illustration-on-accent-ghost);}
+.plx-illustration--on-accent .plx-illustration__accent{fill:var(--plx-comp-illustration-on-accent-accent);}
+.plx-illustration--on-accent .plx-illustration__accent-stroke{stroke:var(--plx-comp-illustration-on-accent-accent);}
+.plx-illustration--on-accent .plx-illustration__knock{stroke:var(--plx-comp-illustration-on-accent-knock);}
+.plx-illustration--on-accent .plx-illustration__danger{fill:var(--plx-comp-illustration-on-accent-accent);}
+.plx-illustration--on-accent .plx-illustration__danger-stroke{stroke:var(--plx-comp-illustration-on-accent-accent);}
+.plx-illustration--on-accent .plx-illustration__danger-knock{stroke:var(--plx-comp-illustration-on-accent-knock);}

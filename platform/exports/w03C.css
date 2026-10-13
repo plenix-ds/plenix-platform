@@ -1,0 +1,4 @@
+/* Library part w03C (wave 3, lane C): Image, Figure and theme zones */
+@import url("../components/Image/image.css");
+@import url("../components/Figure/figure.css");
+@import url("../system/theme-zone.css");

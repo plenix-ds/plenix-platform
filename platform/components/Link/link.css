@@ -12,3 +12,8 @@
 .plx-link--on-accent:focus-visible,.plx-link--on-accent.is-focus-visible{outline-color:var(--plx-comp-link-on-accent-focus-outline-color);}
 .plx-link__icon{--plx-comp-icon-size:var(--plx-comp-link-icon-size);}
 .plx-link--inline>.plx-link__icon,.plx-link--subtle>.plx-link__icon{margin-inline-start:var(--plx-comp-link-icon-gap);}
+/* a link that stands alone as a table cell's only content (not inside a sentence, where WCAG's inline exception applies):
+   an invisible extension reaches the minimum target (24px with a mouse, 44px with touch) without changing the look; the
+   cell (positioned, overflow hidden) clips it, so it never reaches a neighbor row or column (Platforms Standard 3.1, 3.2) */
+.plx-data-table__portal>a.plx-link:only-child{position:relative;}
+.plx-data-table__portal>a.plx-link:only-child::before{content:"";inset-block-end:var(--plx-comp-link-target-inset-block);inset-block-start:var(--plx-comp-link-target-inset-block);inset-inline-end:var(--plx-comp-link-target-inset-inline-end);inset-inline-start:0;position:absolute;}

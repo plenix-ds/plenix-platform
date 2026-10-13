@@ -1,0 +1,15 @@
+{
+  "$description": "EntityHeader (platform/patterns/EntityHeader): tokens added after its base set in components.tokens.json.",
+  "plx-comp": {
+    "entity-header-tile-surface-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "EntityHeader: the icon tile on the surface (hue \"surface\"): white in light, the panel color in dark (owner, 2026-10-12: the design system's page headers)."
+    },
+    "entity-header-tile-surface-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "EntityHeader: the icon on the surface tile: the link blue, light on dark."
+    }
+  }
+}

@@ -150,7 +150,7 @@ function AssetDetail({ asset, act, onDialog, onPreview }) {
             {D.VERSIONS.map((v) => (
               <ActivityList.Item key={v.label} leading={<StatusDot tone={v.current ? 'info' : 'neutral'} label={v.current ? 'Current version' : 'Earlier version'} />}
                 title={v.label} meta={v.date + ' · ' + v.user}
-                actions={<><Button size="xs" variant="link" onClick={act('Download', 'info')}>Download</Button>{v.current ? null : <Button size="xs" variant="link" onClick={act('Restore', 'info')}>Restore</Button>}</>} />
+                actions={<><Button size="xs" variant="ghost" onClick={act('Download', 'info')}>Download</Button>{v.current ? null : <Button size="xs" variant="ghost" onClick={act('Restore', 'info')}>Restore</Button>}</>} />
             ))}
           </ActivityList>) },
       ]} />

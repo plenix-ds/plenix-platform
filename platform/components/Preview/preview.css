@@ -10,3 +10,16 @@
 .plx-preview__media{block-size:var(--plx-comp-preview-media-height);inline-size:var(--plx-comp-preview-media-width);object-fit:contain;}
 /* as a button it shows the pointer can open it: the hover fill of the neutral controls (batch 215) */
 .plx-preview--button:hover{background-color:var(--plx-comp-preview-button-hover-background);}
+/* the ratio: the aspect-ratio scale (data-plx-ratio, from the ratio prop) */
+.plx-preview[data-plx-ratio="1-1"]{aspect-ratio:var(--plx-comp-preview-ratio-1-1);}
+.plx-preview[data-plx-ratio="4-3"]{aspect-ratio:var(--plx-comp-preview-ratio-4-3);}
+.plx-preview[data-plx-ratio="3-2"]{aspect-ratio:var(--plx-comp-preview-ratio-3-2);}
+.plx-preview[data-plx-ratio="16-9"]{aspect-ratio:var(--plx-comp-preview-ratio-16-9);}
+.plx-preview[data-plx-ratio="21-9"]{aspect-ratio:var(--plx-comp-preview-ratio-21-9);}
+.plx-preview[data-plx-ratio="3-4"]{aspect-ratio:var(--plx-comp-preview-ratio-3-4);}
+.plx-preview[data-plx-ratio="9-16"]{aspect-ratio:var(--plx-comp-preview-ratio-9-16);}
+/* the fit: the picture fills the frame, cropped to it (cover) or whole (contain); never stretched */
+.plx-preview--cover,.plx-preview--contain{overflow-x:clip;overflow-y:clip;}
+.plx-preview--cover .plx-preview__media,.plx-preview--contain .plx-preview__media{block-size:100%;inline-size:100%;}
+.plx-preview--cover .plx-preview__media{object-fit:cover;}
+.plx-preview--contain .plx-preview__media{object-fit:contain;}

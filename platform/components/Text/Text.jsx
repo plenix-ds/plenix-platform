@@ -15,7 +15,7 @@
        label: semibold 12px. strong: semibold, the current size.
        heading: a group's title inside a page or dialog, semibold 13px.
        eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (an a element in running text).
+       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
        title: a page title, the heading font, 20px, bold.
        display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
          step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).

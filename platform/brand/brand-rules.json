@@ -1,0 +1,49 @@
+{
+  "$description": "The Plenix brand rules (library wave 3, Brand application): how the brand kit's files are applied in the product. Source: plenix-brand-spec.md (the owner's kit). BrandMark (components/Brand) draws them; the brand tokens (tokens/components/brand.tokens.json) hold the sizes and clear space named here, and tests/brand-rules.test.js checks that they agree.",
+  "source": "plenix-brand-spec.md",
+  "clearSpace": {
+    "rule": "Keep at least 10% of the mark's width clear on every side; nothing else enters it.",
+    "mark": "The kit's mark square already includes it (56 of 512 units on each side, about 11%): the system adds none around the mark alone.",
+    "lockup": "A logo, wordmark or product mark that stands on its own (sign-in page, about box, exported document) takes clearSpace: one inset step on the 4px grid, at least 10% of its mark.",
+    "ratio": 0.1,
+    "tokens": {
+      "sm": "--plx-comp-brand-sm-clear-space",
+      "md": "--plx-comp-brand-md-clear-space",
+      "lg": "--plx-comp-brand-lg-clear-space",
+      "xl": "--plx-comp-brand-xl-clear-space"
+    }
+  },
+  "minimumSize": {
+    "rule": "The kit tests the mark at 16, 32 and 64 px. Below 16 px the central cross closes: the size scale starts there (sm), so nothing smaller can be asked for.",
+    "px": { "mark": 16, "logo": 16, "product": 16, "wordmark": 13 },
+    "tokens": {
+      "mark": "--plx-comp-brand-sm-mark-size",
+      "logo": "--plx-comp-brand-sm-mark-size",
+      "product": "--plx-comp-brand-sm-tile-size",
+      "wordmark": "--plx-comp-brand-sm-font-size"
+    }
+  },
+  "sizes": {
+    "sm": { "mark": 16, "type": 13 },
+    "md": { "mark": 20, "type": 15 },
+    "lg": { "mark": 24, "type": 18 },
+    "xl": { "mark": 32, "type": 20 }
+  },
+  "backgrounds": [
+    { "surface": "The page surface, light mode", "tone": "brand", "approved": true, "why": "The kit's blue mark on white." },
+    { "surface": "The page surface, dark mode", "tone": "brand", "approved": true, "why": "The light blue mark on a dark background: the brand tokens switch with the mode." },
+    { "surface": "The accent (the blue header, an accent banner)", "tone": "on-accent", "approved": true, "why": "The kit's white mark on blue." },
+    { "surface": "Print, an embossing, one ink", "tone": "mono", "approved": true, "why": "The kit's black mark on white: one color, the current text color." },
+    { "surface": "A photograph, a pattern or a busy illustration", "tone": null, "approved": false, "why": "The mark loses its contrast and its shape." },
+    { "surface": "A status or data color (danger, success, a chart color)", "tone": null, "approved": false, "why": "The brand is not a status: it competes with the meaning of the color." }
+  ],
+  "misuse": [
+    "Stretching, rotating, skewing or cropping the mark or the logo",
+    "Recoloring the mark outside its tones (brand, mono, on accent), or with a gradient, a shadow or an outline",
+    "Redrawing the mark or changing its modules or the 8-unit channel between them",
+    "Retyping the wordmark in another face, weight or letter spacing",
+    "Placing the mark smaller than 16 px, or crowding its clear space",
+    "Using the mark as an action icon, a bullet or a decorative pattern",
+    "Inventing a lockup: a tagline, another name or another symbol next to the mark"
+  ]
+}

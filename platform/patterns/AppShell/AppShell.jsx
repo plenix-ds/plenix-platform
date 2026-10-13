@@ -1,4 +1,4 @@
-/* Plenix · AppShell, PageContent, SideNavPortal
+/* Plenix · AppShell, PageContent, SideNavPortal, Show, Hide
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
      navigation (left), the main region and the inspector panel (right), then the footer across the bottom.
    Usage:
@@ -6,6 +6,8 @@
        <PageContent>…</PageContent>
      </AppShell>
      <SideNavPortal><NavPane…/></SideNavPortal>
+     <Show above="wide"><Text variant="data">2.4 MB</Text></Show>      <Hide below="medium"><Toolbar…/></Hide>
+     <Show print><Text>Printed 12 October 2026</Text></Show>          <Hide print><ActionBar…/></Hide>
    Props:
      header: the header across the top (AppHeader)
      sideNav: the navigation on the left (NavPane); without it a screen can fill the area through SideNavPortal
@@ -25,6 +27,14 @@
      PageContent.className: more classes on the column
      PageContent.children: the page's parts
      SideNavPortal.children: the navigation (a NavPane) that a screen hands to the shell's navigation area
+     Show / Hide (responsive visibility, the Hide / show page): show or hide their children by the window class, or on paper:
+       above: a breakpoint: Show is there from it up (Hide removes it there): "medium" (600px, --plx-sys-shell-phone-below),
+         "wide" (840px, --plx-sys-shell-rail-below), "inspector" (1024px, --plx-sys-shell-inspector-overlay-below), or any
+         breakpoint token's name
+       below: a breakpoint: Show is there only under it (Hide removes it there); with above too, both must hold
+       print: Show only on paper; Hide never on paper (the window class does not apply)
+       fallback: what is drawn where the children are not (the place a hidden action moved to, e.g. a menu item; default none)
+       children: what is shown or hidden
      useAppLayout(): the layout state for the panes, or null outside an AppShell:
        { mode, open, expanded, width, setWidth, toggle, close, small, narrow, barEl, parentEl, hasSideNav, page, layout,
          claimPage(kind), parentRow, claimParentRow(), detailBack, claimBack({ label, onBack, ref }) }; mode is "inline",
@@ -62,6 +72,9 @@
      SideNavPortal is for a screen that owns its navigation's state (a settings screen, a project list): it hands the
        navigation to the shell's navigation area from inside the main content, where it then behaves as above.
      Outside an AppShell, SideNavPortal renders its children in place.
+     Show and Hide work anywhere (inside an AppShell or not). Off screen means not rendered at all: what is hidden by width
+       leaves the page, the Tab order and the accessibility tree; on paper they toggle display (the content stays in the
+       page for screen readers). Every hidden action needs a place where it still is (fallback, a menu, the detail view).
 */
 import React from 'react';
 import { createPortal } from 'react-dom';
@@ -210,6 +223,26 @@ export function SideNavPortal({ children }) {
   React.useEffect(() => (layout && layout.registerPortal ? layout.registerPortal() : undefined), []);
   if (!layout || !layout.registerPortal) return children;   // outside an AppShell: render in place
   return layout.slotEl ? createPortal(children, layout.slotEl) : null;
+}
+
+/* <Show> and <Hide>: responsive visibility by the window class (the breakpoint tokens), or on paper; see the header. */
+const BREAKPOINTS = { medium: '--plx-sys-shell-phone-below', wide: '--plx-sys-shell-rail-below', inspector: '--plx-sys-shell-inspector-overlay-below' };
+const breakpointQuery = (b) => (b ? below(BREAKPOINTS[b] || b) : 'not all');
+// true where the window is at or above "above" and under "below" (an omitted bound always holds)
+function useWithin(above, under) {
+  const underAbove = useMedia(breakpointQuery(above));
+  const underBelow = useMedia(breakpointQuery(under));
+  return (!above || !underAbove) && (!under || underBelow);
+}
+export function Show({ above, below: under, print = false, fallback = null, children }) {
+  const within = useWithin(above, under);
+  if (print) return <div className="plx-visibility plx-visibility--print-only">{children}</div>;
+  return within ? children : fallback;
+}
+export function Hide({ above, below: under, print = false, fallback = null, children }) {
+  const within = useWithin(above, under);
+  if (print) return <div className="plx-visibility plx-visibility--no-print">{children}</div>;
+  return (above || under) && within ? fallback : children;
 }
 
 /* <PageContent>: the content column of a page inside the main region; see the header comment. */

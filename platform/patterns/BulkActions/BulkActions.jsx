@@ -61,7 +61,7 @@ export function SelectionSummary({ count, total, noun = 'item', plural, onSelect
   return (
     <div className={cx('plx-selection-summary', className)}>
       <span className="plx-selection-summary__count" aria-live="polite">{words}</span>
-      {onSelectAll && total !== undefined && count < total ? <Button size="sm" variant="link" onClick={onSelectAll}>{t.selectAll(total)}</Button> : null}
+      {onSelectAll && total !== undefined && count < total ? <Button size="sm" variant="ghost" onClick={onSelectAll}>{t.selectAll(total)}</Button> : null}
       {onClear && count ? <Button size="sm" variant="ghost" onClick={onClear}>{t.clear}</Button> : null}
     </div>
   );

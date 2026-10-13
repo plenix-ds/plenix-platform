@@ -2431,7 +2431,7 @@ function CatEditModal({
       r.readAsDataURL(f);
     }
   }), catEdit.icon ? /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "link",
+    variant: "ghost",
     size: "xs",
     onClick: () => setCatEdit(x => ({
       ...x,

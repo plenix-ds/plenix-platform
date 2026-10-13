@@ -16,7 +16,8 @@
      SettingsSection.card: true draws it as a bordered card (asset-app style) for a form that needs grouping; default false
      SettingsSection.actions: the form's buttons, drawn in an ActionBar under the rows (on the right, kept in view at the
        bottom while the page scrolls): the primary action last
-     SettingsSection.headingLevel: the title's heading level (default 2)
+     SettingsSection.headingLevel: the title's heading level (default 2); its size follows the level, as SectionHeading's
+       (level 2 13px, level 3 11px, level 4 10px)
      SettingsSection.className: more classes
      SettingsSection.children: the rows
      SettingsRow.label: the row's label, at the start
@@ -60,7 +61,7 @@ export function SettingsSection({ title, description, card = false, actions, hea
   const H = 'h' + headingLevel;
   return (
     <section aria-labelledby={title ? id : undefined} className={cx('plx-settings__section', card && 'plx-settings__section--card', className)}>
-      {title ? <H id={id} className="plx-settings__section-title">{title}</H> : null}
+      {title ? <H id={id} className={cx('plx-settings__section-title', headingLevel !== 2 && 'plx-settings__section-title--level-' + headingLevel)}>{title}</H> : null}
       {description ? <p className="plx-settings__section-description">{description}</p> : null}
       <div className="plx-settings__rows">{children}</div>
       {actions ? <ActionBar label={(title ? title + ': ' : '') + 'actions'}>{actions}</ActionBar> : null}

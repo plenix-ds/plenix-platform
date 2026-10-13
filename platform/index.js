@@ -116,4 +116,14 @@ export { useFocusable, useFocusGroup } from './hooks/useFocusable.js';
 export { useSelection } from './hooks/useSelection.js';
 export { useGesture, gestureTokens, flingDistance } from './hooks/useGesture.js';
 export { ReadOnly, ReadOnlyProvider, ReadOnlyContext, useReadOnly } from './providers/ReadOnly.jsx';
+export { IconTile } from './components/IconTile/IconTile.jsx';
+export { Pictogram } from './components/Pictogram/Pictogram.jsx';
+export { Show, Hide } from './patterns/AppShell/AppShell.jsx';
+export { Center, Bleed } from './components/Stack/Stack.jsx';
+export { Sticky } from './components/Sticky/Sticky.jsx';
+export { Illustration } from './components/Illustration/Illustration.jsx';
+export { ILLUSTRATIONS, illustrationByName } from './components/Illustration/illustrations.js';
+export { Image } from './components/Image/Image.jsx';
+export { Figure } from './components/Figure/Figure.jsx';
+export { ThemeZone } from './providers/ThemeProvider.jsx';
 /* END library parts */

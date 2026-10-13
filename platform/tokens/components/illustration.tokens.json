@@ -1,0 +1,100 @@
+{
+  "$description": "Illustration (platform/components/Illustration, library wave 3): the sizes, the line widths and the color role of every part of a drawing. Theme roles only: the set has no colors of its own.",
+  "plx-comp": {
+    "illustration-sm-size": {
+      "$value": "{plx-ref.size-64px}",
+      "$type": "dimension",
+      "$description": "Illustration: the spot size (sm), beside a short message."
+    },
+    "illustration-md-size": {
+      "$value": "{plx-ref.size-120px}",
+      "$type": "dimension",
+      "$description": "Illustration: the scene size (md, the default), in an empty state."
+    },
+    "illustration-lg-size": {
+      "$value": "{plx-ref.size-200px}",
+      "$type": "dimension",
+      "$description": "Illustration: the large scene (lg), a full-page empty or error state."
+    },
+    "illustration-stroke-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "Illustration: the width of every line at md and lg (kept at every size: non-scaling)."
+    },
+    "illustration-sm-stroke-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Illustration: the width of every line at the spot size (sm)."
+    },
+    "illustration-back": {
+      "$value": "{plx-sys.surface-sunken}",
+      "$type": "color",
+      "$description": "Illustration: the round backdrop behind a drawing."
+    },
+    "illustration-shape": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "Illustration: the fill of the drawn objects (a folder, a page, a window)."
+    },
+    "illustration-line": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "Illustration: the outlines and lines of the drawn objects."
+    },
+    "illustration-ghost": {
+      "$value": "{plx-sys.skeleton-base}",
+      "$type": "color",
+      "$description": "Illustration: placeholder shapes (the bars of an empty chart): the skeleton color."
+    },
+    "illustration-accent": {
+      "$value": "{plx-comp.brand-mark-color}",
+      "$type": "color",
+      "$description": "Illustration: the one accent of a drawing: the brand blue (the brand mark’s token)."
+    },
+    "illustration-knock": {
+      "$value": "{plx-sys.feedback-info-on-solid}",
+      "$type": "color",
+      "$description": "Illustration: a line drawn on the accent (a check, a plus)."
+    },
+    "illustration-danger": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Illustration: the accent of an error drawing: the danger color."
+    },
+    "illustration-danger-knock": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color",
+      "$description": "Illustration: a line drawn on the danger accent (an exclamation mark)."
+    },
+    "illustration-on-accent-back": {
+      "$value": "{plx-sys.accent-surface-raised}",
+      "$type": "color",
+      "$description": "Illustration: the backdrop on the accent surface."
+    },
+    "illustration-on-accent-shape": {
+      "$value": "{plx-sys.accent-surface}",
+      "$type": "color",
+      "$description": "Illustration: the drawn objects on the accent surface."
+    },
+    "illustration-on-accent-line": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "Illustration: the lines on the accent surface."
+    },
+    "illustration-on-accent-ghost": {
+      "$value": "{plx-sys.accent-content-muted}",
+      "$type": "color",
+      "$description": "Illustration: placeholder shapes on the accent surface."
+    },
+    "illustration-on-accent-accent": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "Illustration: the accent (and the danger accent) on the accent surface."
+    },
+    "illustration-on-accent-knock": {
+      "$value": "{plx-sys.accent-surface}",
+      "$type": "color",
+      "$description": "Illustration: a line drawn on the accent, on the accent surface."
+    }
+  }
+}

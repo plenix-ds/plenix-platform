@@ -2431,7 +2431,7 @@ function CatEditModal({
       r.readAsDataURL(f);
     }
   }), catEdit.icon ? /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "link",
+    variant: "ghost",
     size: "xs",
     onClick: () => setCatEdit(x => ({
       ...x,
@@ -2520,12 +2520,9 @@ function BookmarksScreen({
     }
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
     gap: "md"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
-    as: "a",
-    variant: "link",
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Link, {
     href: 'https://' + bookmark.url,
-    target: "_blank",
-    rel: "noreferrer"
+    external: true
   }, bookmark.url), /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
     label: "Tags"
   }, bookmark.tags.map(t => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {

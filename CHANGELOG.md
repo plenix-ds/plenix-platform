@@ -6,6 +6,35 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.44] - 2026-10-13
+
+### Changed
+- Contrast (owner): every theme pair now passes WCAG AA; the contrast test checks 76 pairs with none pending. Roles
+  were remapped to existing palette colors, and no palette value changed:
+  - field borders are gray-500 in light and gray-400 in dark;
+  - the warning badge is brown-800 and the danger badge red-700, both with white text;
+  - in dark, the focus ring and the status marks are their light tints with dark text.
+- Links are never buttons (owner):
+  - the link-styled button and the "Link button" item are gone;
+  - actions use buttons and navigation uses Link;
+  - a new check rejects a button styled as a link and a link used as an action;
+  - visited links take the standard visited color: #551A8B in light and #d7aefb in dark.
+- Section headings take their size from the type scale by level: h2 13px, h3 11px, h4 10px. Settings titles are h2
+  headings.
+- The design system's page headers draw their icon on a white tile (a new "surface" option of EntityHeader).
+- "Open in Figma" (beside Edit) and "New theme in Figma" (Themes page) show where themes authored in Figma will start,
+  in a future release.
+### Added
+- The complete library, wave 3 (33 inventory items):
+  - IconTile, Pictogram, Image, Figure, Illustration (empty-state and error drawings), Sticky and Fixed regions;
+  - the Brand mark's logo, wordmark and product marks, with the brand rules and their test;
+  - Center, Bleed and reorder for stacks;
+  - Show and Hide by window class;
+  - aspect ratios on Preview;
+  - masonry and justified grids, and collapsing columns;
+  - theme zones;
+  - the one-column and full-screen layouts.
+
 ## [0.31.43] - 2026-10-13
 
 ### Added

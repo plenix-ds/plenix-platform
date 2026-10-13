@@ -85,7 +85,7 @@ export function CatEditModal({ catEdit, setCatEdit, saveEdit }) {
                   const f = e.target.files[0]; if (!f) return;
                   const r = new FileReader(); r.onload = (ev) => setCatEdit((x) => ({ ...x, icon: ev.target.result })); r.readAsDataURL(f);
                 }} />
-                {catEdit.icon ? <Button variant="link" size="xs" onClick={() => setCatEdit((x) => ({ ...x, icon: null }))}>Remove</Button> : null}
+                {catEdit.icon ? <Button variant="ghost" size="xs" onClick={() => setCatEdit((x) => ({ ...x, icon: null }))}>Remove</Button> : null}
               </Inline>
             </Field>
           </>

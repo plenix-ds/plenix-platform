@@ -2,6 +2,29 @@
 
 Open items the owner asked to keep. Newest first; each with the date it was added and what "done" means.
 
+## Settings in cards, matching the design system (owner, 2026-10-12)
+
+Owner: "I need all the settings pages to have the cards view… everything in the Plenix settings needs to be updated to match
+the DS… many things not matching such as the form fields". Card kinds: collapsible (expand/collapse) and static.
+- [ ] SettingsSection: a card always, static or collapsible (its variant pages and lab).
+- [ ] Every settings page in cards: the Plenix Settings app (every category, Features, Documentation), the DAM's System
+  settings and My account.
+- [ ] Conformance: every control as its design-system page defines it (fields with labels, standard widths, nothing cut
+  off; selects, segmented controls, switches, buttons, notices, empty states, DataTables).
+- [ ] Checks: the settings pages in the layout, typography, targets and a11y tests; a rule against sections not in cards
+  and fields not built from Field and Input.
+
+## Future release: themes authored in Figma (owner, 2026-10-12)
+
+Figma feeds the design system. A new theme always starts from the existing Light and Dark themes. From any part of the
+design system that can be adjusted (a component's tokens, the Edit dialog), "Open in Figma" opens that component in Figma, in
+a new Figma file made for that theme (the Plenix variables copied in as the theme's starting values). Edits to the theme's
+variables come back as token changes: a pull request that rebuilds and runs the checks, like the Edit dialog's Save.
+Needs Figma's variables API (Enterprise) or the plugin route; on Starter the call limit throttles it.
+- [x] (0.31.44) The entry points in the UI: "Open in Figma" beside Edit, and "New theme in Figma" on the Themes page,
+  marked as coming in a future release.
+- [ ] Build it (future release).
+
 ## The complete library (owner, 2026-10-11)
 
 Owner: "I am building this as a cdn so that any app i build will use whatever is needed and it has the entire libraries

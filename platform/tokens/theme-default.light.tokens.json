@@ -96,6 +96,11 @@
       "$value": "{plx-ref.color-blue-600}",
       "$type": "color"
     },
+    "content-link-visited": {
+      "$value": "{plx-ref.color-purple-visited}",
+      "$type": "color",
+      "$description": "A visited link: the standard visited purple, 11.0:1 on surface-default (owner, 2026-10-12)."
+    },
     "border-default": {
       "$value": "{plx-ref.color-gray-300}",
       "$type": "color"
@@ -225,8 +230,9 @@
       "$type": "color"
     },
     "feedback-warning-solid": {
-      "$value": "{plx-ref.color-brown-500}",
-      "$type": "color"
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$description": "The warning solid (dots, bars, marks; white text on it): brown-800, 8.3:1 with white (owner, 2026-10-12)."
     },
     "feedback-warning-on-solid": {
       "$value": "{plx-ref.color-white}",
@@ -253,8 +259,9 @@
       "$type": "color"
     },
     "feedback-danger-solid": {
-      "$value": "{plx-ref.color-red-500}",
-      "$type": "color"
+      "$value": "{plx-ref.color-red-700}",
+      "$type": "color",
+      "$description": "The danger solid (dots, bars, marks; white text on it): red-700, 7.0:1 with white (owner, 2026-10-12)."
     },
     "feedback-danger-on-solid": {
       "$value": "{plx-ref.color-white}",
@@ -386,8 +393,9 @@
       "$type": "color"
     },
     "control-border": {
-      "$value": "{plx-ref.color-gray-300}",
-      "$type": "color"
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color",
+      "$description": "The edge of a field or control: gray-500, 3.2:1 on the control background (WCAG 1.4.11; owner, 2026-10-12)."
     },
     "avatar-background": {
       "$value": "{plx-ref.color-blue-600}",

@@ -6,3 +6,24 @@
 .plx-content-grid--lg{--plx-comp-content-grid-min:var(--plx-ref-size-240px);}
 .plx-content-grid__item{display:flex;flex-direction:column;min-inline-size:0;}
 .plx-content-grid__item>*{flex-grow:1;}
+/* masonry: columns of the card width, each item at its own height, filled top to bottom (CSS columns); a masonry grid
+   where the browser has one (it fills row by row) */
+.plx-content-grid--masonry{column-gap:var(--plx-comp-content-grid-gap);column-width:var(--plx-comp-content-grid-min);display:block;}
+.plx-content-grid--masonry>.plx-content-grid__item{break-inside:avoid;margin-block-end:var(--plx-comp-content-grid-masonry-row-gap);}
+@supports (grid-template-rows: masonry){
+.plx-content-grid--masonry{display:grid;grid-template-rows:masonry;}
+.plx-content-grid--masonry>.plx-content-grid__item{margin-block-end:0;}
+}
+/* justified rows: rows of the size's height that fill the width, each item widened by its ratio; the last row keeps its
+   items at their own width (the spacer after it takes the rest) */
+.plx-content-grid--justified{column-gap:var(--plx-comp-content-grid-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-content-grid-row-gap);}
+.plx-content-grid--justified::after{content:"";flex-grow:var(--plx-comp-content-grid-justified-last-row-grow);}
+.plx-content-grid--justified>.plx-content-grid__item{block-size:var(--plx-comp-content-grid-min);overflow:hidden;}
+.plx-content-grid--justified>.plx-content-grid__item>*{block-size:100%;min-block-size:0;}
+.plx-content-grid--justified>[data-plx-ratio="1-1"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-1-1));flex-grow:var(--plx-comp-content-grid-ratio-1-1);}
+.plx-content-grid--justified>[data-plx-ratio="4-3"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-4-3));flex-grow:var(--plx-comp-content-grid-ratio-4-3);}
+.plx-content-grid--justified>[data-plx-ratio="3-2"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-3-2));flex-grow:var(--plx-comp-content-grid-ratio-3-2);}
+.plx-content-grid--justified>[data-plx-ratio="16-9"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-16-9));flex-grow:var(--plx-comp-content-grid-ratio-16-9);}
+.plx-content-grid--justified>[data-plx-ratio="21-9"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-21-9));flex-grow:var(--plx-comp-content-grid-ratio-21-9);}
+.plx-content-grid--justified>[data-plx-ratio="3-4"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-3-4));flex-grow:var(--plx-comp-content-grid-ratio-3-4);}
+.plx-content-grid--justified>[data-plx-ratio="9-16"]{flex-basis:calc(var(--plx-comp-content-grid-min) * var(--plx-comp-content-grid-ratio-9-16));flex-grow:var(--plx-comp-content-grid-ratio-9-16);}

@@ -183,7 +183,7 @@ function MetaGroup({ group, index, fields, onField, collapsed, onToggle, expande
         ))}
         {extra > 0 ? (
           <div className="plx-u-flex">
-            <ShowMore variant="link" size="sm" expanded={expanded} count={'+' + extra} onToggle={onShowMore} />
+            <ShowMore variant="ghost" size="sm" expanded={expanded} count={'+' + extra} onToggle={onShowMore} />
           </div>
         ) : null}
       </Stack>

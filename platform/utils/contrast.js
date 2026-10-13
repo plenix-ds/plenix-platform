@@ -36,6 +36,7 @@ export const CONTRAST_PAIRS = Object.freeze([
   { fg: 'content-muted', bg: 'surface-default', rule: T, use: 'Secondary text on a surface' },
   { fg: 'content-muted', bg: 'surface-canvas', rule: T, use: 'Secondary text on the canvas' },
   { fg: 'content-link', bg: 'surface-default', rule: T, use: 'Links on a surface' },
+  { fg: 'content-link-visited', bg: 'surface-default', rule: T, use: 'Visited links on a surface' },
   { fg: 'content-inverse', bg: 'surface-inverse', rule: T, use: 'Text on the inverse surface' },
   { fg: 'field-placeholder', bg: 'control-background', rule: T, use: 'Placeholder text in a field' },
   { fg: 'action-primary-content', bg: 'action-primary-background', rule: T, use: 'Primary button label' },

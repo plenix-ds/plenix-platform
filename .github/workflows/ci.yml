@@ -106,3 +106,6 @@ jobs:
 
       - name: "Landmarks and heading order on the app pages (known findings may only go down)"
         run: node tests/semantic-html.test.js
+
+      - name: "Brand rules match the brand tokens (clear space, minimum sizes, backgrounds)"
+        run: node tests/brand-rules.test.js

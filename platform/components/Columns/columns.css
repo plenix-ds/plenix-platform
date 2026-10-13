@@ -7,3 +7,17 @@
 .plx-columns--gap-lg{column-gap:var(--plx-comp-columns-gap-lg-gap);}
 .plx-columns--divided>*{min-inline-size:0;padding-block-end:var(--plx-comp-columns-divided-padding-block);padding-block-start:var(--plx-comp-columns-divided-padding-block);padding-inline-end:var(--plx-comp-columns-divided-padding-inline);padding-inline-start:var(--plx-comp-columns-divided-padding-inline);}
 .plx-columns--divided>*+*{border-inline-start-color:var(--plx-comp-columns-divided-border-inline-start-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-columns-divided-border-inline-start-width);}
+/* a sidebar beside the main column (two columns): the narrow column at the start or at the end */
+.plx-columns--sidebar-start{grid-template-columns:var(--plx-comp-columns-sidebar-start-columns);}
+.plx-columns--sidebar-end{grid-template-columns:var(--plx-comp-columns-sidebar-end-columns);}
+/* collapse: one column below a window class (the main region's width, Platforms Standard 3.3: Narrow < 600px, Medium < 840px) */
+@container main-region (max-width: 839px){
+.plx-columns.plx-columns--collapse-below-wide{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-columns-collapse-row-gap);}
+.plx-columns--collapse-below-wide.plx-columns--divided{row-gap:0;}
+.plx-columns--collapse-below-wide.plx-columns--divided>*+*{border-block-start-color:var(--plx-comp-columns-collapse-divider-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-columns-collapse-divider-width);border-inline-start-width:0;}
+}
+@container main-region (max-width: 599px){
+.plx-columns.plx-columns--collapse-below-medium{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-columns-collapse-row-gap);}
+.plx-columns--collapse-below-medium.plx-columns--divided{row-gap:0;}
+.plx-columns--collapse-below-medium.plx-columns--divided>*+*{border-block-start-color:var(--plx-comp-columns-collapse-divider-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-columns-collapse-divider-width);border-inline-start-width:0;}
+}

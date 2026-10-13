@@ -193,6 +193,16 @@
       "$value": "#dff6dd",
       "$type": "color"
     },
+    "color-purple-visited": {
+      "$value": "#551a8b",
+      "$type": "color",
+      "$description": "The standard visited-link purple (the browsers' default :visited color, #551A8B): visited links in the light theme (owner, 2026-10-12). 11.0:1 on white."
+    },
+    "color-purple-visited-light": {
+      "$value": "#d7aefb",
+      "$type": "color",
+      "$description": "The light counterpart of purple-visited for the dark theme (Google's purple 200, #D7AEFB): 5.3:1 on surface-default (#444444) and 8.9:1 on the dark canvas (owner, 2026-10-12)."
+    },
     "font-size-09": {
       "$value": "0.5625rem",
       "$type": "dimension",

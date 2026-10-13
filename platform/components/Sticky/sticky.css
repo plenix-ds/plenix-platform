@@ -1,0 +1,17 @@
+/* Plenix · Sticky (platform/components/Sticky): a region that stays at the top or bottom edge of its scroll area (or is fixed to
+   an edge of the window), on the sticky layer, with a shadow while stuck. The browser reports the stuck state through a
+   scroll-state container query; .is-stuck draws it (Sticky stuck, the documentation). */
+.plx-sticky{container-type:scroll-state;position:sticky;z-index:var(--plx-comp-sticky-z-index);}
+.plx-sticky--top{inset-block-start:0;}
+.plx-sticky--bottom{inset-block-end:0;}
+.plx-sticky--fixed{inset-inline-end:0;inset-inline-start:0;position:fixed;}
+.plx-sticky__body{background-color:var(--plx-comp-sticky-background);box-shadow:none;box-sizing:border-box;color:var(--plx-comp-sticky-text);transition-duration:var(--plx-comp-sticky-transition-duration);transition-property:box-shadow;transition-timing-function:var(--plx-comp-sticky-transition-easing);}
+/* the shadow: while stuck (default), always (a fixed bar), or never */
+.plx-sticky--shadow-stuck.is-stuck>.plx-sticky__body,.plx-sticky--shadow-always>.plx-sticky__body{box-shadow:var(--plx-comp-sticky-stuck-shadow);}
+@container scroll-state(stuck: top){.plx-sticky--top.plx-sticky--shadow-stuck>.plx-sticky__body{box-shadow:var(--plx-comp-sticky-stuck-shadow);}}
+@container scroll-state(stuck: bottom){.plx-sticky--bottom.plx-sticky--shadow-stuck>.plx-sticky__body{box-shadow:var(--plx-comp-sticky-stuck-shadow);}}
+/* the device's safe-area insets: on the stuck edge and both sides */
+.plx-sticky--safe-area>.plx-sticky__body{padding-inline-end:var(--plx-comp-sticky-safe-area-end);padding-inline-start:var(--plx-comp-sticky-safe-area-start);}
+.plx-sticky--safe-area.plx-sticky--top>.plx-sticky__body{padding-block-start:var(--plx-comp-sticky-safe-area-top);}
+.plx-sticky--safe-area.plx-sticky--bottom>.plx-sticky__body{padding-block-end:var(--plx-comp-sticky-safe-area-bottom);}
+@media (prefers-reduced-motion: reduce){.plx-sticky__body{transition-duration:0s;}}

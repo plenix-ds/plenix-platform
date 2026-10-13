@@ -258,7 +258,7 @@ function EmailTemplates({ act }) {
       <SettingsSection card>
         <DataTable label="Email templates" data={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
           { title: 'Template', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'File', field: 'file', kind: 'data' },
-          { title: 'Actions', field: 'actions', kind: 'center', headerSort: false, render: (r) => <Button size="xs" variant="link" aria-label={'Edit ' + r.name} onClick={act('Edit ' + r.file, 'info')}>Edit</Button> }]} />
+          { title: 'Actions', field: 'actions', kind: 'center', headerSort: false, render: (r) => <Button size="xs" variant="ghost" aria-label={'Edit ' + r.name} onClick={act('Edit ' + r.file, 'info')}>Edit</Button> }]} />
       </SettingsSection>
     </div>
   );
@@ -304,7 +304,7 @@ function Server({ act }) {
             <ButtonGroup label="Data entities"><B icon="add" label="Create" act={act} /><B icon="save-doc" label="Save all modules" act={act} /></ButtonGroup>
           </>) },
         { value: 'versions', label: 'Versions', content: (
-          <>{kv(D.VERSIONS)}<CountNote>Full dependency list runs to 100+ jars · <Button size="xs" variant="link" onClick={act('View all', 'info')}>View all</Button></CountNote></>) },
+          <>{kv(D.VERSIONS)}<CountNote>Full dependency list runs to 100+ jars · <Button size="xs" variant="ghost" onClick={act('View all', 'info')}>View all</Button></CountNote></>) },
         { value: 'logs', label: 'Logs', content: (
           <CodeBlock>{D.LOG_PATH}</CodeBlock>) },
       ]} />
@@ -346,7 +346,7 @@ function Database({ act }) {
               </Bar>
               <Inline justify="end" className="plx-u-mb-stack-sm"><Button size="sm" icon="expand" onClick={() => setExpanded(true)}>Expand</Button></Inline>
               {grid('Table: ' + table)}
-              <CountNote>{'Found ' + D.DB_TOTAL.records + ' Records · Page 1 of ' + D.DB_TOTAL.pages + ' · '}<Button size="xs" variant="link" onClick={act('Forward', 'info')}>Forward »</Button></CountNote>
+              <CountNote>{'Found ' + D.DB_TOTAL.records + ' Records · Page 1 of ' + D.DB_TOTAL.pages + ' · '}<Button size="xs" variant="ghost" onClick={act('Forward', 'info')}>Forward »</Button></CountNote>
               <Dialog open={expanded} onClose={() => setExpanded(false)} title={'Table: ' + table} icon="expand" size="full">{grid('Table: ' + table + ', expanded')}</Dialog>
             </>) },
           { value: 'fields', label: 'Customize fields', content: <Lead>Configure the fields available on this table — the same editor as Files &gt; Fields, scoped to this table.</Lead> },

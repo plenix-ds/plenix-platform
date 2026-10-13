@@ -1,0 +1,30 @@
+{
+  "$description": "Columns (library wave 3, extend): the tokens of the sidebar ratios and of the collapse into one column below a window class. The count, gap and divided tokens are in components.tokens.json.",
+  "plx-comp": {
+    "columns-sidebar-start-columns": {
+      "$value": "minmax(0, 1fr) minmax(0, 2fr)",
+      "$type": "string",
+      "$description": "Sidebar at the start: the narrow first column takes one third of the row, the main column two thirds."
+    },
+    "columns-sidebar-end-columns": {
+      "$value": "minmax(0, 2fr) minmax(0, 1fr)",
+      "$type": "string",
+      "$description": "Sidebar at the end: the main column takes two thirds of the row, the narrow last column one third."
+    },
+    "columns-collapse-row-gap": {
+      "$value": "{plx-sys.space-layout-sm}",
+      "$type": "dimension",
+      "$description": "Collapsed into one column: the space between the stacked columns (the same layout step as the medium column gap)."
+    },
+    "columns-collapse-divider-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "Collapsed divided columns: the line above each column after the first (the divider color of the side-by-side lines)."
+    },
+    "columns-collapse-divider-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Collapsed divided columns: the width of the line above each column after the first."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$description": "Library part w03B (wave 3, lane B): the iOS and Android counterparts of the brand pages, the illustrations, the sticky and fixed regions and Stack's Center, Bleed and reorder. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "foundations|Logos": { "ios": ["ios-foundations|Branding"], "android": ["android-foundations|Images"] },
+    "foundations|Wordmarks": { "ios": ["ios-foundations|Branding"], "android": ["android-foundations|Images"] },
+    "foundations|Brand marks": { "ios": ["ios-foundations|Branding"], "android": ["android-foundations|Images"] },
+    "foundations|Product marks": { "ios": ["ios-content|App icons"], "android": ["android-foundations|Images"] },
+    "foundations|Brand application": { "ios": ["ios-foundations|Branding"], "android": ["android-foundations|Themes and color roles"] },
+    "foundations|Illustrations": { "ios": ["ios-content|Images"], "android": ["android-foundations|Images"] },
+    "content|Illustration": { "ios": ["ios-content|Image views"], "android": ["android-content|Images"] },
+    "layout|Sticky region": { "ios": ["ios-layout|Scroll views"], "android": ["android-layout|Scrolling containers"] },
+    "layout|Fixed region": { "ios": ["ios-layout|Layout"], "android": ["android-layout|Edge to edge and insets"] },
+    "layout|Center": { "ios": ["ios-layout|Layout"], "android": ["android-layout|Column, Row and Box"] },
+    "layout|Bleed": { "ios": ["ios-layout|Layout"], "android": ["android-layout|Edge to edge and insets"] },
+    "layout|Reorder": { "ios": ["ios-layout|Layout"], "android": ["android-layout|Reflow"] }
+  }
+}

@@ -1,7 +1,7 @@
 /* Plenix · bookmarks (bookmarks/bookmarks.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 199: collection chips, the bookmarks as Cards in a ContentGrid, the open one in a SidePanel. The open bookmark is a
    screen (#/bookmark/<id>, a history entry: Back closes it; Platforms Standard 4.3). */
-import { EntityHeader, Button, Card, Chip, ContentGrid, Icon, Inline, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
+import { EntityHeader, Button, Card, Chip, ContentGrid, Icon, Inline, Link, PageContent, SidePanel, Stack, Tag, TagList, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_BOOKMARKS } from '../suite/shared.jsx';
 const { useState } = React;
@@ -36,7 +36,7 @@ export function BookmarksScreen({ screen }) {
       {bookmark ? (
         <SidePanel title={bookmark.title} icon="bookmark" onOpenChange={(o) => { if (!o) setSel(null); }}>
           <Stack gap="md">
-            <Text as="a" variant="link" href={'https://' + bookmark.url} target="_blank" rel="noreferrer">{bookmark.url}</Text>
+            <Link href={'https://' + bookmark.url} external>{bookmark.url}</Link>
             <TagList label="Tags">{bookmark.tags.map((t) => <Tag key={t}>{t}</Tag>)}</TagList>
             <ClassificationWidget value={meta[bookmark.id]} onChange={(m) => setMeta((prev) => ({ ...prev, [bookmark.id]: m }))} />
           </Stack>

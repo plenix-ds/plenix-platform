@@ -10,7 +10,7 @@
    Props:
      title: the entity's name; 18px bold; a long name wraps, never cut off
      media: the entity's picture, always shown: { person, src, color } draws an Avatar (48px); { icon, hue } a generic icon for
-       the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray); or an element
+       the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray), or on the surface (hue: surface, a white tile); or an element
      context: the line above the title (optional; not a breadcrumb): a placeholder such as the item's category, or a control
        that places the entity (a period navigator); what it holds is still to be defined per capability
      status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: neutral, info, success,
@@ -48,7 +48,7 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { StatusDot } from '../../components/StatusDot/StatusDot.jsx';
 
-const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
+const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 
 function Media({ media }) {
   if (React.isValidElement(media)) return <span className="plx-entity-header__media">{media}</span>;

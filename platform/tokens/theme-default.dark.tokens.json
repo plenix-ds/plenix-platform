@@ -102,6 +102,11 @@
       "$value": "{plx-ref.color-blue-200}",
       "$type": "color"
     },
+    "content-link-visited": {
+      "$value": "{plx-ref.color-purple-visited-light}",
+      "$type": "color",
+      "$description": "A visited link: the light visited purple, 5.3:1 on surface-default (dark theme; owner, 2026-10-12)."
+    },
     "border-default": {
       "$value": "{plx-ref.color-gray-700}",
       "$type": "color"
@@ -143,8 +148,9 @@
       "$type": "color"
     },
     "focus-ring-color": {
-      "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$value": "{plx-ref.color-blue-300}",
+      "$type": "color",
+      "$description": "The focus color: blue-300, 5.2:1 on surface-default (dark theme; owner, 2026-10-12)."
     },
     "feedback-neutral-solid": {
       "$value": "{plx-ref.color-gray-600}",
@@ -175,20 +181,24 @@
       "$type": "color"
     },
     "feedback-info-solid": {
-      "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$value": "{plx-ref.color-blue-300}",
+      "$type": "color",
+      "$description": "The info solid (dots, bars, marks): blue-300, 5.2:1 on surface-default; dark text on it (dark theme; owner, 2026-10-12)."
     },
     "feedback-info-on-solid": {
-      "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color",
+      "$description": "Text on the info solid: gray-950, at least 5.9:1 on every dark solid (dark theme; owner, 2026-10-12)."
     },
     "feedback-info-solid-label": {
-      "$value": "{plx-ref.color-blue-400}",
-      "$type": "color"
+      "$value": "{plx-ref.color-blue-300}",
+      "$type": "color",
+      "$description": "The info badge and count-pill fill: blue-300, the solid, with dark text (dark theme; owner, 2026-10-12)."
     },
     "feedback-info-solid-border": {
       "$value": "{plx-ref.color-blue-600}",
-      "$type": "color"
+      "$type": "color",
+      "$description": "The info badge edge: blue-600, two shades darker than its blue-300 fill (dark theme; owner, 2026-10-12)."
     },
     "feedback-info-soft": {
       "$value": "{plx-ref.color-gray-700}",
@@ -203,20 +213,24 @@
       "$type": "color"
     },
     "feedback-success-solid": {
-      "$value": "{plx-ref.color-green-500}",
-      "$type": "color"
+      "$value": "{plx-ref.color-green-300}",
+      "$type": "color",
+      "$description": "The success solid (dots, bars, marks): green-300, 3.5:1 on surface-default; dark text on it (dark theme; owner, 2026-10-12)."
     },
     "feedback-success-on-solid": {
-      "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color",
+      "$description": "Text on the success solid: gray-950, at least 5.9:1 on every dark solid (dark theme; owner, 2026-10-12)."
     },
     "feedback-success-solid-label": {
-      "$value": "{plx-ref.color-green-500}",
-      "$type": "color"
+      "$value": "{plx-ref.color-green-300}",
+      "$type": "color",
+      "$description": "The success badge and count-pill fill: green-300, the solid, with dark text (dark theme; owner, 2026-10-12)."
     },
     "feedback-success-solid-border": {
       "$value": "{plx-ref.color-green-700}",
-      "$type": "color"
+      "$type": "color",
+      "$description": "The success badge edge: green-700, two shades darker than its green-300 fill (dark theme; owner, 2026-10-12)."
     },
     "feedback-success-soft": {
       "$value": "{plx-ref.color-gray-700}",
@@ -227,24 +241,29 @@
       "$type": "color"
     },
     "feedback-success-content": {
-      "$value": "{plx-ref.color-green-200}",
-      "$type": "color"
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$description": "Success text on the soft success fill: green-100, 6.2:1 (dark theme; owner, 2026-10-12)."
     },
     "feedback-warning-solid": {
-      "$value": "{plx-ref.color-brown-500}",
-      "$type": "color"
+      "$value": "{plx-ref.color-brown-300}",
+      "$type": "color",
+      "$description": "The warning solid (dots, bars, marks): brown-300, 4.7:1 on surface-default; dark text on it (dark theme; owner, 2026-10-12)."
     },
     "feedback-warning-on-solid": {
-      "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color",
+      "$description": "Text on the warning solid: gray-950, at least 5.9:1 on every dark solid (dark theme; owner, 2026-10-12)."
     },
     "feedback-warning-solid-label": {
-      "$value": "{plx-ref.color-brown-800}",
-      "$type": "color"
+      "$value": "{plx-ref.color-brown-300}",
+      "$type": "color",
+      "$description": "The warning badge and count-pill fill: brown-300, the solid, with dark text (dark theme; owner, 2026-10-12)."
     },
     "feedback-warning-solid-border": {
-      "$value": "{plx-ref.color-brown-950}",
-      "$type": "color"
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$description": "The warning badge edge: brown-800, two shades darker than its brown-300 fill (dark theme; owner, 2026-10-12)."
     },
     "feedback-warning-soft": {
       "$value": "{plx-ref.color-gray-700}",
@@ -259,20 +278,24 @@
       "$type": "color"
     },
     "feedback-danger-solid": {
-      "$value": "{plx-ref.color-red-500}",
-      "$type": "color"
+      "$value": "{plx-ref.color-red-200}",
+      "$type": "color",
+      "$description": "The danger solid (dots, bars, marks): red-200, 5.3:1 on surface-default; dark text on it (dark theme; owner, 2026-10-12)."
     },
     "feedback-danger-on-solid": {
-      "$value": "{plx-ref.color-white}",
-      "$type": "color"
+      "$value": "{plx-ref.color-gray-950}",
+      "$type": "color",
+      "$description": "Text on the danger solid: gray-950, at least 5.9:1 on every dark solid (dark theme; owner, 2026-10-12)."
     },
     "feedback-danger-solid-label": {
-      "$value": "{plx-ref.color-red-700}",
-      "$type": "color"
+      "$value": "{plx-ref.color-red-200}",
+      "$type": "color",
+      "$description": "The danger badge and count-pill fill: red-200, the solid, with dark text (dark theme; owner, 2026-10-12)."
     },
     "feedback-danger-solid-border": {
-      "$value": "{plx-ref.color-red-800}",
-      "$type": "color"
+      "$value": "{plx-ref.color-red-500}",
+      "$type": "color",
+      "$description": "The danger badge edge: red-500, two shades darker than its red-200 fill (dark theme; owner, 2026-10-12)."
     },
     "feedback-danger-soft": {
       "$value": "{plx-ref.color-gray-700}",
@@ -283,8 +306,9 @@
       "$type": "color"
     },
     "feedback-danger-content": {
-      "$value": "{plx-ref.color-red-200}",
-      "$type": "color"
+      "$value": "{plx-ref.color-red-100}",
+      "$type": "color",
+      "$description": "Danger text on the soft danger fill: red-100, 6.0:1 (dark theme; owner, 2026-10-12)."
     },
     "feedback-danger-soft-content": {
       "$value": "{plx-ref.color-red-100}",
@@ -392,8 +416,9 @@
       "$type": "color"
     },
     "control-border": {
-      "$value": "{plx-ref.color-gray-700}",
-      "$type": "color"
+      "$value": "{plx-ref.color-gray-400}",
+      "$type": "color",
+      "$description": "The edge of a field or control: gray-400, 4.0:1 on the control background (dark theme; owner, 2026-10-12)."
     },
     "avatar-background": {
       "$value": "{plx-ref.color-blue-300}",
