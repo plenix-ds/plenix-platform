@@ -1,0 +1,13 @@
+{
+  "$description": "Library part w04B (wave 4, lane B): the iOS and Android counterparts of the availability indicator, presence and online status, the avatar group, the profile summary, circular progress, the QR code and the version label. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "feedback|Availability indicator": { "ios": ["ios-content|Labels"], "android": ["android-content|Badge"] },
+    "content|Presence": { "ios": ["ios-content|Image views"], "android": ["android-content|Avatar"] },
+    "content|Online status": { "ios": ["ios-content|Labels"], "android": ["android-content|Label"] },
+    "content|Avatar group": { "ios": ["ios-content|Image views"], "android": ["android-content|Avatar"] },
+    "content|Profile summary": { "ios": ["ios-content|Labels"], "android": ["android-content|Avatar"] },
+    "feedback|Circular progress": { "ios": ["ios-feedback|Progress indicators"], "android": ["android-feedback|Progress indicators"] },
+    "content|QR code": { "ios": ["ios-content|Image views"], "android": ["android-content|Images"] },
+    "content|Version label": { "ios": ["ios-content|Labels"], "android": ["android-content|Label"] }
+  }
+}

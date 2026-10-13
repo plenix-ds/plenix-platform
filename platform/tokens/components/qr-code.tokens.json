@@ -1,0 +1,100 @@
+{
+  "$description": "QRCode (platform/components/QRCode, library wave 4, lane B): its component tokens.",
+  "plx-comp": {
+    "qr-code-plate-color": {
+      "$value": "{plx-sys.content-on-media}",
+      "$type": "color",
+      "$description": "QRCode: the light plate under the modules, the quiet zone included (white in both modes: the media roles do not follow the theme)."
+    },
+    "qr-code-module-color": {
+      "$value": "{plx-sys.surface-media}",
+      "$type": "color",
+      "$description": "QRCode: the dark modules, and a logo in the center (black in both modes: the media roles do not follow the theme)."
+    },
+    "qr-code-plate-radius": {
+      "$value": "{plx-sys.radius-media-4px}",
+      "$type": "dimension",
+      "$description": "QRCode: the plate’s corners (inside the quiet zone, so they never touch a module)."
+    },
+    "qr-code-sm-size": {
+      "$value": "{plx-ref.size-96px}",
+      "$type": "dimension",
+      "$description": "QRCode size sm: the code with its quiet zone (96px)."
+    },
+    "qr-code-md-size": {
+      "$value": "{plx-ref.size-160px}",
+      "$type": "dimension",
+      "$description": "QRCode size md: the code with its quiet zone (160px, the default)."
+    },
+    "qr-code-lg-size": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "QRCode size lg: the code with its quiet zone (240px)."
+    },
+    "qr-code-sm-logo-size": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "QRCode size sm: the logo’s box, inside the cleared center."
+    },
+    "qr-code-md-logo-size": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "QRCode size md: the logo’s box, inside the cleared center."
+    },
+    "qr-code-lg-logo-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "QRCode size lg: the logo’s box, inside the cleared center."
+    },
+    "qr-code-caption-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "QRCode: the gap between the code and its caption."
+    },
+    "qr-code-value-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "QRCode: the gap between the caption and the value."
+    },
+    "qr-code-caption-color": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "QRCode: the caption (what scanning does)."
+    },
+    "qr-code-caption-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "QRCode: the caption’s size (12px)."
+    },
+    "qr-code-caption-line-height": {
+      "$value": "{plx-ref.line-height-snug}",
+      "$type": "number",
+      "$description": "QRCode: the line height of the caption and the value."
+    },
+    "qr-code-value-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "QRCode: the encoded value under the caption."
+    },
+    "qr-code-value-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "QRCode: the value’s face (the data font: a URL or a code)."
+    },
+    "qr-code-value-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "QRCode: the value’s size (11px)."
+    },
+    "qr-code-on-accent-caption-color": {
+      "$value": "{plx-sys.accent-content}",
+      "$type": "color",
+      "$description": "QRCode on accent: the caption."
+    },
+    "qr-code-on-accent-value-color": {
+      "$value": "{plx-sys.accent-content-muted}",
+      "$type": "color",
+      "$description": "QRCode on accent: the value."
+    }
+  }
+}

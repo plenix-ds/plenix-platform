@@ -1,0 +1,6 @@
+/* Library part w04B (wave 4, lane B): AvatarGroup, Persona, ProgressCircle, QRCode and VersionLabel (StatusDot's and Avatar's stylesheets are already public) */
+@import url("../components/AvatarGroup/avatar-group.css");
+@import url("../components/Persona/persona.css");
+@import url("../components/ProgressCircle/progress-circle.css");
+@import url("../components/QRCode/qr-code.css");
+@import url("../components/VersionLabel/version-label.css");

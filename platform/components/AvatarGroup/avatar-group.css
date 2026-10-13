@@ -1,0 +1,18 @@
+/* Plenix · AvatarGroup (platform/components/AvatarGroup). A row of avatars of one size: overlapped in a stack (each ringed
+   in the surface color) or spaced in a wrapping grid, then a +N tile in the neutral fill. Anatomy and API: AvatarGroup.jsx. */
+.plx-avatar-group{align-items:center;display:inline-flex;flex-wrap:nowrap;min-inline-size:0;}
+/* stack: each avatar after the first overlaps the one before it; the ring keeps the edges apart */
+.plx-avatar-group--stack .plx-avatar-group__avatar,.plx-avatar-group--stack .plx-avatar-group__more{box-shadow:var(--plx-comp-avatar-group-ring);}
+.plx-avatar-group--stack.plx-avatar-group--xs>:not(:first-child){margin-inline-start:var(--plx-comp-avatar-group-xs-overlap);}
+.plx-avatar-group--stack.plx-avatar-group--sm>:not(:first-child){margin-inline-start:var(--plx-comp-avatar-group-sm-overlap);}
+.plx-avatar-group--stack.plx-avatar-group--md>:not(:first-child){margin-inline-start:var(--plx-comp-avatar-group-md-overlap);}
+.plx-avatar-group--stack.plx-avatar-group--lg>:not(:first-child){margin-inline-start:var(--plx-comp-avatar-group-lg-overlap);}
+/* grid: spaced, wrapping to more rows */
+.plx-avatar-group--grid{column-gap:var(--plx-comp-avatar-group-gap);flex-wrap:wrap;row-gap:var(--plx-comp-avatar-group-gap);}
+/* the +N tile: the neutral fill, the count in the data font */
+.plx-avatar.plx-avatar-group__more{background-color:var(--plx-comp-avatar-group-more-background);color:var(--plx-comp-avatar-group-more-text);font-family:var(--plx-comp-avatar-group-more-font-family);}
+/* the +N tile as a button (onMore): no frame of its own; focus changes the tile's ring to the focus color */
+.plx-avatar-group__more-button{background-color:transparent;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-style:none;cursor:pointer;display:inline-flex;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-avatar-group__more-button:focus-visible{outline-style:none;}
+.plx-avatar-group__more-button:focus-visible .plx-avatar-group__more{box-shadow:var(--plx-comp-avatar-group-focus-ring);}
+.plx-avatar-group__more-button:hover .plx-avatar-group__more{background-color:var(--plx-comp-avatar-group-more-background-hover);}

@@ -1,0 +1,105 @@
+{
+  "$description": "Persona (platform/components/Persona, library wave 4, lane B): its component tokens. The avatar uses Avatar’s tokens, the role Badge’s.",
+  "plx-comp": {
+    "persona-name-color": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Persona: the name."
+    },
+    "persona-name-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "Persona: the name’s weight."
+    },
+    "persona-secondary-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Persona: the detail under the name."
+    },
+    "persona-line-height": {
+      "$value": "{plx-ref.line-height-snug}",
+      "$type": "number",
+      "$description": "Persona: the line height of the name and the detail."
+    },
+    "persona-role-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Persona: the gap between the name and the role badge."
+    },
+    "persona-xs-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Persona size xs (24px avatar): the gap after the avatar."
+    },
+    "persona-xs-name-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Persona size xs: the name (12px)."
+    },
+    "persona-xs-secondary-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "Persona size xs: the detail (11px)."
+    },
+    "persona-sm-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Persona size sm (28px avatar): the gap after the avatar."
+    },
+    "persona-sm-name-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Persona size sm: the name (13px)."
+    },
+    "persona-sm-secondary-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Persona size sm: the detail (12px)."
+    },
+    "persona-md-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Persona size md (32px avatar): the gap after the avatar."
+    },
+    "persona-md-name-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Persona size md: the name (13px)."
+    },
+    "persona-md-secondary-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Persona size md: the detail (12px)."
+    },
+    "persona-lg-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "Persona size lg (40px avatar): the gap after the avatar."
+    },
+    "persona-lg-name-font-size": {
+      "$value": "{plx-ref.font-size-14}",
+      "$type": "dimension",
+      "$description": "Persona size lg: the name (14px)."
+    },
+    "persona-lg-secondary-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Persona size lg: the detail (13px)."
+    },
+    "persona-xl-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "Persona size xl (48px avatar): the gap after the avatar."
+    },
+    "persona-xl-name-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "Persona size xl: the name (15px)."
+    },
+    "persona-xl-secondary-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "Persona size xl: the detail (13px)."
+    }
+  }
+}

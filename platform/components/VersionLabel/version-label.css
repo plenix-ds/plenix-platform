@@ -1,0 +1,7 @@
+/* Plenix · VersionLabel (platform/components/VersionLabel). The number in the data font, then the qualifier on a neutral
+   badge, on one baseline. Anatomy and API: VersionLabel.jsx. */
+.plx-version-label{align-items:center;column-gap:var(--plx-comp-version-label-gap);display:inline-flex;vertical-align:middle;white-space:nowrap;}
+.plx-version-label__number{color:var(--plx-comp-version-label-color);font-family:var(--plx-comp-version-label-font-family);font-variant-numeric:tabular-nums;line-height:var(--plx-comp-version-label-line-height);}
+.plx-version-label--md .plx-version-label__number{font-size:var(--plx-comp-version-label-md-font-size);}
+.plx-version-label--sm .plx-version-label__number{font-size:var(--plx-comp-version-label-sm-font-size);}
+.plx-version-label__status{flex-shrink:0;}

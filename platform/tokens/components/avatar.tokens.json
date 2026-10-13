@@ -1,0 +1,8 @@
+{
+  "$description": "Avatar (platform/components/Avatar, library wave 4, extend): the tokens of the presence dot at its corner. The avatar's sizes, corners and colors are in components.tokens.json; the dot's own colors and sizes are StatusDot's.",
+  "plx-comp": {
+    "avatar-presence-ring-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Avatar presence: the ring around the dot, in the surface color, that separates it from the picture or the initials." },
+    "avatar-presence-ring-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Avatar presence: the ring's width." },
+    "avatar-presence-offset": { "$value": "calc(-1 * {plx-sys.border-width-medium})", "$type": "dimension", "$description": "Avatar presence: how far the ringed dot sits past the avatar's bottom and end edges (the ring's width, negated)." }
+  }
+}

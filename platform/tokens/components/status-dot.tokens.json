@@ -1,0 +1,16 @@
+{
+  "$description": "StatusDot (platform/components/StatusDot, library wave 4, extend): the tokens of the availability tones, the larger dots and the glyph. The dot's own size, corners and feedback tones are in components.tokens.json.",
+  "plx-comp": {
+    "status-dot-online-background": { "$value": "{plx-sys.status-online}", "$type": "color", "$description": "StatusDot online: the person is online and available (Status colors)." },
+    "status-dot-away-background": { "$value": "{plx-sys.status-away}", "$type": "color", "$description": "StatusDot away: the person is away (Status colors)." },
+    "status-dot-busy-background": { "$value": "{plx-sys.status-busy}", "$type": "color", "$description": "StatusDot busy: the person is busy, do not disturb (Status colors)." },
+    "status-dot-offline-background": { "$value": "{plx-sys.status-offline}", "$type": "color", "$description": "StatusDot offline: the person is offline (Status colors)." },
+    "status-dot-md-size": { "$value": "{plx-ref.size-12px}", "$type": "dimension", "$description": "StatusDot size md: the dot's width and height, and its glyph's box (12px)." },
+    "status-dot-lg-size": { "$value": "{plx-ref.size-16px}", "$type": "dimension", "$description": "StatusDot size lg: the dot's width and height, and its glyph's box (16px)." },
+    "status-dot-glyph-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "StatusDot: the glyph, cut out of the dot in the surface color." },
+    "status-dot-bar-height": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "StatusDot busy: the bar's thickness." },
+    "status-dot-bar-radius": { "$value": "{plx-sys.shape-pill}", "$type": "dimension", "$description": "StatusDot busy: the bar's rounded ends." },
+    "status-dot-md-bar-width": { "$value": "{plx-ref.glyph-size-6px}", "$type": "dimension", "$description": "StatusDot busy, size md: the bar's length." },
+    "status-dot-lg-bar-width": { "$value": "{plx-ref.size-8px}", "$type": "dimension", "$description": "StatusDot busy, size lg: the bar's length." }
+  }
+}

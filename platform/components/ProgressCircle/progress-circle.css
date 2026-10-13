@@ -1,0 +1,23 @@
+/* Plenix · ProgressCircle (platform/components/ProgressCircle). A ring: the track and the arc in a tone, drawn in SVG; the
+   named size sets the box and the stroke, which does not scale with the box. Anatomy and API: ProgressCircle.jsx. */
+.plx-progress-circle{align-items:center;display:inline-flex;flex-shrink:0;justify-content:center;position:relative;vertical-align:middle;}
+.plx-progress-circle--sm{block-size:var(--plx-comp-progress-circle-sm-size);inline-size:var(--plx-comp-progress-circle-sm-size);}
+.plx-progress-circle--md{block-size:var(--plx-comp-progress-circle-md-size);inline-size:var(--plx-comp-progress-circle-md-size);}
+.plx-progress-circle--lg{block-size:var(--plx-comp-progress-circle-lg-size);inline-size:var(--plx-comp-progress-circle-lg-size);}
+.plx-progress-circle__svg{block-size:100%;display:block;inline-size:100%;overflow:visible;}
+.plx-progress-circle__track,.plx-progress-circle__indicator{fill:none;vector-effect:non-scaling-stroke;}
+.plx-progress-circle__track{stroke:var(--plx-comp-progress-circle-track-color);}
+.plx-progress-circle__indicator{stroke-linecap:round;}
+.plx-progress-circle--sm .plx-progress-circle__track,.plx-progress-circle--sm .plx-progress-circle__indicator{stroke-width:var(--plx-comp-progress-circle-sm-stroke-width);}
+.plx-progress-circle--md .plx-progress-circle__track,.plx-progress-circle--md .plx-progress-circle__indicator{stroke-width:var(--plx-comp-progress-circle-md-stroke-width);}
+.plx-progress-circle--lg .plx-progress-circle__track,.plx-progress-circle--lg .plx-progress-circle__indicator{stroke-width:var(--plx-comp-progress-circle-lg-stroke-width);}
+/* tones: the arc, as ProgressBar's fills */
+.plx-progress-circle--info .plx-progress-circle__indicator{stroke:var(--plx-comp-progress-circle-info-color);}
+.plx-progress-circle--success .plx-progress-circle__indicator{stroke:var(--plx-comp-progress-circle-success-color);}
+.plx-progress-circle--warning .plx-progress-circle__indicator{stroke:var(--plx-comp-progress-circle-warning-color);}
+.plx-progress-circle--danger .plx-progress-circle__indicator{stroke:var(--plx-comp-progress-circle-danger-color);}
+.plx-progress-circle--neutral .plx-progress-circle__indicator{stroke:var(--plx-comp-progress-circle-neutral-color);}
+/* indeterminate: a quarter arc turns; still for people who ask for less motion (motion.css) */
+.plx-progress-circle.is-indeterminate .plx-progress-circle__svg{animation-duration:var(--plx-comp-progress-circle-animation-duration);animation-iteration-count:infinite;animation-name:motion-spin;animation-timing-function:linear;}
+/* the value in the center (size lg): placed by the ring's own centering */
+.plx-progress-circle__value{color:var(--plx-comp-progress-circle-value-color);font-family:var(--plx-comp-progress-circle-value-font-family);font-size:var(--plx-comp-progress-circle-value-font-size);font-variant-numeric:tabular-nums;line-height:var(--plx-comp-progress-circle-value-line-height);position:absolute;}

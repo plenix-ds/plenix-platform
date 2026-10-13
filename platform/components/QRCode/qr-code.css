@@ -1,0 +1,25 @@
+/* Plenix · QRCode (platform/components/QRCode). The code on its light plate (the quiet zone is part of the drawing), a
+   cleared center for a logo, and a caption with the value under it. The plate and the modules keep their colors in dark
+   mode: scanners read dark on light. Anatomy and API: QRCode.jsx. */
+.plx-qr-code{align-items:center;display:inline-flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;row-gap:var(--plx-comp-qr-code-caption-gap);}
+.plx-qr-code__frame{display:block;flex-shrink:0;position:relative;}
+.plx-qr-code__svg{background-color:var(--plx-comp-qr-code-plate-color);block-size:100%;border-bottom-left-radius:var(--plx-comp-qr-code-plate-radius);border-bottom-right-radius:var(--plx-comp-qr-code-plate-radius);border-top-left-radius:var(--plx-comp-qr-code-plate-radius);border-top-right-radius:var(--plx-comp-qr-code-plate-radius);display:block;inline-size:100%;shape-rendering:crispEdges;}
+.plx-qr-code__modules{fill:var(--plx-comp-qr-code-module-color);}
+/* the logo: centered on the cleared modules, on the plate, in the module color */
+.plx-qr-code__logo{align-items:center;color:var(--plx-comp-qr-code-module-color);display:flex;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;justify-content:center;margin-block-end:auto;margin-block-start:auto;margin-inline-end:auto;margin-inline-start:auto;overflow-x:hidden;overflow-y:hidden;position:absolute;}
+.plx-qr-code--sm .plx-qr-code__frame{block-size:var(--plx-comp-qr-code-sm-size);inline-size:var(--plx-comp-qr-code-sm-size);}
+.plx-qr-code--sm .plx-qr-code__logo{block-size:var(--plx-comp-qr-code-sm-logo-size);inline-size:var(--plx-comp-qr-code-sm-logo-size);}
+.plx-qr-code--sm .plx-qr-code__caption{max-inline-size:var(--plx-comp-qr-code-sm-size);}
+.plx-qr-code--md .plx-qr-code__frame{block-size:var(--plx-comp-qr-code-md-size);inline-size:var(--plx-comp-qr-code-md-size);}
+.plx-qr-code--md .plx-qr-code__logo{block-size:var(--plx-comp-qr-code-md-logo-size);inline-size:var(--plx-comp-qr-code-md-logo-size);}
+.plx-qr-code--md .plx-qr-code__caption{max-inline-size:var(--plx-comp-qr-code-md-size);}
+.plx-qr-code--lg .plx-qr-code__frame{block-size:var(--plx-comp-qr-code-lg-size);inline-size:var(--plx-comp-qr-code-lg-size);}
+.plx-qr-code--lg .plx-qr-code__logo{block-size:var(--plx-comp-qr-code-lg-logo-size);inline-size:var(--plx-comp-qr-code-lg-logo-size);}
+.plx-qr-code--lg .plx-qr-code__caption{max-inline-size:var(--plx-comp-qr-code-lg-size);}
+/* the caption: what scanning does, then the value in the data font */
+.plx-qr-code__caption{align-items:center;display:flex;flex-direction:column;row-gap:var(--plx-comp-qr-code-value-gap);text-align:center;}
+.plx-qr-code__text{color:var(--plx-comp-qr-code-caption-color);font-size:var(--plx-comp-qr-code-caption-font-size);line-height:var(--plx-comp-qr-code-caption-line-height);}
+.plx-qr-code__value{color:var(--plx-comp-qr-code-value-color);font-family:var(--plx-comp-qr-code-value-font-family);font-size:var(--plx-comp-qr-code-value-font-size);line-height:var(--plx-comp-qr-code-caption-line-height);overflow-wrap:anywhere;}
+/* on an accent surface: the caption and value in the accent colors; the plate stays light */
+.plx-qr-code--on-accent .plx-qr-code__text{color:var(--plx-comp-qr-code-on-accent-caption-color);}
+.plx-qr-code--on-accent .plx-qr-code__value{color:var(--plx-comp-qr-code-on-accent-value-color);}
