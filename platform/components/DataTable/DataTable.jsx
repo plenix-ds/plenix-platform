@@ -77,12 +77,15 @@
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
      Geometry (owner, 2026-10-13): the row height, the cell padding and the text size are the density's
      (--plx-sys-data-table-row-height, the cell padding tokens, --plx-sys-data-table-font-size; also a density region's),
-     drawn by the stylesheet and never measured; a density change measures nothing. Column widths are Tabulator's: it
-     measures each column's content once (and the columns React draws once more after React fills them), the columns
-     without a width share the room left, and the resize handle, Narrower, Wider and Fit to content set them. A grid built
-     while hidden is drawn again in place when it is shown.
+     drawn by the stylesheet and never measured. Column widths are Tabulator's: it measures each column's content once
+     (and the columns React draws once more after React fills them), the columns without a width share the room left,
+     and the resize handle, Narrower, Wider and Fit to content set them. A density change (the page's or the region's,
+     or the interaction) measures the columns' content once more, never a row, so a bigger density never cuts text off;
+     the widths still round up to the grid, and a width the column gives or the person chose is kept (owner,
+     2026-10-14). A grid built while hidden is drawn again in place when it is shown.
      Vertical alignment: middle (owner, 2026-10-13): everything in a cell (text, avatars, badges, icons, checkboxes,
-     buttons) sits in the middle of the row's height, in every density, in body and header cells; horizontal alignment
+     buttons) sits in the middle of the row's height, in every density and in every row (a row grown by a wrapped cell too:
+     its one-line cells sit in the middle; owner, 2026-10-14), in body and header cells; horizontal alignment
      is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own element
      (plx-data-table__value) and ends in an ellipsis.
      Virtual rendering (a grid with a height, every row one height: no "wrap" column and no groupBy): only the rows in
@@ -538,11 +541,20 @@ export function TableEngine(props) {
       });
     }).catch((err) => { if (alive) setError(err); });
 
-    // a density or interaction change: the stylesheet gives the rows their new height and padding (nothing is measured);
-    // a virtual grid takes the new row height for the rows it does not draw, and keeps the row at the top of its view
-    const mo = new MutationObserver(() => { if (tableRef.current && builtRef.current) virtualResync(tableRef.current); });
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'] });
+    // a density or interaction change: the stylesheet gives the rows their new height and padding (no row is measured);
+    // the columns' content widths are measured once again (the text size and padding changed: widths still round up to
+    // the grid; a set or chosen width is kept); a virtual grid takes the new row height for the rows it does not draw,
+    // and keeps the row at the top of its view
     const region = frameRef.current && frameRef.current.closest('[data-plx-density]');
+    const densityKey = () => ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'].map((a) => document.documentElement.getAttribute(a)).concat(region ? region.getAttribute('data-plx-density') : '').join('|');
+    let lastDensity = densityKey();
+    const mo = new MutationObserver(() => {
+      const t = tableRef.current; if (!t || !builtRef.current) return;
+      const now = densityKey(); if (now === lastDensity) return;
+      lastDensity = now;
+      virtualResync(t); remeasure(t, t.getColumns());
+    });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'] });
     if (region && region !== document.documentElement) mo.observe(region, { attributes: true, attributeFilter: ['data-plx-density'] });
     // a grid built while hidden (a closed tab, a section not shown) had no size to lay out in: once it is shown, it is
     // drawn again in place (its columns are measured then; no row is)

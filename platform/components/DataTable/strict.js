@@ -9,13 +9,16 @@
      strictTabulator(Tabulator, win)   // loadTabulator does it before the first grid is built
      virtualResync(table)              // a density change: the virtual renderer takes the new row height
      virtualPrint(table, true|false)   // before / after printing: every row in the document, then the window again
-     remeasure(table, columns)         // React filled these columns' cells: their content widths are measured again
+     remeasure(table, columns)         // React filled these columns' cells, or the density changed: their content
+                                       // widths are measured again
    Props:
      none: strictTabulator(Tabulator, win) patches that window's Tabulator once
    Behavior:
      Column widths (Tabulator's): the "plenix" layout mode measures each column's content once (Tabulator's fit to data;
        a width the column definition gives, or the person's, is kept), then shares the room left among the columns
-       without a width, as the stylesheet's fill columns did; a window resize only shares the room again. Every width
+       without a width, as the stylesheet's fill columns did; a window resize only shares the room again. A density
+       change measures the columns' content once more (DataTable calls remeasure for every column, once per change;
+       never a row), so a bigger density never cuts text off (owner, 2026-10-14). Every width
        Tabulator writes is a whole number of grid steps (utils/grid.js: measured, fitted and dragged widths round up),
        so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
      Row height and cell padding (Plenix's): never measured, never written. A row is the density's row height
@@ -128,10 +131,13 @@ export function reshare(table) {
   share(table, vis);
 }
 
-// React filled these columns' cells after Tabulator measured them empty: their content is measured again (only theirs),
-// then the room is shared again. Nothing else is measured (no row, no other column).
+// React filled these columns' cells after Tabulator measured them empty, or the density changed (every column): their
+// content is measured again (only theirs; a width the definition gives, or the person's, is kept), then the room is
+// shared again. Nothing else is measured (no row, no other column). A hidden grid forgets their content widths, so its
+// layout measures them when it is shown.
 export function remeasure(table, columns) {
-  const cm = table && table.columnManager; if (!cm || !table.element.offsetWidth) return;
+  const cm = table && table.columnManager; if (!cm) return;
+  if (!table.element.offsetWidth) { (columns || []).forEach((col) => { const c = col && (col._column || col); if (c && !c.widthFixed) c.plxContent = 0; }); return; }
   const vis = cm.columnsByIndex.filter((c) => c.visible && !c.isGroup);
   let any = false;
   (columns || []).forEach((col) => { const c = col && (col._column || col); if (c && !c.widthFixed && vis.indexOf(c) >= 0) { c.reinitializeWidth(); c.plxContent = c.getWidth(); any = true; } });

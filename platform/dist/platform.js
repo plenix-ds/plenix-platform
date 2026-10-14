@@ -9352,13 +9352,16 @@ var _grid = require("../../utils/grid.js");
      strictTabulator(Tabulator, win)   // loadTabulator does it before the first grid is built
      virtualResync(table)              // a density change: the virtual renderer takes the new row height
      virtualPrint(table, true|false)   // before / after printing: every row in the document, then the window again
-     remeasure(table, columns)         // React filled these columns' cells: their content widths are measured again
+     remeasure(table, columns)         // React filled these columns' cells, or the density changed: their content
+                                       // widths are measured again
    Props:
      none: strictTabulator(Tabulator, win) patches that window's Tabulator once
    Behavior:
      Column widths (Tabulator's): the "plenix" layout mode measures each column's content once (Tabulator's fit to data;
        a width the column definition gives, or the person's, is kept), then shares the room left among the columns
-       without a width, as the stylesheet's fill columns did; a window resize only shares the room again. Every width
+       without a width, as the stylesheet's fill columns did; a window resize only shares the room again. A density
+       change measures the columns' content once more (DataTable calls remeasure for every column, once per change;
+       never a row), so a bigger density never cuts text off (owner, 2026-10-14). Every width
        Tabulator writes is a whole number of grid steps (utils/grid.js: measured, fitted and dragged widths round up),
        so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
      Row height and cell padding (Plenix's): never measured, never written. A row is the density's row height
@@ -9492,11 +9495,20 @@ function reshare(table) {
   share(table, vis);
 }
 
-// React filled these columns' cells after Tabulator measured them empty: their content is measured again (only theirs),
-// then the room is shared again. Nothing else is measured (no row, no other column).
+// React filled these columns' cells after Tabulator measured them empty, or the density changed (every column): their
+// content is measured again (only theirs; a width the definition gives, or the person's, is kept), then the room is
+// shared again. Nothing else is measured (no row, no other column). A hidden grid forgets their content widths, so its
+// layout measures them when it is shown.
 function remeasure(table, columns) {
   const cm = table && table.columnManager;
-  if (!cm || !table.element.offsetWidth) return;
+  if (!cm) return;
+  if (!table.element.offsetWidth) {
+    (columns || []).forEach(col => {
+      const c = col && (col._column || col);
+      if (c && !c.widthFixed) c.plxContent = 0;
+    });
+    return;
+  }
   const vis = cm.columnsByIndex.filter(c => c.visible && !c.isGroup);
   let any = false;
   (columns || []).forEach(col => {
@@ -10232,12 +10244,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
      Geometry (owner, 2026-10-13): the row height, the cell padding and the text size are the density's
      (--plx-sys-data-table-row-height, the cell padding tokens, --plx-sys-data-table-font-size; also a density region's),
-     drawn by the stylesheet and never measured; a density change measures nothing. Column widths are Tabulator's: it
-     measures each column's content once (and the columns React draws once more after React fills them), the columns
-     without a width share the room left, and the resize handle, Narrower, Wider and Fit to content set them. A grid built
-     while hidden is drawn again in place when it is shown.
+     drawn by the stylesheet and never measured. Column widths are Tabulator's: it measures each column's content once
+     (and the columns React draws once more after React fills them), the columns without a width share the room left,
+     and the resize handle, Narrower, Wider and Fit to content set them. A density change (the page's or the region's,
+     or the interaction) measures the columns' content once more, never a row, so a bigger density never cuts text off;
+     the widths still round up to the grid, and a width the column gives or the person chose is kept (owner,
+     2026-10-14). A grid built while hidden is drawn again in place when it is shown.
      Vertical alignment: middle (owner, 2026-10-13): everything in a cell (text, avatars, badges, icons, checkboxes,
-     buttons) sits in the middle of the row's height, in every density, in body and header cells; horizontal alignment
+     buttons) sits in the middle of the row's height, in every density and in every row (a row grown by a wrapped cell too:
+     its one-line cells sit in the middle; owner, 2026-10-14), in body and header cells; horizontal alignment
      is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own element
      (plx-data-table__value) and ends in an ellipsis.
      Virtual rendering (a grid with a height, every row one height: no "wrap" column and no groupBy): only the rows in
@@ -11016,16 +11031,26 @@ function TableEngine(props) {
       if (alive) setError(err);
     });
 
-    // a density or interaction change: the stylesheet gives the rows their new height and padding (nothing is measured);
-    // a virtual grid takes the new row height for the rows it does not draw, and keeps the row at the top of its view
+    // a density or interaction change: the stylesheet gives the rows their new height and padding (no row is measured);
+    // the columns' content widths are measured once again (the text size and padding changed: widths still round up to
+    // the grid; a set or chosen width is kept); a virtual grid takes the new row height for the rows it does not draw,
+    // and keeps the row at the top of its view
+    const region = frameRef.current && frameRef.current.closest('[data-plx-density]');
+    const densityKey = () => ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'].map(a => document.documentElement.getAttribute(a)).concat(region ? region.getAttribute('data-plx-density') : '').join('|');
+    let lastDensity = densityKey();
     const mo = new MutationObserver(() => {
-      if (tableRef.current && builtRef.current) (0, _strict.virtualResync)(tableRef.current);
+      const t = tableRef.current;
+      if (!t || !builtRef.current) return;
+      const now = densityKey();
+      if (now === lastDensity) return;
+      lastDensity = now;
+      (0, _strict.virtualResync)(t);
+      (0, _strict.remeasure)(t, t.getColumns());
     });
     mo.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction']
     });
-    const region = frameRef.current && frameRef.current.closest('[data-plx-density]');
     if (region && region !== document.documentElement) mo.observe(region, {
       attributes: true,
       attributeFilter: ['data-plx-density']
@@ -22438,7 +22463,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the top (focusRef), so keyboard and screen reader users continue from there.
    Notes:
      For long pages only; not in panes with their own short scroll, nor where a fixed header already holds the way up.
-     The button is a Button (secondary, with the chevron-up icon); its target is at least the standard control height.
+     The button is a Button (secondary, with the arrow-up icon: Material's arrow_upward); its target is at least the standard control height.
 */
 
 const STRINGS = {
@@ -22486,7 +22511,7 @@ function BackToTop({
     return /*#__PURE__*/_react.default.createElement(_Button.Button, {
       variant: "ghost",
       size: "sm",
-      icon: "chevron-up",
+      icon: "arrow-up",
       className: (0, _cx.cx)('plx-back-to-top', 'plx-back-to-top--inline', className),
       onClick: goTop
     }, t.label);
@@ -22499,7 +22524,7 @@ function BackToTop({
     "aria-hidden": "true"
   }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     iconOnly: true,
-    icon: "chevron-up",
+    icon: "arrow-up",
     label: t.label,
     className: (0, _cx.cx)('plx-back-to-top', 'plx-back-to-top--floating', shown && 'is-shown', className),
     onClick: goTop
@@ -23984,7 +24009,7 @@ function InlineEdit({
   }, error) : null);
 }
   } },
-  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24000,6 +24025,8 @@ var _floating = require("../../utils/floating.js");
 var _Toolbar = require("../Toolbar/Toolbar.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Input = require("../Input/Input.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _hotkey = require("../../utils/hotkey.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichTextEditor
    Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar and Buttons) over an editing area that
@@ -24027,14 +24054,22 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      strings: the words it shows, for other languages: { toolbar: "Formatting", bold: "Bold", italic: "Italic", link: "Link",
        bulleted: "Bulleted list", numbered: "Numbered list", heading: "Heading", quote: "Quote", code: "Code", clear: "Clear
        formatting", undo: "Undo", redo: "Redo", linkAddress: "Link address", addLink: "Add link", cancel: "Cancel",
-       mentions: "Suggestions", on: (name) => name + " on", off: (name) => name + " off" }
+       mentions: "Suggestions", on: (name) => name + " on", off: (name) => name + " off",
+       tip: (name, keys) => name + " (" + keys + ")": a toolbar button's tooltip with its shortcut }
      className: more classes on the editor
      id: the id of the editing area (a Field sets it)
    Behavior:
-     The toolbar is one Tab stop (arrow keys move inside it); each format button shows whether the text at the caret has
-       that format (aria-pressed). Pressing a button keeps the selection in the area.
+     The toolbar is one Tab stop (arrow keys move inside it). Its buttons are icon-only ghost toggle buttons (owner,
+       2026-10-14): bold format-bold, italic format-italic, inline code code, link link, heading heading, bulleted list
+       list-bullets, numbered list format-list-numbered, quote format-quote, undo ed-undo, redo ed-redo; each is named by
+       its word (aria-label) and has a tooltip with the word and its shortcut as hotkeyLabel writes it (Bold (Ctrl B);
+       Bold (⌘ B) on a Mac) and aria-keyshortcuts. Clear formatting keeps its text label (the set has no approved icon for it). Each format button
+       shows whether the text at the caret has that format (aria-pressed). Pressing a button keeps the selection in the area.
      Ctrl+B bold, Ctrl+I italic, Ctrl+K link, Ctrl+Shift+7 numbered list, Ctrl+Shift+8 bulleted list (Command on a Mac);
-       a format turned on or off from the keyboard is announced.
+       a format turned on or off from the keyboard is announced. Undo and redo are the browser's (Ctrl+Z, Ctrl+Y; ⌘Z, ⇧⌘Z on a Mac).
+     Backspace after a Markdown shortcut, inline code or a link added at the caret: the caret waits behind an invisible
+       marker (a zero-width space, so typing goes on outside the element); one Backspace removes the marker and the
+       character before it, so Backspace never seems to do nothing. Both are editing commands, so Undo brings them back.
      Link: with the caret in a link it removes the link; otherwise a link address field opens under the toolbar (Enter adds
        the link, Escape closes it); an address without a scheme gets https://.
      Paste inserts plain text, so formatting from other documents never comes in.
@@ -24065,8 +24100,36 @@ const STRINGS = {
   cancel: 'Cancel',
   mentions: 'Suggestions',
   on: name => name + ' on',
-  off: name => name + ' off'
+  off: name => name + ' off',
+  tip: (name, keys) => name + ' (' + keys + ')'
 };
+
+// the toolbar's icons (Material Symbols Sharp, platform/icons/map.json) and the shortcuts its tooltips show
+const ICONS = {
+  bold: 'format-bold',
+  italic: 'format-italic',
+  code: 'code',
+  link: 'link',
+  heading: 'heading',
+  bulleted: 'list-bullets',
+  numbered: 'format-list-numbered',
+  quote: 'format-quote',
+  undo: 'ed-undo',
+  redo: 'ed-redo'
+};
+// each shortcut as a binding: shown as people read it (hotkeyLabel: Ctrl B, ⇧ ⌘ 7 on a Mac) and named for aria-keyshortcuts
+const KEYS = {
+  bold: 'Mod+B',
+  italic: 'Mod+I',
+  link: 'Mod+K',
+  numbered: 'Mod+Shift+7',
+  bulleted: 'Mod+Shift+8',
+  undo: 'Mod+Z',
+  redo: () => (0, _hotkey.isMac)() ? 'Mod+Shift+Z' : 'Mod+Y'
+};
+const keysAria = binding => binding.replace('Mod', (0, _hotkey.isMac)() ? 'Meta' : 'Control');
+// the invisible marker the caret waits behind after an element put in by place() (a zero-width space)
+const MARK = String.fromCharCode(0x200b);
 const ALLOWED = {
   P: 1,
   BR: 1,
@@ -24444,8 +24507,47 @@ function RichTextEditor({
     const el = list.current;
     if (mentionOpen && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [mentionOpen]);
+
+  // the marker(s) right before a collapsed caret, as a range (null when there are none)
+  const markerBefore = () => {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return null;
+    const caret = sel.getRangeAt(0);
+    if (!caret.collapsed) return null;
+    let node = caret.startContainer,
+      at = caret.startOffset;
+    if (node.nodeType === 1) {
+      const prev = node.childNodes[at - 1];
+      if (!prev || prev.nodeType !== 3) return null;
+      node = prev;
+      at = prev.nodeValue.length;
+    }
+    if (node.nodeType !== 3 || !within(area.current, node)) return null;
+    let from = at;
+    while (from > 0 && node.nodeValue[from - 1] === MARK) from--;
+    if (from === at) return null;
+    const r = document.createRange();
+    r.setStart(node, from);
+    r.setEnd(node, at);
+    return r;
+  };
   const onKeyDown = e => {
     if (!editable) return;
+    // Backspace behind the marker: the marker and the character before it go together (two editing commands: undo works)
+    if (e.key === 'Backspace' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && !mentionOpen) {
+      const marker = markerBefore();
+      if (marker) {
+        e.preventDefault();
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(marker);
+        run('delete');
+        run('delete');
+        read();
+        changed();
+        return;
+      }
+    }
     if (mentionOpen) {
       const n = mention.items.length;
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -24502,18 +24604,30 @@ function RichTextEditor({
 
   // a format button says whether the text at the caret has its format (aria-pressed); undo, redo and clear are plain buttons
   const PLAIN = ['undo', 'redo', 'clear'];
-  const toolButton = (name, icon) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    key: name,
-    variant: "ghost",
-    size: "sm",
-    pressed: PLAIN.indexOf(name) >= 0 ? undefined : !!formats[name],
-    icon: icon,
-    iconOnly: !!icon,
-    label: icon ? t[name] : undefined,
-    disabled: !editable,
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => apply(name)
-  }, t[name]);
+  // icon-only, named by its word, with a tooltip of the word and its shortcut; Clear formatting keeps its text label
+  const toolButton = name => {
+    const icon = ICONS[name],
+      keys = typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS[name];
+    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "sm",
+      pressed: PLAIN.indexOf(name) >= 0 ? undefined : !!formats[name],
+      icon: icon,
+      iconOnly: !!icon,
+      label: icon ? t[name] : undefined,
+      "aria-keyshortcuts": keys ? keysAria(keys) : undefined,
+      disabled: !editable,
+      onMouseDown: e => e.preventDefault(),
+      onClick: () => apply(name)
+    }, t[name]);
+    return icon ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+      key: name,
+      content: keys ? t.tip(t[name], (0, _hotkey.hotkeyLabel)(keys)) : t[name],
+      disabled: !editable
+    }, button) : /*#__PURE__*/_react.default.cloneElement(button, {
+      key: name
+    });
+  };
   const showToolbar = toolbar && !readOnly;
   const full = toolbar === 'full';
   return /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -24521,7 +24635,7 @@ function RichTextEditor({
   }, rest), showToolbar ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
     label: t.toolbar,
     className: "plx-rich-text-editor__toolbar"
-  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, toolButton('bold'), toolButton('italic'), full ? toolButton('code') : null, toolButton('link')), /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, full ? toolButton('heading') : null, toolButton('bulleted', 'list-bullets'), toolButton('numbered'), full ? toolButton('quote') : null), full ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, toolButton('clear'), toolButton('undo', 'ed-undo'), toolButton('redo', 'ed-redo')) : null) : null, linking ? /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, toolButton('bold'), toolButton('italic'), full ? toolButton('code') : null, toolButton('link')), /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, full ? toolButton('heading') : null, toolButton('bulleted'), toolButton('numbered'), full ? toolButton('quote') : null), full ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, toolButton('clear'), toolButton('undo'), toolButton('redo')) : null) : null, linking ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-rich-text-editor__link-bar"
   }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
     ref: linkInput,

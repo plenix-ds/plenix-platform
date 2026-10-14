@@ -24,14 +24,22 @@
      strings: the words it shows, for other languages: { toolbar: "Formatting", bold: "Bold", italic: "Italic", link: "Link",
        bulleted: "Bulleted list", numbered: "Numbered list", heading: "Heading", quote: "Quote", code: "Code", clear: "Clear
        formatting", undo: "Undo", redo: "Redo", linkAddress: "Link address", addLink: "Add link", cancel: "Cancel",
-       mentions: "Suggestions", on: (name) => name + " on", off: (name) => name + " off" }
+       mentions: "Suggestions", on: (name) => name + " on", off: (name) => name + " off",
+       tip: (name, keys) => name + " (" + keys + ")": a toolbar button's tooltip with its shortcut }
      className: more classes on the editor
      id: the id of the editing area (a Field sets it)
    Behavior:
-     The toolbar is one Tab stop (arrow keys move inside it); each format button shows whether the text at the caret has
-       that format (aria-pressed). Pressing a button keeps the selection in the area.
+     The toolbar is one Tab stop (arrow keys move inside it). Its buttons are icon-only ghost toggle buttons (owner,
+       2026-10-14): bold format-bold, italic format-italic, inline code code, link link, heading heading, bulleted list
+       list-bullets, numbered list format-list-numbered, quote format-quote, undo ed-undo, redo ed-redo; each is named by
+       its word (aria-label) and has a tooltip with the word and its shortcut as hotkeyLabel writes it (Bold (Ctrl B);
+       Bold (⌘ B) on a Mac) and aria-keyshortcuts. Clear formatting keeps its text label (the set has no approved icon for it). Each format button
+       shows whether the text at the caret has that format (aria-pressed). Pressing a button keeps the selection in the area.
      Ctrl+B bold, Ctrl+I italic, Ctrl+K link, Ctrl+Shift+7 numbered list, Ctrl+Shift+8 bulleted list (Command on a Mac);
-       a format turned on or off from the keyboard is announced.
+       a format turned on or off from the keyboard is announced. Undo and redo are the browser's (Ctrl+Z, Ctrl+Y; ⌘Z, ⇧⌘Z on a Mac).
+     Backspace after a Markdown shortcut, inline code or a link added at the caret: the caret waits behind an invisible
+       marker (a zero-width space, so typing goes on outside the element); one Backspace removes the marker and the
+       character before it, so Backspace never seems to do nothing. Both are editing commands, so Undo brings them back.
      Link: with the caret in a link it removes the link; otherwise a link address field opens under the toolbar (Enter adds
        the link, Escape closes it); an address without a scheme gets https://.
      Paste inserts plain text, so formatting from other documents never comes in.
@@ -52,10 +60,22 @@ import { useFloating } from '../../utils/floating.js';
 import { Toolbar } from '../Toolbar/Toolbar.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Input } from '../Input/Input.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { hotkeyLabel, isMac } from '../../utils/hotkey.js';
 
 const STRINGS = { toolbar: 'Formatting', bold: 'Bold', italic: 'Italic', link: 'Link', bulleted: 'Bulleted list', numbered: 'Numbered list',
   heading: 'Heading', quote: 'Quote', code: 'Code', clear: 'Clear formatting', undo: 'Undo', redo: 'Redo', linkAddress: 'Link address',
-  addLink: 'Add link', cancel: 'Cancel', mentions: 'Suggestions', on: (name) => name + ' on', off: (name) => name + ' off' };
+  addLink: 'Add link', cancel: 'Cancel', mentions: 'Suggestions', on: (name) => name + ' on', off: (name) => name + ' off',
+  tip: (name, keys) => name + ' (' + keys + ')' };
+
+// the toolbar's icons (Material Symbols Sharp, platform/icons/map.json) and the shortcuts its tooltips show
+const ICONS = { bold: 'format-bold', italic: 'format-italic', code: 'code', link: 'link', heading: 'heading', bulleted: 'list-bullets',
+  numbered: 'format-list-numbered', quote: 'format-quote', undo: 'ed-undo', redo: 'ed-redo' };
+// each shortcut as a binding: shown as people read it (hotkeyLabel: Ctrl B, ⇧ ⌘ 7 on a Mac) and named for aria-keyshortcuts
+const KEYS = { bold: 'Mod+B', italic: 'Mod+I', link: 'Mod+K', numbered: 'Mod+Shift+7', bulleted: 'Mod+Shift+8', undo: 'Mod+Z', redo: () => (isMac() ? 'Mod+Shift+Z' : 'Mod+Y') };
+const keysAria = (binding) => binding.replace('Mod', isMac() ? 'Meta' : 'Control');
+// the invisible marker the caret waits behind after an element put in by place() (a zero-width space)
+const MARK = String.fromCharCode(0x200b);
 
 const ALLOWED = { P: 1, BR: 1, STRONG: 1, EM: 1, A: 1, UL: 1, OL: 1, LI: 1, H2: 1, H3: 1, BLOCKQUOTE: 1, CODE: 1, PRE: 1, SPAN: 1 };
 const RENAME = { B: 'strong', I: 'em', DIV: 'p', H1: 'h2' };
@@ -254,8 +274,30 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   useFloating(area, list, { open: mentionOpen, placement: 'bottom-start', virtual: mentionOpen ? { x: mention.x, y: mention.y } : null });
   React.useLayoutEffect(() => { const el = list.current; if (mentionOpen && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [mentionOpen]);
 
+  // the marker(s) right before a collapsed caret, as a range (null when there are none)
+  const markerBefore = () => {
+    const sel = window.getSelection(); if (!sel.rangeCount) return null;
+    const caret = sel.getRangeAt(0); if (!caret.collapsed) return null;
+    let node = caret.startContainer, at = caret.startOffset;
+    if (node.nodeType === 1) { const prev = node.childNodes[at - 1]; if (!prev || prev.nodeType !== 3) return null; node = prev; at = prev.nodeValue.length; }
+    if (node.nodeType !== 3 || !within(area.current, node)) return null;
+    let from = at; while (from > 0 && node.nodeValue[from - 1] === MARK) from--;
+    if (from === at) return null;
+    const r = document.createRange(); r.setStart(node, from); r.setEnd(node, at);
+    return r;
+  };
   const onKeyDown = (e) => {
     if (!editable) return;
+    // Backspace behind the marker: the marker and the character before it go together (two editing commands: undo works)
+    if (e.key === 'Backspace' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && !mentionOpen) {
+      const marker = markerBefore();
+      if (marker) {
+        e.preventDefault();
+        const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(marker);
+        run('delete'); run('delete');
+        read(); changed(); return;
+      }
+    }
     if (mentionOpen) {
       const n = mention.items.length;
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); setMention(Object.assign({}, mention, { active: (mention.active + (e.key === 'ArrowDown' ? 1 : n - 1)) % n })); return; }
@@ -273,10 +315,16 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
 
   // a format button says whether the text at the caret has its format (aria-pressed); undo, redo and clear are plain buttons
   const PLAIN = ['undo', 'redo', 'clear'];
-  const toolButton = (name, icon) => (
-    <Button key={name} variant="ghost" size="sm" pressed={PLAIN.indexOf(name) >= 0 ? undefined : !!formats[name]} icon={icon} iconOnly={!!icon}
-      label={icon ? t[name] : undefined} disabled={!editable} onMouseDown={(e) => e.preventDefault()} onClick={() => apply(name)}>{t[name]}</Button>
-  );
+  // icon-only, named by its word, with a tooltip of the word and its shortcut; Clear formatting keeps its text label
+  const toolButton = (name) => {
+    const icon = ICONS[name], keys = typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS[name];
+    const button = (
+      <Button variant="ghost" size="sm" pressed={PLAIN.indexOf(name) >= 0 ? undefined : !!formats[name]} icon={icon} iconOnly={!!icon}
+        label={icon ? t[name] : undefined} aria-keyshortcuts={keys ? keysAria(keys) : undefined} disabled={!editable}
+        onMouseDown={(e) => e.preventDefault()} onClick={() => apply(name)}>{t[name]}</Button>
+    );
+    return icon ? <Tooltip key={name} content={keys ? t.tip(t[name], hotkeyLabel(keys)) : t[name]} disabled={!editable}>{button}</Tooltip> : React.cloneElement(button, { key: name });
+  };
   const showToolbar = toolbar && !readOnly;
   const full = toolbar === 'full';
   return (
@@ -284,8 +332,8 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
       {showToolbar ? (
         <Toolbar label={t.toolbar} className="plx-rich-text-editor__toolbar">
           <Toolbar.Group>{toolButton('bold')}{toolButton('italic')}{full ? toolButton('code') : null}{toolButton('link')}</Toolbar.Group>
-          <Toolbar.Group>{full ? toolButton('heading') : null}{toolButton('bulleted', 'list-bullets')}{toolButton('numbered')}{full ? toolButton('quote') : null}</Toolbar.Group>
-          {full ? <Toolbar.Group>{toolButton('clear')}{toolButton('undo', 'ed-undo')}{toolButton('redo', 'ed-redo')}</Toolbar.Group> : null}
+          <Toolbar.Group>{full ? toolButton('heading') : null}{toolButton('bulleted')}{toolButton('numbered')}{full ? toolButton('quote') : null}</Toolbar.Group>
+          {full ? <Toolbar.Group>{toolButton('clear')}{toolButton('undo')}{toolButton('redo')}</Toolbar.Group> : null}
         </Toolbar>
       ) : null}
       {linking ? (
