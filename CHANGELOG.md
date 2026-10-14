@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.57] - 2026-10-14
+
+### Added
+- The complete library, wave 6, lane A (11 inventory items):
+  - Fieldset: a row layout and a hidden legend (field group, legend pages);
+  - Error summary (focus on appear, a link per error to its field);
+  - Input group (prefix, suffix, icon, joined buttons or selects in one field border);
+  - Number input (locale parsing, currency, percent and unit formats, steppers, a quantity selector, full keyboard);
+  - File input (the native picker drawn as a button, a file list with sizes and Remove);
+  - Code editor (coloring, line numbers, Tab indents, Escape then Tab leaves; no new dependency).
+
 ## [0.31.56] - 2026-10-14
 
 ### Added
