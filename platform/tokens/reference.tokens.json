@@ -492,6 +492,10 @@
       "$value": "80px",
       "$type": "dimension"
     },
+    "size-88px": {
+      "$value": "88px",
+      "$type": "dimension"
+    },
     "size-92px": {
       "$value": "92px",
       "$type": "dimension"
@@ -510,6 +514,10 @@
     },
     "size-120px": {
       "$value": "120px",
+      "$type": "dimension"
+    },
+    "size-128px": {
+      "$value": "128px",
       "$type": "dimension"
     },
     "size-132px": {

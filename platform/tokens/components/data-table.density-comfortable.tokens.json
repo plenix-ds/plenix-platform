@@ -1,0 +1,25 @@
+{
+  "$description": "DataTable: its tokens at the comfortable density.",
+  "plx-comp": {
+    "data-table-text-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "DataTable: a line of cell text in taller rows (and the line P is measured against): 20px at Comfortable."
+    },
+    "data-table-header-type-icon-size": {
+      "$value": "{plx-ref.glyph-size-14px}",
+      "$type": "dimension",
+      "$description": "DataTable column header: the type icon before the column name."
+    },
+    "data-table-header-type-icon-gap": {
+      "$value": "{plx-ref.space-6px}",
+      "$type": "dimension",
+      "$description": "DataTable column header: the space between the type icon and the name."
+    },
+    "data-table-view-column-width": {
+      "$value": "{plx-ref.size-36px}",
+      "$type": "dimension",
+      "$description": "DataTable: the view column at the end of the header (the view menu's button): as wide as the checkbox column."
+    }
+  }
+}
