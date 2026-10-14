@@ -51,7 +51,7 @@
 .plx-data-table .tabulator .tabulator-col-resize-handle:hover{background-image:var(--plx-comp-data-table-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-resize-mark-width) 60%;}
 
 /* the rows: soft lines, no zebra; hover, selected and selected + hover */
-.plx-data-table .tabulator .tabulator-row{background-color:var(--plx-comp-data-table-background);border-bottom-color:var(--plx-comp-data-table-row-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);min-height:var(--plx-comp-data-table-min-height);}
+.plx-data-table .tabulator .tabulator-row{background-color:var(--plx-comp-data-table-background);border-bottom-color:var(--plx-comp-data-table-row-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);min-height:var(--plx-comp-data-table-record-height);}
 .plx-data-table .tabulator .tabulator-row.tabulator-row-even{background-color:var(--plx-comp-data-table-background);}
 .plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover{background-color:var(--plx-comp-data-table-row-hover-background);cursor:default;}
 .plx-data-table .tabulator .tabulator-row.tabulator-selected{background-color:var(--plx-comp-data-table-row-selected-background);}
@@ -144,13 +144,86 @@
 .plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-collapse::after{background-color:var(--plx-comp-data-table-tree-control-mark);}
 .plx-data-table .tabulator-row .tabulator-cell .tabulator-data-tree-branch{border-bottom-left-radius:var(--plx-comp-data-table-tree-control-radius);border-color:var(--plx-comp-data-table-tree-branch-color);}
 
-/* groups */
-.plx-data-table .tabulator-row.tabulator-group{background-color:var(--plx-comp-data-table-header-background);border-bottom-color:var(--plx-comp-data-table-row-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);border-top-style:none;color:var(--plx-comp-data-table-text);font-weight:var(--plx-comp-data-table-group-font-weight);line-height:var(--plx-comp-data-table-line-height);min-height:var(--plx-comp-data-table-min-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
-.plx-data-table .tabulator-row.tabulator-group:hover{background-color:var(--plx-comp-data-table-hover-background);cursor:pointer;}
-.plx-data-table .tabulator-row.tabulator-group .plx-data-table__group-count{color:var(--plx-comp-data-table-group-count-text);font-family:var(--plx-comp-data-table-data-font-family);font-size:var(--plx-comp-data-table-data-font-size);font-weight:var(--plx-comp-data-table-group-count-font-weight);margin-left:var(--plx-comp-data-table-group-count-gap);}
-.plx-data-table .tabulator-row.tabulator-group .tabulator-arrow{border-left-color:var(--plx-comp-data-table-border-left-color);}
-.plx-data-table .tabulator-row.tabulator-group.tabulator-group-visible .tabulator-arrow{border-left-color:transparent;border-top-color:var(--plx-comp-data-table-border-top-color);}
+/* groups, Airtable style (owner, 2026-10-14): a group row is [the add row of the group above][the gap band][the header];
+   each part a fixed token height (never measured): the header the density row height + 16px, the band 24px with lines
+   above and below, the add row a Short row. The header's cells follow the columns (their widths, their lines); the first
+   cell (the mark columns and the first value column) holds the chevron, the eyebrow naming the grouped-by field, the value
+   as its column draws it and the count at its end, in the data font; the header sticks to the top while its rows scroll */
+.plx-data-table .tabulator .tabulator-row.tabulator-group{background-color:transparent;border-bottom-color:var(--plx-comp-data-table-row-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);border-top-style:none;color:var(--plx-comp-data-table-text);cursor:default;display:block;font-weight:var(--plx-comp-data-table-group-font-weight);inset-block-start:0;min-height:0;padding-bottom:0;padding-left:0;padding-right:0;padding-top:0;position:sticky;z-index:var(--plx-sys-layer-sticky);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group:hover{background-color:transparent;}
+/* (Tabulator's own group look: its colored spans, its border, its arrow) */
+.plx-data-table .tabulator .tabulator-row.tabulator-group{border-right-style:none;}
+.plx-data-table .tabulator .tabulator-row.tabulator-group span{color:inherit;margin-left:0;}
+.plx-data-table .tabulator .tabulator-row.tabulator-group .plx-data-table__group-eyebrow{color:var(--plx-comp-text-eyebrow-text);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group .plx-data-table__group-chevron{color:var(--plx-comp-data-table-group-chevron-text);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group .plx-data-table__group-count,.plx-data-table .tabulator .tabulator-row.tabulator-group .plx-data-table__group-summary-value{color:var(--plx-comp-data-table-group-count-text);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group .plx-data-table__group-summary-name{color:var(--plx-comp-data-table-group-summary-text);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group:focus-visible{outline-style:none;}
+.plx-data-table .tabulator .tabulator-row.tabulator-group:focus-visible .plx-data-table__group-head{outline-color:var(--plx-comp-data-table-focus-outline-color);outline-offset:calc(var(--plx-comp-data-table-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-table-editing-outline-width);}
+.plx-data-table .tabulator-row.tabulator-group>.tabulator-group-toggle{display:none;}
+.plx-data-table__group-inner{display:block;}
+.plx-data-table__group-add,.plx-data-table__group-band{display:none;}
+.plx-data-table__group--add .plx-data-table__group-add,.plx-data-table__add-row{background-color:var(--plx-comp-data-table-background);block-size:calc(var(--plx-sys-data-table-row-height) + var(--plx-comp-data-table-line-width));border-bottom-color:var(--plx-comp-data-table-row-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);box-sizing:border-box;display:flex;}
+.plx-data-table__group--gap .plx-data-table__group-band{background-color:var(--plx-comp-data-table-background);block-size:var(--plx-comp-data-table-group-gap);display:block;}
+.plx-data-table__group-head{background-color:var(--plx-comp-data-table-group-background);block-size:var(--plx-comp-data-table-group-header-height);display:flex;}
+.plx-data-table__group--gap .plx-data-table__group-head{block-size:calc(var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width));border-top-color:var(--plx-comp-data-table-row-line);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);box-sizing:border-box;}
+.plx-data-table__group-cell{align-items:center;box-sizing:border-box;display:flex;flex-grow:0;flex-shrink:0;min-inline-size:0;padding-inline-end:var(--plx-comp-data-table-cell-padding-inline);padding-inline-start:var(--plx-comp-data-table-cell-padding-inline);position:relative;}
+.plx-data-table__group-cell+.plx-data-table__group-cell::before{background-color:var(--plx-comp-data-table-column-line);content:"";inset-block-end:var(--plx-comp-data-table-column-line-inset);inset-block-start:var(--plx-comp-data-table-column-line-inset);inset-inline-start:0;inline-size:var(--plx-comp-data-table-line-width);position:absolute;}
+.plx-data-table__group-cell--first{background-color:inherit;inset-inline-start:0;position:sticky;z-index:var(--plx-sys-layer-raised);}
+.plx-data-table__add-row .plx-data-table__group-cell--first,.plx-data-table__group-add .plx-data-table__group-cell--first{background-color:var(--plx-comp-data-table-background);color:var(--plx-comp-data-table-add-row-text);}
+.plx-data-table__group-label{align-items:last baseline;column-gap:var(--plx-comp-data-table-group-gap-inline);display:flex;flex-grow:1;min-inline-size:0;}
+.plx-data-table__group-chevron{align-items:center;align-self:center;block-size:var(--plx-ref-size-24px);color:var(--plx-comp-data-table-group-chevron-text);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-ref-size-24px);justify-content:center;}
+.plx-data-table__group-chevron .plx-icon{block-size:var(--plx-comp-data-table-group-chevron-size);inline-size:var(--plx-comp-data-table-group-chevron-size);}
+.plx-data-table__group-text{display:flex;flex-direction:column;flex-grow:1;min-inline-size:0;}
+.plx-data-table__group-eyebrow{display:block;line-height:var(--plx-comp-data-table-group-eyebrow-line-height);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-data-table__group-value{align-items:center;display:flex;font-weight:var(--plx-comp-data-table-group-font-weight);line-height:var(--plx-comp-data-table-text-line-height);min-block-size:var(--plx-comp-data-table-text-line-height);min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-data-table__group-value .plx-text{font-size:inherit;}
+.plx-data-table__group-count,.plx-data-table__group-summary-value{color:var(--plx-comp-data-table-group-count-text);font-size:var(--plx-comp-data-table-data-font-size);font-weight:var(--plx-comp-data-table-group-count-font-weight);}
+.plx-data-table__group-count{flex-shrink:0;line-height:var(--plx-comp-data-table-text-line-height);margin-inline-start:auto;}
+/* (a summary sits on the value line: the header's content is the eyebrow and the value line, P above and below) */
+.plx-data-table__group-cell--summary{align-items:flex-end;justify-content:flex-end;padding-block-end:var(--plx-comp-data-table-cell-padding-block);}
+.plx-data-table__group-summary{align-items:baseline;line-height:var(--plx-comp-data-table-text-line-height);column-gap:var(--plx-comp-data-table-group-summary-gap);display:inline-flex;min-inline-size:0;white-space:nowrap;}
+.plx-data-table__group-summary-name{color:var(--plx-comp-data-table-group-summary-text);font-size:var(--plx-comp-data-table-filter-label-font-size);font-weight:var(--plx-comp-data-table-group-count-font-weight);}
+/* nested groups: one indent step per level */
+.plx-data-table .tabulator-group-level-1 .plx-data-table__group-label{padding-inline-start:var(--plx-comp-data-table-group-indent);}
+.plx-data-table .tabulator-group-level-2 .plx-data-table__group-label{padding-inline-start:calc(var(--plx-comp-data-table-group-indent) * 2);}
+.plx-data-table .tabulator-group-level-3 .plx-data-table__group-label{padding-inline-start:calc(var(--plx-comp-data-table-group-indent) * 3);}
+/* sticky: a nested header sticks under its parent's; the band and the add row above a header scroll away (a negative top) */
+.plx-data-table .tabulator .tabulator-row.tabulator-group.plx-data-table__group--gap{inset-block-start:calc((var(--plx-comp-data-table-group-gap) + var(--plx-comp-data-table-line-width)) * -1);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.plx-data-table__group--gap.plx-data-table__group--add{inset-block-start:calc((var(--plx-comp-data-table-group-gap) + var(--plx-sys-data-table-row-height) + var(--plx-comp-data-table-line-width) * 2) * -1);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.tabulator-group-level-1{inset-block-start:calc(var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width));}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.tabulator-group-level-1.plx-data-table__group--gap{inset-block-start:calc(var(--plx-comp-data-table-group-header-height) - var(--plx-comp-data-table-group-gap));}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.tabulator-group-level-1.plx-data-table__group--gap.plx-data-table__group--add{inset-block-start:calc(var(--plx-comp-data-table-group-header-height) - var(--plx-comp-data-table-group-gap) - var(--plx-sys-data-table-row-height) - var(--plx-comp-data-table-line-width));}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.tabulator-group-level-2{inset-block-start:calc((var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width)) * 2);}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.tabulator-group-level-2.plx-data-table__group--gap{inset-block-start:calc((var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width)) * 2 - var(--plx-comp-data-table-group-gap) - var(--plx-comp-data-table-line-width));}
+.plx-data-table .tabulator .tabulator-row.tabulator-group.tabulator-group-level-2.plx-data-table__group--gap.plx-data-table__group--add{inset-block-start:calc((var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width)) * 2 - var(--plx-comp-data-table-group-gap) - var(--plx-sys-data-table-row-height) - var(--plx-comp-data-table-line-width) * 2);}
+/* a virtual grid's stand-ins for group headers scrolled out of the drawn rows: sticky at the top, a header's copy each */
+.plx-data-table__sticky-groups{block-size:0;inline-size:max-content;inset-block-start:0;min-inline-size:100%;position:sticky;z-index:var(--plx-sys-layer-sticky);}
+.plx-data-table__sticky-group{border-bottom-color:var(--plx-comp-data-table-row-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-data-table-line-width);inset-block-start:0;inset-inline-start:0;position:absolute;}
+.plx-data-table__sticky-group.tabulator-group-level-1{inset-block-start:calc(var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width));}
+.plx-data-table__sticky-group.tabulator-group-level-2{inset-block-start:calc((var(--plx-comp-data-table-group-header-height) + var(--plx-comp-data-table-line-width)) * 2);}
+.plx-data-table__sticky-group .plx-data-table__group-head{block-size:var(--plx-comp-data-table-group-header-height);border-top-style:none;}
+/* the grouped-by column: its header and its cells tinted with the neutral sunken surface; a hovered or selected row keeps
+   its own color across it */
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--grouped,.plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--grouped{background-color:var(--plx-comp-data-table-grouped-column-background);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover .tabulator-cell.plx-data-table__cell--grouped{background-color:var(--plx-comp-data-table-row-hover-background);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected .tabulator-cell.plx-data-table__cell--grouped{background-color:var(--plx-comp-data-table-row-selected-background);}
+.plx-data-table .tabulator .tabulator-row.tabulator-selected:hover .tabulator-cell.plx-data-table__cell--grouped{background-color:var(--plx-comp-data-table-row-selected-hover-background);}
+/* a pinned cell paints over the cells that pass under it, and a sticky group header over both (the body's own layers) */
+.plx-data-table .tabulator .tabulator-tableholder{isolation:isolate;}
+.plx-data-table .tabulator .tabulator-row .tabulator-cell.tabulator-frozen{z-index:var(--plx-sys-layer-raised);}
 .plx-data-table .tabulator .tabulator-row.tabulator-calcs{background-color:var(--plx-comp-data-table-header-background);font-weight:var(--plx-comp-data-table-group-font-weight);}
+/* a virtual grouped grid's gaps: one part per row kind, each piece its kind's height and line */
+.plx-data-table .plx-data-table__gap-part--grp{--plx-sys-virtual-item-size:var(--plx-comp-data-table-group-header-height);}
+.plx-data-table .plx-data-table__gap-part--band{--plx-sys-virtual-item-size:var(--plx-comp-data-table-group-gap);}
+.plx-data-table .plx-data-table__gap-part--add{--plx-sys-virtual-item-size:var(--plx-sys-data-table-row-height);}
+/* the probe: hidden boxes the virtual renderer reads the row kinds' heights from (tokens written as calc() included) */
+.plx-data-table__probe{block-size:0;inline-size:0;overflow:hidden;pointer-events:none;position:absolute;visibility:hidden;}
+.plx-data-table__probe>[data-plx-probe]{display:block;inline-size:var(--plx-ref-size-4px);}
+.plx-data-table__probe>[data-plx-probe="record"]{block-size:var(--plx-comp-data-table-record-height);}
+.plx-data-table__probe>[data-plx-probe="group"]{block-size:var(--plx-comp-data-table-group-header-height);}
+.plx-data-table__probe>[data-plx-probe="band"]{block-size:var(--plx-comp-data-table-group-gap);}
+.plx-data-table__probe>[data-plx-probe="add"]{block-size:var(--plx-sys-data-table-row-height);}
 
 /* footer, empty message, moving rows and columns */
 .plx-data-table .tabulator .tabulator-footer{background-color:var(--plx-comp-data-table-header-background);border-top-color:var(--plx-comp-data-table-footer-line);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);color:var(--plx-comp-data-table-header-text);font-weight:var(--plx-comp-data-table-footer-font-weight);}
@@ -210,8 +283,8 @@
 .plx-data-table .tabulator .tabulator-col.plx-data-table__hidden,.plx-data-table .tabulator .tabulator-cell.plx-data-table__hidden{display:none;}
 /* a virtual grid (a grid with a height): every row is the density's row height and its line, and the rows not drawn are
    gaps of the same rows (system/virtual.css: --plx-sys-virtual-item-size plus --plx-sys-virtual-item-gap per row) */
-.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-tableholder .tabulator-table{--plx-sys-virtual-item-gap:var(--plx-comp-data-table-line-width);--plx-sys-virtual-item-size:var(--plx-comp-data-table-min-height);}
-.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-row{block-size:calc(var(--plx-comp-data-table-min-height) + var(--plx-comp-data-table-line-width));overflow:hidden;}
+.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-tableholder .tabulator-table{--plx-sys-virtual-item-gap:var(--plx-comp-data-table-line-width);--plx-sys-virtual-item-size:var(--plx-comp-data-table-record-height);}
+.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs){block-size:calc(var(--plx-comp-data-table-record-height) + var(--plx-comp-data-table-line-width));overflow:hidden;}
 .plx-data-table .tabulator .tabulator-tableholder .tabulator-table>.plx-data-table__gap{margin-block-end:0;}
 /* printing: the whole grid, every row (a virtual grid draws them all while the page prints) */
 @media print{
@@ -264,6 +337,9 @@
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--handle{grid-column:2;grid-row:1 / span 8;}
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--actions{contain:none;grid-column:4;grid-row:1 / span 8;inline-size:auto;max-inline-size:none;min-inline-size:0;}
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key{contain:none;display:block;grid-column:3;inline-size:auto;line-height:var(--plx-comp-data-table-list-line-height);max-inline-size:none;min-height:0;min-inline-size:0;overflow:hidden;position:relative;text-align:start;text-overflow:ellipsis;white-space:nowrap;}
+  /* a group row in the list: its first cell, as wide as the list */
+  .plx-data-table.plx-data-table--list .plx-data-table__group-cell:not(.plx-data-table__group-cell--first){display:none;}
+  .plx-data-table.plx-data-table--list .plx-data-table__group-cell--first{max-inline-size:100%;}
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key-first{font-weight:var(--plx-comp-data-table-name-font-weight);}
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key:not(.plx-data-table__cell--key-first){color:var(--plx-comp-data-table-list-detail-text);padding-block-start:var(--plx-comp-data-table-list-row-gap);}
 }
@@ -281,3 +357,38 @@
 /* "fill" and "load-more" without a height: at most one screen until the room left is measured (so the first render is
    already virtual); the measured room is then written on the body */
 .plx-data-table[data-plx-fit] .tabulator .tabulator-tableholder{max-block-size:var(--plx-comp-data-table-fit-max-height);}
+/* the row height step (owner, 2026-10-14): two settings, the app's density (Compact, Standard, Comfortable) and each
+   table's row height. Short is the density's row height; Medium, Tall and Extra tall are fixed tokens (56, 88, 128px).
+   Only record rows take it (--plx-comp-data-table-record-height): the header row, group rows, the add row and the gap
+   keep their own heights */
+.plx-data-table[data-plx-row-height="medium"]{--plx-comp-data-table-record-height:var(--plx-comp-data-table-row-height-medium);}
+.plx-data-table[data-plx-row-height="tall"]{--plx-comp-data-table-record-height:var(--plx-comp-data-table-row-height-tall);}
+.plx-data-table[data-plx-row-height="extra-tall"]{--plx-comp-data-table-record-height:var(--plx-comp-data-table-row-height-extra-tall);}
+.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-row.tabulator-calcs{block-size:calc(var(--plx-sys-data-table-row-height) + var(--plx-comp-data-table-line-width));overflow:hidden;}
+/* a DataTable's "wrap" column never grows its row (owner, 2026-10-14): it clamps to the row's lines, one in a Short row
+   (the static Table's wrapping rows still grow: it has no row height step) */
+.plx-data-table[data-plx-row-height] .tabulator-row .tabulator-cell.plx-data-table__cell--wrap,.plx-data-table[data-plx-row-height] .tabulator-row .tabulator-cell.plx-data-table__cell--wrap .plx-data-table__value{line-height:var(--plx-comp-data-table-line-height);padding-bottom:0;padding-top:0;white-space:nowrap;}
+/* taller rows: the content starts P from the top (P = a Short row's own padding, (the density row height − the text line
+   height) / 2), each item in the middle of the first line, so one-line content sits exactly where it does in a Short row;
+   text wraps and ends in "…" on the last line that leaves at least P at the bottom; a picture fills the row less P above
+   and below, keeping its aspect */
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell{align-content:start;align-items:center;display:grid;grid-auto-columns:minmax(0,max-content);grid-auto-flow:column;grid-template-rows:minmax(var(--plx-comp-data-table-text-line-height),auto);line-height:var(--plx-comp-data-table-text-line-height);overflow:hidden;padding-block-end:var(--plx-comp-data-table-cell-padding-block);padding-block-start:var(--plx-comp-data-table-cell-padding-block);}
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-data-table__value,
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell.plx-data-table__cell--wrap .plx-data-table__value{-webkit-box-orient:vertical;-webkit-line-clamp:round(down, calc((var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2) / var(--plx-comp-data-table-text-line-height)), 1);display:-webkit-box;line-height:var(--plx-comp-data-table-text-line-height);max-block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);overflow:hidden;overflow-wrap:anywhere;white-space:normal;}
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell img,
+.plx-data-table[data-plx-row-height]:not([data-plx-row-height="short"]) .tabulator .tabulator-row:not(.tabulator-group):not(.tabulator-calcs) .tabulator-cell .plx-thumbnail{block-size:calc(var(--plx-comp-data-table-record-height) - var(--plx-comp-data-table-cell-padding-block) * 2);inline-size:auto;max-inline-size:100%;object-fit:contain;}
+/* column headers (owner, 2026-10-14): the type icon before the name (its size token is 0 in Compact: a 28px header row is
+   too small for it), the name cut with "…" */
+.plx-data-table__title{align-items:center;column-gap:var(--plx-comp-data-table-header-type-icon-gap);display:flex;min-inline-size:0;}
+.plx-data-table__type-icon{block-size:var(--plx-comp-data-table-header-type-icon-size);color:var(--plx-comp-data-table-header-type-icon-text);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-data-table-header-type-icon-size);overflow:hidden;}
+.plx-data-table__type-icon .plx-icon{block-size:100%;inline-size:100%;}
+.plx-data-table__title-text{min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* Wrap headers (the view menu; off by default): names wrap onto two lines and the header row is two lines tall, a fixed
+   token (never measured) */
+.plx-data-table[data-plx-wrap-headers] .tabulator .tabulator-header .tabulator-col .tabulator-col-content{height:var(--plx-comp-data-table-header-wrap-height);}
+.plx-data-table[data-plx-wrap-headers] .tabulator .tabulator-header .plx-data-table__title-text{-webkit-box-orient:vertical;-webkit-line-clamp:2;display:-webkit-box;line-height:var(--plx-comp-data-table-header-title-line-height);overflow-wrap:anywhere;white-space:normal;}
+/* the view column: the view menu's button at the end of the header; its cells are empty, their column line continues */
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--view .tabulator-col-content{padding-inline-end:0;padding-inline-start:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--view .tabulator-col-title{display:flex;justify-content:center;padding-right:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--view:hover .tabulator-col-title{padding-right:0;}
+.plx-data-table .tabulator .plx-data-table__w-view{flex-basis:var(--plx-comp-data-table-view-column-width);flex-grow:0;flex-shrink:0;inline-size:var(--plx-comp-data-table-view-column-width);max-inline-size:var(--plx-comp-data-table-view-column-width);min-inline-size:var(--plx-comp-data-table-view-column-width);}

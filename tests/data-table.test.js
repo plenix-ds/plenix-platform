@@ -44,9 +44,19 @@ const STATES = [
   // the design system's reference tables (props, states, classes, tokens), where token and class names sit in cells
   ['platform/design-system/index.html#/data-display/data-table', [], 1],
   // the modes: fill (the default; 5,000 rows, virtual), pages (rows from a server, fetchRows), load more
-  ['platform/design-system/index.html#/data-display/data-table/v/fill-data-table', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/virtualized-table', [], 1],
   ['platform/design-system/index.html#/data-display/data-table/v/paged-data-table', [], 1],
-  ['platform/design-system/index.html#/data-display/data-table/v/load-more-data-table', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/load-more-infinite-scroll', [], 1],
+  // the row height steps, grouping (Airtable style), the column headers and the column menu (owner, 2026-10-14)
+  ['platform/design-system/index.html#/data-display/data-table/v/short-rows', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/medium-rows', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/tall-rows', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/extra-tall-rows', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/grouped-table', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/nested-grouped-table', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/grouped-table-with-summaries', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/wrapped-headers', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/column-menu', [], 1],
   ['platform/design-system/index.html#/data-display/badge', [], 1],
   ['platform/design-system/index.html#/actions/button', [], 1],
 ];
@@ -133,7 +143,8 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         const size = getComputedStyle(g.querySelector('.tabulator')).fontSize;
         const w = document.createTreeWalker(g.querySelector('.tabulator-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
         while ((n = w.nextNode()) && type.length < 3) {
-          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .tabulator-placeholder, .ds-vis')) continue;
+          // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
+          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .tabulator-placeholder, .ds-vis, .plx-data-table__group-eyebrow, .plx-data-table__group-summary-name')) continue;
           const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
           const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'DM Mono' : 'DM Sans';
           if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
@@ -184,6 +195,9 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
           const list = g.classList.contains('plx-data-table--list') && g.querySelector('.tabulator-header') && getComputedStyle(g.querySelector('.tabulator-header')).display === 'none';
           const head = list ? [] : Array.from(g.querySelectorAll('.tabulator-header .tabulator-col')).filter((c) => c.offsetWidth);
           head.forEach((c) => { const d = off(contentBox([c.querySelector('.tabulator-col-content') || c]), c.getBoundingClientRect()); if (d > 1.01) bad.push(label + ' header ' + kindOf(c) + ' "' + c.textContent.trim().slice(0, 12) + '" off by ' + d.toFixed(1) + 'px (' + density + ')'); });
+          // (taller rows are top-aligned: the padding check below measures them)
+          const step = g.getAttribute('data-plx-row-height');
+          if (step && step !== 'short') return;
           Array.from(g.querySelectorAll('.tabulator-row:not(.tabulator-group):not(.tabulator-calcs)')).slice(0, 5).forEach((row) => {
             const cells = Array.from(row.querySelectorAll(':scope > .tabulator-cell')).filter((c) => c.offsetWidth && c.offsetHeight);
             const rr = row.getBoundingClientRect(), line = parseFloat(getComputedStyle(row).borderBottomWidth) || 0, rowArea = { top: rr.top, bottom: rr.bottom - line };
@@ -198,16 +212,70 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         });
         return bad;
       };
-      const mid = [], html = document.documentElement, was = html.getAttribute('data-plx-density');
+      // the minimum padding (owner, 2026-10-14): P = a Short row's own padding, (the density row height − the text line
+      // height) / 2. For every cell kind and every row height step, the content has at least P above and below it: text by
+      // its lines (each line the text line height around its glyphs, only the lines shown), boxes by their own box. In a
+      // Short row a box taller than a line (a 24px button) cannot have P: it is in the middle (the check above), and its
+      // room is what the row leaves. Group rows have their own heights and are not record rows.
+      const pads = (density, stepName) => {
+        const bad = [];
+        grids.forEach((g) => {
+          if (!g.hasAttribute('data-plx-row-height')) return;
+          const cs = getComputedStyle(g), px = (v) => parseFloat(v) * (/rem/.test(v) ? parseFloat(root.fontSize) : 1);
+          const R = px(cs.getPropertyValue('--plx-sys-data-table-row-height')), LH = px(cs.getPropertyValue('--plx-comp-data-table-text-line-height'));
+          if (!R || !LH) { bad.push('no row height or text line height token'); return; }
+          const P = (R - LH) / 2, label = g.querySelector('.tabulator') && g.querySelector('.tabulator').getAttribute('aria-label');
+          const boxes = (cell) => {
+            const out = [];
+            const walk = (n) => {
+              if (n.nodeType === 3) {
+                if (!n.textContent.trim()) return;
+                const clip = n.parentElement.closest('.plx-data-table__value') || n.parentElement, cr = clip.getBoundingClientRect();
+                const rg = document.createRange(); rg.selectNodeContents(n);
+                Array.from(rg.getClientRects()).forEach((r) => { if (r.width > 0 && r.top >= cr.top - 1 && r.bottom <= cr.bottom + 1) { const c = (r.top + r.bottom) / 2; out.push({ top: c - LH / 2, bottom: c + LH / 2, h: LH }); } });
+                return;
+              }
+              if (n.nodeType !== 1) return;
+              const s = getComputedStyle(n);
+              if (s.display === 'none' || s.position === 'absolute' || s.position === 'fixed' || s.visibility === 'hidden') return;
+              if (/^(INPUT|IMG|SVG|BUTTON|SELECT)$/i.test(n.tagName) || n.classList.contains('plx-badge') || n.classList.contains('plx-avatar') || n.classList.contains('plx-thumbnail')) { const r = n.getBoundingClientRect(); if (r.width && r.height) out.push({ top: r.top, bottom: r.bottom, h: r.height }); return; }
+              Array.from(n.childNodes).forEach(walk);
+            };
+            Array.from(cell.childNodes).forEach(walk);
+            return out;
+          };
+          Array.from(g.querySelectorAll('.tabulator-row:not(.tabulator-group):not(.tabulator-calcs)')).slice(0, 5).forEach((row) => {
+            Array.from(row.querySelectorAll(':scope > .tabulator-cell')).filter((c) => c.offsetWidth && c.offsetHeight).forEach((c) => {
+              const cr = c.getBoundingClientRect(), list = boxes(c);
+              if (!list.length) return;
+              const top = Math.min.apply(null, list.map((b) => b.top)) - cr.top, bottom = cr.bottom - Math.max.apply(null, list.map((b) => b.bottom));
+              const tallest = Math.max.apply(null, list.map((b) => b.h));
+              if (stepName === 'short' && tallest > LH + 1) return;   // a box taller than a line: in the middle (above)
+              if (top < P - 1 || bottom < P - 1) bad.push(label + ' ' + kindOf(c) + ' "' + c.textContent.trim().slice(0, 12) + '" room ' + top.toFixed(1) + ' / ' + bottom.toFixed(1) + 'px, P ' + P + 'px (' + density + ', ' + stepName + ')');
+            });
+          });
+        });
+        return bad;
+      };
+      const mid = [], padBad = [], html = document.documentElement, was = html.getAttribute('data-plx-density');
+      const stepped = grids.filter((g) => g.hasAttribute('data-plx-row-height')), steps0 = stepped.map((g) => g.getAttribute('data-plx-row-height'));
+      const frames = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 150))));
       for (const density of ['compact', 'standard', 'comfortable']) {
         html.setAttribute('data-plx-density', density);
-        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 150))));
+        await frames();
         middle(density).forEach((x) => { if (mid.length < 4) mid.push(x); });
+        // every row height step (the frame's attribute, as the view menu sets it)
+        for (const s of ['short', 'medium', 'tall', 'extra-tall']) {
+          stepped.forEach((g) => g.setAttribute('data-plx-row-height', s));
+          await frames();
+          pads(density, s).forEach((x) => { if (padBad.length < 4) padBad.push(x); });
+        }
+        stepped.forEach((g, i) => g.setAttribute('data-plx-row-height', steps0[i]));
       }
       if (was === null) html.removeAttribute('data-plx-density'); else html.setAttribute('data-plx-density', was);
       // the modes: a grid that fills its room draws only some of its rows
       const modes = grids.map((g) => (g.hasAttribute('data-plx-fit') ? 'fill' + (g.classList.contains('plx-data-table--load-more') ? ' load-more' : '') : g.classList.contains('plx-data-table--pages') ? 'pages' : '') + (g.getAttribute('data-plx-render') === 'virtual' ? ' virtual' : '')).filter(Boolean);
-      return { type, mid, modes, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
+      return { type, mid, padBad, modes, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
     }, TAGS);
     const bad = [];
     // the footer's controls (pages, load-more) are keyboard reachable: Tab from the grid body lands in the footer, and
@@ -228,8 +296,59 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     if (r.type.length) bad.push('typography: ' + r.type.join('; '));
     if (r.audit.length) bad.push('style audit: ' + r.audit.slice(0, 3).join('; '));
     if (r.mid.length) bad.push('vertical alignment not middle: ' + r.mid.join('; '));
+    if (r.padBad.length) bad.push('less than P above or below: ' + r.padBad.join('; '));
     r.sizes.forEach((s) => { if (!s.label) bad.push('a table has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });
     res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')' + (r.modes.length ? ' [' + r.modes.join(', ') + ']' : ''), !bad.length, bad.join(' · ')]);
+  }
+  // the keyboard (owner, 2026-10-14): a group row opens and closes with Enter and the arrow keys (aria-expanded follows,
+  // the change is announced), the view menu opens from its button and sets the row height, the column menu opens with
+  // Shift + F10 on a focused header, its items take the arrow keys, Escape gives the focus back to the header
+  if (HAS_DS && (!ONLY || ONLY.test('grouped-table')) && changed.wants({ units: GRIDS })) {
+    const name = 'keyboard: group rows, the view menu, the column menu';
+    at(name);
+    const bad = [];
+    await page.goto('about:blank');
+    await page.goto(BASE + 'platform/design-system/index.html#/data-display/data-table/v/grouped-table', { waitUntil: 'networkidle0' });
+    await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
+    await page.reload({ waitUntil: 'networkidle0' });
+    try { await page.waitForFunction(() => document.querySelector('main .plx-data-table .tabulator-group'), { timeout: 15000 }); } catch (e) { bad.push('no group row'); }
+    const state = () => page.evaluate(() => { const a = document.activeElement; return { role: a && a.getAttribute('role'), label: a && (a.getAttribute('aria-label') || a.textContent.trim().slice(0, 30)), expanded: a && a.getAttribute('aria-expanded'), live: Array.from(document.querySelectorAll('[aria-live]')).map((x) => x.textContent).join(' ') }; });
+    const wait = () => new Promise((r) => setTimeout(r, 300));
+    if (!bad.length) {
+      await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-group').focus());
+      const s0 = await state();
+      if (s0.role !== 'row' || s0.expanded !== 'true') bad.push('a group row is a focusable row with aria-expanded="true" (' + JSON.stringify(s0) + ')');
+      await page.keyboard.press('Enter'); await wait();
+      const s1 = await state();
+      if (s1.expanded !== 'false' || !/collapsed/.test(s1.live)) bad.push('Enter closes the group, keeps the focus and announces it (' + JSON.stringify(s1) + ')');
+      await page.keyboard.press('ArrowRight'); await wait();
+      if ((await state()).expanded !== 'true') bad.push('Arrow Right opens the group');
+      await page.keyboard.press('ArrowLeft'); await wait();
+      if ((await state()).expanded !== 'false') bad.push('Arrow Left closes the group');
+      await page.keyboard.press('ArrowDown'); await wait();
+      const s4 = await state();
+      if (s4.role !== 'row' || s4.label === s1.label) bad.push('Arrow Down moves to the next group row (' + JSON.stringify(s4) + ')');
+      // the view menu
+      await page.evaluate(() => document.querySelector('main .plx-data-table .plx-data-table__cell--view button').focus());
+      await page.keyboard.press('Enter'); await wait();
+      const v0 = await state();
+      if (v0.role !== 'menuitemradio') bad.push('the view menu opens on its first row height (' + JSON.stringify(v0) + ')');
+      await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter'); await wait();
+      const step = await page.evaluate(() => document.querySelector('main .plx-data-table[data-plx-row-height]').getAttribute('data-plx-row-height'));
+      if (step !== 'medium') bad.push('the view menu sets the row height (now ' + step + ')');
+      // the column menu
+      await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-col[tabulator-field="qty"]').focus());
+      await page.keyboard.down('Shift'); await page.keyboard.press('F10'); await page.keyboard.up('Shift'); await wait();
+      const c0 = await state();
+      if (c0.role !== 'menuitem') bad.push('Shift + F10 opens the column menu on its first item (' + JSON.stringify(c0) + ')');
+      await page.keyboard.press('ArrowDown');
+      const c1 = await state();
+      if (c1.role !== 'menuitem' || c1.label === c0.label) bad.push('Arrow Down moves in the column menu');
+      await page.keyboard.press('Escape'); await wait();
+      const c2 = await state();
+      if (c2.role !== 'columnheader' || await page.evaluate(() => !!document.querySelector('.tabulator-menu'))) bad.push('Escape closes the column menu and gives the focus back to the header (' + JSON.stringify(c2) + ')');
+    }
+    res.push([name, !bad.length, bad.join(' · ')]);
   }
   await browser.close(); server.close();
   const failed = res.filter((x) => !x[1]);

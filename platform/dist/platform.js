@@ -7690,7 +7690,7 @@ exports.stepSize = stepSize;
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 92, 96, 100, 112, 120, 132, 140, 152, 160, 180, 200, 220, 240, 280, 300, 320, 360, 400, 500, 560, 600, 720, 900];
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 280, 300, 320, 360, 400, 500, 560, 600, 720, 900];
 const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
 function snapSize(px, min, max) {
@@ -9410,6 +9410,8 @@ function useVirtualizer({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.groupAt = groupAt;
+exports.groupLayout = groupLayout;
 exports.remeasure = remeasure;
 exports.reshare = reshare;
 exports.strictTabulator = strictTabulator;
@@ -9427,8 +9429,10 @@ var _grid = require("../../utils/grid.js");
      classes and tokens.
    Usage:
      strictTabulator(Tabulator, win)   // loadTabulator does it before the first grid is built
-     virtualResync(table)              // a density change: the virtual renderer takes the new row height
+     virtualResync(table)              // a density or row height change: the virtual renderer takes the new heights
      virtualPrint(table, true|false)   // before / after printing: every row in the document, then the window again
+     groupLayout(table)                // a grouped grid's rows: their flags and offsets (prefix sums of the tokens)
+     groupAt(table, top)               // the display row at a scroll position, from the tokens' heights
      remeasure(table, columns)         // React filled these columns' cells, or the density changed: their content
                                        // widths are measured again
    Props:
@@ -9441,12 +9445,21 @@ var _grid = require("../../utils/grid.js");
        never a row), so a bigger density never cuts text off (owner, 2026-10-14). Every width
        Tabulator writes is a whole number of grid steps (utils/grid.js: measured, fitted and dragged widths round up),
        so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
-     Row height and cell padding (Plenix's): never measured, never written. A row is the density's row height
-       (--plx-sys-data-table-row-height plus its line); the stylesheet draws it.
+     Row height and cell padding (Plenix's): never measured, never written. A record row is the grid's row height step
+       (--plx-comp-data-table-record-height: Short is the density's row height; Medium, Tall and Extra tall are fixed
+       tokens) plus its line; the stylesheet draws it.
      Virtual rendering (renderVertical "virtual": a grid with a room, its height or the room fill and load-more measure):
-       Tabulator renders the rows in view; every row counts as the density row height (read from the tokens, not from the
-       rows); the room for the rows not drawn is two
-       gaps of the system's virtualization (system/virtual.css: pieces of 1, 2, 4 … rows, data-plx-span), never padding.
+       Tabulator renders the rows in view; every row counts as its kind's height, read from the tokens (the grid's hidden
+       probe boxes, each sized by its token), never from the rows: a record row the row height step, a group row the
+       group header height (the density row height + 16px), plus the gap band before it and the add row of the group
+       above it when it has them. The room for the rows not drawn is two gaps of the system's virtualization
+       (system/virtual.css: pieces of 1, 2, 4 … rows, data-plx-span; a grouped grid's gap has one part per row kind, each
+       sized by its token), never padding. A grouped grid finds the row at a scroll position from those heights (prefix
+       sums), so a jump, a kept position and a density change land on the right row.
+     Group rows (groupBy): Tabulator's groups and their data; no group row is measured and no header margin is written.
+       Each group row carries plxGap (a band before it: it is not the first row, nor the first group under its parent)
+       and plxAddFor (the group whose add row it draws above its band), also as classes on its element; the grid's own
+       callback (table.plxOnGroupLayout) fills the parts in.
        The grid carries aria-rowcount and each drawn row its aria-rowindex. A focused control whose row scrolls out parks
        the focus on the scrolling body and gets it back when the row is drawn again.
      Off: row and cell heights, header vertical alignment, the body's sizing, the virtual renderer's padding, the
@@ -9482,14 +9495,146 @@ function tokenPx(name, el) {
   if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(win.getComputedStyle(el.ownerDocument.documentElement).fontSize) || 16);
   return parseFloat(v) || 0;
 }
-// one row's block size: the density's row height and its line (read from the tokens, never from a row)
+// the heights of the grid's row kinds, read from its tokens where the grid is (its row height step, its density): rec
+// (the row height step), grp (the group header), band (the gap between groups), add (a Short row: the add row, column
+// calcs) and line. A token written as calc() is read from the grid's probe (a hidden box per kind sized by its token;
+// DataTable draws it), else from the custom property.
+function heights(table) {
+  if (table.plxH) return table.plxH;
+  const el = table.element,
+    probe = table.plxProbe;
+  const box = (kind, name) => {
+    const p = probe && probe.isConnected && probe.querySelector('[data-plx-probe="' + kind + '"]');
+    const v = p ? parseFloat(p.ownerDocument.defaultView.getComputedStyle(p).blockSize) : 0;
+    return v > 0 ? v : tokenPx(name, el);
+  };
+  const H = {
+    rec: box('record', '--plx-comp-data-table-record-height'),
+    grp: box('group', '--plx-comp-data-table-group-header-height'),
+    band: box('band', '--plx-comp-data-table-group-gap'),
+    add: box('add', '--plx-sys-data-table-row-height'),
+    line: tokenPx('--plx-comp-data-table-line-width', el)
+  };
+  if (!H.rec) H.rec = tokenPx('--plx-sys-data-table-row-height', el);
+  if (!H.add) H.add = H.rec;
+  table.plxH = H;
+  return H;
+}
+// one record row's block size: the row height step and its line (read from the tokens, never from a row)
 function rowPx(table) {
-  if (!table.plxRowPx) table.plxRowPx = tokenPx('--plx-sys-data-table-row-height', table.element) + tokenPx('--plx-comp-data-table-line-width', table.element);
-  return table.plxRowPx || 1;
+  const H = heights(table);
+  return H.rec + H.line || 1;
+}
+// a display row's block size by its kind (no row is measured)
+function hOf(table, row) {
+  const H = heights(table);
+  if (row && row.type === 'group') return H.grp + H.line + (row.plxGap ? H.band + H.line : 0) + (row.plxAddFor ? H.add + H.line : 0);
+  if (row && row.type === 'calc') return H.add + H.line;
+  return H.rec + H.line;
+}
+
+// ---- group rows: flags and offsets (a grouped grid's rows have several heights, all known from the tokens) ----
+const EMPTY = {
+  mixed: false,
+  n: 0
+};
+function groupLayout(table, rowsIn) {
+  const rm = table && table.rowManager;
+  if (!rm) return EMPTY;
+  const rows = rowsIn || rm.getDisplayRows(),
+    n = rows.length,
+    L0 = table.plxLayout,
+    H = heights(table);
+  if (L0 && L0.rows === rows && L0.n === n && L0.H === H && L0.first === rows[0] && L0.last === rows[n - 1] && L0.adds === !!table.plxAddRows) return L0;
+  let mixed = false;
+  for (let i = 0; i < n; i++) if (rows[i].type !== 'row') {
+    mixed = true;
+    break;
+  }
+  const adds = !!table.plxAddRows;
+  const L = {
+    rows,
+    n,
+    H,
+    first: rows[0],
+    last: rows[n - 1],
+    mixed,
+    adds
+  };
+  table.plxLayout = L;
+  if (!mixed) {
+    table.plxTailFor = null;
+    return L;
+  }
+  // flags: a band before every group but the first row and the first group under its parent; the add row of the group
+  // whose records end just above
+  for (let i = 0; i < n; i++) {
+    const r = rows[i];
+    if (r.type !== 'group') continue;
+    const prev = i ? rows[i - 1] : null;
+    r.plxGap = !!prev && !(prev.type === 'group' && r.parent === prev);
+    r.plxAddFor = adds && prev && prev.type === 'row' && prev.modules.group ? prev.modules.group : null;
+    if (r.element) {
+      r.element.classList.toggle('plx-data-table__group--gap', r.plxGap);
+      r.element.classList.toggle('plx-data-table__group--add', !!r.plxAddFor);
+    }
+  }
+  const last = rows[n - 1];
+  table.plxTailFor = adds && last && last.type === 'row' && last.modules.group ? last.modules.group : null;
+  // prefix sums: the offset of row i and the count of each kind before it
+  const off = new Float64Array(n + 1),
+    rec = new Int32Array(n + 1),
+    grp = new Int32Array(n + 1),
+    band = new Int32Array(n + 1),
+    add = new Int32Array(n + 1);
+  for (let i = 0; i < n; i++) {
+    const r = rows[i],
+      g = r.type === 'group';
+    off[i + 1] = off[i] + hOf(table, r);
+    rec[i + 1] = rec[i] + (r.type === 'row' ? 1 : 0);
+    grp[i + 1] = grp[i] + (g ? 1 : 0);
+    band[i + 1] = band[i] + (g && r.plxGap ? 1 : 0);
+    add[i + 1] = add[i] + (g && r.plxAddFor ? 1 : 0) + (r.type === 'calc' ? 1 : 0);
+  }
+  Object.assign(L, {
+    off,
+    rec,
+    grp,
+    band,
+    add
+  });
+  if (table.plxOnGroupLayout) table.plxOnGroupLayout(null);
+  return L;
+}
+// the display row at a scroll offset (a binary search in the offsets)
+function indexIn(L, top) {
+  let lo = 0,
+    hi = L.n - 1;
+  while (lo < hi) {
+    const mid = lo + hi + 1 >> 1;
+    if (L.off[mid] <= top) lo = mid;else hi = mid - 1;
+  }
+  return Math.max(0, lo);
+}
+function groupAt(table, top) {
+  const L = groupLayout(table);
+  if (!L.mixed || !L.n) return null;
+  const i = indexIn(L, top);
+  return {
+    index: i,
+    row: L.rows[i],
+    offset: L.off[i],
+    layout: L
+  };
+}
+// the heights changed (a density, a row height step): every height is read again
+function forgetHeights(table) {
+  table.plxH = null;
+  table.plxLayout = null;
 }
 
 // the lead column (the checkbox column, a mark column): its width is the lead token, from its classes
-const isLead = c => !!c.isRowHeader || /__cell--select|__cell--icon|__w-lead/.test(String(c.definition && c.definition.cssClass || ''));
+const isLead = c => !!c.isRowHeader || /__cell--select|__cell--icon|__w-lead|__w-view/.test(String(c.definition && c.definition.cssClass || ''));
 // the next size token at or above px (a pinned column's width)
 const stepUp = px => _sizeSteps.SIZE_STEPS.find(s => s >= px) || _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
 
@@ -9603,17 +9748,34 @@ function remeasure(table, columns) {
 // ---- virtual rendering: the rows in view, gaps for the others ----
 
 // a gap's pieces for n rows (system/virtual.css sizes each piece from --plx-sys-virtual-item-size, set by data-table.css)
+const pieceEls = (parent, n) => (0, _useVirtualizer.gapPieces)(n).forEach(p => {
+  const d = parent.ownerDocument.createElement('div');
+  d.className = 'plx-virtual-gap__piece';
+  d.setAttribute('data-plx-span', String(p));
+  parent.appendChild(d);
+});
 function fillGap(box, n) {
-  const pieces = (0, _useVirtualizer.gapPieces)(n),
-    key = pieces.join();
+  const key = String(n);
   if (box.plxHave === key) return;
   box.plxHave = key;
   box.textContent = '';
-  pieces.forEach(p => {
-    const d = box.ownerDocument.createElement('div');
-    d.className = 'plx-virtual-gap__piece';
-    d.setAttribute('data-plx-span', String(p));
-    box.appendChild(d);
+  pieceEls(box, n);
+}
+// a grouped grid's gap: one part per row kind (records, group headers, gap bands, add rows), each part's item size its
+// kind's token (data-table.css: plx-data-table__gap-part--*)
+const KINDS = ['rec', 'grp', 'band', 'add'];
+function fillGapParts(box, L, from, to) {
+  const c = KINDS.map(k => to > from ? L[k][to] - L[k][from] : 0),
+    key = 'g' + c.join();
+  if (box.plxHave === key) return;
+  box.plxHave = key;
+  box.textContent = '';
+  KINDS.forEach((k, i) => {
+    if (!c[i]) return;
+    const part = box.ownerDocument.createElement('div');
+    part.className = 'plx-data-table__gap-part plx-data-table__gap-part--' + k;
+    pieceEls(part, c[i]);
+    box.appendChild(part);
   });
 }
 // the focus inside a row that is about to leave the document waits on the scrolling body
@@ -9636,10 +9798,26 @@ function sync(r) {
     total = rows.length,
     table = r.table;
   const drawn = total && r.vDomBottom >= r.vDomTop;
+  const L = groupLayout(table, rows);
+  // the add row at the end of the last group (a grouped grid with add rows) follows the bottom gap
+  const tail = table.plxTailEl && table.plxTailFor ? table.plxTailEl : null;
   if (te.firstChild !== r.plxTop) te.insertBefore(r.plxTop, te.firstChild);
-  if (te.lastChild !== r.plxBottom) te.appendChild(r.plxBottom);
-  fillGap(r.plxTop, drawn ? r.vDomTop : 0);
-  fillGap(r.plxBottom, drawn ? Math.max(0, total - 1 - r.vDomBottom) : total);
+  if (tail) {
+    if (tail.parentNode !== te || tail.previousSibling !== r.plxBottom || te.lastChild !== tail) {
+      te.appendChild(r.plxBottom);
+      te.appendChild(tail);
+    }
+  } else {
+    if (table.plxTailEl && table.plxTailEl.parentNode === te) te.removeChild(table.plxTailEl);
+    if (te.lastChild !== r.plxBottom) te.appendChild(r.plxBottom);
+  }
+  if (L.mixed) {
+    fillGapParts(r.plxTop, L, 0, drawn ? r.vDomTop : 0);
+    fillGapParts(r.plxBottom, L, drawn ? r.vDomBottom + 1 : 0, total);
+  } else {
+    fillGap(r.plxTop, drawn ? r.vDomTop : 0);
+    fillGap(r.plxBottom, drawn ? Math.max(0, total - 1 - r.vDomBottom) : total);
+  }
   table.element.setAttribute('aria-rowcount', String(total + 1));
   const head = table.columnManager && table.columnManager.headersElement;
   if (head && head.getAttribute('role') === 'row') head.setAttribute('aria-rowindex', '1');
@@ -9663,15 +9841,17 @@ function sync(r) {
   }
 }
 
-// the renderer's own add and remove steps, at the density row height (no row is measured, no padding is written)
+// the renderer's own add and remove steps, at each row kind's height from the tokens (no row is measured, no padding is
+// written)
 function addTop(rows, room) {
   const te = this.tableElement,
-    h = rowPx(this.table);
+    t = this.table;
   let n = this.vDomTop - 1,
     chain = 0,
     added = 0;
-  while (this.vDomTop && rows[n] && chain < this.vDomMaxRenderChain && room >= h) {
-    const row = rows[n];
+  while (this.vDomTop && rows[n] && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[n])) {
+    const row = rows[n],
+      h = hOf(t, row);
     this.styleRow(row, n);
     te.insertBefore(row.getElement(), this.plxTop.parentNode === te ? this.plxTop.nextSibling : te.firstChild);
     row.initialize();
@@ -9682,17 +9862,18 @@ function addTop(rows, room) {
     chain++;
   }
   if (added) {
-    this.vDomTopPad = this.vDomTop * h;
+    this.vDomTopPad = Math.max(0, this.vDomTopPad - added);
     this.vDomScrollPosTop -= added;
   }
   sync(this);
 }
 function removeTop(rows, room) {
-  const h = rowPx(this.table),
+  const t = this.table,
     out = [];
   let chain = 0,
     gone = 0;
-  while (rows[this.vDomTop] && this.vDomTop < this.vDomBottom && chain < this.vDomMaxRenderChain && room >= h) {
+  while (rows[this.vDomTop] && this.vDomTop < this.vDomBottom && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[this.vDomTop])) {
+    const h = hOf(t, rows[this.vDomTop]);
     out.push(rows[this.vDomTop]);
     this.vDomTop++;
     room -= h;
@@ -9702,19 +9883,20 @@ function removeTop(rows, room) {
   park(this, out);
   out.forEach(row => row.detachElement());
   if (gone) {
-    this.vDomTopPad = this.vDomTop * h;
+    this.vDomTopPad += gone;
     this.vDomScrollPosTop += this.vDomTop ? gone : gone + this.vDomWindowBuffer;
   }
   sync(this);
 }
 function addBottom(rows, room) {
   const te = this.tableElement,
-    h = rowPx(this.table);
+    t = this.table;
   let n = this.vDomBottom + 1,
     chain = 0,
     added = 0;
-  while (rows[n] && chain < this.vDomMaxRenderChain && room >= h) {
-    const row = rows[n];
+  while (rows[n] && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[n])) {
+    const row = rows[n],
+      h = hOf(t, row);
     this.styleRow(row, n);
     te.insertBefore(row.getElement(), this.plxBottom.parentNode === te ? this.plxBottom : null);
     row.initialize();
@@ -9725,17 +9907,18 @@ function addBottom(rows, room) {
     chain++;
   }
   if (added) {
-    this.vDomBottomPad = Math.max(0, (rows.length - 1 - this.vDomBottom) * h);
+    this.vDomBottomPad = Math.max(0, this.vDomBottomPad - added);
     this.vDomScrollPosBottom += added;
   }
   sync(this);
 }
 function removeBottom(rows, room) {
-  const h = rowPx(this.table),
+  const t = this.table,
     out = [];
   let chain = 0,
     gone = 0;
-  while (rows[this.vDomBottom] && this.vDomBottom > this.vDomTop && chain < this.vDomMaxRenderChain && room >= h) {
+  while (rows[this.vDomBottom] && this.vDomBottom > this.vDomTop && chain < this.vDomMaxRenderChain && room >= hOf(t, rows[this.vDomBottom])) {
+    const h = hOf(t, rows[this.vDomBottom]);
     out.push(rows[this.vDomBottom]);
     this.vDomBottom--;
     room -= h;
@@ -9745,10 +9928,59 @@ function removeBottom(rows, room) {
   park(this, out);
   out.forEach(row => row.detachElement());
   if (gone) {
-    this.vDomBottomPad = (rows.length - 1 - this.vDomBottom) * h;
+    this.vDomBottomPad += gone;
     this.vDomScrollPosBottom -= gone;
   }
   sync(this);
+}
+// a grouped grid scrolls by its rows' heights: a jump finds the row at the scroll position from the offsets (Tabulator's
+// own estimate assumes one row height) and draws from it in place
+function scrollRowsMixed(own) {
+  return function (top, up) {
+    const L = this.plxTop ? groupLayout(this.table, this.rows()) : EMPTY;
+    if (!L.mixed) return own.apply(this, arguments);
+    const i = top - this.vDomScrollPosTop,
+      s = top - this.vDomScrollPosBottom,
+      far = 2 * this.vDomWindowBuffer,
+      rows = this.rows();
+    this.scrollTop = top;
+    if (-i > far || s > far) {
+      const left = this.table.rowManager.scrollLeft,
+        at = this.elementVertical.scrollTop,
+        k = indexIn(L, at);
+      this._virtualRenderFill(k, true, at - L.off[k]);
+      this.scrollColumns(left);
+    } else if (up) {
+      if (i < 0) this._addTopRow(rows, -i);
+      if (s < 0) {
+        if (this.vDomScrollHeight - this.scrollTop > this.vDomWindowBuffer) this._removeBottomRow(rows, -s);else this.vDomScrollPosBottom = this.scrollTop;
+      }
+    } else {
+      if (s >= 0) this._addBottomRow(rows, s);
+      if (i >= 0) {
+        if (this.scrollTop > this.vDomWindowBuffer) this._removeTopRow(rows, i);else this.vDomScrollPosTop = this.scrollTop;
+      }
+    }
+    return undefined;
+  };
+}
+
+// a group row (Tabulator's group): its height is its kind's token (never measured), and no margin is written to keep its
+// toggle in view when the grid scrolls sideways (the first group cell is sticky: data-table.css)
+const patchedGroups = new WeakSet();
+function patchGroup(group) {
+  const G = Object.getPrototypeOf(group);
+  if (patchedGroups.has(G)) return;
+  patchedGroups.add(G);
+  G.getHeight = function () {
+    return hOf(this.groupManager.table, this);
+  };
+  ['normalizeHeight', 'calcHeight', 'scrollHeader'].forEach(n => {
+    if (typeof G[n] === 'function') G[n] = OFF;
+  });
+  G.setHeight = function () {
+    this.height = this.outerHeight = hOf(this.groupManager.table, this);
+  };
 }
 const patchedRenderers = new WeakSet();
 function patchVirtualClass(V) {
@@ -9757,12 +9989,28 @@ function patchVirtualClass(V) {
   const fill = V._virtualRenderFill,
     clear = V.clearRows,
     rerender = V.rerenderRows;
-  V._virtualRenderFill = function () {
+  V._virtualRenderFill = function (at, keep, into) {
     if (this.plxTop) park(this);
     this.vDomRowHeight = rowPx(this.table);
     fill.apply(this, arguments);
-    if (this.plxTop) sync(this);
+    if (!this.plxTop) return;
+    // a grouped grid: the place Tabulator kept (with one row height) is the row's own offset (the tokens' heights)
+    const L = groupLayout(this.table, this.rows());
+    if (L.mixed && L.n) {
+      const E = this.elementVertical.clientHeight,
+        total = L.off[L.n];
+      this.vDomScrollHeight = Math.max(0, total - E);
+      if (at && keep) {
+        const want = Math.max(0, Math.min(L.off[Math.min(at, L.n)] + (into || 0), Math.max(0, total - E)));
+        this.scrollTop = want;
+        this.vDomScrollPosTop = want;
+        this.vDomScrollPosBottom = want;
+        this.elementVertical.scrollTop = want;
+      }
+    }
+    sync(this);
   };
+  V.scrollRows = scrollRowsMixed(V.scrollRows);
   V.clearRows = function () {
     if (this.plxTop) park(this);
     clear.apply(this, arguments);
@@ -9810,23 +10058,39 @@ function hookVirtual(r) {
   te.appendChild(r.plxBottom);
 }
 
-// a density change: the rows are already their new height (CSS); the renderer takes it, and the row that was at the top
-// of the view stays there
+// a density or row height change: the rows are already their new height (CSS); the renderer takes it, and the row that
+// was at the top of the view stays there
 function virtualResync(table) {
-  const r = table && table.rowManager && table.rowManager.renderer;
-  if (!r || !r.plxTop) return;
-  const before = table.plxRowPx || rowPx(table),
-    top = r.elementVertical.scrollTop;
-  table.plxRowPx = 0;
-  const now = rowPx(table);
+  if (!table) return;
+  const r = table.rowManager && table.rowManager.renderer;
+  if (!r || !r.plxTop) {
+    forgetHeights(table);
+    return;
+  }
+  const top = r.elementVertical.scrollTop,
+    L0 = groupLayout(table, r.rows()),
+    H0 = heights(table),
+    before = rowPx(table);
+  const was = L0.mixed && L0.n ? indexIn(L0, top) : -1,
+    wasH = was >= 0 ? L0.off[was + 1] - L0.off[was] : 0,
+    wasOff = was >= 0 ? L0.off[was] : 0;
+  forgetHeights(table);
+  const now = rowPx(table),
+    H1 = heights(table);
   r.vDomRowHeight = now;
-  if (now === before) {
+  if (['rec', 'grp', 'band', 'add', 'line'].every(k => H0[k] === H1[k]) || !r.rows().length) {
     sync(r);
+    return;
+  }
+  if (was >= 0) {
+    const L1 = groupLayout(table, r.rows()),
+      nowH = L1.off[was + 1] - L1.off[was];
+    r._virtualRenderFill(was, true, wasH ? (top - wasOff) * nowH / wasH : 0);
     return;
   }
   const index = Math.floor(top / before),
     into = (top - index * before) * now / before;
-  if (r.rows().length) r._virtualRenderFill(index, true, into);else sync(r);
+  r._virtualRenderFill(index, true, into);
 }
 // printing: every row in the document while the page prints, then the rows in view again
 function virtualPrint(table, on) {
@@ -9834,13 +10098,72 @@ function virtualPrint(table, on) {
     r = rm && rm.renderer;
   if (!r || !r.plxTop) return;
   if (on) {
-    r.plxPrintTop = Math.floor(r.elementVertical.scrollTop / rowPx(table));
+    const g = groupAt(table, r.elementVertical.scrollTop);
+    r.plxPrintTop = g ? g.index : Math.floor(r.elementVertical.scrollTop / rowPx(table));
     rm.fixedHeight = false;
     r._virtualRenderFill();
   } else {
     rm.fixedHeight = true;
     r._virtualRenderFill(r.plxPrintTop || 0, true);
   }
+}
+
+// a Tabulator menu (the column menu, the row menu, a handle's moves) as an ARIA menu the keyboard works: its items are
+// menu items, the first enabled one takes the focus, Arrow Down / Up (Home, End) move between them, Enter or Space
+// chooses one, Escape and Tab close the menu and the focus goes back to what opened it
+function menuKeys(popup, doc) {
+  const m = popup.element;
+  popup.plxReturn = doc.activeElement && doc.activeElement !== doc.body ? doc.activeElement : null;
+  m.setAttribute('role', 'menu');
+  const items = Array.from(m.children).filter(x => x.classList.contains('tabulator-menu-item'));
+  Array.from(m.children).forEach(x => {
+    if (x.classList.contains('tabulator-menu-separator')) x.setAttribute('role', 'separator');
+  });
+  items.forEach(x => {
+    x.setAttribute('role', 'menuitem');
+    x.tabIndex = -1;
+    if (x.classList.contains('tabulator-menu-item-disabled')) x.setAttribute('aria-disabled', 'true');
+  });
+  const live = () => items.filter(x => !x.classList.contains('tabulator-menu-item-disabled'));
+  const go = x => {
+    if (x) x.focus({
+      preventScroll: true
+    });
+  };
+  if (!m.plxKeys) {
+    m.plxKeys = true;
+    m.addEventListener('keydown', e => {
+      const list = live(),
+        i = list.indexOf(doc.activeElement);
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation();
+        go(list[(i + 1) % list.length]);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        e.stopPropagation();
+        go(list[(i - 1 + list.length) % list.length]);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        e.stopPropagation();
+        go(list[0]);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        e.stopPropagation();
+        go(list[list.length - 1]);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (i >= 0) list[i].click();
+      } else if (e.key === 'Escape' || e.key === 'Tab') {
+        if (e.key === 'Escape') e.preventDefault();
+        e.stopPropagation();
+        if (popup.visible) popup.hide();
+      }
+    });
+  }
+  // only a menu opened from the keyboard (its opener has the focus) moves the focus into it
+  if (popup.plxReturn && !m.contains(popup.plxReturn)) requestAnimationFrame(() => go(live()[0]));
 }
 function strictTabulator(Tabulator, win) {
   if (!Tabulator) return Promise.resolve();
@@ -9911,11 +10234,19 @@ function strictTabulator(Tabulator, win) {
         const Col = Object.getPrototypeOf(col);
         // every width Tabulator writes (measured, fitted, dragged, given) is rounded up to the grid (utils/grid.js)
         const setActual = Col.setWidthActual;
+        // and a changed width tells the grid's group rows (their cells follow the columns; table.plxOnColumns, once a frame)
         Col.setWidthActual = function (w) {
-          return setActual.call(this, typeof w === 'number' && w > 0 ? (0, _grid.snapToGrid)(w, {
+          const out = setActual.call(this, typeof w === 'number' && w > 0 ? (0, _grid.snapToGrid)(w, {
             round: 'up',
             el: this.table.element
           }) : w);
+          const t = this.table;
+          t.plxColsVer = (t.plxColsVer || 0) + 1;
+          if (t.plxOnColumns && !t.plxColsFrame) t.plxColsFrame = requestAnimationFrame(() => {
+            t.plxColsFrame = 0;
+            if (!t.destroyed && t.plxOnColumns) t.plxOnColumns();
+          });
+          return out;
         };
         // a column's width, minimum and maximum are Tabulator's (setWidthActual, setMinWidth, setMaxWidth stay)
         ['setHeight', 'verticalAlign', 'clearVerticalAlign', 'matchChildWidths', 'checkCellHeights'].forEach(n => {
@@ -9943,16 +10274,31 @@ function strictTabulator(Tabulator, win) {
         ['setCellHeight', 'normalizeHeight', 'reinitializeHeight', 'calcHeight'].forEach(n => {
           if (typeof R[n] === 'function') R[n] = OFF;
         });
-        // a row's height is the density's (the virtual renderer counts with it); a basic grid never asks
+        // a row's height is its row height step's (the virtual renderer counts with it); a basic grid never asks
         const height = R.getHeight;
         R.getHeight = function () {
-          return this.table.rowManager.renderMode === 'virtual' ? rowPx(this.table) : height.call(this);
+          return this.table.rowManager.renderMode === 'virtual' ? hOf(this.table, this) : height.call(this);
         };
       }
       const CM = Object.getPrototypeOf(probe.columnManager);
       ['verticalAlignHeaders'].forEach(n => {
         if (typeof CM[n] === 'function') CM[n] = OFF;
       });
+      // every renderer styles a row before it draws it: a grouped grid lays its group rows out first (flags, classes), and
+      // a group row's own measuring and header margin are switched off (its height is its kind's token)
+      const renderer = probe.rowManager.renderer,
+        RB = renderer && Object.getPrototypeOf(Object.getPrototypeOf(renderer));
+      if (RB && typeof RB.styleRow === 'function') {
+        const styleRow = RB.styleRow;
+        RB.styleRow = function (row) {
+          if (row && row.type === 'group') {
+            patchGroup(row);
+            groupLayout(this.table, this.rows());
+            if (this.table.plxOnGroupDraw) this.table.plxOnGroupDraw(row);
+          }
+          return styleRow.apply(this, arguments);
+        };
+      }
       const RM = Object.getPrototypeOf(probe.rowManager);
       ['normalizeHeight'].forEach(n => {
         if (typeof RM[n] === 'function') RM[n] = OFF;
@@ -9970,6 +10316,15 @@ function strictTabulator(Tabulator, win) {
         if (this.renderMode === 'virtual' && this.renderer && 'vDomTopPad' in this.renderer) {
           this.fixedHeight = true;
           hookVirtual(this.renderer);
+        }
+        // the basic renderer's width for a body of group rows only: the stylesheet's (the body is as wide as its rows)
+        else if (this.tableElement && !this.tableElement.plxStrict) {
+          this.tableElement.plxStrict = true;
+          Object.defineProperty(this.tableElement.style, 'minWidth', {
+            configurable: true,
+            get: () => '',
+            set: OFF
+          });
         }
       };
       // a column's resize handle (Tabulator's) sits inside its header, at its end edge: a header row holds only column
@@ -10066,10 +10421,22 @@ function strictTabulator(Tabulator, win) {
           this.element.addEventListener('mousedown', e => {
             e.stopPropagation();
           });
+          if (this.element.classList.contains('tabulator-menu')) menuKeys(this, doc);
           return this;
         };
         P.hide = function () {
           if (this.anchorEl) this.anchorEl.classList.remove('plx-data-table__popup-anchor');
+          // a menu gives the focus back to what opened it (a header opened from the keyboard, a row handle)
+          const back = this.plxReturn,
+            inside = this.element && this.element.contains(doc.activeElement);
+          this.plxReturn = null;
+          if (back && inside && back.isConnected) {
+            try {
+              back.focus({
+                preventScroll: true
+              });
+            } catch (e) {/* gone */}
+          }
           if (typeof this.element.hidePopover === 'function') {
             try {
               this.element.hidePopover();
@@ -10230,7 +10597,7 @@ function tablePx(token, el) {
   return parseFloat(v) || 0;
 }
   } },
-  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10247,6 +10614,7 @@ var _sizeSteps = require("../../utils/sizeSteps.js");
 var _direction = require("../../utils/direction.js");
 var _EmptyState = require("../EmptyState/EmptyState.jsx");
 var _Button = require("../Button/Button.jsx");
+var _Menu = require("../Menu/Menu.jsx");
 var _Pagination = require("../Pagination/Pagination.jsx");
 var _Input = require("../Input/Input.jsx");
 var _Text = require("../Text/Text.jsx");
@@ -10279,9 +10647,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        the row's baseline; owner, 2026-10-11) |
        "icon" (a mark column as wide as the checkbox column; its header shows columns[].icon) | "center" (content
        centered in the row's height: badges, buttons) | "actions" (row action buttons, shown while the row is hovered or
-       selected) | "wrap" (long text: it wraps and the row grows; the first line sits where a one-line cell's text does).
+       selected) | "wrap" (long text: in a DataTable it never grows the row, owner 2026-10-14: one line in a Short row, the
+       lines that fit in a taller one, then an ellipsis; the static Table's wrapping rows grow).
        Two kinds combine as a list: ["name", "data"] (a row named by a file name: medium weight in the data font),
        ["wrap", "data"] (a long path)
+     columns[].type: what the column holds, for the icon before its name and its sort words in the column menu: "text"
+       (the default) | "number" | "currency" | "date" | "select" | "checkbox" | "file" | "image" | "link" | "person" |
+       "long-text"; without it, kind "wrap" is long text, sorter "number" a number, sorter "date" a date
+     columns[].summary: "sum" | "count" | "average" | "min" | "max": the column's summary in each group header (grouped
+       tables; off by default), its value in the data font
      columns[].icon: the Plenix icon name a "kind: icon" column shows in its header (its title is the accessible name)
      columns[].render(data, cell): the cell's content as a React element (badges, buttons, links); state and context work
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
@@ -10295,9 +10669,23 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        options.selectableRows (Tabulator) selects rows by click (1: one row, as the open row of a list)
      selected: the index values of the selected rows, for a selection kept by the page (bulk actions); with
      onSelectionChange(keys): runs when the person changes the selection (not when selected changes it)
-     headerMenu: right-click on a header: sort, clear sort, clear filter, group by, fit, hide, show all; default true
+     headerMenu: the column menu: right-click on a header, or Shift + F10 on a focused one; default true. In sections like
+       Airtable's (owner, 2026-10-14): (1) columnMenu's items, (2) sort in the type's words (A → Z, 1 → 9, Oldest → newest,
+       Unchecked → checked) and Clear sort, (3) Filter by this field, Clear filter, Group by this field, Ungroup,
+       (4) Narrower, Wider, Fit to content, Move left, Move right, (5) Hide field, Show all fields
+     columnMenu: the application's field actions, first in the column menu: [{ label, icon, onSelect(column, col), danger,
+       disabled, separator }] (Edit field, Duplicate, Insert left, Insert right, Delete…), or (column) => that list
      rowMenu: right-click on a row: [{ label, icon, onSelect(data, row), danger, disabled, separator }], or
        (data) => that list
+     rowHeight: the record rows' height step (owner, 2026-10-14): "short" (default: the density's row height, 28 / 32 /
+       40) | "medium" (56px) | "tall" (88px) | "extra-tall" (128px), the same at every density; the person changes it in the
+       view menu (kept in the view with storageKey)
+     wrapHeaders: column names wrap onto two lines and the header row is two lines tall (a fixed token); default false;
+       also in the view menu
+     viewMenu: the view menu, an icon button at the end of the header row (Row height, with a check on the current step,
+       and Wrap headers); default true where headerMenu is on
+     onAddToGroup(value, path): a grouped table's add row: a + one Short row tall at the end of each group; off without it
+     strings: the words the grid writes (menus, the view menu, group rows, the filter popup, the footer), to replace
      empty: shown when no row matches; default "Nothing to show"
      error: the rows could not load (a message or an Error): the grid shows the error state, naming the problem
      onRetry(): the error state's one recovery action (Retry); a grid whose engine failed to load retries it as well
@@ -10305,8 +10693,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        actions and handle columns are not counted)
      narrow: "list" (the DataTable's default: under 600px of its own width, a list of the key columns) | "table" (the
        static Table's default: the columns stay and scroll sideways)
-     storageKey: keeps the person's view (sort, column widths, order and hidden columns) in this browser under the key
-       and restores it the next time the grid is built
+     storageKey: keeps the person's view (sort, column widths, order and hidden columns, the row height step, Wrap
+       headers, the grouping and its closed groups) in this browser under the key and restores it the next time the grid
+       is built
      mode: how the grid handles many rows (owner, 2026-10-14: "each application has its own needs"):
        "fill" (the default): the grid fills the room left on screen (its scrolling pane's, or the window's, under where
          it starts) and its rows scroll inside it; only the rows in view are drawn (virtual rendering), so a large table
@@ -10358,17 +10747,41 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      or the interaction) measures the columns' content once more, never a row, so a bigger density never cuts text off;
      the widths still round up to the grid, and a width the column gives or the person chose is kept (owner,
      2026-10-14). A grid built while hidden is drawn again in place when it is shown.
-     Vertical alignment: middle (owner, 2026-10-13): everything in a cell (text, avatars, badges, icons, checkboxes,
-     buttons) sits in the middle of the row's height, in every density and in every row (a row grown by a wrapped cell too:
-     its one-line cells sit in the middle; owner, 2026-10-14), in body and header cells; horizontal alignment
-     is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own element
-     (plx-data-table__value) and ends in an ellipsis.
-     Virtual rendering ("fill" and "load-more", or a grid with a height; every row one height: no "wrap" column, no
-       groupBy, and not while it is a Narrow list): only the rows in view are in the document; the rows not drawn are gaps of the density's row height (system/virtual.css), the grid
-     carries aria-rowcount and each row its aria-rowindex, a focused control whose row scrolls out leaves the focus on the
-     scrolling body and gets it back when its row returns, and printing draws every row (of the rows loaded). Rows share one height per
-     density, and the browser's find in page finds only the rows drawn (the grid's own filters search all of them).
-     Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
+     Two settings (owner, 2026-10-14): the app's density (Compact, Standard, Comfortable: the text size and the Short row)
+     and each table's row height step (rowHeight, the view menu). Short is the density's row height; Medium, Tall and
+     Extra tall are fixed tokens (56, 88, 128px) at every density. Only record rows take the step: the header row (the
+     density's row height, or two lines with Wrap headers), group header rows, the add row and the group gap keep theirs.
+     Vertical alignment and padding: a Short row puts everything in a cell (text, avatars, badges, icons, checkboxes,
+     buttons) in the middle of its height (owner, 2026-10-13), in body and header cells. A taller row puts it at the top:
+     P from the top, where P is a Short row's own padding ((the density row height − the text line height) / 2: 6px in
+     Standard), each item in the middle of the first line, so one-line content sits exactly where it does in a Short row;
+     the minimum room is P at the top and at the bottom: text wraps and ends in an ellipsis on the last line that leaves
+     at least P below it, and a picture (img, Thumbnail) fills the row less P above and below, keeping its aspect.
+     Horizontal alignment is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own
+     element (plx-data-table__value) and ends in an ellipsis.
+     Column headers (owner, 2026-10-14): the column type's icon before its name (columns[].type; hidden in Compact, where
+     the header row is 28px); a name cut with an ellipsis has its full name as its tooltip (title).
+     Group rows, Airtable style (owner, 2026-10-14; options.groupBy, or Group by this field): a group header row is the
+     density row height + 16px (48px in Standard) at every row height step, on the neutral sunken surface: in the first
+     column (with the mark columns before it) a chevron, the grouped-by field's name as an eyebrow, under it the value as
+     its column's cells draw it (its render), and the record count at the column's end in the data font; the other
+     columns' cells are empty (or hold their summary), their lines continue. No row numbers. A 24px band with lines above
+     and below separates groups, open or closed. Nested groups indent one step per level. Group headers stick to the top
+     while their rows scroll (a virtual grid keeps a hidden-from-assistive-technology copy at the top once the real
+     header has scrolled out of the drawn rows). The grouped-by column is tinted with the neutral sunken surface. The
+     chevron, Enter or Space opens or closes a group; Arrow Right opens, Arrow Left closes, Arrow Down and Arrow Up move
+     between group rows; a group row is named "Box + cask, group, 5 records" with aria-expanded and aria-level, and the
+     change is announced politely. Open and closed groups are kept in the view (storageKey).
+     Virtual rendering ("fill" and "load-more", or a grid with a height; not while it is a Narrow list): only the rows in
+       view are in the document; the rows not drawn are gaps counted from the tokens (system/virtual.css): a record row is
+       its row height step, a group row its header height plus its band and add row; nothing is measured, so every row
+       height step, "wrap" columns and grouped tables virtualize. The grid carries aria-rowcount and each row its
+       aria-rowindex, a focused control whose row scrolls out leaves the focus on the scrolling body and gets it back when
+       its row returns, and printing draws every row (of the rows loaded). The browser's find in page finds only the rows
+       drawn (the grid's own filters search all of them).
+     Menus: the column menu, the row menu and a handle's moves are ARIA menus: opened from the keyboard, the first item
+       has the focus, the arrow keys (Home, End) move, Enter or Space chooses, Escape or Tab closes and the focus goes back.
+     Cells edit on double-click (Tabulator editors). Tree rows are Tabulator's (dataTree).
      The room "fill" takes (no height given): the body's maximum height is measured as the grid is built, the window or
        its pane is resized or the grid is shown: from where the body starts to the bottom of the scrolling pane (or the
        window), less what is under the body (the footer, the frame); a grid that starts too far down for eight rows takes
@@ -10380,8 +10793,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
    Notes:
      Inline styles (owner, 2026-10-13: a JavaScript adjustment from tokens, defined styles or measured layout is allowed):
-       Tabulator writes a column's width (width, min-width, max-width on its column, header and cell elements); it writes
-       no row height and no cell padding (the density's). The rest is drawn from classes: Tabulator runs in strict mode
+       Tabulator writes a column's width (width, min-width, max-width on its column, header and cell elements), and a group
+       row's cells take their columns' widths (inline-size, through gridPx); nothing writes a row height or a cell padding
+       (the row height step's and the density's). The rest is drawn from classes: Tabulator runs in strict mode
        (strict.js); a cell's alignment is a class (__cell--align-*), a pinned column is
        sticky at the size-token widths before it (its own width a whole size token), a tree row is indented by its level
        class, a hidden column is a class, a menu is placed by CSS anchor positioning, and a virtual grid's room for the
@@ -10396,23 +10810,25 @@ const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px'; // the narrowest a resized column gets
 const STRINGS = {
   empty: 'Nothing to show',
-  sortUp: 'Sort A to Z',
-  sortDown: 'Sort Z to A',
   clearSort: 'Clear sort',
   clearFilter: 'Clear filter',
-  group: 'Group by this column',
+  // the column menu's sort items, by the column's type (owner, 2026-10-14: Airtable's words)
+  sortText: ['Sort A → Z', 'Sort Z → A'],
+  sortNumber: ['Sort 1 → 9', 'Sort 9 → 1'],
+  sortDate: ['Sort oldest → newest', 'Sort newest → oldest'],
+  sortCheck: ['Sort unchecked → checked', 'Sort checked → unchecked'],
+  filterBy: 'Filter by this field',
+  group: 'Group by this field',
   ungroup: 'Ungroup',
   fit: 'Fit to content',
-  hide: 'Hide column',
-  showAll: 'Show all columns',
+  hide: 'Hide field',
+  showAll: 'Show all fields',
   filter: 'Filter',
   any: 'Any',
   contains: 'Contains…',
   clear: 'Clear',
   apply: 'Apply',
   selectRow: 'Select row',
-  item: 'item',
-  items: 'items',
   failed: 'The table could not load',
   retry: 'Retry',
   moveUp: 'Move up',
@@ -10430,7 +10846,77 @@ const STRINGS = {
   perPage: 'Rows per page',
   pages: '{label} pages',
   loadMore: 'Load more',
-  loaded: '{n} more rows loaded, {shown} of {total}'
+  loaded: '{n} more rows loaded, {shown} of {total}',
+  // the view menu (owner, 2026-10-14): the row height steps and Wrap headers
+  view: 'View options',
+  rowHeight: 'Row height',
+  short: 'Short',
+  medium: 'Medium',
+  tall: 'Tall',
+  'extra-tall': 'Extra tall',
+  wrapHeaders: 'Wrap headers',
+  // group rows: the row's name ("Box + cask, group, 5 records"), its state, the add row and the summaries
+  groupRow: '{value}, group, {count} {records}',
+  record: 'record',
+  records: 'records',
+  expanded: 'expanded',
+  collapsed: 'collapsed',
+  noValue: '(Empty)',
+  addTo: 'Add a record to {value}',
+  sum: 'Sum',
+  countOf: 'Count',
+  average: 'Average',
+  min: 'Min',
+  max: 'Max'
+};
+// the row height steps (owner, 2026-10-14): Short is the density's row height; the others are fixed tokens
+const ROW_HEIGHTS = ['short', 'medium', 'tall', 'extra-tall'];
+// a column's type (columns[].type, or what its kind and sorter say) -> the icon before its name in the header
+const TYPE_ICONS = {
+  text: 'ed-text',
+  number: 'field-number',
+  currency: 'field-currency',
+  date: 'calendar',
+  select: 'field-select',
+  checkbox: 'select',
+  file: 'attachment',
+  image: 'image-a-2',
+  link: 'link',
+  person: 'person',
+  'long-text': 'field-long-text'
+};
+const typeOf = c => {
+  if (c.type && TYPE_ICONS[c.type]) return c.type;
+  const k = [].concat(c.kind || []);
+  if (k.indexOf('wrap') >= 0) return 'long-text';
+  if (c.sorter === 'number') return 'number';
+  if (/^(date|datetime|time)$/.test(String(c.sorter || ''))) return 'date';
+  if (c.formatter === 'tickCross' || c.editor === 'tickCross') return 'checkbox';
+  if (c.formatter === 'link') return 'link';
+  return 'text';
+};
+// the column menu's sort words for a type
+const sortWords = (S, type) => type === 'number' || type === 'currency' ? S.sortNumber : type === 'date' ? S.sortDate : type === 'checkbox' ? S.sortCheck : S.sortText;
+// the columns that hold a mark, not a value (the checkbox, an icon column, a row handle, row actions, the view column)
+const markColumn = c => !!c.isRowHeader || /__cell--select|__cell--icon|__w-lead|__w-view|__cell--handle|__cell--view/.test(String(c.definition && c.definition.cssClass || ''));
+// a column summary over a group's rows (columns[].summary: "sum" | "count" | "average" | "min" | "max")
+function summaryOf(kind, rows, field) {
+  const vals = rows.map(r => r[field]).filter(v => v != null && v !== '');
+  if (kind === 'count') return vals.length;
+  const nums = vals.map(Number).filter(n => !isNaN(n));
+  if (!nums.length) return null;
+  if (kind === 'sum') return nums.reduce((a, b) => a + b, 0);
+  if (kind === 'average') return Math.round(nums.reduce((a, b) => a + b, 0) / nums.length * 100) / 100;
+  if (kind === 'min') return Math.min.apply(null, nums);
+  if (kind === 'max') return Math.max.apply(null, nums);
+  return null;
+}
+const SUMMARY_WORD = {
+  sum: 'sum',
+  count: 'countOf',
+  average: 'average',
+  min: 'min',
+  max: 'max'
 };
 // the modes (owner, 2026-10-14): how a grid handles many rows
 const MODES = ['fill', 'pages', 'load-more'];
@@ -10603,10 +11089,40 @@ function TableEngine(props) {
     pageSize,
     pageSizes = PAGE_SIZES,
     fetchRows,
-    search
+    search,
+    rowHeight = 'short',
+    wrapHeaders = false,
+    viewMenu = !isStatic && headerMenu,
+    columnMenu,
+    onAddToGroup,
+    strings
   } = props;
+  const S = _react.default.useMemo(() => Object.assign({}, STRINGS, strings), [strings]);
   // the mode: the static Table draws every row; a DataTable fills the room by default
   const M = isStatic ? 'all' : MODES.indexOf(mode) >= 0 ? mode : 'fill';
+  // the row height step and Wrap headers (owner, 2026-10-14): the props, or the person's choice kept in the view
+  const kept = _react.default.useMemo(() => storageKey && !isStatic ? readView(storageKey) : null, [storageKey, isStatic]);
+  const [rowStep, setRowStep] = _react.default.useState(() => {
+    const v = kept && kept.rowHeight;
+    return ROW_HEIGHTS.indexOf(v) >= 0 ? v : ROW_HEIGHTS.indexOf(rowHeight) >= 0 ? rowHeight : 'short';
+  });
+  const [wrapHead, setWrapHead] = _react.default.useState(() => kept && typeof kept.wrapHeaders === 'boolean' ? kept.wrapHeaders : !!wrapHeaders);
+  const stepRef = _react.default.useRef(rowStep);
+  stepRef.current = rowStep;
+  const wrapRef = _react.default.useRef(wrapHead);
+  wrapRef.current = wrapHead;
+  const firstProps = _react.default.useRef(true);
+  _react.default.useEffect(() => {
+    if (firstProps.current) return;
+    if (ROW_HEIGHTS.indexOf(rowHeight) >= 0) setRowStep(rowHeight);
+  }, [rowHeight]);
+  _react.default.useEffect(() => {
+    if (firstProps.current) return;
+    setWrapHead(!!wrapHeaders);
+  }, [wrapHeaders]);
+  _react.default.useEffect(() => {
+    firstProps.current = false;
+  }, []);
   const remote = (M === 'pages' || M === 'load-more') && typeof fetchRows === 'function';
   const step = pageSize > 0 ? pageSize : PAGE;
   // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
@@ -10618,8 +11134,10 @@ function TableEngine(props) {
   listRef.current = listNow;
   // fill and load-more measure the room left (autoFit) unless a height is given; virtual rendering: a grid with a room
   // whose rows are all one height (no wrapping column, no group rows, not a Narrow list)
+  // (owner, 2026-10-14: a DataTable's "wrap" columns clamp to the row's lines and group rows have token heights, so both
+  // virtualize; the static Table's wrapping rows grow, so it draws them all)
   const autoFit = !height && (M === 'fill' || M === 'load-more');
-  const virtual = (!!height || autoFit) && !columns.some(c => [].concat(c.kind || []).indexOf('wrap') >= 0) && !(options || {}).groupBy && !listNow;
+  const virtual = (!!height || autoFit) && !(isStatic && columns.some(c => [].concat(c.kind || []).indexOf('wrap') >= 0)) && !listNow;
   // the footer of pages and load-more: { page, max, size, total } or { shown, total }; busy while more rows come
   const [foot, setFoot] = _react.default.useState(null);
   const [busy, setBusy] = _react.default.useState(false);
@@ -10649,6 +11167,13 @@ function TableEngine(props) {
   const moving = _react.default.useRef(null); // the row being moved by its handle
   const [, bump] = _react.default.useReducer(x => x + 1, 0);
   const [error, setError] = _react.default.useState(null);
+  const probeRef = _react.default.useRef(null); // the hidden boxes the virtual renderer reads the row kinds' heights from
+  const groupCells = _react.default.useRef(new Map()); // React content of group rows (a value drawn by its column's render): path key -> { node, c, row }
+  const closedRef = _react.default.useRef(new Set(kept && kept.closed || [])); // the closed groups (their path keys), kept in the view
+  const viewNode = _react.default.useRef(null); // the view menu's place in the header (the view column's title)
+  if (!viewNode.current && typeof document !== 'undefined') viewNode.current = el('span', B + '__portal');
+  const fitRef = _react.default.useRef(null); // the room "fill" measures, once more (a header that grew)
+  const stickyRef = _react.default.useRef(null); // the sticky group rows' stand-ins (a virtual grid whose group row is not drawn)
 
   // a container for a React cell, kept per cell so React keeps its state between renders
   const container = id => {
@@ -10687,6 +11212,7 @@ function TableEngine(props) {
     const t = tableRef.current,
       key = latest.current.storageKey;
     if (!key || !t || restoring.current) return;
+    const g = t.options.groupBy;
     writeView(key, {
       sort: t.getSorters().map(s => ({
         column: s.field,
@@ -10694,7 +11220,12 @@ function TableEngine(props) {
       })),
       widths: resized.current,
       order: t.getColumns().map(c => c.getField()).filter(Boolean),
-      hidden: t.getColumns().filter(c => !c.isVisible()).map(c => c.getField()).filter(Boolean)
+      hidden: t.getColumns().filter(c => !c.isVisible()).map(c => c.getField()).filter(Boolean),
+      // the view's own settings (owner, 2026-10-14): the row height step, Wrap headers, the grouping and its closed groups
+      rowHeight: stepRef.current,
+      wrapHeaders: wrapRef.current,
+      groupBy: typeof g === 'string' || Array.isArray(g) && g.every(x => typeof x === 'string') ? g : false,
+      closed: Array.from(closedRef.current)
     });
   };
   // the kept view onto a grid just built: what still fits its columns (a field that is gone is skipped)
@@ -10726,6 +11257,9 @@ function TableEngine(props) {
       });
       const sort = (v.sort || []).filter(s => col(s.column) && (s.dir === 'asc' || s.dir === 'desc'));
       if (sort.length) t.setSort(sort);
+      // the grouping kept (a field that is gone is not grouped by); its closed groups come with groupStartOpen
+      const want = [].concat(v.groupBy || []).filter(col);
+      if (v.groupBy !== undefined && JSON.stringify(want.length ? want.length === 1 ? want[0] : want : false) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, want.length ? want.length === 1 ? want[0] : want : false);
     } catch (e) {/* a view kept for another column set: what fits is restored */}
     restoring.current = false;
   };
@@ -10780,22 +11314,276 @@ function TableEngine(props) {
     const up = !row.getPrevRow(),
       down = !row.getNextRow();
     return [{
-      label: menuLabel(STRINGS.moveUp, 'chevron-up'),
+      label: menuLabel(S.moveUp, 'chevron-up'),
       disabled: up,
       action: () => moveRow(row, 'up')
     }, {
-      label: menuLabel(STRINGS.moveDown, 'chevron-down'),
+      label: menuLabel(S.moveDown, 'chevron-down'),
       disabled: down,
       action: () => moveRow(row, 'down')
     }, {
-      label: menuLabel(STRINGS.moveTop),
+      label: menuLabel(S.moveTop),
       disabled: up,
       action: () => moveRow(row, 'top')
     }, {
-      label: menuLabel(STRINGS.moveBottom),
+      label: menuLabel(S.moveBottom),
       disabled: down,
       action: () => moveRow(row, 'bottom')
     }];
+  };
+
+  // ---- group rows, Airtable style (owner, 2026-10-14) ----
+  // a group's place: the values of its groups from the top ("["Vendor A","Box"]"), the key of its open/closed state
+  const pathKey = g => JSON.stringify(g && g.getPath ? g.getPath() : []);
+  const groupFields = t => [].concat(t && t.options.groupBy || []).filter(f => typeof f === 'string');
+  // the grouped-by columns are tinted (their headers and cells): a class on the cells drawn now; rowFormatter marks the rest
+  const tintGrouped = t => {
+    const want = groupFields(t),
+      key = want.join(SEP);
+    if (t.plxGroupedKey === key) return;
+    t.plxGroupedKey = key;
+    t.plxGrouped = new Set(want);
+    const on = c => !!c && t.plxGrouped.has(c.getField && c.getField());
+    t.columnManager.columnsByIndex.forEach(c => {
+      if (c.element) c.element.classList.toggle(B + '__cell--grouped', on(c));
+    });
+    t.rowManager.rows.forEach(r => (r.cells || []).forEach(cell => {
+      if (cell.element) cell.element.classList.toggle(B + '__cell--grouped', on(cell.column));
+    }));
+  };
+  const groupBy = (t, field) => {
+    t.setGroupBy(field);
+    tintGrouped(t);
+    saveView();
+  };
+  // the columns a group row's cells follow: the first cell spans the mark columns at the start and the first value column
+  const cellsInto = (box, t, fill) => {
+    box.textContent = '';
+    const cols = t.columnManager.columnsByIndex.filter(c => c.visible);
+    let first = 0;
+    while (first < cols.length - 1 && markColumn(cols[first])) first++;
+    const cell = (cls, width) => {
+      const d = el('div', (0, _cx.cx)(B + '__group-cell', cls));
+      d.setAttribute('role', 'gridcell');
+      d.style.inlineSize = (0, _grid.gridPx)(width);
+      box.appendChild(d);
+      return d;
+    };
+    let w = 0;
+    for (let i = 0; i <= first && i < cols.length; i++) w += cols[i].getWidth();
+    fill(cell(B + '__group-cell--first', w), null);
+    for (let i = first + 1; i < cols.length; i++) fill(cell(null, cols[i].getWidth()), cols[i]);
+  };
+  // the add row's button (onAddToGroup): one Short row at the end of a group
+  const addButton = g => {
+    const b = el('button', 'plx-button plx-button--ghost plx-button--size-xs plx-button--icon-only ' + B + '__add');
+    b.type = 'button';
+    const ic = el('span', 'plx-button__icon');
+    ic.appendChild(iconEl('plus'));
+    b.appendChild(ic);
+    b.setAttribute('aria-label', words(S.addTo, {
+      value: g.plxText != null ? g.plxText : String(g.key)
+    }));
+    b.addEventListener('click', e => {
+      e.stopPropagation();
+      const f = latest.current.onAddToGroup;
+      if (f) f(g.key, g.getPath());
+    });
+    return b;
+  };
+  // Tabulator's group header (groupHeader): its parts, filled when the row is drawn (drawGroup): the add row of the group
+  // above, the gap band, and the header: chevron, eyebrow (the grouped-by field), the value as its column draws it, the count
+  const groupHeader = (value, count, rowsData, comp) => {
+    const g = comp && comp._group,
+      t = tableRef.current;
+    const inner = el('div', B + '__group-inner');
+    const add = el('div', B + '__group-add'),
+      band = el('div', B + '__group-band'),
+      head = el('div', B + '__group-head');
+    band.setAttribute('aria-hidden', 'true');
+    inner.appendChild(add);
+    inner.appendChild(band);
+    inner.appendChild(head);
+    if (!g || !t) return inner;
+    const c = (latest.current.columns || []).find(x => x.field === g.field) || null;
+    const text = value == null || value === '' ? S.noValue : String(value);
+    const lab = el('div', B + '__group-label');
+    const chev = el('span', B + '__group-chevron');
+    chev.setAttribute('aria-hidden', 'true');
+    chev.appendChild(iconEl('chevron-down'));
+    const words2 = el('div', B + '__group-text');
+    words2.appendChild(el('span', 'plx-text plx-text--eyebrow ' + B + '__group-eyebrow', c ? String(c.title || c.field) : ''));
+    const val = el('span', (0, _cx.cx)(B + '__group-value', c && [].concat(c.kind || []).indexOf('data') >= 0 && 'plx-font-data'));
+    if (c && c.render && rowsData && rowsData.length) {
+      const node = el('span', B + '__portal');
+      val.appendChild(node);
+      groupCells.current.set(pathKey(g), {
+        node,
+        c,
+        row: rowsData[0]
+      });
+      bump();
+    } else val.textContent = text;
+    words2.appendChild(val);
+    lab.appendChild(chev);
+    lab.appendChild(words2);
+    lab.appendChild(el('span', 'plx-font-data ' + B + '__group-count', (0, _format.formatNumber)(count)));
+    g.plxText = text;
+    g.plxParts = {
+      add,
+      band,
+      head,
+      lab,
+      chev,
+      count,
+      rows: rowsData || [],
+      ver: -1,
+      addFor: null,
+      addVer: -1
+    };
+    g.element.plxGroup = g;
+    return inner;
+  };
+  // a group row as it is drawn: its cells at the columns' widths (again after a width changes), its add row, its state
+  const drawGroup = g => {
+    const t = tableRef.current;
+    if (!t || !g) return;
+    const e = g.getElement(),
+      P = g.plxParts;
+    if (!P) return;
+    const ver = t.plxColsVer || 0;
+    if (P.ver !== ver) {
+      cellsInto(P.head, t, (cell, col) => {
+        if (!col) {
+          cell.appendChild(P.lab);
+          return;
+        }
+        const def = (latest.current.columns || []).find(x => x.field === col.getField());
+        const kind = def && def.summary,
+          v = kind ? summaryOf(kind, P.rows, def.field) : null;
+        if (v == null) return;
+        cell.classList.add(B + '__group-cell--summary');
+        const s = el('span', B + '__group-summary');
+        s.appendChild(el('span', B + '__group-summary-name', S[SUMMARY_WORD[kind]] || kind));
+        s.appendChild(el('span', 'plx-font-data ' + B + '__group-summary-value', (0, _format.formatNumber)(v)));
+        cell.appendChild(s);
+      });
+      P.ver = ver;
+      P.addVer = -1;
+    }
+    const addFor = g.plxAddFor || null;
+    if (addFor && (P.addVer !== ver || P.addFor !== addFor)) {
+      cellsInto(P.add, t, (cell, col) => {
+        if (!col) cell.appendChild(addButton(addFor));
+      });
+      P.addVer = ver;
+      P.addFor = addFor;
+    } else if (!addFor && P.addFor) {
+      P.add.textContent = '';
+      P.addFor = null;
+      P.addVer = -1;
+    }
+    const open = typeof g.visible === 'function' ? true : !!g.visible;
+    e.classList.toggle('tabulator-group-visible', open);
+    e.classList.toggle(B + '__group--closed', !open);
+    P.chev.firstChild.className = 'plx-icon plx-icon--' + (open ? 'chevron-down' : (0, _direction.isRtl)(e) ? 'chevron-left' : 'chevron-right');
+    e.tabIndex = 0;
+    e.setAttribute('aria-expanded', String(open));
+    e.setAttribute('aria-level', String((g.level || 0) + 1));
+    e.setAttribute('aria-label', words(S.groupRow, {
+      value: g.plxText,
+      count: (0, _format.formatNumber)(P.count),
+      records: P.count === 1 ? S.record : S.records
+    }));
+  };
+  // the add row after the last group's records (a grouped grid with onAddToGroup)
+  const drawTail = t => {
+    if (!t.plxTailEl) {
+      t.plxTailEl = el('div', B + '__add-row');
+      t.plxTailEl.setAttribute('role', 'row');
+    }
+    const g = t.plxTailFor,
+      ver = t.plxColsVer || 0;
+    if (g && (t.plxTailEl.plxFor !== g || t.plxTailEl.plxVer !== ver)) {
+      cellsInto(t.plxTailEl, t, (cell, col) => {
+        if (!col) cell.appendChild(addButton(g));
+      });
+      t.plxTailEl.plxFor = g;
+      t.plxTailEl.plxVer = ver;
+    }
+    const te = t.rowManager.tableElement;
+    if (t.rowManager.renderMode !== 'virtual') {
+      if (g) {
+        if (te.lastChild !== t.plxTailEl) te.appendChild(t.plxTailEl);
+      } else if (t.plxTailEl.parentNode) t.plxTailEl.parentNode.removeChild(t.plxTailEl);
+    }
+  };
+  // every group row drawn now, again (a column's width, order or visibility changed)
+  const redrawGroups = t => {
+    const h = hostRef.current;
+    if (!t || !h) return;
+    h.querySelectorAll('.tabulator-group').forEach(x => {
+      if (x.plxGroup) drawGroup(x.plxGroup);
+    });
+    if (t.plxTailFor) drawTail(t);
+    syncSticky(true);
+  };
+  // open or close a group (the chevron, Enter, the arrow keys); the focus stays on its row
+  const toggleGroup = (g, show) => {
+    if (!g) return;
+    const open = typeof g.visible === 'function' ? true : !!g.visible;
+    if (show === open) return;
+    const doc = g.element.ownerDocument,
+      had = doc.activeElement === g.element,
+      key = pathKey(g);
+    g.toggleVisibility();
+    // (Tabulator groups the rows again: the group's row is a new element; it is found by its place)
+    if (had) requestAnimationFrame(() => {
+      const h = hostRef.current,
+        row = h && Array.from(h.querySelectorAll('.tabulator-group')).find(x => x.plxGroup && pathKey(x.plxGroup) === key);
+      if (row) row.focus({
+        preventScroll: true
+      });
+    });
+  };
+  // a virtual grid: a group row scrolled out of the drawn rows still sticks to the top, as a stand-in (its header's copy,
+  // hidden from assistive technology; its chevron opens and closes the real group)
+  const stickyKey = _react.default.useRef('');
+  const syncSticky = force => {
+    const t = tableRef.current,
+      box = stickyRef.current,
+      h = hostRef.current;
+    if (!t || !box || !h || !builtRef.current) return;
+    const holder = h.querySelector('.tabulator-tableholder'),
+      at = holder && t.rowManager.renderMode === 'virtual' ? (0, _strict.groupAt)(t, holder.scrollTop) : null;
+    let chain = [];
+    if (at) {
+      const top = at.row.type === 'group' ? at.row.parent : at.row.modules && at.row.modules.group;
+      for (let x = top; x; x = x.parent) chain.unshift(x);
+    }
+    const te = t.rowManager.tableElement;
+    chain = chain.filter(x => !(x.element && x.element.parentNode === te));
+    // (a group scrolled past in a jump was never drawn: its header is made now)
+    chain.forEach(x => {
+      if (!x.plxParts || x.plxParts.ver !== (t.plxColsVer || 0)) drawGroup(x);
+    });
+    chain = chain.filter(x => x.plxParts);
+    const key = chain.map(x => pathKey(x) + x.plxParts.ver + String(x.visible)).join('|');
+    if (!force && key === stickyKey.current) return;
+    stickyKey.current = key;
+    box.textContent = '';
+    chain.forEach(x => {
+      const w = el('div', (0, _cx.cx)(B + '__sticky-group', 'tabulator-group-level-' + (x.level || 0), !x.visible && B + '__group--closed'));
+      w.setAttribute('aria-hidden', 'true');
+      w.plxGroup = x;
+      const copy = x.plxParts.head.cloneNode(true);
+      copy.querySelectorAll('[role]').forEach(n => n.removeAttribute('role'));
+      copy.querySelectorAll('a, button, input, select, textarea, [tabindex]').forEach(n => {
+        n.tabIndex = -1;
+      });
+      w.appendChild(copy);
+      box.appendChild(w);
+    });
   };
 
   // Plenix columns -> Tabulator column definitions
@@ -10823,7 +11611,7 @@ function TableEngine(props) {
         active = filters(field)[0];
       const id = 'plx-data-table-filter-' + Math.random().toString(36).slice(2);
       const box = el('div', 'plx-data-table__filter');
-      const lab = el('label', 'plx-data-table__filter-label', STRINGS.filter + ' ' + (c.title || field));
+      const lab = el('label', 'plx-data-table__filter-label', S.filter + ' ' + (c.title || field));
       lab.htmlFor = id;
       let input;
       if (c.filter === 'list') {
@@ -10836,14 +11624,14 @@ function TableEngine(props) {
           });
         })(latest.current.data || []);
         [''].concat(Array.from(new Set(values)).sort()).forEach(v => {
-          const o = el('option', null, v === '' ? STRINGS.any : String(v));
+          const o = el('option', null, v === '' ? S.any : String(v));
           o.value = v;
           input.appendChild(o);
         });
       } else {
         input = el('input', 'plx-input plx-data-table__filter-input');
         input.type = 'text';
-        input.placeholder = STRINGS.contains;
+        input.placeholder = S.contains;
       }
       input.id = id;
       input.value = active ? active.value : '';
@@ -10854,11 +11642,11 @@ function TableEngine(props) {
         b.addEventListener('click', fn);
         return b;
       };
-      actions.appendChild(button(STRINGS.clear, false, () => {
+      actions.appendChild(button(S.clear, false, () => {
         setFilter(column, c.filter, '');
         close();
       }));
-      actions.appendChild(button(STRINGS.apply, true, () => {
+      actions.appendChild(button(S.apply, true, () => {
         setFilter(column, c.filter, input.value);
         close();
       }));
@@ -10874,94 +11662,124 @@ function TableEngine(props) {
       onRendered(() => input.focus());
       return box;
     };
+    // the column menu, in sections like Airtable's (owner, 2026-10-14): (1) the application's field actions (columnMenu),
+    // (2) sort in the type's words and Clear sort, (3) filter and group, (4) width and position, (5) hide and show
     const headerItems = (c, pinned) => () => {
-      const items = [];
-      // moving a column without dragging it (WCAG 2.5.7): one place left or right
-      if ((latest.current.options || {}).movableColumns && !pinned) {
-        items.push({
-          label: menuLabel(STRINGS.moveLeft, 'chevron-left'),
-          action: (e, col) => moveColumn(col, -1)
+      const sections = [];
+      const add = list => {
+        if (list.length) sections.push(list);
+      };
+      const own = latest.current.columnMenu,
+        list = typeof own === 'function' ? own(c) : own;
+      const ownItems = [];
+      (list || []).forEach(it => {
+        if (it.separator) {
+          add(ownItems.splice(0));
+          return;
+        }
+        ownItems.push({
+          label: menuLabel(it.label, it.icon, it.danger),
+          disabled: typeof it.disabled === 'function' ? it.disabled(c) : !!it.disabled,
+          action: (e, col) => it.onSelect && it.onSelect(c, col)
         });
-        items.push({
-          label: menuLabel(STRINGS.moveRight, 'chevron-right'),
-          action: (e, col) => moveColumn(col, 1)
-        });
-        items.push({
-          separator: true
-        });
-      }
+      });
+      add(ownItems);
       if (c.headerSort !== false && c.kind !== 'actions') {
-        items.push({
-          label: menuLabel(STRINGS.sortUp, 'sort-ascending'),
+        const w = sortWords(S, typeOf(c));
+        add([{
+          label: menuLabel(w[0], 'sort-ascending'),
           action: (e, col) => T().setSort(col.getField(), 'asc')
-        });
-        items.push({
-          label: menuLabel(STRINGS.sortDown, 'sort-descending'),
+        }, {
+          label: menuLabel(w[1], 'sort-descending'),
           action: (e, col) => T().setSort(col.getField(), 'desc')
-        });
-        items.push({
-          label: menuLabel(STRINGS.clearSort, 'close'),
+        }, {
+          label: menuLabel(S.clearSort, 'close'),
+          disabled: !T().getSorters().length,
           action: () => T().clearSort()
+        }]);
+      }
+      const fg = [];
+      if (c.filter) {
+        // Filter by this field opens the column's own filter popup (its header button)
+        fg.push({
+          label: menuLabel(S.filterBy, 'filter'),
+          action: (e, col) => {
+            const b = col.getElement().querySelector('.tabulator-header-popup-button');
+            if (b) setTimeout(() => b.click());
+          }
         });
-        items.push({
-          separator: true
+        fg.push({
+          label: menuLabel(S.clearFilter, 'filter-off'),
+          disabled: !filters(c.field).length,
+          action: (e, col) => setFilter(col, c.filter, '')
         });
       }
-      if (c.filter) items.push({
-        label: menuLabel(STRINGS.clearFilter, 'filter-off'),
-        action: (e, col) => setFilter(col, c.filter, '')
-      });
       if (c.kind !== 'icon' && c.kind !== 'actions') {
-        items.push({
-          label: menuLabel(STRINGS.group, 'list-lines'),
-          action: (e, col) => T().setGroupBy(col.getField())
+        const grouped = groupFields(T());
+        if (grouped.indexOf(c.field) < 0) fg.push({
+          label: menuLabel(S.group, 'list-lines'),
+          action: (e, col) => groupBy(T(), col.getField())
         });
-        if (T().options.groupBy) items.push({
-          label: menuLabel(STRINGS.ungroup, 'list-bullets'),
-          action: () => T().setGroupBy(false)
+        if (T().options.groupBy) fg.push({
+          label: menuLabel(S.ungroup, 'list-bullets'),
+          action: () => groupBy(T(), false)
         });
       }
-      if (items.length && !items[items.length - 1].separator) items.push({
-        separator: true
-      });
+      add(fg);
+      const wp = [];
       // the width without dragging: one size token narrower or wider, or fitted to the content
       if (c.kind !== 'icon' && c.kind !== 'actions' && c.resizable !== false) {
-        items.push({
-          label: menuLabel(STRINGS.narrower),
+        wp.push({
+          label: menuLabel(S.narrower, 'column-narrower'),
           action: (e, col) => stepWidth(col, -1)
         });
-        items.push({
-          label: menuLabel(STRINGS.wider),
+        wp.push({
+          label: menuLabel(S.wider, 'column-wider'),
           action: (e, col) => stepWidth(col, 1)
         });
-        items.push({
-          label: menuLabel(STRINGS.fit, 'expand'),
+        wp.push({
+          label: menuLabel(S.fit, 'column-fit'),
           action: (e, col) => fitColumn(col)
         });
       }
-      items.push({
-        label: menuLabel(STRINGS.hide, 'visibility-off'),
+      // moving a column without dragging it (WCAG 2.5.7): one place left or right
+      if ((latest.current.options || {}).movableColumns && !pinned) {
+        wp.push({
+          label: menuLabel(S.moveLeft, 'chevron-left'),
+          action: (e, col) => moveColumn(col, -1)
+        });
+        wp.push({
+          label: menuLabel(S.moveRight, 'chevron-right'),
+          action: (e, col) => moveColumn(col, 1)
+        });
+      }
+      add(wp);
+      add([{
+        label: menuLabel(S.hide, 'visibility-off'),
         action: (e, col) => {
           col.hide();
           saveView();
         }
-      });
-      items.push({
-        label: menuLabel(STRINGS.showAll, 'visibility'),
+      }, {
+        label: menuLabel(S.showAll, 'visibility'),
         action: () => {
           T().getColumns().forEach(col => col.show());
           saveView();
         }
-      });
-      return items;
+      }]);
+      return sections.reduce((all, s, i) => i ? all.concat([{
+        separator: true
+      }], s) : s, []);
     };
-    return cols.map((c, i) => {
+    const defs = cols.map((c, i) => {
       const {
         kind,
         icon,
         render,
         filter,
         rowLabel,
+        type,
+        summary,
         ...rest
       } = c;
       const d = {
@@ -11017,6 +11835,18 @@ function TableEngine(props) {
           s.appendChild(iconEl(icon || 'circle-info'));
           return s;
         };
+      } else if (!isStatic && !c.rowHandle && kind !== 'actions' && d.titleFormatter === undefined) {
+        // the column's type icon before its name (owner, 2026-10-14; hidden where the header row is 28px: its size token is
+        // 0 in Compact), and the name in its own element: cut with "…", the full name in its tooltip (titleTips)
+        d.titleFormatter = () => {
+          const s = el('span', B + '__title'),
+            ic = el('span', B + '__type-icon');
+          ic.setAttribute('aria-hidden', 'true');
+          ic.appendChild(iconEl(TYPE_ICONS[typeOf(c)] || TYPE_ICONS.text));
+          s.appendChild(ic);
+          s.appendChild(el('span', B + '__title-text', c.title == null ? '' : String(c.title)));
+          return s;
+        };
       }
       if (kind === 'actions') Object.assign(d, {
         headerSort: false,
@@ -11036,6 +11866,24 @@ function TableEngine(props) {
       if (c.rowHandle && !isStatic && (latest.current.options || {}).movableRows && d.clickMenu === undefined) d.clickMenu = (e, cell) => rowMoveItems(cell.getRow());
       return d;
     });
+    // the view column (owner, 2026-10-14): at the end of the header, the view menu (Row height, Wrap headers); its cells are
+    // empty, their column line continues
+    if (viewMenu && !isStatic) {
+      // (as wide as the checkbox column; wider with touch, for its 44px target)
+      const viewPx = (0, _tabulator.tablePx)('--plx-comp-data-table-view-column-width', host) || (0, _tabulator.tablePx)('--plx-comp-data-table-lead-column-width', host);
+      defs.push({
+        title: S.view,
+        headerSort: false,
+        resizable: false,
+        width: viewPx,
+        minWidth: viewPx,
+        maxWidth: viewPx,
+        cssClass: (0, _cx.cx)(B + '__cell--view', B + '__w-view', B + '__cell--align-center', B + '__head-align-center'),
+        titleFormatter: () => viewNode.current,
+        formatter: () => ''
+      });
+    }
+    return defs;
   };
 
   // the column set's shape: a change rebuilds the columns (the data and the cell contents do not)
@@ -11053,7 +11901,7 @@ function TableEngine(props) {
       if (!alive || !hostRef.current || !hostRef.current.ownerDocument.defaultView) return;
       const host = hostRef.current;
       const p = latest.current;
-      const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || STRINGS.empty);
+      const placeholder = el('div', B + '__empty tabulator-placeholder-contents', p.empty || S.empty);
       // the row menu: the page's items, then (movable rows) the moves
       const movable = !isStatic && !!(p.options || {}).movableRows;
       const rowContextMenu = p.rowMenu || movable ? (e, row) => {
@@ -11121,17 +11969,36 @@ function TableEngine(props) {
               }
             });
           }
+          // the grouped-by column's cell is tinted (its class)
+          const t = row.getTable(),
+            g = t && t.plxGrouped;
+          if (g && g.size) row.getCells().forEach(cell => {
+            if (g.has(cell.getField())) cell.getElement().classList.add(B + '__cell--grouped');
+          });
         },
-        // a group row: its value and a count, one cell (Tabulator marks it a row group with no rows: axe aria-required-children)
-        groupHeader: (value, count) => {
-          const s = el('span', null, String(value));
-          s.setAttribute('role', 'gridcell');
-          s.appendChild(el('span', 'plx-data-table__group-count', count + ' ' + (count === 1 ? STRINGS.item : STRINGS.items)));
-          return s;
+        // group rows, Airtable style (owner, 2026-10-14): Plenix's header (groupHeader), opened and closed by its chevron,
+        // Enter and the arrow keys (no click on the whole row), each group open unless the view keeps it closed
+        groupHeader,
+        groupToggleElement: false,
+        groupStartOpen: (value, count, rows, comp) => {
+          const g = comp && comp._group;
+          if (g && closedRef.current.has(pathKey(g))) return false;
+          const own = (latest.current.options || {}).groupStartOpen;
+          return typeof own === 'function' ? own(value, count, rows, comp) : own !== false;
         },
-        ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => !['rowFormatter', 'movableRows', 'movableColumns', 'height', 'maxHeight', 'minHeight', 'renderVertical', 'renderHorizontal', 'dataTreeChildIndent', 'columnDefaults'].includes(k))),
+        // the keyboard's Home, End, Page Up and Page Down are the browser's (the body scrolls; a menu or a field in the grid
+        // keeps its own keys); Tabulator's other key bindings stay
+        keybindings: Object.assign({
+          scrollToStart: false,
+          scrollToEnd: false,
+          scrollPageUp: false,
+          scrollPageDown: false
+        }, (p.options || {}).keybindings),
+        ...Object.fromEntries(Object.entries(p.options || {}).filter(([k]) => !['rowFormatter', 'movableRows', 'movableColumns', 'height', 'maxHeight', 'minHeight', 'renderVertical', 'renderHorizontal', 'dataTreeChildIndent', 'columnDefaults', 'groupStartOpen', 'keybindings'].includes(k))),
         data: p.data || []
       };
+      // a page's own groupHeader keeps Tabulator's toggle (the arrow)
+      if ((p.options || {}).groupHeader) opts.groupToggleElement = 'arrow';
       if (isStatic) Object.assign(opts, {
         rowContextMenu: undefined,
         rowHeader: false,
@@ -11208,6 +12075,15 @@ function TableEngine(props) {
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
+      // what the virtual renderer and the group rows need from the grid (strict.js): its token boxes, the add rows, and
+      // the callbacks that draw a group row's parts and the add row after the last group
+      table.plxProbe = probeRef.current;
+      table.plxAddRows = !isStatic && typeof p.onAddToGroup === 'function';
+      table.plxOnGroupDraw = g => drawGroup(g);
+      table.plxOnGroupLayout = () => {
+        if (table.plxTailFor || table.plxTailEl) drawTail(table);
+      };
+      table.plxOnColumns = () => redrawGroups(table);
 
       // the ARIA tree: Tabulator's scrolling body is a Tab stop (the keyboard scrolls it), and inside role="grid" a Tab stop
       // must be a row or a row group: the scrolling body is the body's row group, Tabulator's inner body layout only; the
@@ -11223,18 +12099,25 @@ function TableEngine(props) {
         }
         if (body) body.setAttribute('role', 'presentation');
         host.querySelectorAll('.tabulator-group').forEach(g => g.setAttribute('role', 'row'));
+        // a grouped grid is a tree grid: its group rows open and close (aria-expanded, aria-level)
+        if (table && !isStatic) host.setAttribute('role', host.querySelector('.tabulator-group') || table.options.groupBy ? 'treegrid' : 'grid');
+        // the add row after the last group (the basic renderer: after the rows; the virtual one places it with its gaps)
+        if (table && table.plxAddRows) drawTail(table);
+        // a column name cut with "…" shows the full name in its tooltip
+        titleTips();
+        syncSticky(false);
         // the selection kept by the page, once the rows are in (Tabulator builds before it loads them; nothing happens
         // when it already matches)
         if (table) syncSelection(table);
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => {
-          if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', STRINGS.selectRow + ' ' + (n + 1));
+          if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', S.selectRow + ' ' + (n + 1));
         });
         // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
         if (table && !isStatic) nameGrips(table);
         if (movable) host.querySelectorAll('.tabulator-row .' + B + '__cell--handle').forEach(h => {
           if (h.hasAttribute('aria-keyshortcuts')) return;
           h.tabIndex = 0;
-          h.setAttribute('aria-label', STRINGS.moveRow);
+          h.setAttribute('aria-label', S.moveRow);
           h.setAttribute('aria-haspopup', 'menu');
           h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
         });
@@ -11263,8 +12146,10 @@ function TableEngine(props) {
         if (!isStatic) {
           wireColumns(table);
           wireRows(table, host);
+          wireGroups(table, host);
           restoreView(table);
           table.on('dataSorted', () => saveView());
+          tintGrouped(table);
         }
         if (latest.current.onReady) latest.current.onReady(table);
         bump();
@@ -11272,6 +12157,7 @@ function TableEngine(props) {
     }).catch(err => {
       if (alive) setError(err);
     });
+    fitRef.current = () => fitRoom();
 
     // a density or interaction change: the stylesheet gives the rows their new height and padding (no row is measured);
     // the columns' content widths are measured once again (the text size and padding changed: widths still round up to
@@ -11288,6 +12174,7 @@ function TableEngine(props) {
       lastDensity = now;
       (0, _strict.virtualResync)(t);
       (0, _strict.remeasure)(t, t.getColumns());
+      titleTips();
     });
     mo.observe(document.documentElement, {
       attributes: true,
@@ -11401,7 +12288,7 @@ function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step]);
+  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
 
   // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
   // and the total ("load-more"); a page's rows carry their place in the whole set
@@ -11473,7 +12360,7 @@ function TableEngine(props) {
       syncFoot(t);
       watchEnd(t);
       const now = footRef.current || f;
-      (0, _announce.announce)(words(STRINGS.loaded, {
+      (0, _announce.announce)(words(S.loaded, {
         n: (0, _format.formatNumber)(now.shown - before),
         shown: (0, _format.formatNumber)(now.shown),
         total: (0, _format.formatNumber)(now.total)
@@ -11593,6 +12480,8 @@ function TableEngine(props) {
     });
   };
 
+  // the column headers with a menu, in their order on screen (the visible ones)
+  const menuHeaders = table => table.getColumns().filter(c => c.isVisible()).map(c => c.getElement()).filter(e => e && e.getAttribute('aria-haspopup') === 'menu');
   // a header can be dragged onto another to move its column (options.movableColumns); its edge is Tabulator's resize
   // handle (drag it, or double-click it to fit the content), kept in the view
   const wireColumns = table => {
@@ -11603,7 +12492,46 @@ function TableEngine(props) {
         def = col.getDefinition();
       if (!el || el.hasAttribute('data-plx-wired')) return;
       el.setAttribute('data-plx-wired', '');
-      if (opt.movableColumns && !def.frozen) {
+      // the column menu from the keyboard: Shift + F10 or the Menu key on a focused header (as a right-click does); the
+      // headers are one Tab stop, Arrow Left and Right move between them (the grid pattern)
+      if (def.headerContextMenu) {
+        el.setAttribute('aria-haspopup', 'menu');
+        el.setAttribute('aria-keyshortcuts', 'Shift+F10');
+        el.tabIndex = -1;
+        el.addEventListener('keydown', ev => {
+          if (ev.target !== el) return;
+          const step = (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') && !ev.altKey ? (0, _direction.arrowStep)(ev, el, {
+            vertical: false
+          }) : 0;
+          if (step) {
+            const all = menuHeaders(table),
+              next = all[all.indexOf(el) + step];
+            if (next) {
+              ev.preventDefault();
+              all.forEach(h => {
+                h.tabIndex = h === next ? 0 : -1;
+              });
+              next.focus();
+            }
+            return;
+          }
+          if (!(ev.shiftKey && ev.key === 'F10' || ev.key === 'ContextMenu')) return;
+          ev.preventDefault();
+          const r = el.getBoundingClientRect();
+          el.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
+            clientX: r.left,
+            clientY: r.bottom
+          }));
+        });
+        el.addEventListener('focus', () => {
+          menuHeaders(table).forEach(h => {
+            h.tabIndex = h === el ? 0 : -1;
+          });
+        });
+      }
+      if (opt.movableColumns && !def.frozen && !/__cell--view/.test(String(def.cssClass || ''))) {
         el.draggable = true;
         el.addEventListener('dragstart', ev => {
           if (ev.target.closest('.tabulator-col-resize-handle')) {
@@ -11640,10 +12568,16 @@ function TableEngine(props) {
         });
       }
     });
+    // one header with a menu is in the Tab order (the first, or the one used last)
+    const heads = menuHeaders(table);
+    if (heads.length && !heads.some(h => h.tabIndex === 0)) heads[0].tabIndex = 0;
     if (table.plxWired) return;
     table.plxWired = true;
     // a width the person gave with the handle (drag, or double-click to fit) is kept in the view
-    table.on('columnResized', col => keepWidth(col));
+    table.on('columnResized', col => {
+      keepWidth(col);
+      titleTips();
+    });
     // the handle is a separator: focused and stepped through the size tokens with the arrow keys (Home and End: the
     // narrowest and widest), as well as dragged (WCAG 2.5.7 and 2.1.1)
     table.element.addEventListener('keydown', ev => {
@@ -11659,6 +12593,118 @@ function TableEngine(props) {
       ev.preventDefault();
       ev.stopPropagation();
       applyWidth(col, to);
+    });
+  };
+  // group rows: the chevron (a click), the keyboard on a focused group row (Enter or Space: open or close; Arrow Right:
+  // open; Arrow Left: close; Arrow Down / Up: the next or previous group row), the sticky stand-ins, the state kept in the
+  // view and announced ("Box + cask, group, 5 records, expanded")
+  const wireGroups = (table, host) => {
+    if (host.hasAttribute('data-plx-groups')) return;
+    host.setAttribute('data-plx-groups', '');
+    const holder = host.querySelector('.tabulator-tableholder');
+    if (holder && !stickyRef.current) {
+      const box = el('div', B + '__sticky-groups');
+      box.setAttribute('aria-hidden', 'true');
+      holder.insertBefore(box, holder.firstChild);
+      stickyRef.current = box;
+      box.addEventListener('click', ev => {
+        const w = ev.target.closest && ev.target.closest('.' + B + '__sticky-group');
+        if (w && ev.target.closest('.' + B + '__group-chevron')) toggleGroup(w.plxGroup);
+      });
+      let frame = 0;
+      holder.addEventListener('scroll', () => {
+        if (!frame) frame = requestAnimationFrame(() => {
+          frame = 0;
+          syncSticky(false);
+        });
+      }, {
+        passive: true
+      });
+    }
+    host.addEventListener('click', ev => {
+      const chev = ev.target.closest && ev.target.closest('.tabulator-group .' + B + '__group-chevron');
+      const row = chev && chev.closest('.tabulator-group');
+      if (row && row.plxGroup) {
+        ev.stopPropagation();
+        toggleGroup(row.plxGroup);
+      }
+    });
+    host.addEventListener('keydown', ev => {
+      const row = ev.target,
+        g = row && row.plxGroup;
+      if (!g || !row.classList || !row.classList.contains('tabulator-group')) return;
+      const open = typeof g.visible === 'function' ? true : !!g.visible,
+        k = ev.key;
+      const rtl = (0, _direction.isRtl)(row),
+        into = rtl ? 'ArrowLeft' : 'ArrowRight',
+        out = rtl ? 'ArrowRight' : 'ArrowLeft';
+      if (k === 'Enter' || k === ' ') {
+        ev.preventDefault();
+        toggleGroup(g, !open);
+      } else if (k === into) {
+        ev.preventDefault();
+        toggleGroup(g, true);
+      } else if (k === out) {
+        ev.preventDefault();
+        toggleGroup(g, false);
+      } else if (k === 'ArrowDown' || k === 'ArrowUp') {
+        const all = Array.from(host.querySelectorAll('.tabulator-group')),
+          i = all.indexOf(row),
+          next = all[i + (k === 'ArrowDown' ? 1 : -1)];
+        if (next) {
+          ev.preventDefault();
+          next.focus();
+        }
+      }
+    });
+    table.on('groupVisibilityChanged', (comp, visible) => {
+      const g = comp && comp._group;
+      if (!g) return;
+      const key = pathKey(g);
+      if (visible) closedRef.current.delete(key);else closedRef.current.add(key);
+      saveView();
+      const P = g.plxParts;
+      (0, _announce.announce)(words(S.groupRow, {
+        value: g.plxText,
+        count: (0, _format.formatNumber)(P ? P.count : 0),
+        records: P && P.count === 1 ? S.record : S.records
+      }) + ', ' + (visible ? S.expanded : S.collapsed));
+      requestAnimationFrame(() => syncSticky(true));
+    });
+    table.on('columnMoved', () => {
+      table.plxColsVer = (table.plxColsVer || 0) + 1;
+      redrawGroups(table);
+    });
+    table.on('columnVisibilityChanged', () => {
+      table.plxColsVer = (table.plxColsVer || 0) + 1;
+      redrawGroups(table);
+    });
+    table.on('dataGrouped', () => {
+      // the React content of groups that are gone (a new grouping, new data) goes with them
+      const live = new Set();
+      (function walk(list) {
+        (list || []).forEach(g => {
+          live.add(pathKey(g));
+          walk(g.groupList);
+        });
+      })(table.modules.groupRows ? table.modules.groupRows.groupList : []);
+      let gone = false;
+      Array.from(groupCells.current.keys()).forEach(k => {
+        if (!live.has(k)) {
+          groupCells.current.delete(k);
+          gone = true;
+        }
+      });
+      if (gone) bump();
+    });
+  };
+  // a column name cut with "…" shows the full name in a tooltip (its title); a name that fits has none
+  const titleTips = () => {
+    const h = hostRef.current;
+    if (!h) return;
+    h.querySelectorAll('.tabulator-header .' + B + '__title-text').forEach(t => {
+      const cut = t.scrollWidth > t.clientWidth + 1 || t.scrollHeight > t.clientHeight + 1;
+      if (cut) t.setAttribute('title', t.textContent);else t.removeAttribute('title');
     });
   };
   // Tabulator's resize handles, named and focusable (each time they are drawn); the header keeps its own name (its title)
@@ -11679,7 +12725,7 @@ function TableEngine(props) {
       grip.setAttribute('aria-orientation', 'vertical');
       grip.tabIndex = 0;
       grip.setAttribute('data-plx-target-equivalent', 'the header menu: Narrower, Wider, Fit to content (WCAG 2.5.8 Equivalent)');
-      grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
+      grip.setAttribute('aria-label', S.resize + ' ' + title);
       grip.setAttribute('aria-valuemin', String(lo));
       grip.setAttribute('aria-valuemax', String(hi));
       grip.setAttribute('aria-valuenow', String(Math.round(col.getWidth()) || lo));
@@ -11707,6 +12753,18 @@ function TableEngine(props) {
   _react.default.useEffect(() => {
     if (builtRef.current) syncSelection(tableRef.current);
   }, [(selected || []).join(SEP)]);
+  // a new row height step or Wrap headers: the stylesheet draws the rows and the header at once (the frame's data
+  // attributes); the virtual renderer takes the new heights and keeps the row at the top of its view, the room "fill"
+  // takes is measured again (the header may have grown), and the names cut with "…" are found again
+  _react.default.useEffect(() => {
+    const t = tableRef.current;
+    if (!t || !builtRef.current) return;
+    (0, _strict.virtualResync)(t);
+    if (fitRef.current) fitRef.current();
+    titleTips();
+    syncSticky(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowStep, wrapHead]);
 
   // new data in place: sort, filters, scroll and column widths stay. Rows equal to the ones shown (a page that builds its
   // rows again on every render) change nothing.
@@ -11762,6 +12820,47 @@ function TableEngine(props) {
         className: B + '__value'
       }, out) : out, node, id));
     });
+    // a group row's value, drawn as its column's cells draw it (a badge column shows the badge)
+    groupCells.current.forEach((g, key) => {
+      const c = columns.find(x => x.field === g.c.field) || g.c;
+      if (!c.render) return;
+      portals.push(/*#__PURE__*/_reactDom.default.createPortal(c.render(g.row, null), g.node, 'group' + SEP + key));
+    });
+    // the view menu (owner, 2026-10-14): Row height (a check on the current step, like Airtable) and Wrap headers
+    if (viewMenu && !isStatic && viewNode.current) {
+      const pick = v => {
+        setRowStep(v);
+        stepRef.current = v;
+        saveView();
+      };
+      const wrapToggle = () => {
+        const v = !wrapRef.current;
+        setWrapHead(v);
+        wrapRef.current = v;
+        saveView();
+      };
+      portals.push(/*#__PURE__*/_reactDom.default.createPortal(/*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+        label: S.view,
+        placement: "bottom-end",
+        trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+          size: "xs",
+          variant: "ghost",
+          iconOnly: true,
+          icon: "settings-customize",
+          label: S.view
+        })
+      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+        label: S.rowHeight,
+        value: rowStep,
+        onChange: pick
+      }, ROW_HEIGHTS.map(v => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        key: v,
+        value: v
+      }, S[v]))), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        checked: wrapHead,
+        onSelect: wrapToggle
+      }, S.wrapHeaders)), viewNode.current, 'view'));
+    }
   }
 
   // the error state (platforms.md 5.5: it names the problem, one action recovers): the page's failure, or the engine's
@@ -11786,13 +12885,13 @@ function TableEngine(props) {
     }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "data",
       className: B + '__range'
-    }, words(STRINGS.range, {
+    }, words(S.range, {
       first: n(first),
       last: n(last),
       total: n(foot.total)
     })), /*#__PURE__*/_react.default.createElement("label", {
       className: B + '__page-size'
-    }, /*#__PURE__*/_react.default.createElement("span", null, STRINGS.perPage), /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    }, /*#__PURE__*/_react.default.createElement("span", null, S.perPage), /*#__PURE__*/_react.default.createElement(_Input.Select, {
       value: String(foot.size),
       options: sizes.map(x => ({
         value: String(x),
@@ -11804,7 +12903,7 @@ function TableEngine(props) {
       }
     })), /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
       className: B + '__pages',
-      label: words(STRINGS.pages, {
+      label: words(S.pages, {
         label: label || ''
       }).trim(),
       page: foot.page,
@@ -11820,7 +12919,7 @@ function TableEngine(props) {
     }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "data",
       className: B + '__range'
-    }, words(STRINGS.count, {
+    }, words(S.count, {
       shown: n(foot.shown),
       total: n(foot.total)
     })), foot.shown < foot.total ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -11828,28 +12927,42 @@ function TableEngine(props) {
       className: B + '__more',
       loading: busy,
       onClick: () => loadMore()
-    }, STRINGS.loadMore) : null);
+    }, S.loadMore) : null);
   }
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: frameRef,
     className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', M === 'pages' && B + '--pages', M === 'load-more' && B + '--load-more', className),
     "data-plx-render": virtual ? 'virtual' : undefined,
     "data-plx-height": height && height !== '100%' ? sizeName(height) || undefined : undefined,
-    "data-plx-fit": autoFit ? '' : undefined
+    "data-plx-fit": autoFit ? '' : undefined,
+    "data-plx-row-height": isStatic || listNow ? undefined : rowStep,
+    "data-plx-wrap-headers": !isStatic && wrapHead ? '' : undefined
   }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     className: B + '__error',
     tone: "error",
-    title: STRINGS.failed,
+    title: S.failed,
     action: error || onRetry ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "sm",
       icon: "refresh",
       onClick: retry
-    }, STRINGS.retry) : null
+    }, S.retry) : null
   }, reason) : null, /*#__PURE__*/_react.default.createElement("div", {
     ref: hostRef,
     className: B + '__table',
     hidden: failed ? true : undefined
-  }), footer, portals);
+  }), footer, isStatic ? null : /*#__PURE__*/_react.default.createElement("div", {
+    ref: probeRef,
+    className: B + '__probe',
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    "data-plx-probe": "record"
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    "data-plx-probe": "group"
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    "data-plx-probe": "band"
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    "data-plx-probe": "add"
+  })), portals);
 }
 
 // the interactive table: records to sort, filter, select, open, edit, group or nest

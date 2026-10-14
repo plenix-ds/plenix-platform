@@ -6,7 +6,7 @@
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-export const SIZE_STEPS = [4,8,12,16,18,20,24,28,32,36,40,44,48,52,56,60,64,68,72,80,92,96,100,112,120,132,140,152,160,180,200,220,240,280,300,320,360,400,500,560,600,720,900];
+export const SIZE_STEPS = [4,8,12,16,18,20,24,28,32,36,40,44,48,52,56,60,64,68,72,80,88,92,96,100,112,120,128,132,140,152,160,180,200,220,240,280,300,320,360,400,500,560,600,720,900];
 const within = (min, max) => SIZE_STEPS.filter((s) => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
 export function snapSize(px, min, max) { const c = within(min, max); if (!c.length) return Math.max(min, Math.min(max, px)); return c.reduce((a, b) => (Math.abs(b - px) < Math.abs(a - px) ? b : a)); }
