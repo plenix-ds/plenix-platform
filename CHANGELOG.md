@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.59] - 2026-10-14
+
+### Changed
+- Owner decisions (2026-10-14):
+  - DataTable re-measures its column widths when the density changes (columns only; widths stay on the grid);
+  - Back to top uses the up arrow (new icon arrow-up);
+  - the rich text toolbar is icons (bold, italic, link, numbered list, heading, quote, code; new from Material Symbols
+    Sharp, unedited), each with its shortcut in a tooltip;
+  - one Backspace after a Markdown shortcut or inline code removes the character (undo still works);
+  - the kept choices of waves 5 and 6 are written as rules in their docs.
+
 ## [0.31.58] - 2026-10-14
 
 ### Added
