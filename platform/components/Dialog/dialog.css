@@ -30,3 +30,7 @@
 /* the drawer slides in from its edge (its animation is on .plx-drawer above): the start side with side="start"; mirrored in right to left (batch 215) */
 .plx-modal-layer--start .plx-drawer,.plx-drawer:dir(rtl){animation-name:motion-slide-in-left;}
 .plx-modal-layer--start .plx-drawer:dir(rtl){animation-name:motion-slide-in-right;}
+/* non-modal (modal={false}): the same window in the same place, with no veil; the page behind stays usable */
+.plx-modal-layer--non-modal{pointer-events:none;}
+.plx-modal-layer--non-modal::before{content:none;}
+.plx-modal-layer--non-modal .plx-dialog{pointer-events:auto;}
