@@ -6,6 +6,19 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.56] - 2026-10-14
+
+### Added
+- The complete library, wave 6, lane B (12 inventory items):
+  - Form (one or two columns, named sections, sticky actions);
+  - Field: a character counter ("42/60", invalid past the limit, announced);
+  - Input, Textarea and Select appearances: outline, filled, underline; a Textarea that grows to 10 lines; the
+    read-only field page;
+  - One-time code input (typing, Backspace, arrows, paste and the device's code autofill);
+  - SearchField suggestions (the match in bold, announced) and recent searches (useSearchHistory).
+### Fixed
+- Sidebar group labels of titles already in -es ("All recent searches").
+
 ## [0.31.55] - 2026-10-14
 
 ### Changed
