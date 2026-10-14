@@ -34,7 +34,7 @@ const FOCUSABLE = 'button:not([disabled]),input:not([disabled]),select:not([disa
 
 export function Toolbar({ label, className, children, onKeyDown, onFocus, ...rest }) {
   const ref = React.useRef(null);
-  const itemsOf = () => (ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.offsetParent !== null && !el.closest('[role="radiogroup"] [aria-checked="false"]')) : []);
+  const itemsOf = () => (ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), (el) => el.offsetParent !== null && !el.closest('[inert]') && !el.closest('[role="radiogroup"] [aria-checked="false"]')) : []);
   // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
   useRovingFocus(ref, itemsOf);
   const onKey = (e) => {

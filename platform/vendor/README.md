@@ -5,8 +5,11 @@ These files are copied into the project so both Plenix applications load React w
 `tabulator/` holds the engine every Plenix table runs on (Tabulator 6.6.1, MIT, added 2026-10-08); the DataTable component loads it the first time a grid renders. Its files, checksums, load order and update steps are in `tabulator/README.md`.
 
 `tiptap/` holds the engine every Plenix rich-text editor runs on (Tiptap 3.31.3 with ProseMirror, MIT, added 2026-10-14):
-one bundled file, `tiptap.min.js` (411 KB, 132 KB gzipped; `window.PlenixTiptap`), built with esbuild from the npm packages
-@tiptap/core, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-link and @tiptap/extension-mention, and `LICENSES.txt`
+one bundled file, `tiptap.min.js` (481 KB, 153 KB gzipped; `window.PlenixTiptap`), built with esbuild from the npm packages
+@tiptap/core, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-list, @tiptap/extension-mention, @tiptap/extension-table,
+@tiptap/extension-text-style, @tiptap/extension-text-align, @tiptap/extension-highlight, @tiptap/extension-subscript,
+@tiptap/extension-superscript, @tiptap/extension-image and @tiptap/extension-typography (all of Tiptap's free formatting,
+rebuilt 2026-10-14), and `LICENSES.txt`
 (the license of every bundled package). The RichTextEditor component loads it the first time an editor mounts. Its
 packages, checksums, build and update steps are in `tiptap/README.md`.
 

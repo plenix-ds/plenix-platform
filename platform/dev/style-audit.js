@@ -8,6 +8,10 @@
      3. font written inline: a font family that is not a Platform token reference (a font is never computed on the spot);
      4. DataTable density: an inline height, min-height, max-height, line-height or padding on a DataTable row or cell
         (the row height and the cell padding are the density's: data-table.css and the tokens; owner, 2026-10-13);
+     User content (an element inside .plx-user-content: the RichTextEditor's area and RichText showing saved HTML) may carry
+     the person's own formatting, as Tiptap stores it: color, background-color, font-family, font-size and text-align
+     only (owner, 2026-10-14: "the colors and fonts rule is limited to just the UI, not the user in Tiptap"); any other
+     property there is checked as everywhere else.
      5. off the grid: an inline length that is neither a Platform token reference (var) nor a whole number of grid steps (the base
         spacing token, --plx-ref-space-4px; utils/grid.js): "has to conform to fit into the grid system!!! important"
         (owner, 2026-10-13). A length in another unit than px (rem, em, vw…) is reported too; a percentage is a
@@ -54,12 +58,16 @@
     }
     return null;
   }
+  // the person's own formatting on user content (the editor's area and saved rich text): these properties only
+  var USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
+  function userContent(el) { return !!(el.closest && el.closest('.plx-user-content')); }
   var DENSITY = /^(height|min-height|max-height|line-height|padding(-(top|right|bottom|left|block|inline)(-(start|end))?)?)$/;
   function inlineFinding(el) {
     if (probe(el) || el.isConnected === false) return null;   // the probe, or an element already gone from the page
-    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell'));
+    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell')), user = userContent(el);
     for (var i = 0; i < st.length; i++) {
       var p = st[i], v = st.getPropertyValue(p);
+      if (user && USER_FORMAT.test(p)) continue;
       if (/^--/.test(p) ? !allowedVar(p) : (p === 'font-family' && !/^\s*var\(--plx-/.test(v)) || (table && DENSITY.test(p))) bad.push(p + ': ' + v);
       else { var off = offGrid(v, el); if (off) bad.push(p + ': ' + v + ' (' + off + ' is off the grid)'); }
     }

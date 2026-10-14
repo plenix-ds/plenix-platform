@@ -1,8 +1,8 @@
 /* Plenix · RichTextEditor
-   Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar and Buttons) over an editing area that
-     shows the text as RichText does (paragraphs, bold, italic, links, lists, headings, quotes, inline code), with Markdown
-     shortcuts and an optional mentions list. The editing engine is Tiptap 3.31.3 (MIT, on ProseMirror), vendored in
-     platform/vendor/tiptap/ and loaded the first time an editor mounts.
+   Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar, Buttons and Menus) over an editing
+     area that shows the text as RichText does. The editing engine is Tiptap 3.31.3 (MIT, on ProseMirror), vendored in
+     platform/vendor/tiptap/ and loaded the first time an editor mounts; the editor offers all of Tiptap's free formatting
+     with Tiptap's own keyboard behavior.
    Usage:
      <RichTextEditor label="Description" defaultValue={html} onChange={(html) => …} />
      <RichTextEditor label="Notes" toolbar="full" placeholder="Describe the change" />
@@ -13,10 +13,15 @@
      label: the accessible name of the editing area (required; give a visible label with Field or a heading)
      defaultValue: the starting HTML; it is cleaned to the allowed elements (see Notes) before it is shown
      onChange(html): runs after each change with the cleaned HTML of the content ('' when the area is empty)
-     toolbar: "basic" (default: bold, italic, link, bulleted and numbered list) | "full" (also heading, quote, inline code,
-       clear formatting, undo and redo) | false (no toolbar; the shortcuts still work)
-     markdownShortcuts: Markdown as you type (default true): "- " or "* " a bulleted list, "1. " a numbered list, "# " or
-       "## " a heading, "> " a quote at the start of a line; **bold**, _italic_ and `code` around words
+     toolbar: "basic" (default: bold, italic, link, bulleted and numbered list) | "full" (every format, in groups: text
+       style (paragraph, heading 1–6); font and size; bold, italic, underline, strikethrough, inline code, subscript,
+       superscript; text color and highlight; align left, center, right, justify; bulleted, numbered and task list;
+       insert link, image, table, code block, quote, horizontal rule; undo, redo, clear formatting) | false (no toolbar;
+       the shortcuts still work)
+     markdownShortcuts: Tiptap's input rules as you type (default true): "- " or "* " a bulleted list, "1. " a numbered
+       list, "[ ] " a task list, "# " to "###### " a heading 1 to 6, "> " a quote, "```" a code block, "---" a horizontal
+       rule; **bold**, *italic*, ~~strike~~, ==highlight== and `code` around words; typography: "smart quotes", -- an em
+       dash, ... an ellipsis, (c) ©, -> →
      mentions: the mentions slot: { trigger: "@" (default), search(query) → options or a Promise of them ([{ value, label }]),
        renderOption(option) (the row's content; default its label) }; typing the trigger opens the list under the caret.
        Give it when the editor mounts (the engine is set up once); a new search function is used from the next keystroke.
@@ -24,100 +29,204 @@
      readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
      invalid: marks the area invalid (aria-invalid); put the message in Field's error
      disabled: the area cannot be used (default false)
-     strings: the words it shows, for other languages: { toolbar: "Formatting", bold: "Bold", italic: "Italic", link: "Link",
-       bulleted: "Bulleted list", numbered: "Numbered list", heading: "Heading", quote: "Quote", code: "Code", clear: "Clear
-       formatting", undo: "Undo", redo: "Redo", linkAddress: "Link address", addLink: "Add link", cancel: "Cancel",
-       mentions: "Suggestions", on: (name) => name + " on", off: (name) => name + " off",
-       tip: (name, keys) => name + " (" + keys + ")": a toolbar button's tooltip with its shortcut }
+     strings: the words it shows, for other languages (STRINGS below: every button, menu and field name; on(name),
+       off(name) announce a format turned on or off from the keyboard; tip(name, keys) is a button's tooltip; leave is
+       announced after Escape)
      className: more classes on the editor
      id: the id of the editing area (a Field sets it)
    Behavior:
-     The toolbar is one Tab stop (arrow keys move inside it). Its buttons are icon-only ghost toggle buttons (owner,
-       2026-10-14): bold format-bold, italic format-italic, inline code code, link link, heading heading, bulleted list
-       list-bullets, numbered list format-list-numbered, quote format-quote, undo ed-undo, redo ed-redo; each is named by
-       its word (aria-label) and has a tooltip with the word and its shortcut as hotkeyLabel writes it (Bold (Ctrl B);
-       Bold (⌘ B) on a Mac) and aria-keyshortcuts. Clear formatting keeps its text label (the set has no approved icon for it). Each format button
-       shows whether the text at the caret has that format (aria-pressed). Pressing a button keeps the selection in the area.
-     Ctrl+B bold, Ctrl+I italic, Ctrl+K link, Ctrl+Shift+7 numbered list, Ctrl+Shift+8 bulleted list (Command on a Mac);
-       a format turned on or off from the keyboard is announced. Undo and redo are the editor's own history (Ctrl+Z,
-       Ctrl+Y or Ctrl+Shift+Z; ⌘Z, ⇧⌘Z on a Mac): one step per change, Markdown shortcuts included.
-     Backspace right after a Markdown shortcut turns it back into the typed characters (Tiptap's input rules); otherwise it
-       removes the character before the caret.
-     Link: with the caret in a link it removes the link; otherwise a link address field opens under the toolbar (Enter adds
-       the link, Escape closes it); an address without a scheme gets https://. Text typed after a link is not part of it.
+     The toolbar is one Tab stop (arrow keys move inside it). Its groups that do not fit the frame's width move, in
+       order from the end, into a More formatting menu at the end of the row (the Platform overflow: utils/overflow.js).
+       Its buttons are icon-only ghost buttons named by their format (aria-label), each with a tooltip of the name and
+       its shortcut as hotkeyLabel writes it (Bold (Ctrl B); Bold (⌘ B) on a Mac) and aria-keyshortcuts. A format button
+       shows whether the text at the caret has that format (aria-pressed). Text style, font, size and table are menus.
+       Pressing a button keeps the selection in the area; choosing from a menu returns the focus to the area.
+     Keyboard: Tiptap's own shortcuts (Command on a Mac for Ctrl): Ctrl+B bold, Ctrl+I italic, Ctrl+U underline,
+       Ctrl+Shift+S strikethrough, Ctrl+E inline code, Ctrl+, subscript, Ctrl+. superscript, Ctrl+Shift+H highlight,
+       Ctrl+Alt+0 paragraph, Ctrl+Alt+1 to 6 heading 1 to 6, Ctrl+Shift+L / E / R / J align left, center, right,
+       justify, Ctrl+Shift+8 bulleted list, Ctrl+Shift+7 numbered list, Ctrl+Shift+9 task list, Ctrl+Shift+B quote,
+       Ctrl+Alt+C code block, Shift+Enter or Ctrl+Enter a line break, Ctrl+Z undo, Ctrl+Shift+Z or Ctrl+Y redo; and
+       Plenix's Ctrl+K link. A format turned on or off from the keyboard is announced ("Bold on").
+     Tab and Shift+Tab are Tiptap's: in a list item they nest it and lift it out, in a table they move to the next and
+       the previous cell (Tab in the last cell adds a row); elsewhere they move the focus out of the area. To leave the
+       area from anywhere: Escape, then Tab or Shift+Tab (Escape announces it; the area's description says it too).
+     Backspace right after a Markdown shortcut turns it back into the typed characters (Tiptap's input rules).
+     Link: with the caret in a link it removes the link; otherwise the link field opens under the toolbar (Enter adds the
+       link, Escape closes it); an address without a scheme gets https://. Image: the image field takes an address and
+       a description (the alternative text). Text color and highlight: the color field offers suggested swatches (the
+       category colors), a custom color (a hex value or the browser's color input) and Remove. Custom font and size:
+       the menus' Custom item opens a field for any font family or size.
      Paste inserts plain text (a line break starts a new paragraph), so formatting from other documents never comes in.
      Mentions: ↓ / ↑ move in the list, Enter or Tab inserts the mention (one unit, removed with one Backspace), Escape closes it.
-     Tab and Shift+Tab move the focus, in a list too (they never insert a tab or nest a list item).
      The area grows with its text up to its maximum height, then scrolls inside (it is focusable, so the keyboard reaches it).
      Until the engine has loaded (the first editor on a page) the area shows the cleaned content without editing; a failed
        load leaves it so, and the next editor that mounts tries again.
    Notes:
-     The engine: Tiptap (@tiptap/core, pm, starter-kit, extension-link, extension-mention 3.31.3, MIT), driven directly (no
-       @tiptap/react): the area element is ProseMirror's editing element, its attributes set through editorProps. Its
-       document schema is the allow-list below, so the editor can only hold what cleanRichText keeps. The same engine
-       carries what Plenix can add later: tables (@tiptap/extension-table), editing together (Yjs through
-       @tiptap/extension-collaboration) and embeds (custom nodes).
-     Allowed elements: p, br, strong, em, a (href only: http, https, mailto or a relative address), ul, ol, li, h2, h3,
-       blockquote, code, pre, and the mention span (data-mention). Everything else is unwrapped, every other attribute dropped.
+     The rule: the editor's interface (the frame, toolbar, menus, fields and swatches) follows the design system, on its
+       tokens and fonts; the content is the person's own: the colors, fonts, sizes and alignment they choose are kept as
+       Tiptap stores them (an inline style on the text), and the area and RichText output carry plx-user-content, the
+       marker the style audit and the page checks read to allow exactly those properties there.
+     The engine: Tiptap (@tiptap/core, pm, starter-kit, extension-list, extension-mention, extension-table,
+       extension-text-style, extension-text-align, extension-highlight, extension-subscript, extension-superscript,
+       extension-image, extension-typography 3.31.3, MIT), driven directly (no @tiptap/react). The table draws no column
+       group (no column resizing) and the task item draws its own checkbox (the Platform checkbox's class), so the engine
+       writes no style of its own.
+     Allowed elements (cleanRichText): p, br, strong, em, u, s, code, sub, sup, mark, a (href: http, https, mailto or a
+       relative address), span (a mention, or the person's text style), h1–h6, ul, ol (start), li, blockquote, pre, hr,
+       img (src: http, https or a relative address; alt, title), table, tbody, tr, th, td (colspan, rowspan), task lists
+       (ul data-type="taskList", li data-type="taskItem" data-checked, its label, checkbox and div). Style attributes keep
+       only color, background-color, font-family, font-size and text-align; everything else is unwrapped or dropped.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { announce } from '../../utils/announce.jsx';
 import { useFloating } from '../../utils/floating.js';
+import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { Toolbar } from '../Toolbar/Toolbar.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Input } from '../Input/Input.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub } from '../Menu/Menu.jsx';
+import { ColorSwatch } from '../ColorSwatch/ColorSwatch.jsx';
+import { CATEGORY_COLORS } from '../ColorSwatch/categoryColors.js';
 import { hotkeyLabel, isMac } from '../../utils/hotkey.js';
 import { loadTiptap } from './tiptap.js';
 
-const STRINGS = { toolbar: 'Formatting', bold: 'Bold', italic: 'Italic', link: 'Link', bulleted: 'Bulleted list', numbered: 'Numbered list',
-  heading: 'Heading', quote: 'Quote', code: 'Code', clear: 'Clear formatting', undo: 'Undo', redo: 'Redo', linkAddress: 'Link address',
-  addLink: 'Add link', cancel: 'Cancel', mentions: 'Suggestions', on: (name) => name + ' on', off: (name) => name + ' off',
-  tip: (name, keys) => name + ' (' + keys + ')' };
+const STRINGS = { toolbar: 'Formatting', more: 'More formatting', bold: 'Bold', italic: 'Italic', underline: 'Underline', strike: 'Strikethrough',
+  code: 'Inline code', subscript: 'Subscript', superscript: 'Superscript', link: 'Link', bulleted: 'Bulleted list', numbered: 'Numbered list',
+  tasks: 'Task list', quote: 'Quote', codeBlock: 'Code block', rule: 'Horizontal rule', image: 'Image', table: 'Table', color: 'Text color',
+  highlight: 'Highlight', alignLeft: 'Align left', alignCenter: 'Align center', alignRight: 'Align right', alignJustify: 'Justify',
+  clear: 'Clear formatting', undo: 'Undo', redo: 'Redo', textStyle: 'Text style', paragraph: 'Paragraph', heading: (n) => 'Heading ' + n,
+  font: 'Font', defaultFont: 'Default font', size: 'Size', defaultSize: 'Default size', custom: 'Custom…', customFont: 'Font family',
+  customSize: 'Font size', insertTable: 'Insert table', rowBefore: 'Add row above', rowAfter: 'Add row below', columnBefore: 'Add column before',
+  columnAfter: 'Add column after', deleteRow: 'Delete row', deleteColumn: 'Delete column', headerRow: 'Header row', deleteTable: 'Delete table',
+  linkAddress: 'Link address', addLink: 'Add link', imageAddress: 'Image address', imageAlt: 'Description', addImage: 'Add image',
+  swatches: 'Suggested colors', customColor: 'Custom color', hex: 'Hex value', apply: 'Apply', remove: 'Remove', cancel: 'Cancel',
+  mentions: 'Suggestions', on: (name) => name + ' on', off: (name) => name + ' off', tip: (name, keys) => name + ' (' + keys + ')',
+  groupMarks: 'Text', groupColor: 'Color', groupAlign: 'Alignment', groupLists: 'Lists', groupInsert: 'Insert', groupHistory: 'History',
+  leave: 'Press Tab or Shift+Tab to leave the editor', hint: 'Escape, then Tab, leaves the editor' };
 
-// the toolbar's icons (Material Symbols Sharp, platform/icons/map.json) and the shortcuts its tooltips show
-const ICONS = { bold: 'format-bold', italic: 'format-italic', code: 'code', link: 'link', heading: 'heading', bulleted: 'list-bullets',
-  numbered: 'format-list-numbered', quote: 'format-quote', undo: 'ed-undo', redo: 'ed-redo' };
-// each shortcut as a binding: shown as people read it (hotkeyLabel: Ctrl B, ⇧ ⌘ 7 on a Mac) and named for aria-keyshortcuts
-const KEYS = { bold: 'Mod+B', italic: 'Mod+I', link: 'Mod+K', numbered: 'Mod+Shift+7', bulleted: 'Mod+Shift+8', undo: 'Mod+Z', redo: () => (isMac() ? 'Mod+Shift+Z' : 'Mod+Y') };
+// the toolbar's icons (Material Symbols Sharp, platform/icons/map.json)
+const ICONS = { bold: 'format-bold', italic: 'format-italic', underline: 'format-underlined', strike: 'format-strikethrough', code: 'code',
+  subscript: 'subscript', superscript: 'superscript', link: 'link', bulleted: 'list-bullets', numbered: 'format-list-numbered', tasks: 'checklist',
+  quote: 'format-quote', codeBlock: 'code-blocks', rule: 'horizontal-rule', image: 'ed-image', table: 'table', color: 'format-color-text',
+  highlight: 'ink-highlighter', alignLeft: 'ed-align-left', alignCenter: 'ed-align-center', alignRight: 'ed-align-right',
+  alignJustify: 'ed-align-justify', clear: 'format-clear', undo: 'ed-undo', redo: 'ed-redo',
+  rowBefore: 'add-row-above', rowAfter: 'add-row-below', columnBefore: 'add-column-left', columnAfter: 'add-column-right', deleteTable: 'trash' };
+// each shortcut as a binding (Tiptap's defaults, and Plenix's Ctrl+K): shown as people read it and named for aria-keyshortcuts
+const KEYS = { bold: 'Mod+B', italic: 'Mod+I', underline: 'Mod+U', strike: 'Mod+Shift+S', code: 'Mod+E', subscript: 'Mod+,', superscript: 'Mod+.',
+  highlight: 'Mod+Shift+H', link: 'Mod+K', bulleted: 'Mod+Shift+8', numbered: 'Mod+Shift+7', tasks: 'Mod+Shift+9', quote: 'Mod+Shift+B',
+  codeBlock: 'Mod+Alt+C', alignLeft: 'Mod+Shift+L', alignCenter: 'Mod+Shift+E', alignRight: 'Mod+Shift+R', alignJustify: 'Mod+Shift+J',
+  undo: 'Mod+Z', redo: () => (isMac() ? 'Mod+Shift+Z' : 'Mod+Y'), paragraph: 'Mod+Alt+0', h1: 'Mod+Alt+1', h2: 'Mod+Alt+2', h3: 'Mod+Alt+3',
+  h4: 'Mod+Alt+4', h5: 'Mod+Alt+5', h6: 'Mod+Alt+6' };
+const keysOf = (name) => (typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS[name]);
 const keysAria = (binding) => binding.replace('Mod', isMac() ? 'Meta' : 'Control');
 
-const ALLOWED = { P: 1, BR: 1, STRONG: 1, EM: 1, A: 1, UL: 1, OL: 1, LI: 1, H2: 1, H3: 1, BLOCKQUOTE: 1, CODE: 1, PRE: 1, SPAN: 1 };
-const RENAME = { B: 'strong', I: 'em', DIV: 'p', H1: 'h2' };
+// the person's fonts and sizes to choose from (content, not interface: any family or size can be typed in too)
+export const RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['DM Mono', '"DM Mono", monospace'], ['Arial', 'Arial, sans-serif'],
+  ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'],
+  ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
+export const RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
+
+const ALLOWED = { P: 1, BR: 1, STRONG: 1, EM: 1, U: 1, S: 1, CODE: 1, SUB: 1, SUP: 1, MARK: 1, A: 1, SPAN: 1, H1: 1, H2: 1, H3: 1, H4: 1, H5: 1, H6: 1,
+  UL: 1, OL: 1, LI: 1, BLOCKQUOTE: 1, PRE: 1, HR: 1, IMG: 1, TABLE: 1, TBODY: 1, TR: 1, TH: 1, TD: 1, LABEL: 1, INPUT: 1, DIV: 1 };
+const RENAME = { B: 'strong', I: 'em', STRIKE: 's', DEL: 's', DIV: 'p' };
+// the person's own formatting kept on their content: these style properties only, on these elements
+const USER_STYLE = { SPAN: ['color', 'background-color', 'font-family', 'font-size'], MARK: ['color', 'background-color'],
+  P: ['text-align'], H1: ['text-align'], H2: ['text-align'], H3: ['text-align'], H4: ['text-align'], H5: ['text-align'], H6: ['text-align'], TH: ['text-align'], TD: ['text-align'] };
+export const RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
 const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
+const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
 const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const MENTION_CLASS = 'plx-rich-text-editor__mention';
+const CHECK_CLASS = 'plx-check__input';
+const USER_CONTENT = 'plx-user-content';
 
-// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped)
+// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped, styles kept to the person's formatting)
 export function cleanRichText(html) {
   if (typeof document === 'undefined') return '';
   const from = document.createElement('template'); from.innerHTML = String(html || '');
-  const copy = (node, into) => {
+  const copy = (node, into, task) => {
     node.childNodes.forEach((n) => {
       if (n.nodeType === 3) { const text = n.nodeValue.replace(/​/g, ''); if (text) into.appendChild(document.createTextNode(text)); return; }
       if (n.nodeType !== 1) return;
-      const tag = RENAME[n.tagName] ? RENAME[n.tagName].toUpperCase() : n.tagName;
+      // inside a task item its label, checkbox and content div stay as Tiptap writes them
+      const inTask = task && n.parentNode && n.parentNode.getAttribute && n.parentNode.getAttribute('data-type') === 'taskItem';
+      let tag = RENAME[n.tagName] && !(inTask && n.tagName === 'DIV') ? RENAME[n.tagName].toUpperCase() : n.tagName;
+      if ((tag === 'LABEL' || tag === 'DIV') && !inTask) { copy(n, into, task); return; }
+      if (tag === 'INPUT') {
+        if (!(task && n.closest('li[data-type="taskItem"]') && /^checkbox$/i.test(n.getAttribute('type') || ''))) return;
+        const box = document.createElement('input');
+        const item = n.closest('li[data-type="taskItem"]'), body = item && item.querySelector(':scope > div');
+        box.setAttribute('type', 'checkbox'); box.setAttribute('class', CHECK_CLASS); box.setAttribute('disabled', '');
+        if (n.hasAttribute('checked') || (item && item.getAttribute('data-checked') === 'true')) box.setAttribute('checked', 'checked');
+        box.setAttribute('aria-label', ((body ? body.textContent : '') || '').trim().slice(0, 200));
+        into.appendChild(box); return;
+      }
       const mention = tag === 'SPAN' && n.hasAttribute('data-mention');
-      if (!ALLOWED[tag] || (tag === 'SPAN' && !mention)) { copy(n, into); return; }
+      const styles = (USER_STYLE[tag] || []).map((p) => [p, n.style ? n.style.getPropertyValue(p) : '']).filter((s) => s[1] && !/url\(|expression|[<>]/i.test(s[1]));
+      if (!ALLOWED[tag] || (tag === 'SPAN' && !mention && !styles.length)) { copy(n, into, task); return; }
       const el = document.createElement(tag.toLowerCase());
       if (tag === 'A') { const href = (n.getAttribute('href') || '').trim(); if (SAFE_HREF.test(href)) el.setAttribute('href', href); }
+      if (tag === 'IMG') {
+        const src = (n.getAttribute('src') || '').trim();
+        if (!src || !SAFE_SRC.test(src)) return;
+        el.setAttribute('src', src); el.setAttribute('alt', n.getAttribute('alt') || '');
+        if (n.getAttribute('title')) el.setAttribute('title', n.getAttribute('title'));
+      }
+      if (tag === 'OL' && /^\d+$/.test(n.getAttribute('start') || '') && n.getAttribute('start') !== '1') el.setAttribute('start', n.getAttribute('start'));
+      if ((tag === 'TD' || tag === 'TH')) ['colspan', 'rowspan'].forEach((a) => { const v = n.getAttribute(a); if (/^\d+$/.test(v || '') && v !== '1') el.setAttribute(a, v); });
+      if (tag === 'UL' && n.getAttribute('data-type') === 'taskList') el.setAttribute('data-type', 'taskList');
+      const isTask = tag === 'LI' && n.getAttribute('data-type') === 'taskItem';
+      if (isTask) { el.setAttribute('data-type', 'taskItem'); el.setAttribute('data-checked', n.getAttribute('data-checked') === 'true' ? 'true' : 'false'); }
+      if (tag === 'MARK' && n.getAttribute('data-color')) el.setAttribute('data-color', n.getAttribute('data-color'));
       if (mention) { el.setAttribute('data-mention', n.getAttribute('data-mention')); el.setAttribute('class', MENTION_CLASS); el.setAttribute('contenteditable', 'false'); }
-      copy(n, el); into.appendChild(el);
+      styles.forEach((s) => el.style.setProperty(s[0], s[1]));
+      if (tag === 'LABEL') el.setAttribute('contenteditable', 'false');
+      if (tag === 'IMG' || tag === 'HR' || tag === 'BR') { into.appendChild(el); return; }
+      copy(n, el, task || isTask); into.appendChild(el);
     });
   };
-  const out = document.createElement('div'); copy(from.content, out);
+  const out = document.createElement('div'); copy(from.content, out, false);
   return out.innerHTML;
 }
 
-// the formats at the caret, as the toolbar names them, read from the editor
-const FORMATS = { bold: ['bold'], italic: ['italic'], link: ['link'], bulleted: ['bulletList'], numbered: ['orderedList'], heading: ['heading'], quote: ['blockquote'], code: ['code'] };
-const readFormats = (editor) => { const f = {}; Object.keys(FORMATS).forEach((k) => { f[k] = editor.isActive(FORMATS[k][0]); }); return f; };
-const sameFormats = (a, b) => Object.keys(FORMATS).every((k) => !!a[k] === !!b[k]);
+// what the toolbar shows for the text at the caret, read from the editor
+const MARKS = { bold: 'bold', italic: 'italic', underline: 'underline', strike: 'strike', code: 'code', subscript: 'subscript', superscript: 'superscript',
+  link: 'link', highlight: 'highlight', bulleted: 'bulletList', numbered: 'orderedList', tasks: 'taskList', quote: 'blockquote', codeBlock: 'codeBlock' };
+const ALIGNS = { alignLeft: 'left', alignCenter: 'center', alignRight: 'right', alignJustify: 'justify' };
+function readState(ed) {
+  const f = {};
+  Object.keys(MARKS).forEach((k) => { f[k] = ed.isActive(MARKS[k]); });
+  Object.keys(ALIGNS).forEach((k) => { f[k] = ed.isActive({ textAlign: ALIGNS[k] }); });
+  f.block = 'paragraph';
+  for (let n = 1; n <= 6; n += 1) if (ed.isActive('heading', { level: n })) f.block = 'h' + n;
+  const ts = ed.getAttributes('textStyle');
+  f.font = ts.fontFamily || ''; f.size = ts.fontSize || ''; f.textColor = ts.color || '';
+  f.table = ed.isActive('table');
+  f.headerRow = false;
+  const at = ed.state.selection.$from;
+  for (let d = at.depth; d > 0; d -= 1) {
+    const n = at.node(d);
+    if (n.type.name === 'table') { const cell = n.firstChild && n.firstChild.firstChild; f.headerRow = !!cell && cell.type.name === 'tableHeader'; break; }
+  }
+  f.undo = ed.can().undo(); f.redo = ed.can().redo();
+  return f;
+}
 
-// the engine set up for this editor: the starter kit cut to the allow-list, list items without Tab, links, the mention node (its suggestion list
-// only when the editor has a mentions slot), the Plenix shortcuts (announced) and the "# " heading rule
+// a computed color (rgb() or rgba()) as a hex value, for the person's content
+const toHex = (rgb) => {
+  if (/^#[0-9a-f]{3,6}$/i.test(String(rgb))) return String(rgb);
+  const m = String(rgb).match(/\d+(\.\d+)?/g);
+  if (!m || m.length < 3) return '';
+  return '#' + m.slice(0, 3).map((v) => Math.round(Number(v)).toString(16).padStart(2, '0')).join('');
+};
+const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+// the engine set up for this editor: the starter kit with every format, the official free extensions, a table without
+// its column group, a task item with the Platform checkbox, the mention node (its suggestion list only when the editor
+// has a mentions slot), Plenix's Ctrl+K and the announcements of the format shortcuts
 function makeEditor(T, el, o) {
   const trigger = o.trigger;
   const PlenixKeys = T.Extension.create({
@@ -125,10 +234,12 @@ function makeEditor(T, el, o) {
     priority: 1000,
     addKeyboardShortcuts() {
       const key = (name) => () => { o.apply(name, true); return true; };
-      return { 'Mod-b': key('bold'), 'Mod-i': key('italic'), 'Mod-k': key('link'), 'Mod-Shift-7': key('numbered'), 'Mod-Shift-8': key('bulleted') };
-    },
-    addInputRules() {
-      return [T.textblockTypeInputRule({ find: /^#\s$/, type: this.editor.schema.nodes.heading, getAttributes: { level: 2 } })];
+      const out = { 'Mod-k': key('link') };
+      // Tiptap's own shortcuts, run through the same commands so a format turned on or off is announced
+      [['Mod-b', 'bold'], ['Mod-i', 'italic'], ['Mod-u', 'underline'], ['Mod-Shift-s', 'strike'], ['Mod-e', 'code'], ['Mod-,', 'subscript'],
+        ['Mod-.', 'superscript'], ['Mod-Shift-h', 'highlight'], ['Mod-Shift-7', 'numbered'], ['Mod-Shift-8', 'bulleted'], ['Mod-Shift-9', 'tasks']]
+        .forEach((k) => { out[k[0]] = key(k[1]); });
+      return out;
     }
   });
   const PlenixMention = T.Mention.extend({
@@ -151,6 +262,31 @@ function makeEditor(T, el, o) {
       render: () => ({ onStart: o.suggest, onUpdate: o.suggest, onKeyDown: o.suggestKey, onExit: () => o.suggest(null) })
     }
   });
+  // a table without the engine's column group and widths (no column resizing): nothing written inline
+  const PlenixTable = T.Table.extend({ renderHTML({ HTMLAttributes }) { return ['table', HTMLAttributes, ['tbody', 0]]; } }).configure({ View: null, resizable: false });
+  const noWidth = (Cell) => Cell.extend({ addAttributes() { const a = Object.assign({}, this.parent()); delete a.colwidth; return a; } });
+  // a task item whose checkbox is the Platform checkbox (named by its text), in place of the engine's view
+  const PlenixTaskItem = T.TaskItem.extend({
+    addNodeView() {
+      return ({ node, getPos, editor }) => {
+        const doc = el.ownerDocument;
+        const item = doc.createElement('li'), label = doc.createElement('label'), box = doc.createElement('input'), content = doc.createElement('div');
+        label.contentEditable = 'false'; box.type = 'checkbox'; box.className = CHECK_CLASS;
+        const show = (n) => { item.setAttribute('data-type', 'taskItem'); item.setAttribute('data-checked', n.attrs.checked ? 'true' : 'false'); box.checked = !!n.attrs.checked; box.setAttribute('aria-label', n.textContent || o.strings().tasks); };
+        show(node);
+        box.addEventListener('mousedown', (e) => e.preventDefault());
+        box.addEventListener('change', () => {
+          if (!editor.isEditable || typeof getPos !== 'function') { box.checked = !box.checked; return; }
+          editor.chain().focus(undefined, { scrollIntoView: false }).command(({ tr }) => {
+            const at = getPos(); if (typeof at !== 'number') return false;
+            const cur = tr.doc.nodeAt(at); tr.setNodeMarkup(at, undefined, Object.assign({}, cur && cur.attrs, { checked: box.checked })); return true;
+          }).run();
+        });
+        label.appendChild(box); item.append(label, content);
+        return { dom: item, contentDOM: content, update: (n) => { if (n.type !== this.type) return false; show(n); return true; } };
+      };
+    }
+  });
   return new T.Editor({
     element: { mount: el },
     injectCSS: false,
@@ -160,14 +296,17 @@ function makeEditor(T, el, o) {
     enablePasteRules: false,
     extensions: [
       T.StarterKit.configure({
-        heading: { levels: [2, 3] }, listItem: false, underline: false, strike: false, horizontalRule: false, dropcursor: false, gapcursor: false, trailingNode: false,
+        dropcursor: false, gapcursor: false, trailingNode: false,
         link: { openOnClick: false, autolink: false, linkOnPaste: false, HTMLAttributes: { target: null, rel: null, class: null }, isAllowedUri: (url) => SAFE_HREF.test(String(url || '').trim()) }
       }),
-      // a list item without Tab and Shift+Tab (nesting): Tab always leaves the area
-      T.ListItem.extend({ addKeyboardShortcuts() { return { Enter: () => this.editor.commands.splitListItem(this.name) }; } }),
+      T.TaskList, PlenixTaskItem.configure({ nested: true }),
+      PlenixTable, T.TableRow, noWidth(T.TableHeader), noWidth(T.TableCell),
+      T.TextStyle, T.Color, T.FontFamily, T.FontSize, T.Highlight.configure({ multicolor: true }),
+      T.TextAlign.configure({ types: ['heading', 'paragraph'] }), T.Subscript, T.Superscript,
+      T.Image.configure({ inline: false, allowBase64: false }), o.markdown ? T.Typography : null,
       PlenixMention, PlenixKeys
-    ],
-    editorProps: { attributes: o.attributes, handlePaste: o.paste }
+    ].filter(Boolean),
+    editorProps: { attributes: o.attributes, handlePaste: o.paste, handleDOMEvents: { keydown: o.keydown } }
   });
 }
 
@@ -176,13 +315,13 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   const t = Object.assign({}, STRINGS, strings);
   const auto = useUid('plx-rte');
   const areaId = id || auto + '-area';
-  const area = React.useRef(null), list = React.useRef(null), linkInput = React.useRef(null);
-  const editorRef = React.useRef(null), saved = React.useRef(null), pasting = React.useRef(false);
+  const area = React.useRef(null), list = React.useRef(null), firstField = React.useRef(null), groupsRef = React.useRef(null), picker = React.useRef(null);
+  const editorRef = React.useRef(null), saved = React.useRef(null), pasting = React.useRef(false), escaped = React.useRef(false);
   const [ready, setReady] = React.useState(false);
   const [formats, setFormats] = React.useState({});
   const [empty, setEmpty] = React.useState(() => !String(defaultValue || '').replace(/<[^>]*>/g, '').trim());
-  const [linking, setLinking] = React.useState(false);
-  const [href, setHref] = React.useState('');
+  const [bar, setBar] = React.useState(null);           // the field under the toolbar: { kind: link | image | font | size | color | highlight }
+  const [values, setValues] = React.useState({});       // its fields' values
   const [mention, setMention] = React.useState(null);   // { items, active, x, y, command }
   const editable = !readOnly && !disabled;
   const live = React.useRef({}); live.current = { onChange, editable, mentions, mention, t };
@@ -190,9 +329,10 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   const mentionOpen = !!(mention && mention.items.length);
   // the editing area's attributes: ProseMirror owns the element, so they go through the engine (and onto the element
   // itself until the engine has loaded)
-  const attributes = { id: areaId, class: cx('plx-rich-text', 'plx-rich-text--compact', 'plx-rich-text-editor__area', empty && 'is-empty'),
-    role: 'textbox', 'aria-multiline': 'true', 'aria-label': label, 'aria-readonly': readOnly ? 'true' : null, 'aria-disabled': disabled ? 'true' : null,
-    'aria-invalid': invalid ? 'true' : null, 'aria-placeholder': placeholder || null, 'data-placeholder': placeholder || null, tabindex: disabled ? '-1' : '0',
+  const attributes = { id: areaId, class: cx('plx-rich-text', 'plx-rich-text--compact', 'plx-rich-text-editor__area', USER_CONTENT, empty && 'is-empty'),
+    role: 'textbox', 'aria-multiline': 'true', 'aria-label': label, 'aria-description': editable ? t.hint : null, 'aria-readonly': readOnly ? 'true' : null,
+    'aria-disabled': disabled ? 'true' : null, 'aria-invalid': invalid ? 'true' : null, 'aria-placeholder': placeholder || null,
+    'data-placeholder': placeholder || null, tabindex: disabled ? '-1' : '0',
     'aria-autocomplete': mentions ? 'list' : null, 'aria-controls': mentionOpen ? auto + '-mentions' : null,
     'aria-activedescendant': mentionOpen ? auto + '-m' + mention.active : null };
   Object.keys(attributes).forEach((k) => { if (attributes[k] == null || attributes[k] === false) delete attributes[k]; });
@@ -217,7 +357,7 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
       if (gone) return;
       const ed = makeEditor(T, el, {
         content, editable: live.current.editable, markdown: markdownShortcuts, attributes,
-        trigger: (mentions && mentions.trigger) || '@', mentions: !!mentions,
+        trigger: (mentions && mentions.trigger) || '@', mentions: !!mentions, strings: () => live.current.t,
         apply: (name, fromKeys) => apply(name, fromKeys),
         search: (q) => { const m = live.current.mentions; return m && m.search ? m.search(q) : []; },
         suggest: (p) => {
@@ -233,6 +373,17 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
           if (event.key === 'Escape') { setMention(null); return true; }
           return false;
         },
+        // Escape, then Tab or Shift+Tab, always leaves the area: the browser moves the focus (nothing handles that Tab)
+        keydown: (view, e) => {
+          if (e.key === 'Escape') {
+            const m = live.current.mention;
+            if (!(m && m.items.length)) { escaped.current = true; announce(live.current.t.leave); }
+            return false;
+          }
+          if (e.key === 'Tab' && escaped.current && !e.ctrlKey && !e.altKey && !e.metaKey) { escaped.current = false; return true; }
+          if (['Shift', 'Control', 'Alt', 'Meta'].indexOf(e.key) < 0) escaped.current = false;
+          return false;
+        },
         paste: (view, event) => {
           if (pasting.current) return false;
           const text = event.clipboardData ? event.clipboardData.getData('text/plain') : '';
@@ -244,9 +395,10 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
         }
       });
       editorRef.current = ed;
+      let last = '';
       const sync = () => {
-        const f = readFormats(ed);
-        setFormats((prev) => (sameFormats(prev, f) ? prev : f));
+        const f = readState(ed), key = JSON.stringify(f);
+        if (key !== last) { last = key; setFormats(f); }
         setEmpty(ed.isEmpty);
       };
       ed.on('transaction', sync);
@@ -262,81 +414,223 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   const pick = (m, o) => { if (m && m.command && o) m.command({ id: o.value, label: o.label }); setMention(null); };
 
   const COMMANDS = {
-    bold: (c) => c.toggleBold(), italic: (c) => c.toggleItalic(), code: (c) => c.toggleCode(),
-    bulleted: (c) => c.toggleBulletList(), numbered: (c) => c.toggleOrderedList(),
-    heading: (c) => c.toggleHeading({ level: 2 }), quote: (c) => c.toggleBlockquote(),
-    clear: (c) => c.unsetAllMarks().clearNodes(), undo: (c) => c.undo(), redo: (c) => c.redo()
+    bold: (c) => c.toggleBold(), italic: (c) => c.toggleItalic(), underline: (c) => c.toggleUnderline(), strike: (c) => c.toggleStrike(),
+    code: (c) => c.toggleCode(), subscript: (c) => c.toggleSubscript(), superscript: (c) => c.toggleSuperscript(), highlight: (c) => c.toggleHighlight(),
+    bulleted: (c) => c.toggleBulletList(), numbered: (c) => c.toggleOrderedList(), tasks: (c) => c.toggleTaskList(),
+    quote: (c) => c.toggleBlockquote(), codeBlock: (c) => c.toggleCodeBlock(), rule: (c) => c.setHorizontalRule(),
+    alignLeft: (c) => c.setTextAlign('left'), alignCenter: (c) => c.setTextAlign('center'), alignRight: (c) => c.setTextAlign('right'), alignJustify: (c) => c.setTextAlign('justify'),
+    paragraph: (c) => c.setParagraph(), h1: (c) => c.toggleHeading({ level: 1 }), h2: (c) => c.toggleHeading({ level: 2 }), h3: (c) => c.toggleHeading({ level: 3 }),
+    h4: (c) => c.toggleHeading({ level: 4 }), h5: (c) => c.toggleHeading({ level: 5 }), h6: (c) => c.toggleHeading({ level: 6 }),
+    insertTable: (c) => c.insertTable({ rows: 3, cols: 3, withHeaderRow: true }), rowBefore: (c) => c.addRowBefore(), rowAfter: (c) => c.addRowAfter(),
+    columnBefore: (c) => c.addColumnBefore(), columnAfter: (c) => c.addColumnAfter(), deleteRow: (c) => c.deleteRow(), deleteColumn: (c) => c.deleteColumn(),
+    headerRow: (c) => c.toggleHeaderRow(), deleteTable: (c) => c.deleteTable(),
+    defaultFont: (c) => c.unsetFontFamily(), defaultSize: (c) => c.unsetFontSize(),
+    clear: (c) => c.unsetAllMarks().clearNodes().unsetTextAlign(), undo: (c) => c.undo(), redo: (c) => c.redo()
   };
-  // a format from the toolbar or the keyboard; from the keyboard it is announced
+  // a format from the toolbar, a menu or the keyboard; from the keyboard it is announced
   function apply(name, fromKeys) {
     const ed = editorRef.current, L = live.current;
     if (!ed || !L.editable) return;
     if (name === 'link') { openLink(); return; }
-    const was = name in FORMATS ? ed.isActive(FORMATS[name][0]) : false;
+    // the header row is the table's first row (the engine toggles the row of the caret): toggled from its first cell
+    if (name === 'headerRow') {
+      const at = ed.state.selection.$from; let d = at.depth;
+      while (d > 0 && at.node(d).type.name !== 'table') d -= 1;
+      if (!d) return;
+      const { from, to } = ed.state.selection;
+      ed.chain().focus().setTextSelection(at.before(d) + 4).toggleHeaderRow().setTextSelection({ from, to }).run();
+      return;
+    }
+    if (name === 'image' || name === 'color' || name === 'highlight' && !fromKeys || name === 'customFont' || name === 'customSize') { openBar(name); return; }
+    const was = MARKS[name] ? ed.isActive(MARKS[name]) : false;
     COMMANDS[name](ed.chain().focus()).run();
-    if (fromKeys && name in FORMATS) announce(was ? L.t.off(L.t[name]) : L.t.on(L.t[name]));
+    if (fromKeys && MARKS[name]) announce(was ? L.t.off(L.t[name]) : L.t.on(L.t[name]));
   }
+  // after a menu choice the menu gives the focus to its button; it goes back to the area
+  const fromMenu = (fn) => () => { fn(); setTimeout(() => { const ed = editorRef.current; if (ed && !ed.isDestroyed) ed.commands.focus(); }, 0); };
 
-  // the link field: opens under the toolbar for the selection kept in saved; Enter adds the link
+  // the field under the toolbar (link, image, color, highlight, custom font or size), for the selection kept in saved
+  function openBar(kind, start) {
+    const ed = editorRef.current; if (!ed) return;
+    const { from, to } = ed.state.selection;
+    saved.current = { from, to };
+    const ts = ed.getAttributes('textStyle'), hl = ed.getAttributes('highlight');
+    const hex = toHex(kind === 'color' ? ts.color || '' : kind === 'highlight' ? hl.color || '' : '') || '';
+    setValues(Object.assign({ main: kind === 'font' ? ts.fontFamily || '' : kind === 'size' ? ts.fontSize || '' : HEX.test(hex) ? hex : '', alt: '' }, start));
+    setBar({ kind: kind === 'customFont' ? 'font' : kind === 'customSize' ? 'size' : kind });
+  }
   function openLink() {
     const ed = editorRef.current; if (!ed) return;
     if (ed.isActive('link')) { ed.chain().focus().extendMarkRange('link').unsetLink().run(); return; }
-    const { from, to } = ed.state.selection;
-    saved.current = { from, to };
-    setHref(''); setLinking(true);
+    openBar('link');
   }
-  React.useEffect(() => { if (linking && linkInput.current) linkInput.current.focus(); }, [linking]);
-  const closeLink = () => {
-    setLinking(false);
+  React.useEffect(() => { if (bar && firstField.current) firstField.current.focus(); }, [bar]);
+  // the browser's color input follows a full hex value typed in the field (it holds #rrggbb only)
+  React.useEffect(() => { const v = values.main || ''; if (picker.current && /^#[0-9a-f]{6}$/i.test(v) && picker.current.value !== v.toLowerCase()) picker.current.value = v.toLowerCase(); }, [values.main, bar]);
+  const closeBar = () => {
+    setBar(null);
     const ed = editorRef.current; if (!ed) return;
     const s = saved.current;
     if (s) ed.chain().focus().setTextSelection(s).run(); else ed.commands.focus();
   };
-  const addLink = () => {
-    const text = href.trim();
-    let to = text;
-    closeLink();
+  const submitBar = (value) => {
+    const kind = bar && bar.kind, v = String(value != null ? value : values.main || '').trim(), alt = String(values.alt || '').trim();
+    closeBar();
     const ed = editorRef.current;
-    if (!ed || !to) return;
-    if (!/^[a-z][a-z0-9+.-]*:/i.test(to) && !/^[/#.]/.test(to)) to = 'https://' + to;
-    if (!SAFE_HREF.test(to)) return;
-    if (ed.state.selection.empty) ed.chain().focus().insertContent({ type: 'text', text, marks: [{ type: 'link', attrs: { href: to } }] }).unsetMark('link').run();
-    else ed.chain().focus().setLink({ href: to }).run();
+    if (!ed || !kind) return;
+    if (kind === 'link') {
+      if (!v) return;
+      let to = v;
+      if (!/^[a-z][a-z0-9+.-]*:/i.test(to) && !/^[/#.]/.test(to)) to = 'https://' + to;
+      if (!SAFE_HREF.test(to)) return;
+      if (ed.state.selection.empty) ed.chain().focus().insertContent({ type: 'text', text: v, marks: [{ type: 'link', attrs: { href: to } }] }).unsetMark('link').run();
+      else ed.chain().focus().setLink({ href: to }).run();
+    } else if (kind === 'image') {
+      let src = v;
+      if (src && !/^[a-z][a-z0-9+.-]*:/i.test(src) && !/^[/.]/.test(src)) src = 'https://' + src;
+      if (src && SAFE_SRC.test(src)) ed.chain().focus().setImage({ src, alt }).run();
+    } else if (kind === 'font') { if (v) ed.chain().focus().setFontFamily(v).run(); }
+    else if (kind === 'size') { const s = /^\d+(\.\d+)?$/.test(v) ? v + 'px' : v; if (s) ed.chain().focus().setFontSize(s).run(); }
+    else if (kind === 'color') { if (HEX.test(v)) ed.chain().focus().setColor(v).run(); }
+    else if (kind === 'highlight') { if (HEX.test(v)) ed.chain().focus().setHighlight({ color: v }).run(); }
+  };
+  const removeColor = () => {
+    const kind = bar && bar.kind; closeBar();
+    const ed = editorRef.current; if (!ed) return;
+    if (kind === 'color') ed.chain().focus().unsetColor().run(); else ed.chain().focus().unsetHighlight().run();
+  };
+  // a suggested swatch: its color as the stylesheet shows it now, kept on the content as a hex value
+  const swatchPick = (e) => {
+    const chip = e.currentTarget, win = chip.ownerDocument.defaultView;
+    submitBar(toHex(win.getComputedStyle(chip).backgroundColor));
   };
 
   useFloating(area, list, { open: mentionOpen, placement: 'bottom-start', virtual: mentionOpen ? { x: mention.x, y: mention.y } : null });
   React.useLayoutEffect(() => { const el = list.current; if (mentionOpen && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [mentionOpen]);
 
-  // a format button says whether the text at the caret has its format (aria-pressed); undo, redo and clear are plain buttons
-  const PLAIN = ['undo', 'redo', 'clear'];
   const usable = editable && ready;
-  // icon-only, named by its word, with a tooltip of the word and its shortcut; Clear formatting keeps its text label
+  const PLAIN = ['undo', 'redo', 'clear', 'rule', 'image', 'color'];
+  const pressedOf = (name) => (PLAIN.indexOf(name) >= 0 ? undefined : name === 'highlight' ? !!formats.highlight : !!formats[name]);
+  // an icon-only ghost button named by its word, with a tooltip of the word and its shortcut
   const toolButton = (name) => {
-    const icon = ICONS[name], keys = typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS[name];
-    const button = (
-      <Button variant="ghost" size="sm" pressed={PLAIN.indexOf(name) >= 0 ? undefined : !!formats[name]} icon={icon} iconOnly={!!icon}
-        label={icon ? t[name] : undefined} aria-keyshortcuts={keys ? keysAria(keys) : undefined} disabled={!usable}
-        onMouseDown={(e) => e.preventDefault()} onClick={() => apply(name)}>{t[name]}</Button>
+    const keys = keysOf(name), off = !usable || (name === 'undo' && !formats.undo) || (name === 'redo' && !formats.redo);
+    return (
+      <Tooltip key={name} content={keys ? t.tip(t[name], hotkeyLabel(keys)) : t[name]} disabled={off}>
+        <Button variant="ghost" size="sm" pressed={pressedOf(name)} icon={ICONS[name]} iconOnly label={t[name]}
+          aria-keyshortcuts={keys ? keysAria(keys) : undefined} disabled={off}
+          onMouseDown={(e) => e.preventDefault()} onClick={() => apply(name)}>{t[name]}</Button>
+      </Tooltip>
     );
-    return icon ? <Tooltip key={name} content={keys ? t.tip(t[name], hotkeyLabel(keys)) : t[name]} disabled={!usable}>{button}</Tooltip> : React.cloneElement(button, { key: name });
   };
+  const blockName = (b) => (!b || b === 'paragraph' ? t.paragraph : t.heading(Number(b.slice(1))));
+  const fontName = (f) => { const hit = RICH_TEXT_FONTS.find((x) => x[1] === f); return f ? (hit ? hit[0] : f.replace(/["']/g, '').split(',')[0]) : t.font; };
+  // the menus' items, the same in the toolbar's menus and in the More menu's submenus
+  const blockItems = () => (
+    <MenuRadioGroup label={t.textStyle} value={formats.block || 'paragraph'} onChange={(v) => fromMenu(() => apply(v === 'paragraph' ? 'paragraph' : v))()}>
+      {['paragraph', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((b) => <MenuItem key={b} value={b} aria-keyshortcuts={keysAria(keysOf(b))}>{blockName(b)}</MenuItem>)}
+    </MenuRadioGroup>
+  );
+  const fontItems = () => [
+    <MenuItem key="d" checked={!formats.font} onSelect={fromMenu(() => apply('defaultFont'))}>{t.defaultFont}</MenuItem>,
+    ...RICH_TEXT_FONTS.map((f) => <MenuItem key={f[0]} checked={formats.font === f[1]} onSelect={fromMenu(() => { const ed = editorRef.current; if (ed) ed.chain().focus().setFontFamily(f[1]).run(); })}>{f[0]}</MenuItem>),
+    <MenuDivider key="div" />, <MenuItem key="c" onSelect={() => setTimeout(() => apply('customFont'), 0)}>{t.custom}</MenuItem>
+  ];
+  const sizeItems = () => [
+    <MenuItem key="d" checked={!formats.size} onSelect={fromMenu(() => apply('defaultSize'))}>{t.defaultSize}</MenuItem>,
+    ...RICH_TEXT_SIZES.map((s) => <MenuItem key={s} checked={formats.size === s} onSelect={fromMenu(() => { const ed = editorRef.current; if (ed) ed.chain().focus().setFontSize(s).run(); })}>{s}</MenuItem>),
+    <MenuDivider key="div" />, <MenuItem key="c" onSelect={() => setTimeout(() => apply('customSize'), 0)}>{t.custom}</MenuItem>
+  ];
+  const tableItems = () => [
+    <MenuItem key="i" icon={ICONS.table} disabled={!usable || formats.table} onSelect={fromMenu(() => apply('insertTable'))}>{t.insertTable}</MenuItem>,
+    <MenuDivider key="d1" />,
+    ...['rowBefore', 'rowAfter', 'columnBefore', 'columnAfter', 'deleteRow', 'deleteColumn'].map((n) => (
+      <MenuItem key={n} icon={ICONS[n]} disabled={!usable || !formats.table} onSelect={fromMenu(() => apply(n))}>{t[n]}</MenuItem>)),
+    <MenuItem key="h" checked={!!formats.headerRow} disabled={!usable || !formats.table} onSelect={fromMenu(() => apply('headerRow'))}>{t.headerRow}</MenuItem>,
+    <MenuDivider key="d2" />,
+    <MenuItem key="x" icon={ICONS.deleteTable} danger disabled={!usable || !formats.table} onSelect={fromMenu(() => apply('deleteTable'))}>{t.deleteTable}</MenuItem>
+  ];
+  const menuButton = (name, text, items, icon) => (
+    <Menu key={name} label={t[name]} trigger={<Button variant="ghost" size="sm" caret icon={icon} iconOnly={!!icon} label={icon ? t[name] : t[name] + ': ' + text} disabled={!usable} onMouseDown={(e) => e.preventDefault()}>{text}</Button>}>
+      {items()}
+    </Menu>
+  );
+
+  // the full toolbar's groups, in order; each is one overflow item (the last ones move into More formatting first)
+  const GROUPS = toolbar === 'full' ? [
+    { id: 'block', label: t.textStyle, menus: [['textStyle', () => blockName(formats.block), blockItems]] },
+    { id: 'font', label: t.font, menus: [['font', () => fontName(formats.font), fontItems], ['size', () => formats.size || t.size, sizeItems]] },
+    { id: 'marks', label: t.groupMarks, buttons: ['bold', 'italic', 'underline', 'strike', 'code', 'subscript', 'superscript'] },
+    { id: 'color', label: t.groupColor, buttons: ['color', 'highlight'] },
+    { id: 'align', label: t.groupAlign, buttons: ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'] },
+    { id: 'lists', label: t.groupLists, buttons: ['bulleted', 'numbered', 'tasks'] },
+    { id: 'insert', label: t.groupInsert, buttons: ['link', 'image'], menus: [['table', null, tableItems, ICONS.table]], after: ['codeBlock', 'quote', 'rule'] },
+    { id: 'history', label: t.groupHistory, buttons: ['undo', 'redo', 'clear'] }
+  ] : [{ id: 'marks', label: t.groupMarks, buttons: ['bold', 'italic', 'link'] }, { id: 'lists', label: t.groupLists, buttons: ['bulleted', 'numbered'] }];
+  const fit = useOverflow(groupsRef, GROUPS.length, toolbar + JSON.stringify([formats.block, formats.font, formats.size]));
+  const groupEl = (g) => (
+    <span key={g.id} data-plx-overflow-item="" className="plx-rich-text-editor__slot">
+      <Toolbar.Group>
+        {(g.buttons || []).map(toolButton)}
+        {(g.menus || []).map((m) => menuButton(m[0], m[1] ? m[1]() : t[m[0]], m[2], m[3]))}
+        {(g.after || []).map(toolButton)}
+      </Toolbar.Group>
+    </span>
+  );
+  // a hidden group in the More menu: its buttons as items (a format as a checkbox item), its menus as submenus
+  const menuEntry = (name) => (
+    <MenuItem key={name} icon={ICONS[name]} checked={pressedOf(name)} disabled={!usable || (name === 'undo' && !formats.undo) || (name === 'redo' && !formats.redo)}
+      aria-keyshortcuts={keysOf(name) ? keysAria(keysOf(name)) : undefined}
+      onSelect={['image', 'color', 'highlight', 'link'].indexOf(name) >= 0 ? () => setTimeout(() => apply(name), 0) : fromMenu(() => apply(name))}>{t[name]}</MenuItem>
+  );
+  const hidden = GROUPS.slice(fit);
+  const more = hidden.length ? (
+    <span key="plx-more" data-plx-overflow-more="" className="plx-rich-text-editor__slot">
+      <Menu label={t.more} placement="bottom-end" trigger={<Button variant="ghost" size="sm" iconOnly icon="more" label={t.more} disabled={!usable} onMouseDown={(e) => e.preventDefault()} />}>
+        {hidden.map((g) => (
+          <MenuGroup key={g.id} label={g.label}>
+            {(g.buttons || []).map(menuEntry)}
+            {(g.menus || []).map((m) => <MenuSub key={m[0]} label={t[m[0]]} icon={m[3]}>{m[2]()}</MenuSub>)}
+            {(g.after || []).map(menuEntry)}
+          </MenuGroup>
+        ))}
+      </Menu>
+    </span>
+  ) : null;
+
   const showToolbar = toolbar && !readOnly;
-  const full = toolbar === 'full';
+  const field = (props) => <Input ref={firstField} {...props} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitBar(); } else if (e.key === 'Escape') { e.preventDefault(); closeBar(); } }} />;
+  const setMain = (e) => setValues(Object.assign({}, values, { main: e.target.value }));
+  let barContent = null;
+  if (bar) {
+    const k = bar.kind;
+    if (k === 'link') barContent = [field({ key: 'a', type: 'url', 'aria-label': t.linkAddress, placeholder: 'https://', value: values.main, onChange: setMain }),
+      <Button key="ok" size="sm" variant="primary" onClick={() => submitBar()}>{t.addLink}</Button>];
+    else if (k === 'image') barContent = [field({ key: 'a', type: 'url', 'aria-label': t.imageAddress, placeholder: 'https://', value: values.main, onChange: setMain }),
+      <Input key="alt" aria-label={t.imageAlt} placeholder={t.imageAlt} value={values.alt} onChange={(e) => setValues(Object.assign({}, values, { alt: e.target.value }))}
+        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitBar(); } else if (e.key === 'Escape') { e.preventDefault(); closeBar(); } }} />,
+      <Button key="ok" size="sm" variant="primary" onClick={() => submitBar()}>{t.addImage}</Button>];
+    else if (k === 'font' || k === 'size') barContent = [field({ key: 'a', 'aria-label': k === 'font' ? t.customFont : t.customSize, value: values.main, onChange: setMain }),
+      <Button key="ok" size="sm" variant="primary" onClick={() => submitBar()}>{t.apply}</Button>];
+    else barContent = [
+      <div key="sw" role="group" aria-label={t.swatches} className="plx-rich-text-editor__swatches">
+        {CATEGORY_COLORS.map((c) => <ColorSwatch key={c} category={c} size="md" label={c.charAt(0).toUpperCase() + c.slice(1)} onClick={swatchPick} />)}
+      </div>,
+      field({ key: 'hex', 'aria-label': t.hex, placeholder: t.hex, value: values.main, invalid: !!values.main && !HEX.test(values.main), onChange: setMain, className: 'plx-rich-text-editor__hex' }),
+      <Input key="pick" ref={picker} type="color" aria-label={t.customColor} onChange={(e) => setValues(Object.assign({}, values, { main: e.target.value }))} className="plx-rich-text-editor__picker" />,
+      <Button key="ok" size="sm" variant="primary" disabled={!HEX.test(values.main || '')} onClick={() => submitBar()}>{t.apply}</Button>,
+      <Button key="rm" size="sm" onClick={removeColor}>{t.remove}</Button>];
+  }
   return (
     <div className={cx('plx-rich-text-editor', readOnly && 'is-read-only', disabled && 'is-disabled', className)} {...rest}>
       {showToolbar ? (
         <Toolbar label={t.toolbar} className="plx-rich-text-editor__toolbar">
-          <Toolbar.Group>{toolButton('bold')}{toolButton('italic')}{full ? toolButton('code') : null}{toolButton('link')}</Toolbar.Group>
-          <Toolbar.Group>{full ? toolButton('heading') : null}{toolButton('bulleted')}{toolButton('numbered')}{full ? toolButton('quote') : null}</Toolbar.Group>
-          {full ? <Toolbar.Group>{toolButton('clear')}{toolButton('undo')}{toolButton('redo')}</Toolbar.Group> : null}
+          <div ref={groupsRef} className="plx-rich-text-editor__groups">{splitAt(GROUPS.map(groupEl), fit, more)}</div>
         </Toolbar>
       ) : null}
-      {linking ? (
-        <div className="plx-rich-text-editor__link-bar">
-          <Input ref={linkInput} type="url" aria-label={t.linkAddress} placeholder="https://" value={href} onChange={(e) => setHref(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addLink(); } else if (e.key === 'Escape') { e.preventDefault(); closeLink(); } }} />
-          <Button size="sm" variant="primary" onClick={addLink}>{t.addLink}</Button>
-          <Button size="sm" onClick={closeLink}>{t.cancel}</Button>
+      {bar ? (
+        <div className="plx-rich-text-editor__bar" role="group" aria-label={t[bar.kind === 'font' ? 'customFont' : bar.kind === 'size' ? 'customSize' : bar.kind]}>
+          {barContent}
+          <Button size="sm" onClick={closeBar}>{t.cancel}</Button>
         </div>
       ) : null}
       {/* the editing area: ProseMirror's element (its attributes are set above, never by React) */}

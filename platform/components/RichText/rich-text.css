@@ -8,17 +8,17 @@
 .plx-rich-text--article{font-size:var(--plx-comp-rich-text-article-font-size);line-height:var(--plx-comp-rich-text-article-line-height);max-inline-size:var(--plx-comp-rich-text-article-measure);}
 .plx-rich-text--compact{font-size:var(--plx-comp-rich-text-compact-font-size);line-height:var(--plx-comp-rich-text-compact-line-height);}
 /* the rhythm: no outer margins; the variant's gap between blocks, more above a heading */
-.plx-rich-text :where(h1,h2,h3,h4,p,ul,ol,blockquote,pre,figure,hr){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+.plx-rich-text :where(h1,h2,h3,h4,h5,h6,p,ul,ol,blockquote,pre,figure,hr,table){margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
 .plx-rich-text--article>*+*{margin-block-start:var(--plx-comp-rich-text-article-gap);}
 .plx-rich-text--compact>*+*{margin-block-start:var(--plx-comp-rich-text-compact-gap);}
-.plx-rich-text--article>*+:where(h1,h2,h3,h4){margin-block-start:var(--plx-comp-rich-text-article-heading-gap);}
-.plx-rich-text--compact>*+:where(h1,h2,h3,h4){margin-block-start:var(--plx-comp-rich-text-compact-heading-gap);}
+.plx-rich-text--article>*+:where(h1,h2,h3,h4,h5,h6){margin-block-start:var(--plx-comp-rich-text-article-heading-gap);}
+.plx-rich-text--compact>*+:where(h1,h2,h3,h4,h5,h6){margin-block-start:var(--plx-comp-rich-text-compact-heading-gap);}
 /* headings: the heading font and weight; four steps */
-.plx-rich-text :where(h1,h2,h3,h4){color:var(--plx-comp-rich-text-heading-text);font-family:var(--plx-comp-rich-text-heading-font-family);font-weight:var(--plx-comp-rich-text-heading-font-weight);}
+.plx-rich-text :where(h1,h2,h3,h4,h5,h6){color:var(--plx-comp-rich-text-heading-text);font-family:var(--plx-comp-rich-text-heading-font-family);font-weight:var(--plx-comp-rich-text-heading-font-weight);}
 .plx-rich-text :where(h1){font-size:var(--plx-comp-rich-text-h1-font-size);line-height:var(--plx-comp-rich-text-h1-line-height);}
 .plx-rich-text :where(h2){font-size:var(--plx-comp-rich-text-h2-font-size);line-height:var(--plx-comp-rich-text-h2-line-height);}
 .plx-rich-text :where(h3){font-size:var(--plx-comp-rich-text-h3-font-size);line-height:var(--plx-comp-rich-text-h3-line-height);}
-.plx-rich-text :where(h4){font-size:inherit;line-height:inherit;}
+.plx-rich-text :where(h4,h5,h6){font-size:inherit;line-height:inherit;}
 .plx-rich-text :where(strong,b){font-weight:var(--plx-comp-rich-text-strong-font-weight);}
 /* lists: the browser's markers (they follow the writing direction), indented at the start side */
 .plx-rich-text :where(ul,ol){padding-inline-start:var(--plx-comp-rich-text-list-indent);}
@@ -40,5 +40,16 @@
 .plx-rich-text :where(pre code){font-family:inherit;font-size:inherit;}
 /* a rule between parts, and pictures that never overflow their column */
 .plx-rich-text :where(hr){border-block-end-style:none;border-block-start-color:var(--plx-comp-rich-text-rule-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-rich-text-rule-width);border-inline-end-style:none;border-inline-start-style:none;}
-.plx-rich-text :where(img){block-size:auto;max-inline-size:100%;}
+.plx-rich-text :where(img){block-size:auto;border-end-end-radius:var(--plx-comp-rich-text-image-radius);border-end-start-radius:var(--plx-comp-rich-text-image-radius);border-start-end-radius:var(--plx-comp-rich-text-image-radius);border-start-start-radius:var(--plx-comp-rich-text-image-radius);max-inline-size:var(--plx-comp-rich-text-image-max-width);}
 .plx-rich-text :where(figcaption){color:var(--plx-comp-rich-text-caption-text);font-size:var(--plx-comp-rich-text-caption-font-size);}
+/* a task list (an editor's): no markers, each item its checkbox (the Platform checkbox's input) and its text */
+.plx-rich-text :where(ul[data-type="taskList"]){list-style-type:none;padding-inline-start:0;}
+.plx-rich-text :where(li[data-type="taskItem"]){align-items:flex-start;column-gap:var(--plx-comp-rich-text-task-gap);display:flex;}
+.plx-rich-text :where(li[data-type="taskItem"])>:where(label){display:flex;flex-shrink:0;}
+.plx-rich-text :where(li[data-type="taskItem"])>:where(div){flex-grow:1;min-inline-size:0;}
+.plx-rich-text :where(li[data-type="taskItem"] ul[data-type="taskList"]){margin-block-start:var(--plx-comp-rich-text-list-item-gap);}
+/* a table from content: the Plenix table's surface, header and full inside lines, at the text's size */
+.plx-rich-text :where(table){background-color:var(--plx-comp-rich-text-table-background);border-collapse:collapse;color:var(--plx-comp-rich-text-table-text);max-inline-size:100%;}
+.plx-rich-text :where(th,td){border-bottom-color:var(--plx-comp-rich-text-table-line);border-bottom-style:solid;border-bottom-width:var(--plx-comp-rich-text-table-line-width);border-left-color:var(--plx-comp-rich-text-table-line);border-left-style:solid;border-left-width:var(--plx-comp-rich-text-table-line-width);border-right-color:var(--plx-comp-rich-text-table-line);border-right-style:solid;border-right-width:var(--plx-comp-rich-text-table-line-width);border-top-color:var(--plx-comp-rich-text-table-line);border-top-style:solid;border-top-width:var(--plx-comp-rich-text-table-line-width);box-sizing:border-box;min-inline-size:var(--plx-comp-rich-text-table-cell-min-width);padding-block-end:var(--plx-comp-rich-text-table-cell-padding-block);padding-block-start:var(--plx-comp-rich-text-table-cell-padding-block);padding-inline-end:var(--plx-comp-rich-text-table-cell-padding-inline);padding-inline-start:var(--plx-comp-rich-text-table-cell-padding-inline);text-align:start;vertical-align:top;}
+.plx-rich-text :where(th){background-color:var(--plx-comp-rich-text-table-header-background);color:var(--plx-comp-rich-text-table-header-text);font-weight:var(--plx-comp-rich-text-table-header-font-weight);}
+.plx-rich-text :where(th,td)>:where(*+*){margin-block-start:var(--plx-comp-rich-text-compact-gap);}

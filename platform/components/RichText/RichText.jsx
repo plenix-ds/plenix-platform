@@ -14,7 +14,8 @@
      html: HTML to show, already sanitized by the application (see Notes); without it, the children
      as: the element: "div" (default) | "article" | "section"
      label: names the region for assistive technology when it is a landmark (as="section")
-     children: the content, as plain elements (h2, p, ul, ol, li, a, strong, em, code, pre, blockquote, hr, img, figure)
+     children: the content, as plain elements (h1–h6, p, ul, ol, li, a, strong, em, u, s, sub, sup, mark, code, pre,
+       blockquote, hr, img, figure, table, and the RichTextEditor's task lists)
      className: more classes on the container
    Behavior:
      Not interactive itself; links inside it are one Tab stop each and take the Link's look and focus ring.
@@ -25,8 +26,12 @@
    Notes:
      It sanitizes nothing: HTML from people (comments, imported documents) must be cleaned by the application first (an
        allow-list of the elements above, no scripts, no event attributes, no style attributes).
+     With html, the container carries plx-user-content: the HTML is a person's content, whose own formatting (color,
+       background-color, font-family, font-size and text-align on its text, as the RichTextEditor stores them) the style
+       audit and the page checks allow there; the rest follows the type styles.
      It uses the elements' own styles from Link, Code and Blockquote, so a link in prose looks like <Link>.
-     Tables are not prose: show a table from content with the DataTable.
+     Tables of data are not prose: show them with the DataTable. A table written in the RichTextEditor shows here in the
+       Plenix table's look (its surface, header and full inside lines).
      Keep the real heading levels and list markup: screen readers move through them.
      Other props pass through to the container.
 */
@@ -37,7 +42,7 @@ export function RichText({ variant = 'article', html, as: Tag = 'div', label, cl
   const content = html != null ? { dangerouslySetInnerHTML: { __html: html } } : null;
   return (
     <Tag aria-label={label} {...content} {...rest}
-      className={cx('plx-rich-text', 'plx-rich-text--' + (variant === 'compact' ? 'compact' : 'article'), className)}>
+      className={cx('plx-rich-text', 'plx-rich-text--' + (variant === 'compact' ? 'compact' : 'article'), html != null && 'plx-user-content', className)}>
       {html != null ? undefined : children}
     </Tag>
   );

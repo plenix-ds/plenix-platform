@@ -24,9 +24,10 @@ let current = '';   // the design-system page being checked
   page.on('pageerror', (e) => errs.push('page error: ' + String(e).slice(0, 200)));
   page.on('response', (r) => { if (r.status() >= 400 && !ALLOWED_MISSING.test(r.url()) && !/favicon/.test(r.url())) errs.push(r.status() + ' ' + r.url()); });
   const failed = []; let n = 0;
-  // every table is a DataTable (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it
+  // every table is a DataTable (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it;
+  // a table a person wrote in their own content (inside .plx-user-content: the rich-text editor, RichText showing saved HTML) is content, not interface
   const tables = async () => { const left = await page.evaluate(() => [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean))
-    .reduce((n, d) => n + d.querySelectorAll('table').length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataTable'); };
+    .reduce((n, d) => n + [...d.querySelectorAll('table')].filter((t) => !t.closest('.plx-user-content')).length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataTable'); };
   // containers nest two deep, never three (batch 250): a framed box is one larger than a control that draws a border on three
   // or more sides (inset shadows count as the sides they draw) or an outer shadow; a one-sided divider is not a frame.
   // Specimens are the subject on show, not page structure: anything in a design-system sample stage, a variant card's Preview
@@ -69,8 +70,11 @@ let current = '';   // the design-system page being checked
     const step = (el) => { const v = getComputedStyle(el.ownerDocument.documentElement).getPropertyValue('--plx-ref-space-4px').trim(); const px = /rem$/.test(v) ? parseFloat(v) * parseFloat(getComputedStyle(el.ownerDocument.documentElement).fontSize) : parseFloat(v); return px > 0 ? px : 4; };
     const offGrid = (el, v) => { const s = step(el); return Array.from(String(v).replace(/var\([^()]*(\([^()]*\)[^()]*)*\)/g, ' ').matchAll(/(-?\d*\.?\d+)(px|rem|em|pt|vh|vw|vmin|vmax|ch|ex)(?![\w-])/gi))
       .some((m) => parseFloat(m[1]) && (m[2].toLowerCase() !== 'px' || Math.abs(Math.abs(parseFloat(m[1])) / s - Math.round(Math.abs(parseFloat(m[1])) / s)) * s > 0.5)); };
-    const wrong = (el) => { const table = el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell');
-      return Array.from(el.style).filter((p) => (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
+    // user content (.plx-user-content: the rich-text editor's area, RichText showing saved HTML) keeps the person's own
+    // formatting, as Tiptap stores it: these properties only (owner, 2026-10-14)
+    const USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
+    const wrong = (el) => { const table = el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell'), user = !!el.closest('.plx-user-content');
+      return Array.from(el.style).filter((p) => !(user && USER_FORMAT.test(p)) && (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
         || offGrid(el, el.style.getPropertyValue(p))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
     docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { const bad = wrong(el); if (!bad.length || el.closest('[data-plx-probe]')) return; out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' ' + bad.join(', ')); }));
     return out; });

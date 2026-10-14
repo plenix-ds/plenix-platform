@@ -38,6 +38,14 @@
     "rich-text-editor-mention-option-font-size": { "$value": "{plx-comp.combobox-option-font-size}", "$type": "dimension", "$description": "RichTextEditor mentions option: its text size (the combobox option's)." },
     "rich-text-editor-mention-option-min-height": { "$value": "{plx-comp.combobox-option-min-height}", "$type": "dimension", "$description": "RichTextEditor mentions option: its height (the combobox option's)." },
     "rich-text-editor-mention-option-padding-inline": { "$value": "{plx-comp.combobox-option-padding-inline}", "$type": "dimension", "$description": "RichTextEditor mentions option: its side padding (the combobox option's)." },
-    "rich-text-editor-mention-option-active-background": { "$value": "{plx-comp.combobox-option-active-background}", "$type": "color", "$description": "RichTextEditor mentions option: the active option's fill (the combobox option's)." }
+    "rich-text-editor-mention-option-active-background": { "$value": "{plx-comp.combobox-option-active-background}", "$type": "color", "$description": "RichTextEditor mentions option: the active option's fill (the combobox option's)." },
+    "rich-text-editor-groups-height": { "$value": "{plx-sys.control-height-toolbar}", "$type": "dimension", "$description": "RichTextEditor toolbar: the height of its one row of groups (the toolbar control height); groups past it move into More formatting." },
+    "rich-text-editor-groups-gap": { "$value": "{plx-comp.toolbar-group-gap}", "$type": "dimension", "$description": "RichTextEditor toolbar: the space between its groups (the toolbar's group gap)." },
+    "rich-text-editor-swatches-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "RichTextEditor color field: the space between the suggested color swatches." },
+    "rich-text-editor-hex-width": { "$value": "{plx-ref.size-120px}", "$type": "dimension", "$description": "RichTextEditor color field: the width of the hex value field." },
+    "rich-text-editor-picker-width": { "$value": "{plx-sys.control-height-toolbar}", "$type": "dimension", "$description": "RichTextEditor color field: the width of the browser's color input (a square at the control height)." },
+    "rich-text-editor-selected-cell-background": { "$value": "{plx-comp.data-table-row-selected-background}", "$type": "color", "$description": "RichTextEditor table: the cells of a table selection (the selected row fill of the Plenix table)." },
+    "rich-text-editor-selected-node-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "RichTextEditor image: the outline of a selected image (the focus color)." },
+    "rich-text-editor-selected-node-outline-width": { "$value": "{plx-comp.link-focus-outline-width}", "$type": "dimension", "$description": "RichTextEditor image: the width of a selected image's outline (the focus outline width)." }
   }
 }
