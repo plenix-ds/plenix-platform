@@ -1,0 +1,11 @@
+{
+  "$description": "Library part w06C (wave 6, lane C): the iOS and Android counterparts of Async select, Checkbox select, Radio select, Inline editable text, Inline editing and Rich-text editor. Toggle button and Range slider are named by their iOS guidance pages (Buttons, Sliders) in native-guidance.json. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "forms|Async select": { "ios": ["ios-forms|Combo boxes"], "android": ["android-forms|Exposed dropdown menu"] },
+    "forms|Checkbox select": { "ios": ["ios-forms|Combo boxes"], "android": ["android-forms|Exposed dropdown menu", "android-forms|Checkbox"] },
+    "forms|Radio select": { "ios": ["ios-forms|Combo boxes"], "android": ["android-forms|Exposed dropdown menu", "android-forms|Radio group"] },
+    "forms|Inline editable text": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|OutlinedTextField"] },
+    "patterns|Inline editing": { "ios": ["ios-forms|Text fields"], "android": ["android-patterns|Form"] },
+    "forms|Rich-text editor": { "ios": ["ios-content|Text views"], "android": ["android-forms|Multi-line text field"] }
+  }
+}

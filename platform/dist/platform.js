@@ -1849,7 +1849,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the accessible name (aria-label); an icon-only button falls back to string children
      caret: the button opens a menu: a chevron after the label (default false)
      expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed)
+     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
      selected: shows the selected state without a toggle role (default false)
      loading: shows a spinner in place of the icon (default false)
      disabled: the button does nothing (default false)
@@ -1866,6 +1866,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      Placement can also set the role: a dialog footer gives its buttons the dialog role.
      Selected, pressed and expanded all show the selected state.
+     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
+       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
      Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
      A disabled link loses its href.
    Notes:
@@ -6296,7 +6298,7 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   }, label) : null);
 });
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6306,12 +6308,17 @@ exports.Combobox = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _announce = require("../../utils/announce.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
    Usage:
      <Combobox label="Owner" options={[{ value: 'rm', label: 'Raphael Maher' }]} value={owner} onChange={(value) => …} />
      <Combobox multiple creatable options={tags} values={chosen} onChange={(values) => …} onCreate={(text) => …} />
+     <Combobox label="Owner" loadOptions={(text) => api.people(text)} value={owner} onChange={…} />   // async select
+     <Combobox multiple marks="checkbox" options={…} values={…} onChange={…} />                        // checkbox select
+     <Combobox marks="radio" options={…} value={…} onChange={…} />                                     // radio select
    Props:
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
      value: the chosen value, for a single choice
@@ -6325,6 +6332,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      invalid: shows the invalid state
      disabled: the field cannot be used
      emptyText: the text when nothing matches (default "No matches")
+     loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
+       the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
+     loadDelay: the pause after typing before loadOptions runs, in milliseconds (default 300; 0 when the field is empty)
+     minChars: the characters needed before loadOptions runs (default 0: it also loads when the list opens)
+     loading: shows the loading row whatever loadOptions does (for options the caller loads itself) (default false)
+     marks: a mark before each option: "checkbox" (several, with multiple) | "radio" (one choice) | none (default)
+     strings: the words it shows and announces, for other languages: { loading: "Loading…", error: "The options could not
+       be loaded", results: (n) => n + " options" } (results is announced after each load)
      id: the id of the input (a Field sets it)
      className: more classes on the combobox
      ref: forwarded to the <input>
@@ -6334,10 +6349,20 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, choosing toggles the value and the list stays open.
      A tag's remove button removes its value.
+     With loadOptions, each pause in typing loads once; an answer that arrives after a newer request is dropped. The list
+       is busy (aria-busy) while it loads, the number of options is announced politely, a failed load says so in the list.
+     Options loaded earlier keep naming the chosen values when a later load no longer has them.
+     Marks are the Checkbox and Radio controls drawn inside the option: not focusable and hidden from assistive
+       technology (the option's own aria-selected says it is chosen).
    Notes:
      The list is a menu surface: border only, no shadow (D9).
      Other props pass through to the <input>.
 */
+const STRINGS = {
+  loading: 'Loading…',
+  error: 'The options could not be loaded',
+  results: n => n + (n === 1 ? ' option' : ' options')
+};
 const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(function Combobox({
   options = [],
   value,
@@ -6351,10 +6376,17 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   invalid,
   disabled,
   emptyText = 'No matches',
+  loadOptions,
+  loadDelay = 300,
+  minChars = 0,
+  loading = false,
+  marks,
+  strings,
   className,
   id,
   ...rest
 }, ref) {
+  const t = Object.assign({}, STRINGS, strings);
   const auto = 'plx-cb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = _react.default.useState(false);
@@ -6363,17 +6395,58 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => input.current);
+  // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
+  const [loaded, setLoaded] = _react.default.useState([]);
+  const [busy, setBusy] = _react.default.useState(false);
+  const [failed, setFailed] = _react.default.useState(false);
+  const loader = _react.default.useRef(loadOptions),
+    request = _react.default.useRef(0),
+    seen = _react.default.useRef(new Map());
+  loader.current = loadOptions;
+  const async = !!loadOptions;
+  _react.default.useEffect(() => {
+    if (!async || !open) return undefined;
+    const query = text.trim();
+    if (query.length < minChars) {
+      request.current++;
+      setLoaded([]);
+      setBusy(false);
+      setFailed(false);
+      return undefined;
+    }
+    const n = ++request.current;
+    setBusy(true);
+    setFailed(false);
+    const timer = setTimeout(() => {
+      Promise.resolve().then(() => loader.current(query)).then(list => {
+        if (n !== request.current) return;
+        const got = Array.isArray(list) ? list : [];
+        got.forEach(o => seen.current.set(o.value, o));
+        setLoaded(got);
+        setBusy(false);
+        (0, _announce.announce)(t.results(got.length));
+      }, () => {
+        if (n !== request.current) return;
+        setLoaded([]);
+        setBusy(false);
+        setFailed(true);
+      });
+    }, query ? loadDelay : 0);
+    return () => clearTimeout(timer);
+  }, [async, open, text, minChars, loadDelay]);
+  const isLoading = !!loading || async && busy;
+  const optionOf = v => options.find(x => x.value === v) || (async ? loaded.find(x => x.value === v) || seen.current.get(v) : undefined);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
-  const current = !multiple && chosen.length ? options.find(o => o.value === chosen[0]) : null;
+  const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
   const q = text.trim().toLowerCase();
-  const matching = options.filter(o => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
+  const matching = isLoading || failed ? [] : async ? loaded : options.filter(o => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
   // grouped options stay together under their group's heading (groups in the order they first appear)
   const groupOrder = [];
   matching.forEach(o => {
     if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group);
   });
   const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter(o => o.group === g)), []);
-  const canCreate = creatable && q && !options.some(o => String(o.label).toLowerCase() === q);
+  const canCreate = creatable && q && !isLoading && !(async ? loaded : options).some(o => String(o.label).toLowerCase() === q);
   const items = filtered.map(o => ({
     kind: 'option',
     o
@@ -6432,7 +6505,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const optId = i => auto + '-o' + i;
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
-    className: (0, _cx.cx)('plx-combobox', multiple && 'plx-combobox--multiple', open && 'is-open', disabled && 'is-disabled', className)
+    className: (0, _cx.cx)('plx-combobox', multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-combobox__field plx-input",
     "aria-invalid": invalid || undefined,
@@ -6440,7 +6513,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
       if (!disabled && input.current) input.current.focus();
     }
   }, multiple ? chosen.map(v => {
-    const o = options.find(x => x.value === v);
+    const o = optionOf(v);
     const t = o ? o.label : v;
     return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
       key: v,
@@ -6474,7 +6547,8 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-combobox__list",
     id: listId,
     role: "listbox",
-    "aria-multiselectable": multiple || undefined
+    "aria-multiselectable": multiple || undefined,
+    "aria-busy": isLoading || undefined
   }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
     key: "create",
     id: optId(i),
@@ -6497,7 +6571,27 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     onMouseDown: e => e.preventDefault(),
     onClick: () => choose(it),
     onMouseEnter: () => setActive(i)
-  }, it.o.label)]) : /*#__PURE__*/_react.default.createElement("li", {
+  }, marks ? /*#__PURE__*/_react.default.createElement("input", {
+    type: marks === 'radio' ? 'radio' : 'checkbox',
+    className: "plx-check__input plx-combobox__mark",
+    tabIndex: -1,
+    "aria-hidden": "true",
+    checked: chosen.indexOf(it.o.value) >= 0,
+    readOnly: true
+  }) : null, marks ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-combobox__option-label"
+  }, it.o.label) : it.o.label)]) : isLoading ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-combobox__loading",
+    role: "presentation"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.loading
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, t.loading)) : failed ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-combobox__empty plx-combobox__error",
+    role: "presentation"
+  }, t.error) : /*#__PURE__*/_react.default.createElement("li", {
     className: "plx-combobox__empty",
     role: "presentation"
   }, emptyText)) : null);
@@ -6793,7 +6887,7 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   }, it.description) : null))))) : null);
 });
   } },
-  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6803,27 +6897,66 @@ exports.Slider = Slider;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
+var _grid = require("../../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
-   Summary: A value picked from a range by dragging.
+   Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
+     with marks, labeled values sit under the track.
    Usage:
      <Slider label="Brightness" value={v} min={0} max={100} step={1} unit="%" onChange={(v) => …} onCommit={(v) => …} />
+     <Slider range label="Price" value={[20, 80]} min={0} max={200} step={5} unit=" €" onChange={([low, high]) => …} />
+     <Slider label="Quality" value={q} min={0} max={100} step={25} marks={[0, 25, 50, 75, 100]} onChange={…} />
    Props:
      label: the label above the track
-     value: the current value, a number
+     value: the current value, a number; with range, [low, high]
      min: the lowest value; default 0
      max: the highest value; default 100
      step: the step between values; default 1
      unit: text after the value ("%"); default ""
-     onChange(value): follows every move (live preview)
+     range: two thumbs, for a minimum and a maximum: value and onChange take [low, high] (default false)
+     marks: labeled values under the track: an array of numbers or of { value, label }, or true for one mark per step
+       (only when there are 12 steps or fewer) (default none)
+     onChange(value): follows every move (live preview); with range, onChange([low, high])
      onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
      disabled: default false
+     strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
+       is named "<label>, minimum" and "<label>, maximum")
      className: more classes on the slider
-     ...rest: other attributes go on the range input
+     ...rest: other attributes go on the range input (the first one with range)
    Behavior:
-     It is a native range input, so keys work: arrows, Page Up/Down, Home, End.
-     The label and the current value sit above the track.
+     It is a native range input (two with range), so keys work: arrows, Page Up/Down, Home, End.
+     The label and the current value sit above the track ("20–80 €" with range).
+     The thumbs of a range never cross: the minimum stops at the maximum and the maximum at the minimum. Where they meet,
+       the one that can still move is on top.
+     A range or marked slider draws its own track (the plain slider is the browser's control): the filled part between
+       the thumbs and each mark sit where the thumbs' centers are, measured from the track and placed on the 4px grid.
+   Notes:
+     The fill and the marks are placed by JavaScript (inline inset and inline size through gridPx, utils/grid.js); every
+       other value is a --plx-comp-slider-* token.
+     Mark labels are values: they use the data font.
 */
+const STRINGS = {
+  minimum: 'Minimum',
+  maximum: 'Maximum'
+};
+const MAX_STEP_MARKS = 12;
+
+// the marks to draw: [{ value, label }] inside [min, max]
+function marksOf(marks, min, max, step) {
+  if (!marks) return [];
+  let list = marks;
+  if (marks === true) {
+    const n = Math.floor((max - min) / step);
+    if (n < 1 || n > MAX_STEP_MARKS) return [];
+    list = Array.from({
+      length: n + 1
+    }, (x, i) => min + i * step);
+  }
+  return list.map(m => typeof m === 'object' ? m : {
+    value: m,
+    label: String(m)
+  }).filter(m => m.value >= min && m.value <= max);
+}
 function Slider({
   label,
   value,
@@ -6831,24 +6964,128 @@ function Slider({
   max = 100,
   step = 1,
   unit = '',
+  range = false,
+  marks,
   onChange,
   onCommit,
   disabled = false,
+  strings,
   className,
   ...rest
 }) {
   const id = (0, _layer.useUid)('plx-slider');
+  const t = Object.assign({}, STRINGS, strings);
+  const drawn = marksOf(marks, min, max, step);
+  const custom = range || drawn.length > 0;
+  const span = _react.default.useRef(null);
+  const [width, setWidth] = _react.default.useState(0);
+  // the width between the thumbs' centers at min and at max (the span is inset by half a thumb on each side, in CSS)
+  _react.default.useLayoutEffect(() => {
+    const el = span.current;
+    if (!custom || !el) return undefined;
+    const measure = () => setWidth(el.getBoundingClientRect().width);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [custom]);
+  const low = range ? Math.min(Number(value && value[0] != null ? value[0] : min), Number(value && value[1] != null ? value[1] : max)) : min;
+  const high = range ? Math.max(low, Number(value && value[1] != null ? value[1] : max)) : Number(value);
+  const at = v => (max > min ? (Math.min(max, Math.max(min, v)) - min) / (max - min) : 0) * width;
+  const commit = next => onCommit && onCommit(next);
+  const keyCommit = next => e => {
+    if (/Arrow|Page|Home|End/.test(e.key)) commit(next(Number(e.currentTarget.value)));
+  };
+  const shown = range ? low + '–' + high + unit : value + unit;
+  if (!custom) {
+    return /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-slider', className)
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-slider__head"
+    }, /*#__PURE__*/_react.default.createElement("label", {
+      htmlFor: id,
+      className: "plx-slider__label"
+    }, label), /*#__PURE__*/_react.default.createElement("output", {
+      htmlFor: id,
+      className: "plx-slider__value"
+    }, value + unit)), /*#__PURE__*/_react.default.createElement("input", _extends({
+      id: id,
+      type: "range",
+      className: "plx-slider__input",
+      min: min,
+      max: max,
+      step: step,
+      value: value,
+      disabled: disabled,
+      "aria-valuetext": value + unit,
+      onChange: e => onChange && onChange(Number(e.target.value)),
+      onPointerUp: e => onCommit && onCommit(Number(e.currentTarget.value)),
+      onKeyUp: e => {
+        if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
+      }
+    }, rest)));
+  }
+  const lowOf = v => [Math.min(v, high), high],
+    highOf = v => [low, Math.max(v, low)];
+  const fillStart = range ? at(low) : 0,
+    fillEnd = at(high);
   return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-slider', className)
+    className: (0, _cx.cx)('plx-slider', 'plx-slider--custom', range && 'plx-slider--range', drawn.length && 'plx-slider--marks', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-slider__head"
-  }, /*#__PURE__*/_react.default.createElement("label", {
+  }, range ? /*#__PURE__*/_react.default.createElement("span", {
+    id: id + '-label',
+    className: "plx-slider__label"
+  }, label) : /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: id,
     className: "plx-slider__label"
   }, label), /*#__PURE__*/_react.default.createElement("output", {
-    htmlFor: id,
+    htmlFor: range ? id + ' ' + id + '-high' : id,
     className: "plx-slider__value"
-  }, value + unit)), /*#__PURE__*/_react.default.createElement("input", _extends({
+  }, shown)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__control"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__rail",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: span,
+    className: "plx-slider__span"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__fill",
+    style: {
+      insetInlineStart: (0, _grid.gridPx)(fillStart),
+      inlineSize: (0, _grid.gridPx)(fillEnd - fillStart)
+    }
+  }))), range ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("input", _extends({
+    id: id,
+    type: "range",
+    className: (0, _cx.cx)('plx-slider__input', low > (min + max) / 2 && 'is-on-top'),
+    min: min,
+    max: max,
+    step: step,
+    value: low,
+    disabled: disabled,
+    "aria-label": label + ', ' + t.minimum.toLowerCase(),
+    "aria-valuetext": low + unit,
+    onChange: e => onChange && onChange(lowOf(Number(e.target.value))),
+    onPointerUp: e => commit(lowOf(Number(e.currentTarget.value))),
+    onKeyUp: keyCommit(lowOf)
+  }, rest)), /*#__PURE__*/_react.default.createElement("input", {
+    id: id + '-high',
+    type: "range",
+    className: "plx-slider__input",
+    min: min,
+    max: max,
+    step: step,
+    value: high,
+    disabled: disabled,
+    "aria-label": label + ', ' + t.maximum.toLowerCase(),
+    "aria-valuetext": high + unit,
+    onChange: e => onChange && onChange(highOf(Number(e.target.value))),
+    onPointerUp: e => commit(highOf(Number(e.currentTarget.value))),
+    onKeyUp: keyCommit(highOf)
+  })) : /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id,
     type: "range",
     className: "plx-slider__input",
@@ -6859,11 +7096,20 @@ function Slider({
     disabled: disabled,
     "aria-valuetext": value + unit,
     onChange: e => onChange && onChange(Number(e.target.value)),
-    onPointerUp: e => onCommit && onCommit(Number(e.currentTarget.value)),
-    onKeyUp: e => {
-      if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
+    onPointerUp: e => commit(Number(e.currentTarget.value)),
+    onKeyUp: keyCommit(v => v)
+  }, rest))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__marks",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-slider__marks-span"
+  }, drawn.map(m => /*#__PURE__*/_react.default.createElement("span", {
+    key: m.value,
+    className: "plx-slider__mark",
+    style: {
+      insetInlineStart: (0, _grid.gridPx)(at(m.value))
     }
-  }, rest)));
+  }, m.label)))) : null);
 }
   } },
   "platform/utils/roving.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -23504,7 +23750,853 @@ function useSearchHistory(key, options = {}) {
   };
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/InlineEdit/InlineEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InlineEdit = InlineEdit;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · InlineEdit
+   Summary: A value people edit where it is shown: the read view is a button with the value; activating it swaps in a text
+     field, a text area or a select with the value, and Enter (or the check button) saves it, Escape puts it back.
+   Usage:
+     <InlineEdit label="Title" value={title} onConfirm={(next) => save(next)} />
+     <InlineEdit label="Description" type="textarea" value={text} placeholder="Add a description" onConfirm={…} />
+     <InlineEdit label="Status" type="select" options={[{ value: 'draft', label: 'Draft' }, …]} value={status} onConfirm={…} />
+     <InlineEdit label="Title" value={title} confirmButtons validate={(v) => (v.trim() ? null : 'Enter a title')} onConfirm={…} />
+   Props:
+     label: what the value is ("Title"); it names the field and the read view (required)
+     value: the saved value (a string; for a select, an option's value)
+     onConfirm(next): runs with the new value when it is saved; return a Promise to show the busy state until it settles
+       (a rejected Promise keeps the field open with the error's message)
+     onCancel(): runs when the edit is put back
+     type: "text" (default) | "textarea" | "select"
+     options: the choices of a select: [{ value, label }]; the read view shows the chosen option's label
+     placeholder: the read view of an empty value, and the field's hint ("Add a description") (default strings.empty)
+     confirmButtons: a check (save) and a close (cancel) button beside the field (default false)
+     validate(next): returns an error message to keep the field open, or nothing when the value may be saved
+     data: the data font, for technical values such as codes and file names (default false)
+     disabled: shows the value without the edit affordance (default false)
+     readView(value): draws the read view's content (default: the text, or the option's label)
+     strings: the words it shows and announces, for other languages: { edit: "edit", save: "Save", cancel: "Cancel",
+       empty: "Add a value", saved: "Saved", failed: "The change could not be saved" }
+     className: more classes on the inline edit
+   Behavior:
+     Click, Enter or Space on the read view opens the field with the value, the text selected.
+     Enter saves a text field or a select; in a text area Enter is a new line and Ctrl+Enter (Command+Enter) saves.
+     Escape puts the value back; leaving the field (focus moves out of the inline edit) saves it.
+     An unchanged value closes without saving. An invalid value stays open with its message under the field, and the
+       field is marked invalid (aria-invalid, aria-describedby).
+     After saving or cancelling with the keyboard or the buttons, focus returns to the read view; "Saved" is announced.
+   Notes:
+     The read view has the field's size and padding, so the text does not move when it turns into the field.
+     The read view is a button (it opens an editor), never a link; it shows a pencil on hover and focus.
+*/
+const STRINGS = {
+  edit: 'edit',
+  save: 'Save',
+  cancel: 'Cancel',
+  empty: 'Add a value',
+  saved: 'Saved',
+  failed: 'The change could not be saved'
+};
+function InlineEdit({
+  label,
+  value = '',
+  onConfirm,
+  onCancel,
+  type = 'text',
+  options = [],
+  placeholder,
+  confirmButtons = false,
+  validate,
+  data = false,
+  disabled = false,
+  readView,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-inline-edit');
+  const [editing, setEditing] = _react.default.useState(false);
+  const [draft, setDraft] = _react.default.useState(value);
+  const [error, setError] = _react.default.useState(null);
+  const [saving, setSaving] = _react.default.useState(false);
+  const root = _react.default.useRef(null),
+    read = _react.default.useRef(null),
+    field = _react.default.useRef(null),
+    refocus = _react.default.useRef(false);
+  const shownValue = type === 'select' ? (options.find(o => o.value === value) || {}).label || '' : value;
+  const empty = shownValue === '' || shownValue == null;
+  const hint = placeholder || t.empty;
+  _react.default.useEffect(() => {
+    if (editing && field.current) {
+      field.current.focus();
+      if (field.current.select && type !== 'select') field.current.select();
+    }
+    if (!editing && refocus.current && read.current) {
+      refocus.current = false;
+      read.current.focus();
+    }
+  }, [editing, type]);
+  const open = () => {
+    if (disabled) return;
+    setDraft(value);
+    setError(null);
+    setEditing(true);
+  };
+  const close = back => {
+    refocus.current = back;
+    setEditing(false);
+    setSaving(false);
+  };
+  const cancel = back => {
+    setDraft(value);
+    setError(null);
+    close(back);
+    if (onCancel) onCancel();
+  };
+  const save = back => {
+    if (saving) return;
+    if (draft === value) {
+      close(back);
+      return;
+    }
+    const problem = validate ? validate(draft) : null;
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    const done = onConfirm ? onConfirm(draft) : null;
+    if (done && typeof done.then === 'function') {
+      setSaving(true);
+      done.then(() => {
+        close(back);
+        (0, _announce.announce)(t.saved);
+      }, e => {
+        setSaving(false);
+        setError(e && e.message || t.failed);
+      });
+    } else {
+      close(back);
+      (0, _announce.announce)(t.saved);
+    }
+  };
+  const onKey = e => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      cancel(true);
+    } else if (e.key === 'Enter' && (type !== 'textarea' || e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      save(true);
+    }
+  };
+  // leaving the inline edit saves; moving between the field and its buttons does not
+  const onBlur = e => {
+    if (root.current && e.relatedTarget && root.current.contains(e.relatedTarget)) return;
+    if (editing && !saving) save(false);
+  };
+  if (!editing) {
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      ref: root,
+      className: (0, _cx.cx)('plx-inline-edit', 'plx-inline-edit--' + type, data && 'plx-inline-edit--data', className)
+    }, rest), /*#__PURE__*/_react.default.createElement("button", {
+      ref: read,
+      type: "button",
+      className: (0, _cx.cx)('plx-inline-edit__read', empty && 'is-empty'),
+      onClick: open,
+      disabled: disabled
+    }, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label + ', '), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-inline-edit__value"
+    }, empty ? hint : readView ? readView(value) : shownValue), disabled ? null : /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t.edit), disabled ? null : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-inline-edit__hint",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "pencil"
+    }))));
+  }
+  const errId = id + '-error';
+  const common = {
+    ref: field,
+    'aria-label': label,
+    value: draft,
+    invalid: !!error,
+    readOnly: saving || undefined,
+    onKeyDown: onKey,
+    'aria-describedby': error ? errId : undefined,
+    onChange: e => {
+      setDraft(e.target.value);
+      if (error) setError(null);
+    }
+  };
+  const control = type === 'textarea' ? /*#__PURE__*/_react.default.createElement(_Input.Textarea, _extends({}, common, {
+    autoGrow: true,
+    placeholder: hint
+  })) : type === 'select' ? /*#__PURE__*/_react.default.createElement(_Input.Select, _extends({}, common, {
+    options: options,
+    disabled: saving || undefined
+  })) : /*#__PURE__*/_react.default.createElement(_Input.Input, _extends({}, common, {
+    data: data,
+    placeholder: hint
+  }));
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: root,
+    className: (0, _cx.cx)('plx-inline-edit', 'plx-inline-edit--' + type, 'is-editing', data && 'plx-inline-edit--data', className),
+    onBlur: onBlur
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-inline-edit__edit"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-inline-edit__control"
+  }, control), confirmButtons ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-inline-edit__actions"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    iconOnly: true,
+    icon: "check",
+    label: t.save + ' ' + label.toLowerCase(),
+    loading: saving,
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => save(true)
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.cancel,
+    disabled: saving,
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => cancel(true)
+  })) : null), error ? /*#__PURE__*/_react.default.createElement("div", {
+    id: errId,
+    className: "plx-inline-edit__error",
+    role: "alert"
+  }, error) : null);
+}
+  } },
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RichTextEditor = RichTextEditor;
+exports.cleanRichText = cleanRichText;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
+var _Toolbar = require("../Toolbar/Toolbar.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Input = require("../Input/Input.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichTextEditor
+   Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar and Buttons) over an editing area that
+     shows the text as RichText does (paragraphs, bold, italic, links, lists, headings, quotes, inline code), with Markdown
+     shortcuts and an optional mentions list. It is a contenteditable area on the browser's Selection API.
+   Usage:
+     <RichTextEditor label="Description" defaultValue={html} onChange={(html) => …} />
+     <RichTextEditor label="Notes" toolbar="full" placeholder="Describe the change" />
+     <RichTextEditor label="Comment" mentions={{ search: (q) => people.filter((p) => p.label.startsWith(q)) }} />
+     <RichTextEditor label="Description" readOnly defaultValue={html} />
+   Props:
+     label: the accessible name of the editing area (required; give a visible label with Field or a heading)
+     defaultValue: the starting HTML; it is cleaned to the allowed elements (see Notes) before it is shown
+     onChange(html): runs after each change with the cleaned HTML of the content
+     toolbar: "basic" (default: bold, italic, link, bulleted and numbered list) | "full" (also heading, quote, inline code,
+       clear formatting, undo and redo) | false (no toolbar; the shortcuts still work)
+     markdownShortcuts: Markdown as you type (default true): "- " or "* " a bulleted list, "1. " a numbered list, "## " a
+       heading, "> " a quote at the start of a line; **bold**, _italic_ and `code` around words
+     mentions: the mentions slot: { trigger: "@" (default), search(query) → options or a Promise of them ([{ value, label }]),
+       renderOption(option) (the row's content; default its label) }; typing the trigger opens the list under the caret
+     placeholder: the hint in the empty area
+     readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
+     invalid: marks the area invalid (aria-invalid); put the message in Field's error
+     disabled: the area cannot be used (default false)
+     strings: the words it shows, for other languages: { toolbar: "Formatting", bold: "Bold", italic: "Italic", link: "Link",
+       bulleted: "Bulleted list", numbered: "Numbered list", heading: "Heading", quote: "Quote", code: "Code", clear: "Clear
+       formatting", undo: "Undo", redo: "Redo", linkAddress: "Link address", addLink: "Add link", cancel: "Cancel",
+       mentions: "Suggestions", on: (name) => name + " on", off: (name) => name + " off" }
+     className: more classes on the editor
+     id: the id of the editing area (a Field sets it)
+   Behavior:
+     The toolbar is one Tab stop (arrow keys move inside it); each format button shows whether the text at the caret has
+       that format (aria-pressed). Pressing a button keeps the selection in the area.
+     Ctrl+B bold, Ctrl+I italic, Ctrl+K link, Ctrl+Shift+7 numbered list, Ctrl+Shift+8 bulleted list (Command on a Mac);
+       a format turned on or off from the keyboard is announced.
+     Link: with the caret in a link it removes the link; otherwise a link address field opens under the toolbar (Enter adds
+       the link, Escape closes it); an address without a scheme gets https://.
+     Paste inserts plain text, so formatting from other documents never comes in.
+     Mentions: ↓ / ↑ move in the list, Enter or Tab inserts the mention (one unit, removed with one Backspace), Escape closes it.
+     The area grows with its text up to its maximum height, then scrolls inside (it is focusable, so the keyboard reaches it).
+   Notes:
+     The browser's editing commands (document.execCommand: deprecated but supported everywhere) do the formatting; the
+       Selection API reads the formats at the caret, finds Markdown shortcuts and mentions, and places the link field.
+     Allowed elements: p, br, strong, em, a (href only: http, https, mailto or a relative address), ul, ol, li, h2, h3,
+       blockquote, code, pre, and the mention span (data-mention). Everything else is unwrapped, every other attribute dropped.
+     For collaborative editing, tables or embeds, a real editor engine is needed (not part of Plenix).
+*/
+const STRINGS = {
+  toolbar: 'Formatting',
+  bold: 'Bold',
+  italic: 'Italic',
+  link: 'Link',
+  bulleted: 'Bulleted list',
+  numbered: 'Numbered list',
+  heading: 'Heading',
+  quote: 'Quote',
+  code: 'Code',
+  clear: 'Clear formatting',
+  undo: 'Undo',
+  redo: 'Redo',
+  linkAddress: 'Link address',
+  addLink: 'Add link',
+  cancel: 'Cancel',
+  mentions: 'Suggestions',
+  on: name => name + ' on',
+  off: name => name + ' off'
+};
+const ALLOWED = {
+  P: 1,
+  BR: 1,
+  STRONG: 1,
+  EM: 1,
+  A: 1,
+  UL: 1,
+  OL: 1,
+  LI: 1,
+  H2: 1,
+  H3: 1,
+  BLOCKQUOTE: 1,
+  CODE: 1,
+  PRE: 1,
+  SPAN: 1
+};
+const RENAME = {
+  B: 'strong',
+  I: 'em',
+  DIV: 'p',
+  H1: 'h2'
+};
+const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
+const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped)
+function cleanRichText(html) {
+  if (typeof document === 'undefined') return '';
+  const from = document.createElement('template');
+  from.innerHTML = String(html || '');
+  const copy = (node, into) => {
+    node.childNodes.forEach(n => {
+      if (n.nodeType === 3) {
+        const text = n.nodeValue.replace(/​/g, '');
+        if (text) into.appendChild(document.createTextNode(text));
+        return;
+      }
+      if (n.nodeType !== 1) return;
+      const tag = RENAME[n.tagName] ? RENAME[n.tagName].toUpperCase() : n.tagName;
+      const mention = tag === 'SPAN' && n.hasAttribute('data-mention');
+      if (!ALLOWED[tag] || tag === 'SPAN' && !mention) {
+        copy(n, into);
+        return;
+      }
+      const el = document.createElement(tag.toLowerCase());
+      if (tag === 'A') {
+        const href = (n.getAttribute('href') || '').trim();
+        if (SAFE_HREF.test(href)) el.setAttribute('href', href);
+      }
+      if (mention) {
+        el.setAttribute('data-mention', n.getAttribute('data-mention'));
+        el.setAttribute('class', 'plx-rich-text-editor__mention');
+        el.setAttribute('contenteditable', 'false');
+      }
+      copy(n, el);
+      into.appendChild(el);
+    });
+  };
+  const out = document.createElement('div');
+  copy(from.content, out);
+  return out.innerHTML;
+}
+
+// an element put in place of a range with the DOM (insertHTML would copy computed styles onto it), then a text after it
+// for the caret (a zero-width space, dropped from the output), so typing goes on outside the element
+const place = (range, el, tail = '​') => {
+  range.deleteContents();
+  range.insertNode(el);
+  const after = document.createTextNode(tail);
+  el.after(after);
+  const sel = window.getSelection(),
+    r = document.createRange();
+  r.setStart(after, tail.length);
+  r.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(r);
+};
+const run = (cmd, arg) => {
+  try {
+    return document.execCommand(cmd, false, arg);
+  } catch (e) {
+    return false;
+  }
+};
+const within = (root, node) => !!(root && node && (node === root || root.contains(node)));
+const closestIn = (root, node, selector) => {
+  let el = node && node.nodeType === 3 ? node.parentElement : node;
+  while (el && el !== root) {
+    if (el.matches && el.matches(selector)) return el;
+    el = el.parentElement;
+  }
+  return null;
+};
+function RichTextEditor({
+  label,
+  defaultValue = '',
+  onChange,
+  toolbar = 'basic',
+  markdownShortcuts = true,
+  mentions,
+  placeholder,
+  readOnly = false,
+  invalid,
+  disabled = false,
+  strings,
+  className,
+  id,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = (0, _layer.useUid)('plx-rte');
+  const areaId = id || auto + '-area';
+  const area = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    linkInput = _react.default.useRef(null),
+    saved = _react.default.useRef(null);
+  const [formats, setFormats] = _react.default.useState({});
+  const [empty, setEmpty] = _react.default.useState(true);
+  const [linking, setLinking] = _react.default.useState(false);
+  const [href, setHref] = _react.default.useState('');
+  const [mention, setMention] = _react.default.useState(null); // { query, items, active, x, y }
+  const editable = !readOnly && !disabled;
+
+  // the starting content, cleaned, once
+  _react.default.useEffect(() => {
+    if (!area.current) return;
+    area.current.innerHTML = cleanRichText(defaultValue);
+    setEmpty(!area.current.textContent.trim() && !area.current.querySelector('li,[data-mention]'));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // the formats at the caret (Selection API), on every selection change inside the area
+  const read = _react.default.useCallback(() => {
+    const root = area.current,
+      sel = typeof window !== 'undefined' ? window.getSelection() : null;
+    if (!root || !sel || !sel.rangeCount || !within(root, sel.anchorNode)) return;
+    saved.current = sel.getRangeAt(0).cloneRange();
+    const at = s => !!closestIn(root, sel.anchorNode, s);
+    setFormats({
+      bold: at('strong,b'),
+      italic: at('em,i'),
+      link: at('a'),
+      bulleted: at('ul'),
+      numbered: at('ol'),
+      heading: at('h2,h3'),
+      quote: at('blockquote'),
+      code: at('code')
+    });
+  }, []);
+  _react.default.useEffect(() => {
+    document.addEventListener('selectionchange', read);
+    return () => document.removeEventListener('selectionchange', read);
+  }, [read]);
+  const changed = () => {
+    const root = area.current;
+    if (!root) return;
+    setEmpty(!root.textContent.trim() && !root.querySelector('li,[data-mention]'));
+    if (onChange) onChange(cleanRichText(root.innerHTML));
+  };
+  // put the selection back in the area (a toolbar button or the link field may hold the focus)
+  const restore = () => {
+    const root = area.current,
+      sel = window.getSelection();
+    if (!root) return;
+    if (document.activeElement !== root) root.focus();
+    if (saved.current && within(root, saved.current.startContainer) && (!sel.rangeCount || !within(root, sel.anchorNode))) {
+      sel.removeAllRanges();
+      sel.addRange(saved.current);
+    }
+  };
+  const inlineCode = () => {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const code = closestIn(area.current, sel.anchorNode, 'code');
+    if (code) {
+      const text = document.createTextNode(code.textContent);
+      code.replaceWith(text);
+      return;
+    }
+    const text = sel.toString();
+    if (!text) return;
+    const el = document.createElement('code');
+    el.textContent = text;
+    place(sel.getRangeAt(0), el);
+  };
+  const block = tag => run('formatBlock', formats[tag === 'h2' ? 'heading' : 'quote'] ? 'p' : tag);
+  const COMMANDS = {
+    bold: () => run('bold'),
+    italic: () => run('italic'),
+    bulleted: () => run('insertUnorderedList'),
+    numbered: () => run('insertOrderedList'),
+    heading: () => block('h2'),
+    quote: () => block('blockquote'),
+    code: inlineCode,
+    clear: () => {
+      run('removeFormat');
+      run('formatBlock', 'p');
+    },
+    undo: () => run('undo'),
+    redo: () => run('redo')
+  };
+  const apply = (name, fromKeys) => {
+    if (!editable) return;
+    restore();
+    if (name === 'link') {
+      openLink();
+      return;
+    }
+    const was = !!formats[name];
+    COMMANDS[name]();
+    read();
+    changed();
+    if (fromKeys && name in formats) (0, _announce.announce)(was ? t.off(t[name]) : t.on(t[name]));
+  };
+
+  // the link field: opens under the toolbar for the selection kept in saved; Enter adds the link
+  const openLink = () => {
+    const sel = window.getSelection();
+    const a = sel.rangeCount ? closestIn(area.current, sel.anchorNode, 'a') : null;
+    if (a) {
+      const r = document.createRange();
+      r.selectNodeContents(a);
+      sel.removeAllRanges();
+      sel.addRange(r);
+      run('unlink');
+      read();
+      changed();
+      return;
+    }
+    if (sel.rangeCount) saved.current = sel.getRangeAt(0).cloneRange();
+    setHref('');
+    setLinking(true);
+  };
+  _react.default.useEffect(() => {
+    if (linking && linkInput.current) linkInput.current.focus();
+  }, [linking]);
+  const addLink = () => {
+    let to = href.trim();
+    setLinking(false);
+    restore();
+    if (!to) return;
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(to) && !/^[/#.]/.test(to)) to = 'https://' + to;
+    if (!SAFE_HREF.test(to)) return;
+    const sel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt(0).collapsed) {
+      const a = document.createElement('a');
+      a.setAttribute('href', to);
+      a.textContent = href.trim();
+      place(sel.getRangeAt(0), a);
+    } else run('createLink', to);
+    read();
+    changed();
+  };
+
+  // Markdown shortcuts at the start of a line (on Space) and around words (as they are typed)
+  const textBeforeCaret = () => {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return null;
+    const caret = sel.getRangeAt(0);
+    if (!caret.collapsed) return null;
+    const blockEl = closestIn(area.current, caret.startContainer, 'p,li,h2,h3,blockquote,pre') || area.current;
+    const r = document.createRange();
+    r.setStart(blockEl, 0);
+    r.setEnd(caret.startContainer, caret.startOffset);
+    return {
+      text: r.toString(),
+      range: r,
+      caret
+    };
+  };
+  const BLOCK_MARKS = {
+    '-': 'bulleted',
+    '*': 'bulleted',
+    '1.': 'numbered',
+    '#': 'heading',
+    '##': 'heading',
+    '>': 'quote'
+  };
+  const blockShortcut = () => {
+    const b = textBeforeCaret();
+    if (!b || !BLOCK_MARKS[b.text]) return false;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(b.range);
+    run('delete');
+    COMMANDS[BLOCK_MARKS[b.text]]();
+    return true;
+  };
+  const INLINE = [[/\*\*([^*]+)\*\*$/, 'strong'], [/(?:^|\s)_([^_]+)_$/, 'em'], [/`([^`]+)`$/, 'code']];
+  const inlineShortcut = () => {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return false;
+    const caret = sel.getRangeAt(0);
+    const node = caret.startContainer;
+    if (!caret.collapsed || node.nodeType !== 3) return false;
+    const before = node.nodeValue.slice(0, caret.startOffset);
+    for (const [re, tag] of INLINE) {
+      const m = re.exec(before);
+      if (!m) continue;
+      const start = caret.startOffset - m[0].length + (m[0].length - m[0].trimStart().length);
+      const r = document.createRange();
+      r.setStart(node, start);
+      r.setEnd(node, caret.startOffset);
+      const el = document.createElement(tag);
+      el.textContent = m[1];
+      place(r, el);
+      return true;
+    }
+    return false;
+  };
+
+  // mentions: the trigger and the word after it, before the caret
+  const trigger = mentions && mentions.trigger || '@';
+  const searchRef = _react.default.useRef(null);
+  searchRef.current = mentions && mentions.search;
+  const lookup = _react.default.useRef(0);
+  const findMention = () => {
+    if (!mentions) return;
+    const sel = window.getSelection();
+    if (!sel.rangeCount) {
+      setMention(null);
+      return;
+    }
+    const caret = sel.getRangeAt(0),
+      node = caret.startContainer;
+    const before = node.nodeType === 3 ? node.nodeValue.slice(0, caret.startOffset) : '';
+    const m = new RegExp('(?:^|\\s)' + trigger.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([\\w.-]*)$').exec(before);
+    if (!m) {
+      setMention(null);
+      return;
+    }
+    const box = caret.getBoundingClientRect();
+    const n = ++lookup.current,
+      query = m[1];
+    Promise.resolve().then(() => searchRef.current(query)).then(items => {
+      if (n !== lookup.current) return;
+      setMention({
+        query,
+        items: Array.isArray(items) ? items : [],
+        active: 0,
+        x: box.left,
+        y: box.bottom
+      });
+    }, () => {
+      if (n === lookup.current) setMention(null);
+    });
+  };
+  const insertMention = o => {
+    const sel = window.getSelection();
+    if (!sel.rangeCount || !mention) return;
+    const caret = sel.getRangeAt(0),
+      node = caret.startContainer;
+    const r = document.createRange();
+    r.setStart(node, caret.startOffset - mention.query.length - trigger.length);
+    r.setEnd(node, caret.startOffset);
+    const el = document.createElement('span');
+    el.setAttribute('data-mention', o.value);
+    el.setAttribute('class', 'plx-rich-text-editor__mention');
+    el.setAttribute('contenteditable', 'false');
+    el.textContent = trigger + o.label;
+    place(r, el, ' ');
+    lookup.current++;
+    setMention(null);
+    changed();
+  };
+  const mentionOpen = !!(mention && mention.items.length);
+  (0, _floating.useFloating)(area, list, {
+    open: mentionOpen,
+    placement: 'bottom-start',
+    virtual: mentionOpen ? {
+      x: mention.x,
+      y: mention.y
+    } : null
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (mentionOpen && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [mentionOpen]);
+  const onKeyDown = e => {
+    if (!editable) return;
+    if (mentionOpen) {
+      const n = mention.items.length;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        setMention(Object.assign({}, mention, {
+          active: (mention.active + (e.key === 'ArrowDown' ? 1 : n - 1)) % n
+        }));
+        return;
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        insertMention(mention.items[mention.active]);
+        return;
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        lookup.current++;
+        setMention(null);
+        return;
+      }
+    }
+    const mod = e.ctrlKey || e.metaKey,
+      k = e.key.toLowerCase();
+    if (mod && !e.shiftKey && !e.altKey && (k === 'b' || k === 'i' || k === 'k')) {
+      e.preventDefault();
+      apply(k === 'b' ? 'bold' : k === 'i' ? 'italic' : 'link', true);
+      return;
+    }
+    if (mod && e.shiftKey && (e.code === 'Digit7' || e.code === 'Digit8')) {
+      e.preventDefault();
+      apply(e.code === 'Digit7' ? 'numbered' : 'bulleted', true);
+      return;
+    }
+    if (markdownShortcuts && e.key === ' ' && !mod && blockShortcut()) {
+      e.preventDefault();
+      read();
+      changed();
+    }
+  };
+  const onInput = () => {
+    if (markdownShortcuts) inlineShortcut();
+    findMention();
+    read();
+    changed();
+  };
+  const onPaste = e => {
+    if (!editable) return;
+    e.preventDefault();
+    run('insertText', e.clipboardData && e.clipboardData.getData('text/plain') || '');
+  };
+  const onFocus = () => {
+    run('defaultParagraphSeparator', 'p');
+  };
+
+  // a format button says whether the text at the caret has its format (aria-pressed); undo, redo and clear are plain buttons
+  const PLAIN = ['undo', 'redo', 'clear'];
+  const toolButton = (name, icon) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: name,
+    variant: "ghost",
+    size: "sm",
+    pressed: PLAIN.indexOf(name) >= 0 ? undefined : !!formats[name],
+    icon: icon,
+    iconOnly: !!icon,
+    label: icon ? t[name] : undefined,
+    disabled: !editable,
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => apply(name)
+  }, t[name]);
+  const showToolbar = toolbar && !readOnly;
+  const full = toolbar === 'full';
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-rich-text-editor', readOnly && 'is-read-only', disabled && 'is-disabled', className)
+  }, rest), showToolbar ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    label: t.toolbar,
+    className: "plx-rich-text-editor__toolbar"
+  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, toolButton('bold'), toolButton('italic'), full ? toolButton('code') : null, toolButton('link')), /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, full ? toolButton('heading') : null, toolButton('bulleted', 'list-bullets'), toolButton('numbered'), full ? toolButton('quote') : null), full ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, null, toolButton('clear'), toolButton('undo', 'ed-undo'), toolButton('redo', 'ed-redo')) : null) : null, linking ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-rich-text-editor__link-bar"
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: linkInput,
+    type: "url",
+    "aria-label": t.linkAddress,
+    placeholder: "https://",
+    value: href,
+    onChange: e => setHref(e.target.value),
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addLink();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        setLinking(false);
+        restore();
+      }
+    }
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "primary",
+    onClick: addLink
+  }, t.addLink), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    onClick: () => {
+      setLinking(false);
+      restore();
+    }
+  }, t.cancel)) : null, /*#__PURE__*/_react.default.createElement("div", {
+    ref: area,
+    id: areaId,
+    className: (0, _cx.cx)('plx-rich-text', 'plx-rich-text--compact', 'plx-rich-text-editor__area', empty && 'is-empty'),
+    role: "textbox",
+    "aria-multiline": "true",
+    "aria-label": label,
+    "aria-readonly": readOnly || undefined,
+    "aria-disabled": disabled || undefined,
+    "aria-invalid": invalid || undefined,
+    "aria-placeholder": placeholder,
+    "data-placeholder": placeholder,
+    tabIndex: disabled ? -1 : 0,
+    contentEditable: editable,
+    suppressContentEditableWarning: true,
+    "aria-autocomplete": mentions ? 'list' : undefined,
+    "aria-controls": mentionOpen ? auto + '-mentions' : undefined,
+    "aria-activedescendant": mentionOpen ? auto + '-m' + mention.active : undefined,
+    onKeyDown: onKeyDown,
+    onInput: onInput,
+    onPaste: onPaste,
+    onFocus: onFocus,
+    onBlur: () => {
+      lookup.current++;
+      setMention(null);
+    }
+  }), mentionOpen ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: auto + '-mentions',
+    role: "listbox",
+    "aria-label": t.mentions,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    className: "plx-rich-text-editor__mentions"
+  }, mention.items.map((o, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: o.value,
+    id: auto + '-m' + i,
+    role: "option",
+    "aria-selected": i === mention.active,
+    className: (0, _cx.cx)('plx-rich-text-editor__mention-option', i === mention.active && 'is-active'),
+    onMouseDown: e => {
+      e.preventDefault();
+      insertMention(o);
+    }
+  }, mentions.renderOption ? mentions.renderOption(o) : o.label))) : null);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24020,6 +25112,12 @@ Object.defineProperty(exports, "Inline", {
     return _Stack.Inline;
   }
 });
+Object.defineProperty(exports, "InlineEdit", {
+  enumerable: true,
+  get: function () {
+    return _InlineEdit.InlineEdit;
+  }
+});
 Object.defineProperty(exports, "Input", {
   enumerable: true,
   get: function () {
@@ -24318,6 +25416,12 @@ Object.defineProperty(exports, "RichText", {
   enumerable: true,
   get: function () {
     return _RichText.RichText;
+  }
+});
+Object.defineProperty(exports, "RichTextEditor", {
+  enumerable: true,
+  get: function () {
+    return _RichTextEditor.RichTextEditor;
   }
 });
 Object.defineProperty(exports, "RowButton", {
@@ -24684,6 +25788,12 @@ Object.defineProperty(exports, "choosePicture", {
   enumerable: true,
   get: function () {
     return _SessionProvider.choosePicture;
+  }
+});
+Object.defineProperty(exports, "cleanRichText", {
+  enumerable: true,
+  get: function () {
+    return _RichTextEditor.cleanRichText;
   }
 });
 Object.defineProperty(exports, "confirmLeave", {
@@ -25425,6 +26535,8 @@ var _CodeEditor = require("./components/CodeEditor/CodeEditor.jsx");
 var _Form = require("./patterns/Form/Form.jsx");
 var _OtpInput = require("./components/OtpInput/OtpInput.jsx");
 var _useSearchHistory = require("./hooks/useSearchHistory.js");
+var _InlineEdit = require("./components/InlineEdit/InlineEdit.jsx");
+var _RichTextEditor = require("./components/RichTextEditor/RichTextEditor.jsx");
   } }
   };
   var cache = {};

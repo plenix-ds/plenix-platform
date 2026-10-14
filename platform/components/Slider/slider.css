@@ -7,3 +7,26 @@
 .plx-slider__input:focus-visible,
 .plx-slider__input.is-focus-visible{outline-color:var(--plx-comp-slider-input-focus-outline-color);outline-offset:var(--plx-comp-slider-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-slider-input-focus-outline-width);}
 .plx-slider__input:disabled{cursor:default;opacity:var(--plx-comp-slider-input-disabled-opacity);}
+/* the range and marked slider (range, marks; library wave 6): its own track under one or two transparent range inputs.
+   The span is the track between the thumbs' centers (inset by half a thumb); the fill and the marks are placed in it. */
+.plx-slider__control{block-size:var(--plx-comp-slider-input-height);position:relative;}
+.plx-slider__rail{background-color:var(--plx-comp-slider-track-background);block-size:var(--plx-comp-slider-track-height);border-end-end-radius:var(--plx-comp-slider-track-radius);border-end-start-radius:var(--plx-comp-slider-track-radius);border-start-end-radius:var(--plx-comp-slider-track-radius);border-start-start-radius:var(--plx-comp-slider-track-radius);inset-block-start:50%;inset-inline-end:0;inset-inline-start:0;position:absolute;transform:translateY(-50%);}
+.plx-slider__span,.plx-slider__marks-span{inset-block-end:0;inset-block-start:0;inset-inline-end:calc(var(--plx-comp-slider-thumb-size) / 2);inset-inline-start:calc(var(--plx-comp-slider-thumb-size) / 2);position:absolute;}
+.plx-slider__fill{background-color:var(--plx-comp-slider-fill-background);border-end-end-radius:var(--plx-comp-slider-track-radius);border-end-start-radius:var(--plx-comp-slider-track-radius);border-start-end-radius:var(--plx-comp-slider-track-radius);border-start-start-radius:var(--plx-comp-slider-track-radius);inset-block-end:0;inset-block-start:0;position:absolute;}
+.plx-slider--custom .plx-slider__input{-webkit-appearance:none;appearance:none;background-color:transparent;block-size:100%;inset-block-start:0;inset-inline-start:0;pointer-events:none;position:absolute;}
+.plx-slider--custom .plx-slider__input.is-on-top{z-index:var(--plx-comp-slider-thumb-top-layer);}
+.plx-slider--custom .plx-slider__input::-webkit-slider-runnable-track{background-color:transparent;}
+.plx-slider--custom .plx-slider__input::-moz-range-track{background-color:transparent;}
+.plx-slider--custom .plx-slider__input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;background-color:var(--plx-comp-slider-thumb-background);block-size:var(--plx-comp-slider-thumb-size);border-end-end-radius:var(--plx-comp-slider-thumb-radius);border-end-start-radius:var(--plx-comp-slider-thumb-radius);border-start-end-radius:var(--plx-comp-slider-thumb-radius);border-start-start-radius:var(--plx-comp-slider-thumb-radius);border-style:none;cursor:pointer;inline-size:var(--plx-comp-slider-thumb-size);pointer-events:auto;}
+.plx-slider--custom .plx-slider__input::-moz-range-thumb{background-color:var(--plx-comp-slider-thumb-background);block-size:var(--plx-comp-slider-thumb-size);border-end-end-radius:var(--plx-comp-slider-thumb-radius);border-end-start-radius:var(--plx-comp-slider-thumb-radius);border-start-end-radius:var(--plx-comp-slider-thumb-radius);border-start-start-radius:var(--plx-comp-slider-thumb-radius);border-style:none;cursor:pointer;inline-size:var(--plx-comp-slider-thumb-size);pointer-events:auto;}
+/* focus: the ring moves from the whole input to the thumb in focus */
+.plx-slider--custom .plx-slider__input:focus-visible,
+.plx-slider--custom .plx-slider__input.is-focus-visible{outline-style:none;}
+.plx-slider--custom .plx-slider__input:focus-visible::-webkit-slider-thumb{outline-color:var(--plx-comp-slider-input-focus-outline-color);outline-offset:var(--plx-comp-slider-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-slider-input-focus-outline-width);}
+.plx-slider--custom .plx-slider__input:focus-visible::-moz-range-thumb{outline-color:var(--plx-comp-slider-input-focus-outline-color);outline-offset:var(--plx-comp-slider-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-slider-input-focus-outline-width);}
+.plx-slider--custom .plx-slider__input:disabled::-webkit-slider-thumb{cursor:default;}
+.plx-slider.is-disabled .plx-slider__rail{opacity:var(--plx-comp-slider-input-disabled-opacity);}
+/* marks: labeled values under the track, centered on their place */
+.plx-slider__marks{block-size:var(--plx-comp-slider-mark-line-height);position:relative;}
+.plx-slider__mark{color:var(--plx-comp-slider-mark-text);font-family:var(--plx-comp-slider-mark-font-family);font-size:var(--plx-comp-slider-mark-font-size);inset-block-start:0;line-height:var(--plx-comp-slider-mark-line-height);position:absolute;transform:translateX(-50%);white-space:nowrap;}
+.plx-slider__mark:dir(rtl){transform:translateX(50%);}

@@ -173,4 +173,7 @@ export { FormActions } from './patterns/Form/Form.jsx';
 export { OtpInput } from './components/OtpInput/OtpInput.jsx';
 export { FieldLayoutContext } from './components/Field/Field.jsx';
 export { useSearchHistory } from './hooks/useSearchHistory.js';
+export { InlineEdit } from './components/InlineEdit/InlineEdit.jsx';
+export { RichTextEditor } from './components/RichTextEditor/RichTextEditor.jsx';
+export { cleanRichText } from './components/RichTextEditor/RichTextEditor.jsx';
 /* END library parts */

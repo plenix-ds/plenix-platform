@@ -18,7 +18,7 @@
      label: the accessible name (aria-label); an icon-only button falls back to string children
      caret: the button opens a menu: a chevron after the label (default false)
      expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed)
+     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
      selected: shows the selected state without a toggle role (default false)
      loading: shows a spinner in place of the icon (default false)
      disabled: the button does nothing (default false)
@@ -35,6 +35,8 @@
    Behavior:
      Placement can also set the role: a dialog footer gives its buttons the dialog role.
      Selected, pressed and expanded all show the selected state.
+     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
+       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
      Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
      A disabled link loses its href.
    Notes:

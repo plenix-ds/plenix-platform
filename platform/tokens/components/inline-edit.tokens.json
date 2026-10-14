@@ -1,0 +1,28 @@
+{
+  "$description": "InlineEdit (platform/components/InlineEdit), library wave 6, lane C: its component tokens. The read view takes the text field's size, padding and type (the input tokens) so the value does not move when it turns into the field; its states are the system's hover tint and focus border color.",
+  "plx-comp": {
+    "inline-edit-max-width": { "$value": "{plx-comp.input-max-width}", "$type": "dimension", "$description": "InlineEdit: its widest (the text field's)." },
+    "inline-edit-read-background": { "$value": "transparent", "$type": "color", "$description": "InlineEdit read view: no fill at rest; the value reads as text." },
+    "inline-edit-read-border-color": { "$value": "transparent", "$type": "color", "$description": "InlineEdit read view: the border, kept and transparent at rest so the read view has the field's size." },
+    "inline-edit-read-border-width": { "$value": "{plx-comp.input-border-width}", "$type": "dimension", "$description": "InlineEdit read view: the text field's border width." },
+    "inline-edit-read-radius": { "$value": "{plx-comp.input-radius}", "$type": "dimension", "$description": "InlineEdit read view: the text field's corners." },
+    "inline-edit-read-text": { "$value": "{plx-comp.input-text}", "$type": "color", "$description": "InlineEdit read view: the value's color (the field's text)." },
+    "inline-edit-read-empty-text": { "$value": "{plx-comp.input-placeholder-text}", "$type": "color", "$description": "InlineEdit read view: the prompt shown for an empty value (the placeholder's color)." },
+    "inline-edit-read-font-family": { "$value": "{plx-comp.input-font-family}", "$type": "fontFamily", "$description": "InlineEdit read view: the text field's font." },
+    "inline-edit-read-data-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "InlineEdit read view with data: a technical value, in the data font." },
+    "inline-edit-read-font-size": { "$value": "{plx-comp.input-font-size}", "$type": "dimension", "$description": "InlineEdit read view: the text field's size." },
+    "inline-edit-read-line-height": { "$value": "{plx-comp.input-line-height}", "$type": "number", "$description": "InlineEdit read view: the text field's line height." },
+    "inline-edit-read-min-height": { "$value": "{plx-comp.input-min-height}", "$type": "dimension", "$description": "InlineEdit read view: the text field's height." },
+    "inline-edit-read-padding-inline": { "$value": "{plx-comp.input-padding-inline}", "$type": "dimension", "$description": "InlineEdit read view: the text field's side padding, so the text starts where the field's does." },
+    "inline-edit-read-textarea-padding-block": { "$value": "{plx-comp.textarea-padding-block}", "$type": "dimension", "$description": "InlineEdit read view of a text area: the text area's padding above and below." },
+    "inline-edit-read-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "InlineEdit read view: the space between the value and the pencil." },
+    "inline-edit-read-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "InlineEdit read view: the hover tint, the hint that the value can be edited." },
+    "inline-edit-read-focus-border-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "InlineEdit read view: the border in focus (no ring outside it)." },
+    "inline-edit-hint-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "InlineEdit pencil: its color, on hover and focus." },
+    "inline-edit-hint-size": { "$value": "{plx-sys.icon-size-sm}", "$type": "dimension", "$description": "InlineEdit pencil: its size." },
+    "inline-edit-actions-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "InlineEdit edit view: the space between the field and its buttons, and between the buttons." },
+    "inline-edit-error-text": { "$value": "{plx-comp.field-error-text}", "$type": "color", "$description": "InlineEdit: the message under an invalid field (the Field error's color)." },
+    "inline-edit-error-font-size": { "$value": "{plx-comp.field-error-font-size}", "$type": "dimension", "$description": "InlineEdit: the message's size (the Field error's)." },
+    "inline-edit-error-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "InlineEdit: the space above the message." }
+  }
+}
