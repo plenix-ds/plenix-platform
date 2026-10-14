@@ -1,0 +1,12 @@
+{
+  "$description": "BackToTop (platform/components/BackToTop, library wave 5, lane C): its component tokens. The button is Button's (secondary, icon only, or ghost inline); these place the floating one and set when it shows.",
+  "plx-comp": {
+    "back-to-top-reveal-distance": { "$value": "100vh", "$type": "dimension", "$description": "BackToTop: how far the page scrolls before the floating button shows (one window height: the sentinel's height)." },
+    "back-to-top-sentinel-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "BackToTop: the sentinel's width (a hairline: it only has to intersect)." },
+    "back-to-top-inset-block-end": { "$value": "{plx-sys.space-inset-lg}", "$type": "dimension", "$description": "BackToTop floating: the space from the window's bottom edge." },
+    "back-to-top-inset-inline-end": { "$value": "{plx-sys.space-inset-lg}", "$type": "dimension", "$description": "BackToTop floating: the space from the window's end edge." },
+    "back-to-top-shadow": { "$value": "{plx-sys.elevation-menu}", "$type": "shadow", "$description": "BackToTop floating: the shadow that lifts it above the content (the menu elevation, as the other floating surfaces)." },
+    "back-to-top-z-index": { "$value": "{plx-sys.layer-sticky}", "$type": "number", "$description": "BackToTop floating: above the content, under menus and dialogs (the sticky layer)." },
+    "back-to-top-duration": { "$value": "{plx-sys.motion-duration-fast}", "$type": "duration", "$description": "BackToTop floating: the fade when it shows and hides." }
+  }
+}

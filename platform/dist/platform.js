@@ -650,7 +650,212 @@ function StatusDot({
   }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -659,14 +864,22 @@ Object.defineProperty(exports, "__esModule", {
 exports.Tooltip = Tooltip;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press.
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
+     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
    Usage:
      <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
+     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
    Props:
-     content: the tooltip text
-     placement: "bottom" (default) | "top" | "end"
+     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
+     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
+     title: a short title above the body; it makes the tooltip rich
+     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+       it opens on click (Enter or Space on the trigger) instead of on hover and focus
+     rich: the rich look without a title or an action (default false; true when title or action is given)
      disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
        the time and only needs its tooltip when it is cut short
      className: more classes on the wrapper
@@ -679,11 +892,23 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
      release is dropped): a long press asks what a control is, it does not use it.
      The trigger is described by the tooltip (aria-describedby), added to any it already has.
+     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
+       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
+       the window.
+     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
+       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
+       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
+       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
    Notes:
      An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
      way to learn the control's name.
-     Not for essential or interactive content.
+     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
+     depends on hover.
+     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
 */
+
+const SIDES = ['bottom', 'top', 'start', 'end'];
 
 // a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
 const ms = (el, name) => {
@@ -709,6 +934,9 @@ const listen = () => {
 function Tooltip({
   content,
   placement = 'bottom',
+  title,
+  action,
+  rich = false,
   disabled = false,
   className,
   children
@@ -716,9 +944,13 @@ function Tooltip({
   const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
   const wrap = _react.default.useRef(null);
+  const bubble = _react.default.useRef(null);
   const press = _react.default.useRef(null); // the long-press timer
-  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press opened
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
   const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const isRich = !!(rich || title || action);
+  const toggle = !!action; // a toggletip: opened by a click on the trigger
+  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
   const clear = () => {
     clearTimeout(press.current);
     clearTimeout(hide.current);
@@ -727,23 +959,50 @@ function Tooltip({
     listen();
     return clear;
   }, []);
+  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
+  (0, _floating.useFloating)(wrap, bubble, {
+    open: open && !disabled && _floating.FLOATING_ANCHOR,
+    placement: side,
+    offset: 'sm',
+    flip: isRich,
+    shift: isRich
+  });
   _react.default.useEffect(() => {
     if (!open) return undefined;
     const esc = e => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key !== 'Escape') return;
+      const inside = wrap.current && wrap.current.contains(document.activeElement);
+      setOpen(false);
+      // a toggletip gives focus back to its trigger when Escape closes it from inside
+      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+    };
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
     };
     document.addEventListener('keydown', esc);
-    return () => document.removeEventListener('keydown', esc);
-  }, [open]);
+    if (toggle) document.addEventListener('mousedown', outside);
+    return () => {
+      document.removeEventListener('keydown', esc);
+      document.removeEventListener('mousedown', outside);
+    };
+  }, [open, toggle]);
   const child = _react.default.Children.only(children);
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, {
+  const described = {
     'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  });
+  };
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
+    'aria-expanded': open,
+    'aria-controls': open ? id + 'b' : undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  }) : described);
   if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-tooltip', className)
   }, trigger);
   const onPointerDown = e => {
-    if (e.pointerType !== 'touch') return;
+    if (e.pointerType !== 'touch' || toggle) return;
     clear();
     pressed.current = false;
     press.current = setTimeout(() => {
@@ -752,22 +1011,32 @@ function Tooltip({
     }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
   };
   const onPointerEnd = e => {
-    if (e.pointerType !== 'touch') return;
+    if (e.pointerType !== 'touch' || toggle) return;
     clearTimeout(press.current);
     if (pressed.current) hide.current = setTimeout(() => {
       setOpen(false);
       pressed.current = false;
     }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
   };
+  const onEnter = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    clearTimeout(hide.current);
+    setOpen(true);
+  };
+  const onLeave = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
+    if (isRich) {
+      clearTimeout(hide.current);
+      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
+    } else setOpen(false);
+  };
+  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
   return /*#__PURE__*/_react.default.createElement("span", {
     ref: wrap,
     className: (0, _cx.cx)('plx-tooltip', className),
-    onPointerEnter: e => {
-      if (e.pointerType !== 'touch') setOpen(true);
-    },
-    onPointerLeave: e => {
-      if (e.pointerType !== 'touch') setOpen(false);
-    },
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
     onPointerDown: onPointerDown,
     onPointerUp: onPointerEnd,
     onPointerCancel: onPointerEnd,
@@ -782,15 +1051,30 @@ function Tooltip({
       }
     },
     onFocus: () => {
-      if (lastInput !== 'touch') setOpen(true);
+      if (!toggle && lastInput !== 'touch') setOpen(true);
     },
-    onBlur: () => {
-      if (!pressed.current) setOpen(false);
+    onBlur: e => {
+      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
     }
-  }, trigger, /*#__PURE__*/_react.default.createElement("span", {
+  }, trigger, isRich ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    id: id + 'b',
+    className: bubbleCls
+  }, /*#__PURE__*/_react.default.createElement("span", {
     role: "tooltip",
     id: id,
-    className: (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + placement, open && 'is-open')
+    className: "plx-tooltip__content"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__title"
+  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__body"
+  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__action"
+  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    id: id,
+    className: bubbleCls
   }, content));
 }
   } },
@@ -2260,211 +2544,6 @@ function Portal({
     ref: origin,
     "data-plx-portal-origin": ""
   }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
-  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
-exports.useFloating = useFloating;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFloating
-   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
-   Usage:
-     const anchor = React.useRef(null), panel = React.useRef(null);
-     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
-     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
-     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
-     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
-     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
-   Props:
-     anchorRef: a ref to the element the floating element is placed against
-     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
-     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
-     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
-     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
-     options.flip (true): moves to the opposite side when there is no room
-     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
-     options.matchWidth (false): at least as wide as the anchor
-     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
-     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
-   Behavior:
-     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
-     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
-     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
-     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
-   Notes:
-     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
-     Menu, Tooltip and Popover adopt it in their own tasks.
-*/
-
-const SLOTS = 16;
-const taken = new Array(SLOTS + 1).fill(false);
-const take = () => {
-  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
-    taken[i] = true;
-    return i;
-  }
-  return 0;
-};
-const release = i => {
-  if (i) taken[i] = false;
-};
-
-// what the browser can do, checked once
-const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
-const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
-const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
-const OFFSETS = {
-  none: null,
-  xs: '--plx-sys-floating-offset-xs',
-  sm: '--plx-sys-floating-offset-sm',
-  md: '--plx-sys-floating-offset-md'
-};
-const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
-
-// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
-function tokenPixels(name) {
-  if (!name || typeof document === 'undefined') return 0;
-  const root = document.documentElement,
-    v = getComputedStyle(root).getPropertyValue(name).trim(),
-    n = parseFloat(v) || 0;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
-}
-const set = (el, name, value) => {
-  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
-};
-const isRtl = el => getComputedStyle(el).direction === 'rtl';
-
-// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
-function measured(anchor, floating, placement, flip, shift, gap) {
-  const a = anchor.getBoundingClientRect(),
-    f = floating.getBoundingClientRect();
-  const W = window.innerWidth,
-    H = window.innerHeight,
-    rtl = isRtl(anchor);
-  let [side, align] = placement.split('-');
-  const room = {
-    top: a.top - gap,
-    bottom: H - a.bottom - gap,
-    start: rtl ? W - a.right - gap : a.left - gap,
-    end: rtl ? a.left - gap : W - a.right - gap
-  };
-  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
-  const opposite = {
-    top: 'bottom',
-    bottom: 'top',
-    start: 'end',
-    end: 'start'
-  }[side];
-  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
-  if (shift && align && (side === 'top' || side === 'bottom')) {
-    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
-    const startEdge = rtl ? a.right : a.left,
-      endRoom = rtl ? startEdge : W - startEdge;
-    const endEdge = rtl ? a.left : a.right,
-      startRoom = rtl ? W - endEdge : endEdge;
-    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
-  }
-  if (shift && align && (side === 'start' || side === 'end')) {
-    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
-  }
-  return align ? side + '-' + align : side;
-}
-
-// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
-function pointAt(floating, x, y) {
-  const f = floating.getBoundingClientRect(),
-    W = window.innerWidth,
-    H = window.innerHeight,
-    m = tokenPixels('--plx-sys-floating-viewport-margin');
-  const rtl = isRtl(floating);
-  // the inline-start inset of the point, measured from the window's inline-start edge
-  let ix = rtl ? W - x : x,
-    iy = y;
-  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
-  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
-  ix = Math.max(m, Math.min(ix, W - m - f.width));
-  iy = Math.max(m, Math.min(iy, H - m - f.height));
-  return [Math.round(ix), Math.round(iy)];
-}
-function useFloating(anchorRef, floatingRef, options = {}) {
-  const {
-    open = true,
-    placement = 'bottom-start',
-    offset = 'xs',
-    flip = true,
-    shift = true,
-    matchWidth = false,
-    virtual = null
-  } = options;
-  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const pointer = !!(virtual && FLOATING_POINTER);
-  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
-  const [used, setUsed] = _react.default.useState(wanted);
-  const slot = _react.default.useRef(0);
-  const vx = virtual ? virtual.x : null,
-    vy = virtual ? virtual.y : null;
-  _react.default.useLayoutEffect(() => {
-    const anchor = anchorRef && anchorRef.current,
-      floating = floatingRef && floatingRef.current;
-    if (!open || !floating) return undefined;
-    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
-    if (pointer) {
-      set(floating, 'data-plx-floating-pointer', '');
-      const [ix, iy] = pointAt(floating, vx, vy);
-      set(floating, 'data-plx-floating-x', ix);
-      set(floating, 'data-plx-floating-y', iy);
-    } else if (anchor) {
-      if (!slot.current) slot.current = take();
-      set(anchor, 'data-plx-floating-anchor', slot.current || null);
-      set(floating, 'data-plx-floating', slot.current || 'inline');
-      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
-      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
-      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
-      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
-      if (host) set(host, 'data-plx-floating-host', '');
-      set(floating, 'data-plx-floating-placement', wanted);
-      let next = wanted;
-      if (mode === 'inline') {
-        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-        set(floating, 'data-plx-floating-placement', next);
-      }
-      setUsed(next);
-    }
-    return () => {
-      ATTRS.forEach(n => floating.removeAttribute(n));
-      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
-      if (host) host.removeAttribute('data-plx-floating-host');
-      release(slot.current);
-      slot.current = 0;
-    };
-  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
-
-  // the inline fallback measures again when the window changes size
-  _react.default.useEffect(() => {
-    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
-    const again = () => {
-      const anchor = anchorRef.current,
-        floating = floatingRef.current;
-      if (!anchor || !floating) return;
-      set(floating, 'data-plx-floating-placement', wanted);
-      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-      set(floating, 'data-plx-floating-placement', next);
-      setUsed(next);
-    };
-    window.addEventListener('resize', again);
-    return () => window.removeEventListener('resize', again);
-  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
-  return {
-    placement: mode === 'anchor' ? wanted : used,
-    mode
-  };
 }
   } },
   "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -5994,7 +6073,7 @@ Toolbar.Spacer = function ToolbarSpacer() {
   });
 };
   } },
-  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6003,23 +6082,32 @@ Object.defineProperty(exports, "__esModule", {
 exports.ConfirmDialog = ConfirmDialog;
 exports.Dialog = Dialog;
 exports.Drawer = Drawer;
+exports.PromptDialog = PromptDialog;
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Input = require("../Input/Input.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Dialog, ConfirmDialog, Drawer
-   Summary: Modal layers. Dialog is a centered window; ConfirmDialog is an alert dialog that asks to confirm an action;
-     Drawer is the same shell, docked to a side.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Dialog, ConfirmDialog, PromptDialog, Drawer
+   Summary: Modal layers. Dialog is a centered window (or, with modal={false}, a non-modal one beside the page);
+     ConfirmDialog is an alert dialog that asks to confirm an action; PromptDialog asks for one short value; Drawer is the
+     same shell, docked to a side.
    Usage:
      <Dialog open={open} onClose={close} title="Rename" description="…" size="sm" footer={<>…</>}>…</Dialog>
+     <Dialog open={open} onClose={close} title="Find and replace" modal={false} size="sm">…</Dialog>
      <ConfirmDialog open={open} title="Delete 3 assets?" message="…" confirmLabel="Delete" destructive
        onConfirm={() => …} onCancel={() => …} />
+     <PromptDialog open={open} title="Rename asset" label="Name" defaultValue="Cross 014" confirmLabel="Rename"
+       validate={(v) => (v.trim() ? '' : 'Enter a name.')} onSubmit={(value) => …} onCancel={() => …} />
      <Drawer open={open} onClose={close} title="Details" side="end" size="md" footer={<>…</>}>…</Drawer>
    Props:
      Dialog.open: whether the layer is shown
+     Dialog.modal: false makes it non-modal (default true): no veil, the page behind stays usable, focus is not trapped
+       and the page scrolls (09 Overlays › Dialogs › Non-modal dialog)
      Dialog.onClose(): runs from the close button, Escape and a click on the veil
      Dialog.title: the title at the start of the header; it names the dialog
      Dialog.description: a paragraph at the top of the body; it describes the dialog
@@ -6043,16 +6131,39 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      ConfirmDialog.onConfirm(): runs from the confirm button
      ConfirmDialog.onCancel(): runs from the cancel button, the close button, Escape and the veil
      ConfirmDialog.children: more content in the body
+     PromptDialog.open: whether the dialog is shown
+     PromptDialog.title: the action, as a title ("Rename asset")
+     PromptDialog.message: a sentence under the title (optional)
+     PromptDialog.label: the field's visible label
+     PromptDialog.defaultValue: the value the field starts with when the dialog opens (default "")
+     PromptDialog.placeholder: a hint in the empty field (never in place of the label)
+     PromptDialog.description: help text under the field
+     PromptDialog.confirmLabel: the confirm button text, the action's verb (default "Save")
+     PromptDialog.cancelLabel: the cancel button text (default "Cancel")
+     PromptDialog.validate(value): returns an error message, or "" when the value is fine; it runs on submit
+     PromptDialog.onSubmit(value): runs with the value when it is submitted and valid
+     PromptDialog.onCancel(): runs from Cancel, the close button, Escape and the veil
+     PromptDialog.inputProps: more props for the Input (maxLength, inputMode, autoComplete…)
+     PromptDialog.size: as Dialog.size (default "sm")
    Behavior:
      Focus moves in (initialFocus, else the first control in the body, else the first footer action) and returns to the opener.
      Tab stays inside the layer.
      Escape and a click on the veil close it, unless dismissible is false.
      The page does not scroll while the layer is open.
      A destructive ConfirmDialog starts on Cancel, uses a danger confirm button and the destructive dialog role.
+     Non-modal (modal={false}): the same window and place, with no veil; the page behind stays usable and scrolls. Focus
+       moves in when it opens but is not trapped; F6 moves focus between the dialog and the element that opened it;
+       Escape closes it while focus is inside it, and focus returns to the opener when it closes from inside.
+       aria-modal is not set.
+     PromptDialog: a form with one field. The field takes focus with its text selected; Enter submits; validate runs on
+       submit, and an error keeps the dialog open with the message under the field (announced); nothing is disabled.
+       The value starts again from defaultValue each time it opens.
    Notes:
      Drawer takes every Dialog prop (open, onClose, title, description, icon, footer, initialFocus, closeLabel, dismissible,
        flush, className, children), with its own side and size.
      Modal layers follow D3, option C.
+     Full-screen dialog (09 Overlays › Dialogs › Full-screen dialog) is size="full": the whole modal layer, inside the
+       layout inset.
      Header and footer are filled bands (--plx-sys-surface-dialog-chrome) with hairline dividers, always shown; the body is white.
      The title is at the start of the header, the close button at its end, the actions in the footer.
      The layer renders in a portal on document.body.
@@ -6060,6 +6171,42 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
+
+// a non-modal dialog: focus moves in when it opens (not trapped), F6 moves between it and its opener, and focus goes back
+// to the opener when it closes from inside (useLayer does this only for modal layers)
+function useNonModalFocus(ref, open, active, firstFocus) {
+  const inside = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (!open || !active) return undefined;
+    const opener = document.activeElement;
+    const root = ref.current;
+    const first = firstFocus() || root;
+    if (first) first.focus({
+      preventScroll: true
+    });
+    inside.current = true;
+    const f6 = e => {
+      if (e.key !== 'F6' || e.ctrlKey || e.metaKey || e.altKey || !ref.current) return;
+      const into = !ref.current.contains(document.activeElement);
+      const target = into ? firstFocus() || ref.current : opener;
+      if (target && target.focus && document.contains(target)) {
+        e.preventDefault();
+        target.focus({
+          preventScroll: true
+        });
+      }
+    };
+    document.addEventListener('keydown', f6);
+    return () => {
+      document.removeEventListener('keydown', f6);
+      const a = document.activeElement;
+      if (inside.current && (!a || a === document.body) && opener && opener.focus && document.contains(opener)) opener.focus({
+        preventScroll: true
+      });
+    };
+  }, [open, active]);
+  return inside;
+}
 function ModalShell({
   kind,
   open,
@@ -6075,6 +6222,7 @@ function ModalShell({
   closeLabel = 'Close',
   dismissible = true,
   flush = false,
+  modal = true,
   className,
   children
 }) {
@@ -6086,26 +6234,43 @@ function ModalShell({
     return (0, _layer.focusables)(root.querySelector('.plx-dialog__body'))[0] || (0, _layer.focusables)(root.querySelector('.plx-dialog__footer'))[0] || null;
   };
   (0, _layer.useLayer)(ref, open, {
-    modal: true,
-    onEscape: dismissible ? onClose : null,
+    modal,
+    onEscape: dismissible && modal ? onClose : null,
     initialFocus: firstFocus
   });
+  const inside = useNonModalFocus(ref, open, !modal, firstFocus);
   if (!open) return null;
   const onVeil = e => {
-    if (dismissible && e.target === e.currentTarget && onClose) onClose();
+    if (modal && dismissible && e.target === e.currentTarget && onClose) onClose();
   };
+  // non-modal: Escape closes it only while focus is inside it (a menu inside it closes first: its layer stops the key)
+  const onKeyDown = !modal && dismissible ? e => {
+    if (e.key === 'Escape' && onClose) {
+      e.stopPropagation();
+      onClose();
+    }
+  } : undefined;
+  const track = !modal ? {
+    onFocus: () => {
+      inside.current = true;
+    },
+    onBlur: e => {
+      inside.current = !!(ref.current && ref.current.contains(e.relatedTarget));
+    }
+  } : {};
   return /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-modal-layer', 'plx-modal-layer--' + kind, side && 'plx-modal-layer--' + side),
+    className: (0, _cx.cx)('plx-modal-layer', 'plx-modal-layer--' + kind, side && 'plx-modal-layer--' + side, !modal && 'plx-modal-layer--non-modal'),
     onMouseDown: onVeil
-  }, /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: ref,
     role: role,
-    "aria-modal": "true",
+    "aria-modal": modal ? 'true' : undefined,
     "aria-labelledby": id + 't',
     "aria-describedby": description ? id + 'd' : undefined,
     tabIndex: -1,
-    className: (0, _cx.cx)('plx-dialog', kind === 'drawer' && 'plx-drawer', 'plx-' + kind + '--' + size, className)
-  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-dialog', kind === 'drawer' && 'plx-drawer', 'plx-' + kind + '--' + size, className),
+    onKeyDown: onKeyDown
+  }, track), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-dialog__header"
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-dialog__icon"
@@ -6178,6 +6343,79 @@ function ConfirmDialog({
       onClick: onConfirm
     }, confirmLabel))
   }, children);
+}
+function PromptDialog({
+  open,
+  title,
+  message,
+  label,
+  defaultValue = '',
+  placeholder,
+  description,
+  confirmLabel = 'Save',
+  cancelLabel = 'Cancel',
+  validate,
+  onSubmit,
+  onCancel,
+  inputProps,
+  size = 'sm'
+}) {
+  const formId = (0, _layer.useUid)('plx-prompt');
+  const input = _react.default.useRef(null);
+  const [value, setValue] = _react.default.useState(defaultValue);
+  const [error, setError] = _react.default.useState('');
+  // each time it opens: the value starts again from defaultValue, with no error, and its text is selected
+  _react.default.useEffect(() => {
+    if (open) {
+      setValue(defaultValue);
+      setError('');
+    }
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (open && input.current && input.current.select) input.current.select();
+  }, [open]);
+  const submit = e => {
+    e.preventDefault();
+    const problem = validate ? validate(value) || '' : '';
+    setError(problem);
+    if (problem) {
+      if (input.current) input.current.focus();
+      return;
+    }
+    if (onSubmit) onSubmit(value);
+  };
+  return /*#__PURE__*/_react.default.createElement(ModalShell, {
+    kind: "dialog",
+    size: size,
+    open: open,
+    onClose: onCancel,
+    title: title,
+    description: message,
+    initialFocus: input,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: onCancel
+    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      type: "submit",
+      form: formId
+    }, confirmLabel))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: submit
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: label,
+    description: description,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, _extends({
+    ref: input,
+    value: value,
+    placeholder: placeholder,
+    onChange: e => {
+      setValue(e.target.value);
+      if (error) setError('');
+    }
+  }, inputProps)))));
 }
   } },
   "platform/utils/sizeSteps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -21044,7 +21282,654 @@ function usePrint(options = {}) {
   };
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/CommandMenu/CommandMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommandMenu = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _hotkey = require("../../utils/hotkey.js");
+var _announce = require("../../utils/announce.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _Button = require("../Button/Button.jsx");
+var _SearchField = require("../SearchField/SearchField.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandMenu
+   Summary: A filterable list of commands (04 Actions & Commands › Menus and commands › Command menu): a search field
+     and, under it, the commands that match what is typed, in groups, with their icons, descriptions and keyboard
+     shortcuts; a command can open a page of further commands. It is the ARIA combobox pattern with a listbox, drawn in
+     place; CommandPalette opens it in a dialog with Ctrl K.
+   Usage:
+     <CommandMenu label="Commands" items={[
+       { id: 'new', label: 'Create collection', icon: 'plus', group: 'Create', shortcut: 'Mod+Shift+N', onSelect: create },
+       { id: 'theme', label: 'Change theme', icon: 'gear', group: 'Settings', items: [
+         { id: 'light', label: 'Light', onSelect: () => setTheme('light') }, { id: 'dark', label: 'Dark', onSelect: … }] },
+     ]} />
+     <CommandMenu items={found} query={q} onQueryChange={setQ} filter={false} loading={pending} />   // the app searches
+   Props:
+     items: the commands: [{ id, label, icon, group, description, keywords, shortcut, disabled, onSelect(item), items,
+       placeholder }]; group puts it under that heading (groups in the order they first appear); description is a second
+       line; keywords are more words it matches; shortcut is a hotkey binding ("Mod+K") shown with hotkeyLabel; items
+       makes it open a page of those commands (placeholder: that page's hint)
+     label: the accessible name of the field and the list (default strings.label)
+     placeholder: the hint in the empty field (default strings.placeholder)
+     query, onQueryChange(text): the typed text, controlled (default: kept inside)
+     filter: true (default) filters and ranks the items by the text; false shows them as given (the app searches)
+     loading: the commands are being fetched: a spinner in the field and a Loading row while there are none (default false)
+     onSelect(item): runs after a command's own onSelect, for every command run (a palette closes on it)
+     autoFocus: the field takes focus when it is drawn (default false; CommandPalette's dialog focuses it)
+     strings: the words it shows and announces, for other languages: { label: "Commands", placeholder: "Type a command or
+       search", empty: "No results for “{query}”", loading: "Loading", back: "Back", results: "{count} results" }
+     className: more classes on the menu
+     ref: forwarded to the <input>
+   Behavior:
+     Typing filters: a label that starts with the text comes first, then one with a word that starts with it, then one
+       that contains it, then a match in keywords, description or group; the groups keep their headings.
+     ↓ and ↑ move the active command (it wraps at the ends) while focus stays in the field (aria-activedescendant);
+       Enter runs it; a pointer moves the active command and a click runs it. A disabled command shows but does not run.
+     A command with items opens its page: the field empties, its hint changes, and a Back button with the page's name
+       shows above it; Backspace in the empty field or Back returns. Escape clears the text, then goes back a page; on the
+       first page it is left to the container (a palette closes).
+     The number of results is announced politely as it changes; no results shows "No results for “text”".
+     The shortcut keys are shown, not bound: bind them where the command lives (useHotkey with the same label).
+   Notes:
+     Command labels are verb plus object ("Create collection"), the same words as in the menus and buttons.
+     Not for choosing a value in a form (Combobox), nor for searching records (SearchField and its results).
+*/
+const STRINGS = {
+  label: 'Commands',
+  placeholder: 'Type a command or search',
+  empty: 'No results for “{query}”',
+  loading: 'Loading',
+  back: 'Back',
+  results: '{count} results'
+};
+
+// how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,
+// 1 the keywords, description or group do, 0 no match
+function score(item, q) {
+  if (!q) return 1;
+  const label = String(item.label || '').toLowerCase();
+  if (label.indexOf(q) === 0) return 4;
+  if (label.split(/[\s\-_/]+/).some(w => w.indexOf(q) === 0)) return 3;
+  if (label.indexOf(q) >= 0) return 2;
+  const more = [].concat(item.keywords || [], item.description || '', item.group || '').join(' ').toLowerCase();
+  return more.indexOf(q) >= 0 ? 1 : 0;
+}
+const CommandMenu = exports.CommandMenu = /*#__PURE__*/_react.default.forwardRef(function CommandMenu({
+  items = [],
+  label,
+  placeholder,
+  query: queryProp,
+  onQueryChange,
+  filter = true,
+  loading = false,
+  onSelect,
+  autoFocus = false,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-cmd');
+  const input = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const list = _react.default.useRef(null);
+  const [own, setOwn] = _react.default.useState('');
+  const query = queryProp !== undefined ? queryProp : own;
+  const setQuery = v => {
+    if (queryProp === undefined) setOwn(v);
+    if (onQueryChange) onQueryChange(v);
+  };
+  const [pages, setPages] = _react.default.useState([]); // the pages opened from the first one: [item, …]
+  const [active, setActive] = _react.default.useState(0);
+  const page = pages.length ? pages[pages.length - 1] : null;
+  const source = page ? page.items || [] : items;
+  const q = query.trim().toLowerCase();
+
+  // the matching commands, ranked, then kept together under their group (groups in the order they first appear)
+  const ranked = filter ? source.map((it, i) => ({
+    it,
+    s: score(it, q),
+    i
+  })).filter(x => x.s > 0).sort((a, b) => b.s - a.s || a.i - b.i).map(x => x.it) : source.slice();
+  const groups = [];
+  ranked.forEach(it => {
+    if (groups.indexOf(it.group || '') < 0) groups.push(it.group || '');
+  });
+  const shown = groups.reduce((all, g) => all.concat(ranked.filter(it => (it.group || '') === g)), []);
+  _react.default.useEffect(() => {
+    setActive(0);
+  }, [q, pages.length, shown.length]);
+  _react.default.useEffect(() => {
+    if (autoFocus && input.current) input.current.focus({
+      preventScroll: true
+    });
+  }, []);
+  // the active command stays in view as it moves: only the list scrolls (never the page around it)
+  _react.default.useEffect(() => {
+    const L = list.current,
+      el = L && L.querySelector('[data-plx-command-index="' + active + '"]');
+    if (!el) return;
+    // grid: a scroll position (scrollTop), not a style or a size: it brings the row's measured edge to the list's edge
+    const lr = L.getBoundingClientRect(),
+      er = el.getBoundingClientRect();
+    if (er.top < lr.top) L.scrollTop -= lr.top - er.top;else if (er.bottom > lr.bottom) L.scrollTop += er.bottom - lr.bottom;
+  }, [active]);
+  const open = item => {
+    setPages(pages.concat([item]));
+    setQuery('');
+    if (input.current) input.current.focus();
+  };
+  const back = () => {
+    setPages(pages.slice(0, -1));
+    setQuery('');
+    if (input.current) input.current.focus();
+  };
+  const run = item => {
+    if (!item || item.disabled) return;
+    if (item.items) {
+      open(item);
+      return;
+    }
+    if (item.onSelect) item.onSelect(item);
+    if (onSelect) onSelect(item);
+  };
+  const move = d => {
+    if (!shown.length) return;
+    setActive(a => (a + d + shown.length) % shown.length);
+  };
+  const onKeyDown = e => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      move(1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      move(-1);
+    } else if (e.key === 'Enter') {
+      if (shown[active]) {
+        e.preventDefault();
+        run(shown[active]);
+      }
+    } else if (e.key === 'Escape') {
+      if (query) {
+        e.preventDefault();
+        e.stopPropagation();
+        setQuery('');
+      } else if (pages.length) {
+        e.preventDefault();
+        e.stopPropagation();
+        back();
+      }
+    } else if (e.key === 'Backspace' && !query && pages.length) {
+      e.preventDefault();
+      back();
+    }
+  };
+  const listId = id + '-list';
+  const optId = i => id + '-o' + i;
+  const name = label || t.label;
+  const count = loading && !shown.length ? '' : q && !shown.length ? t.empty.replace('{query}', query.trim()) : t.results.replace('{count}', String(shown.length));
+  let n = -1;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-command-menu', className)
+  }, rest), page ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-menu__page"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "arrow-left",
+    label: t.back,
+    onClick: back
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-command-menu__page-title"
+  }, page.label)) : null, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    ref: input,
+    className: "plx-command-menu__search",
+    value: query,
+    onChange: e => setQuery(e.target.value),
+    onClear: query ? () => setQuery('') : undefined,
+    loading: loading,
+    label: page ? page.label : name,
+    placeholder: page && page.placeholder || placeholder || t.placeholder,
+    role: "combobox",
+    "aria-expanded": "true",
+    "aria-controls": listId,
+    "aria-autocomplete": "list",
+    "aria-activedescendant": shown[active] ? optId(active) : undefined,
+    onKeyDown: onKeyDown
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    "aria-label": page ? page.label : name,
+    "aria-busy": loading || undefined,
+    hidden: !shown.length || undefined,
+    className: "plx-command-menu__list"
+  }, groups.map(g => {
+    const members = shown.filter(it => (it.group || '') === g);
+    const head = g ? id + '-g' + groups.indexOf(g) : undefined;
+    const rows = members.map(it => {
+      n += 1;
+      const i = n;
+      return /*#__PURE__*/_react.default.createElement("div", {
+        key: it.id || it.label,
+        id: optId(i),
+        role: "option",
+        "aria-selected": i === active,
+        "aria-disabled": it.disabled || undefined,
+        "aria-haspopup": it.items ? 'listbox' : undefined,
+        "data-plx-command-index": i,
+        className: (0, _cx.cx)('plx-command-menu__item', i === active && 'is-active'),
+        onMouseDown: e => e.preventDefault(),
+        onMouseMove: () => {
+          if (i !== active) setActive(i);
+        },
+        onClick: () => run(it)
+      }, it.icon ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-command-menu__icon",
+        "aria-hidden": "true"
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: it.icon
+      })) : null, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-command-menu__text"
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-command-menu__label"
+      }, it.label), it.description ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-command-menu__description"
+      }, it.description) : null), it.shortcut ? /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, {
+        className: "plx-command-menu__shortcut"
+      }, (0, _hotkey.hotkeyLabel)(it.shortcut)) : null, it.items ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-command-menu__chevron",
+        "aria-hidden": "true"
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "chevron-right"
+      })) : null);
+    });
+    return g ? /*#__PURE__*/_react.default.createElement("div", {
+      key: 'g' + g,
+      role: "group",
+      "aria-labelledby": head,
+      className: "plx-command-menu__group"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      id: head,
+      className: "plx-command-menu__group-label",
+      role: "presentation"
+    }, g), rows) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+      key: "g"
+    }, rows);
+  })), !shown.length && loading ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-menu__status"
+  }, t.loading) : null, !shown.length && !loading ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-menu__status"
+  }, q ? t.empty.replace('{query}', query.trim()) : t.results.replace('{count}', '0')) : null, /*#__PURE__*/_react.default.createElement(_announce.LiveRegion, {
+    kind: "status"
+  }, count));
+});
+  } },
+  "platform/patterns/CommandPalette/CommandPalette.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommandPalette = CommandPalette;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _hotkey = require("../../utils/hotkey.js");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _CommandMenu = require("../../components/CommandMenu/CommandMenu.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · CommandPalette
+   Summary: The command menu in a dialog, opened with a shortcut (04 Actions & Commands › Menus and commands › Command
+     palette): Ctrl K (⌘ K on a Mac) anywhere in the app, or in one region when it is scoped, and from a visible control.
+     Type to find a command or a place, Enter to run it; the palette closes and focus returns.
+   Usage:
+     <CommandPalette items={commands} trigger={<Button icon="search">Commands</Button>} />           // global: Ctrl K
+     <CommandPalette items={editorCommands} scope={editorRef} hotkey="Mod+Shift+P" title="Editor commands" />
+     <CommandPalette items={commands} open={open} onOpenChange={setOpen} hotkey={null} />            // opened by the app
+   Props:
+     items: the commands, as CommandMenu.items (groups, shortcuts, pages)
+     hotkey: the binding that opens it (default "Mod+K"); null for none
+     scope: a ref to the region the hotkey belongs to: it opens only while focus is inside it (default: the whole page)
+     trigger: a control that opens it (one element; it gets aria-haspopup="dialog" and aria-keyshortcuts)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onOpenChange(open): runs when it opens or closes
+     title: the dialog title (default strings.title)
+     placeholder, loading, query, onQueryChange, filter: as CommandMenu
+     onSelect(item): runs after a command runs (the palette has closed)
+     strings: the words it shows and announces, for other languages: { title: "Commands", close: "Close" } and the
+       CommandMenu strings
+     className: more classes on the dialog
+   Behavior:
+     The hotkey (useHotkey, listed in the shortcuts dialog under General with the title) opens it, also from a text field;
+       pressed again while it is open, it closes it.
+     It is a modal Dialog (size md) at the top of the window, so the list grows downward without moving the field. The
+       field takes focus; the CommandMenu keys apply; a command runs and the palette closes, focus returning to where it
+       was. Escape or the close button close it without running anything.
+     Each time it opens the text is empty and the first page shows.
+   Notes:
+     A faster way to commands that are also in the interface, never the only way. Name commands as in the menus.
+     Built only from Platform parts: Dialog, CommandMenu and useHotkey.
+*/
+
+const STRINGS = {
+  title: 'Commands',
+  close: 'Close'
+};
+
+// a one-step binding as aria-keyshortcuts writes it (Mod+K: Control+K, or Meta+K on a Mac)
+const keyshortcut = b => /\s/.test(String(b).trim()) ? undefined : String(b).trim().split('+').map(k => /^mod$/i.test(k) ? (0, _hotkey.isMac)() ? 'Meta' : 'Control' : /^ctrl$/i.test(k) ? 'Control' : k).join('+');
+function CommandPalette({
+  items = [],
+  hotkey = 'Mod+K',
+  scope,
+  trigger,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  title,
+  placeholder,
+  loading,
+  query,
+  onQueryChange,
+  filter,
+  onSelect,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const setOpen = v => {
+    if (!controlled) setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  };
+  const field = _react.default.useRef(null);
+  const name = title || t.title;
+  (0, _hotkey.useHotkey)(hotkey, () => setOpen(!open), {
+    scope,
+    allowInFields: true,
+    label: name,
+    group: 'General',
+    enabled: !!hotkey
+  });
+  const chosen = item => {
+    setOpen(false);
+    if (onSelect) onSelect(item);
+  };
+  const opener = trigger ? /*#__PURE__*/_react.default.cloneElement(_react.default.Children.only(trigger), {
+    'aria-haspopup': 'dialog',
+    'aria-keyshortcuts': hotkey ? keyshortcut(hotkey) : undefined,
+    onClick: e => {
+      if (trigger.props.onClick) trigger.props.onClick(e);
+      setOpen(true);
+    }
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, opener, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    onClose: () => setOpen(false),
+    title: name,
+    size: "md",
+    initialFocus: field,
+    closeLabel: t.close,
+    className: (0, _cx.cx)('plx-command-palette', className)
+  }, open ? /*#__PURE__*/_react.default.createElement(_CommandMenu.CommandMenu, {
+    ref: field,
+    items: items,
+    label: name,
+    placeholder: placeholder,
+    loading: loading,
+    query: query,
+    onQueryChange: onQueryChange,
+    filter: filter,
+    onSelect: chosen,
+    strings: strings,
+    className: "plx-command-palette__menu"
+  }) : null));
+}
+  } },
+  "platform/components/DownloadButton/DownloadButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DownloadButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _ProgressCircle = require("../ProgressCircle/ProgressCircle.jsx");
+var _format = require("../../utils/format.js");
+var _announce = require("../../utils/announce.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DownloadButton
+   Summary: A button that saves a file to the device (04 Actions & Commands › Common actions › Download): the download
+     icon, its label, the file's format and size before it starts, and its progress while a large or prepared file comes
+     down.
+   Usage:
+     <DownloadButton href="/files/cross-014.png" fileName="cross-014.png" />
+     <DownloadButton href={url} fileName="brand-kit.zip" format="ZIP" size={48200000}>Download original</DownloadButton>
+     <DownloadButton iconOnly href={url} fileName="report.pdf" />
+     <DownloadButton onDownload={start} progress={percent} fileName="export.csv" />     // prepared by the app
+   Props:
+     href: the file's address; it renders a link with the download attribute (the browser saves the file)
+     fileName: the name the file is saved under (the download attribute); it is also part of the accessible name
+     onDownload(event): runs on click instead of following a link (a file the app prepares or fetches itself)
+     format: the file's format as people know it ("PNG", "PDF"); shown after the label in the data font
+     size: the file's size in bytes; shown after the format (formatBytes: "4.2 MB")
+     progress: while downloading: a number from 0 to 100, or true when the amount is unknown; leave it out otherwise
+     iconOnly: only the download icon (default false); its name still says what downloads
+     variant: the Button variant (default "secondary")
+     buttonSize: the Button size, "md" (default) | "sm" | "xs"
+     locale: the language the size and percent are formatted in (default: the page's language)
+     strings: the words it shows and announces, for other languages: { download: "Download", downloading: "Downloading",
+       ready: "Download ready" }
+     children: the label (default strings.download)
+     className: more classes on the button
+     Other props pass through to the Button.
+   Behavior:
+     Before it starts, the format and size show after the label ("Download · PNG · 4.2 MB"), so people know what they
+       get; an icon-only button says them in its name.
+     While progress is set the icon becomes a progress ring (an unknown amount turns) and the label says "Downloading"
+       with the percent in the data font; the button is busy (aria-busy) and a click does nothing, so a file never
+       downloads twice. When progress reaches 100 "Download ready" is announced politely.
+     The accessible name names the file and its format: "Download cross-014.png (PNG, 4.2 MB)".
+   Notes:
+     One file in its stored format. Several formats or sizes: a Menu of downloads; a changed or filtered copy: Export.
+     Opening a file in the browser is a Link, not a download.
+*/
+const STRINGS = {
+  download: 'Download',
+  downloading: 'Downloading',
+  ready: 'Download ready'
+};
+const DownloadButton = exports.DownloadButton = /*#__PURE__*/_react.default.forwardRef(function DownloadButton({
+  href,
+  fileName,
+  onDownload,
+  format,
+  size,
+  progress,
+  iconOnly = false,
+  variant = 'secondary',
+  buttonSize = 'md',
+  locale,
+  strings,
+  children,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const busy = progress !== undefined && progress !== null && progress !== false;
+  const known = busy && typeof progress === 'number';
+  const pct = known ? Math.max(0, Math.min(100, progress)) : null;
+  const bytes = typeof size === 'number' ? (0, _format.formatBytes)(size, {
+    locale
+  }) : '';
+  const facts = [format, bytes].filter(Boolean);
+  const percent = known ? (0, _format.formatPercent)(pct / 100, {
+    locale,
+    decimals: 0
+  }) : '';
+  // the finished download is announced once, when progress reaches 100
+  const done = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (known && pct >= 100 && !done.current) {
+      done.current = true;
+      (0, _announce.announce)(t.ready + (fileName ? ': ' + fileName : ''));
+    }
+    if (!busy) done.current = false;
+  }, [busy, known, pct]);
+  const label = children !== undefined && children !== null ? children : t.download;
+  const word = typeof label === 'string' ? label : t.download;
+  const name = busy ? [t.downloading, fileName, percent].filter(Boolean).join(' ') : [word, fileName].filter(Boolean).join(' ') + (facts.length ? ' (' + facts.join(', ') + ')' : '');
+  const icon = busy ? /*#__PURE__*/_react.default.createElement(_ProgressCircle.ProgressCircle, {
+    size: "sm",
+    value: known ? pct : undefined,
+    label: t.downloading,
+    "aria-hidden": "true"
+  }) : 'download-arrow';
+  const onClick = e => {
+    if (busy) {
+      e.preventDefault();
+      return;
+    }
+    if (onDownload) onDownload(e);
+  };
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    ref: ref,
+    variant: variant,
+    size: buttonSize,
+    icon: icon,
+    iconOnly: iconOnly,
+    label: name,
+    href: busy ? undefined : href,
+    download: href && !busy ? fileName || '' : undefined,
+    "aria-busy": busy || undefined,
+    "aria-disabled": busy || undefined,
+    className: (0, _cx.cx)('plx-download-button', busy && 'is-loading', className),
+    onClick: onClick
+  }, rest), busy ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, t.downloading, percent ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-download-button__percent"
+  }, percent) : null) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, label, facts.length ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-download-button__meta"
+  }, facts.join(' · ')) : null));
+});
+  } },
+  "platform/components/BackToTop/BackToTop.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BackToTop = BackToTop;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _useIntersection = require("../../hooks/useIntersection.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · BackToTop
+   Summary: A button that takes a long page back to its top (04 Actions & Commands › Common actions › Back to top):
+     floating at the end of the window's bottom edge once the page has scrolled about a screen, or inline at the end of
+     the content.
+   Usage:
+     <BackToTop />                                         // first in the page's content: floats once it has scrolled a screen
+     <BackToTop scrollRef={mainRef} focusRef={titleRef} /> // a scrolling region, and where focus goes
+     <BackToTop variant="inline" />                        // at the end of a long article
+   Props:
+     variant: "floating" (default; an icon button at the end of the window's bottom edge, shown after a screen of
+       scrolling) | "inline" (a labeled button in the flow, always shown)
+     scrollRef: a ref to the scrolling region that goes back to its top (default: the page)
+     focusRef: a ref to the element that takes focus at the top (default: the region's first level 1 heading, else its
+       main landmark, else the region)
+     strings: the words it shows and announces, for other languages: { label: "Back to top" }
+     className: more classes on the button
+   Behavior:
+     Floating: render it first in the scrolling content. A sentinel as tall as the reveal distance
+       (--plx-comp-back-to-top-reveal-distance, one window height) sits where it is drawn; useIntersection watches it in the
+       scroll region, so the button shows once the sentinel has left the view, without scroll handlers. Hidden, it is out
+       of the Tab order.
+     A press scrolls the region to its top (smoothly, or at once for people who ask for less motion) and moves focus to
+       the top (focusRef), so keyboard and screen reader users continue from there.
+   Notes:
+     For long pages only; not in panes with their own short scroll, nor where a fixed header already holds the way up.
+     The button is a Button (secondary, with the chevron-up icon); its target is at least the standard control height.
+*/
+
+const STRINGS = {
+  label: 'Back to top'
+};
+const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function BackToTop({
+  variant = 'floating',
+  scrollRef,
+  focusRef,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const floating = variant !== 'inline';
+  const sentinel = _react.default.useRef(null);
+  const {
+    visible: atTop,
+    entry
+  } = (0, _useIntersection.useIntersection)(sentinel, {
+    root: scrollRef || null,
+    disabled: !floating
+  });
+  // shown once the sentinel has been measured and is out of view (not before the first report)
+  const shown = floating && !!entry && !atTop;
+  const goTop = () => {
+    const area = scrollRef && scrollRef.current;
+    const behavior = reduced() ? 'auto' : 'smooth';
+    if (area) area.scrollTo({
+      top: 0,
+      behavior
+    });else window.scrollTo({
+      top: 0,
+      behavior
+    });
+    const root = area || document;
+    let target = focusRef && focusRef.current || root.querySelector('h1') || root.querySelector('main, [role="main"]') || area;
+    if (!target) return;
+    if (!target.matches('a[href],button,input,select,textarea,[tabindex]')) target.setAttribute('tabindex', '-1');
+    target.focus({
+      preventScroll: true
+    });
+  };
+  if (!floating) {
+    return /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "sm",
+      icon: "chevron-up",
+      className: (0, _cx.cx)('plx-back-to-top', 'plx-back-to-top--inline', className),
+      onClick: goTop
+    }, t.label);
+  }
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-back-to-top__anchor"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    ref: sentinel,
+    className: "plx-back-to-top__sentinel",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    iconOnly: true,
+    icon: "chevron-up",
+    label: t.label,
+    className: (0, _cx.cx)('plx-back-to-top', 'plx-back-to-top--floating', shown && 'is-shown', className),
+    onClick: goTop
+  }));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21090,6 +21975,12 @@ Object.defineProperty(exports, "BARCODE_QUIET_ZONE", {
   enumerable: true,
   get: function () {
     return _barcode.BARCODE_QUIET_ZONE;
+  }
+});
+Object.defineProperty(exports, "BackToTop", {
+  enumerable: true,
+  get: function () {
+    return _BackToTop.BackToTop;
   }
 });
 Object.defineProperty(exports, "Badge", {
@@ -21248,6 +22139,18 @@ Object.defineProperty(exports, "Combobox", {
     return _Combobox.Combobox;
   }
 });
+Object.defineProperty(exports, "CommandMenu", {
+  enumerable: true,
+  get: function () {
+    return _CommandMenu.CommandMenu;
+  }
+});
+Object.defineProperty(exports, "CommandPalette", {
+  enumerable: true,
+  get: function () {
+    return _CommandPalette.CommandPalette;
+  }
+});
 Object.defineProperty(exports, "ConfirmDialog", {
   enumerable: true,
   get: function () {
@@ -21366,6 +22269,12 @@ Object.defineProperty(exports, "Divider", {
   enumerable: true,
   get: function () {
     return _Divider.Divider;
+  }
+});
+Object.defineProperty(exports, "DownloadButton", {
+  enumerable: true,
+  get: function () {
+    return _DownloadButton.DownloadButton;
   }
 });
 Object.defineProperty(exports, "Drawer", {
@@ -21690,6 +22599,12 @@ Object.defineProperty(exports, "ProgressCircle", {
   enumerable: true,
   get: function () {
     return _ProgressCircle.ProgressCircle;
+  }
+});
+Object.defineProperty(exports, "PromptDialog", {
+  enumerable: true,
+  get: function () {
+    return _Dialog.PromptDialog;
   }
 });
 Object.defineProperty(exports, "PropertyList", {
@@ -22857,6 +23772,10 @@ var _FloatingActionButton = require("./components/FloatingActionButton/FloatingA
 var _SplitButton = require("./components/SplitButton/SplitButton.jsx");
 var _Spotlight = require("./components/Spotlight/Spotlight.jsx");
 var _usePrint = require("./hooks/usePrint.js");
+var _CommandMenu = require("./components/CommandMenu/CommandMenu.jsx");
+var _CommandPalette = require("./patterns/CommandPalette/CommandPalette.jsx");
+var _DownloadButton = require("./components/DownloadButton/DownloadButton.jsx");
+var _BackToTop = require("./components/BackToTop/BackToTop.jsx");
   } }
   };
   var cache = {};

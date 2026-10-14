@@ -1,0 +1,13 @@
+{
+  "$description": "Library part w05C (wave 5, lane C): the iOS and Android counterparts of Command menu, Command palette, Download, Back to top, Non-modal dialog, Prompt dialog, Full-screen dialog and Rich tooltip. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "actions|Command menu": { "ios": ["ios-actions|Menus", "ios-navigation|Search fields"], "android": ["android-actions|Menu", "android-navigation|Search screen"] },
+    "actions|Command palette": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search screen"] },
+    "actions|Download": { "ios": ["ios-actions|Activity views", "ios-feedback|Progress indicators"], "android": ["android-actions|Button", "android-feedback|Progress indicators"] },
+    "actions|Back to top": { "ios": ["ios-feedback|Status bars"], "android": ["android-actions|Floating action button"] },
+    "overlays|Non-modal dialog": { "ios": ["ios-overlays|Panels"], "android": ["android-overlays|ModalBottomSheet"] },
+    "overlays|Prompt dialog": { "ios": ["ios-overlays|Alerts"], "android": ["android-overlays|AlertDialog"] },
+    "overlays|Full-screen dialog": { "ios": ["ios-overlays|Sheets"], "android": ["android-overlays|Full-screen dialog"] },
+    "overlays|Rich tooltip": { "ios": ["ios-overlays|Popovers"], "android": ["android-overlays|Tooltip"] }
+  }
+}

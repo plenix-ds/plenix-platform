@@ -157,4 +157,9 @@ export { MenuRadioGroup } from './components/Menu/Menu.jsx';
 export { MenuSub } from './components/Menu/Menu.jsx';
 export { ContextMenu } from './components/Menu/Menu.jsx';
 export { usePrint } from './hooks/usePrint.js';
+export { CommandMenu } from './components/CommandMenu/CommandMenu.jsx';
+export { CommandPalette } from './patterns/CommandPalette/CommandPalette.jsx';
+export { DownloadButton } from './components/DownloadButton/DownloadButton.jsx';
+export { BackToTop } from './components/BackToTop/BackToTop.jsx';
+export { PromptDialog } from './components/Dialog/Dialog.jsx';
 /* END library parts */

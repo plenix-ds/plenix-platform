@@ -2445,6 +2445,15 @@
   --plx-comp-avatar-group-more-font-family: var(--plx-sys-font-data);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-back-to-top-reveal-distance: 100vh;
+  --plx-comp-back-to-top-sentinel-width: var(--plx-sys-border-width-thin);
+  --plx-comp-back-to-top-inset-block-end: var(--plx-sys-space-inset-lg);
+  --plx-comp-back-to-top-inset-inline-end: var(--plx-sys-space-inset-lg);
+  --plx-comp-back-to-top-shadow: var(--plx-sys-elevation-menu);
+  --plx-comp-back-to-top-z-index: var(--plx-sys-layer-sticky);
+  --plx-comp-back-to-top-duration: var(--plx-sys-motion-duration-fast);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-banner-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-banner-body-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-banner-actions-gap: var(--plx-sys-space-inline-sm);
@@ -2576,6 +2585,41 @@
   --plx-comp-columns-collapse-divider-width: var(--plx-sys-border-width-thin);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-command-menu-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-command-menu-page-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-command-menu-page-min-height: var(--plx-sys-control-height-inline);
+  --plx-comp-command-menu-page-title-text: var(--plx-sys-content-default);
+  --plx-comp-command-menu-page-title-font-family: var(--plx-sys-font-label);
+  --plx-comp-command-menu-page-title-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-command-menu-page-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-command-menu-list-max-height: var(--plx-ref-size-320px);
+  --plx-comp-command-menu-group-label-text: var(--plx-sys-content-muted);
+  --plx-comp-command-menu-group-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-command-menu-group-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-command-menu-group-label-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-command-menu-group-label-padding-block-start: var(--plx-sys-space-inset-sm);
+  --plx-comp-command-menu-group-label-padding-block-end: var(--plx-sys-space-inset-xs);
+  --plx-comp-command-menu-item-text: var(--plx-sys-content-default);
+  --plx-comp-command-menu-item-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-command-menu-item-min-height: var(--plx-sys-control-height-standard);
+  --plx-comp-command-menu-item-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-command-menu-item-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-command-menu-item-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-command-menu-item-radius: var(--plx-sys-radius-control);
+  --plx-comp-command-menu-item-active-background: var(--plx-sys-state-selected);
+  --plx-comp-command-menu-item-disabled-text: var(--plx-sys-content-disabled);
+  --plx-comp-command-menu-icon-color: var(--plx-sys-content-muted);
+  --plx-comp-command-menu-description-text: var(--plx-sys-content-muted);
+  --plx-comp-command-menu-description-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-command-menu-status-text: var(--plx-sys-content-subtle);
+  --plx-comp-command-menu-status-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-command-menu-status-padding-block: var(--plx-sys-space-inset-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-command-palette-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-command-palette-list-max-height: var(--plx-ref-size-400px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-content-grid-masonry-row-gap: var(--plx-sys-card-grid-gap);
   --plx-comp-content-grid-justified-last-row-grow: 1000;
   --plx-comp-content-grid-ratio-1-1: 1;
@@ -2634,6 +2678,15 @@
   --plx-comp-details-inline-summary-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-details-inline-marker-size: var(--plx-sys-icon-size-xs);
   --plx-comp-details-inline-content-margin-block-start: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-download-button-meta-text: var(--plx-sys-content-muted);
+  --plx-comp-download-button-meta-font-family: var(--plx-sys-font-data);
+  --plx-comp-download-button-meta-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-download-button-meta-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-download-button-meta-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-download-button-percent-font-family: var(--plx-sys-font-data);
+  --plx-comp-download-button-percent-gap: var(--plx-sys-space-inline-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-empty-state-warning-icon-text: var(--plx-sys-feedback-warning-solid);
@@ -3154,6 +3207,26 @@
   --plx-comp-time-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-time-focus-radius: var(--plx-sys-shape-2xs);
   --plx-comp-time-refresh-interval: 60s;
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-tooltip-bubble-start-inset-inline-end: calc(100% + var(--plx-sys-space-stack-sm));
+  --plx-comp-tooltip-bubble-start-arrow-color: var(--plx-sys-tooltip-background);
+  --plx-comp-tooltip-rich-background: var(--plx-sys-surface-overlay);
+  --plx-comp-tooltip-rich-text: var(--plx-sys-content-default);
+  --plx-comp-tooltip-rich-border-color: var(--plx-sys-border-default);
+  --plx-comp-tooltip-rich-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-tooltip-rich-radius: var(--plx-sys-radius-menu-8px);
+  --plx-comp-tooltip-rich-shadow: var(--plx-sys-elevation-menu);
+  --plx-comp-tooltip-rich-padding: var(--plx-sys-space-inset-md);
+  --plx-comp-tooltip-rich-max-width: var(--plx-ref-size-320px);
+  --plx-comp-tooltip-rich-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-tooltip-rich-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-tooltip-rich-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-tooltip-rich-title-text: var(--plx-sys-content-default);
+  --plx-comp-tooltip-rich-title-font-family: var(--plx-sys-font-heading);
+  --plx-comp-tooltip-rich-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-tooltip-rich-action-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-tooltip-rich-close-delay: var(--plx-sys-motion-duration-slow);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-version-label-color: var(--plx-sys-content-default);
