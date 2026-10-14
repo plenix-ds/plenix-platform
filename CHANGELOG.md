@@ -6,6 +6,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.60] - 2026-10-14
+
+### Added
+- DataTable modes for many rows (owner): `mode="fill"` (the default: the table fills the space left on screen and
+  draws only the rows in view; a table without a height is fast too), `"pages"` (25, 50 or 100 rows per page with a
+  footer: range in Mono, rows per page, Pagination) and `"load-more"` (more rows near the bottom, a Load more button,
+  announced). Pages and load-more also work with server data through `fetchRows({ page, size, sort, filters, search })`.
+  5,000 rows: first rows in 0.28–0.34 s (was 1.8 s), 50–80 rows drawn (was 5,000).
+### Changed
+- SearchField recent searches have a remove button on each row (the WAI-ARIA combobox with a grid popup): arrows move
+  between the term and its remove button; Delete still removes; Clear all stays.
+
 ## [0.31.59] - 2026-10-14
 
 ### Changed
