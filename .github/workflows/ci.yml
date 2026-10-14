@@ -92,12 +92,23 @@ jobs:
             tests: typography
           - name: targets and reflow
             tests: targets reflow
-          - name: labs and fixtures
-            tests: labs visual density layout theme
+          # the labs in three parts: a change to a shared component reaches many labs (0.31.52 ran out of time in one job)
+          - name: labs 1 of 3
+            tests: labs
+            shard: 1/3
+          - name: labs 2 of 3
+            tests: labs
+            shard: 2/3
+          - name: labs 3 of 3
+            tests: labs
+            shard: 3/3
+          - name: fixtures
+            tests: visual density layout theme
           - name: behavior
             tests: data-table keyboard high-contrast focus-order semantic-html utilities navigation
     env:
       TEST_TIMEOUT_MS: '1200000'
+      TEST_SHARD: ${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v5
         with:

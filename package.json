@@ -1,6 +1,6 @@
 {
   "name": "plenix",
-  "version": "0.31.54",
+  "version": "0.31.55",
   "private": true,
   "description": "Plenix Platform: the design system, component library and apps",
   "scripts": {

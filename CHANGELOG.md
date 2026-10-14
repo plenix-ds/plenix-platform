@@ -6,6 +6,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.55] - 2026-10-14
+
+### Changed
+- CI runs the labs in three parallel parts, so a change to a shared component no longer runs out of time (0.31.52).
+
 ## [0.31.54] - 2026-10-14
 
 ### Added
