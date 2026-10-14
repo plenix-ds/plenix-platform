@@ -1,0 +1,7 @@
+/* Library part w05B (wave 5, lane B): CopyButton, Details, FloatingActionButton, SplitButton, Spotlight and print. */
+@import url("../components/CopyButton/copy-button.css");
+@import url("../components/Details/details.css");
+@import url("../components/FloatingActionButton/floating-action-button.css");
+@import url("../components/SplitButton/split-button.css");
+@import url("../components/Spotlight/spotlight.css");
+@import url("../system/print.css");

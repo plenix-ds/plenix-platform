@@ -1,0 +1,19 @@
+{
+  "$description": "Spotlight (platform/components/Spotlight, library wave 5, lane B): its component tokens. The dim is the scrim role at the middle opacity (as the modal scrim); the beacon is the brand color with a ring in the color on the brand.",
+  "plx-comp": {
+    "spotlight-dim-background": { "$value": "{plx-sys.scrim}", "$type": "color", "$description": "Spotlight: the dimmed panels, in the scrim role." },
+    "spotlight-dim-opacity": { "$value": "{plx-sys.opacity-mid}", "$type": "number", "$description": "Spotlight: the dim's opacity (the modal scrim's)." },
+    "spotlight-padding": { "$value": "{plx-sys.space-inset-xs}", "$type": "dimension", "$description": "Spotlight: the clear space between the target's edges and the dim." },
+    "spotlight-z-index": { "$value": "{plx-sys.layer-overlay}", "$type": "number", "$description": "Spotlight over the window: the overlay layer, under the bubble or dialog that explains it." },
+    "spotlight-contained-z-index": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "Contained spotlight: one layer over the region's content." },
+    "spotlight-animation-duration": { "$value": "{plx-sys.motion-duration-fast}", "$type": "duration", "$description": "Spotlight: the dim's fade in (the scrim's)." },
+    "spotlight-animation-timing-function": { "$value": "{plx-sys.motion-ease-standard}", "$type": "dimension", "$description": "Spotlight: the easing of the fade and the pulse." },
+    "spotlight-beacon-size": { "$value": "{plx-ref.size-16px}", "$type": "dimension", "$description": "Beacon: the dot's size." },
+    "spotlight-beacon-offset": { "$value": "calc({plx-ref.size-16px} / 2)", "$type": "dimension", "$description": "Beacon: half its size, so it is centered on the target's top end corner." },
+    "spotlight-beacon-color": { "$value": "{plx-sys.brand-primary}", "$type": "color", "$description": "Beacon: the dot, in the brand blue (as the teaching bubble)." },
+    "spotlight-beacon-ring-color": { "$value": "{plx-sys.brand-on-primary}", "$type": "color", "$description": "Beacon: its ring, the color on the brand blue, so it shows on any target." },
+    "spotlight-beacon-ring-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Beacon: the ring's width." },
+    "spotlight-beacon-radius": { "$value": "{plx-sys.shape-pill}", "$type": "dimension", "$description": "Beacon: a round dot." },
+    "spotlight-beacon-duration": { "$value": "{plx-sys.motion-duration-loop-slow}", "$type": "duration", "$description": "Beacon: one pulse (the slow loop)." }
+  }
+}

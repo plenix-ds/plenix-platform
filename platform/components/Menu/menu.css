@@ -28,3 +28,13 @@
 .plx-menu[popover].plx-menu--bottom-end{margin-block-start:var(--plx-comp-menu-popover-bottom-end-margin-block-start);position-area:block-end span-inline-start;}
 .plx-menu[popover].plx-menu--top-start{margin-block-end:var(--plx-comp-menu-popover-top-start-margin-block-end);position-area:block-start span-inline-end;}
 .plx-menu[popover].plx-menu--top-end{margin-block-end:var(--plx-comp-menu-popover-top-end-margin-block-end);position-area:block-start span-inline-start;}
+
+/* radio items (MenuRadioGroup, MenuItem type="radio"): the check of a checkbox item marks the one chosen (library w05B) */
+/* submenus (MenuSub, library w05B): the item scopes its own anchor; the submenu is a popover at the item's end edge,
+   level with it, and flips to the other side (or upward) when there is no room. The open item keeps the hover fill. */
+.plx-menu-sub{anchor-scope:--plx-menu-sub;display:flex;flex-direction:column;position:relative;}
+.plx-menu-sub>.plx-menu-sub__item{anchor-name:--plx-menu-sub;}
+.plx-menu-sub__item.is-open{background-color:var(--plx-comp-menu-sub-open-background);}
+.plx-menu-sub__arrow{--plx-comp-icon-size:var(--plx-comp-menu-sub-arrow-size);color:var(--plx-comp-menu-sub-arrow-color);display:inline-flex;flex-shrink:0;}
+.plx-menu-sub__list:not([popover]){inset-block-start:var(--plx-comp-menu-sub-fallback-inset-block-start);inset-inline-start:var(--plx-comp-menu-sub-fallback-inset-inline-start);}
+.plx-menu-sub__list[popover]{margin-inline-start:var(--plx-comp-menu-sub-offset);position-anchor:--plx-menu-sub;position-area:inline-end span-block-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}

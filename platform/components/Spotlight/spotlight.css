@@ -1,0 +1,24 @@
+/* Plenix · Spotlight (platform/components/Spotlight). The cut-out: four panels in the scrim role at the middle opacity
+   around the target (top and bottom the full width; start and end level with the target), --plx-comp-spotlight-padding
+   clear of its edges. The beacon: a dot in the brand color with a ring, centered on the target's top end corner, pulsing.
+   The target names the anchor (data-plx-spotlight-target); a contained spotlight's parent scopes it
+   (data-plx-spotlight-scope). Without anchor positioning, Spotlight.jsx writes the measured insets. Anatomy and API:
+   Spotlight.jsx. */
+.plx-spotlight{display:contents;}
+.plx-spotlight__dim{animation-duration:var(--plx-comp-spotlight-animation-duration);animation-name:motion-fade-in;animation-timing-function:var(--plx-comp-spotlight-animation-timing-function);background-color:var(--plx-comp-spotlight-dim-background);opacity:var(--plx-comp-spotlight-dim-opacity);position:fixed;z-index:var(--plx-comp-spotlight-z-index);}
+.plx-spotlight--contained .plx-spotlight__dim{position:absolute;z-index:var(--plx-comp-spotlight-contained-z-index);}
+.plx-spotlight__beacon{animation-duration:var(--plx-comp-spotlight-beacon-duration);animation-iteration-count:infinite;animation-name:motion-pulse;animation-timing-function:var(--plx-comp-spotlight-animation-timing-function);background-color:var(--plx-comp-spotlight-beacon-color);block-size:var(--plx-comp-spotlight-beacon-size);border-bottom-color:var(--plx-comp-spotlight-beacon-ring-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-spotlight-beacon-ring-width);border-end-end-radius:var(--plx-comp-spotlight-beacon-radius);border-end-start-radius:var(--plx-comp-spotlight-beacon-radius);border-left-color:var(--plx-comp-spotlight-beacon-ring-color);border-left-style:solid;border-left-width:var(--plx-comp-spotlight-beacon-ring-width);border-right-color:var(--plx-comp-spotlight-beacon-ring-color);border-right-style:solid;border-right-width:var(--plx-comp-spotlight-beacon-ring-width);border-start-end-radius:var(--plx-comp-spotlight-beacon-radius);border-start-start-radius:var(--plx-comp-spotlight-beacon-radius);border-top-color:var(--plx-comp-spotlight-beacon-ring-color);border-top-style:solid;border-top-width:var(--plx-comp-spotlight-beacon-ring-width);box-sizing:border-box;inline-size:var(--plx-comp-spotlight-beacon-size);pointer-events:none;position:fixed;z-index:var(--plx-comp-spotlight-z-index);}
+.plx-spotlight--contained .plx-spotlight__beacon{position:absolute;z-index:var(--plx-comp-spotlight-contained-z-index);}
+@media (prefers-reduced-motion: reduce){
+  .plx-spotlight__dim,.plx-spotlight__beacon{animation-name:none;}
+}
+@supports (anchor-name: --plx-a){
+  [data-plx-spotlight-scope]{anchor-scope:--plx-spotlight-target;}
+  [data-plx-spotlight-target]{anchor-name:--plx-spotlight-target;}
+  .plx-spotlight__dim,.plx-spotlight__beacon{position-anchor:--plx-spotlight-target;}
+  .plx-spotlight__dim--top{inset-block-end:calc(anchor(start) + var(--plx-comp-spotlight-padding));inset-block-start:0;inset-inline-end:0;inset-inline-start:0;}
+  .plx-spotlight__dim--bottom{inset-block-end:0;inset-block-start:calc(anchor(end) + var(--plx-comp-spotlight-padding));inset-inline-end:0;inset-inline-start:0;}
+  .plx-spotlight__dim--start{inset-block-end:calc(anchor(end) - var(--plx-comp-spotlight-padding));inset-block-start:calc(anchor(start) - var(--plx-comp-spotlight-padding));inset-inline-end:calc(anchor(start) + var(--plx-comp-spotlight-padding));inset-inline-start:0;}
+  .plx-spotlight__dim--end{inset-block-end:calc(anchor(end) - var(--plx-comp-spotlight-padding));inset-block-start:calc(anchor(start) - var(--plx-comp-spotlight-padding));inset-inline-end:0;inset-inline-start:calc(anchor(end) + var(--plx-comp-spotlight-padding));}
+  .plx-spotlight__beacon{inset-block-start:calc(anchor(start) - var(--plx-comp-spotlight-beacon-offset));inset-inline-start:calc(anchor(end) - var(--plx-comp-spotlight-beacon-offset));}
+}

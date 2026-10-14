@@ -1,0 +1,15 @@
+/* Plenix · SplitButton (platform/components/SplitButton). Two Buttons of one variant and size joined into one control:
+   the main button's end corners and the menu button's start corners are square; on secondary the menu button drops its
+   start border, so the main button's end border is the divider; on primary the menu button's start border is the
+   divider, in the pressed step of the action color. The focused part rises so its ring is whole. Anatomy and API:
+   SplitButton.jsx. */
+.plx-split-button{display:inline-flex;vertical-align:middle;}
+.plx-split-button>.plx-split-button__main{border-end-end-radius:var(--plx-comp-split-button-joined-radius);border-start-end-radius:var(--plx-comp-split-button-joined-radius);}
+.plx-split-button .plx-split-button__toggle{border-end-start-radius:var(--plx-comp-split-button-joined-radius);border-start-start-radius:var(--plx-comp-split-button-joined-radius);}
+.plx-split-button--secondary .plx-split-button__toggle{border-inline-start-width:0;}
+.plx-split-button--primary .plx-split-button__toggle{border-inline-start-color:var(--plx-comp-split-button-primary-divider-color);border-inline-start-width:var(--plx-comp-split-button-divider-width);}
+.plx-split-button--primary .plx-split-button__toggle:disabled{border-inline-start-color:var(--plx-comp-split-button-disabled-divider-color);}
+.plx-split-button>.plx-split-button__main:focus-visible,
+.plx-split-button>.plx-split-button__main.is-focus-visible,
+.plx-split-button .plx-split-button__toggle:focus-visible,
+.plx-split-button .plx-split-button__toggle.is-focus-visible{position:relative;z-index:var(--plx-comp-split-button-focus-layer);}

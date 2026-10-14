@@ -68,6 +68,8 @@ export const CONTRAST_PAIRS = Object.freeze([
   { fg: 'feedback-danger-solid', bg: 'surface-default', rule: N, use: 'Danger marks (dots, icons)' },
   // the brand and status roles (color groups, owner 2026-10-13)
   { fg: 'brand-on-primary', bg: 'brand-primary', rule: T, use: 'Text and icons on the brand blue (a product tile)' },
+  { fg: 'brand-primary', bg: 'brand-on-primary', rule: T, use: 'The teaching bubble primary action: the brand blue label on its fill' },
+  { fg: 'brand-on-primary', bg: 'brand-primary', rule: N, use: 'Teaching bubble focus ring and action outlines on the brand blue' },
   { fg: 'status-online', bg: 'surface-default', rule: N, use: 'Presence: online (a dot)' },
   { fg: 'status-away', bg: 'surface-default', rule: N, use: 'Presence: away (a dot)' },
   { fg: 'status-busy', bg: 'surface-default', rule: N, use: 'Presence: busy (a dot)' },

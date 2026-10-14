@@ -1,0 +1,8 @@
+{
+  "$description": "CopyButton (platform/components/CopyButton, library wave 5, lane B): its component tokens. The button is a Button (its variant, size and states); the field is an Input in the data font.",
+  "plx-comp": {
+    "copy-button-field-max-width": { "$value": "{plx-sys.field-width-lg}", "$type": "dimension", "$description": "CopyButton field: the widest the field and its button grow (the large field width)." },
+    "copy-button-field-joined-radius": { "$value": "{plx-sys.shape-none}", "$type": "dimension", "$description": "CopyButton field: the square corners where the field meets the button (as a button group's joined corners)." },
+    "copy-button-field-focus-layer": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "CopyButton field: the focused button rises one layer so its focus ring is drawn over the field's edge." }
+  }
+}
