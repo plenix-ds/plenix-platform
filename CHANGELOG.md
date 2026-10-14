@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.54] - 2026-10-14
+
+### Added
+- The complete library, wave 5, lane C (12 inventory items):
+  - Command menu (a filterable list of commands, groups, nested pages, shortcuts shown) and the Command palette (Ctrl K);
+  - Download button (format and size, progress while downloading) and Back to top (floating or inline);
+  - Dialog: non-modal (no veil, F6 between dialog and opener), the Prompt dialog (one field, validated on submit) and the
+    full-screen dialog page;
+  - Tooltip: rich tooltips (a title, the popover surface) and toggletips (an action, opened by click), a start
+    placement; tooltips are placed by CSS anchor positioning.
+
 ## [0.31.53] - 2026-10-14
 
 ### Added
