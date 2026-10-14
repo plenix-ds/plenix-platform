@@ -14,12 +14,13 @@
 //   icon-size   no icon size written as a number (<Icon size={14}>, <Ico size={13}>, <Avatar size={28}>): an icon takes its
 //               control's grid icon (--plx-sys-control-icon-<role>) or a size token from CSS, so it sits on the 4px grid
 //   defined     every var(--plx-…) a file uses is declared somewhere (a renamed or removed token leaves no dangling use)
-//   inline-style every page draws itself only with Platform components and plx- classes: no style={…}, style: {…},
-//               el.style.x =, style.setProperty(…), setAttribute('style'), style="…" or style block anywhere (the Platform,
-//               the design system, every application), custom properties included (Strict DS step 7, batch 283; owner: "no
-//               exceptions"): a value from the data reaches the stylesheet as an attribute with one generated rule per step
-//               (system/steps.css) or a class (the design system's samples: DS.varClass). Applications not yet
-//               converted are listed in INLINE_STYLE_PENDING with their count, until their batch removes them (batch 150).
+//   inline-style (check-system.rules/inline-style.js; owner, 2026-10-13, replacing "no exceptions", batch 283): no style
+//               written in markup (style="…" in an HTML file, an HTML string or a JSX string attribute; a <style> block),
+//               and no hard-coded design value written by code (a color, a length with a unit, a font, a bare number) in
+//               el.style.x =, style.setProperty(…), setAttribute('style', …), cssText, style={{…}} or style: {…}. A
+//               JavaScript adjustment is allowed anywhere (React's style prop included): a var(--plx-…) reference or a value
+//               computed from tokens, defined styles or measured layout. A DataTable's row height and cell padding stay the
+//               density's (tokens and classes): the style audit and the pages test check them at run time.
 //   generated   the token stylesheets and the standards' code (build-standards.js: providers/pageLayouts.js, system/layout-modes.css)
 //               are exactly what is generated from their JSON (platform/tokens/*.tokens.json, platform/standards/*.json);
 //               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
@@ -106,23 +107,9 @@ for (const { file } of files) {
   const text = fs.readFileSync(file, 'utf8');
   for (const m of text.matchAll(/\.plx-property-list--table\b/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
 }
-// inline-style: application code takes its look from the Platform only (see the rule's description above)
+// inline-style: the rule is check-system.rules/inline-style.js (see its description above)
 const INLINE_STYLE_PENDING = [];   // every application converted (batches 150-151)
 const pendingStyles = {};
-function styleObjects(text) {   // every style={…} with its balanced body
-  const out = [];
-  let at = 0;
-  while ((at = text.indexOf('style={', at)) >= 0) {
-    let depth = 0, i = at + 6;
-    for (; i < text.length; i++) { if (text[i] === '{') depth++; else if (text[i] === '}' && --depth === 0) break; }
-    out.push({ at, body: text.slice(at + 7, i) });
-    at = i;
-  }
-  return out;
-}
-// a custom property a page may set at run time (a value only the data knows, read by a stylesheet): Platform names, and
-// on the design system page its own --ds- names
-const runtimeVar = (file, name) => /^--plx-/.test(name) || (SPEC_PAGE.test(file) && /^--ds-/.test(name));
 const SPEC_PAGE = /[\\/]platform[\\/]design-system[\\/]/;
 for (const { file } of files) {
   if (!/\.(jsx|js|html)$/.test(file)) continue;
@@ -148,33 +135,7 @@ for (const { file } of files) {
   if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
     for (const m of text.matchAll(/fonts\.(googleapis|gstatic)\.com/g)) add('fonts', file, lineOf(m.index), 'a call to Google Fonts: ' + text.slice(Math.max(0, m.index - 20), m.index + 40).split('\n')[0]);
   }
-  // style: in h()/createElement props: never, custom properties included (batch 283)
-  for (const m of text.matchAll(/[{,]\s*style\s*:\s*/g)) {
-    const at = m.index + m[0].length;
-    if (/['"`]/.test(text[at])) continue;   // a data field named style (a string), not a style
-    add('inline-style', file, lineOf(m.index), 'style: ' + text.slice(at, at + 80).split('\n')[0]);
-  }
-  // writing to an element's style from script: never, not even a custom property (batch 283)
-  for (const m of text.matchAll(/\.style\s*(?:\.\s*([\w$]+)|\[)/g)) {
-    const after = text.slice(m.index + m[0].length);
-    if (m[1] === 'setProperty' || m[1] === 'removeProperty') { /* a write */ }
-    else if (!/^(?:[^\]\n]*\])?\s*=(?!=)/.test(after)) continue;   // reading a style (a rule's cssText, a value) is not styling
-    add('inline-style', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
-  }
-  for (const m of text.matchAll(/setAttribute\(\s*['"]style['"]|\.cssText\s*=(?!=)|\bstyle="[^"]|<style[\s>]/g)) add('inline-style', file, lineOf(m.index), text.slice(m.index, m.index + 80).split('\n')[0]);
-}
-for (const { file, app } of files) {
-  if (!/\.(jsx|js|html)$/.test(file)) continue;
-  const text = fs.readFileSync(file, 'utf8');
-  for (const o of styleObjects(text)) {
-    // allowed: an object literal whose keys are all '--plx-…' strings (strings and nested brackets removed before looking)
-    const body = o.body.trim();
-    let flat = body.slice(1, -1).replace(/(['"])(--[\w-]+)\1\s*:/g, (all, q, k) => runtimeVar(file, k) ? ' PLXKEY:' : all).replace(/'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`/g, 'S');
-    for (let k = 0; k < 5; k++) flat = flat.replace(/\([^()]*\)|\[[^[\]]*\]|\{[^{}]*\}/g, 'X');
-    void flat;   // until batch 283 an object of custom properties was allowed here; every style object is a finding now
-    if (INLINE_STYLE_PENDING.includes(app)) { pendingStyles[app] = (pendingStyles[app] || 0) + 1; continue; }
-    add('inline-style', file, text.slice(0, o.at).split('\n').length, 'style=' + o.body.slice(0, 100));
-  }
+  // inline-style: check-system.rules/inline-style.js (style in markup and hard-coded values; JavaScript adjustments from tokens allowed)
 }
 
 for (const { file } of files) {

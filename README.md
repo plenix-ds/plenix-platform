@@ -115,7 +115,7 @@ bash deploy.sh
 
 Both checks must pass. The rules:
 - nothing hard-coded;
-- no inline styles;
+- no style in markup and no hard-coded values; an inline style only as a JavaScript adjustment from tokens, defined styles or measured layout (check-system, rule inline-style);
 - no new colors;
 - tokens only from `platform/tokens/*.tokens.json`.
 

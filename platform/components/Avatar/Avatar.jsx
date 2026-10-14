@@ -24,7 +24,8 @@
        dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the avatar
    Behavior:
-     A picture that fails to load falls back to the initials.
+     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
+     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
      The corner and the text size follow the size.
      Initials are the first letters of the first and last name ("Raphael Maher" → RM).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
@@ -66,7 +67,7 @@ export function Avatar({ name, src, initials, size = 'sm', color, category, labe
   React.useEffect(() => { setFailed(false); }, [src]);
   return (
     <span className={cx('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', className)} data-plx-avatar="" data-plx-color={color || undefined} data-plx-category={category || undefined} role={label ? 'img' : undefined}
-      aria-label={named} aria-hidden={label ? undefined : true} {...rest}>{src && !failed ? <img className="plx-avatar__image" src={src} alt="" onError={() => setFailed(true)} /> : text}
+      aria-label={named} aria-hidden={label ? undefined : true} {...rest}>{src && !failed ? <img className="plx-avatar__image" src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} /> : text}
       {p ? <StatusDot tone={p} size={DOT[s]} icon={DOT[s] !== 'sm'} className="plx-avatar__presence" /> : null}</span>
   );
 }

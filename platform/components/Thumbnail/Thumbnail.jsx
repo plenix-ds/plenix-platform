@@ -19,5 +19,5 @@ export function Thumbnail({ src, alt = '', icon = 'document' }) {
   // an image that fails to load falls back to the icon, as when there is none (batch 215)
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => { setFailed(false); }, [src]);
-  return src && !failed ? <img className="plx-thumbnail" src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} /> : <span className="plx-thumbnail plx-thumbnail--icon" aria-hidden="true"><Icon name={icon} size="sm" /></span>;
+  return src && !failed ? <img className="plx-thumbnail" src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} /> : <span className="plx-thumbnail plx-thumbnail--icon" aria-hidden="true"><Icon name={icon} size="sm" /></span>;
 }

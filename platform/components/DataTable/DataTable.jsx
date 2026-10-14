@@ -31,8 +31,9 @@
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
      columns[].rowLabel: true: the row header: this column and the columns before it are pinned and shaded like the
        header row (and so is the checkbox column)
-     columns[].width: a size token ("--plx-ref-size-240px"; a number snaps to the nearest one); without it the column shares
-       the room left with the others. minWidth: the smallest such a sharing column gets (a size token; default 80px)
+     columns[].width: a size token ("--plx-ref-size-240px"; a number snaps to the nearest one), Tabulator's width option;
+       without it Tabulator measures the column's content and the column shares the room left with the others.
+       minWidth / maxWidth: the narrowest and widest the column gets (size tokens; minWidth default 80px)
      index: the field that identifies a row; default "id"
      selectable: a checkbox column (select all in its header) and row selection; default false. Without it,
        options.selectableRows (Tabulator) selects rows by click (1: one row, as the open row of a list)
@@ -50,7 +51,8 @@
        static Table's default: the columns stay and scroll sideways)
      storageKey: keeps the person's view (sort, column widths, order and hidden columns) in this browser under the key
        and restores it the next time the grid is built
-     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container)
+     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container); a grid with
+       a height draws only the rows in view (virtual rendering)
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
      on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
        with rowClick, rows are focusable and Enter does what a click does
@@ -63,8 +65,8 @@
      Every drag has a way without dragging (WCAG 2.5.7): a click on a row handle, or the row menu, offers Move up, Move
        down, Move to top and Move to bottom; a focused handle moves its row with Alt + Arrow Up / Down (Alt + Home / End
        to the ends). A column's header menu offers Move left and Move right (options.movableColumns), Narrower and Wider
-       (one size token) and Fit to content; its resize grip is a separator that the arrow keys step through the size
-       tokens (Home and End: narrowest and widest).
+       (one size token) and Fit to content; its resize handle (Tabulator's: drag it, double-click it to fit the content)
+       is a separator that the arrow keys step through the size tokens (Home and End: narrowest and widest).
      Error: the error prop, or an engine that failed to load, shows an inline error state (EmptyState tone="error"): what
        failed and Retry.
      Narrow (platforms.md 6.5): under 600px of its own width (a container query, not the window) the grid becomes a list
@@ -73,23 +75,40 @@
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
-     The row height and text size follow the density (--plx-sys-data-table-row-height, --plx-sys-data-table-font-size), also a
-     density region's; a density change redraws the grid. A grid built while hidden is drawn again when it is shown.
+     Geometry (owner, 2026-10-13): the row height, the cell padding and the text size are the density's
+     (--plx-sys-data-table-row-height, the cell padding tokens, --plx-sys-data-table-font-size; also a density region's),
+     drawn by the stylesheet and never measured; a density change measures nothing. Column widths are Tabulator's: it
+     measures each column's content once (and the columns React draws once more after React fills them), the columns
+     without a width share the room left, and the resize handle, Narrower, Wider and Fit to content set them. A grid built
+     while hidden is drawn again in place when it is shown.
+     Vertical alignment: middle (owner, 2026-10-13): everything in a cell (text, avatars, badges, icons, checkboxes,
+     buttons) sits in the middle of the row's height, in every density, in body and header cells; horizontal alignment
+     is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own element
+     (plx-data-table__value) and ends in an ellipsis.
+     Virtual rendering (a grid with a height, every row one height: no "wrap" column and no groupBy): only the rows in
+     view are in the document; the rows not drawn are gaps of the density's row height (system/virtual.css), the grid
+     carries aria-rowcount and each row its aria-rowindex, a focused control whose row scrolls out leaves the focus on the
+     scrolling body and gets it back when its row returns, and printing draws every row. Rows share one height per
+     density, and the browser's find in page finds only the rows drawn (the grid's own filters search all of them).
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
    Notes:
-     Nothing on the grid is styled inline (Strict DS 6b, batch 285): Tabulator runs in strict mode (strict.js) and the grid
-       is drawn from classes: a column's width is a size token class (__w-<size>, __w-lead, __w-fill), its alignment a class
-       (__cell--align-*), a pinned column sticky at the widths before it, a tree row indented by its level class, a menu
-       placed by CSS anchor positioning. Rows render all at once (no virtual scrolling). Moving rows (a rowHandle column
-       with options.movableRows) and columns (options.movableColumns) is native drag and drop; a column's resize handle
-       and Fit to content snap its width to the size tokens. Editors "input" and "number" are a Plenix input.
+     Inline styles (owner, 2026-10-13: a JavaScript adjustment from tokens, defined styles or measured layout is allowed):
+       Tabulator writes a column's width (width, min-width, max-width on its column, header and cell elements); it writes
+       no row height and no cell padding (the density's). The rest is drawn from classes: Tabulator runs in strict mode
+       (strict.js); a cell's alignment is a class (__cell--align-*), a pinned column is
+       sticky at the size-token widths before it (its own width a whole size token), a tree row is indented by its level
+       class, a hidden column is a class, a menu is placed by CSS anchor positioning, and a virtual grid's room for the
+       rows not drawn is gap elements, never padding. The style audit and the pages test reject an inline height, line
+       height or padding on a row or cell; check-system (table-geometry) rejects a forced redraw. Moving rows (a rowHandle column with options.movableRows)
+       and columns (options.movableColumns) is native drag and drop. Editors "input" and "number" are a Plenix input.
      The data changes in place (sort, filters, scroll and column widths stay); new columns rebuild the column set.
 */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { loadTabulator, tablePx } from './tabulator.js';
+import { remeasure, reshare, virtualResync, virtualPrint } from './strict.js';
 import { snapSize, stepSize, SIZE_STEPS } from '../../utils/sizeSteps.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
 import { EmptyState } from '../EmptyState/EmptyState.jsx';
@@ -148,14 +167,14 @@ const plenixEditor = (type) => (cell, onRendered, success, cancel) => {
   onRendered(() => { i.focus(); i.select(); });
   return i;
 };
-// a column's width class set again (the resize handle, Fit to content): its definition for new cells, its header and cells now
-function setWidthClass(column, size, B) {
-  const def = column.getDefinition(), next = B + '__w-' + size;
-  const swap = (el) => { if (!el) return; Array.from(el.classList).filter((c) => c.indexOf(B + '__w-') === 0).forEach((c) => el.classList.remove(c)); el.classList.add(next); };
-  def.cssClass = String(def.cssClass || '').split(/\s+/).filter((c) => c && c.indexOf(B + '__w-') !== 0).concat(next).join(' ');
-  if (column._column) column._column.definition.cssClass = def.cssClass;
-  swap(column.getElement()); column.getCells().forEach((c) => swap(c.getElement()));
+// a plain value in its own element, so the cell aligns it to the middle of the row and a long value still ends in an ellipsis
+function valueFormatter(cell) {
+  const v = cell.getValue(), s = document.createElement('span');
+  s.className = 'plx-data-table__value'; s.textContent = v == null ? '' : String(v);
+  return s;
 }
+// a width kept in the view ("240px", or a number) as pixels
+const viewPx = (v) => (typeof v === 'number' ? v : /^\d+(\.\d+)?px$/.test(String(v)) ? parseFloat(v) : 0);
 
 // the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
 // resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
@@ -181,6 +200,8 @@ export function TableEngine(props) {
   // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
   const keys = keyFields(columns, keyColumns);
   const listed = narrow === 'list' && columns.some((c) => listable(c) && keys.indexOf(c.field) < 0);
+  // virtual rendering: a grid with a height whose rows are all one height (no wrapping column, no group rows)
+  const virtual = !!height && !columns.some((c) => [].concat(c.kind || []).indexOf('wrap') >= 0) && !(options || {}).groupBy;
   const [attempt, setAttempt] = React.useState(0);   // a Retry after the engine failed to load builds the grid again
   const resized = React.useRef({});   // the widths the person chose (field -> size name), for the kept view
   const restoring = React.useRef(false);
@@ -203,11 +224,21 @@ export function TableEngine(props) {
     if (!e) { e = el('span', B + '__portal'); cells.current.set(id, e); pending.current = true; bump(); }
     return e;
   };
-  // once React has filled new cells, Tabulator measures again (column widths, row heights)
+  // once React has filled the first cells, Tabulator measures the content of the columns React draws again (it measured
+  // them empty), and only those: no row is measured (a row is the density's height) and later fills change no width
+  const measured = React.useRef(false);
   React.useLayoutEffect(() => {
     if (!pending.current || !tableRef.current || !builtRef.current) return undefined;
+    if (measured.current) { pending.current = false; return undefined; }
     const t = tableRef.current;
-    const id = requestAnimationFrame(() => { if (tableRef.current === t) { t.redraw(true); pending.current = false; } });
+    const id = requestAnimationFrame(() => {
+      if (tableRef.current !== t) return;
+      pending.current = false;
+      if (!t.element.offsetWidth) return;   // hidden: measured in full when it is shown
+      measured.current = true;
+      const drawn = new Set((latest.current.columns || []).filter((c) => c.render && c.field).map((c) => c.field));
+      remeasure(t, t.getColumns().filter((c) => drawn.has(c.getField())));
+    });
     return () => cancelAnimationFrame(id);
   });
 
@@ -232,22 +263,26 @@ export function TableEngine(props) {
       const col = (f) => t.getColumns().find((c) => c.getField() === f);
       const order = (v.order || []).filter(col);
       order.forEach((f, i) => { const c = col(f), prev = i ? col(order[i - 1]) : null; if (c && prev && !c.getDefinition().frozen && !prev.getDefinition().frozen) c.move(prev, true); });
-      Object.keys(v.widths || {}).forEach((f) => { const c = col(f); if (c && /^\d+px$/.test(v.widths[f])) { setWidthClass(c, v.widths[f], B); resized.current[f] = v.widths[f]; } });
+      Object.keys(v.widths || {}).forEach((f) => { const c = col(f), px = viewPx(v.widths[f]); if (c && px) { c.setWidth(px); resized.current[f] = Math.round(px) + 'px'; } });
       (v.hidden || []).forEach((f) => { const c = col(f); if (c) c.hide(); });
       const sort = (v.sort || []).filter((s) => col(s.column) && (s.dir === 'asc' || s.dir === 'desc'));
       if (sort.length) t.setSort(sort);
     } catch (e) { /* a view kept for another column set: what fits is restored */ }
     restoring.current = false;
   };
-  // a column's width as a size token (the grip, the header menu, Fit to content), kept in the view
-  const applyWidth = (col, size) => {
-    setWidthClass(col, size, B);
-    if (col.getField()) resized.current[col.getField()] = size;
-    const grip = col.getElement().querySelector('.' + B + '__resize'); if (grip) grip.setAttribute('aria-valuenow', String(parseInt(size, 10)));
+  // a column's width is Tabulator's (its resize handle, the header menu, Fit to content): the person's width is kept in
+  // the view, and the resize handle says it (aria-valuenow)
+  const keepWidth = (col) => {
+    const w = Math.round(col.getWidth());
+    if (col.getField()) resized.current[col.getField()] = w + 'px';
+    const grip = gripOf(col); if (grip) grip.setAttribute('aria-valuenow', String(w));
     saveView();
   };
+  const applyWidth = (col, px) => { col.setWidth(px); keepWidth(col); };
   const widthLimits = (el) => [tablePx(MIN, el), SIZE_STEPS[SIZE_STEPS.length - 1]];
-  const stepWidth = (col, dir) => { const el = col.getElement(), [lo, hi] = widthLimits(el); applyWidth(col, stepSize(el.getBoundingClientRect().width, dir, lo, hi) + 'px'); };
+  const stepWidth = (col, dir) => { const [lo, hi] = widthLimits(col.getElement()); applyWidth(col, stepSize(col.getWidth(), dir, lo, hi)); };
+  // Tabulator's resize handle of a column (it sits after the column's header)
+  const gripOf = (col) => { const c = col && col._column; return (c && c.modules.resize && c.modules.resize.handleEl) || null; };
   // a column one place left or right (the header menu): past hidden columns, never into the pinned ones
   const moveColumn = (col, step) => {
     const dir = isRtl(col.getElement()) ? -step : step;
@@ -294,11 +329,8 @@ export function TableEngine(props) {
       column.getElement().classList.toggle('is-filtered', on);
     };
     const close = () => document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    const fitColumn = (col) => {
-      const els = [col.getElement()].concat(col.getCells().map((x) => x.getElement()));
-      const need = Math.max.apply(null, els.map((el) => el.scrollWidth));
-      applyWidth(col, snapSize(SIZE_STEPS.find((z) => z >= need) || need, SIZE_STEPS[0], SIZE_STEPS[SIZE_STEPS.length - 1]) + 'px');
-    };
+    // Fit to content: Tabulator measures the column's content (as a double-click on its resize handle does)
+    const fitColumn = (col) => { col.setWidth(true); keepWidth(col); };
     const filterPopup = (c) => (e, column, onRendered) => {
       const field = column.getField(), active = filters(field)[0];
       const id = 'plx-data-table-filter-' + Math.random().toString(36).slice(2);
@@ -358,20 +390,33 @@ export function TableEngine(props) {
       const { kind, icon, render, filter, rowLabel, ...rest } = c;
       const d = { ...rest };
       if (isStatic) { Object.assign(d, { headerSort: false, resizable: false }); delete d.editor; delete d.headerContextMenu; delete d.headerPopup; delete d.cellClick; delete d.rowHandle; }
-      // the width: a size token class, the lead width (icon), or a share of the room left (with its smallest size)
-      const w = kind === 'icon' ? 'lead' : sizeName(d.width, host);
-      const min = sizeName(d.minWidth, host);
-      const hz = kind === 'icon' ? 'center' : d.hozAlign, hh = kind === 'icon' ? 'center' : d.headerHozAlign;
+      // the width (owner, 2026-10-13): Tabulator measures the content, and the columns without a width share the room
+      // left (strict.js, the "plenix" layout); a width the column asks for (a size token; a number snaps to the nearest
+      // one) is Tabulator's width option; a mark column is the lead width. Tabulator writes the width on the column's
+      // header and cells (a JavaScript adjustment from measured layout; owner, 2026-10-13).
+      const lead = kind === 'icon';
+      const leadPx = tablePx('--plx-comp-data-table-lead-column-width', host), floor = tablePx(MIN, host);
+      const wName = lead ? null : sizeName(d.width, host), minName = sizeName(d.minWidth, host), maxName = sizeName(d.maxWidth, host);
+      const w = lead ? leadPx : wName ? parseInt(wName, 10) : undefined;
+      const hz = lead ? 'center' : d.hozAlign, hh = lead ? 'center' : d.headerHozAlign;
       const align = hz && hz !== 'left' ? B + '__cell--align-' + hz : null;
       const headAlign = hh && hh !== 'left' ? B + '__head-align-' + hh : null;
+      const pinned = labelAt >= i || !!c.frozen;
       ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach((k) => { delete d[k]; });
+      if (w) d.width = w;
+      d.minWidth = lead ? leadPx : minName ? parseInt(minName, 10) : w ? Math.min(w, floor) : floor;
+      if (lead) d.maxWidth = leadPx; else if (maxName) d.maxWidth = parseInt(maxName, 10);
+      // resizable where interaction is on: Tabulator's resize handle on the header (not on pinned, mark or action columns)
+      d.resizable = !isStatic && !lead && kind !== 'actions' && !pinned && c.resizable !== false ? 'header' : false;
       d.cssClass = cx(c.cssClass, kind && [].concat(kind).map((k) => B + '__cell--' + k).join(' '), (rowLabel || (labelAt > i)) && B + '__cell--row-label',
-        w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle',
+        lead && B + '__w-lead', align, headAlign, c.rowHandle && B + '__cell--handle',
         keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
-      if (kind === 'icon') {
-        d.resizable = false;   // the lead width and centered (its classes)
+      // a plain value: in its own element (vertical alignment: middle, with its ellipsis)
+      if (!render && !c.rowHandle && (d.formatter === undefined || d.formatter === 'plaintext')) d.formatter = valueFormatter;
+      if (lead) {
+        // the lead width and centered (its classes)
         d.titleFormatter = () => { const s = el('span', B + '__header-icon'); s.title = c.title || c.field; s.setAttribute('role', 'img'); s.setAttribute('aria-label', s.title); s.appendChild(iconEl(icon || 'circle-info')); return s; };
       }
       if (kind === 'actions') Object.assign(d, { headerSort: false, resizable: false });
@@ -389,7 +434,7 @@ export function TableEngine(props) {
 
   React.useEffect(() => {
     let alive = true, table = null;
-    builtRef.current = false;
+    builtRef.current = false; measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
     // (a frame that loaded again meanwhile) gets no grid
     const win = hostRef.current && hostRef.current.ownerDocument.defaultView;
@@ -413,18 +458,22 @@ export function TableEngine(props) {
         return items;
       } : undefined;
       const labelled = p.columns.some((c) => c.rowLabel);
+      const leadPx = tablePx('--plx-comp-data-table-lead-column-width', host);
       const opts = {
-        layout: 'fitColumns',
+        // the columns: Tabulator measures their content, and the columns without a width share the room left (strict.js)
+        layout: 'plenix',
         index: p.index || 'id',
         placeholder,
         columnDefaults: { resizable: false },
-        renderVertical: 'basic',
+        // a grid with a height draws the rows in view (every row is the density's height); one without draws them all
+        renderVertical: virtual ? 'virtual' : 'basic',
         editTriggerEvent: 'dblclick',
         rowContextMenu,
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
         // plain click mean "only this row", so a checked box could not be unchecked; Shift and Ctrl/Cmd keep their range
         // and add meanings. The header checkbox stays Tabulator's (select all / none).
         rowHeader: p.selectable ? { formatter: rowCheckbox, titleFormatter: 'rowSelection', headerSort: false, resizable: false, frozen: true,
+          width: leadPx, minWidth: leadPx, maxWidth: leadPx,
           cssClass: cx('plx-data-table__cell--select', B + '__w-lead', B + '__cell--align-center', B + '__head-align-center', labelled && 'plx-data-table__cell--row-label'),
         } : false,
         selectableRows: p.selectable ? true : false,
@@ -466,6 +515,7 @@ export function TableEngine(props) {
         if (table) syncSelection(table);
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => { if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', STRINGS.selectRow + ' ' + (n + 1)); });
         // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
+        if (table && !isStatic) nameGrips(table);
         if (movable) host.querySelectorAll('.tabulator-row .' + B + '__cell--handle').forEach((h) => {
           if (h.hasAttribute('aria-keyshortcuts')) return;
           h.tabIndex = 0; h.setAttribute('aria-label', STRINGS.moveRow); h.setAttribute('aria-haspopup', 'menu');
@@ -488,29 +538,37 @@ export function TableEngine(props) {
       });
     }).catch((err) => { if (alive) setError(err); });
 
-    // a density or interaction change redraws the rows at their new height
-    const mo = new MutationObserver(() => { if (tableRef.current && builtRef.current) tableRef.current.redraw(true); });
+    // a density or interaction change: the stylesheet gives the rows their new height and padding (nothing is measured);
+    // a virtual grid takes the new row height for the rows it does not draw, and keeps the row at the top of its view
+    const mo = new MutationObserver(() => { if (tableRef.current && builtRef.current) virtualResync(tableRef.current); });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-plx-density', 'data-plx-density-policy', 'data-plx-interaction'] });
     const region = frameRef.current && frameRef.current.closest('[data-plx-density]');
     if (region && region !== document.documentElement) mo.observe(region, { attributes: true, attributeFilter: ['data-plx-density'] });
-    // a grid built while hidden (a closed tab, a section not shown) has no size to lay out in: once it is shown, it is
-    // drawn again in full (columns and rows)
-    let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth);
+    // a grid built while hidden (a closed tab, a section not shown) had no size to lay out in: once it is shown, it is
+    // drawn again in place (its columns are measured then; no row is)
+    // and a grid whose width changes shares the room among its columns again (nothing is measured)
+    let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth), lastWidth = frameRef.current ? frameRef.current.offsetWidth : 0, frame = 0;
     const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
-      const now = !!(frameRef.current && frameRef.current.offsetWidth);
-      if (now && !shownBefore && tableRef.current && builtRef.current) tableRef.current.redraw(true);
-      shownBefore = now;
+      const width = frameRef.current ? frameRef.current.offsetWidth : 0, now = !!width;
+      if (now && !shownBefore && tableRef.current && builtRef.current) tableRef.current.redraw();
+      else if (now && width !== lastWidth && tableRef.current && builtRef.current && !frame) frame = requestAnimationFrame(() => { frame = 0; if (tableRef.current) reshare(tableRef.current); });
+      shownBefore = now; lastWidth = width;
     });
     if (ro && frameRef.current) ro.observe(frameRef.current);
+    // printing a virtual grid: every row is in the document while the page prints (React fills their cells first)
+    const printing = (on) => () => { const t = tableRef.current; if (!t || !builtRef.current || !virtual) return; virtualPrint(t, on); if (on) ReactDOM.flushSync(() => bump()); };
+    const beforePrint = printing(true), afterPrint = printing(false);
+    win.addEventListener('beforeprint', beforePrint); win.addEventListener('afterprint', afterPrint);
 
     return () => {
-      alive = false; mo.disconnect(); if (ro) ro.disconnect(); builtRef.current = false;
+      alive = false; mo.disconnect(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
+      win.removeEventListener('beforeprint', beforePrint); win.removeEventListener('afterprint', afterPrint);
       if (table) { try { table.destroy(); } catch (e) { /* already gone */ } }
       tableRef.current = null; cells.current = new Map(); owners.current = new Map();
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '']);
+  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual]);
 
   // moving rows (options.movableRows with a rowHandle column): native drag and drop from the handle, delegated on the grid;
   // the row it is dropped on shows a line (a class) and the moved row lands before it
@@ -548,8 +606,8 @@ export function TableEngine(props) {
     });
   };
 
-  // a header can be dragged onto another to move its column (options.movableColumns), and its edge resizes it: the width
-  // snaps to the size tokens (between 80px and the largest token), set as the column's width class
+  // a header can be dragged onto another to move its column (options.movableColumns); its edge is Tabulator's resize
+  // handle (drag it, or double-click it to fit the content), kept in the view
   const wireColumns = (table) => {
     const opt = latest.current.options || {};
     let dragged = null;
@@ -559,45 +617,44 @@ export function TableEngine(props) {
       el.setAttribute('data-plx-wired', '');
       if (opt.movableColumns && !def.frozen) {
         el.draggable = true;
-        el.addEventListener('dragstart', (ev) => { if (ev.target.closest('.' + B + '__resize')) { ev.preventDefault(); return; } dragged = col; el.classList.add('tabulator-moving'); ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', col.getField() || ''); });
+        el.addEventListener('dragstart', (ev) => { if (ev.target.closest('.tabulator-col-resize-handle')) { ev.preventDefault(); return; } dragged = col; el.classList.add('tabulator-moving'); ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', col.getField() || ''); });
         el.addEventListener('dragend', () => { el.classList.remove('tabulator-moving'); dragged = null; });
         el.addEventListener('dragover', (ev) => { if (dragged && dragged !== col) { ev.preventDefault(); el.classList.add(B + '__drop'); } });
         el.addEventListener('dragleave', () => el.classList.remove(B + '__drop'));
         el.addEventListener('drop', (ev) => { ev.preventDefault(); el.classList.remove(B + '__drop'); if (dragged && dragged !== col) { const from = dragged; dragged = null; from.move(col, true); const h = (latest.current.on || {}).columnMoved; if (h) h(from, table.getColumns()); saveView(); } });
       }
-      // resizable unless the page's column says not (Tabulator's own resizing is off: its handles write styles)
-      const mine = (latest.current.columns || []).find((x) => x.field && x.field === col.getField());
-      const resizable = !!mine && mine.resizable !== false && !/__cell--(icon|actions|select)|__w-lead/.test(String(def.cssClass || ''));
-      if (resizable) {
-        // the grip is a separator: dragged, or focused and stepped with the arrow keys (WCAG 2.5.7 and 2.1.1); the header
-        // keeps its own name (its title), so the grip's name does not join it
-        const title = String(def.title || col.getField() || '');
-        const [lo, hi] = widthLimits(el);
-        const grip = el.ownerDocument.createElement('span'); grip.className = B + '__resize';
-        grip.setAttribute('role', 'separator'); grip.setAttribute('aria-orientation', 'vertical'); grip.tabIndex = 0;
-        grip.setAttribute('data-plx-target-equivalent', 'the header menu: Narrower, Wider, Fit to content (WCAG 2.5.8 Equivalent)');
-        grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
-        grip.setAttribute('aria-valuemin', String(lo)); grip.setAttribute('aria-valuemax', String(hi));
-        grip.setAttribute('aria-valuenow', String(Math.round(el.getBoundingClientRect().width) || lo));
-        if (title && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', title);
-        grip.addEventListener('click', (ev) => ev.stopPropagation());
-        grip.addEventListener('keydown', (ev) => {
-          const now = el.getBoundingClientRect().width, step = arrowStep(ev, el, { vertical: false });
-          const to = step ? stepSize(now, step, lo, hi) : ev.key === 'Home' ? snapSize(lo, lo, hi) : ev.key === 'End' ? snapSize(hi, lo, hi) : null;
-          if (to == null) return;
-          ev.preventDefault(); ev.stopPropagation(); applyWidth(col, to + 'px');
-        });
-        grip.addEventListener('pointerdown', (ev) => {
-          ev.preventDefault(); ev.stopPropagation();
-          const x0 = ev.clientX, w0 = el.getBoundingClientRect().width, rtl = getComputedStyle(el).direction === 'rtl' ? -1 : 1;
-          const doc = el.ownerDocument;
-          let last = null;
-          const move = (e2) => { last = snapSize(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px'; setWidthClass(col, last, B); };
-          const up = () => { doc.removeEventListener('pointermove', move); doc.removeEventListener('pointerup', up); doc.documentElement.classList.remove('is-resizing-columns'); if (last) applyWidth(col, last); };
-          doc.addEventListener('pointermove', move); doc.addEventListener('pointerup', up); doc.documentElement.classList.add('is-resizing-columns');
-        });
-        el.appendChild(grip);
-      }
+    });
+    if (table.plxWired) return;
+    table.plxWired = true;
+    // a width the person gave with the handle (drag, or double-click to fit) is kept in the view
+    table.on('columnResized', (col) => keepWidth(col));
+    // the handle is a separator: focused and stepped through the size tokens with the arrow keys (Home and End: the
+    // narrowest and widest), as well as dragged (WCAG 2.5.7 and 2.1.1)
+    table.element.addEventListener('keydown', (ev) => {
+      const grip = ev.target.closest && ev.target.closest('.tabulator-col-resize-handle');
+      const col = grip && table.getColumns().find((c) => gripOf(c) === grip);
+      if (!col) return;
+      const [lo, hi] = widthLimits(col.getElement()), step = arrowStep(ev, col.getElement(), { vertical: false });
+      const to = step ? stepSize(col.getWidth(), step, lo, hi) : ev.key === 'Home' ? snapSize(lo, lo, hi) : ev.key === 'End' ? snapSize(hi, lo, hi) : null;
+      if (to == null) return;
+      ev.preventDefault(); ev.stopPropagation(); applyWidth(col, to);
+    });
+  };
+  // Tabulator's resize handles, named and focusable (each time they are drawn); the header keeps its own name (its title)
+  const nameGrips = (table) => {
+    table.getColumns().forEach((col) => {
+      const grip = gripOf(col), el = col.getElement();
+      if (!grip) return;
+      if (grip.hasAttribute('data-plx-grip')) { grip.setAttribute('aria-valuenow', String(Math.round(col.getWidth()))); return; }
+      const title = String(col.getDefinition().title || col.getField() || ''), [lo, hi] = widthLimits(el);
+      grip.setAttribute('data-plx-grip', '');
+      grip.classList.add(B + '__resize');
+      grip.setAttribute('role', 'separator'); grip.setAttribute('aria-orientation', 'vertical'); grip.tabIndex = 0;
+      grip.setAttribute('data-plx-target-equivalent', 'the header menu: Narrower, Wider, Fit to content (WCAG 2.5.8 Equivalent)');
+      grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
+      grip.setAttribute('aria-valuemin', String(lo)); grip.setAttribute('aria-valuemax', String(hi));
+      grip.setAttribute('aria-valuenow', String(Math.round(col.getWidth()) || lo));
+      if (title && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', title);
     });
   };
 
@@ -643,7 +700,15 @@ export function TableEngine(props) {
       const [key, field] = id.split(SEP);
       const c = columns.find((x) => x.field === field);
       const cell = owners.current.get(id);
-      if (c && c.render && cell && key) portals.push(ReactDOM.createPortal(c.render(cell.getRow().getData(), cell), node, id));
+      if (!c || !c.render || !cell || !key) return;
+      // one element is the cell's own content (vertical alignment: middle); text, or text with elements (a sentence with a code
+      // part), flows as one line of text in a value element, as a plain value does
+      // (a list or fragment holding one element and no text is that element)
+      const flat = (x) => (Array.isArray(x) ? x.flatMap(flat) : React.isValidElement(x) && x.type === React.Fragment ? flat(x.props.children) : x == null || x === false || x === '' || (typeof x === 'string' && !x.trim()) ? [] : [x]);
+      const raw = c.render(cell.getRow().getData(), cell), only = flat(raw);
+      const out = only.length === 1 && React.isValidElement(only[0]) ? only[0] : raw;
+      const flow = out != null && out !== false && (typeof out !== 'object' || Array.isArray(out) || (React.isValidElement(out) && out.type === React.Fragment));
+      portals.push(ReactDOM.createPortal(flow ? <span className={B + '__value'}>{out}</span> : out, node, id));
     });
   }
 
@@ -652,7 +717,7 @@ export function TableEngine(props) {
   const retry = () => { if (error) { setError(null); setAttempt((n) => n + 1); } if (onRetry) onRetry(); };
   const reason = failed && failed !== true ? String(failed.message || failed) : null;
   return (
-    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', className)}
+    <div ref={frameRef} className={cx(B, columns.some((c) => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', className)} data-plx-render={virtual ? 'virtual' : undefined}
       data-plx-height={height && height !== '100%' ? (sizeName(height) || undefined) : undefined}>
       {failed ? (
         <EmptyState className={B + '__error'} tone="error" title={STRINGS.failed}

@@ -55,14 +55,26 @@ let current = '';   // the design-system page being checked
     }
     return null;
   }); if (found) errs.push('three containers nested: ' + found); };
-  // no element carries a style attribute (Strict DS step 7, batch 283; owner: "no exceptions"), in the page or its frames.
-  // Tabulator included: it runs in strict mode (components/DataTable/strict.js, Strict DS 6b, batch 285)
+  // inline styles at run time (owner, 2026-10-13): JavaScript may write inline styles for on-the-spot adjustments from
+  // tokens and defined styles; whether a value is a token or a literal is checked in the source (check-system,
+  // inline-style). Here, in the page and its frames: no custom property that is not a Platform one (--plx-…; --ds-… on the
+  // design system), no font family that is not a token, and no height, line height or padding on a DataTable row or cell
+  // (the density's), and every inline length a token or a whole number of grid steps (the base spacing token; owner: the
+  // output "has to conform to fit into the grid system")
   const styles = async () => { const r = await page.evaluate(() => {
     const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
     const out = { other: [] };
-    docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' style="' + el.getAttribute('style').slice(0, 60) + '"'); }));
+    const SPEC = /\/platform\/design-system\//.test(location.pathname);
+    const DENSITY = /^(height|min-height|max-height|line-height|padding(-(top|right|bottom|left|block|inline)(-(start|end))?)?)$/;
+    const step = (el) => { const v = getComputedStyle(el.ownerDocument.documentElement).getPropertyValue('--plx-ref-space-4px').trim(); const px = /rem$/.test(v) ? parseFloat(v) * parseFloat(getComputedStyle(el.ownerDocument.documentElement).fontSize) : parseFloat(v); return px > 0 ? px : 4; };
+    const offGrid = (el, v) => { const s = step(el); return Array.from(String(v).replace(/var\([^()]*(\([^()]*\)[^()]*)*\)/g, ' ').matchAll(/(-?\d*\.?\d+)(px|rem|em|pt|vh|vw|vmin|vmax|ch|ex)(?![\w-])/gi))
+      .some((m) => parseFloat(m[1]) && (m[2].toLowerCase() !== 'px' || Math.abs(Math.abs(parseFloat(m[1])) / s - Math.round(Math.abs(parseFloat(m[1])) / s)) * s > 0.5)); };
+    const wrong = (el) => { const table = el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell');
+      return Array.from(el.style).filter((p) => (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
+        || offGrid(el, el.style.getPropertyValue(p))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
+    docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { const bad = wrong(el); if (!bad.length || el.closest('[data-plx-probe]')) return; out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' ' + bad.join(', ')); }));
     return out; });
-    if (r.other.length) errs.push(r.other.length + ' element(s) with a style attribute: ' + r.other.slice(0, 2).join(' | ')); };
+    if (r.other.length) errs.push(r.other.length + ' element(s) with an inline style the system does not allow: ' + r.other.slice(0, 2).join(' | ')); };
   const done = (name) => { n++; if (errs.length) failed.push([name, [...new Set(errs)].slice(0, 4)]); errs = []; };
 
   for (const a of APP_PAGES) { at(a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(600); await tables(); await nesting(); await styles(); done(a); }

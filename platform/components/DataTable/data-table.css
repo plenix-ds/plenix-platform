@@ -6,6 +6,11 @@
 .plx-data-table{background-color:var(--plx-comp-data-table-background);border-color:var(--plx-comp-data-table-border-color);border-radius:var(--plx-comp-data-table-radius);border-style:solid;border-width:var(--plx-comp-data-table-border-width);min-inline-size:0;overflow:hidden;}
 .plx-data-table__empty{color:var(--plx-comp-data-table-empty-text);font-family:var(--plx-comp-data-table-font-family);font-size:var(--plx-comp-data-table-placeholder-font-size);font-weight:var(--plx-comp-data-table-placeholder-font-weight);}
 .plx-data-table__portal{display:contents;}
+/* a plain value in its cell: one line, an ellipsis when it does not fit */
+.plx-data-table__value{flex-basis:auto;flex-grow:0;flex-shrink:1;min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* a link that is the whole of a cell is hit on the whole cell (WCAG 2.5.8 target size): it fills the cell, its text in
+   the middle of the row (vertical alignment: middle) and at the start */
+.plx-data-table .tabulator-row .tabulator-cell>.plx-data-table__portal>a{align-items:center;align-self:stretch;display:inline-flex;flex-grow:1;min-inline-size:0;}
 
 /* the grid */
 .plx-data-table .tabulator{background-color:var(--plx-comp-data-table-background);border-style:none;color:var(--plx-comp-data-table-text);font-family:var(--plx-comp-data-table-font-family);font-size:var(--plx-comp-data-table-font-size);}
@@ -51,8 +56,10 @@
 .plx-data-table .tabulator .tabulator-row.tabulator-selectable:hover{background-color:var(--plx-comp-data-table-row-hover-background);cursor:default;}
 .plx-data-table .tabulator .tabulator-row.tabulator-selected{background-color:var(--plx-comp-data-table-row-selected-background);}
 .plx-data-table .tabulator .tabulator-row.tabulator-selected:hover{background-color:var(--plx-comp-data-table-row-selected-hover-background);}
-/* every cell stretches to its row: when one cell wraps onto more lines, the others (their fill, the row label's shade, the column line) grow with it (owner, 2026-10-09) */
-.plx-data-table .tabulator .tabulator-row .tabulator-cell{align-self:stretch;border-right-style:none;height:auto;min-height:var(--plx-comp-data-table-min-height);line-height:var(--plx-comp-data-table-line-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;position:relative;}
+/* every cell stretches to its row: when one cell wraps onto more lines, the others (their fill, the row label's shade, the column line) grow with it (owner, 2026-10-09);
+   vertical alignment: middle for everything in a cell, in every density (owner, 2026-10-13): the cell is a flex row
+   (align-items); its horizontal alignment stays as it was (start, or the __cell--align-* classes) */
+.plx-data-table .tabulator .tabulator-row .tabulator-cell{align-items:center;align-self:stretch;display:flex;border-right-style:none;height:auto;min-height:var(--plx-comp-data-table-min-height);line-height:var(--plx-comp-data-table-line-height);padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;position:relative;}
 .plx-data-table .tabulator .tabulator-row .tabulator-cell:not(:first-child)::before{background-color:var(--plx-comp-data-table-column-line);bottom:var(--plx-comp-data-table-column-line-inset);content:"";left:0;position:absolute;top:var(--plx-comp-data-table-column-line-inset);width:var(--plx-comp-data-table-line-width);}
 
 /* editing in place */
@@ -70,6 +77,7 @@
 .plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content,
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-content{padding-bottom:0;padding-left:var(--plx-comp-data-table-cell-padding-inline);padding-right:var(--plx-comp-data-table-cell-padding-inline);padding-top:0;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content{justify-content:center;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-title{align-items:center;display:flex;justify-content:center;}
 .plx-data-table .tabulator input[type="checkbox"]{accent-color:var(--plx-comp-data-table-checkbox-accent-color);block-size:var(--plx-comp-data-table-mark-size);cursor:pointer;inline-size:var(--plx-comp-data-table-mark-size);margin:0;vertical-align:middle;}
 
 /* pinned columns keep no heavy edge */
@@ -95,6 +103,10 @@
 /* long text: it wraps and the row grows; the first line sits where a one-line cell's text does (half the row height
    around one line) */
 .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--wrap{height:auto;line-height:var(--plx-comp-data-table-wrap-line-height);padding-bottom:var(--plx-comp-data-table-cell-wrap-padding-bottom);padding-top:var(--plx-comp-data-table-cell-wrap-padding-top);white-space:normal;}
+/* (its text block carries the wrap padding, so the block, padding included, is what a link in it is hit on, and the
+   block has vertical alignment: middle in a taller row) */
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--wrap:has(> .plx-data-table__value, > .plx-data-table__portal > .plx-data-table__value){padding-bottom:0;padding-top:0;}
+.plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--wrap .plx-data-table__value{padding-bottom:var(--plx-comp-data-table-cell-wrap-padding-bottom);padding-top:var(--plx-comp-data-table-cell-wrap-padding-top);white-space:normal;}
 
 /* row actions: shown while the row is hovered or selected */
 .plx-data-table .tabulator-row .tabulator-cell.plx-data-table__cell--actions{justify-content:flex-end;}
@@ -183,16 +195,27 @@
 .plx-data-table .tabulator-row-handle{cursor:grab;}
 .plx-data-table .tabulator-row.tabulator-moving,.plx-data-table .tabulator-row.tabulator-moving *{cursor:grabbing;}
 
-/* drawn by Plenix (Strict DS 6b, batch 285): Tabulator writes no style (strict.js). The header and every row are flex rows
-   of columns sized by their classes: __w-<size> a size token, __w-lead the checkbox and icon width, __w-fill a share of the
-   room left (never under its __min-<size> or 80px); cells keep their intrinsic width out of the sum (contain), so the
-   header and the rows always add up to the same width and stay aligned while the body scrolls sideways */
+/* the geometry split (owner, 2026-10-13): a column's width is Tabulator's (it measures the content and writes the width
+   on the column's header and cells, a JavaScript adjustment from measured layout; strict.js), the row height and the cell
+   padding are the density's (these rules and the tokens). The header and every row are flex rows of columns at those
+   widths (__w-lead: the checkbox and mark width), so they add up to the same width and stay aligned while the body
+   scrolls sideways */
 .plx-data-table .tabulator .tabulator-header{overflow-x:hidden;}
 .plx-data-table .tabulator .tabulator-header .tabulator-headers{display:flex;inline-size:max-content;min-inline-size:100%;}
 .plx-data-table .tabulator .tabulator-tableholder .tabulator-table{display:block;inline-size:max-content;min-inline-size:100%;}
 .plx-data-table .tabulator .tabulator-row{display:flex;}
-.plx-data-table .tabulator .tabulator-header .tabulator-col,.plx-data-table .tabulator .tabulator-row .tabulator-cell{box-sizing:border-box;contain:inline-size;}
-.plx-data-table .tabulator .plx-data-table__w-fill{flex-basis:var(--plx-comp-data-table-w-fill-flex-basis);flex-grow:1;flex-shrink:0;inline-size:var(--plx-comp-data-table-w-fill-width);min-inline-size:var(--plx-comp-data-table-w-fill-min-width);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col,.plx-data-table .tabulator .tabulator-row .tabulator-cell{box-sizing:border-box;flex-grow:0;flex-shrink:0;}
+/* a hidden column (Tabulator's hide, as a class) */
+.plx-data-table .tabulator .tabulator-col.plx-data-table__hidden,.plx-data-table .tabulator .tabulator-cell.plx-data-table__hidden{display:none;}
+/* a virtual grid (a grid with a height): every row is the density's row height and its line, and the rows not drawn are
+   gaps of the same rows (system/virtual.css: --plx-sys-virtual-item-size plus --plx-sys-virtual-item-gap per row) */
+.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-tableholder .tabulator-table{--plx-sys-virtual-item-gap:var(--plx-comp-data-table-line-width);--plx-sys-virtual-item-size:var(--plx-comp-data-table-min-height);}
+.plx-data-table[data-plx-render="virtual"] .tabulator .tabulator-row{block-size:calc(var(--plx-comp-data-table-min-height) + var(--plx-comp-data-table-line-width));overflow:hidden;}
+.plx-data-table .tabulator .tabulator-tableholder .tabulator-table>.plx-data-table__gap{margin-block-end:0;}
+/* printing: the whole grid, every row (a virtual grid draws them all while the page prints) */
+@media print{
+  .plx-data-table[data-plx-height] .tabulator .tabulator-tableholder{max-block-size:none;overflow:visible;}
+}
 .plx-data-table .tabulator .plx-data-table__w-lead{flex-grow:0;flex-shrink:0;flex-basis:var(--plx-comp-data-table-lead-column-width);inline-size:var(--plx-comp-data-table-lead-column-width);max-inline-size:var(--plx-comp-data-table-lead-column-width);min-inline-size:var(--plx-comp-data-table-lead-column-width);}
 .plx-data-table .tabulator .tabulator-cell.plx-data-table__cell--align-right{justify-content:flex-end;text-align:right;}
 .plx-data-table .tabulator .tabulator-cell.plx-data-table__cell--align-center{justify-content:center;text-align:center;}
@@ -207,9 +230,9 @@
 .plx-data-table.plx-data-table--fill,.plx-data-table.plx-data-table--fill .plx-data-table__table{block-size:100%;}
 .plx-data-table.plx-data-table--fill .tabulator{display:flex;flex-direction:column;}
 .plx-data-table.plx-data-table--fill .tabulator .tabulator-tableholder{flex-basis:0%;flex-grow:1;min-block-size:0;}
-/* a column's resize handle (batch 285): at its end edge; dragging snaps the width to the size tokens */
-.plx-data-table .tabulator .tabulator-header .tabulator-col .plx-data-table__resize{cursor:col-resize;inline-size:var(--plx-comp-data-table-resize-width);inset-block-end:0;inset-block-start:0;inset-inline-end:0;position:absolute;z-index:var(--plx-comp-data-table-resize-z-index);}
-.plx-data-table .tabulator .tabulator-header .tabulator-col .plx-data-table__resize:hover{background-image:var(--plx-comp-data-table-resize-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-line-width) 100%;}
+/* a column's resize handle: Tabulator's, inside its header at the end edge (strict.js moves it there) */
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-resize-handle,.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-col-resize-handle:last-of-type{cursor:col-resize;inline-size:var(--plx-comp-data-table-resize-width);inset-block-end:0;inset-block-start:0;inset-inline-end:0;margin-inline-end:0;margin-inline-start:0;position:absolute;z-index:var(--plx-comp-data-table-resize-z-index);}
+.plx-data-table .tabulator .tabulator-header .plx-data-table__resize:hover{background-image:var(--plx-comp-data-table-resize-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-line-width) 100%;}
 /* where a moved row or column lands: a line in the accent color at its start */
 .plx-data-table .tabulator .tabulator-row.plx-data-table__drop{box-shadow:var(--plx-comp-data-table-drop-shadow);}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__drop{box-shadow:var(--plx-comp-data-table-column-drop-shadow);}
@@ -222,7 +245,7 @@
 .plx-data-table__popup-anchor{anchor-name:--plx-data-table-popup;}
 .tabulator-popup-container.plx-data-table__popup{inset:auto;margin:0;position:fixed;position-anchor:--plx-data-table-popup;position-area:block-end span-inline-end;position-try-fallbacks:flip-block,flip-inline;}
 /* without dragging (WCAG 2.5.7): a resize grip and a row handle take the keyboard focus, shown in the accent color */
-.plx-data-table .tabulator .tabulator-header .tabulator-col .plx-data-table__resize:focus-visible{background-image:var(--plx-comp-data-table-resize-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-resize-focus-outline-width) 100%;outline-style:none;}
+.plx-data-table .tabulator .tabulator-header .plx-data-table__resize:focus-visible{background-image:var(--plx-comp-data-table-resize-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-resize-focus-outline-width) 100%;outline-style:none;}
 .plx-data-table .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--handle:focus-visible{outline-color:var(--plx-comp-data-table-focus-outline-color);outline-offset:calc(var(--plx-comp-data-table-editing-outline-width) * -1);outline-style:solid;outline-width:var(--plx-comp-data-table-editing-outline-width);}
 /* Narrow (platforms.md 3.3 and 6.5): the grid lays out for its own width (a container query), and under 600px it becomes a
    list of its key columns: the first is the item's title line, the others the lines under it; the checkbox and the row

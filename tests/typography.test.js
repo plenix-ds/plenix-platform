@@ -106,6 +106,9 @@ async function inspect() {
   const seen = new Set();
   for (const m of monos) {
     const row = rowOf(m); if (!row || seen.has(row)) continue;
+    // a DataTable row taller than one line (a wrapped cell): every cell has vertical alignment: middle (owner,
+    // 2026-10-13), so a one-line cell sits in the middle of the row, not on the first line of the wrapped one
+    if (row.classList.contains('tabulator-row')) { const c = row.querySelector('.tabulator-cell'); if (c && row.getBoundingClientRect().height > (parseFloat(getComputedStyle(c).minHeight) || 0) + (parseFloat(getComputedStyle(row).borderBottomWidth) || 0) + 1) continue; }
     const lm = line(m); if (!lm) continue;
     const sans = texts.filter((s) => !s.mono && row.contains(s.n) && !s.el.closest(OWN));
     for (const s of sans) {

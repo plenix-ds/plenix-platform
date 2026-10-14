@@ -1,14 +1,23 @@
 /* Plenix · Style audit (platform/dev/style-audit.js): rejects styling that does not come from the design system.
    Loaded by every Plenix page (check-system.js, rule "audit", keeps it there). On a page served from this machine
    (localhost) it watches the whole document and reports, as a console error, every:
-     1. inline style: an element's style attribute with anything but a custom property (--plx-…, a value only the
-        data knows, read by a Platform stylesheet; the design system page's own --ds-… names on that page);
-     2. style element: a style block written into the page (styles come from platform.css and the page's own
-        stylesheet files only).
-   Left alone: the geometry the DataTable's engine (Tabulator) writes on its own elements while it lays out (inside a
-   .tabulator table, its menus and popups): widths, heights, offsets, not colors or type (those come from data-table.css).
-   The source check (node check-system.js: inline-style, palette, raw-value) rejects the same things before a page runs;
-   this audit catches what only appears at run time (a script or a component writing a style).
+     1. style element: a style block written into the page (styles come from platform.css and the page's own
+        stylesheet files only);
+     2. undefined custom property: a style attribute that sets a custom property other than a Platform one (--plx-…;
+        the design system page's own --ds-… names on that page);
+     3. font written inline: a font family that is not a Platform token reference (a font is never computed on the spot);
+     4. DataTable density: an inline height, min-height, max-height, line-height or padding on a DataTable row or cell
+        (the row height and the cell padding are the density's: data-table.css and the tokens; owner, 2026-10-13);
+     5. off the grid: an inline length that is neither a Platform token reference (var) nor a whole number of grid steps (the base
+        spacing token, --plx-ref-space-4px; utils/grid.js): "has to conform to fit into the grid system!!! important"
+        (owner, 2026-10-13). A length in another unit than px (rem, em, vw…) is reported too; a percentage is a
+        proportion, not a length, and 0 is on every grid.
+   Inline styles written by JavaScript are otherwise allowed (owner, 2026-10-13): "sometimes we have situations in which
+   JavaScript is needed to make adjustments on the spot. And these adjustments make inline styles. However these
+   adjustments are based on tokens and defined styles to make inline adjustments for that moment." Whether a written value
+   comes from a token or is a hard-coded literal is a question of the source: check-system.js (rule inline-style) rejects
+   style written in markup and literal values written by code before a page runs; this audit catches what only appears at
+   run time.
      PlenixStyleAudit.audit()   -> [{ kind, element, detail }] for the current document
      PlenixStyleAudit.report()  -> the same, printed to the console
    Findings also go to document.documentElement's data-plx-style-findings (a count), which the page checks read. */
@@ -26,17 +35,34 @@
     var cls = (typeof el.className === 'string' ? el.className : '').trim().split(/\s+/).filter(Boolean).slice(0, 3);
     return cls.length ? s + '.' + cls.join('.') : s;
   }
-  // the DataTable's engine (Tabulator, platform/vendor/tabulator) writes widths, heights and offsets on its own elements while
-  // it lays out: its geometry, not styling. Its elements are inside a .tabulator table, or are its menus and popups.
-  var ENGINE = '.tabulator, .tabulator-menu, .tabulator-popup-container, .tabulator-tooltip, .tabulator-alert, .tabulator-col-resize-guide, .tabulator-row-resize-guide';
-  function engine(el) {
-    if (typeof el.className === 'string' && /(^|\s)tabulator(-|\s|$)/.test(el.className)) return true;
-    return !!(el.closest && el.closest(ENGINE));
+  // the engine's probe (DataTable strict.js): a hidden Tabulator built once, before its patches, and removed at once
+  function probe(el) { return !!(el.closest && el.closest('[data-plx-probe="tabulator"]')); }
+  // the grid step: the base spacing token in pixels (utils/grid.js reads the same token)
+  function gridStep(el) {
+    var at = el && el.ownerDocument ? el : document.documentElement, v = getComputedStyle(at).getPropertyValue('--plx-ref-space-4px').trim();
+    var px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16) : parseFloat(v);
+    return px > 0 ? px : 4;
   }
+  // the first length in a value that is not on the grid (var(…) references are tokens; a percentage is a proportion)
+  function offGrid(value, el) {
+    var v = String(value).replace(/var\([^()]*(\([^()]*\)[^()]*)*\)/g, ' '), step = gridStep(el), m, re = /(-?\d*\.?\d+)(px|rem|em|pt|pc|vh|vw|vmin|vmax|ch|ex|cm|mm|in)(?![\w-])/gi;
+    while ((m = re.exec(v))) {
+      var n = parseFloat(m[1]);
+      if (!n) continue;
+      if (m[2].toLowerCase() !== 'px') return m[0];
+      var q = Math.abs(n) / step; if (Math.abs(q - Math.round(q)) * step > 0.5) return m[0];
+    }
+    return null;
+  }
+  var DENSITY = /^(height|min-height|max-height|line-height|padding(-(top|right|bottom|left|block|inline)(-(start|end))?)?)$/;
   function inlineFinding(el) {
-    if (engine(el)) return null;
-    var st = el.style, bad = [];
-    for (var i = 0; i < st.length; i++) if (!allowedVar(st[i])) bad.push(st[i] + ': ' + st.getPropertyValue(st[i]));
+    if (probe(el) || el.isConnected === false) return null;   // the probe, or an element already gone from the page
+    var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-table .tabulator-row, .plx-data-table .tabulator-cell'));
+    for (var i = 0; i < st.length; i++) {
+      var p = st[i], v = st.getPropertyValue(p);
+      if (/^--/.test(p) ? !allowedVar(p) : (p === 'font-family' && !/^\s*var\(--plx-/.test(v)) || (table && DENSITY.test(p))) bad.push(p + ': ' + v);
+      else { var off = offGrid(v, el); if (off) bad.push(p + ': ' + v + ' (' + off + ' is off the grid)'); }
+    }
     return bad.length ? { kind: 'inline style', element: describe(el), detail: bad.join('; ') } : null;
   }
   function audit(root) {

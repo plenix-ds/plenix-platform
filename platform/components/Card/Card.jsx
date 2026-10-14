@@ -136,7 +136,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
     <article className={cx('plx-media-card', (href || onOpen) && 'plx-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
       onClick={click} onDoubleClick={dblClick} {...rest}>
       <div className="plx-media-card__media" data-plx-aspect={aspect}>
-        {src ? <img src={src} alt={alt} loading="lazy" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
+        {src ? <img src={src} alt={alt} loading="lazy" decoding="async" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
         {badge ? <span className="plx-media-card__badge">{badge}</span> : null}
       </div>
       {onSelectChange ? (

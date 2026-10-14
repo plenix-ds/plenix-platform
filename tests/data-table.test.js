@@ -140,12 +140,71 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
           while ((n = w.nextNode())) { const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-chip, .plx-button, .plx-kbd, .plx-count, .ds-vis')) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500' && type.length < 3) type.push('row label "' + n.textContent.trim().slice(0, 16) + '" is ' + fw + ', not 500'); }
         });
       });
-      return { type, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
+      // vertical alignment: middle (owner, 2026-10-13): in every density, each cell's content (its text and
+      // its boxes: avatars, badges, icons, checkboxes, buttons) has the same room above and below, within 1px, in the
+      // header and the first rows, for every cell kind; in a Narrow list the key lines together, and the checkbox, the
+      // handle and the actions each, sit in the middle of the row (horizontal alignment is not checked: it is unchanged)
+      const kindOf = (c) => (c.classList.contains('tabulator-row-header') ? 'select' : (Array.from(c.classList).find((x) => /__cell--(?!key|align|row-label)/.test(x)) || 'plain').replace(/^.*__cell--/, ''));
+      const contentBox = (els) => {
+        let top = Infinity, bottom = -Infinity;
+        const take = (r) => { if (r.width > 0 && r.height > 0) { top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom); } };
+        // the innermost boxes: an element holding only text (its lines), a box with nothing inside (a picture, an icon, a
+        // checkbox), a control; text beside elements by its own box; anything taken out of the flow (absolutely placed:
+        // the resize handle, a column line) is not content
+        const walk = (n) => {
+          // (text by its line: its glyph box grown to the line height, the half-leading above it in whole pixels as the
+          // browser lays it out (a leading of 1.2px goes below the glyphs), the rest below)
+          if (n.nodeType === 3) { if (n.textContent.trim()) { const rg = document.createRange(); rg.selectNodeContents(n); const lh = parseFloat(getComputedStyle(n.parentElement).lineHeight);
+            Array.from(rg.getClientRects()).forEach((r) => { const lead = lh > r.height ? lh - r.height : 0, above = Math.floor(lead / 2); take({ width: r.width, height: r.height + lead, top: r.top - above, bottom: r.bottom + lead - above }); }); } return; }
+          if (n.nodeType !== 1) return;
+          const cs = getComputedStyle(n);
+          if (cs.display === 'none' || cs.position === 'absolute' || cs.position === 'fixed') return;
+          const kids = Array.from(n.childNodes);
+          // (a block of text lines, links and code inside it included, counts as its lines: the glyphs inside a line are
+          // the font's business)
+          const lines = cs.display !== 'inline' && kids.every((k) => k.nodeType !== 1 || getComputedStyle(k).display === 'inline');
+          if (/^(INPUT|IMG|SVG|BUTTON|SELECT)$/i.test(n.tagName) || lines) { if (cs.visibility !== 'hidden') take(n.getBoundingClientRect()); return; }
+          kids.forEach(walk);
+        };
+        els.forEach((root) => Array.from(root.childNodes).forEach(walk));
+        return top === Infinity ? null : { top, bottom };
+      };
+      const off = (box, area) => (box ? Math.abs((box.top - area.top) - (area.bottom - box.bottom)) : 0);
+      const middle = (density) => {
+        const bad = [];
+        grids.forEach((g) => {
+          const label = g.querySelector('.tabulator') && g.querySelector('.tabulator').getAttribute('aria-label');
+          const list = g.classList.contains('plx-data-table--list') && g.querySelector('.tabulator-header') && getComputedStyle(g.querySelector('.tabulator-header')).display === 'none';
+          const head = list ? [] : Array.from(g.querySelectorAll('.tabulator-header .tabulator-col')).filter((c) => c.offsetWidth);
+          head.forEach((c) => { const d = off(contentBox([c.querySelector('.tabulator-col-content') || c]), c.getBoundingClientRect()); if (d > 1.01) bad.push(label + ' header ' + kindOf(c) + ' "' + c.textContent.trim().slice(0, 12) + '" off by ' + d.toFixed(1) + 'px (' + density + ')'); });
+          Array.from(g.querySelectorAll('.tabulator-row:not(.tabulator-group):not(.tabulator-calcs)')).slice(0, 5).forEach((row) => {
+            const cells = Array.from(row.querySelectorAll(':scope > .tabulator-cell')).filter((c) => c.offsetWidth && c.offsetHeight);
+            const rr = row.getBoundingClientRect(), line = parseFloat(getComputedStyle(row).borderBottomWidth) || 0, rowArea = { top: rr.top, bottom: rr.bottom - line };
+            if (list) {
+              const keys = cells.filter((c) => c.classList.contains('plx-data-table__cell--key'));
+              const d = off(contentBox(keys), rowArea); if (keys.length && d > 1.01) bad.push(label + ' list key lines off by ' + d.toFixed(1) + 'px (' + density + ')');
+              cells.filter((c) => keys.indexOf(c) < 0).forEach((c) => { const e = off(contentBox([c]), rowArea); if (e > 1.01) bad.push(label + ' list ' + kindOf(c) + ' off by ' + e.toFixed(1) + 'px (' + density + ')'); });
+              return;
+            }
+            cells.forEach((c) => { const d = off(contentBox([c]), c.getBoundingClientRect()); if (d > 1.01) bad.push(label + ' ' + kindOf(c) + ' "' + c.textContent.trim().slice(0, 12) + '" off by ' + d.toFixed(1) + 'px (' + density + ')'); });
+          });
+        });
+        return bad;
+      };
+      const mid = [], html = document.documentElement, was = html.getAttribute('data-plx-density');
+      for (const density of ['compact', 'standard', 'comfortable']) {
+        html.setAttribute('data-plx-density', density);
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 150))));
+        middle(density).forEach((x) => { if (mid.length < 4) mid.push(x); });
+      }
+      if (was === null) html.removeAttribute('data-plx-density'); else html.setAttribute('data-plx-density', was);
+      return { type, mid, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
     }, TAGS);
     const bad = [];
     if (r.violations.length) bad.push('axe: ' + r.violations.join('; '));
     if (r.type.length) bad.push('typography: ' + r.type.join('; '));
     if (r.audit.length) bad.push('style audit: ' + r.audit.slice(0, 3).join('; '));
+    if (r.mid.length) bad.push('vertical alignment not middle: ' + r.mid.join('; '));
     r.sizes.forEach((s) => { if (!s.label) bad.push('a table has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });
     res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')', !bad.length, bad.join(' · ')]);
   }

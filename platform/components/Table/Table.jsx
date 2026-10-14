@@ -15,13 +15,14 @@
        (["name", "data"]); render(row) for React content; rowLabel for the row header. Interactive options are ignored.
      index: the field that identifies a row; default "id"
      empty: shown when there are no rows; default "Nothing to show"
-     height: a fixed height (a size token) for a long table; its rows scroll inside it
+     height: a fixed height (a size token) for a long table; its rows scroll inside it, and only the rows in view are drawn
      options: Tabulator table options that only change the layout (layout, headerVisible…)
      className: more classes on the frame
      Table.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
      Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
-     in cells work as themselves. Row height and text size follow the density.
+     in cells work as themselves. Row height, cell padding and text size follow the density; column widths are
+     measured by Tabulator (a width a column gives is kept), as in the DataTable. Vertical alignment: middle in every cell.
    Notes:
      For records people work with (sort, filter, select, open, edit) use DataTable. Every name/value list of reference facts
      (the design system's details, Settings and Capture) is a Table with a header row.
