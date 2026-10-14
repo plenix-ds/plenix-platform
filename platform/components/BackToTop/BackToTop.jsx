@@ -23,7 +23,7 @@
        the top (focusRef), so keyboard and screen reader users continue from there.
    Notes:
      For long pages only; not in panes with their own short scroll, nor where a fixed header already holds the way up.
-     The button is a Button (secondary, with the chevron-up icon); its target is at least the standard control height.
+     The button is a Button (secondary, with the arrow-up icon: Material's arrow_upward); its target is at least the standard control height.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
@@ -52,12 +52,12 @@ export function BackToTop({ variant = 'floating', scrollRef, focusRef, strings, 
     target.focus({ preventScroll: true });
   };
   if (!floating) {
-    return <Button variant="ghost" size="sm" icon="chevron-up" className={cx('plx-back-to-top', 'plx-back-to-top--inline', className)} onClick={goTop}>{t.label}</Button>;
+    return <Button variant="ghost" size="sm" icon="arrow-up" className={cx('plx-back-to-top', 'plx-back-to-top--inline', className)} onClick={goTop}>{t.label}</Button>;
   }
   return (
     <span className="plx-back-to-top__anchor">
       <span ref={sentinel} className="plx-back-to-top__sentinel" aria-hidden="true" />
-      <Button iconOnly icon="chevron-up" label={t.label} className={cx('plx-back-to-top', 'plx-back-to-top--floating', shown && 'is-shown', className)} onClick={goTop} />
+      <Button iconOnly icon="arrow-up" label={t.label} className={cx('plx-back-to-top', 'plx-back-to-top--floating', shown && 'is-shown', className)} onClick={goTop} />
     </span>
   );
 }

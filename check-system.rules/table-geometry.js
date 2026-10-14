@@ -2,7 +2,8 @@
 // writes a column's width (a JavaScript adjustment from measured layout, allowed by the inline-style rule); the row
 // height and the cell padding are the density's (tokens and classes), never measured and never written. No Platform or
 // application source asks Tabulator for a forced redraw (redraw(true)): it measures every row again, which nothing needs
-// (a density change is CSS; a grid shown again redraws in place; React-filled cells re-measure only their columns).
+// (a density change is CSS for the rows and re-measures only the columns; a grid shown again redraws in place; React-filled
+// cells re-measure only their columns).
 //   table.redraw()                 ok
 //   table.redraw(true)             finding
 // The style audit and the pages test check at run time that no DataTable row or cell carries an inline height or padding.
