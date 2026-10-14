@@ -2683,6 +2683,17 @@
   --plx-comp-copy-button-field-focus-layer: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-table-footer-border-color: var(--plx-sys-data-table-line);
+  --plx-comp-data-table-footer-text: var(--plx-sys-content-muted);
+  --plx-comp-data-table-footer-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-data-table-footer-gap: var(--plx-sys-space-cluster-md);
+  --plx-comp-data-table-footer-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-data-table-footer-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-data-table-footer-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-data-table-footer-label-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-data-table-fit-max-height: 100dvh;
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-details-text: var(--plx-sys-content-default);
   --plx-comp-details-font-family: var(--plx-sys-font-body);
   --plx-comp-details-font-size: var(--plx-ref-font-size-13);

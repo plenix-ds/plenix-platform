@@ -6637,10 +6637,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
        'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
      onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
-     onRemoveRecent(text): removes one recent search (Delete on it); onClearRecent(): removes them all (the Clear button
-       in the list's heading); without them the recent searches cannot be removed here
+     onRemoveRecent(text): removes one recent search: its row's remove button (an "×" named "Remove <term>"), or Delete
+       on it; onClearRecent(): removes them all (the Clear button in the list's heading); without them the recent
+       searches cannot be removed here
      strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
-       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches' }
+       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
      className: more classes on the field
      ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
@@ -6651,6 +6652,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
        list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
        of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
+     Recent searches with onRemoveRecent (owner, 2026-10-14): the WAI-ARIA "combobox with grid popup" pattern. The field
+       has aria-haspopup="grid"; the list is a grid named by its heading, one row per search with two cells: the term and
+       its remove button (an icon-only ghost button, "Remove <term>"). The focus stays in the field (aria-activedescendant
+       names the active cell): Arrow Down and Up move between rows (in the same cell), Arrow Right moves into the remove
+       cell and Arrow Left back to the term (mirrored right to left); Enter on the term searches it, Enter on the remove
+       cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
+       the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
+       listbox.
    Notes:
      It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
      ranks and limits the suggestions (about eight) and the recent searches (about five).
@@ -6661,7 +6670,8 @@ const STRINGS = {
   clearRecent: 'Clear recent searches',
   clear: 'Clear search',
   results: '{n} suggestions',
-  removed: '{query} removed from recent searches'
+  removed: '{query} removed from recent searches',
+  remove: 'Remove {query}'
 };
 const asItem = kind => x => typeof x === 'string' ? {
   value: x,
@@ -6718,9 +6728,13 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   const items = showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion'));
   const [open, setOpen] = _react.default.useState(false);
   const [active, setActive] = _react.default.useState(-1);
+  const [cell, setCell] = _react.default.useState(0); // the grid's active cell in its row: 0 the term, 1 the remove button
   const shown = hasList && open && items.length > 0;
+  // recent searches that can be removed one by one: the combobox with grid popup (WAI-ARIA APG)
+  const grid = showRecent && !!onRemoveRecent;
   _react.default.useEffect(() => {
     setActive(-1);
+    setCell(0);
   }, [text, showRecent]);
   _react.default.useEffect(() => {
     if (!open) return undefined;
@@ -6736,7 +6750,7 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   }, [shown, showRecent, items.length, t.results]);
   // the active option stays in view in a long list
   _react.default.useEffect(() => {
-    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-o' + active) : null;
+    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
     if (el && el.scrollIntoView) el.scrollIntoView({
       block: 'nearest'
     });
@@ -6756,6 +6770,15 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
       if (onSubmitSearch) onSubmitSearch(item.value);
     }
   };
+  // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
+  const removeRecent = i => {
+    const it = items[i];
+    if (!it || !onRemoveRecent) return;
+    onRemoveRecent(it.value);
+    if (active >= 0) setActive(a => Math.min(a, items.length - 2));
+    if (items.length <= 1) setCell(0);
+    (0, _announce.announce)(t.removed.replace('{query}', it.value));
+  };
   const keys = e => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented || !hasList) {
@@ -6768,8 +6791,16 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (!open) setOpen(true);else if (items.length) setActive(a => a <= 0 ? items.length - 1 : a - 1);
+    } else if (grid && shown && active >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      // the grid's cells in reading order: toward the end is the remove cell (Arrow Left in a right-to-left page)
+      const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === 'rtl';
+      e.preventDefault();
+      setCell(e.key === 'ArrowRight' !== rtl ? 1 : 0);
     } else if (e.key === 'Enter') {
-      if (shown && items[active]) {
+      if (shown && items[active] && grid && cell === 1) {
+        e.preventDefault();
+        removeRecent(active);
+      } else if (shown && items[active]) {
         e.preventDefault();
         choose(items[active]);
       } else {
@@ -6783,19 +6814,18 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
       }
     } else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
       e.preventDefault();
-      const q = items[active].value;
-      onRemoveRecent(q);
-      setActive(a => Math.min(a, items.length - 2));
-      (0, _announce.announce)(t.removed.replace('{query}', q));
+      removeRecent(active);
     } else if (!open && e.key.length === 1) setOpen(true);
   };
   const optId = i => auto + '-o' + i;
+  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
   const comboProps = hasList ? {
     role: 'combobox',
     'aria-expanded': shown,
     'aria-controls': listId,
     'aria-autocomplete': 'list',
-    'aria-activedescendant': shown && active >= 0 ? optId(active) : undefined
+    'aria-haspopup': grid ? 'grid' : undefined,
+    'aria-activedescendant': shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : undefined
   } : {};
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
@@ -6857,7 +6887,54 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
       setOpen(false);
       if (input.current) input.current.focus();
     }
-  }, t.clearRecent) : null) : null, /*#__PURE__*/_react.default.createElement("ul", {
+  }, t.clearRecent) : null) : null, grid ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    id: listId,
+    role: "grid",
+    className: "plx-search__list plx-search__grid",
+    "aria-labelledby": listId + '-t'
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: it.kind + ':' + it.value,
+    id: auto + '-r' + i,
+    role: "row",
+    className: (0, _cx.cx)('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: cellId(i, 0),
+    role: "gridcell",
+    "aria-selected": i === active && cell === 0,
+    className: "plx-search__cell",
+    onClick: () => choose(it)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "clock"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-label"
+  }, it.label))), /*#__PURE__*/_react.default.createElement("span", {
+    id: cellId(i, 1),
+    role: "gridcell",
+    "aria-selected": i === active && cell === 1,
+    className: "plx-search__remove-cell"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    tabIndex: -1,
+    label: t.remove.replace('{query}', it.value),
+    className: (0, _cx.cx)('plx-search__remove', i === active && cell === 1 && 'is-focus-visible'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: e => {
+      e.stopPropagation();
+      removeRecent(i);
+      if (input.current) input.current.focus();
+    }
+  }))))) : /*#__PURE__*/_react.default.createElement("ul", {
     ref: list,
     id: listId,
     role: "listbox",
@@ -9366,8 +9443,9 @@ var _grid = require("../../utils/grid.js");
        so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
      Row height and cell padding (Plenix's): never measured, never written. A row is the density's row height
        (--plx-sys-data-table-row-height plus its line); the stylesheet draws it.
-     Virtual rendering (renderVertical "virtual", for a grid with a height): Tabulator renders the rows in view; every row
-       counts as the density row height (read from the tokens, not from the rows); the room for the rows not drawn is two
+     Virtual rendering (renderVertical "virtual": a grid with a room, its height or the room fill and load-more measure):
+       Tabulator renders the rows in view; every row counts as the density row height (read from the tokens, not from the
+       rows); the room for the rows not drawn is two
        gaps of the system's virtualization (system/virtual.css: pieces of 1, 2, 4 … rows, data-plx-span), never padding.
        The grid carries aria-rowcount and each drawn row its aria-rowindex. A focused control whose row scrolls out parks
        the focus on the scrolling body and gets it back when the row is drawn again.
@@ -9884,7 +9962,8 @@ function strictTabulator(Tabulator, win) {
         if (this.renderer && typeof this.renderer.resize === 'function') this.renderer.resize();
         return false;
       };
-      // the virtual renderer: a grid with a height (its tableholder has a block size from data-plx-height) counts as one
+      // the virtual renderer: a grid with a room (its tableholder has a maximum block size: data-plx-height, or the room
+      // fill and load-more measure) counts as one
       const init = RM.initializeRenderer;
       RM.initializeRenderer = function () {
         init.apply(this, arguments);
@@ -10147,7 +10226,7 @@ function tablePx(token, el) {
   return parseFloat(v) || 0;
 }
   } },
-  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10164,6 +10243,12 @@ var _sizeSteps = require("../../utils/sizeSteps.js");
 var _direction = require("../../utils/direction.js");
 var _EmptyState = require("../EmptyState/EmptyState.jsx");
 var _Button = require("../Button/Button.jsx");
+var _Pagination = require("../Pagination/Pagination.jsx");
+var _Input = require("../Input/Input.jsx");
+var _Text = require("../Text/Text.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _grid = require("../../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable (and the engine the static Table shares, components/Table)
    Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
@@ -10218,8 +10303,27 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        static Table's default: the columns stay and scroll sideways)
      storageKey: keeps the person's view (sort, column widths, order and hidden columns) in this browser under the key
        and restores it the next time the grid is built
-     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container); a grid with
-       a height draws only the rows in view (virtual rendering)
+     mode: how the grid handles many rows (owner, 2026-10-14: "each application has its own needs"):
+       "fill" (the default): the grid fills the room left on screen (its scrolling pane's, or the window's, under where
+         it starts) and its rows scroll inside it; only the rows in view are drawn (virtual rendering), so a large table
+         is always fast. A grid shorter than the room is as tall as its rows.
+       "pages": pages of rows (pageSize a page, 50 by default) and a footer under the grid: the range ("101–150 of 560",
+         the data font), the rows-per-page choice (a Select of pageSizes) and Pagination. Every row of the page is drawn;
+         the page grows with them (no scrolling inside, unless height is given).
+       "load-more": the first pageSize rows, then pageSize more each time the person reaches the bottom (the last row
+         comes into view: an IntersectionObserver) or presses Load more in the footer (the keyboard and screen-reader
+         way; it shows the count, "150 of 560"); how many rows came is announced politely. Fills the room as "fill" does.
+       The static Table ignores it: it draws every row.
+     pageSize: the rows of a page ("pages") or of each load ("load-more"); default 50
+     pageSizes: the rows-per-page choices of "pages"; default [25, 50, 100]
+     fetchRows({ page, size, sort, filters, search }): rows from a server, for "pages" and "load-more": page is 1-based,
+       sort [{ field, dir: "asc" | "desc" }] (the headers' sort), filters [{ field, type: "like" | "=", value }] (the
+       headers' filters), search the search prop; returns (a promise of) { rows, total }. With it the grid sorts and
+       filters on the server (Tabulator's remote pagination, sort and filter modes) and data is not used; a rejected
+       promise shows the error state (Retry asks again).
+     search: the page's search text, passed to fetchRows; a change asks for the first rows again
+     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container); it replaces
+       the room "fill" and "load-more" measure
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
      on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
        with rowClick, rows are focusable and Enter does what a click does
@@ -10255,12 +10359,20 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      its one-line cells sit in the middle; owner, 2026-10-14), in body and header cells; horizontal alignment
      is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own element
      (plx-data-table__value) and ends in an ellipsis.
-     Virtual rendering (a grid with a height, every row one height: no "wrap" column and no groupBy): only the rows in
-     view are in the document; the rows not drawn are gaps of the density's row height (system/virtual.css), the grid
+     Virtual rendering ("fill" and "load-more", or a grid with a height; every row one height: no "wrap" column, no
+       groupBy, and not while it is a Narrow list): only the rows in view are in the document; the rows not drawn are gaps of the density's row height (system/virtual.css), the grid
      carries aria-rowcount and each row its aria-rowindex, a focused control whose row scrolls out leaves the focus on the
-     scrolling body and gets it back when its row returns, and printing draws every row. Rows share one height per
+     scrolling body and gets it back when its row returns, and printing draws every row (of the rows loaded). Rows share one height per
      density, and the browser's find in page finds only the rows drawn (the grid's own filters search all of them).
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
+     The room "fill" takes (no height given): the body's maximum height is measured as the grid is built, the window or
+       its pane is resized or the grid is shown: from where the body starts to the bottom of the scrolling pane (or the
+       window), less what is under the body (the footer, the frame); a grid that starts too far down for eight rows takes
+       one screen. The length is written on the body (max-block-size), rounded down to the grid (utils/grid.js); printing
+       lifts it.
+     Pages: the footer's Select changes the page size (back to page 1); a sort or a filter goes back to page 1; the grid
+       carries aria-rowcount (every row) and each row its aria-rowindex in the whole set.
+     Load more: the button stays while rows are left; when the last ones come the focus it had goes to the scrolling body.
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
    Notes:
      Inline styles (owner, 2026-10-13: a JavaScript adjustment from tokens, defined styles or measured layout is allowed):
@@ -10273,6 +10385,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        height or padding on a row or cell; check-system (table-geometry) rejects a forced redraw. Moving rows (a rowHandle column with options.movableRows)
        and columns (options.movableColumns) is native drag and drop. Editors "input" and "number" are a Plenix input.
      The data changes in place (sort, filters, scroll and column widths stay); new columns rebuild the column set.
+     Every DataTable handles many rows by its mode (owner, 2026-10-14): "fill" by default, "pages" or "load-more" where the
+     application needs them; no DataTable draws all of a long list at once.
 */
 const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px'; // the narrowest a resized column gets
@@ -10306,8 +10420,32 @@ const STRINGS = {
   moveRight: 'Move right',
   narrower: 'Narrower',
   wider: 'Wider',
-  resize: 'Resize'
+  resize: 'Resize',
+  range: '{first}–{last} of {total}',
+  count: '{shown} of {total}',
+  perPage: 'Rows per page',
+  pages: '{label} pages',
+  loadMore: 'Load more',
+  loaded: '{n} more rows loaded, {shown} of {total}'
 };
+// the modes (owner, 2026-10-14): how a grid handles many rows
+const MODES = ['fill', 'pages', 'load-more'];
+const PAGE_SIZES = [25, 50, 100];
+const PAGE = 50; // the rows of a page or of each load, by default
+const LIST_WIDTH = '--plx-ref-size-600px'; // under it a Narrow grid is a list (data-table.css, the container query)
+const AHEAD = '--plx-ref-size-200px'; // load-more: the next rows are asked for this far before the last row shows
+const FIT_ROWS = 8; // fill: a grid that starts too low for this many rows takes one screen
+const words = (str, vars) => str.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+// the nearest ancestor that scrolls and is no taller than the window (a pane), else null (the window scrolls)
+function scrollerOf(el) {
+  const doc = el.ownerDocument,
+    win = doc.defaultView;
+  for (let p = el.parentElement; p && p !== doc.body && p !== doc.documentElement; p = p.parentElement) {
+    const oy = win.getComputedStyle(p).overflowY;
+    if ((oy === 'auto' || oy === 'scroll' || oy === 'overlay') && p.clientHeight && p.clientHeight <= win.innerHeight) return p;
+  }
+  return null;
+}
 const VIEW = 'plx-data-table:'; // the browser storage prefix of a kept view (storageKey)
 const readView = key => {
   try {
@@ -10456,13 +10594,41 @@ function TableEngine(props) {
     onRetry,
     keyColumns,
     narrow = isStatic ? 'table' : 'list',
-    storageKey
+    storageKey,
+    mode = 'fill',
+    pageSize,
+    pageSizes = PAGE_SIZES,
+    fetchRows,
+    search
   } = props;
+  // the mode: the static Table draws every row; a DataTable fills the room by default
+  const M = isStatic ? 'all' : MODES.indexOf(mode) >= 0 ? mode : 'fill';
+  const remote = (M === 'pages' || M === 'load-more') && typeof fetchRows === 'function';
+  const step = pageSize > 0 ? pageSize : PAGE;
   // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
   const keys = keyFields(columns, keyColumns);
   const listed = narrow === 'list' && columns.some(c => listable(c) && keys.indexOf(c.field) < 0);
-  // virtual rendering: a grid with a height whose rows are all one height (no wrapping column, no group rows)
-  const virtual = !!height && !columns.some(c => [].concat(c.kind || []).indexOf('wrap') >= 0) && !(options || {}).groupBy;
+  // a Narrow grid that is a list now (its rows are taller than the density's: drawn in full, not virtually)
+  const [listNow, setListNow] = _react.default.useState(false);
+  const listRef = _react.default.useRef(false);
+  listRef.current = listNow;
+  // fill and load-more measure the room left (autoFit) unless a height is given; virtual rendering: a grid with a room
+  // whose rows are all one height (no wrapping column, no group rows, not a Narrow list)
+  const autoFit = !height && (M === 'fill' || M === 'load-more');
+  const virtual = (!!height || autoFit) && !columns.some(c => [].concat(c.kind || []).indexOf('wrap') >= 0) && !(options || {}).groupBy && !listNow;
+  // the footer of pages and load-more: { page, max, size, total } or { shown, total }; busy while more rows come
+  const [foot, setFoot] = _react.default.useState(null);
+  const [busy, setBusy] = _react.default.useState(false);
+  const totalRef = _react.default.useRef(0); // remote: the total the server gave
+  const countRef = _react.default.useRef(step); // local load-more: the rows shown
+  const loadRef = _react.default.useRef({
+    pages: 1,
+    ask: null,
+    busy: false
+  }); // remote load-more: pages loaded, the last question
+  const ioRef = _react.default.useRef(null); // load-more: the observer of the last row
+  const loadMoreRef = _react.default.useRef(null);
+  const footRef = _react.default.useRef(null);
   const [attempt, setAttempt] = _react.default.useState(0); // a Retry after the engine failed to load builds the grid again
   const resized = _react.default.useRef({}); // the widths the person chose (field -> size name), for the kept view
   const restoring = _react.default.useRef(false);
@@ -10915,7 +11081,8 @@ function TableEngine(props) {
         columnDefaults: {
           resizable: false
         },
-        // a grid with a height draws the rows in view (every row is the density's height); one without draws them all
+        // a grid with a room (a height, or fill and load-more) draws the rows in view (every row is the density's height);
+        // pages, a wrapping column, group rows and a Narrow list draw them all
         renderVertical: virtual ? 'virtual' : 'basic',
         editTriggerEvent: 'dblclick',
         rowContextMenu,
@@ -10969,6 +11136,70 @@ function TableEngine(props) {
         movableRows: false,
         groupBy: false
       });
+      // pages, and local load-more (a page that grows): Tabulator's pagination, its own page buttons never shown (the
+      // footer is Plenix's)
+      countRef.current = step;
+      loadRef.current = {
+        pages: 1,
+        ask: null,
+        busy: false
+      };
+      totalRef.current = 0;
+      if (M === 'pages' || M === 'load-more' && !remote) {
+        Object.assign(opts, {
+          pagination: true,
+          paginationMode: remote ? 'remote' : 'local',
+          paginationSize: step,
+          paginationElement: host.ownerDocument.createElement('div'),
+          paginationCounter: false
+        });
+      }
+      // rows from the server (fetchRows): Tabulator's remote pagination, sort and filter; the question in Plenix's terms
+      if (remote) {
+        const request = (url, config, params) => {
+          const q = latest.current,
+            size = M === 'pages' ? params.size || step : step;
+          const ask = {
+            page: M === 'pages' ? params.page || 1 : 1,
+            size,
+            sort: (params.sort || []).map(x => ({
+              field: x.field,
+              dir: x.dir
+            })),
+            filters: (params.filter || []).map(x => ({
+              field: x.field,
+              type: x.type,
+              value: x.value
+            })),
+            search: q.search
+          };
+          loadRef.current = {
+            pages: 1,
+            ask,
+            busy: false
+          };
+          return Promise.resolve(q.fetchRows(ask)).then(r => {
+            const rows = r && r.rows || [],
+              total = r && r.total != null ? Number(r.total) : rows.length;
+            totalRef.current = total;
+            return M === 'pages' ? {
+              last_page: Math.max(1, Math.ceil(total / size)),
+              last_row: total,
+              data: rows
+            } : rows;
+          }, err => {
+            if (alive) setError(err || new Error('The rows could not load'));
+            throw err;
+          });
+        };
+        Object.assign(opts, {
+          ajaxURL: 'plenix:rows',
+          ajaxRequestFunc: request,
+          sortMode: 'remote',
+          filterMode: 'remote'
+        });
+        delete opts.data;
+      }
       opts.columns = defsOf(p.columns, host);
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
@@ -11004,10 +11235,17 @@ function TableEngine(props) {
           h.setAttribute('aria-keyshortcuts', 'Alt+ArrowUp Alt+ArrowDown Alt+Home Alt+End');
         });
       };
-      table.on('renderComplete', aria);
+      table.on('renderComplete', () => {
+        aria();
+        syncFoot(table);
+        watchEnd(table);
+      });
       table.on('tableBuilt', () => {
         aria();
         builtRef.current = true;
+        fitRoom();
+        syncFoot(table);
+        watchEnd(table);
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach(ev => table.on(ev, (...a) => {
           const h = (latest.current.on || {})[ev];
@@ -11058,26 +11296,78 @@ function TableEngine(props) {
     // a grid built while hidden (a closed tab, a section not shown) had no size to lay out in: once it is shown, it is
     // drawn again in place (its columns are measured then; no row is)
     // and a grid whose width changes shares the room among its columns again (nothing is measured)
+    // fill and load-more without a height (autoFit): the body takes the room left on screen, from where it starts to the
+    // bottom of its scrolling pane or the window, less what is under it (the footer, the frame); a grid that starts too
+    // low for FIT_ROWS rows takes one screen. Written on the body as a maximum, rounded down to the grid.
+    const fitRoom = () => {
+      const f = frameRef.current,
+        h = hostRef.current,
+        holder = h && h.querySelector('.tabulator-tableholder');
+      if (!autoFit || !f || !holder || !f.offsetWidth || !builtRef.current) return;
+      const sc = scrollerOf(f),
+        view = sc ? sc.getBoundingClientRect() : {
+          top: 0
+        };
+      const screen = sc ? sc.clientHeight - (parseFloat(win.getComputedStyle(sc).paddingBlockEnd) || 0) : win.innerHeight;
+      const hr = holder.getBoundingClientRect(),
+        fr = f.getBoundingClientRect();
+      const above = hr.top - fr.top,
+        below = fr.bottom - hr.bottom;
+      const start = hr.top - view.top + (sc ? sc.scrollTop : win.scrollY); // where the body starts in the scrolling content
+      const rows = FIT_ROWS * ((0, _tabulator.tablePx)('--plx-sys-data-table-row-height', f) + (0, _tabulator.tablePx)('--plx-comp-data-table-line-width', f));
+      let room = screen - start - below;
+      if (room < rows) room = screen - above - below;
+      const want = Math.max(room, rows);
+      if (holder.style.maxBlockSize !== (0, _grid.gridPx)(want, {
+        round: 'down',
+        el: f
+      })) holder.style.maxBlockSize = (0, _grid.gridPx)(want, {
+        round: 'down',
+        el: f
+      });
+    };
+    const onWindow = () => {
+      fitRoom();
+    };
+    win.addEventListener('resize', onWindow);
     let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth),
       lastWidth = frameRef.current ? frameRef.current.offsetWidth : 0,
       frame = 0;
+    const narrowNow = width => listed && width > 0 && width < (0, _tabulator.tablePx)(LIST_WIDTH, frameRef.current);
     const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
       const width = frameRef.current ? frameRef.current.offsetWidth : 0,
         now = !!width;
+      // a Narrow grid that became a list (or a table again): drawn again with the renderer that fits
+      if (now && narrowNow(width) !== listRef.current) {
+        setListNow(narrowNow(width));
+        shownBefore = now;
+        lastWidth = width;
+        return;
+      }
       if (now && !shownBefore && tableRef.current && builtRef.current) tableRef.current.redraw();else if (now && width !== lastWidth && tableRef.current && builtRef.current && !frame) frame = requestAnimationFrame(() => {
         frame = 0;
         if (tableRef.current) (0, _strict.reshare)(tableRef.current);
       });
       shownBefore = now;
       lastWidth = width;
+      fitRoom();
     });
     if (ro && frameRef.current) ro.observe(frameRef.current);
-    // printing a virtual grid: every row is in the document while the page prints (React fills their cells first)
+    const pane = autoFit && frameRef.current ? scrollerOf(frameRef.current) : null;
+    if (ro && pane) ro.observe(pane);
+    if (frameRef.current && narrowNow(frameRef.current.offsetWidth) !== listRef.current) setListNow(narrowNow(frameRef.current.offsetWidth));
+    // printing: every row (of those loaded) is in the document while the page prints (React fills their cells first),
+    // and the measured room is lifted
     const printing = on => () => {
       const t = tableRef.current;
-      if (!t || !builtRef.current || !virtual) return;
-      (0, _strict.virtualPrint)(t, on);
-      if (on) _reactDom.default.flushSync(() => bump());
+      if (!t || !builtRef.current) return;
+      const holder = hostRef.current && hostRef.current.querySelector('.tabulator-tableholder');
+      if (on && autoFit && holder) holder.style.maxBlockSize = '';
+      if (virtual) {
+        (0, _strict.virtualPrint)(t, on);
+        if (on) _reactDom.default.flushSync(() => bump());
+      }
+      if (!on) fitRoom();
     };
     const beforePrint = printing(true),
       afterPrint = printing(false);
@@ -11091,6 +11381,11 @@ function TableEngine(props) {
       builtRef.current = false;
       win.removeEventListener('beforeprint', beforePrint);
       win.removeEventListener('afterprint', afterPrint);
+      win.removeEventListener('resize', onWindow);
+      if (ioRef.current) {
+        ioRef.current.disconnect();
+        ioRef.current = null;
+      }
       if (table) {
         try {
           table.destroy();
@@ -11102,7 +11397,120 @@ function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual]);
+  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step]);
+
+  // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
+  // and the total ("load-more"); a page's rows carry their place in the whole set
+  const syncFoot = t => {
+    if (!t || M !== 'pages' && M !== 'load-more') return;
+    const total = remote ? totalRef.current : t.getDataCount('active');
+    let next;
+    if (M === 'pages') {
+      const size = t.getPageSize() || step,
+        page = t.getPage() || 1,
+        max = t.getPageMax() || 1;
+      next = {
+        page,
+        max,
+        size,
+        total
+      };
+      if (t.element) t.element.setAttribute('aria-rowcount', String(total + 1));
+      t.getRows('display').forEach((r, i) => {
+        const e = r.getElement();
+        if (e) e.setAttribute('aria-rowindex', String((page - 1) * size + i + 2));
+      });
+    } else next = {
+      shown: remote ? t.getDataCount() : Math.min(countRef.current, total),
+      total
+    };
+    footRef.current = next;
+    setFoot(f => f && Object.keys(next).every(k => f[k] === next[k]) ? f : next);
+  };
+  // load-more: the last row loaded is watched; as it comes within AHEAD of the view, the next rows are asked for
+  const watchEnd = t => {
+    if (M !== 'load-more' || !t || !hostRef.current) return;
+    const win = hostRef.current.ownerDocument.defaultView,
+      holder = hostRef.current.querySelector('.tabulator-tableholder');
+    if (!ioRef.current) {
+      if (!holder || typeof win.IntersectionObserver === 'undefined') return; // the Load more button stays the way
+      ioRef.current = new win.IntersectionObserver(list => {
+        if (list.some(e => e.isIntersecting) && loadMoreRef.current) loadMoreRef.current();
+      }, {
+        root: holder,
+        rootMargin: (0, _tabulator.tablePx)(AHEAD, hostRef.current) + 'px'
+      });
+    }
+    const rows = t.getRows('display'),
+      last = rows[rows.length - 1],
+      el = last ? last.getElement() : null;
+    if (el === ioRef.current.plxEl) return;
+    ioRef.current.disconnect();
+    ioRef.current.plxEl = el;
+    if (el) ioRef.current.observe(el);
+  };
+  // load-more: pageSize more rows (local: the page grows; remote: the next page from fetchRows), announced politely
+  const loadMore = () => {
+    const t = tableRef.current,
+      L = loadRef.current,
+      f = footRef.current;
+    if (!t || !builtRef.current || L.busy || !f || f.shown >= f.total) return;
+    const holder = hostRef.current && hostRef.current.querySelector('.tabulator-tableholder'),
+      top = holder ? holder.scrollTop : 0;
+    const before = f.shown,
+      had = hostRef.current && hostRef.current.ownerDocument.activeElement;
+    L.busy = true;
+    setBusy(true);
+    const done = () => {
+      L.busy = false;
+      setBusy(false);
+      if (tableRef.current !== t) return;
+      if (holder && holder.scrollTop !== top) holder.scrollTop = top;
+      syncFoot(t);
+      watchEnd(t);
+      const now = footRef.current || f;
+      (0, _announce.announce)(words(STRINGS.loaded, {
+        n: (0, _format.formatNumber)(now.shown - before),
+        shown: (0, _format.formatNumber)(now.shown),
+        total: (0, _format.formatNumber)(now.total)
+      }));
+      // the last rows came: the Load more button goes, and the focus it had goes to the scrolling body
+      if (now.shown >= now.total && had && had.closest && had.closest('.' + B + '__more') && holder) holder.focus({
+        preventScroll: true
+      });
+    };
+    const fail = err => {
+      L.busy = false;
+      setBusy(false);
+      setError(err || new Error('The rows could not load'));
+    };
+    if (!remote) {
+      countRef.current = Math.min(f.total, countRef.current + step);
+      Promise.resolve(t.setPageSize(countRef.current)).then(done, fail);
+      return;
+    }
+    const ask = Object.assign({}, L.ask, {
+      page: L.pages + 1,
+      size: step,
+      search: latest.current.search
+    });
+    Promise.resolve(latest.current.fetchRows(ask)).then(r => {
+      if (tableRef.current !== t) return null;
+      L.pages += 1;
+      if (r && r.total != null) totalRef.current = Number(r.total);
+      return t.addData(r && r.rows || [], false);
+    }).then(done, fail);
+  };
+  loadMoreRef.current = loadMore;
+  // the page's search text (fetchRows): the first rows again
+  const searchKey = search == null ? '' : String(search);
+  const searched = _react.default.useRef(searchKey);
+  _react.default.useEffect(() => {
+    if (searched.current === searchKey) return;
+    searched.current = searchKey;
+    const t = tableRef.current;
+    if (remote && t && builtRef.current) t.setData();
+  }, [searchKey, remote]);
 
   // moving rows (options.movableRows with a rowHandle column): native drag and drop from the handle, delegated on the grid;
   // the row it is dropped on shows a line (a class) and the moved row lands before it
@@ -11301,7 +11709,7 @@ function TableEngine(props) {
   const shown = _react.default.useRef(null);
   _react.default.useEffect(() => {
     const table = tableRef.current;
-    if (!table || !builtRef.current) return;
+    if (!table || !builtRef.current || remote) return;
     if (sameRows(shown.current, data || [])) return;
     shown.current = snap(data);
     // new rows clear Tabulator's selection: that is not the person changing it; the page's selection is applied again
@@ -11362,11 +11770,68 @@ function TableEngine(props) {
     if (onRetry) onRetry();
   };
   const reason = failed && failed !== true ? String(failed.message || failed) : null;
+  // the footer (pages, load-more): Plenix components; numbers in the data font
+  const n = _format.formatNumber;
+  let footer = null;
+  if (!failed && foot && M === 'pages') {
+    const first = foot.total ? (foot.page - 1) * foot.size + 1 : 0,
+      last = Math.min(foot.total, foot.page * foot.size);
+    const sizes = pageSizes.indexOf(foot.size) >= 0 ? pageSizes : pageSizes.concat([foot.size]).sort((a, b) => a - b);
+    footer = /*#__PURE__*/_react.default.createElement("div", {
+      className: B + '__footer'
+    }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data",
+      className: B + '__range'
+    }, words(STRINGS.range, {
+      first: n(first),
+      last: n(last),
+      total: n(foot.total)
+    })), /*#__PURE__*/_react.default.createElement("label", {
+      className: B + '__page-size'
+    }, /*#__PURE__*/_react.default.createElement("span", null, STRINGS.perPage), /*#__PURE__*/_react.default.createElement(_Input.Select, {
+      value: String(foot.size),
+      options: sizes.map(x => ({
+        value: String(x),
+        label: String(x)
+      })),
+      onChange: e => {
+        const t = tableRef.current;
+        if (t) Promise.resolve(t.setPageSize(Number(e.target.value))).then(() => syncFoot(t));
+      }
+    })), /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
+      className: B + '__pages',
+      label: words(STRINGS.pages, {
+        label: label || ''
+      }).trim(),
+      page: foot.page,
+      pageCount: foot.max,
+      onPageChange: p => {
+        const t = tableRef.current;
+        if (t) Promise.resolve(t.setPage(p)).then(() => syncFoot(t));
+      }
+    }));
+  } else if (!failed && foot && M === 'load-more') {
+    footer = /*#__PURE__*/_react.default.createElement("div", {
+      className: B + '__footer'
+    }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data",
+      className: B + '__range'
+    }, words(STRINGS.count, {
+      shown: n(foot.shown),
+      total: n(foot.total)
+    })), foot.shown < foot.total ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      className: B + '__more',
+      loading: busy,
+      onClick: () => loadMore()
+    }, STRINGS.loadMore) : null);
+  }
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: frameRef,
-    className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', className),
+    className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', M === 'pages' && B + '--pages', M === 'load-more' && B + '--load-more', className),
     "data-plx-render": virtual ? 'virtual' : undefined,
-    "data-plx-height": height && height !== '100%' ? sizeName(height) || undefined : undefined
+    "data-plx-height": height && height !== '100%' ? sizeName(height) || undefined : undefined,
+    "data-plx-fit": autoFit ? '' : undefined
   }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     className: B + '__error',
     tone: "error",
@@ -11380,7 +11845,7 @@ function TableEngine(props) {
     ref: hostRef,
     className: B + '__table',
     hidden: failed ? true : undefined
-  }), portals);
+  }), footer, portals);
 }
 
 // the interactive table: records to sort, filter, select, open, edit, group or nest
