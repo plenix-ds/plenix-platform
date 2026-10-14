@@ -3243,6 +3243,19 @@
   --plx-comp-rich-text-rule-width: var(--plx-sys-border-width-thin);
   --plx-comp-rich-text-caption-text: var(--plx-sys-content-muted);
   --plx-comp-rich-text-caption-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-rich-text-image-radius: var(--plx-sys-shape-md);
+  --plx-comp-rich-text-image-max-width: 100%;
+  --plx-comp-rich-text-task-gap: var(--plx-comp-check-gap);
+  --plx-comp-rich-text-table-background: var(--plx-comp-table-background);
+  --plx-comp-rich-text-table-text: var(--plx-comp-table-text);
+  --plx-comp-rich-text-table-line: var(--plx-comp-table-column-line);
+  --plx-comp-rich-text-table-line-width: var(--plx-comp-table-line-width);
+  --plx-comp-rich-text-table-header-background: var(--plx-comp-table-header-background);
+  --plx-comp-rich-text-table-header-text: var(--plx-comp-table-header-text);
+  --plx-comp-rich-text-table-header-font-weight: var(--plx-comp-table-header-font-weight);
+  --plx-comp-rich-text-table-cell-padding-inline: var(--plx-comp-table-cell-padding-inline);
+  --plx-comp-rich-text-table-cell-padding-block: var(--plx-sys-space-stack-xs);
+  --plx-comp-rich-text-table-cell-min-width: var(--plx-ref-size-48px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-rich-text-editor-max-width: var(--plx-ref-size-720px);
@@ -3283,6 +3296,14 @@
   --plx-comp-rich-text-editor-mention-option-min-height: var(--plx-comp-combobox-option-min-height);
   --plx-comp-rich-text-editor-mention-option-padding-inline: var(--plx-comp-combobox-option-padding-inline);
   --plx-comp-rich-text-editor-mention-option-active-background: var(--plx-comp-combobox-option-active-background);
+  --plx-comp-rich-text-editor-groups-height: var(--plx-sys-control-height-toolbar);
+  --plx-comp-rich-text-editor-groups-gap: var(--plx-comp-toolbar-group-gap);
+  --plx-comp-rich-text-editor-swatches-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-rich-text-editor-hex-width: var(--plx-ref-size-120px);
+  --plx-comp-rich-text-editor-picker-width: var(--plx-sys-control-height-toolbar);
+  --plx-comp-rich-text-editor-selected-cell-background: var(--plx-comp-data-table-row-selected-background);
+  --plx-comp-rich-text-editor-selected-node-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-rich-text-editor-selected-node-outline-width: var(--plx-comp-link-focus-outline-width);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-scrim-background: var(--plx-sys-scrim);

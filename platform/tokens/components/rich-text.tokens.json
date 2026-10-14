@@ -180,6 +180,71 @@
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension",
       "$description": "RichText: the size of a figure’s caption."
+    },
+    "rich-text-image-radius": {
+      "$value": "{plx-sys.shape-md}",
+      "$type": "dimension",
+      "$description": "RichText: the corners of a picture in prose."
+    },
+    "rich-text-image-max-width": {
+      "$value": "100%",
+      "$type": "dimension",
+      "$description": "RichText: a picture never wider than its column."
+    },
+    "rich-text-task-gap": {
+      "$value": "{plx-comp.check-gap}",
+      "$type": "dimension",
+      "$description": "RichText task list: the space between an item's checkbox and its text (the checkbox row's gap)."
+    },
+    "rich-text-table-background": {
+      "$value": "{plx-comp.table-background}",
+      "$type": "color",
+      "$description": "RichText table: the Plenix table's surface."
+    },
+    "rich-text-table-text": {
+      "$value": "{plx-comp.table-text}",
+      "$type": "color",
+      "$description": "RichText table: the Plenix table's text color."
+    },
+    "rich-text-table-line": {
+      "$value": "{plx-comp.table-column-line}",
+      "$type": "color",
+      "$description": "RichText table: the full inside lines and the frame (the Plenix table's line color)."
+    },
+    "rich-text-table-line-width": {
+      "$value": "{plx-comp.table-line-width}",
+      "$type": "dimension",
+      "$description": "RichText table: the width of its lines (the Plenix table's)."
+    },
+    "rich-text-table-header-background": {
+      "$value": "{plx-comp.table-header-background}",
+      "$type": "color",
+      "$description": "RichText table: the header cells' fill (the Plenix table header)."
+    },
+    "rich-text-table-header-text": {
+      "$value": "{plx-comp.table-header-text}",
+      "$type": "color",
+      "$description": "RichText table: the header cells' text (the Plenix table header)."
+    },
+    "rich-text-table-header-font-weight": {
+      "$value": "{plx-comp.table-header-font-weight}",
+      "$type": "fontWeight",
+      "$description": "RichText table: the header cells' weight (the Plenix table header)."
+    },
+    "rich-text-table-cell-padding-inline": {
+      "$value": "{plx-comp.table-cell-padding-inline}",
+      "$type": "dimension",
+      "$description": "RichText table: a cell's side padding (the Plenix table's)."
+    },
+    "rich-text-table-cell-padding-block": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "RichText table: the space above and below a cell's text."
+    },
+    "rich-text-table-cell-min-width": {
+      "$value": "{plx-ref.size-48px}",
+      "$type": "dimension",
+      "$description": "RichText table: the narrowest a column gets (room to click into an empty cell)."
     }
   }
 }

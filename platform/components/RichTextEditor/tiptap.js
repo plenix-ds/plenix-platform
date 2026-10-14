@@ -14,8 +14,9 @@
      The engine has no stylesheet of its own: the few rules ProseMirror needs are in rich-text-editor.css, on tokens.
    Notes:
      A failed load rejects and is forgotten, so the next editor that mounts tries again.
-     The bundle holds @tiptap/core, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-link, @tiptap/extension-mention
-       and their dependencies (platform/vendor/README.md: versions, licenses, how it is built). */
+     The bundle holds @tiptap/core, @tiptap/pm, @tiptap/starter-kit (with its link, underline and list extensions),
+       @tiptap/extension-list, -mention, -table, -text-style, -text-align, -highlight, -subscript, -superscript, -image and
+       -typography, and their dependencies (platform/vendor/README.md: versions, licenses, how it is built). */
 
 import { vendorBase } from '../DataTable/tabulator.js';
 

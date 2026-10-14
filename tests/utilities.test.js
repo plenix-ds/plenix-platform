@@ -1,13 +1,14 @@
 // Plenix · tests/utilities.test.js: the behavioral utilities work in Chrome, on their own design-system pages:
 // virtualization (only the view rendered, true scroll length, positions, focus kept, grid columns, no style written),
-// hotkeys (single key, sequence, scope, ignored in fields), live regions (announce) and the clipboard (Copied, announced).
+// hotkeys (single key, sequence, scope, ignored in fields), live regions (announce), the clipboard (Copied, announced) and
+// the style audit on user content (the person's own formatting allowed only inside .plx-user-content).
 //   node tests/utilities.test.js       (UTILITIES_PORT or TEST_PORT picks the port; default 8831)   → UTILITIES_OK
 //   TEST_SCOPE=full: always; by default (tests/changed.js) when a utility, its page, a global file or this test changed
 const { serve, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
 
 const PORT = Number(process.env.UTILITIES_PORT || process.env.TEST_PORT || 8831);
-if (!changed.wants({ ids: ['virtualization', 'hotkey', 'live-regions', 'clipboard'], units: ['hooks/useVirtualizer.js', 'utils/hotkey.js', 'utils/announce.jsx', 'utils/clipboard.js'] })) changed.none('UTILITIES_OK (0 checks)');
+if (!changed.wants({ ids: ['virtualization', 'hotkey', 'live-regions', 'clipboard'], units: ['hooks/useVirtualizer.js', 'utils/hotkey.js', 'utils/announce.jsx', 'utils/clipboard.js', 'components/RichTextEditor', 'components/RichText'] })) changed.none('UTILITIES_OK (0 checks)');
 changed.report('every utility');
 const BASE = 'http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/index.html';
 let failed = 0, passed = 0;
@@ -103,6 +104,21 @@ const check = (name, ok, info) => { if (ok) passed++; else { failed++; console.l
     await sleep(300);
     const copied = await page.evaluate(async () => ({ button: [...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Copied'), clip: await navigator.clipboard.readText().catch((e) => 'unreadable: ' + e.message), said: (document.querySelector('[data-plx-announcer="polite"]') || {}).textContent }));
     check('copying shows Copied, announces it and fills the clipboard', copied.button && copied.clip === 'ASSET-0142' && copied.said === 'Copied', copied);
+
+    /* the style audit on user content (owner, 2026-10-14: the colors and fonts rule is the interface's, not the person's
+       content in the editor): inside .plx-user-content the person's color, background-color, font-family, font-size and
+       text-align pass; any other inline property there, and the same properties on the interface, are still checked */
+    const audit = await page.evaluate(() => {
+      const box = document.createElement('div');
+      box.innerHTML = '<div class="plx-user-content"><p style="text-align: center"><span style="color: rgb(230, 25, 75); background-color: rgb(255, 225, 25); font-family: Georgia, serif; font-size: 15px">user</span></p></div>'
+        + '<div class="plx-user-content"><span style="margin-top: 3px">stray</span></div><span style="font-family: Georgia, serif">interface font</span><span style="font-size: 15px">interface size</span>';
+      document.body.appendChild(box);
+      const found = window.PlenixStyleAudit.audit(box).map((f) => f.detail);
+      box.remove();
+      return found;
+    });
+    check('style audit: user formatting passes in user content; a stray style there and a font or off-grid size on the interface are caught',
+      audit.length === 3 && audit.some((d) => /margin-top/.test(d)) && audit.some((d) => /font-family/.test(d)) && audit.some((d) => /font-size/.test(d)), audit);
 
     check('no page errors', errors.length === 0, errors.slice(0, 5));
   } finally {
