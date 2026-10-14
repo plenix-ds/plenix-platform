@@ -162,4 +162,10 @@ export { CommandPalette } from './patterns/CommandPalette/CommandPalette.jsx';
 export { DownloadButton } from './components/DownloadButton/DownloadButton.jsx';
 export { BackToTop } from './components/BackToTop/BackToTop.jsx';
 export { PromptDialog } from './components/Dialog/Dialog.jsx';
+export { Form } from './patterns/Form/Form.jsx';
+export { FormSection } from './patterns/Form/Form.jsx';
+export { FormActions } from './patterns/Form/Form.jsx';
+export { OtpInput } from './components/OtpInput/OtpInput.jsx';
+export { FieldLayoutContext } from './components/Field/Field.jsx';
+export { useSearchHistory } from './hooks/useSearchHistory.js';
 /* END library parts */

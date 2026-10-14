@@ -1,0 +1,12 @@
+/* Plenix · Form, FormSection, FormActions (platform/patterns/Form). Sections in a column, apart by the form gap; a
+   section's header (title, description) over its fields (a Stack). No outer margin, no frames. */
+.plx-form{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;min-inline-size:0;row-gap:var(--plx-comp-form-gap);}
+.plx-form-section{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-form-section-gap);}
+.plx-form-section__header{display:flex;flex-direction:column;row-gap:var(--plx-comp-form-section-header-gap);}
+.plx-form-section__title,.plx-form-section__description{margin-block-end:0;margin-block-start:0;}
+/* FormActions sticky={false}: in its place under the last section */
+.plx-form-actions.plx-form-actions--static{position:static;}
+/* two columns: one label column for the whole form. Each section's fields are a Stack of inline fields (a shared label
+   column as wide as its longest label); in a form every section takes the same label column, the inline field's own width,
+   so the sections line up. A longer label ends in an ellipsis and shows in full in its Tooltip (Field). */
+.plx-form--two-column .plx-form-section__body:has(>.plx-field--inline){grid-template-columns:var(--plx-comp-form-two-column-grid-template-columns);}

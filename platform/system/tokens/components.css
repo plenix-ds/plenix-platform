@@ -2697,6 +2697,13 @@
   --plx-comp-entity-header-tile-surface-text: var(--plx-sys-content-link);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-field-foot-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-field-counter-text: var(--plx-sys-content-subtle);
+  --plx-comp-field-counter-font-family: var(--plx-sys-font-data);
+  --plx-comp-field-counter-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-field-counter-over-text: var(--plx-sys-feedback-danger-solid);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-figure-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-figure-caption-text: var(--plx-sys-content-muted);
   --plx-comp-figure-caption-font-family: var(--plx-sys-font-body);
@@ -2747,6 +2754,12 @@
   --plx-comp-floating-action-button-inset: var(--plx-sys-space-layout-md);
   --plx-comp-floating-action-button-z-index: var(--plx-sys-layer-sticky);
   --plx-comp-floating-action-button-clearance: calc(var(--plx-ref-size-56px) + var(--plx-sys-space-layout-md) * 2);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-form-gap: var(--plx-sys-space-stack-xl);
+  --plx-comp-form-section-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-form-section-header-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-form-two-column-grid-template-columns: var(--plx-ref-size-160px) minmax(var(--plx-sys-field-width-md),var(--plx-sys-field-width-lg));
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-icon-tile-border-width: var(--plx-sys-border-width-thin);
@@ -2830,6 +2843,13 @@
   --plx-comp-image-fallback-min-height: var(--plx-ref-size-96px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-input-filled-background: var(--plx-sys-fill-neutral);
+  --plx-comp-input-filled-end-radius: var(--plx-sys-shape-none);
+  --plx-comp-input-underline-background: transparent;
+  --plx-comp-input-underline-radius: var(--plx-sys-shape-none);
+  --plx-comp-textarea-auto-grow-max-height: calc(10lh + var(--plx-sys-space-inset-sm) * 2 + var(--plx-sys-border-width-thin) * 2);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-link-text: var(--plx-sys-content-link);
   --plx-comp-link-visited-text: var(--plx-sys-content-link-visited);
   --plx-comp-link-subtle-text: var(--plx-sys-content-default);
@@ -2907,6 +2927,23 @@
   --plx-comp-notice-title-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-notice-actions-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-notice-actions-margin-block-start: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-otp-input-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-otp-input-cell-width: var(--plx-sys-control-height-prominent);
+  --plx-comp-otp-input-cell-height: var(--plx-sys-control-height-prominent);
+  --plx-comp-otp-input-cell-background: var(--plx-sys-control-background);
+  --plx-comp-otp-input-cell-border-color: var(--plx-sys-control-border);
+  --plx-comp-otp-input-cell-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-otp-input-cell-radius: var(--plx-sys-radius-control);
+  --plx-comp-otp-input-cell-text: var(--plx-sys-content-default);
+  --plx-comp-otp-input-cell-font-family: var(--plx-sys-font-data);
+  --plx-comp-otp-input-cell-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-otp-input-cell-hover-border-color: var(--plx-sys-border-strong);
+  --plx-comp-otp-input-cell-focus-border-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-otp-input-cell-invalid-border-color: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-otp-input-cell-disabled-background: var(--plx-sys-fill-neutral);
+  --plx-comp-otp-input-cell-disabled-text: var(--plx-sys-content-disabled);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-persona-name-color: var(--plx-sys-content-default);
@@ -3088,6 +3125,37 @@
   --plx-comp-scrim-contained-z-index: var(--plx-sys-layer-raised);
   --plx-comp-scrim-animation-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-scrim-animation-timing-function: var(--plx-sys-motion-ease-standard);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-search-popup-background: var(--plx-sys-surface-overlay);
+  --plx-comp-search-popup-border-color: var(--plx-sys-border-default);
+  --plx-comp-search-popup-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-search-popup-radius: var(--plx-sys-radius-surface-4px);
+  --plx-comp-search-popup-shadow: var(--plx-sys-elevation-menu);
+  --plx-comp-search-popup-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-search-popup-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-search-popup-padding-inline: var(--plx-sys-space-inset-xs);
+  --plx-comp-search-popup-z-index: var(--plx-sys-layer-menu);
+  --plx-comp-search-popup-head-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-search-popup-head-padding-block-start: var(--plx-sys-space-inset-xs);
+  --plx-comp-search-popup-head-padding-block-end: var(--plx-sys-space-inset-xs);
+  --plx-comp-search-popup-head-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-search-popup-title-text: var(--plx-sys-content-muted);
+  --plx-comp-search-popup-title-font-family: var(--plx-sys-font-label);
+  --plx-comp-search-popup-title-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-search-popup-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-search-list-max-height: var(--plx-ref-size-220px);
+  --plx-comp-search-option-radius: var(--plx-sys-radius-control);
+  --plx-comp-search-option-text: var(--plx-sys-content-default);
+  --plx-comp-search-option-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-search-option-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-search-option-min-height: var(--plx-sys-control-height-inline);
+  --plx-comp-search-option-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-search-option-active-background: var(--plx-sys-state-selected);
+  --plx-comp-search-option-icon-text: var(--plx-sys-content-muted);
+  --plx-comp-search-option-description-text: var(--plx-sys-content-subtle);
+  --plx-comp-search-option-description-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-search-match-font-weight: var(--plx-sys-font-weight-semibold);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-split-button-joined-radius: var(--plx-sys-shape-none);

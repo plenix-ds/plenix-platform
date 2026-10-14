@@ -38,3 +38,10 @@
 .plx-stack:has(>.plx-field--inline)>.plx-field--inline{grid-template-columns:minmax(0,1fr);row-gap:var(--plx-comp-stack-field-inline-row-gap);}
 .plx-stack:has(>.plx-field--inline)>.plx-field--inline .plx-field__label{white-space:normal;}
 }
+/* the character counter (counter, library wave 6): the description and the count on one help line, the count at its end,
+   in the data font; past the limit it takes the error color */
+.plx-field__foot{align-items:baseline;column-gap:var(--plx-comp-field-foot-gap);display:flex;min-inline-size:0;}
+.plx-field__foot>.plx-field__description{flex-grow:1;min-inline-size:0;}
+.plx-field__counter{color:var(--plx-comp-field-counter-text);flex-shrink:0;font-size:var(--plx-comp-field-counter-font-size);margin-inline-start:auto;}
+.plx-field__count{font-family:var(--plx-comp-field-counter-font-family);}
+.plx-field__counter.is-over{color:var(--plx-comp-field-counter-over-text);}

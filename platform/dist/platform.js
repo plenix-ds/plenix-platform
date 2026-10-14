@@ -4466,7 +4466,67 @@ function ShowMore({
   }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
 }
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gridPx = exports.GRID_TOKEN = void 0;
+exports.gridStep = gridStep;
+exports.onGrid = onGrid;
+exports.snapToGrid = snapToGrid;
+/* Plenix · grid (platform/utils/grid.js)
+   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
+     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
+     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
+     instead: snapSize and stepSize in utils/sizeSteps.js.
+   Usage:
+     import { snapToGrid, gridPx } from '../../utils/grid.js';
+     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
+     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
+   Props:
+     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
+     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
+     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
+     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
+   Behavior:
+     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
+     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
+   Notes:
+     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
+     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
+     length is neither a token nor passed through this helper (or the size steps).
+*/
+
+const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
+
+// the base spacing token in pixels where el is (a rem token follows the root font size)
+function gridStep(el) {
+  if (typeof document === 'undefined') return 4;
+  const at = el || document.documentElement,
+    win = at.ownerDocument.defaultView;
+  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
+  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
+  return px > 0 ? px : 4;
+}
+function snapToGrid(px, opts) {
+  const o = opts || {},
+    step = gridStep(o.el),
+    n = Number(px) || 0;
+  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
+  const q = n / step;
+  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
+}
+const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
+exports.gridPx = gridPx;
+function onGrid(px, el) {
+  const step = gridStep(el),
+    q = Math.abs(Number(px) || 0) / step;
+  return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
+  } },
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4475,6 +4535,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Textarea = exports.Select = exports.Input = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _grid = require("../../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
    Summary: The text field family, at the standard control height.
@@ -4482,6 +4543,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Input value={name} onChange={(e) => …} width="md" />
      <Textarea rows={5} value={notes} onChange={(e) => …} />
      <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
+     <Input appearance="underline" … />            <Textarea autoGrow … />
    Props:
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*)
@@ -4491,16 +4553,26 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (owner, batch 275); the system sizes it, so it takes no width or utility
      Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
        (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
+     Input.appearance: "outline" (default; a border on every side) | "filled" (the neutral fill with a line under it, square
+       bottom corners) | "underline" (only the line under it, no fill, no corners); one appearance per form
      Input.className: more classes on the <input>
      Textarea.invalid: marks the field (aria-invalid)
-     Textarea.rows: the visible lines (default 3)
+     Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
+     Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
+       scrolls inside; it cannot be resized by hand (default false)
+     Textarea.appearance: as Input.appearance
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
      Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
      Select.children: <option>s, when there are no options
+     Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
    Behavior:
      Inside a Field, the label, description and error are connected for you.
+     Every appearance keeps the same states: hover, focus and invalid change only the color of its border (the line
+     under a filled or underline field), never a ring outside it; read-only and disabled keep their fills.
+     autoGrow: the browser sizes the text area to its content (field-sizing: content); where it cannot, the text area
+     measures its content on each change and sets its height on the 4px grid (gridPx), the one inline style it writes.
      Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
      check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
@@ -4527,11 +4599,15 @@ const TYPE_HINTS = {
     enterKeyHint: 'search'
   }
 };
+
+// the appearance class (outline is the base look: no class)
+const look = appearance => (appearance === 'filled' || appearance === 'underline') && 'plx-input--' + appearance;
 const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
   invalid,
   width,
   data = false,
   emphasis = false,
+  appearance,
   className,
   type = 'text',
   ...rest
@@ -4539,21 +4615,50 @@ const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function In
   return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: type,
-    className: (0, _cx.cx)('plx-input', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', className),
+    className: (0, _cx.cx)('plx-input', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
     "aria-invalid": invalid || undefined
   }, TYPE_HINTS[type], rest));
 });
+
+// can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
+const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
 const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(function Textarea({
   invalid,
+  appearance,
+  autoGrow = false,
   className,
   rows = 3,
+  onInput,
   ...rest
 }, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = _react.default.useCallback(el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
+  const fit = _react.default.useCallback(() => {
+    const el = own.current;
+    if (!el || !autoGrow || SIZES_ITSELF) return;
+    el.style.blockSize = '';
+    const edge = el.offsetHeight - el.clientHeight;
+    el.style.blockSize = (0, _grid.gridPx)(el.scrollHeight + edge, {
+      round: 'up',
+      el
+    });
+  }, [autoGrow]);
+  _react.default.useLayoutEffect(() => {
+    fit();
+  });
   return /*#__PURE__*/_react.default.createElement("textarea", _extends({
-    ref: ref,
+    ref: setRef,
     rows: rows,
-    className: (0, _cx.cx)('plx-input', 'plx-textarea', className),
-    "aria-invalid": invalid || undefined
+    className: (0, _cx.cx)('plx-input', 'plx-textarea', autoGrow && 'plx-textarea--auto-grow', look(appearance), className),
+    "aria-invalid": invalid || undefined,
+    onInput: e => {
+      fit();
+      if (onInput) onInput(e);
+    }
   }, rest));
 });
 
@@ -4561,6 +4666,7 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
 const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select({
   invalid,
   options,
+  appearance,
   className,
   children,
   ...rest
@@ -4569,7 +4675,7 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
     className: (0, _cx.cx)('plx-select', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
     ref: ref,
-    className: "plx-input plx-select__control",
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', look(appearance)),
     "aria-invalid": invalid || undefined
   }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
@@ -5264,17 +5370,561 @@ function SegmentedControl({
   }) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenMs = tokenMs;
+// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
+// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
+// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
+function tokenMs(name, fallback = 0, el) {
+  if (typeof document === 'undefined') return fallback;
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
+  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
+  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
+}
+  } },
+  "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LiveRegion = LiveRegion;
+exports.announce = announce;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("./cx.js");
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LiveRegion, announce (platform/utils/announce.jsx)
+   Summary: Tells screen-reader users about a change they cannot see happen (a save, a count of results, an upload that
+     finished, an error) without moving their focus. announce(text) speaks through one pair of page-wide regions;
+     LiveRegion is a region of a component's own, for messages that also stay on screen (a status line, a log).
+   Usage:
+     announce('12 results');                               // polite: waits until the reader is idle
+     announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
+     <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
+     <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
+   Props:
+     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
+     LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
+       (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
+     LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
+     LiveRegion.atomic: read the whole region on every change, not only what changed (default: true for status, else false)
+     LiveRegion.children: the message (render the region empty first, then put the text in it)
+     LiveRegion.className: more classes on the region
+   Behavior:
+     The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
+     Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
+     A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
+   Notes:
+     Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
+     Never put a control inside a live region. Messages are plain text: no markup, icons or emoji names.
+     Meets WCAG 2.2 SC 4.1.3 Status Messages.
+*/
+const regions = {};
+const pending = {};
+
+// the page-wide region for one politeness (made once, visually hidden)
+function region(politeness) {
+  if (regions[politeness] && regions[politeness].isConnected) return regions[politeness];
+  const el = document.createElement('div');
+  el.className = 'plx-visually-hidden';
+  el.setAttribute('aria-live', politeness);
+  el.setAttribute('aria-atomic', 'true');
+  el.setAttribute('data-plx-announcer', politeness);
+  if (politeness === 'assertive') el.setAttribute('role', 'alert');
+  document.body.appendChild(el);
+  regions[politeness] = el;
+  return el;
+}
+function announce(text, {
+  politeness = 'polite'
+} = {}) {
+  if (typeof document === 'undefined' || !document.body) return;
+  const p = politeness === 'assertive' ? 'assertive' : 'polite';
+  const el = region(p);
+  // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
+  el.textContent = '';
+  if (pending[p]) clearTimeout(pending[p]);
+  pending[p] = setTimeout(() => {
+    pending[p] = null;
+    el.textContent = String(text || '');
+  }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
+}
+const KINDS = {
+  polite: {
+    'aria-live': 'polite'
+  },
+  assertive: {
+    'aria-live': 'assertive'
+  },
+  status: {
+    role: 'status',
+    'aria-live': 'polite'
+  },
+  log: {
+    role: 'log',
+    'aria-live': 'polite'
+  }
+};
+function LiveRegion({
+  kind = 'polite',
+  visible = false,
+  atomic,
+  className,
+  children,
+  ...rest
+}) {
+  const a = KINDS[kind] || KINDS.polite;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({}, a, {
+    "aria-atomic": atomic !== undefined ? atomic : kind === 'status',
+    "data-plx-live": kind,
+    className: (0, _cx.cx)(!visible && 'plx-visually-hidden', className)
+  }, rest), children);
+}
+  } },
+  "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FORMATS = void 0;
+exports.dateTimeAttr = dateTimeAttr;
+exports.formatAddress = formatAddress;
+exports.formatBytes = formatBytes;
+exports.formatCompact = formatCompact;
+exports.formatCurrency = formatCurrency;
+exports.formatDate = formatDate;
+exports.formatDateTime = formatDateTime;
+exports.formatDuration = formatDuration;
+exports.formatList = formatList;
+exports.formatLocale = formatLocale;
+exports.formatNumber = formatNumber;
+exports.formatPercent = formatPercent;
+exports.formatPersonName = formatPersonName;
+exports.formatPhone = formatPhone;
+exports.formatRange = formatRange;
+exports.formatRelative = formatRelative;
+exports.formatTime = formatTime;
+exports.formatUnit = formatUnit;
+exports.regionName = regionName;
+/* Plenix · Formatting (platform/utils/format.js)
+   Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
+     every page, in the reader's locale, on the browser's Intl formatters (NumberFormat, DateTimeFormat,
+     RelativeTimeFormat, ListFormat, DisplayNames). The rules (precision, when relative time ends, address layouts, phone
+     groupings) are the Formats standard, platform/standards/formats.json; FORMATS below is the same data (the format test
+     keeps the two equal).
+   Usage:
+     formatNumber(1234.5)                         // "1,234.5"
+     formatBytes(1200000)                         // "1.2 MB"
+     formatCompact(1234)                          // "1.2K"
+     formatDate(date, { dateStyle: 'long' })          // "March 4, 2026"
+     formatRelative(date)                         // "5 minutes ago" (an absolute date after 7 days)
+     formatCurrency(12.5, 'EUR')                  // "€12.50"
+     formatPercent(0.256)                         // "26%"
+     formatPhone('+14155550123')                  // "+1 415 555 0123"
+   Props:
+     every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
+     formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
+     formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
+       display "short" (default), "long" or "narrow"
+     formatBytes(bytes, { decimals }): a file size in B, kB, MB, GB or TB (powers of 1000)
+     formatDuration(seconds, { display }): "1 hr, 5 min" (display "short", default), "1 hour, 5 minutes" ("long") or "1:05:00" ("clock")
+     formatCompact(value, { decimals }): "1.2K", "3.4M": only where space is tight, with the full value beside it (title, tooltip)
+     formatDate(date, { dateStyle, timeZone }): dateStyle "short" ("Mar 4"; the year when it is not this year), "medium"
+       ("Mar 4, 2026", default), "long" ("March 4, 2026") or "full" ("Wednesday, March 4, 2026")
+     formatTime(date, { seconds, timeZone, timeZoneName }): "2:05 PM"; timeZoneName "short" adds the zone ("2:05 PM PST")
+     formatDateTime(date, { dateStyle, timeZone, timeZoneName }): the date (medium) and the time together
+     formatRelative(date, { now, untilDays }): "5 minutes ago", "in 2 days", "yesterday"; after untilDays (FORMATS) the date
+     formatRange(from, to, { kind, dateStyle }): two dates ("Mar 4 – 6, 2026", kind "date", default) or numbers ("3–5", kind "number")
+     formatCurrency(amount, currency, { display, decimals, signed }): money in an ISO 4217 currency ("USD"); display
+       "symbol" (default, "$12.50") or "code" ("USD 12.50", for pages that mix currencies)
+     formatPercent(ratio, { decimals, signed }): a ratio as a percentage, 0.256 → "26%" (signed: "+3%", for changes)
+     formatList(items, { type }): "A, B, and C"; type "conjunction" (default), "disjunction" ("A, B, or C") or "unit"
+     formatPersonName(person, { display }): a name as the person wrote it; person is a string or { full, preferred };
+       display "full" (default), "preferred" (the preferred name, else the full one) or "initials"
+     formatAddress(address, { country, includeCountry }): the lines of a postal address in its country's order; address
+       is { name, organization, street (a string or lines), locality, region, postalCode, country (ISO 3166 code) }
+     regionName(code): a country's name in the reader's language ("DE" → "Germany")
+     formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
+       "national" ("(415) 555-0123")
+     dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     FORMATS: the standard's data (see platform/standards/formats.json)
+   Behavior:
+     Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
+     A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
+   Notes:
+     Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
+     Phone numbers and addresses follow FORMATS for the countries it lists; others fall back to a neutral layout.
+*/
+
+// The Formats standard (platform/standards/formats.json): edit both together; the format test compares them.
+const FORMATS = exports.FORMATS = {
+  number: {
+    decimals: {
+      default: 0,
+      ratio: 0,
+      compact: 1,
+      bytes: 1
+    }
+  },
+  bytes: {
+    base: 1000,
+    units: ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte']
+  },
+  relative: {
+    untilDays: 7
+  },
+  currency: {
+    display: 'symbol',
+    mixedDisplay: 'code'
+  },
+  date: {
+    default: 'medium'
+  },
+  address: {
+    default: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
+    US: ['name', 'organization', 'street', 'locality, region postalCode', 'country'],
+    CA: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
+    GB: ['name', 'organization', 'street', 'locality', 'postalCode', 'country'],
+    DE: ['name', 'organization', 'street', 'postalCode locality', 'country'],
+    FR: ['name', 'organization', 'street', 'postalCode locality', 'country'],
+    IT: ['name', 'organization', 'street', 'postalCode locality region', 'country'],
+    JP: ['country', 'postalCode', 'region locality', 'street', 'organization', 'name']
+  },
+  phone: {
+    '1': {
+      national: '(###) ###-####',
+      international: '+1 ### ### ####'
+    },
+    '33': {
+      national: '0# ## ## ## ##',
+      international: '+33 # ## ## ## ##'
+    },
+    '44': {
+      national: '0#### ######',
+      international: '+44 #### ######'
+    },
+    '49': {
+      national: '0### #######',
+      international: '+49 ### #######'
+    },
+    '61': {
+      national: '0# #### ####',
+      international: '+61 # #### ####'
+    }
+  }
+};
+const ok = n => typeof n === 'number' && isFinite(n);
+const toDate = d => {
+  const x = d instanceof Date ? d : new Date(d);
+  return isNaN(x.getTime()) ? null : x;
+};
+function formatLocale() {
+  const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
+  if (lang) return lang;
+  if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
+  return 'en-US';
+}
+const loc = o => o && o.locale || formatLocale();
+const digits = d => d === undefined ? {} : {
+  minimumFractionDigits: d,
+  maximumFractionDigits: d
+};
+function formatNumber(value, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    ...digits(o.decimals),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(value);
+}
+function formatUnit(value, unit, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    style: 'unit',
+    unit,
+    unitDisplay: o.display || 'short',
+    ...digits(o.decimals)
+  }).format(value);
+}
+function formatBytes(bytes, o = {}) {
+  if (!ok(bytes)) return '';
+  const {
+    base,
+    units
+  } = FORMATS.bytes;
+  let i = 0,
+    v = Math.abs(bytes);
+  while (v >= base && i < units.length - 1) {
+    v /= base;
+    i++;
+  }
+  const d = o.decimals !== undefined ? o.decimals : i === 0 ? 0 : FORMATS.number.decimals.bytes;
+  return new Intl.NumberFormat(loc(o), {
+    style: 'unit',
+    unit: units[i],
+    unitDisplay: 'short',
+    maximumFractionDigits: d
+  }).format(Math.sign(bytes) * v);
+}
+function formatDuration(seconds, o = {}) {
+  if (!ok(seconds)) return '';
+  const s = Math.round(Math.abs(seconds)),
+    h = Math.floor(s / 3600),
+    m = Math.floor(s % 3600 / 60),
+    r = s % 60;
+  if (o.display === 'clock') {
+    const two = n => String(n).padStart(2, '0');
+    return (seconds < 0 ? '-' : '') + (h ? h + ':' + two(m) : String(m)) + ':' + two(r);
+  }
+  const display = o.display === 'long' ? 'long' : 'short';
+  const parts = [[h, 'hour'], [m, 'minute'], [r, 'second']].filter(([n], i, all) => n || i === 2 && !all[0][0] && !all[1][0]);
+  return formatList(parts.map(([n, unit]) => formatUnit(n, unit, {
+    locale: o.locale,
+    display
+  })), {
+    locale: o.locale,
+    type: 'unit'
+  });
+}
+function formatCompact(value, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    notation: 'compact',
+    maximumFractionDigits: o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.compact
+  }).format(value);
+}
+const DATE_STYLES = {
+  medium: {
+    dateStyle: 'medium'
+  },
+  long: {
+    dateStyle: 'long'
+  },
+  full: {
+    dateStyle: 'full'
+  }
+};
+function formatDate(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const style = o.dateStyle || FORMATS.date.default;
+  if (style === 'short') {
+    const thisYear = d.getFullYear() === new Date().getFullYear();
+    return new Intl.DateTimeFormat(loc(o), {
+      month: 'short',
+      day: 'numeric',
+      year: thisYear ? undefined : 'numeric',
+      timeZone: o.timeZone
+    }).format(d);
+  }
+  return new Intl.DateTimeFormat(loc(o), {
+    ...(DATE_STYLES[style] || DATE_STYLES.medium),
+    timeZone: o.timeZone
+  }).format(d);
+}
+function formatTime(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  return new Intl.DateTimeFormat(loc(o), {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: o.seconds ? '2-digit' : undefined,
+    timeZone: o.timeZone,
+    timeZoneName: o.timeZoneName
+  }).format(d);
+}
+function formatDateTime(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const style = o.dateStyle && DATE_STYLES[o.dateStyle] ? o.dateStyle : FORMATS.date.default;
+  if (o.timeZoneName) return new Intl.DateTimeFormat(loc(o), {
+    ...(style === 'medium' ? {
+      month: 'short'
+    } : {
+      month: 'long'
+    }),
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: o.timeZone,
+    timeZoneName: o.timeZoneName
+  }).format(d);
+  return new Intl.DateTimeFormat(loc(o), {
+    dateStyle: style,
+    timeStyle: 'short',
+    timeZone: o.timeZone
+  }).format(d);
+}
+const STEPS = [['second', 60], ['minute', 60], ['hour', 24], ['day', 7]];
+function formatRelative(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const now = toDate(o.now || Date.now());
+  const until = o.untilDays !== undefined ? o.untilDays : FORMATS.relative.untilDays;
+  let diff = (d.getTime() - now.getTime()) / 1000;
+  if (Math.abs(diff) >= until * 86400) return formatDate(d, {
+    locale: o.locale,
+    dateStyle: 'medium',
+    timeZone: o.timeZone
+  });
+  const rtf = new Intl.RelativeTimeFormat(loc(o), {
+    numeric: 'auto'
+  });
+  for (const [unit, size] of STEPS) {
+    if (Math.abs(diff) < size || unit === 'day') return rtf.format(Math.round(diff), unit);
+    diff /= size;
+  }
+  return '';
+}
+function formatRange(from, to, o = {}) {
+  if (o.kind === 'number') {
+    if (!ok(from) || !ok(to)) return '';
+    return new Intl.NumberFormat(loc(o), digits(o.decimals)).formatRange(from, to);
+  }
+  const a = toDate(from),
+    b = toDate(to);
+  if (!a || !b) return '';
+  return new Intl.DateTimeFormat(loc(o), {
+    ...(DATE_STYLES[o.dateStyle] || DATE_STYLES.medium),
+    timeZone: o.timeZone
+  }).formatRange(a, b);
+}
+function formatCurrency(amount, currency, o = {}) {
+  if (!ok(amount) || !currency) return '';
+  return new Intl.NumberFormat(loc(o), {
+    style: 'currency',
+    currency,
+    currencyDisplay: o.display || FORMATS.currency.display,
+    ...digits(o.decimals),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(amount);
+}
+function formatPercent(ratio, o = {}) {
+  if (!ok(ratio)) return '';
+  const d = o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.ratio;
+  return new Intl.NumberFormat(loc(o), {
+    style: 'percent',
+    ...digits(d),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(ratio);
+}
+function formatList(items, o = {}) {
+  const list = (items || []).filter(x => x !== undefined && x !== null && x !== '').map(String);
+  return new Intl.ListFormat(loc(o), o.type === 'unit' ? {
+    type: 'unit',
+    style: 'short'
+  } : {
+    type: o.type || 'conjunction'
+  }).format(list);
+}
+function formatPersonName(person, o = {}) {
+  const p = typeof person === 'string' ? {
+    full: person
+  } : person || {};
+  const full = String(p.full || '').trim();
+  if (o.display === 'preferred') return String(p.preferred || '').trim() || full;
+  if (o.display === 'initials') {
+    const words = full.split(/\s+/).filter(Boolean);
+    const pick = words.length > 1 ? [words[0], words[words.length - 1]] : words;
+    return pick.map(w => Array.from(w)[0].toLocaleUpperCase(loc(o))).join('');
+  }
+  return full;
+}
+function regionName(code, o = {}) {
+  if (!code) return '';
+  try {
+    return new Intl.DisplayNames(loc(o), {
+      type: 'region'
+    }).of(code) || code;
+  } catch (e) {
+    return code;
+  }
+}
+function formatAddress(address, o = {}) {
+  const a = address || {};
+  const country = (o.country || a.country || '').toUpperCase();
+  const layout = FORMATS.address[country] || FORMATS.address.default;
+  const readerRegion = (loc(o).split('-')[1] || '').toUpperCase();
+  const includeCountry = o.includeCountry !== undefined ? o.includeCountry : !!country && country !== readerRegion;
+  const value = k => {
+    if (k === 'country') return includeCountry ? regionName(country, o) : '';
+    if (k === 'street') return [].concat(a.street || []).filter(Boolean).join('\n');
+    return a[k] ? String(a[k]) : '';
+  };
+  const lines = [];
+  layout.forEach(pattern => {
+    // a pattern line: field names with the punctuation between them; a separator is written only between two values
+    let text = '',
+      sep = '';
+    for (const [, field, between] of pattern.matchAll(/([A-Za-z]+)|([^A-Za-z]+)/g)) {
+      if (between) {
+        sep = between;
+        continue;
+      }
+      const v = value(field);
+      if (!v) continue;
+      text += (text ? sep : '') + v;
+      sep = '';
+    }
+    text.split('\n').forEach(l => {
+      if (l.trim()) lines.push(l.trim());
+    });
+  });
+  return lines;
+}
+function formatPhone(e164, o = {}) {
+  const raw = String(e164 || '').trim();
+  const num = raw.replace(/[^\d+]/g, '');
+  if (!/^\+\d{4,15}$/.test(num)) return raw;
+  const all = num.slice(1);
+  const code = Object.keys(FORMATS.phone).sort((x, y) => y.length - x.length).find(c => all.startsWith(c));
+  const display = o.display === 'national' ? 'national' : 'international';
+  if (code) {
+    const rest = all.slice(code.length),
+      pattern = FORMATS.phone[code][display];
+    if ((pattern.match(/#/g) || []).length === rest.length) {
+      let i = 0;
+      return pattern.replace(/#/g, () => rest[i++]);
+    }
+  }
+  // a country Formats does not list (or a length its pattern does not fit): the country code when it is known, then the
+  // digits in groups of three, the last group taking up to four
+  const groups = [];
+  let rest = code ? all.slice(code.length) : all;
+  while (rest.length > 4) {
+    groups.push(rest.slice(0, 3));
+    rest = rest.slice(3);
+  }
+  groups.push(rest);
+  return '+' + (code ? code + ' ' : '') + groups.join(' ');
+}
+function dateTimeAttr(date) {
+  const d = toDate(date);
+  return d ? d.toISOString() : '';
+}
+  } },
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Field = Field;
+exports.FieldLayoutContext = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -5290,7 +5940,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      info: content for a small (i) button next to the label
      infoLabel: the accessible name of the (i) button (default "About " + the label)
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
-       "row" (the description under the label and the control at the end)
+       "row" (the description under the label and the control at the end); without it, the layout of the Form around the
+       field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
+     counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
+       as a number; default none
+     strings: the counter's words for screen readers: { left: '{n} characters left', over: '{n} characters too many' }
      labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
      type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
        unless it sets its own
@@ -5300,9 +5954,20 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The child control gets id, aria-describedby, invalid and required, unless it sets its own.
      The error is announced (role="alert").
      The (i) button shows and hides the info text under the control (aria-expanded).
+     counter: the count updates as people type ("12/100", in the data font) and is part of the control's description.
+       People may type past the limit: the native maxLength is not set, so nothing is cut off; past it the count and the
+       control turn invalid (the danger color, aria-invalid). Near the limit (the last tenth) and past it, the characters
+       left or over are announced politely, once typing pauses (announce).
    Notes:
      Other props pass through to the <div>.
 */
+// the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
+const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
+const COUNTER_STRINGS = {
+  left: '{n} characters left',
+  over: '{n} characters too many'
+};
+const fill = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
 function Field({
   label,
   description,
@@ -5310,8 +5975,10 @@ function Field({
   required = false,
   info,
   infoLabel,
-  layout = 'stacked',
+  layout,
   labelWidth,
+  counter,
+  strings,
   type,
   inputMode,
   autoComplete,
@@ -5321,6 +5988,8 @@ function Field({
   ...rest
 }) {
   const id = _react.default.useId();
+  const formLayout = _react.default.useContext(FieldLayoutContext);
+  const lay = layout || formLayout || 'stacked';
   const controlId = 'plx-f' + id.replace(/[^a-zA-Z0-9]/g, '');
   const descId = description ? controlId + '-d' : undefined,
     errId = error ? controlId + '-e' : undefined;
@@ -5328,12 +5997,39 @@ function Field({
   const labelRef = _react.default.useRef(null);
   const cut = (0, _overflow.useTruncated)(labelRef);
   const child = _react.default.Children.only(children);
+  // the character counter: the limit, the length (the control's value, else what was typed), what is left
+  const max = counter ? typeof counter === 'number' ? counter : Number(child.props.maxLength) || 0 : 0;
+  const [typed, setTyped] = _react.default.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
+  const length = child.props.value != null ? String(child.props.value).length : typed;
+  const over = max > 0 && length > max;
+  const t = Object.assign({}, COUNTER_STRINGS, strings);
+  const countId = max ? controlId + '-c' : undefined;
+  const near = max > 0 && max - length <= Math.ceil(max / 10);
+  const said = _react.default.useRef(null);
+  _react.default.useEffect(() => {
+    if (!max || !near || said.current === null) {
+      said.current = length;
+      return;
+    }
+    if (said.current !== length) {
+      said.current = length;
+      (0, _announce.announce)(over ? fill(t.over, length - max) : fill(t.left, max - length));
+    }
+  }, [length, max, near, over, t.over, t.left]);
   const props = {
     id: child.props.id || controlId,
-    'aria-describedby': [child.props['aria-describedby'], descId, errId].filter(Boolean).join(' ') || undefined,
-    invalid: child.props.invalid !== undefined ? child.props.invalid : error ? true : undefined,
+    'aria-describedby': [child.props['aria-describedby'], descId, countId, errId].filter(Boolean).join(' ') || undefined,
+    invalid: child.props.invalid !== undefined ? child.props.invalid : error || over ? true : undefined,
     required: child.props.required !== undefined ? child.props.required : required || undefined
   };
+  if (max) {
+    // people may type past the limit (the count shows it); the length is followed for an uncontrolled control
+    props.maxLength = undefined;
+    props.onChange = e => {
+      setTyped(e.target.value.length);
+      if (child.props.onChange) child.props.onChange(e);
+    };
+  }
   // keyboard hints given on the Field reach the control, unless it has its own
   const hints = {
     type,
@@ -5346,7 +6042,7 @@ function Field({
   });
   const control = /*#__PURE__*/_react.default.cloneElement(child, props);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-field', 'plx-field--' + layout, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)
+    className: (0, _cx.cx)('plx-field', 'plx-field--' + lay, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__head"
   }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
@@ -5366,12 +6062,25 @@ function Field({
     "aria-label": infoLabel || 'About ' + label,
     "aria-expanded": showInfo,
     onClick: () => setShowInfo(!showInfo)
-  }, "i") : null, layout === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+  }, "i") : null, lay === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: descId
   }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__control"
-  }, control, layout !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+  }, control, max ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__foot"
+  }, lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__description",
+    id: descId
+  }, description) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-field__counter', over && 'is-over')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-field__count",
+    "aria-hidden": "true"
+  }, (0, _format.formatNumber)(length) + '/' + (0, _format.formatNumber)(max)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-visually-hidden",
+    id: countId
+  }, over ? fill(t.over, length - max) : fill(t.left, max - length)))) : lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: descId
   }, description) : null, error ? /*#__PURE__*/_react.default.createElement("div", {
@@ -5778,7 +6487,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   }, emptyText)) : null);
 });
   } },
-  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5787,14 +6496,22 @@ Object.defineProperty(exports, "__esModule", {
 exports.SearchField = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../Button/Button.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Kbd = require("../Kbd/Kbd.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchField
-   Summary: A search input with a search icon, an optional clear button and an optional shortcut hint.
+   Summary: A search input with a search icon, an optional clear button and an optional shortcut hint; optionally a list
+     under it of suggestions while people type, and of their recent searches while it is empty.
    Usage:
      <SearchField value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery('')} shortcut="Ctrl K" />
+     const history = useSearchHistory('assets');
+     <SearchField value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')}
+       suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
+       onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
    Props:
      value: the search text
      onChange(event): runs when the text changes
@@ -5804,15 +6521,59 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      shortcut: a keyboard shortcut hint ("Ctrl K")
      loading: shows a spinner in place of the search icon; default false
      onAccent: the look for the blue header; default false
+     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
+       [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
+     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
+     onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
+       'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
+     onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
+     onRemoveRecent(text): removes one recent search (Delete on it); onClearRecent(): removes them all (the Clear button
+       in the list's heading); without them the recent searches cannot be removed here
+     strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
+       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches' }
      className: more classes on the field
      ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
      The clear button shows only while there is text.
      The shortcut hint shows only while the field is empty.
      It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
+     With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
+       the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
+       list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
+       of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
    Notes:
-     It has the toolbar control height.
+     It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
+     ranks and limits the suggestions (about eight) and the recent searches (about five).
 */
+const STRINGS = {
+  suggestions: 'Suggestions',
+  recent: 'Recent searches',
+  clearRecent: 'Clear recent searches',
+  clear: 'Clear search',
+  results: '{n} suggestions',
+  removed: '{query} removed from recent searches'
+};
+const asItem = kind => x => typeof x === 'string' ? {
+  value: x,
+  label: x,
+  kind
+} : Object.assign({
+  label: x.value
+}, x, {
+  kind
+});
+
+// the label with the part that matches the text in bold (the first match, ignoring case)
+function marked(label, text) {
+  const s = String(label),
+    q = String(text || '').trim();
+  const at = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1;
+  if (at < 0) return s;
+  return [s.slice(0, at), /*#__PURE__*/_react.default.createElement("strong", {
+    key: "m",
+    className: "plx-search__match"
+  }, s.slice(at, at + q.length)), s.slice(at + q.length)];
+}
 const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef(function SearchField({
   value,
   onChange,
@@ -5822,11 +6583,113 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   shortcut,
   loading = false,
   onAccent = false,
+  suggestions,
+  recent,
+  onSelect,
+  onSubmitSearch,
+  onRemoveRecent,
+  onClearRecent,
+  strings,
   className,
+  onKeyDown,
+  onFocus,
   ...rest
 }, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-sf' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const listId = auto + '-list';
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const hasList = !!(suggestions || recent);
+  const text = value == null ? '' : String(value);
+  const showRecent = !text;
+  const items = showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion'));
+  const [open, setOpen] = _react.default.useState(false);
+  const [active, setActive] = _react.default.useState(-1);
+  const shown = hasList && open && items.length > 0;
+  _react.default.useEffect(() => {
+    setActive(-1);
+  }, [text, showRecent]);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  // the number of suggestions, once typing pauses (announce waits for the pause)
+  _react.default.useEffect(() => {
+    if (shown && !showRecent) (0, _announce.announce)(t.results.replace('{n}', (0, _format.formatNumber)(items.length)));
+  }, [shown, showRecent, items.length, t.results]);
+  // the active option stays in view in a long list
+  _react.default.useEffect(() => {
+    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-o' + active) : null;
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [active, auto]);
+  const setText = v => {
+    if (onChange && input.current) onChange({
+      target: Object.assign(input.current, {
+        value: v
+      }),
+      currentTarget: input.current
+    });
+  };
+  const choose = item => {
+    setOpen(false);
+    if (onSelect) onSelect(item);else {
+      setText(item.value);
+      if (onSubmitSearch) onSubmitSearch(item.value);
+    }
+  };
+  const keys = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || !hasList) {
+      if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text);
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) setOpen(true);else if (items.length) setActive(a => (a + 1) % items.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) setOpen(true);else if (items.length) setActive(a => a <= 0 ? items.length - 1 : a - 1);
+    } else if (e.key === 'Enter') {
+      if (shown && items[active]) {
+        e.preventDefault();
+        choose(items[active]);
+      } else {
+        setOpen(false);
+        if (onSubmitSearch) onSubmitSearch(text);
+      }
+    } else if (e.key === 'Escape') {
+      if (shown) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    } else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
+      e.preventDefault();
+      const q = items[active].value;
+      onRemoveRecent(q);
+      setActive(a => Math.min(a, items.length - 2));
+      (0, _announce.announce)(t.removed.replace('{query}', q));
+    } else if (!open && e.key.length === 1) setOpen(true);
+  };
+  const optId = i => auto + '-o' + i;
+  const comboProps = hasList ? {
+    role: 'combobox',
+    'aria-expanded': shown,
+    'aria-controls': listId,
+    'aria-autocomplete': 'list',
+    'aria-activedescendant': shown && active >= 0 ? optId(active) : undefined
+  } : {};
   return /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-search', onAccent && 'plx-search--on-accent', className),
+    ref: wrap,
+    className: (0, _cx.cx)('plx-search', onAccent && 'plx-search--on-accent', shown && 'is-open', className),
     role: "search"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-search__icon",
@@ -5837,7 +6700,7 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "search"
   })), /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
+    ref: input,
     type: "search",
     inputMode: "search",
     enterKeyHint: "search",
@@ -5846,11 +6709,19 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
     "aria-label": label,
     placeholder: placeholder,
     value: value,
-    onChange: onChange
-  }, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
+    onChange: e => {
+      if (hasList) setOpen(true);
+      if (onChange) onChange(e);
+    },
+    onKeyDown: keys,
+    onFocus: e => {
+      if (hasList) setOpen(true);
+      if (onFocus) onFocus(e);
+    }
+  }, comboProps, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-search__clear",
-    "aria-label": "Clear search",
+    "aria-label": t.clear,
     onClick: onClear
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "close"
@@ -5858,7 +6729,52 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
     className: "plx-search__kbd"
   }, /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, {
     onAccent: onAccent
-  }, shortcut)) : null);
+  }, shortcut)) : null, hasList ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__popup",
+    hidden: !shown
+  }, showRecent ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__popup-head"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__popup-title",
+    id: listId + '-t'
+  }, t.recent), onClearRecent ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "2xs",
+    className: "plx-search__popup-action",
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => {
+      onClearRecent();
+      setOpen(false);
+      if (input.current) input.current.focus();
+    }
+  }, t.clearRecent) : null) : null, /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    className: "plx-search__list",
+    "aria-label": showRecent ? undefined : t.suggestions,
+    "aria-labelledby": showRecent ? listId + '-t' : undefined
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: it.kind + ':' + it.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": i === active,
+    className: (0, _cx.cx)('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: it.kind === 'recent' ? 'clock' : 'search'
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-label"
+  }, it.kind === 'recent' ? it.label : marked(it.label, text)), it.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-description"
+  }, it.description) : null))))) : null);
 });
   } },
   "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -7191,23 +8107,6 @@ function Sheet({
   }, footer) : null)), document.body);
 }
   } },
-  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.tokenMs = tokenMs;
-// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
-// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
-// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
-function tokenMs(name, fallback = 0, el) {
-  if (typeof document === 'undefined') return fallback;
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
-  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
-  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
-}
-  } },
   "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -8164,66 +9063,6 @@ function useVirtualizer({
     },
     columns
   };
-}
-  } },
-  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.gridPx = exports.GRID_TOKEN = void 0;
-exports.gridStep = gridStep;
-exports.onGrid = onGrid;
-exports.snapToGrid = snapToGrid;
-/* Plenix · grid (platform/utils/grid.js)
-   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
-     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
-     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
-     instead: snapSize and stepSize in utils/sizeSteps.js.
-   Usage:
-     import { snapToGrid, gridPx } from '../../utils/grid.js';
-     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
-     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
-   Props:
-     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
-     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
-     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
-     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
-   Behavior:
-     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
-     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
-   Notes:
-     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
-     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
-     length is neither a token nor passed through this helper (or the size steps).
-*/
-
-const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
-
-// the base spacing token in pixels where el is (a rem token follows the root font size)
-function gridStep(el) {
-  if (typeof document === 'undefined') return 4;
-  const at = el || document.documentElement,
-    win = at.ownerDocument.defaultView;
-  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
-  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
-  return px > 0 ? px : 4;
-}
-function snapToGrid(px, opts) {
-  const o = opts || {},
-    step = gridStep(o.el),
-    n = Number(px) || 0;
-  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
-  const q = n / step;
-  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
-}
-const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
-exports.gridPx = gridPx;
-function onGrid(px, el) {
-  const step = gridStep(el),
-    q = Math.abs(Number(px) || 0) / step;
-  return Math.abs(q - Math.round(q)) * step <= 0.5;
 }
   } },
   "platform/components/DataTable/strict.js": { deps: {"../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: {  }, run: function (module, exports, require) {
@@ -15029,530 +15868,6 @@ const IMAGE_EDITOR_STEPS = exports.IMAGE_EDITOR_STEPS = {
   }
 };
   } },
-  "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FORMATS = void 0;
-exports.dateTimeAttr = dateTimeAttr;
-exports.formatAddress = formatAddress;
-exports.formatBytes = formatBytes;
-exports.formatCompact = formatCompact;
-exports.formatCurrency = formatCurrency;
-exports.formatDate = formatDate;
-exports.formatDateTime = formatDateTime;
-exports.formatDuration = formatDuration;
-exports.formatList = formatList;
-exports.formatLocale = formatLocale;
-exports.formatNumber = formatNumber;
-exports.formatPercent = formatPercent;
-exports.formatPersonName = formatPersonName;
-exports.formatPhone = formatPhone;
-exports.formatRange = formatRange;
-exports.formatRelative = formatRelative;
-exports.formatTime = formatTime;
-exports.formatUnit = formatUnit;
-exports.regionName = regionName;
-/* Plenix · Formatting (platform/utils/format.js)
-   Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
-     every page, in the reader's locale, on the browser's Intl formatters (NumberFormat, DateTimeFormat,
-     RelativeTimeFormat, ListFormat, DisplayNames). The rules (precision, when relative time ends, address layouts, phone
-     groupings) are the Formats standard, platform/standards/formats.json; FORMATS below is the same data (the format test
-     keeps the two equal).
-   Usage:
-     formatNumber(1234.5)                         // "1,234.5"
-     formatBytes(1200000)                         // "1.2 MB"
-     formatCompact(1234)                          // "1.2K"
-     formatDate(date, { dateStyle: 'long' })          // "March 4, 2026"
-     formatRelative(date)                         // "5 minutes ago" (an absolute date after 7 days)
-     formatCurrency(12.5, 'EUR')                  // "€12.50"
-     formatPercent(0.256)                         // "26%"
-     formatPhone('+14155550123')                  // "+1 415 555 0123"
-   Props:
-     every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
-     formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
-     formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
-     formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
-       display "short" (default), "long" or "narrow"
-     formatBytes(bytes, { decimals }): a file size in B, kB, MB, GB or TB (powers of 1000)
-     formatDuration(seconds, { display }): "1 hr, 5 min" (display "short", default), "1 hour, 5 minutes" ("long") or "1:05:00" ("clock")
-     formatCompact(value, { decimals }): "1.2K", "3.4M": only where space is tight, with the full value beside it (title, tooltip)
-     formatDate(date, { dateStyle, timeZone }): dateStyle "short" ("Mar 4"; the year when it is not this year), "medium"
-       ("Mar 4, 2026", default), "long" ("March 4, 2026") or "full" ("Wednesday, March 4, 2026")
-     formatTime(date, { seconds, timeZone, timeZoneName }): "2:05 PM"; timeZoneName "short" adds the zone ("2:05 PM PST")
-     formatDateTime(date, { dateStyle, timeZone, timeZoneName }): the date (medium) and the time together
-     formatRelative(date, { now, untilDays }): "5 minutes ago", "in 2 days", "yesterday"; after untilDays (FORMATS) the date
-     formatRange(from, to, { kind, dateStyle }): two dates ("Mar 4 – 6, 2026", kind "date", default) or numbers ("3–5", kind "number")
-     formatCurrency(amount, currency, { display, decimals, signed }): money in an ISO 4217 currency ("USD"); display
-       "symbol" (default, "$12.50") or "code" ("USD 12.50", for pages that mix currencies)
-     formatPercent(ratio, { decimals, signed }): a ratio as a percentage, 0.256 → "26%" (signed: "+3%", for changes)
-     formatList(items, { type }): "A, B, and C"; type "conjunction" (default), "disjunction" ("A, B, or C") or "unit"
-     formatPersonName(person, { display }): a name as the person wrote it; person is a string or { full, preferred };
-       display "full" (default), "preferred" (the preferred name, else the full one) or "initials"
-     formatAddress(address, { country, includeCountry }): the lines of a postal address in its country's order; address
-       is { name, organization, street (a string or lines), locality, region, postalCode, country (ISO 3166 code) }
-     regionName(code): a country's name in the reader's language ("DE" → "Germany")
-     formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
-       "national" ("(415) 555-0123")
-     dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
-     FORMATS: the standard's data (see platform/standards/formats.json)
-   Behavior:
-     Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
-     A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
-   Notes:
-     Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
-     Phone numbers and addresses follow FORMATS for the countries it lists; others fall back to a neutral layout.
-*/
-
-// The Formats standard (platform/standards/formats.json): edit both together; the format test compares them.
-const FORMATS = exports.FORMATS = {
-  number: {
-    decimals: {
-      default: 0,
-      ratio: 0,
-      compact: 1,
-      bytes: 1
-    }
-  },
-  bytes: {
-    base: 1000,
-    units: ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte']
-  },
-  relative: {
-    untilDays: 7
-  },
-  currency: {
-    display: 'symbol',
-    mixedDisplay: 'code'
-  },
-  date: {
-    default: 'medium'
-  },
-  address: {
-    default: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
-    US: ['name', 'organization', 'street', 'locality, region postalCode', 'country'],
-    CA: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
-    GB: ['name', 'organization', 'street', 'locality', 'postalCode', 'country'],
-    DE: ['name', 'organization', 'street', 'postalCode locality', 'country'],
-    FR: ['name', 'organization', 'street', 'postalCode locality', 'country'],
-    IT: ['name', 'organization', 'street', 'postalCode locality region', 'country'],
-    JP: ['country', 'postalCode', 'region locality', 'street', 'organization', 'name']
-  },
-  phone: {
-    '1': {
-      national: '(###) ###-####',
-      international: '+1 ### ### ####'
-    },
-    '33': {
-      national: '0# ## ## ## ##',
-      international: '+33 # ## ## ## ##'
-    },
-    '44': {
-      national: '0#### ######',
-      international: '+44 #### ######'
-    },
-    '49': {
-      national: '0### #######',
-      international: '+49 ### #######'
-    },
-    '61': {
-      national: '0# #### ####',
-      international: '+61 # #### ####'
-    }
-  }
-};
-const ok = n => typeof n === 'number' && isFinite(n);
-const toDate = d => {
-  const x = d instanceof Date ? d : new Date(d);
-  return isNaN(x.getTime()) ? null : x;
-};
-function formatLocale() {
-  const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
-  if (lang) return lang;
-  if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
-  return 'en-US';
-}
-const loc = o => o && o.locale || formatLocale();
-const digits = d => d === undefined ? {} : {
-  minimumFractionDigits: d,
-  maximumFractionDigits: d
-};
-function formatNumber(value, o = {}) {
-  if (!ok(value)) return '';
-  return new Intl.NumberFormat(loc(o), {
-    ...digits(o.decimals),
-    signDisplay: o.signed ? 'exceptZero' : 'auto'
-  }).format(value);
-}
-function formatUnit(value, unit, o = {}) {
-  if (!ok(value)) return '';
-  return new Intl.NumberFormat(loc(o), {
-    style: 'unit',
-    unit,
-    unitDisplay: o.display || 'short',
-    ...digits(o.decimals)
-  }).format(value);
-}
-function formatBytes(bytes, o = {}) {
-  if (!ok(bytes)) return '';
-  const {
-    base,
-    units
-  } = FORMATS.bytes;
-  let i = 0,
-    v = Math.abs(bytes);
-  while (v >= base && i < units.length - 1) {
-    v /= base;
-    i++;
-  }
-  const d = o.decimals !== undefined ? o.decimals : i === 0 ? 0 : FORMATS.number.decimals.bytes;
-  return new Intl.NumberFormat(loc(o), {
-    style: 'unit',
-    unit: units[i],
-    unitDisplay: 'short',
-    maximumFractionDigits: d
-  }).format(Math.sign(bytes) * v);
-}
-function formatDuration(seconds, o = {}) {
-  if (!ok(seconds)) return '';
-  const s = Math.round(Math.abs(seconds)),
-    h = Math.floor(s / 3600),
-    m = Math.floor(s % 3600 / 60),
-    r = s % 60;
-  if (o.display === 'clock') {
-    const two = n => String(n).padStart(2, '0');
-    return (seconds < 0 ? '-' : '') + (h ? h + ':' + two(m) : String(m)) + ':' + two(r);
-  }
-  const display = o.display === 'long' ? 'long' : 'short';
-  const parts = [[h, 'hour'], [m, 'minute'], [r, 'second']].filter(([n], i, all) => n || i === 2 && !all[0][0] && !all[1][0]);
-  return formatList(parts.map(([n, unit]) => formatUnit(n, unit, {
-    locale: o.locale,
-    display
-  })), {
-    locale: o.locale,
-    type: 'unit'
-  });
-}
-function formatCompact(value, o = {}) {
-  if (!ok(value)) return '';
-  return new Intl.NumberFormat(loc(o), {
-    notation: 'compact',
-    maximumFractionDigits: o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.compact
-  }).format(value);
-}
-const DATE_STYLES = {
-  medium: {
-    dateStyle: 'medium'
-  },
-  long: {
-    dateStyle: 'long'
-  },
-  full: {
-    dateStyle: 'full'
-  }
-};
-function formatDate(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  const style = o.dateStyle || FORMATS.date.default;
-  if (style === 'short') {
-    const thisYear = d.getFullYear() === new Date().getFullYear();
-    return new Intl.DateTimeFormat(loc(o), {
-      month: 'short',
-      day: 'numeric',
-      year: thisYear ? undefined : 'numeric',
-      timeZone: o.timeZone
-    }).format(d);
-  }
-  return new Intl.DateTimeFormat(loc(o), {
-    ...(DATE_STYLES[style] || DATE_STYLES.medium),
-    timeZone: o.timeZone
-  }).format(d);
-}
-function formatTime(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  return new Intl.DateTimeFormat(loc(o), {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: o.seconds ? '2-digit' : undefined,
-    timeZone: o.timeZone,
-    timeZoneName: o.timeZoneName
-  }).format(d);
-}
-function formatDateTime(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  const style = o.dateStyle && DATE_STYLES[o.dateStyle] ? o.dateStyle : FORMATS.date.default;
-  if (o.timeZoneName) return new Intl.DateTimeFormat(loc(o), {
-    ...(style === 'medium' ? {
-      month: 'short'
-    } : {
-      month: 'long'
-    }),
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: o.timeZone,
-    timeZoneName: o.timeZoneName
-  }).format(d);
-  return new Intl.DateTimeFormat(loc(o), {
-    dateStyle: style,
-    timeStyle: 'short',
-    timeZone: o.timeZone
-  }).format(d);
-}
-const STEPS = [['second', 60], ['minute', 60], ['hour', 24], ['day', 7]];
-function formatRelative(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  const now = toDate(o.now || Date.now());
-  const until = o.untilDays !== undefined ? o.untilDays : FORMATS.relative.untilDays;
-  let diff = (d.getTime() - now.getTime()) / 1000;
-  if (Math.abs(diff) >= until * 86400) return formatDate(d, {
-    locale: o.locale,
-    dateStyle: 'medium',
-    timeZone: o.timeZone
-  });
-  const rtf = new Intl.RelativeTimeFormat(loc(o), {
-    numeric: 'auto'
-  });
-  for (const [unit, size] of STEPS) {
-    if (Math.abs(diff) < size || unit === 'day') return rtf.format(Math.round(diff), unit);
-    diff /= size;
-  }
-  return '';
-}
-function formatRange(from, to, o = {}) {
-  if (o.kind === 'number') {
-    if (!ok(from) || !ok(to)) return '';
-    return new Intl.NumberFormat(loc(o), digits(o.decimals)).formatRange(from, to);
-  }
-  const a = toDate(from),
-    b = toDate(to);
-  if (!a || !b) return '';
-  return new Intl.DateTimeFormat(loc(o), {
-    ...(DATE_STYLES[o.dateStyle] || DATE_STYLES.medium),
-    timeZone: o.timeZone
-  }).formatRange(a, b);
-}
-function formatCurrency(amount, currency, o = {}) {
-  if (!ok(amount) || !currency) return '';
-  return new Intl.NumberFormat(loc(o), {
-    style: 'currency',
-    currency,
-    currencyDisplay: o.display || FORMATS.currency.display,
-    ...digits(o.decimals),
-    signDisplay: o.signed ? 'exceptZero' : 'auto'
-  }).format(amount);
-}
-function formatPercent(ratio, o = {}) {
-  if (!ok(ratio)) return '';
-  const d = o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.ratio;
-  return new Intl.NumberFormat(loc(o), {
-    style: 'percent',
-    ...digits(d),
-    signDisplay: o.signed ? 'exceptZero' : 'auto'
-  }).format(ratio);
-}
-function formatList(items, o = {}) {
-  const list = (items || []).filter(x => x !== undefined && x !== null && x !== '').map(String);
-  return new Intl.ListFormat(loc(o), o.type === 'unit' ? {
-    type: 'unit',
-    style: 'short'
-  } : {
-    type: o.type || 'conjunction'
-  }).format(list);
-}
-function formatPersonName(person, o = {}) {
-  const p = typeof person === 'string' ? {
-    full: person
-  } : person || {};
-  const full = String(p.full || '').trim();
-  if (o.display === 'preferred') return String(p.preferred || '').trim() || full;
-  if (o.display === 'initials') {
-    const words = full.split(/\s+/).filter(Boolean);
-    const pick = words.length > 1 ? [words[0], words[words.length - 1]] : words;
-    return pick.map(w => Array.from(w)[0].toLocaleUpperCase(loc(o))).join('');
-  }
-  return full;
-}
-function regionName(code, o = {}) {
-  if (!code) return '';
-  try {
-    return new Intl.DisplayNames(loc(o), {
-      type: 'region'
-    }).of(code) || code;
-  } catch (e) {
-    return code;
-  }
-}
-function formatAddress(address, o = {}) {
-  const a = address || {};
-  const country = (o.country || a.country || '').toUpperCase();
-  const layout = FORMATS.address[country] || FORMATS.address.default;
-  const readerRegion = (loc(o).split('-')[1] || '').toUpperCase();
-  const includeCountry = o.includeCountry !== undefined ? o.includeCountry : !!country && country !== readerRegion;
-  const value = k => {
-    if (k === 'country') return includeCountry ? regionName(country, o) : '';
-    if (k === 'street') return [].concat(a.street || []).filter(Boolean).join('\n');
-    return a[k] ? String(a[k]) : '';
-  };
-  const lines = [];
-  layout.forEach(pattern => {
-    // a pattern line: field names with the punctuation between them; a separator is written only between two values
-    let text = '',
-      sep = '';
-    for (const [, field, between] of pattern.matchAll(/([A-Za-z]+)|([^A-Za-z]+)/g)) {
-      if (between) {
-        sep = between;
-        continue;
-      }
-      const v = value(field);
-      if (!v) continue;
-      text += (text ? sep : '') + v;
-      sep = '';
-    }
-    text.split('\n').forEach(l => {
-      if (l.trim()) lines.push(l.trim());
-    });
-  });
-  return lines;
-}
-function formatPhone(e164, o = {}) {
-  const raw = String(e164 || '').trim();
-  const num = raw.replace(/[^\d+]/g, '');
-  if (!/^\+\d{4,15}$/.test(num)) return raw;
-  const all = num.slice(1);
-  const code = Object.keys(FORMATS.phone).sort((x, y) => y.length - x.length).find(c => all.startsWith(c));
-  const display = o.display === 'national' ? 'national' : 'international';
-  if (code) {
-    const rest = all.slice(code.length),
-      pattern = FORMATS.phone[code][display];
-    if ((pattern.match(/#/g) || []).length === rest.length) {
-      let i = 0;
-      return pattern.replace(/#/g, () => rest[i++]);
-    }
-  }
-  // a country Formats does not list (or a length its pattern does not fit): the country code when it is known, then the
-  // digits in groups of three, the last group taking up to four
-  const groups = [];
-  let rest = code ? all.slice(code.length) : all;
-  while (rest.length > 4) {
-    groups.push(rest.slice(0, 3));
-    rest = rest.slice(3);
-  }
-  groups.push(rest);
-  return '+' + (code ? code + ' ' : '') + groups.join(' ');
-}
-function dateTimeAttr(date) {
-  const d = toDate(date);
-  return d ? d.toISOString() : '';
-}
-  } },
-  "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LiveRegion = LiveRegion;
-exports.announce = announce;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("./cx.js");
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LiveRegion, announce (platform/utils/announce.jsx)
-   Summary: Tells screen-reader users about a change they cannot see happen (a save, a count of results, an upload that
-     finished, an error) without moving their focus. announce(text) speaks through one pair of page-wide regions;
-     LiveRegion is a region of a component's own, for messages that also stay on screen (a status line, a log).
-   Usage:
-     announce('12 results');                               // polite: waits until the reader is idle
-     announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
-     <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
-     <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
-   Props:
-     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
-     LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
-       (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
-     LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
-     LiveRegion.atomic: read the whole region on every change, not only what changed (default: true for status, else false)
-     LiveRegion.children: the message (render the region empty first, then put the text in it)
-     LiveRegion.className: more classes on the region
-   Behavior:
-     The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
-     Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
-     A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
-   Notes:
-     Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
-     Never put a control inside a live region. Messages are plain text: no markup, icons or emoji names.
-     Meets WCAG 2.2 SC 4.1.3 Status Messages.
-*/
-const regions = {};
-const pending = {};
-
-// the page-wide region for one politeness (made once, visually hidden)
-function region(politeness) {
-  if (regions[politeness] && regions[politeness].isConnected) return regions[politeness];
-  const el = document.createElement('div');
-  el.className = 'plx-visually-hidden';
-  el.setAttribute('aria-live', politeness);
-  el.setAttribute('aria-atomic', 'true');
-  el.setAttribute('data-plx-announcer', politeness);
-  if (politeness === 'assertive') el.setAttribute('role', 'alert');
-  document.body.appendChild(el);
-  regions[politeness] = el;
-  return el;
-}
-function announce(text, {
-  politeness = 'polite'
-} = {}) {
-  if (typeof document === 'undefined' || !document.body) return;
-  const p = politeness === 'assertive' ? 'assertive' : 'polite';
-  const el = region(p);
-  // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
-  el.textContent = '';
-  if (pending[p]) clearTimeout(pending[p]);
-  pending[p] = setTimeout(() => {
-    pending[p] = null;
-    el.textContent = String(text || '');
-  }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
-}
-const KINDS = {
-  polite: {
-    'aria-live': 'polite'
-  },
-  assertive: {
-    'aria-live': 'assertive'
-  },
-  status: {
-    role: 'status',
-    'aria-live': 'polite'
-  },
-  log: {
-    role: 'log',
-    'aria-live': 'polite'
-  }
-};
-function LiveRegion({
-  kind = 'polite',
-  visible = false,
-  atomic,
-  className,
-  children,
-  ...rest
-}) {
-  const a = KINDS[kind] || KINDS.polite;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({}, a, {
-    "aria-atomic": atomic !== undefined ? atomic : kind === 'status',
-    "data-plx-live": kind,
-    className: (0, _cx.cx)(!visible && 'plx-visually-hidden', className)
-  }, rest), children);
-}
-  } },
   "platform/utils/clipboard.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -21929,7 +22244,402 @@ function BackToTop({
   }));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/patterns/Form/Form.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Form = Form;
+exports.FormActions = FormActions;
+exports.FormSection = FormSection;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Field = require("../../components/Field/Field.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _ActionBar = require("../ActionBar/ActionBar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Form, FormSection, FormActions
+   Summary: A form laid out the Plenix way: titled sections of fields in one column (labels above) or two (labels beside),
+     and one bar of actions at the end that stays in view while a long form scrolls.
+   Usage:
+     <Form label="Asset details" layout="two-column" onSubmit={save}>
+       <FormSection title="General" description="Shown on the asset card.">
+         <Field label="Name" required><Input value={name} onChange={…} /></Field>
+         <Field label="Category"><Select options={CATEGORIES} … /></Field>
+       </FormSection>
+       <FormSection title="Usage rights">…</FormSection>
+       <FormActions>
+         <Button onClick={cancel}>Cancel</Button>
+         <Button type="submit" variant="primary">Save changes</Button>
+       </FormActions>
+     </Form>
+   Props:
+     Form.layout: "one-column" (default; every field's label above its control) | "two-column" (labels beside their
+       controls in one label column: settings-like forms with many short fields); a Field's own layout still wins
+     Form.label: names the form for screen readers when no heading names it (aria-label)
+     Form.onSubmit(event): runs when the form is submitted (Enter in a one-line field, or the submit button)
+     Form.className: more classes on the <form>
+     Form.children: FormSections (or Fields), then one FormActions
+     FormSection.title: the section's title, a heading (it names the section)
+     FormSection.description: one sentence under the title: why the section asks for this
+     FormSection.headingLevel: the title's heading level (default 2: under the page title)
+     FormSection.className: more classes on the section
+     FormSection.children: the fields of the section, stacked
+     FormActions.label: names the group of buttons for screen readers (default "Form actions")
+     FormActions.sticky: the bar stays at the bottom of the scrolling page while the form is longer than it (default
+       true); false keeps it in its place under the last section (a short form, a form in a card)
+     FormActions.className: more classes on the bar
+     FormActions.children: the buttons, in reading order: a destructive action first, the primary last (at the end)
+   Behavior:
+     The fields of a section are a Stack: in a two-column form they share one label column, as wide as the longest label
+       (at most --plx-ref-size-160px); a label cut short shows in full in a Tooltip; in a very narrow column each label
+       moves above its control (Field).
+     A section is a <section> named by its title; its description is part of the page text (read in order).
+     FormActions is an ActionBar: buttons at the end, wrapping when the bar is narrow; sticky by default.
+     Other props pass through to the <form> and the <section>.
+   Notes:
+     One set of actions per form, never one per section. Validate on submit or when a field is left, and show the error
+     under its field (Field error); with several errors, an error summary at the top of the form.
+     Sections are separated by space only (no lines or frames), so a form inside a card or a dialog stays two frames deep.
+*/
+const LAYOUTS = ['one-column', 'two-column'];
+function Form({
+  layout = 'one-column',
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  const lay = LAYOUTS.indexOf(layout) >= 0 ? layout : 'one-column';
+  return /*#__PURE__*/_react.default.createElement(_Field.FieldLayoutContext.Provider, {
+    value: lay === 'two-column' ? 'inline' : null
+  }, /*#__PURE__*/_react.default.createElement("form", _extends({
+    className: (0, _cx.cx)('plx-form', 'plx-form--' + lay, className),
+    "aria-label": label
+  }, rest), children));
+}
+function FormSection({
+  title,
+  description,
+  headingLevel = 2,
+  className,
+  children,
+  ...rest
+}) {
+  const id = (0, _layer.useUid)('plx-form-s');
+  return /*#__PURE__*/_react.default.createElement("section", _extends({
+    className: (0, _cx.cx)('plx-form-section', className),
+    "aria-labelledby": title ? id : undefined
+  }, rest), title || description ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-form-section__header"
+  }, title ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: 'h' + headingLevel,
+    variant: "heading",
+    id: id,
+    className: "plx-form-section__title"
+  }, title) : null, description ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    as: "p",
+    variant: "secondary",
+    className: "plx-form-section__description"
+  }, description) : null) : null, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    gap: "md",
+    className: "plx-form-section__body"
+  }, children));
+}
+function FormActions({
+  label = 'Form actions',
+  sticky = true,
+  className,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement(_ActionBar.ActionBar, {
+    label: label,
+    className: (0, _cx.cx)('plx-form-actions', !sticky && 'plx-form-actions--static', className)
+  }, children);
+}
+  } },
+  "platform/components/OtpInput/OtpInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.OtpInput = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · OtpInput
+   Summary: A one-time passcode or PIN of a known length, one box per character: typing moves on, Backspace moves back, a
+     pasted or autofilled code fills every box.
+   Usage:
+     <Field label="Verification code" description="We sent a 6-digit code to r•••@lighthouseway.org." error={err}>
+       <OtpInput value={code} onChange={setCode} onComplete={verify} />
+     </Field>
+     <OtpInput length={4} masked label="PIN" />
+     <OtpInput kind="alphanumeric" length={8} label="Recovery code" />
+   Props:
+     length: how many characters (default 6); 4 for a PIN
+     value: the code typed so far (a string), for a controlled field
+     defaultValue: the code it starts with, uncontrolled
+     onChange(value): runs with the whole code after every change
+     onComplete(value): runs once every box is filled
+     kind: "numeric" (default; digits, the number keypad) | "alphanumeric" (letters and digits, shown in capitals)
+     masked: each character shows as a dot once typed (a PIN); default false
+     label: names the group and each box ("Verification code, character 2 of 6"); without it, inside a Field, the Field's
+       label names the first box
+     invalid: the invalid state (every box's border in the danger color); a Field with an error sets it
+     disabled: none of the boxes can be used
+     required: the code is required (a Field sets it)
+     autoFocus: the first box takes focus when it appears
+     name: submits the code with a form under this name (a hidden input)
+     id: the id of the first box (a Field sets it, so its label points at the first box)
+     strings: { cell: 'character {n} of {total}' } (the name of each box after the label)
+     className: more classes on the group
+     aria-describedby: the description and error of a Field, on the group
+   Behavior:
+     Typing a character fills the box and moves to the next; a character the kind does not take is ignored.
+     Backspace clears the box, or, in an empty box, moves back and clears the one before; Arrow Left and Right, Home and
+       End move between boxes; focusing a box selects its character, so typing replaces it.
+     Pasting (or the device's autofill of a code sent by message: autocomplete "one-time-code" on the first box) fills
+       the boxes from the one in focus; focus moves to the next empty box, or the last.
+     The boxes are written left to right in every writing direction (a code reads the same way everywhere).
+   Notes:
+     Only for codes of a known, short length (4 to 8). A password or a code of any length is one Input.
+     Say where the code was sent and how long it lasts in the Field's description; give a way to send a new one.
+*/
+const STRINGS = {
+  cell: 'character {n} of {total}'
+};
+const KEEP = {
+  numeric: /[^0-9]/g,
+  alphanumeric: /[^0-9a-zA-Z]/g
+};
+const OtpInput = exports.OtpInput = /*#__PURE__*/_react.default.forwardRef(function OtpInput({
+  length = 6,
+  value,
+  defaultValue = '',
+  onChange,
+  onComplete,
+  kind = 'numeric',
+  masked = false,
+  label,
+  invalid,
+  disabled,
+  required,
+  autoFocus,
+  name,
+  id,
+  strings,
+  className,
+  'aria-describedby': describedBy,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const n = Math.max(1, Number(length) || 6);
+  const clean = s => String(s == null ? '' : s).replace(KEEP[kind] || KEEP.numeric, '').toUpperCase();
+  const [own, setOwn] = _react.default.useState(() => clean(defaultValue).slice(0, n));
+  const code = value !== undefined ? clean(value).slice(0, n) : own;
+  const boxes = _react.default.useRef([]);
+  _react.default.useImperativeHandle(ref, () => boxes.current[0]);
+  const chars = Array.from({
+    length: n
+  }, (x, i) => code[i] || '');
+  const focusBox = i => {
+    const el = boxes.current[Math.max(0, Math.min(n - 1, i))];
+    if (el) {
+      el.focus();
+      el.select();
+    }
+  };
+  const commit = next => {
+    const joined = next.join('').slice(0, n);
+    if (value === undefined) setOwn(joined);
+    if (onChange) onChange(joined);
+    if (onComplete && next.every(Boolean) && joined.length === n) onComplete(joined);
+  };
+  // put text into the boxes from box i on; returns the box to focus next
+  const fillFrom = (i, text) => {
+    const next = chars.slice(),
+      add = clean(text).split('');
+    let at = i;
+    add.forEach(c => {
+      if (at < n) next[at++] = c;
+    });
+    commit(next);
+    const empty = next.indexOf('');
+    return empty >= 0 ? empty : n - 1;
+  };
+  const onBoxChange = i => e => {
+    const typed = e.target.value,
+      cur = chars[i];
+    if (!typed) {
+      const next = chars.slice();
+      next[i] = '';
+      commit(next);
+      return;
+    }
+    // a box that held a character gets it back with the new one: keep only what was added
+    const added = cur && typed.length === cur.length + 1 ? typed.indexOf(cur) === 0 ? typed.slice(cur.length) : typed.slice(0, 1) : typed;
+    const ok = clean(added);
+    if (!ok) return;
+    const after = fillFrom(i, ok);
+    focusBox(ok.length > 1 ? after : i + 1);
+  };
+  const onKeyDown = i => e => {
+    if (e.key === 'Backspace' && !chars[i] && i > 0) {
+      e.preventDefault();
+      const next = chars.slice();
+      next[i - 1] = '';
+      commit(next);
+      focusBox(i - 1);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      focusBox(i - 1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      focusBox(i + 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      focusBox(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      focusBox(n - 1);
+    }
+  };
+  const onPaste = i => e => {
+    const text = e.clipboardData ? e.clipboardData.getData('text') : '';
+    if (!text) return;
+    e.preventDefault();
+    focusBox(fillFrom(i, text));
+  };
+  // without a label of its own, the first box keeps the name its Field's label gives it
+  const boxName = i => !label && i === 0 && id ? undefined : (label ? label + ', ' : '') + t.cell.replace('{n}', String(i + 1)).replace('{total}', String(n));
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    dir: "ltr",
+    "aria-label": label,
+    "aria-describedby": describedBy,
+    className: (0, _cx.cx)('plx-otp-input', invalid && 'is-invalid', disabled && 'is-disabled', className)
+  }, rest), chars.map((c, i) => /*#__PURE__*/_react.default.createElement("input", {
+    key: i,
+    ref: el => {
+      boxes.current[i] = el;
+    },
+    id: i === 0 ? id : undefined,
+    className: "plx-otp-input__cell",
+    type: masked ? 'password' : 'text',
+    inputMode: kind === 'numeric' ? 'numeric' : 'text',
+    autoComplete: i === 0 ? 'one-time-code' : 'off',
+    autoCapitalize: kind === 'alphanumeric' ? 'characters' : 'off',
+    spellCheck: false,
+    enterKeyHint: i === n - 1 ? 'done' : 'next',
+    "aria-label": boxName(i),
+    "aria-invalid": invalid || undefined,
+    required: required,
+    disabled: disabled,
+    autoFocus: autoFocus && i === 0,
+    value: c,
+    onChange: onBoxChange(i),
+    onKeyDown: onKeyDown(i),
+    onPaste: onPaste(i),
+    onFocus: e => e.target.select()
+  })), name ? /*#__PURE__*/_react.default.createElement("input", {
+    type: "hidden",
+    name: name,
+    value: code
+  }) : null);
+});
+  } },
+  "platform/hooks/useSearchHistory.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useSearchHistory = useSearchHistory;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useSearchHistory
+   Summary: The person's last searches in one place (an application's global search, a list's search), kept in this browser,
+     newest first, for SearchField's recent searches and a search history page.
+   Usage:
+     const history = useSearchHistory('assets');
+     <SearchField value={q} onChange={…} recent={history.items} onSubmitSearch={(q) => { history.add(q); run(q); }}
+       onSelect={(item) => run(item.value)} onRemoveRecent={history.remove} onClearRecent={history.clear} />
+   Props:
+     key: names the history (one per search box: 'assets', 'global'); stored as "plx-search-history:<key>"
+     options.max (5): how many searches it keeps; the oldest goes when a new one comes
+     returns { items (the searches, newest first), add(query), remove(query), clear() }
+   Behavior:
+     add trims the query, ignores an empty one, and moves a search made again to the top (no duplicates, compared without
+       regard to case).
+     The history is read once when the component appears and written on every change; every component with the same key
+       on the page shares it (a storage event from another tab updates it too).
+     Without storage (a private window, storage turned off) the history lives only until the page closes; nothing fails.
+   Notes:
+     Searches can be personal: offer Clear recent searches wherever the history shows, and use a key per person when
+     several people share a browser.
+*/
+
+const PREFIX = 'plx-search-history:';
+const listeners = {};
+const memory = {}; // the page's copy: what storage holds, or all there is when storage is off
+
+const read = key => {
+  try {
+    const v = JSON.parse(window.localStorage.getItem(PREFIX + key));
+    if (Array.isArray(v)) return v.filter(x => typeof x === 'string');
+  } catch (e) {/* storage off */}
+  return memory[key] || [];
+};
+const write = (key, items) => {
+  memory[key] = items;
+  try {
+    window.localStorage.setItem(PREFIX + key, JSON.stringify(items));
+  } catch (e) {/* storage off: kept for this page only */}
+};
+function useSearchHistory(key, options = {}) {
+  const max = Math.max(1, Number(options.max) || 5);
+  const [items, setItems] = _react.default.useState(() => typeof window === 'undefined' ? [] : read(key).slice(0, max));
+  _react.default.useEffect(() => {
+    const mine = next => setItems(next.slice(0, max));
+    (listeners[key] = listeners[key] || []).push(mine);
+    const fromTab = e => {
+      if (e.key === PREFIX + key) mine(read(key));
+    };
+    window.addEventListener('storage', fromTab);
+    return () => {
+      listeners[key] = (listeners[key] || []).filter(f => f !== mine);
+      window.removeEventListener('storage', fromTab);
+    };
+  }, [key, max]);
+  const save = _react.default.useCallback(next => {
+    write(key, next);
+    (listeners[key] || []).forEach(f => f(next));
+  }, [key]);
+  const add = _react.default.useCallback(query => {
+    const q = String(query || '').trim();
+    if (!q) return;
+    save([q].concat(read(key).filter(x => x.toLowerCase() !== q.toLowerCase())).slice(0, max));
+  }, [key, max, save]);
+  const remove = _react.default.useCallback(query => {
+    save(read(key).filter(x => x !== query));
+  }, [key, save]);
+  const clear = _react.default.useCallback(() => {
+    save([]);
+  }, [save]);
+  return {
+    items,
+    add,
+    remove,
+    clear
+  };
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22325,6 +23035,12 @@ Object.defineProperty(exports, "Field", {
     return _Field.Field;
   }
 });
+Object.defineProperty(exports, "FieldLayoutContext", {
+  enumerable: true,
+  get: function () {
+    return _Field.FieldLayoutContext;
+  }
+});
 Object.defineProperty(exports, "Fieldset", {
   enumerable: true,
   get: function () {
@@ -22347,6 +23063,24 @@ Object.defineProperty(exports, "FloatingActionButton", {
   enumerable: true,
   get: function () {
     return _FloatingActionButton.FloatingActionButton;
+  }
+});
+Object.defineProperty(exports, "Form", {
+  enumerable: true,
+  get: function () {
+    return _Form.Form;
+  }
+});
+Object.defineProperty(exports, "FormActions", {
+  enumerable: true,
+  get: function () {
+    return _Form.FormActions;
+  }
+});
+Object.defineProperty(exports, "FormSection", {
+  enumerable: true,
+  get: function () {
+    return _Form.FormSection;
   }
 });
 Object.defineProperty(exports, "GRID_TOKEN", {
@@ -22521,6 +23255,12 @@ Object.defineProperty(exports, "NotificationList", {
   enumerable: true,
   get: function () {
     return _NotificationList.NotificationList;
+  }
+});
+Object.defineProperty(exports, "OtpInput", {
+  enumerable: true,
+  get: function () {
+    return _OtpInput.OtpInput;
   }
 });
 Object.defineProperty(exports, "PAGE_LAYOUTS", {
@@ -23579,6 +24319,12 @@ Object.defineProperty(exports, "useScrollLock", {
     return _scrollLock.useScrollLock;
   }
 });
+Object.defineProperty(exports, "useSearchHistory", {
+  enumerable: true,
+  get: function () {
+    return _useSearchHistory.useSearchHistory;
+  }
+});
 Object.defineProperty(exports, "useSelection", {
   enumerable: true,
   get: function () {
@@ -23776,6 +24522,9 @@ var _CommandMenu = require("./components/CommandMenu/CommandMenu.jsx");
 var _CommandPalette = require("./patterns/CommandPalette/CommandPalette.jsx");
 var _DownloadButton = require("./components/DownloadButton/DownloadButton.jsx");
 var _BackToTop = require("./components/BackToTop/BackToTop.jsx");
+var _Form = require("./patterns/Form/Form.jsx");
+var _OtpInput = require("./components/OtpInput/OtpInput.jsx");
+var _useSearchHistory = require("./hooks/useSearchHistory.js");
   } }
   };
   var cache = {};

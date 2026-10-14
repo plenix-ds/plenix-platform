@@ -25,3 +25,10 @@
 .plx-input[type="color"]::-moz-color-swatch{border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:inherit;border-top-right-radius:inherit;border-top-style:none;}
 .plx-input[type="color"]:focus-visible,
 .plx-input[type="color"].is-focus-visible{outline-color:var(--plx-comp-input-color-focus-outline-color);outline-offset:var(--plx-comp-input-color-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-input-color-focus-outline-width);}
+/* the appearances (appearance, library wave 6): filled is the neutral fill with only the line under it, square at the line;
+   underline is only the line. The line is the field's border, so hover, focus and invalid recolor it as on an outline field. */
+.plx-input--filled,.plx-input--underline{border-left-style:none;border-right-style:none;border-top-style:none;}
+.plx-input--filled{background-color:var(--plx-comp-input-filled-background);border-bottom-left-radius:var(--plx-comp-input-filled-end-radius);border-bottom-right-radius:var(--plx-comp-input-filled-end-radius);}
+.plx-input--underline{background-color:var(--plx-comp-input-underline-background);border-bottom-left-radius:var(--plx-comp-input-underline-radius);border-bottom-right-radius:var(--plx-comp-input-underline-radius);border-top-left-radius:var(--plx-comp-input-underline-radius);border-top-right-radius:var(--plx-comp-input-underline-radius);}
+/* the autogrowing text area (autoGrow): sized to its content up to the maximum, then it scrolls; no resize handle */
+.plx-textarea.plx-textarea--auto-grow{field-sizing:content;max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}

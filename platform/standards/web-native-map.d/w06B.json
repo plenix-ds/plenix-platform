@@ -1,0 +1,16 @@
+{
+  "$description": "Library part w06B (wave 6, lane B): the iOS and Android counterparts of Form section, Form actions, Character counter, Read-only field, Field style variants, Autogrowing text area, PIN / OTP input, Search suggestions, Autocomplete search, Recent searches and Search history. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "forms|Form section": { "ios": ["ios-forms|Entering data"], "android": ["android-forms|Form screen", "android-patterns|Form"] },
+    "forms|Form actions": { "ios": ["ios-forms|Entering data"], "android": ["android-forms|Form screen"] },
+    "forms|Character counter": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|OutlinedTextField", "android-forms|Validation"] },
+    "forms|Read-only field": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|OutlinedTextField"] },
+    "forms|Field style variants": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|OutlinedTextField"] },
+    "forms|Autogrowing text area": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|Multi-line text field"] },
+    "forms|PIN / OTP input": { "ios": ["ios-forms|Digit entry views"], "android": ["android-forms|OutlinedTextField", "android-forms|Keyboard types"] },
+    "navigation|Search suggestions": { "ios": ["ios-navigation|Searching"], "android": ["android-forms|Search bar"] },
+    "navigation|Autocomplete search": { "ios": ["ios-navigation|Searching"], "android": ["android-forms|Search bar"] },
+    "navigation|Recent searches": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search screen"] },
+    "navigation|Search history": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search screen"] }
+  }
+}
