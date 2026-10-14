@@ -1,0 +1,10 @@
+{
+  "$description": "Field (platform/components/Field), library wave 6, lane B: the tokens of its character counter. The rest of Field's tokens are in the shared set.",
+  "plx-comp": {
+    "field-foot-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Field counter: the gap between the description and the count on the help line." },
+    "field-counter-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Field counter: the count's color (the description's)." },
+    "field-counter-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Field counter: the count is a technical value, in the data font." },
+    "field-counter-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Field counter: the count's size (the description's, so the two share a baseline)." },
+    "field-counter-over-text": { "$value": "{plx-sys.feedback-danger-solid}", "$type": "color", "$description": "Field counter: the count's color past the limit (the error's)." }
+  }
+}

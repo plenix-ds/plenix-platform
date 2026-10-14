@@ -1,0 +1,25 @@
+{
+  "$description": "Form, FormSection, FormActions (platform/patterns/Form), library wave 6, lane B: the space between a form's sections and inside them. The fields are Fields in a Stack; the actions are an ActionBar.",
+  "plx-comp": {
+    "form-gap": {
+      "$value": "{plx-sys.space-stack-xl}",
+      "$type": "dimension",
+      "$description": "Form: the space between its sections, and above its actions."
+    },
+    "form-section-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Form section: the space between its header and its fields."
+    },
+    "form-section-header-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Form section: the space between its title and its description."
+    },
+    "form-two-column-grid-template-columns": {
+      "$value": "{plx-ref.size-160px} minmax({plx-sys.field-width-md},{plx-sys.field-width-lg})",
+      "$type": "dimension",
+      "$description": "Two-column form: the label column every section shares (the inline field's label column) and the control column (the inline field's range, as in a Stack of inline fields)."
+    }
+  }
+}
