@@ -1115,7 +1115,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        dnd: "Do not disturb", offline: "Offline" }
      className: more classes on the avatar
    Behavior:
-     A picture that fails to load falls back to the initials.
+     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
+     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
      The corner and the text size follow the size.
      Initials are the first letters of the first and last name ("Raphael Maher" → RM).
      Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
@@ -1199,6 +1200,8 @@ function Avatar({
     className: "plx-avatar__image",
     src: src,
     alt: "",
+    loading: "lazy",
+    decoding: "async",
     onError: () => setFailed(true)
   }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
     tone: p,
@@ -1855,6 +1858,7 @@ function Thumbnail({
     src: src,
     alt: alt,
     loading: "lazy",
+    decoding: "async",
     onError: () => setFailed(true)
   }) : /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-thumbnail plx-thumbnail--icon",
@@ -6620,6 +6624,7 @@ function MediaCard({
     src: src,
     alt: alt,
     loading: "lazy",
+    decoding: "async",
     className: "plx-media-card__image"
   }) : /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-media-card__placeholder"
@@ -6649,26 +6654,382 @@ function MediaCard({
   }, actions) : null));
 }
   } },
-  "platform/components/DataTable/strict.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.VIRTUAL_STICKY_CLASS = void 0;
+exports.VirtualGap = VirtualGap;
+exports.VirtualProbe = VirtualProbe;
+exports.gapPieces = gapPieces;
+exports.useVirtualizer = useVirtualizer;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useVirtualizer
+   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
+     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
+     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
+   Usage:
+     const v = useVirtualizer({ count: files.length });
+     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
+       <VirtualProbe />
+       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
+         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
+     </div>
+     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
+   Props:
+     count: how many items there are
+     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
+       size; the token is the estimate for the items not rendered)
+     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
+     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
+     overscan: rows rendered beyond each edge of the view (default 4)
+     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
+     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
+     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
+       grid) not rendered
+     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
+     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
+       first in the viewport)
+   Behavior:
+     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
+     name it (aria-label) and give it its role (list, grid, listbox).
+     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
+     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
+     scroll anchoring keeps the content still while gaps replace items of another size.
+     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
+     "12 of 4,000" even though only a few are in the page.
+   Notes:
+     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
+     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
+     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
+     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
+*/
+
+const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
+
+// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
+function gapPieces(count) {
+  const out = [];
+  let n = Math.max(0, Math.floor(count));
+  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
+    out.push(p);
+    n -= p;
+  }
+  return out;
+}
+function VirtualGap({
+  count,
+  axis = 'y'
+}) {
+  if (!count) return null;
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-gap',
+    'data-plx-axis': axis,
+    'aria-hidden': 'true'
+  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
+    key: i,
+    className: 'plx-virtual-gap__piece',
+    'data-plx-span': String(p)
+  })));
+}
+function VirtualProbe({
+  axis = 'y'
+}) {
+  return /*#__PURE__*/_react.default.createElement('div', {
+    className: 'plx-virtual-probe',
+    'data-plx-axis': axis,
+    'data-plx-virtual-probe': '',
+    'aria-hidden': 'true'
+  });
+}
+function useVirtualizer({
+  count = 0,
+  mode = 'fixed',
+  axis = 'y',
+  grid = false,
+  overscan = 4,
+  sticky
+} = {}) {
+  const viewportRef = _react.default.useRef(null);
+  const [view, setView] = _react.default.useState({
+    offset: 0,
+    size: 0,
+    pitch: 0,
+    columns: 1
+  });
+  const [focused, setFocused] = _react.default.useState(-1);
+  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
+  const shown = _react.default.useRef({
+    start: 0,
+    end: 0
+  }); // the rows rendered last
+  const horizontal = axis === 'x';
+
+  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
+  const measure = _react.default.useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
+    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
+    let columns = 1;
+    if (grid) {
+      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
+      if (items.length) {
+        const top = items[0].offsetTop;
+        let n = 0;
+        while (n < items.length && items[n].offsetTop === top) n++;
+        // no wrap seen while more items exist: guess wider, render more and look again
+        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
+      }
+    }
+    if (mode === 'measured') {
+      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
+        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
+      });
+    }
+    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
+    const size = horizontal ? el.clientWidth : el.clientHeight;
+    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
+      offset,
+      size,
+      pitch,
+      columns
+    });
+  }, [horizontal, grid, mode, count, view.columns]);
+  _react.default.useLayoutEffect(() => {
+    measure();
+  });
+  _react.default.useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return undefined;
+    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
+    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+    const onScroll = () => measure();
+    const onFocus = e => {
+      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
+      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
+    };
+    const onBlur = e => {
+      if (!el.contains(e.relatedTarget)) setFocused(-1);
+    };
+    el.addEventListener('scroll', onScroll, {
+      passive: true
+    });
+    el.addEventListener('focusin', onFocus);
+    el.addEventListener('focusout', onBlur);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('focusin', onFocus);
+      el.removeEventListener('focusout', onBlur);
+      if (ro) ro.disconnect();
+    };
+  }, [measure]);
+  const columns = grid ? Math.max(1, view.columns) : 1;
+  const rows = Math.ceil(count / columns);
+  const pitch = view.pitch || 1;
+  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
+  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
+  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
+  let first;
+  const last = shown.current;
+  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
+    let pos = last.start * pitch,
+      i = last.start;
+    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
+      pos += sizes.current.get(i) || pitch;
+      i++;
+    }
+    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
+    first = Math.min(rows, i);
+  } else first = Math.min(rows, Math.floor(view.offset / pitch));
+  let fill = 0,
+    covered = 0;
+  const target = view.size || pitch * 10;
+  while (first + fill < rows && covered < target) {
+    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
+    fill++;
+  }
+  const startRow = Math.max(0, first - overscan);
+  const endRow = Math.min(rows, first + fill + overscan); // exclusive
+  const start = startRow * columns,
+    end = Math.min(count, endRow * columns);
+  shown.current = {
+    start: startRow,
+    end: endRow
+  };
+
+  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
+  const pinned = [];
+  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
+  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
+  if (header !== undefined && !grid) pinned.push(header);
+  const segments = [];
+  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
+  let at = 0;
+  const pushRows = (from, to) => {
+    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
+      key: 'i' + i,
+      index: i
+    });
+  };
+  const pushGap = (from, to) => {
+    if (to > from) segments.push({
+      key: 'g' + from,
+      gap: true,
+      count: to - from
+    });
+  };
+  rowsOut.filter(r => r < startRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, startRow);
+  pushRows(startRow, endRow);
+  at = endRow;
+  rowsOut.filter(r => r >= endRow).forEach(r => {
+    pushGap(at, r);
+    pushRows(r, r + 1);
+    at = r + 1;
+  });
+  pushGap(at, rows);
+  const itemProps = _react.default.useCallback(index => ({
+    'data-plx-virtual-index': index,
+    'aria-posinset': index + 1,
+    'aria-setsize': count
+  }), [count]);
+  const scrollToIndex = _react.default.useCallback(index => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const offset = Math.floor(index / columns) * pitch;
+    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
+    measure();
+  }, [columns, pitch, horizontal, measure]);
+  return {
+    viewportRef,
+    segments,
+    itemProps,
+    scrollToIndex,
+    range: {
+      start,
+      end
+    },
+    columns
+  };
+}
+  } },
+  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gridPx = exports.GRID_TOKEN = void 0;
+exports.gridStep = gridStep;
+exports.onGrid = onGrid;
+exports.snapToGrid = snapToGrid;
+/* Plenix · grid (platform/utils/grid.js)
+   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
+     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
+     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
+     instead: snapSize and stepSize in utils/sizeSteps.js.
+   Usage:
+     import { snapToGrid, gridPx } from '../../utils/grid.js';
+     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
+     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
+   Props:
+     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
+     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
+     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
+     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
+   Behavior:
+     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
+     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
+   Notes:
+     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
+     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
+     length is neither a token nor passed through this helper (or the size steps).
+*/
+
+const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
+
+// the base spacing token in pixels where el is (a rem token follows the root font size)
+function gridStep(el) {
+  if (typeof document === 'undefined') return 4;
+  const at = el || document.documentElement,
+    win = at.ownerDocument.defaultView;
+  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
+  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
+  return px > 0 ? px : 4;
+}
+function snapToGrid(px, opts) {
+  const o = opts || {},
+    step = gridStep(o.el),
+    n = Number(px) || 0;
+  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
+  const q = n / step;
+  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
+}
+const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
+exports.gridPx = gridPx;
+function onGrid(px, el) {
+  const step = gridStep(el),
+    q = Math.abs(Number(px) || 0) / step;
+  return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
+  } },
+  "platform/components/DataTable/strict.js": { deps: {"../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.remeasure = remeasure;
+exports.reshare = reshare;
 exports.strictTabulator = strictTabulator;
+exports.virtualPrint = virtualPrint;
+exports.virtualResync = virtualResync;
+var _sizeSteps = require("../../utils/sizeSteps.js");
+var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+var _grid = require("../../utils/grid.js");
 /* Plenix · DataTable strict mode (strict.js)
-   Summary: Tabulator drawn by Plenix (Strict DS 6b, batch 285): Tabulator keeps its data, sorting, filtering, selection,
-     editing, grouping and tree, but writes no style: every geometry write it makes is switched off here, once per window,
-     and the Plenix stylesheet draws the grid from classes and tokens (data-table.css, table.css, system/steps.css).
+   Summary: Tabulator drawn by Plenix (Strict DS 6b, batch 285; geometry split, owner 2026-10-13): Tabulator keeps its
+     data, sorting, filtering, selection, editing, grouping and tree, measures the columns' content and sizes and resizes
+     the columns; Plenix owns everything else. Tabulator writes a column's width (width, min-width, max-width on its
+     column, header and cell elements: a JavaScript adjustment from measured layout); every other geometry write it makes
+     (row heights, padding, positions) is switched off here, once per window, and the Plenix stylesheet draws the grid from
+     classes and tokens.
    Usage:
      strictTabulator(Tabulator, win)   // loadTabulator does it before the first grid is built
+     virtualResync(table)              // a density change: the virtual renderer takes the new row height
+     virtualPrint(table, true|false)   // before / after printing: every row in the document, then the window again
+     remeasure(table, columns)         // React filled these columns' cells: their content widths are measured again
    Props:
      none: strictTabulator(Tabulator, win) patches that window's Tabulator once
    Behavior:
-     Off: cell and column widths, heights and alignment; row heights; header vertical alignment; the body's sizing and the
-       virtual renderer's padding (DataTable renders rows with the basic renderer); the frozen-rows holder's width.
-     Pinned (frozen) columns: classes only (tabulator-frozen, data-plx-sticky naming the widths before it); the stylesheet
-       makes them sticky at that offset.
+     Column widths (Tabulator's): the "plenix" layout mode measures each column's content once (Tabulator's fit to data;
+       a width the column definition gives, or the person's, is kept), then shares the room left among the columns
+       without a width, as the stylesheet's fill columns did; a window resize only shares the room again. Every width
+       Tabulator writes is a whole number of grid steps (utils/grid.js: measured, fitted and dragged widths round up),
+       so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
+     Row height and cell padding (Plenix's): never measured, never written. A row is the density's row height
+       (--plx-sys-data-table-row-height plus its line); the stylesheet draws it.
+     Virtual rendering (renderVertical "virtual", for a grid with a height): Tabulator renders the rows in view; every row
+       counts as the density row height (read from the tokens, not from the rows); the room for the rows not drawn is two
+       gaps of the system's virtualization (system/virtual.css: pieces of 1, 2, 4 … rows, data-plx-span), never padding.
+       The grid carries aria-rowcount and each drawn row its aria-rowindex. A focused control whose row scrolls out parks
+       the focus on the scrolling body and gets it back when the row is drawn again.
+     Off: row and cell heights, header vertical alignment, the body's sizing, the virtual renderer's padding, the
+       frozen-rows holder's width, a hidden column's display (a class, plx-data-table__hidden).
+     Pinned (frozen) columns: classes only (tabulator-frozen, data-plx-sticky naming the widths before it); Tabulator's own
+       pinning writes position and left/right inline, so it stays off. A pinned column's width is a whole size token
+       (its own, or its content rounded up to the next one), so the offset classes stay exact.
      Tree rows: no branch spacer and no indent written; the row's level is its tabulator-tree-level-N class and the tree
        cell (plx-data-table__tree-cell) is indented by the stylesheet.
      Popups (menus, the header filter): no coordinates. The popup opens in the top layer (popover) and is placed by CSS
@@ -6679,13 +7040,374 @@ exports.strictTabulator = strictTabulator;
 
 const OFF = function () {};
 const done = new WeakMap(); // Tabulator -> the promise of its patches
+const WIDTHS = ['width', 'min-width', 'max-width']; // the inline style a column, header or cell may carry
+const HIDDEN = 'plx-data-table__hidden';
 
-// the width token class a column carries (plx-data-table__w-<size> or the lead column), for a pinned column's offset
+// an element keeps only its width (width, min-width, max-width): anything else Tabulator wrote is taken off again
+function keepWidths(el) {
+  if (!el || !el.hasAttribute || !el.hasAttribute('style')) return;
+  const st = el.style;
+  for (let i = st.length - 1; i >= 0; i--) if (WIDTHS.indexOf(st[i]) < 0) st.removeProperty(st[i]);
+  if (!st.length) el.removeAttribute('style');
+}
+
+// a token's value in pixels where el is (its density region): '--plx-sys-data-table-row-height' -> 32
+function tokenPx(name, el) {
+  const win = el.ownerDocument.defaultView;
+  const v = win.getComputedStyle(el).getPropertyValue(name).trim();
+  if (/rem$/.test(v)) return parseFloat(v) * (parseFloat(win.getComputedStyle(el.ownerDocument.documentElement).fontSize) || 16);
+  return parseFloat(v) || 0;
+}
+// one row's block size: the density's row height and its line (read from the tokens, never from a row)
+function rowPx(table) {
+  if (!table.plxRowPx) table.plxRowPx = tokenPx('--plx-sys-data-table-row-height', table.element) + tokenPx('--plx-comp-data-table-line-width', table.element);
+  return table.plxRowPx || 1;
+}
+
+// the lead column (the checkbox column, a mark column): its width is the lead token, from its classes
+const isLead = c => !!c.isRowHeader || /__cell--select|__cell--icon|__w-lead/.test(String(c.definition && c.definition.cssClass || ''));
+// the next size token at or above px (a pinned column's width)
+const stepUp = px => _sizeSteps.SIZE_STEPS.find(s => s >= px) || _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
+
+// a pinned column's width as named by the steps stylesheet ("lead", "240px"), for the offset of the pinned column after it
 function widthName(column) {
-  const css = String(column.definition && column.definition.cssClass || '');
-  if (/__cell--select|__cell--icon|__w-lead/.test(css)) return 'lead';
-  const m = /__w-(\d+px)/.exec(css);
-  return m ? m[1] : null;
+  if (isLead(column)) return 'lead';
+  return _sizeSteps.SIZE_STEPS.indexOf(column.width) >= 0 ? column.width + 'px' : null;
+}
+
+// the "plenix" layout: Tabulator measures each column's content (once, or again when forced), then the room left is
+// shared among the columns without a width (equal parts, the last takes the rounding); pinned columns take a size token
+function plenixLayout(columns, forced) {
+  const table = this.table;
+  if (!table.element.offsetWidth) return; // hidden: measured when it is shown (DataTable redraws it then)
+  const vis = columns.filter(c => c.visible && !c.isGroup);
+  vis.forEach(c => {
+    if (!c.widthFixed && (forced || !c.plxContent)) {
+      c.reinitializeWidth();
+      c.plxContent = c.getWidth();
+    }
+  });
+  share(table, vis);
+}
+function share(table, vis) {
+  let pinned = false;
+  vis.forEach(c => {
+    if (!c.modules.frozen || isLead(c)) return;
+    const w = stepUp(c.widthFixed ? c.getWidth() : c.plxContent || c.getWidth());
+    if (w !== c.getWidth()) {
+      c.setWidthActual(w);
+      pinned = true;
+    }
+  });
+  const sharing = vis.filter(c => !c.widthFixed && !c.modules.frozen && !isLead(c) && c.plxContent);
+  const room = table.rowManager.element.clientWidth;
+  const used = vis.reduce((s, c) => s + (sharing.indexOf(c) >= 0 ? c.plxContent : c.getWidth()), 0);
+  // in whole grid steps (owner, 2026-10-13: every length written inline is on the grid; utils/grid.js); what is left
+  // under one step per column stays at the end of the row
+  const step = (0, _grid.gridStep)(table.element),
+    units = Math.floor((room - used) / step);
+  let widths;
+  if (units >= 0) {
+    // room left: equal parts to the sharing columns (the first ones take the steps that do not divide evenly)
+    const each = sharing.length ? Math.floor(units / sharing.length) : 0,
+      extra = units - each * sharing.length;
+    widths = sharing.map((c, i) => c.plxContent + (each + (i < extra ? 1 : 0)) * step);
+  } else {
+    // too little room: the sharing columns give up what their content asks beyond their minimum, in proportion (a long
+    // text then ends in its ellipsis, or wraps, instead of the grid scrolling sideways); below that, the grid scrolls
+    const give = sharing.map(c => Math.max(0, Math.floor((c.plxContent - (c.minWidth || 0)) / step))),
+      total = give.reduce((s, g) => s + g, 0);
+    const cut = Math.min(Math.ceil((used - room) / step), total);
+    const per = give.map(g => total ? Math.floor(cut * g / total) : 0);
+    for (let rest = cut - per.reduce((s, x) => s + x, 0), i = 0; rest > 0 && i < 4 * sharing.length; i++) {
+      const k = i % sharing.length;
+      if (per[k] < give[k]) {
+        per[k]++;
+        rest--;
+      }
+    }
+    widths = sharing.map((c, i) => c.plxContent - per[i] * step);
+  }
+  sharing.forEach((c, i) => {
+    if (widths[i] !== c.getWidth()) c.setWidthActual(widths[i]);
+  });
+  // the pinned offsets name the widths before each pinned column: laid out again once the layout is unblocked
+  if (pinned && table.modules.frozenColumns) Promise.resolve().then(() => {
+    if (!table.destroyed) table.modules.frozenColumns.layout();
+  });
+}
+
+// the grid's width changed: the room is shared again (nothing is measured; a grid not measured yet is measured now)
+function reshare(table) {
+  const cm = table && table.columnManager;
+  if (!cm || !table.element.offsetWidth || cm.table.modules.layout.getMode() !== 'plenix') return;
+  const vis = cm.columnsByIndex.filter(c => c.visible && !c.isGroup);
+  if (vis.some(c => !c.widthFixed && !c.plxContent)) {
+    table.redraw();
+    return;
+  }
+  share(table, vis);
+}
+
+// React filled these columns' cells after Tabulator measured them empty: their content is measured again (only theirs),
+// then the room is shared again. Nothing else is measured (no row, no other column).
+function remeasure(table, columns) {
+  const cm = table && table.columnManager;
+  if (!cm || !table.element.offsetWidth) return;
+  const vis = cm.columnsByIndex.filter(c => c.visible && !c.isGroup);
+  let any = false;
+  (columns || []).forEach(col => {
+    const c = col && (col._column || col);
+    if (c && !c.widthFixed && vis.indexOf(c) >= 0) {
+      c.reinitializeWidth();
+      c.plxContent = c.getWidth();
+      any = true;
+    }
+  });
+  if (any && cm.table.modules.layout.getMode() === 'plenix') share(table, vis);
+}
+
+// ---- virtual rendering: the rows in view, gaps for the others ----
+
+// a gap's pieces for n rows (system/virtual.css sizes each piece from --plx-sys-virtual-item-size, set by data-table.css)
+function fillGap(box, n) {
+  const pieces = (0, _useVirtualizer.gapPieces)(n),
+    key = pieces.join();
+  if (box.plxHave === key) return;
+  box.plxHave = key;
+  box.textContent = '';
+  pieces.forEach(p => {
+    const d = box.ownerDocument.createElement('div');
+    d.className = 'plx-virtual-gap__piece';
+    d.setAttribute('data-plx-span', String(p));
+    box.appendChild(d);
+  });
+}
+// the focus inside a row that is about to leave the document waits on the scrolling body
+function park(r, leaving) {
+  const doc = r.tableElement.ownerDocument,
+    a = doc.activeElement;
+  if (!a || a === r.tableElement || !r.tableElement.contains(a)) return;
+  if (leaving && !leaving.some(row => row.getElement().contains(a))) return;
+  r.plxFocus = a;
+  try {
+    r.elementVertical.focus({
+      preventScroll: true
+    });
+  } catch (e) {/* not focusable */}
+}
+// the gaps, the ARIA positions and a parked focus, after every change of the rows drawn
+function sync(r) {
+  const te = r.tableElement,
+    rows = r.rows(),
+    total = rows.length,
+    table = r.table;
+  const drawn = total && r.vDomBottom >= r.vDomTop;
+  if (te.firstChild !== r.plxTop) te.insertBefore(r.plxTop, te.firstChild);
+  if (te.lastChild !== r.plxBottom) te.appendChild(r.plxBottom);
+  fillGap(r.plxTop, drawn ? r.vDomTop : 0);
+  fillGap(r.plxBottom, drawn ? Math.max(0, total - 1 - r.vDomBottom) : total);
+  table.element.setAttribute('aria-rowcount', String(total + 1));
+  const head = table.columnManager && table.columnManager.headersElement;
+  if (head && head.getAttribute('role') === 'row') head.setAttribute('aria-rowindex', '1');
+  if (drawn) for (let i = r.vDomTop; i <= r.vDomBottom; i++) {
+    const row = rows[i];
+    if (row && row.element) row.element.setAttribute('aria-rowindex', String(i + 2));
+  }
+  const f = r.plxFocus;
+  if (f) {
+    const doc = te.ownerDocument,
+      at = doc.activeElement;
+    if (at !== r.elementVertical && at !== doc.body && at !== f) r.plxFocus = null; // the person moved on
+    else if (f.isConnected && te.contains(f)) {
+      r.plxFocus = null;
+      try {
+        f.focus({
+          preventScroll: true
+        });
+      } catch (e) {/* gone */}
+    }
+  }
+}
+
+// the renderer's own add and remove steps, at the density row height (no row is measured, no padding is written)
+function addTop(rows, room) {
+  const te = this.tableElement,
+    h = rowPx(this.table);
+  let n = this.vDomTop - 1,
+    chain = 0,
+    added = 0;
+  while (this.vDomTop && rows[n] && chain < this.vDomMaxRenderChain && room >= h) {
+    const row = rows[n];
+    this.styleRow(row, n);
+    te.insertBefore(row.getElement(), this.plxTop.parentNode === te ? this.plxTop.nextSibling : te.firstChild);
+    row.initialize();
+    room -= h;
+    added += h;
+    this.vDomTop--;
+    n--;
+    chain++;
+  }
+  if (added) {
+    this.vDomTopPad = this.vDomTop * h;
+    this.vDomScrollPosTop -= added;
+  }
+  sync(this);
+}
+function removeTop(rows, room) {
+  const h = rowPx(this.table),
+    out = [];
+  let chain = 0,
+    gone = 0;
+  while (rows[this.vDomTop] && this.vDomTop < this.vDomBottom && chain < this.vDomMaxRenderChain && room >= h) {
+    out.push(rows[this.vDomTop]);
+    this.vDomTop++;
+    room -= h;
+    gone += h;
+    chain++;
+  }
+  park(this, out);
+  out.forEach(row => row.detachElement());
+  if (gone) {
+    this.vDomTopPad = this.vDomTop * h;
+    this.vDomScrollPosTop += this.vDomTop ? gone : gone + this.vDomWindowBuffer;
+  }
+  sync(this);
+}
+function addBottom(rows, room) {
+  const te = this.tableElement,
+    h = rowPx(this.table);
+  let n = this.vDomBottom + 1,
+    chain = 0,
+    added = 0;
+  while (rows[n] && chain < this.vDomMaxRenderChain && room >= h) {
+    const row = rows[n];
+    this.styleRow(row, n);
+    te.insertBefore(row.getElement(), this.plxBottom.parentNode === te ? this.plxBottom : null);
+    row.initialize();
+    room -= h;
+    added += h;
+    this.vDomBottom++;
+    n++;
+    chain++;
+  }
+  if (added) {
+    this.vDomBottomPad = Math.max(0, (rows.length - 1 - this.vDomBottom) * h);
+    this.vDomScrollPosBottom += added;
+  }
+  sync(this);
+}
+function removeBottom(rows, room) {
+  const h = rowPx(this.table),
+    out = [];
+  let chain = 0,
+    gone = 0;
+  while (rows[this.vDomBottom] && this.vDomBottom > this.vDomTop && chain < this.vDomMaxRenderChain && room >= h) {
+    out.push(rows[this.vDomBottom]);
+    this.vDomBottom--;
+    room -= h;
+    gone += h;
+    chain++;
+  }
+  park(this, out);
+  out.forEach(row => row.detachElement());
+  if (gone) {
+    this.vDomBottomPad = (rows.length - 1 - this.vDomBottom) * h;
+    this.vDomScrollPosBottom -= gone;
+  }
+  sync(this);
+}
+const patchedRenderers = new WeakSet();
+function patchVirtualClass(V) {
+  if (patchedRenderers.has(V)) return;
+  patchedRenderers.add(V);
+  const fill = V._virtualRenderFill,
+    clear = V.clearRows,
+    rerender = V.rerenderRows;
+  V._virtualRenderFill = function () {
+    if (this.plxTop) park(this);
+    this.vDomRowHeight = rowPx(this.table);
+    fill.apply(this, arguments);
+    if (this.plxTop) sync(this);
+  };
+  V.clearRows = function () {
+    if (this.plxTop) park(this);
+    clear.apply(this, arguments);
+    if (this.plxTop) sync(this);
+  };
+  V.rerenderRows = function () {
+    rerender.apply(this, arguments);
+    if (this.plxTop) sync(this);
+  };
+  V._addTopRow = addTop;
+  V._removeTopRow = removeTop;
+  V._addBottomRow = addBottom;
+  V._removeBottomRow = removeBottom;
+  V._quickNormalizeRowHeight = OFF;
+}
+// one virtual renderer: its two gaps, and the body's padding and sizing writes switched off on its element
+function hookVirtual(r) {
+  if (r.plxTop) return;
+  patchVirtualClass(Object.getPrototypeOf(r));
+  const te = r.tableElement,
+    doc = te.ownerDocument;
+  const gap = () => {
+    const g = doc.createElement('div');
+    g.className = 'plx-virtual-gap plx-data-table__gap';
+    g.setAttribute('aria-hidden', 'true');
+    return g;
+  };
+  r.plxTop = gap();
+  r.plxBottom = gap();
+  // where Tabulator would write the padding, the gaps are drawn instead (at once: it reads the scroll height next)
+  ['paddingTop', 'paddingBottom'].forEach(p => Object.defineProperty(te.style, p, {
+    configurable: true,
+    get: () => '',
+    set() {
+      sync(r);
+    }
+  }));
+  ['minHeight', 'minWidth', 'display', 'visibility'].forEach(p => Object.defineProperty(te.style, p, {
+    configurable: true,
+    get: () => '',
+    set: OFF
+  }));
+  r.vDomRowHeight = rowPx(r.table);
+  te.insertBefore(r.plxTop, te.firstChild);
+  te.appendChild(r.plxBottom);
+}
+
+// a density change: the rows are already their new height (CSS); the renderer takes it, and the row that was at the top
+// of the view stays there
+function virtualResync(table) {
+  const r = table && table.rowManager && table.rowManager.renderer;
+  if (!r || !r.plxTop) return;
+  const before = table.plxRowPx || rowPx(table),
+    top = r.elementVertical.scrollTop;
+  table.plxRowPx = 0;
+  const now = rowPx(table);
+  r.vDomRowHeight = now;
+  if (now === before) {
+    sync(r);
+    return;
+  }
+  const index = Math.floor(top / before),
+    into = (top - index * before) * now / before;
+  if (r.rows().length) r._virtualRenderFill(index, true, into);else sync(r);
+}
+// printing: every row in the document while the page prints, then the rows in view again
+function virtualPrint(table, on) {
+  const rm = table && table.rowManager,
+    r = rm && rm.renderer;
+  if (!r || !r.plxTop) return;
+  if (on) {
+    r.plxPrintTop = Math.floor(r.elementVertical.scrollTop / rowPx(table));
+    rm.fixedHeight = false;
+    r._virtualRenderFill();
+  } else {
+    rm.fixedHeight = true;
+    r._virtualRenderFill(r.plxPrintTop || 0, true);
+  }
 }
 function strictTabulator(Tabulator, win) {
   if (!Tabulator) return Promise.resolve();
@@ -6694,9 +7416,13 @@ function strictTabulator(Tabulator, win) {
   done.set(Tabulator, new Promise(r => {
     resolveDone = r;
   }));
+  if (typeof Tabulator.extendModule === 'function') Tabulator.extendModule('layout', 'modes', {
+    plenix: plenixLayout
+  });
   const doc = win.document;
   const probeEl = doc.createElement('div');
   probeEl.className = 'plx-visually-hidden';
+  probeEl.setAttribute('data-plx-probe', 'tabulator'); // the style audit leaves the unpatched probe alone while it lives
   doc.body.appendChild(probeEl);
   const probe = new Tabulator(probeEl, {
     data: [{
@@ -6730,38 +7456,107 @@ function strictTabulator(Tabulator, win) {
         col = cell && cell.column;
       if (cell) {
         const Cell = Object.getPrototypeOf(cell);
-        ['setWidth', 'setMinWidth', 'setMaxWidth', 'setHeight', 'clearWidth'].forEach(n => {
+        // a cell's width is Tabulator's (setWidth, setMinWidth, setMaxWidth, clearWidth stay); its height is the row's (CSS)
+        ['setHeight'].forEach(n => {
           if (typeof Cell[n] === 'function') Cell[n] = OFF;
         });
-        // a cell's alignment is a class (DataTable maps hozAlign to plx-data-table__cell--align-*): nothing written
+        // a cell's alignment is a class (DataTable maps hozAlign to plx-data-table__cell--align-*): only its width stays
         const configure = Cell._configureCell;
         Cell._configureCell = function () {
           configure.apply(this, arguments);
-          if (this.element) this.element.removeAttribute('style');
+          keepWidths(this.element);
+        };
+        // a hidden column's cells: a class, not display
+        Cell.hide = function () {
+          if (this.element) this.element.classList.add(HIDDEN);
+        };
+        Cell.show = function () {
+          if (this.element) this.element.classList.remove(HIDDEN);
         };
       }
       if (col) {
         const Col = Object.getPrototypeOf(col);
+        // every width Tabulator writes (measured, fitted, dragged, given) is rounded up to the grid (utils/grid.js)
+        const setActual = Col.setWidthActual;
         Col.setWidthActual = function (w) {
-          this.width = w;
-          this.widthStyled = '';
+          return setActual.call(this, typeof w === 'number' && w > 0 ? (0, _grid.snapToGrid)(w, {
+            round: 'up',
+            el: this.table.element
+          }) : w);
         };
-        ['setMinWidth', 'setMaxWidth', 'setHeight', 'verticalAlign', 'clearVerticalAlign', 'matchChildWidths', 'checkCellHeights'].forEach(n => {
+        // a column's width, minimum and maximum are Tabulator's (setWidthActual, setMinWidth, setMaxWidth stay)
+        ['setHeight', 'verticalAlign', 'clearVerticalAlign', 'matchChildWidths', 'checkCellHeights'].forEach(n => {
           if (typeof Col[n] === 'function') Col[n] = OFF;
         });
+        const hide = Col.hide,
+          show = Col.show;
+        Col.hide = function () {
+          hide.apply(this, arguments);
+          if (this.element) {
+            this.element.classList.add(HIDDEN);
+            keepWidths(this.element);
+          }
+        };
+        Col.show = function () {
+          show.apply(this, arguments);
+          if (this.element) {
+            this.element.classList.remove(HIDDEN);
+            keepWidths(this.element);
+          }
+        };
       }
-      if (row) ['setCellHeight', 'normalizeHeight', 'reinitializeHeight', 'calcHeight'].forEach(n => {
+      if (row) {
         const R = Object.getPrototypeOf(row);
-        if (typeof R[n] === 'function') R[n] = OFF;
-      });
+        ['setCellHeight', 'normalizeHeight', 'reinitializeHeight', 'calcHeight'].forEach(n => {
+          if (typeof R[n] === 'function') R[n] = OFF;
+        });
+        // a row's height is the density's (the virtual renderer counts with it); a basic grid never asks
+        const height = R.getHeight;
+        R.getHeight = function () {
+          return this.table.rowManager.renderMode === 'virtual' ? rowPx(this.table) : height.call(this);
+        };
+      }
       const CM = Object.getPrototypeOf(probe.columnManager);
       ['verticalAlignHeaders'].forEach(n => {
         if (typeof CM[n] === 'function') CM[n] = OFF;
       });
       const RM = Object.getPrototypeOf(probe.rowManager);
-      ['normalizeHeight', 'adjustTableSize'].forEach(n => {
+      ['normalizeHeight'].forEach(n => {
         if (typeof RM[n] === 'function') RM[n] = OFF;
       });
+      // the body's size is the stylesheet's: nothing is written; the renderer still learns how tall its view is
+      RM.adjustTableSize = function () {
+        if (this.renderer && typeof this.renderer.resize === 'function') this.renderer.resize();
+        return false;
+      };
+      // the virtual renderer: a grid with a height (its tableholder has a block size from data-plx-height) counts as one
+      const init = RM.initializeRenderer;
+      RM.initializeRenderer = function () {
+        init.apply(this, arguments);
+        if (this.renderMode === 'virtual' && this.renderer && 'vDomTopPad' in this.renderer) {
+          this.fixedHeight = true;
+          hookVirtual(this.renderer);
+        }
+      };
+      // a column's resize handle (Tabulator's) sits inside its header, at its end edge: a header row holds only column
+      // headers (ARIA), and the handle is a separator that names its column
+      if (probe.modules.resizeColumns) {
+        const RC = Object.getPrototypeOf(probe.modules.resizeColumns),
+          initCol = RC.initializeColumn,
+          reinitCol = RC.reinitializeColumn;
+        const inside = column => {
+          const h = column && column.modules.resize && column.modules.resize.handleEl;
+          if (h && column.element && h.parentNode !== column.element) column.element.appendChild(h);
+        };
+        RC.initializeColumn = function (type, component, column) {
+          initCol.apply(this, arguments);
+          if (type === 'header') inside(column);
+        };
+        RC.reinitializeColumn = function (column) {
+          reinitCol.apply(this, arguments);
+          inside(column);
+        };
+      }
       if (probe.modules.frozenRows) {
         const FR = Object.getPrototypeOf(probe.modules.frozenRows);
         FR.resizeHolderWidth = OFF;
@@ -6783,9 +7578,9 @@ function strictTabulator(Tabulator, win) {
       // tree rows: no spacer, no indent written; the level is a class and the tree cell is marked
       if (probe.modules.dataTree) {
         const DT = Object.getPrototypeOf(probe.modules.dataTree),
-          init = DT.initialize;
+          dtInit = DT.initialize;
         DT.initialize = function () {
-          init.apply(this, arguments);
+          dtInit.apply(this, arguments);
           this.branchEl = null;
         };
         DT.layoutRow = function (r) {
@@ -6997,7 +7792,7 @@ function tablePx(token, el) {
   return parseFloat(v) || 0;
 }
   } },
-  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7009,6 +7804,7 @@ var _react = _interopRequireDefault(require("react"));
 var _reactDom = _interopRequireDefault(require("react-dom"));
 var _cx = require("../../utils/cx.js");
 var _tabulator = require("./tabulator.js");
+var _strict = require("./strict.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 var _direction = require("../../utils/direction.js");
 var _EmptyState = require("../EmptyState/EmptyState.jsx");
@@ -7047,8 +7843,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      columns[].filter: true (contains text) | "list" (one of the column's values): the filter button, shown on hover
      columns[].rowLabel: true: the row header: this column and the columns before it are pinned and shaded like the
        header row (and so is the checkbox column)
-     columns[].width: a size token ("--plx-ref-size-240px"; a number snaps to the nearest one); without it the column shares
-       the room left with the others. minWidth: the smallest such a sharing column gets (a size token; default 80px)
+     columns[].width: a size token ("--plx-ref-size-240px"; a number snaps to the nearest one), Tabulator's width option;
+       without it Tabulator measures the column's content and the column shares the room left with the others.
+       minWidth / maxWidth: the narrowest and widest the column gets (size tokens; minWidth default 80px)
      index: the field that identifies a row; default "id"
      selectable: a checkbox column (select all in its header) and row selection; default false. Without it,
        options.selectableRows (Tabulator) selects rows by click (1: one row, as the open row of a list)
@@ -7066,7 +7863,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        static Table's default: the columns stay and scroll sideways)
      storageKey: keeps the person's view (sort, column widths, order and hidden columns) in this browser under the key
        and restores it the next time the grid is built
-     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container)
+     height: the grid's height, a size token (the rows scroll inside it), or "100%" (it fills its container); a grid with
+       a height draws only the rows in view (virtual rendering)
      options: any other Tabulator table option (layout, initialSort, groupBy, dataTree, movableColumns, movableRows…)
      on: Tabulator events, { rowClick(e, row), cellEdited(cell), rowSelectionChanged(data, rows), dataSorted(sorters)… };
        with rowClick, rows are focusable and Enter does what a click does
@@ -7079,8 +7877,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Every drag has a way without dragging (WCAG 2.5.7): a click on a row handle, or the row menu, offers Move up, Move
        down, Move to top and Move to bottom; a focused handle moves its row with Alt + Arrow Up / Down (Alt + Home / End
        to the ends). A column's header menu offers Move left and Move right (options.movableColumns), Narrower and Wider
-       (one size token) and Fit to content; its resize grip is a separator that the arrow keys step through the size
-       tokens (Home and End: narrowest and widest).
+       (one size token) and Fit to content; its resize handle (Tabulator's: drag it, double-click it to fit the content)
+       is a separator that the arrow keys step through the size tokens (Home and End: narrowest and widest).
      Error: the error prop, or an engine that failed to load, shows an inline error state (EmptyState tone="error"): what
        failed and Retry.
      Narrow (platforms.md 6.5): under 600px of its own width (a container query, not the window) the grid becomes a list
@@ -7089,17 +7887,33 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The header's sort arrow and filter button show while the header is hovered; a sorted column keeps its arrow and a
      filtered column its button, in the accent color. Right-click opens the header menu or the row menu.
      Hover, selected and selected + hover are three row colors; pinned and row-header cells follow the row.
-     The row height and text size follow the density (--plx-sys-data-table-row-height, --plx-sys-data-table-font-size), also a
-     density region's; a density change redraws the grid. A grid built while hidden is drawn again when it is shown.
+     Geometry (owner, 2026-10-13): the row height, the cell padding and the text size are the density's
+     (--plx-sys-data-table-row-height, the cell padding tokens, --plx-sys-data-table-font-size; also a density region's),
+     drawn by the stylesheet and never measured; a density change measures nothing. Column widths are Tabulator's: it
+     measures each column's content once (and the columns React draws once more after React fills them), the columns
+     without a width share the room left, and the resize handle, Narrower, Wider and Fit to content set them. A grid built
+     while hidden is drawn again in place when it is shown.
+     Vertical alignment: middle (owner, 2026-10-13): everything in a cell (text, avatars, badges, icons, checkboxes,
+     buttons) sits in the middle of the row's height, in every density, in body and header cells; horizontal alignment
+     is unchanged (text at the start, numbers at the end, hozAlign). A plain value sits in its own element
+     (plx-data-table__value) and ends in an ellipsis.
+     Virtual rendering (a grid with a height, every row one height: no "wrap" column and no groupBy): only the rows in
+     view are in the document; the rows not drawn are gaps of the density's row height (system/virtual.css), the grid
+     carries aria-rowcount and each row its aria-rowindex, a focused control whose row scrolls out leaves the focus on the
+     scrolling body and gets it back when its row returns, and printing draws every row. Rows share one height per
+     density, and the browser's find in page finds only the rows drawn (the grid's own filters search all of them).
      Cells edit on double-click (Tabulator editors). Group rows and tree rows are Tabulator's (groupBy, dataTree).
      The grid is an ARIA grid: rows, column headers (aria-sort on sorted ones), cells; its scrolling body is one Tab stop.
    Notes:
-     Nothing on the grid is styled inline (Strict DS 6b, batch 285): Tabulator runs in strict mode (strict.js) and the grid
-       is drawn from classes: a column's width is a size token class (__w-<size>, __w-lead, __w-fill), its alignment a class
-       (__cell--align-*), a pinned column sticky at the widths before it, a tree row indented by its level class, a menu
-       placed by CSS anchor positioning. Rows render all at once (no virtual scrolling). Moving rows (a rowHandle column
-       with options.movableRows) and columns (options.movableColumns) is native drag and drop; a column's resize handle
-       and Fit to content snap its width to the size tokens. Editors "input" and "number" are a Plenix input.
+     Inline styles (owner, 2026-10-13: a JavaScript adjustment from tokens, defined styles or measured layout is allowed):
+       Tabulator writes a column's width (width, min-width, max-width on its column, header and cell elements); it writes
+       no row height and no cell padding (the density's). The rest is drawn from classes: Tabulator runs in strict mode
+       (strict.js); a cell's alignment is a class (__cell--align-*), a pinned column is
+       sticky at the size-token widths before it (its own width a whole size token), a tree row is indented by its level
+       class, a hidden column is a class, a menu is placed by CSS anchor positioning, and a virtual grid's room for the
+       rows not drawn is gap elements, never padding. The style audit and the pages test reject an inline height, line
+       height or padding on a row or cell; check-system (table-geometry) rejects a forced redraw. Moving rows (a rowHandle column with options.movableRows)
+       and columns (options.movableColumns) is native drag and drop. Editors "input" and "number" are a Plenix input.
      The data changes in place (sort, filters, scroll and column widths stay); new columns rebuild the column set.
 */
 const SEP = '\u0000';
@@ -7232,20 +8046,16 @@ const plenixEditor = type => (cell, onRendered, success, cancel) => {
   });
   return i;
 };
-// a column's width class set again (the resize handle, Fit to content): its definition for new cells, its header and cells now
-function setWidthClass(column, size, B) {
-  const def = column.getDefinition(),
-    next = B + '__w-' + size;
-  const swap = el => {
-    if (!el) return;
-    Array.from(el.classList).filter(c => c.indexOf(B + '__w-') === 0).forEach(c => el.classList.remove(c));
-    el.classList.add(next);
-  };
-  def.cssClass = String(def.cssClass || '').split(/\s+/).filter(c => c && c.indexOf(B + '__w-') !== 0).concat(next).join(' ');
-  if (column._column) column._column.definition.cssClass = def.cssClass;
-  swap(column.getElement());
-  column.getCells().forEach(c => swap(c.getElement()));
+// a plain value in its own element, so the cell aligns it to the middle of the row and a long value still ends in an ellipsis
+function valueFormatter(cell) {
+  const v = cell.getValue(),
+    s = document.createElement('span');
+  s.className = 'plx-data-table__value';
+  s.textContent = v == null ? '' : String(v);
+  return s;
 }
+// a width kept in the view ("240px", or a number) as pixels
+const viewPx = v => typeof v === 'number' ? v : /^\d+(\.\d+)?px$/.test(String(v)) ? parseFloat(v) : 0;
 
 // the engine both components run on: props.isStatic makes the static Table (no sorting, filters, menus, selection,
 // resizing, moving, editing or row clicks), with its own classes (plx-table…) and stylesheet
@@ -7293,6 +8103,8 @@ function TableEngine(props) {
   // the Narrow list: its key columns, and whether it hides any (a grid whose columns are all key columns stays a table)
   const keys = keyFields(columns, keyColumns);
   const listed = narrow === 'list' && columns.some(c => listable(c) && keys.indexOf(c.field) < 0);
+  // virtual rendering: a grid with a height whose rows are all one height (no wrapping column, no group rows)
+  const virtual = !!height && !columns.some(c => [].concat(c.kind || []).indexOf('wrap') >= 0) && !(options || {}).groupBy;
   const [attempt, setAttempt] = _react.default.useState(0); // a Retry after the engine failed to load builds the grid again
   const resized = _react.default.useRef({}); // the widths the person chose (field -> size name), for the kept view
   const restoring = _react.default.useRef(false);
@@ -7321,15 +8133,23 @@ function TableEngine(props) {
     }
     return e;
   };
-  // once React has filled new cells, Tabulator measures again (column widths, row heights)
+  // once React has filled the first cells, Tabulator measures the content of the columns React draws again (it measured
+  // them empty), and only those: no row is measured (a row is the density's height) and later fills change no width
+  const measured = _react.default.useRef(false);
   _react.default.useLayoutEffect(() => {
     if (!pending.current || !tableRef.current || !builtRef.current) return undefined;
+    if (measured.current) {
+      pending.current = false;
+      return undefined;
+    }
     const t = tableRef.current;
     const id = requestAnimationFrame(() => {
-      if (tableRef.current === t) {
-        t.redraw(true);
-        pending.current = false;
-      }
+      if (tableRef.current !== t) return;
+      pending.current = false;
+      if (!t.element.offsetWidth) return; // hidden: measured in full when it is shown
+      measured.current = true;
+      const drawn = new Set((latest.current.columns || []).filter(c => c.render && c.field).map(c => c.field));
+      (0, _strict.remeasure)(t, t.getColumns().filter(c => drawn.has(c.getField())));
     });
     return () => cancelAnimationFrame(id);
   });
@@ -7365,10 +8185,11 @@ function TableEngine(props) {
         if (c && prev && !c.getDefinition().frozen && !prev.getDefinition().frozen) c.move(prev, true);
       });
       Object.keys(v.widths || {}).forEach(f => {
-        const c = col(f);
-        if (c && /^\d+px$/.test(v.widths[f])) {
-          setWidthClass(c, v.widths[f], B);
-          resized.current[f] = v.widths[f];
+        const c = col(f),
+          px = viewPx(v.widths[f]);
+        if (c && px) {
+          c.setWidth(px);
+          resized.current[f] = Math.round(px) + 'px';
         }
       });
       (v.hidden || []).forEach(f => {
@@ -7380,19 +8201,28 @@ function TableEngine(props) {
     } catch (e) {/* a view kept for another column set: what fits is restored */}
     restoring.current = false;
   };
-  // a column's width as a size token (the grip, the header menu, Fit to content), kept in the view
-  const applyWidth = (col, size) => {
-    setWidthClass(col, size, B);
-    if (col.getField()) resized.current[col.getField()] = size;
-    const grip = col.getElement().querySelector('.' + B + '__resize');
-    if (grip) grip.setAttribute('aria-valuenow', String(parseInt(size, 10)));
+  // a column's width is Tabulator's (its resize handle, the header menu, Fit to content): the person's width is kept in
+  // the view, and the resize handle says it (aria-valuenow)
+  const keepWidth = col => {
+    const w = Math.round(col.getWidth());
+    if (col.getField()) resized.current[col.getField()] = w + 'px';
+    const grip = gripOf(col);
+    if (grip) grip.setAttribute('aria-valuenow', String(w));
     saveView();
+  };
+  const applyWidth = (col, px) => {
+    col.setWidth(px);
+    keepWidth(col);
   };
   const widthLimits = el => [(0, _tabulator.tablePx)(MIN, el), _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1]];
   const stepWidth = (col, dir) => {
-    const el = col.getElement(),
-      [lo, hi] = widthLimits(el);
-    applyWidth(col, (0, _sizeSteps.stepSize)(el.getBoundingClientRect().width, dir, lo, hi) + 'px');
+    const [lo, hi] = widthLimits(col.getElement());
+    applyWidth(col, (0, _sizeSteps.stepSize)(col.getWidth(), dir, lo, hi));
+  };
+  // Tabulator's resize handle of a column (it sits after the column's header)
+  const gripOf = col => {
+    const c = col && col._column;
+    return c && c.modules.resize && c.modules.resize.handleEl || null;
   };
   // a column one place left or right (the header menu): past hidden columns, never into the pinned ones
   const moveColumn = (col, step) => {
@@ -7455,10 +8285,10 @@ function TableEngine(props) {
     const close = () => document.body.dispatchEvent(new MouseEvent('click', {
       bubbles: true
     }));
+    // Fit to content: Tabulator measures the column's content (as a double-click on its resize handle does)
     const fitColumn = col => {
-      const els = [col.getElement()].concat(col.getCells().map(x => x.getElement()));
-      const need = Math.max.apply(null, els.map(el => el.scrollWidth));
-      applyWidth(col, (0, _sizeSteps.snapSize)(_sizeSteps.SIZE_STEPS.find(z => z >= need) || need, _sizeSteps.SIZE_STEPS[0], _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1]) + 'px');
+      col.setWidth(true);
+      keepWidth(col);
     };
     const filterPopup = c => (e, column, onRendered) => {
       const field = column.getField(),
@@ -7620,21 +8450,37 @@ function TableEngine(props) {
         delete d.cellClick;
         delete d.rowHandle;
       }
-      // the width: a size token class, the lead width (icon), or a share of the room left (with its smallest size)
-      const w = kind === 'icon' ? 'lead' : sizeName(d.width, host);
-      const min = sizeName(d.minWidth, host);
-      const hz = kind === 'icon' ? 'center' : d.hozAlign,
-        hh = kind === 'icon' ? 'center' : d.headerHozAlign;
+      // the width (owner, 2026-10-13): Tabulator measures the content, and the columns without a width share the room
+      // left (strict.js, the "plenix" layout); a width the column asks for (a size token; a number snaps to the nearest
+      // one) is Tabulator's width option; a mark column is the lead width. Tabulator writes the width on the column's
+      // header and cells (a JavaScript adjustment from measured layout; owner, 2026-10-13).
+      const lead = kind === 'icon';
+      const leadPx = (0, _tabulator.tablePx)('--plx-comp-data-table-lead-column-width', host),
+        floor = (0, _tabulator.tablePx)(MIN, host);
+      const wName = lead ? null : sizeName(d.width, host),
+        minName = sizeName(d.minWidth, host),
+        maxName = sizeName(d.maxWidth, host);
+      const w = lead ? leadPx : wName ? parseInt(wName, 10) : undefined;
+      const hz = lead ? 'center' : d.hozAlign,
+        hh = lead ? 'center' : d.headerHozAlign;
       const align = hz && hz !== 'left' ? B + '__cell--align-' + hz : null;
       const headAlign = hh && hh !== 'left' ? B + '__head-align-' + hh : null;
+      const pinned = labelAt >= i || !!c.frozen;
       ['width', 'minWidth', 'maxWidth', 'hozAlign', 'headerHozAlign', 'vertAlign', 'widthGrow', 'widthShrink'].forEach(k => {
         delete d[k];
       });
-      d.cssClass = (0, _cx.cx)(c.cssClass, kind && [].concat(kind).map(k => B + '__cell--' + k).join(' '), (rowLabel || labelAt > i) && B + '__cell--row-label', w ? B + '__w-' + w : B + '__w-fill', !w && min && B + '__min-' + min, align, headAlign, c.rowHandle && B + '__cell--handle', keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
+      if (w) d.width = w;
+      d.minWidth = lead ? leadPx : minName ? parseInt(minName, 10) : w ? Math.min(w, floor) : floor;
+      if (lead) d.maxWidth = leadPx;else if (maxName) d.maxWidth = parseInt(maxName, 10);
+      // resizable where interaction is on: Tabulator's resize handle on the header (not on pinned, mark or action columns)
+      d.resizable = !isStatic && !lead && kind !== 'actions' && !pinned && c.resizable !== false ? 'header' : false;
+      d.cssClass = (0, _cx.cx)(c.cssClass, kind && [].concat(kind).map(k => B + '__cell--' + k).join(' '), (rowLabel || labelAt > i) && B + '__cell--row-label', lead && B + '__w-lead', align, headAlign, c.rowHandle && B + '__cell--handle', keys.indexOf(c.field) >= 0 && B + '__cell--key', keys.indexOf(c.field) === 0 && B + '__cell--key-first') || undefined;
       if (d.editor === 'input' || d.editor === 'number') d.editor = plenixEditor(d.editor === 'number' ? 'number' : 'text');
       if (labelAt >= i) d.frozen = true;
-      if (kind === 'icon') {
-        d.resizable = false; // the lead width and centered (its classes)
+      // a plain value: in its own element (vertical alignment: middle, with its ellipsis)
+      if (!render && !c.rowHandle && (d.formatter === undefined || d.formatter === 'plaintext')) d.formatter = valueFormatter;
+      if (lead) {
+        // the lead width and centered (its classes)
         d.titleFormatter = () => {
           const s = el('span', B + '__header-icon');
           s.title = c.title || c.field;
@@ -7670,6 +8516,7 @@ function TableEngine(props) {
     let alive = true,
       table = null;
     builtRef.current = false;
+    measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
     // (a frame that loaded again meanwhile) gets no grid
     const win = hostRef.current && hostRef.current.ownerDocument.defaultView;
@@ -7701,14 +8548,17 @@ function TableEngine(props) {
         return items;
       } : undefined;
       const labelled = p.columns.some(c => c.rowLabel);
+      const leadPx = (0, _tabulator.tablePx)('--plx-comp-data-table-lead-column-width', host);
       const opts = {
-        layout: 'fitColumns',
+        // the columns: Tabulator measures their content, and the columns without a width share the room left (strict.js)
+        layout: 'plenix',
         index: p.index || 'id',
         placeholder,
         columnDefaults: {
           resizable: false
         },
-        renderVertical: 'basic',
+        // a grid with a height draws the rows in view (every row is the density's height); one without draws them all
+        renderVertical: virtual ? 'virtual' : 'basic',
         editTriggerEvent: 'dblclick',
         rowContextMenu,
         // the row checkbox toggles its row (batch 246): Tabulator's own one, in the "click" range mode the rows use, makes a
@@ -7720,6 +8570,9 @@ function TableEngine(props) {
           headerSort: false,
           resizable: false,
           frozen: true,
+          width: leadPx,
+          minWidth: leadPx,
+          maxWidth: leadPx,
           cssClass: (0, _cx.cx)('plx-data-table__cell--select', B + '__w-lead', B + '__cell--align-center', B + '__head-align-center', labelled && 'plx-data-table__cell--row-label')
         } : false,
         selectableRows: p.selectable ? true : false,
@@ -7784,6 +8637,7 @@ function TableEngine(props) {
           if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', STRINGS.selectRow + ' ' + (n + 1));
         });
         // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
+        if (table && !isStatic) nameGrips(table);
         if (movable) host.querySelectorAll('.tabulator-row .' + B + '__cell--handle').forEach(h => {
           if (h.hasAttribute('aria-keyshortcuts')) return;
           h.tabIndex = 0;
@@ -7819,9 +8673,10 @@ function TableEngine(props) {
       if (alive) setError(err);
     });
 
-    // a density or interaction change redraws the rows at their new height
+    // a density or interaction change: the stylesheet gives the rows their new height and padding (nothing is measured);
+    // a virtual grid takes the new row height for the rows it does not draw, and keeps the row at the top of its view
     const mo = new MutationObserver(() => {
-      if (tableRef.current && builtRef.current) tableRef.current.redraw(true);
+      if (tableRef.current && builtRef.current) (0, _strict.virtualResync)(tableRef.current);
     });
     mo.observe(document.documentElement, {
       attributes: true,
@@ -7832,20 +8687,42 @@ function TableEngine(props) {
       attributes: true,
       attributeFilter: ['data-plx-density']
     });
-    // a grid built while hidden (a closed tab, a section not shown) has no size to lay out in: once it is shown, it is
-    // drawn again in full (columns and rows)
-    let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth);
+    // a grid built while hidden (a closed tab, a section not shown) had no size to lay out in: once it is shown, it is
+    // drawn again in place (its columns are measured then; no row is)
+    // and a grid whose width changes shares the room among its columns again (nothing is measured)
+    let shownBefore = !!(frameRef.current && frameRef.current.offsetWidth),
+      lastWidth = frameRef.current ? frameRef.current.offsetWidth : 0,
+      frame = 0;
     const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
-      const now = !!(frameRef.current && frameRef.current.offsetWidth);
-      if (now && !shownBefore && tableRef.current && builtRef.current) tableRef.current.redraw(true);
+      const width = frameRef.current ? frameRef.current.offsetWidth : 0,
+        now = !!width;
+      if (now && !shownBefore && tableRef.current && builtRef.current) tableRef.current.redraw();else if (now && width !== lastWidth && tableRef.current && builtRef.current && !frame) frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (tableRef.current) (0, _strict.reshare)(tableRef.current);
+      });
       shownBefore = now;
+      lastWidth = width;
     });
     if (ro && frameRef.current) ro.observe(frameRef.current);
+    // printing a virtual grid: every row is in the document while the page prints (React fills their cells first)
+    const printing = on => () => {
+      const t = tableRef.current;
+      if (!t || !builtRef.current || !virtual) return;
+      (0, _strict.virtualPrint)(t, on);
+      if (on) _reactDom.default.flushSync(() => bump());
+    };
+    const beforePrint = printing(true),
+      afterPrint = printing(false);
+    win.addEventListener('beforeprint', beforePrint);
+    win.addEventListener('afterprint', afterPrint);
     return () => {
       alive = false;
       mo.disconnect();
       if (ro) ro.disconnect();
+      if (frame) cancelAnimationFrame(frame);
       builtRef.current = false;
+      win.removeEventListener('beforeprint', beforePrint);
+      win.removeEventListener('afterprint', afterPrint);
       if (table) {
         try {
           table.destroy();
@@ -7857,7 +8734,7 @@ function TableEngine(props) {
     };
     // built once per column shape; the data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '']);
+  }, [shape, selectable, headerMenu, !!rowMenu, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual]);
 
   // moving rows (options.movableRows with a rowHandle column): native drag and drop from the handle, delegated on the grid;
   // the row it is dropped on shows a line (a class) and the moved row lands before it
@@ -7936,8 +8813,8 @@ function TableEngine(props) {
     });
   };
 
-  // a header can be dragged onto another to move its column (options.movableColumns), and its edge resizes it: the width
-  // snaps to the size tokens (between 80px and the largest token), set as the column's width class
+  // a header can be dragged onto another to move its column (options.movableColumns); its edge is Tabulator's resize
+  // handle (drag it, or double-click it to fit the content), kept in the view
   const wireColumns = table => {
     const opt = latest.current.options || {};
     let dragged = null;
@@ -7949,7 +8826,7 @@ function TableEngine(props) {
       if (opt.movableColumns && !def.frozen) {
         el.draggable = true;
         el.addEventListener('dragstart', ev => {
-          if (ev.target.closest('.' + B + '__resize')) {
+          if (ev.target.closest('.tabulator-col-resize-handle')) {
             ev.preventDefault();
             return;
           }
@@ -7982,61 +8859,51 @@ function TableEngine(props) {
           }
         });
       }
-      // resizable unless the page's column says not (Tabulator's own resizing is off: its handles write styles)
-      const mine = (latest.current.columns || []).find(x => x.field && x.field === col.getField());
-      const resizable = !!mine && mine.resizable !== false && !/__cell--(icon|actions|select)|__w-lead/.test(String(def.cssClass || ''));
-      if (resizable) {
-        // the grip is a separator: dragged, or focused and stepped with the arrow keys (WCAG 2.5.7 and 2.1.1); the header
-        // keeps its own name (its title), so the grip's name does not join it
-        const title = String(def.title || col.getField() || '');
-        const [lo, hi] = widthLimits(el);
-        const grip = el.ownerDocument.createElement('span');
-        grip.className = B + '__resize';
-        grip.setAttribute('role', 'separator');
-        grip.setAttribute('aria-orientation', 'vertical');
-        grip.tabIndex = 0;
-        grip.setAttribute('data-plx-target-equivalent', 'the header menu: Narrower, Wider, Fit to content (WCAG 2.5.8 Equivalent)');
-        grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
-        grip.setAttribute('aria-valuemin', String(lo));
-        grip.setAttribute('aria-valuemax', String(hi));
-        grip.setAttribute('aria-valuenow', String(Math.round(el.getBoundingClientRect().width) || lo));
-        if (title && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', title);
-        grip.addEventListener('click', ev => ev.stopPropagation());
-        grip.addEventListener('keydown', ev => {
-          const now = el.getBoundingClientRect().width,
-            step = (0, _direction.arrowStep)(ev, el, {
-              vertical: false
-            });
-          const to = step ? (0, _sizeSteps.stepSize)(now, step, lo, hi) : ev.key === 'Home' ? (0, _sizeSteps.snapSize)(lo, lo, hi) : ev.key === 'End' ? (0, _sizeSteps.snapSize)(hi, lo, hi) : null;
-          if (to == null) return;
-          ev.preventDefault();
-          ev.stopPropagation();
-          applyWidth(col, to + 'px');
+    });
+    if (table.plxWired) return;
+    table.plxWired = true;
+    // a width the person gave with the handle (drag, or double-click to fit) is kept in the view
+    table.on('columnResized', col => keepWidth(col));
+    // the handle is a separator: focused and stepped through the size tokens with the arrow keys (Home and End: the
+    // narrowest and widest), as well as dragged (WCAG 2.5.7 and 2.1.1)
+    table.element.addEventListener('keydown', ev => {
+      const grip = ev.target.closest && ev.target.closest('.tabulator-col-resize-handle');
+      const col = grip && table.getColumns().find(c => gripOf(c) === grip);
+      if (!col) return;
+      const [lo, hi] = widthLimits(col.getElement()),
+        step = (0, _direction.arrowStep)(ev, col.getElement(), {
+          vertical: false
         });
-        grip.addEventListener('pointerdown', ev => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          const x0 = ev.clientX,
-            w0 = el.getBoundingClientRect().width,
-            rtl = getComputedStyle(el).direction === 'rtl' ? -1 : 1;
-          const doc = el.ownerDocument;
-          let last = null;
-          const move = e2 => {
-            last = (0, _sizeSteps.snapSize)(w0 + (e2.clientX - x0) * rtl, lo, hi) + 'px';
-            setWidthClass(col, last, B);
-          };
-          const up = () => {
-            doc.removeEventListener('pointermove', move);
-            doc.removeEventListener('pointerup', up);
-            doc.documentElement.classList.remove('is-resizing-columns');
-            if (last) applyWidth(col, last);
-          };
-          doc.addEventListener('pointermove', move);
-          doc.addEventListener('pointerup', up);
-          doc.documentElement.classList.add('is-resizing-columns');
-        });
-        el.appendChild(grip);
+      const to = step ? (0, _sizeSteps.stepSize)(col.getWidth(), step, lo, hi) : ev.key === 'Home' ? (0, _sizeSteps.snapSize)(lo, lo, hi) : ev.key === 'End' ? (0, _sizeSteps.snapSize)(hi, lo, hi) : null;
+      if (to == null) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      applyWidth(col, to);
+    });
+  };
+  // Tabulator's resize handles, named and focusable (each time they are drawn); the header keeps its own name (its title)
+  const nameGrips = table => {
+    table.getColumns().forEach(col => {
+      const grip = gripOf(col),
+        el = col.getElement();
+      if (!grip) return;
+      if (grip.hasAttribute('data-plx-grip')) {
+        grip.setAttribute('aria-valuenow', String(Math.round(col.getWidth())));
+        return;
       }
+      const title = String(col.getDefinition().title || col.getField() || ''),
+        [lo, hi] = widthLimits(el);
+      grip.setAttribute('data-plx-grip', '');
+      grip.classList.add(B + '__resize');
+      grip.setAttribute('role', 'separator');
+      grip.setAttribute('aria-orientation', 'vertical');
+      grip.tabIndex = 0;
+      grip.setAttribute('data-plx-target-equivalent', 'the header menu: Narrower, Wider, Fit to content (WCAG 2.5.8 Equivalent)');
+      grip.setAttribute('aria-label', STRINGS.resize + ' ' + title);
+      grip.setAttribute('aria-valuemin', String(lo));
+      grip.setAttribute('aria-valuemax', String(hi));
+      grip.setAttribute('aria-valuenow', String(Math.round(col.getWidth()) || lo));
+      if (title && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', title);
     });
   };
 
@@ -8102,7 +8969,18 @@ function TableEngine(props) {
       const [key, field] = id.split(SEP);
       const c = columns.find(x => x.field === field);
       const cell = owners.current.get(id);
-      if (c && c.render && cell && key) portals.push(/*#__PURE__*/_reactDom.default.createPortal(c.render(cell.getRow().getData(), cell), node, id));
+      if (!c || !c.render || !cell || !key) return;
+      // one element is the cell's own content (vertical alignment: middle); text, or text with elements (a sentence with a code
+      // part), flows as one line of text in a value element, as a plain value does
+      // (a list or fragment holding one element and no text is that element)
+      const flat = x => Array.isArray(x) ? x.flatMap(flat) : /*#__PURE__*/_react.default.isValidElement(x) && x.type === _react.default.Fragment ? flat(x.props.children) : x == null || x === false || x === '' || typeof x === 'string' && !x.trim() ? [] : [x];
+      const raw = c.render(cell.getRow().getData(), cell),
+        only = flat(raw);
+      const out = only.length === 1 && /*#__PURE__*/_react.default.isValidElement(only[0]) ? only[0] : raw;
+      const flow = out != null && out !== false && (typeof out !== 'object' || Array.isArray(out) || /*#__PURE__*/_react.default.isValidElement(out) && out.type === _react.default.Fragment);
+      portals.push(/*#__PURE__*/_reactDom.default.createPortal(flow ? /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__value'
+      }, out) : out, node, id));
     });
   }
 
@@ -8119,6 +8997,7 @@ function TableEngine(props) {
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: frameRef,
     className: (0, _cx.cx)(B, columns.some(c => c.rowLabel) && B + '--row-header', height === '100%' && B + '--fill', listed && B + '--list', className),
+    "data-plx-render": virtual ? 'virtual' : undefined,
     "data-plx-height": height && height !== '100%' ? sizeName(height) || undefined : undefined
   }, failed ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     className: B + '__error',
@@ -8175,13 +9054,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (["name", "data"]); render(row) for React content; rowLabel for the row header. Interactive options are ignored.
      index: the field that identifies a row; default "id"
      empty: shown when there are no rows; default "Nothing to show"
-     height: a fixed height (a size token) for a long table; its rows scroll inside it
+     height: a fixed height (a size token) for a long table; its rows scroll inside it, and only the rows in view are drawn
      options: Tabulator table options that only change the layout (layout, headerVisible…)
      className: more classes on the frame
      Table.preload(): starts loading Tabulator now; call it as a page whose first screen has a table starts
    Behavior:
      Nothing reacts to the pointer: rows do not highlight, headers do not sort, there is no menu. Links and buttons placed
-     in cells work as themselves. Row height and text size follow the density.
+     in cells work as themselves. Row height, cell padding and text size follow the density; column widths are
+     measured by Tabulator (a width a column gives is kept), as in the DataTable. Vertical alignment: middle in every cell.
    Notes:
      For records people work with (sort, filter, select, open, edit) use DataTable. Every name/value list of reference facts
      (the design system's details, Settings and Capture) is a Table with a header row.
@@ -13848,276 +14728,6 @@ function singleKeyHotkeys() {
   return singleKeys;
 }
   } },
-  "platform/hooks/useVirtualizer.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VIRTUAL_STICKY_CLASS = void 0;
-exports.VirtualGap = VirtualGap;
-exports.VirtualProbe = VirtualProbe;
-exports.gapPieces = gapPieces;
-exports.useVirtualizer = useVirtualizer;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useVirtualizer
-   Summary: Renders only the items of a long collection that are in view (plus a few on each side), so a list, a file
-     grid or a log of thousands of items stays fast. The items that are not rendered are stood in for by gaps the
-     stylesheet sizes (system/virtual.css): no style is ever written, and the scroll bar keeps its true length.
-   Usage:
-     const v = useVirtualizer({ count: files.length });
-     <div ref={v.viewportRef} className="plx-file-list" role="list">            // the scroll container
-       <VirtualProbe />
-       {v.segments.map((s) => s.gap ? <VirtualGap key={s.key} count={s.count} />
-         : <div key={s.key} role="listitem" {...v.itemProps(s.index)}>{files[s.index].name}</div>)}
-     </div>
-     .plx-file-list { --plx-sys-virtual-item-size: var(--plx-sys-data-table-row-height); overflow-y: auto; }
-   Props:
-     count: how many items there are
-     mode: "fixed" (default: every item is one row of --plx-sys-virtual-item-size) or "measured" (items take their own
-       size; the token is the estimate for the items not rendered)
-     axis: "y" (default, a vertical list) or "x" (a horizontal strip)
-     grid: true lays items out in rows of as many columns as fit (a CSS grid container); gaps then stand for whole rows
-     overscan: rows rendered beyond each edge of the view (default 4)
-     sticky: indexes of group headers; the header of the group in view stays rendered (give it VIRTUAL_STICKY_CLASS)
-     returns: { viewportRef, segments, itemProps(index), scrollToIndex(index), range: { start, end }, columns }
-     segments: in order, { key, index } for an item to render and { key, gap: true, count } for a run of items (rows, in a
-       grid) not rendered
-     itemProps(index): data-plx-virtual-index, aria-posinset and aria-setsize for the item (spread them on it)
-     VirtualGap: { count, axis }: the stand-in for count items (rows); VirtualProbe: { axis }: measures one item (render it
-       first in the viewport)
-   Behavior:
-     The viewport is in the Tab order (tabIndex 0, unless it has a tabindex of its own), so keyboard users can scroll it;
-     name it (aria-label) and give it its role (list, grid, listbox).
-     The view follows the scroll position and the viewport's size (a ResizeObserver). The focused item stays rendered
-     while it has focus, so keyboard navigation and screen readers do not lose it. With measured items the browser's
-     scroll anchoring keeps the content still while gaps replace items of another size.
-     Items carry their position in the whole collection (aria-posinset of aria-setsize), so screen readers announce
-     "12 of 4,000" even though only a few are in the page.
-   Notes:
-     Not for short collections (under a few hundred items): render them all. Not where browser find (Ctrl F) over every
-     item matters, unless the page offers its own search. DataTable keeps Tabulator's own rendering.
-     The item size token and --plx-sys-virtual-item-gap must match the container's layout: set them in its stylesheet.
-     A grid container sizes its rows by their content (no grid-auto-rows): a gap is one grid row across every column.
-*/
-
-const VIRTUAL_STICKY_CLASS = exports.VIRTUAL_STICKY_CLASS = 'plx-virtual-sticky';
-
-// a count as powers of two: 13 → [8, 4, 1] (one generated rule per power in system/virtual.css)
-function gapPieces(count) {
-  const out = [];
-  let n = Math.max(0, Math.floor(count));
-  for (let p = 1 << 20; p >= 1; p >>= 1) while (n >= p) {
-    out.push(p);
-    n -= p;
-  }
-  return out;
-}
-function VirtualGap({
-  count,
-  axis = 'y'
-}) {
-  if (!count) return null;
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-gap',
-    'data-plx-axis': axis,
-    'aria-hidden': 'true'
-  }, gapPieces(count).map((p, i) => /*#__PURE__*/_react.default.createElement('div', {
-    key: i,
-    className: 'plx-virtual-gap__piece',
-    'data-plx-span': String(p)
-  })));
-}
-function VirtualProbe({
-  axis = 'y'
-}) {
-  return /*#__PURE__*/_react.default.createElement('div', {
-    className: 'plx-virtual-probe',
-    'data-plx-axis': axis,
-    'data-plx-virtual-probe': '',
-    'aria-hidden': 'true'
-  });
-}
-function useVirtualizer({
-  count = 0,
-  mode = 'fixed',
-  axis = 'y',
-  grid = false,
-  overscan = 4,
-  sticky
-} = {}) {
-  const viewportRef = _react.default.useRef(null);
-  const [view, setView] = _react.default.useState({
-    offset: 0,
-    size: 0,
-    pitch: 0,
-    columns: 1
-  });
-  const [focused, setFocused] = _react.default.useState(-1);
-  const sizes = _react.default.useRef(new Map()); // measured mode: index → size along the axis
-  const shown = _react.default.useRef({
-    start: 0,
-    end: 0
-  }); // the rows rendered last
-  const horizontal = axis === 'x';
-
-  // reads the scroll position, the viewport's size, one item's pitch (the probe) and, in a grid, the columns
-  const measure = _react.default.useCallback(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const probe = el.querySelector(':scope > [data-plx-virtual-probe]');
-    const pitch = probe ? horizontal ? probe.offsetWidth : probe.offsetHeight : 0;
-    let columns = 1;
-    if (grid) {
-      const items = el.querySelectorAll(':scope > [data-plx-virtual-index]');
-      if (items.length) {
-        const top = items[0].offsetTop;
-        let n = 0;
-        while (n < items.length && items[n].offsetTop === top) n++;
-        // no wrap seen while more items exist: guess wider, render more and look again
-        columns = n === items.length && items.length < count ? Math.min(count, Math.max(n, view.columns * 2)) : n;
-      }
-    }
-    if (mode === 'measured') {
-      el.querySelectorAll(':scope > [data-plx-virtual-index]').forEach(it => {
-        sizes.current.set(Number(it.getAttribute('data-plx-virtual-index')), horizontal ? it.offsetWidth : it.offsetHeight);
-      });
-    }
-    const offset = Math.abs(horizontal ? el.scrollLeft : el.scrollTop);
-    const size = horizontal ? el.clientWidth : el.clientHeight;
-    setView(v => v.offset === offset && v.size === size && v.pitch === pitch && v.columns === columns ? v : {
-      offset,
-      size,
-      pitch,
-      columns
-    });
-  }, [horizontal, grid, mode, count, view.columns]);
-  _react.default.useLayoutEffect(() => {
-    measure();
-  });
-  _react.default.useEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return undefined;
-    // a scroll container people reach with the keyboard (WCAG 2.1.1): in the Tab order unless the page placed it already
-    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
-    const onScroll = () => measure();
-    const onFocus = e => {
-      const it = e.target.closest && e.target.closest('[data-plx-virtual-index]');
-      setFocused(it && el.contains(it) ? Number(it.getAttribute('data-plx-virtual-index')) : -1);
-    };
-    const onBlur = e => {
-      if (!el.contains(e.relatedTarget)) setFocused(-1);
-    };
-    el.addEventListener('scroll', onScroll, {
-      passive: true
-    });
-    el.addEventListener('focusin', onFocus);
-    el.addEventListener('focusout', onBlur);
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
-    if (ro) ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', onScroll);
-      el.removeEventListener('focusin', onFocus);
-      el.removeEventListener('focusout', onBlur);
-      if (ro) ro.disconnect();
-    };
-  }, [measure]);
-  const columns = grid ? Math.max(1, view.columns) : 1;
-  const rows = Math.ceil(count / columns);
-  const pitch = view.pitch || 1;
-  // the first row in view. Fixed items: the offset in pitches. Measured items: from the window rendered last, walking
-  // through its items' own sizes (the gap before it counts in pitches), so a window that moves keeps the same first
-  // item while scroll anchoring shifts the offset by the difference (no back-and-forth between two windows)
-  let first;
-  const last = shown.current;
-  if (mode === 'measured' && !grid && view.offset >= last.start * pitch) {
-    let pos = last.start * pitch,
-      i = last.start;
-    while (i < last.end && pos + (sizes.current.get(i) || pitch) <= view.offset) {
-      pos += sizes.current.get(i) || pitch;
-      i++;
-    }
-    if (i >= last.end) i += Math.floor((view.offset - pos) / pitch);
-    first = Math.min(rows, i);
-  } else first = Math.min(rows, Math.floor(view.offset / pitch));
-  let fill = 0,
-    covered = 0;
-  const target = view.size || pitch * 10;
-  while (first + fill < rows && covered < target) {
-    covered += mode === 'measured' && !grid ? sizes.current.get(first + fill) || pitch : pitch;
-    fill++;
-  }
-  const startRow = Math.max(0, first - overscan);
-  const endRow = Math.min(rows, first + fill + overscan); // exclusive
-  const start = startRow * columns,
-    end = Math.min(count, endRow * columns);
-  shown.current = {
-    start: startRow,
-    end: endRow
-  };
-
-  // rows outside the window that stay rendered: the focused item's row and the sticky header of the group in view
-  const pinned = [];
-  if (focused >= 0 && focused < count) pinned.push(Math.floor(focused / columns));
-  const header = (sticky || []).filter(i => i < start).sort((a, b) => b - a)[0];
-  if (header !== undefined && !grid) pinned.push(header);
-  const segments = [];
-  const rowsOut = [...new Set(pinned)].filter(r => r < startRow || r >= endRow).sort((a, b) => a - b);
-  let at = 0;
-  const pushRows = (from, to) => {
-    for (let i = from * columns; i < Math.min(count, to * columns); i++) segments.push({
-      key: 'i' + i,
-      index: i
-    });
-  };
-  const pushGap = (from, to) => {
-    if (to > from) segments.push({
-      key: 'g' + from,
-      gap: true,
-      count: to - from
-    });
-  };
-  rowsOut.filter(r => r < startRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, startRow);
-  pushRows(startRow, endRow);
-  at = endRow;
-  rowsOut.filter(r => r >= endRow).forEach(r => {
-    pushGap(at, r);
-    pushRows(r, r + 1);
-    at = r + 1;
-  });
-  pushGap(at, rows);
-  const itemProps = _react.default.useCallback(index => ({
-    'data-plx-virtual-index': index,
-    'aria-posinset': index + 1,
-    'aria-setsize': count
-  }), [count]);
-  const scrollToIndex = _react.default.useCallback(index => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const offset = Math.floor(index / columns) * pitch;
-    if (horizontal) el.scrollLeft = (0, _direction.isRtl)(el) ? -offset : offset;else el.scrollTop = offset;
-    measure();
-  }, [columns, pitch, horizontal, measure]);
-  return {
-    viewportRef,
-    segments,
-    itemProps,
-    scrollToIndex,
-    range: {
-      start,
-      end
-    },
-    columns
-  };
-}
-  } },
   "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -19489,7 +20099,7 @@ function MegaMenu({
   }, featured) : null)));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19859,6 +20469,12 @@ Object.defineProperty(exports, "FilterBar", {
   enumerable: true,
   get: function () {
     return _FilterBar.FilterBar;
+  }
+});
+Object.defineProperty(exports, "GRID_TOKEN", {
+  enumerable: true,
+  get: function () {
+    return _grid.GRID_TOKEN;
   }
 });
 Object.defineProperty(exports, "Hide", {
@@ -20725,6 +21341,18 @@ Object.defineProperty(exports, "goToParent", {
     return _ScreenLocation.goToParent;
   }
 });
+Object.defineProperty(exports, "gridPx", {
+  enumerable: true,
+  get: function () {
+    return _grid.gridPx;
+  }
+});
+Object.defineProperty(exports, "gridStep", {
+  enumerable: true,
+  get: function () {
+    return _grid.gridStep;
+  }
+});
 Object.defineProperty(exports, "hasUnsaved", {
   enumerable: true,
   get: function () {
@@ -20809,6 +21437,12 @@ Object.defineProperty(exports, "navigate", {
     return _ScreenLocation.navigate;
   }
 });
+Object.defineProperty(exports, "onGrid", {
+  enumerable: true,
+  get: function () {
+    return _grid.onGrid;
+  }
+});
 Object.defineProperty(exports, "pageLayout", {
   enumerable: true,
   get: function () {
@@ -20885,6 +21519,12 @@ Object.defineProperty(exports, "singleKeyHotkeys", {
   enumerable: true,
   get: function () {
     return _hotkey.singleKeyHotkeys;
+  }
+});
+Object.defineProperty(exports, "snapToGrid", {
+  enumerable: true,
+  get: function () {
+    return _grid.snapToGrid;
   }
 });
 Object.defineProperty(exports, "subscribeHotkeys", {
@@ -21163,6 +21803,7 @@ var _TimeGrid = require("./patterns/TimeGrid/TimeGrid.jsx");
 require("./utils/prefetch.js");
 var _WidgetGrid = require("./patterns/WidgetGrid/WidgetGrid.jsx");
 var _imageEditorSteps = require("./patterns/ImageEditor/imageEditorSteps.js");
+var _grid = require("./utils/grid.js");
 var _format = require("./utils/format.js");
 var _announce = require("./utils/announce.jsx");
 var _clipboard = require("./utils/clipboard.js");

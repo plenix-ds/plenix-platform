@@ -6,6 +6,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.52] - 2026-10-14
+
+### Changed
+- DataTable geometry (owner): row height and cell padding come only from the density (never measured); Tabulator
+  measures column widths from the content, rounded up to the 4px grid; columns resize with Tabulator's handle (also by
+  keyboard, in size steps) and the widths are kept in the saved view; pinned columns keep Plenix classes.
+- Large tables are fast: the wasted full redraw is gone, grids with a height draw only the rows in view (virtual
+  rendering; the space for the others comes from classes; aria-rowcount and aria-rowindex; focus kept; printing draws
+  every row), and Avatar, MediaCard and Thumbnail images load lazily. 560 rows with avatars: 2.1 s frozen → 0.23 s;
+  5,000 rows with a height: did not finish → 0.24 s.
+- Every cell's content has vertical alignment: middle, in every density, header and body (horizontal alignment
+  unchanged).
+- Inline styles (owner): never in HTML or markup; JavaScript (React's style prop included) may adjust on the spot only
+  with values from tokens or defined styles, and every length it writes sits on the grid (utils/grid.js: snapToGrid,
+  gridPx). check-system rejects hard-coded values in style-writing code; the style audit reports off-grid lengths.
+
 ## [0.31.51] - 2026-10-13
 
 ### Added
