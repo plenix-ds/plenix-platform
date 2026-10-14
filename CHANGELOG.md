@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.58] - 2026-10-14
+
+### Added
+- The complete library, wave 6, lane C (8 inventory items) — wave 6 complete:
+  - Toggle button pages (every variant, on and off);
+  - Combobox: async loading (spinner, results announced, stale answers dropped) and checkbox or radio marks;
+  - Slider: a range with two thumbs that never cross, and tick marks;
+  - Inline edit (text, text area, select; Enter saves, Escape cancels; never link-styled);
+  - Rich text editor (basic or full toolbar, Markdown and keyboard shortcuts, plain-text paste, links, mentions; no
+    new dependency).
+
 ## [0.31.57] - 2026-10-14
 
 ### Added
