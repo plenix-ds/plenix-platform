@@ -1,0 +1,28 @@
+/* Plenix · InlineEdit (platform/components/InlineEdit). The read view is a button the size of the field it turns into:
+   the same height, padding and type, a border kept transparent so nothing moves; hover tints it, focus colors its border
+   (no ring outside it), and a pencil shows on hover and focus. The edit view is the Platform field, its buttons beside it.
+   Tokens: platform/tokens/components/inline-edit.tokens.json. */
+.plx-inline-edit{display:block;max-inline-size:var(--plx-comp-inline-edit-max-width);min-inline-size:0;}
+.plx-inline-edit__read{align-items:center;appearance:none;background-color:var(--plx-comp-inline-edit-read-background);border-bottom-color:var(--plx-comp-inline-edit-read-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-inline-edit-read-border-width);border-end-end-radius:var(--plx-comp-inline-edit-read-radius);border-end-start-radius:var(--plx-comp-inline-edit-read-radius);border-left-color:var(--plx-comp-inline-edit-read-border-color);border-left-style:solid;border-left-width:var(--plx-comp-inline-edit-read-border-width);border-right-color:var(--plx-comp-inline-edit-read-border-color);border-right-style:solid;border-right-width:var(--plx-comp-inline-edit-read-border-width);border-start-end-radius:var(--plx-comp-inline-edit-read-radius);border-start-start-radius:var(--plx-comp-inline-edit-read-radius);border-top-color:var(--plx-comp-inline-edit-read-border-color);border-top-style:solid;border-top-width:var(--plx-comp-inline-edit-read-border-width);box-sizing:border-box;color:var(--plx-comp-inline-edit-read-text);column-gap:var(--plx-comp-inline-edit-read-gap);cursor:pointer;display:flex;font-family:var(--plx-comp-inline-edit-read-font-family);font-size:var(--plx-comp-inline-edit-read-font-size);inline-size:100%;line-height:var(--plx-comp-inline-edit-read-line-height);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-inline-edit-read-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-inline-edit-read-padding-inline);padding-inline-start:var(--plx-comp-inline-edit-read-padding-inline);text-align:start;}
+.plx-inline-edit__read:hover,
+.plx-inline-edit__read.is-hover{background-color:var(--plx-comp-inline-edit-read-hover-background);}
+.plx-inline-edit__read:focus-visible,
+.plx-inline-edit__read.is-focus-visible{border-bottom-color:var(--plx-comp-inline-edit-read-focus-border-color);border-left-color:var(--plx-comp-inline-edit-read-focus-border-color);border-right-color:var(--plx-comp-inline-edit-read-focus-border-color);border-top-color:var(--plx-comp-inline-edit-read-focus-border-color);outline-style:none;}
+.plx-inline-edit__read:disabled{background-color:var(--plx-comp-inline-edit-read-background);cursor:default;}
+.plx-inline-edit__read.is-empty{color:var(--plx-comp-inline-edit-read-empty-text);}
+.plx-inline-edit__value{flex-grow:1;min-inline-size:0;overflow-wrap:anywhere;}
+.plx-inline-edit--data .plx-inline-edit__read{font-family:var(--plx-comp-inline-edit-read-data-font-family);}
+/* a text area's read view keeps its lines and the text area's padding */
+.plx-inline-edit--textarea .plx-inline-edit__read{align-items:flex-start;padding-block-end:var(--plx-comp-inline-edit-read-textarea-padding-block);padding-block-start:var(--plx-comp-inline-edit-read-textarea-padding-block);white-space:pre-wrap;}
+.plx-inline-edit__hint{color:var(--plx-comp-inline-edit-hint-text);display:inline-flex;flex-shrink:0;visibility:hidden;}
+.plx-inline-edit__hint .plx-icon{--plx-comp-icon-size:var(--plx-comp-inline-edit-hint-size);}
+.plx-inline-edit__read:hover .plx-inline-edit__hint,
+.plx-inline-edit__read.is-hover .plx-inline-edit__hint,
+.plx-inline-edit__read:focus-visible .plx-inline-edit__hint,
+.plx-inline-edit__read.is-focus-visible .plx-inline-edit__hint{visibility:visible;}
+/* the edit view: the field, its buttons beside it, the message under it */
+.plx-inline-edit__edit{align-items:flex-start;column-gap:var(--plx-comp-inline-edit-actions-gap);display:flex;}
+.plx-inline-edit__control{flex-grow:1;min-inline-size:0;}
+.plx-inline-edit__control .plx-select{display:block;}
+.plx-inline-edit__actions{align-items:center;column-gap:var(--plx-comp-inline-edit-actions-gap);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-inline-edit-read-min-height);}
+.plx-inline-edit__error{color:var(--plx-comp-inline-edit-error-text);font-size:var(--plx-comp-inline-edit-error-font-size);margin-block-start:var(--plx-comp-inline-edit-error-gap);}

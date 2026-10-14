@@ -15,3 +15,10 @@
 .plx-combobox.is-disabled .plx-combobox__field{background-color:var(--plx-comp-combobox-disabled-field-background);color:var(--plx-comp-combobox-disabled-field-text);cursor:not-allowed;}
 /* a group heading in the list (options[].group) */
 .plx-combobox__group{color:var(--plx-comp-combobox-group-text);font-family:var(--plx-comp-combobox-group-font-family);font-size:var(--plx-comp-combobox-group-font-size);font-weight:var(--plx-comp-combobox-group-font-weight);padding-block-end:var(--plx-comp-combobox-group-padding-block-end);padding-block-start:var(--plx-comp-combobox-group-padding-block-start);padding-inline-end:var(--plx-comp-combobox-group-padding-inline);padding-inline-start:var(--plx-comp-combobox-group-padding-inline);text-transform:uppercase;}
+/* option marks (marks="checkbox" | "radio", library wave 6): the Checkbox or Radio control before the label, not a target of its own */
+.plx-combobox--marks .plx-combobox__option{column-gap:var(--plx-comp-combobox-option-mark-gap);}
+.plx-combobox__mark{margin-block-start:0;pointer-events:none;}
+.plx-combobox__option-label{min-inline-size:0;}
+/* loading (loadOptions, loading) and a failed load: rows in place of the options */
+.plx-combobox__loading{align-items:center;color:var(--plx-comp-combobox-loading-text);column-gap:var(--plx-comp-combobox-loading-gap);display:flex;font-size:var(--plx-comp-combobox-loading-font-size);padding-block-end:var(--plx-comp-combobox-loading-padding-block);padding-block-start:var(--plx-comp-combobox-loading-padding-block);padding-inline-end:var(--plx-comp-combobox-loading-padding-inline);padding-inline-start:var(--plx-comp-combobox-loading-padding-inline);}
+.plx-combobox__error{color:var(--plx-comp-combobox-error-text);}
