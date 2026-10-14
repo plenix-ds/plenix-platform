@@ -1,0 +1,8 @@
+{
+  "$description": "ErrorSummary (platform/components/ErrorSummary, library wave 6, lane A): its component tokens. The surface is a danger Notice (its own tokens); the links are Links.",
+  "plx-comp": {
+    "error-summary-list-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "ErrorSummary: the space between the problems in the list." },
+    "error-summary-focus-border-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "ErrorSummary: the Notice's edge while the summary has focus (after a failed submit)." },
+    "error-summary-focus-border-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "ErrorSummary: the width of the edge while the summary has focus." }
+  }
+}

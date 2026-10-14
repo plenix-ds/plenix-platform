@@ -1,0 +1,6 @@
+/* Plenix · ErrorSummary (platform/components/ErrorSummary). A danger Notice (its fill, edge and text) with a heading and a
+   list of links; the summary takes focus when it appears, and while it has focus the Notice's edge turns the focus color. */
+.plx-error-summary{outline-style:none;}
+.plx-error-summary:focus>.plx-notice,.plx-error-summary.is-focused>.plx-notice{box-shadow:inset 0 0 0 var(--plx-comp-error-summary-focus-border-width) var(--plx-comp-error-summary-focus-border-color);}
+.plx-error-summary__title{font-family:inherit;font-size:inherit;font-weight:inherit;line-height:inherit;margin-block-end:0;margin-block-start:0;}
+.plx-error-summary__list{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-error-summary-list-gap);}

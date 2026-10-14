@@ -1,0 +1,140 @@
+{
+  "$description": "InputGroup (platform/components/InputGroup, library wave 6, lane A): its component tokens. The box is the Input’s field (its fill, border, corners and states point to the Input’s tokens, so a change to the field reaches the group); the affixes are muted text; attached controls are Buttons and Selects with their own tokens.",
+  "plx-comp": {
+    "input-group-max-width": {
+      "$value": "{plx-comp.input-max-width}",
+      "$type": "dimension",
+      "$description": "InputGroup: the widest the group grows (the Input’s maximum width)."
+    },
+    "input-group-width-xs-width": {
+      "$value": "{plx-sys.field-width-xs}",
+      "$type": "dimension",
+      "$description": "InputGroup width xs: the extra-small field width."
+    },
+    "input-group-width-sm-width": {
+      "$value": "{plx-sys.field-width-sm}",
+      "$type": "dimension",
+      "$description": "InputGroup width sm: the small field width."
+    },
+    "input-group-width-md-width": {
+      "$value": "{plx-sys.field-width-md}",
+      "$type": "dimension",
+      "$description": "InputGroup width md: the medium field width."
+    },
+    "input-group-width-lg-width": {
+      "$value": "{plx-sys.field-width-lg}",
+      "$type": "dimension",
+      "$description": "InputGroup width lg: the large field width."
+    },
+    "input-group-background": {
+      "$value": "{plx-comp.input-background}",
+      "$type": "color",
+      "$description": "InputGroup box: the field’s fill."
+    },
+    "input-group-border-color": {
+      "$value": "{plx-comp.input-border-color}",
+      "$type": "color",
+      "$description": "InputGroup box: the field’s border."
+    },
+    "input-group-border-width": {
+      "$value": "{plx-comp.input-border-width}",
+      "$type": "dimension",
+      "$description": "InputGroup box: the field’s border width."
+    },
+    "input-group-radius": {
+      "$value": "{plx-comp.input-radius}",
+      "$type": "dimension",
+      "$description": "InputGroup box: the field’s corners."
+    },
+    "input-group-min-height": {
+      "$value": "{plx-comp.input-min-height}",
+      "$type": "dimension",
+      "$description": "InputGroup box: the field’s height (the standard control height)."
+    },
+    "input-group-padding-inline": {
+      "$value": "{plx-comp.input-padding-inline}",
+      "$type": "dimension",
+      "$description": "InputGroup: the space between the box’s edge and the prefix, the suffix or the icon (the field’s own inset)."
+    },
+    "input-group-hover-border-color": {
+      "$value": "{plx-comp.input-hover-border-color}",
+      "$type": "color",
+      "$description": "InputGroup box: the border under the pointer."
+    },
+    "input-group-focus-border-color": {
+      "$value": "{plx-comp.input-focus-border-color}",
+      "$type": "color",
+      "$description": "InputGroup box: the border while the field has focus (border color only)."
+    },
+    "input-group-invalid-border-color": {
+      "$value": "{plx-comp.input-invalid-border-color}",
+      "$type": "color",
+      "$description": "InputGroup box: the border of an invalid field."
+    },
+    "input-group-disabled-background": {
+      "$value": "{plx-comp.input-disabled-background}",
+      "$type": "color",
+      "$description": "InputGroup box: the fill of a disabled field."
+    },
+    "input-group-disabled-text": {
+      "$value": "{plx-comp.input-disabled-text}",
+      "$type": "color",
+      "$description": "InputGroup: the affixes and the icon of a disabled field."
+    },
+    "input-group-readonly-background": {
+      "$value": "{plx-comp.input-readonly-background}",
+      "$type": "color",
+      "$description": "InputGroup box: the fill of a read-only field."
+    },
+    "input-group-affix-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "InputGroup prefix and suffix: muted, so the value reads first."
+    },
+    "input-group-affix-font-family": {
+      "$value": "{plx-comp.input-font-family}",
+      "$type": "fontFamily",
+      "$description": "InputGroup prefix and suffix: the field’s font."
+    },
+    "input-group-data-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "InputGroup data: the prefix and suffix in the data font (DM Mono), for technical values."
+    },
+    "input-group-affix-font-size": {
+      "$value": "{plx-comp.input-font-size}",
+      "$type": "dimension",
+      "$description": "InputGroup prefix and suffix: the field’s text size."
+    },
+    "input-group-affix-line-height": {
+      "$value": "{plx-comp.input-line-height}",
+      "$type": "number",
+      "$description": "InputGroup prefix and suffix: the field’s line height."
+    },
+    "input-group-affix-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "InputGroup: the space between an affix (or the icon) and the value."
+    },
+    "input-group-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "InputGroup icon: muted, as the affixes."
+    },
+    "input-group-icon-size": {
+      "$value": "{plx-sys.control-icon-standard}",
+      "$type": "dimension",
+      "$description": "InputGroup icon: the standard control’s grid icon."
+    },
+    "input-group-joined-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension",
+      "$description": "InputGroup: the square corners where the box and an attached button or select meet (as a button group’s joined corners)."
+    },
+    "input-group-focus-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "InputGroup: a focused attached control rises one layer so its focus is drawn over the shared edge."
+    }
+  }
+}

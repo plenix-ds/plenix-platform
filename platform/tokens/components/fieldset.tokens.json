@@ -1,0 +1,7 @@
+{
+  "$description": "Fieldset (platform/components/Fieldset, library wave 6, lane A): the field group's tokens. The legend's tokens stay in the shared set.",
+  "plx-comp": {
+    "fieldset-row-column-gap": { "$value": "{plx-sys.space-inline-lg}", "$type": "dimension", "$description": "Fieldset row (field group): the space between the controls side by side (the space between a Field row's label and control)." },
+    "fieldset-row-row-gap": { "$value": "{plx-sys.space-stack-sm}", "$type": "dimension", "$description": "Fieldset row (field group): the space between the lines when the controls wrap." }
+  }
+}
