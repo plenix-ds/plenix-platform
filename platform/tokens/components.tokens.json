@@ -2267,7 +2267,7 @@
       "$type": "dimension"
     },
     "tag-input-background": {
-      "$value": "{plx-sys.surface-default}",
+      "$value": "{plx-sys.control-background}",
       "$type": "color"
     },
     "tag-input-radius": {
@@ -6640,7 +6640,7 @@
       "$type": "color"
     },
     "search-input-background": {
-      "$value": "{plx-sys.fill-neutral}",
+      "$value": "{plx-sys.control-background}",
       "$type": "color"
     },
     "search-input-border-color": {

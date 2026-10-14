@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.62] - 2026-10-14
+
+### Added
+- RichTextEditor has every Tiptap format (owner): headings 1–6, quote, code block, horizontal rule; bold, italic,
+  underline, strikethrough, inline code, subscript, superscript; font family and size, text color and highlight (any
+  color: the person's content is their own); alignment; bulleted, numbered and task lists; links, images and tables;
+  smart typography. Tiptap's own keyboard (Tab nests list items and moves between table cells; Esc then Tab leaves). 16
+  icons from Material Symbols Sharp, unedited. Saved HTML keeps only color, highlight, font, size and alignment styles.
+### Changed
+- Text fields are white (owner): the search field takes the control background like every field; read-only fields
+  stay gray, the "filled" appearance stays an option, and the search in the blue header stays blue. A new check
+  (check-system.rules/field-background.js) fails any other text field background.
+- The style checks exempt only the user-format properties inside rich-text content (plx-user-content).
+
 ## [0.31.61] - 2026-10-14
 
 ### Changed

@@ -557,7 +557,7 @@
   --plx-comp-tag-rename-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-tag-rename-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-tag-rename-focus-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-tag-input-background: var(--plx-sys-surface-default);
+  --plx-comp-tag-input-background: var(--plx-sys-control-background);
   --plx-comp-tag-input-radius: var(--plx-sys-radius-compact-4px);
   --plx-comp-tag-border-color: var(--plx-sys-fill-neutral-border);
   --plx-comp-tag-border-width: var(--plx-sys-border-width-thin);
@@ -1636,7 +1636,7 @@
   --plx-comp-row-button-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-row-button-focus-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-row-button-disabled-text: var(--plx-sys-content-disabled);
-  --plx-comp-search-input-background: var(--plx-sys-fill-neutral);
+  --plx-comp-search-input-background: var(--plx-sys-control-background);
   --plx-comp-search-input-border-color: var(--plx-sys-control-border);
   --plx-comp-search-input-radius: var(--plx-sys-radius-control);
   --plx-comp-search-input-border-width: var(--plx-sys-border-width-thin);
