@@ -1,0 +1,21 @@
+{
+  "$description": "Print (system/print.css, hooks/usePrint.js, library wave 5, lane B): how a page prints.",
+  "plx-sys": {
+    "print-page-margin": {
+      "$value": "{plx-sys.space-layout-md}",
+      "$type": "dimension",
+      "$description": "The paper's margins on every side (@page)."
+    },
+    "print-url-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "The address printed after an external link's text (inside plx-print-urls).",
+      "$extensions": {
+        "plenix": {
+          "group": "text",
+          "purpose": "The address printed after an external link on paper."
+        }
+      }
+    }
+  }
+}

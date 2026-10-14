@@ -2597,6 +2597,45 @@
   --plx-comp-contextual-help-inline-line-height: var(--plx-sys-label-height-20px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-copy-button-field-max-width: var(--plx-sys-field-width-lg);
+  --plx-comp-copy-button-field-joined-radius: var(--plx-sys-shape-none);
+  --plx-comp-copy-button-field-focus-layer: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-details-text: var(--plx-sys-content-default);
+  --plx-comp-details-font-family: var(--plx-sys-font-body);
+  --plx-comp-details-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-details-line-height: var(--plx-ref-line-height-normal);
+  --plx-comp-details-summary-text: var(--plx-sys-content-default);
+  --plx-comp-details-summary-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-details-summary-radius: var(--plx-sys-radius-control-4px);
+  --plx-comp-details-summary-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-details-summary-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-details-summary-min-height: var(--plx-sys-control-height-inline);
+  --plx-comp-details-marker-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-details-content-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-details-content-indent: calc(var(--plx-sys-icon-size-sm) + var(--plx-sys-space-inline-xs));
+  --plx-comp-details-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-details-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-details-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-details-bordered-background: var(--plx-sys-surface-default);
+  --plx-comp-details-bordered-border-color: var(--plx-sys-border-default);
+  --plx-comp-details-bordered-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-details-bordered-radius: var(--plx-sys-radius-card-4px);
+  --plx-comp-details-bordered-summary-min-height: var(--plx-sys-control-height-standard);
+  --plx-comp-details-bordered-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-details-bordered-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-details-bordered-content-indent: calc(var(--plx-sys-space-inset-sm) + var(--plx-sys-icon-size-sm) + var(--plx-sys-space-inline-xs));
+  --plx-comp-details-bordered-summary-radius: var(--plx-sys-shape-none);
+  --plx-comp-details-inline-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-details-inline-summary-text: var(--plx-sys-content-muted);
+  --plx-comp-details-inline-summary-hover-text: var(--plx-sys-content-default);
+  --plx-comp-details-inline-summary-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-details-inline-summary-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-details-inline-marker-size: var(--plx-sys-icon-size-xs);
+  --plx-comp-details-inline-content-margin-block-start: var(--plx-sys-space-stack-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-empty-state-warning-icon-text: var(--plx-sys-feedback-warning-solid);
   --plx-comp-empty-state-success-icon-text: var(--plx-sys-feedback-success-solid);
 }
@@ -2618,6 +2657,43 @@
   --plx-comp-figure-overlay-text: var(--plx-sys-content-on-media);
   --plx-comp-figure-overlay-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-figure-overlay-padding-inline: var(--plx-sys-space-inset-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-floating-action-button-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-floating-action-button-shadow: var(--plx-sys-shadow-raised);
+  --plx-comp-floating-action-button-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-floating-action-button-font-family: var(--plx-sys-font-label);
+  --plx-comp-floating-action-button-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-floating-action-button-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-floating-action-button-line-height: var(--plx-ref-line-height-tight);
+  --plx-comp-floating-action-button-focus-ring-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-floating-action-button-focus-ring-width: var(--plx-sys-border-width-medium);
+  --plx-comp-floating-action-button-focus-ring-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-floating-action-button-sm-size: var(--plx-ref-size-40px);
+  --plx-comp-floating-action-button-sm-radius: var(--plx-sys-radius-control-8px);
+  --plx-comp-floating-action-button-sm-icon-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-floating-action-button-md-size: var(--plx-ref-size-56px);
+  --plx-comp-floating-action-button-md-radius: var(--plx-sys-radius-control-12px);
+  --plx-comp-floating-action-button-md-icon-size: var(--plx-sys-icon-size-lg);
+  --plx-comp-floating-action-button-lg-size: var(--plx-ref-size-96px);
+  --plx-comp-floating-action-button-lg-radius: var(--plx-sys-shape-xl);
+  --plx-comp-floating-action-button-lg-icon-size: var(--plx-sys-icon-size-xl);
+  --plx-comp-floating-action-button-extended-padding-inline-start: var(--plx-sys-space-inset-lg);
+  --plx-comp-floating-action-button-extended-padding-inline-end: var(--plx-sys-space-inset-xl);
+  --plx-comp-floating-action-button-primary-background: var(--plx-sys-action-primary-background);
+  --plx-comp-floating-action-button-primary-text: var(--plx-sys-action-primary-content);
+  --plx-comp-floating-action-button-primary-hover-background: var(--plx-sys-action-primary-background-hover);
+  --plx-comp-floating-action-button-primary-pressed-background: var(--plx-sys-action-primary-background-pressed);
+  --plx-comp-floating-action-button-secondary-background: var(--plx-sys-surface-raised);
+  --plx-comp-floating-action-button-secondary-border: var(--plx-sys-border-default);
+  --plx-comp-floating-action-button-secondary-text: var(--plx-sys-content-default);
+  --plx-comp-floating-action-button-secondary-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-floating-action-button-secondary-pressed-background: var(--plx-sys-state-pressed);
+  --plx-comp-floating-action-button-disabled-background: var(--plx-sys-fill-neutral);
+  --plx-comp-floating-action-button-disabled-text: var(--plx-sys-content-disabled);
+  --plx-comp-floating-action-button-inset: var(--plx-sys-space-layout-md);
+  --plx-comp-floating-action-button-z-index: var(--plx-sys-layer-sticky);
+  --plx-comp-floating-action-button-clearance: calc(var(--plx-ref-size-56px) + var(--plx-sys-space-layout-md) * 2);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-icon-tile-border-width: var(--plx-sys-border-width-thin);
@@ -2764,6 +2840,14 @@
   --plx-comp-mega-menu-feature-radius: var(--plx-sys-radius-card-6px);
   --plx-comp-mega-menu-feature-width: var(--plx-ref-size-240px);
   --plx-comp-mega-menu-feature-padding: var(--plx-sys-space-inset-md);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-menu-sub-open-background: var(--plx-sys-state-hover);
+  --plx-comp-menu-sub-arrow-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-menu-sub-arrow-color: var(--plx-sys-content-muted);
+  --plx-comp-menu-sub-offset: calc(var(--plx-sys-space-inset-xs) + var(--plx-sys-border-width-thin));
+  --plx-comp-menu-sub-fallback-inset-block-start: 0;
+  --plx-comp-menu-sub-fallback-inset-inline-start: 100%;
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-notice-body-row-gap: var(--plx-sys-space-stack-xs);
@@ -2953,6 +3037,29 @@
   --plx-comp-scrim-animation-timing-function: var(--plx-sys-motion-ease-standard);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-split-button-joined-radius: var(--plx-sys-shape-none);
+  --plx-comp-split-button-divider-width: var(--plx-sys-border-width-thin);
+  --plx-comp-split-button-primary-divider-color: var(--plx-sys-action-primary-background-pressed);
+  --plx-comp-split-button-disabled-divider-color: var(--plx-sys-border-default);
+  --plx-comp-split-button-focus-layer: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-spotlight-dim-background: var(--plx-sys-scrim);
+  --plx-comp-spotlight-dim-opacity: var(--plx-sys-opacity-mid);
+  --plx-comp-spotlight-padding: var(--plx-sys-space-inset-xs);
+  --plx-comp-spotlight-z-index: var(--plx-sys-layer-overlay);
+  --plx-comp-spotlight-contained-z-index: var(--plx-sys-layer-raised);
+  --plx-comp-spotlight-animation-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-spotlight-animation-timing-function: var(--plx-sys-motion-ease-standard);
+  --plx-comp-spotlight-beacon-size: var(--plx-ref-size-16px);
+  --plx-comp-spotlight-beacon-offset: calc(var(--plx-ref-size-16px) / 2);
+  --plx-comp-spotlight-beacon-color: var(--plx-sys-brand-primary);
+  --plx-comp-spotlight-beacon-ring-color: var(--plx-sys-brand-on-primary);
+  --plx-comp-spotlight-beacon-ring-width: var(--plx-sys-border-width-medium);
+  --plx-comp-spotlight-beacon-radius: var(--plx-sys-shape-pill);
+  --plx-comp-spotlight-beacon-duration: var(--plx-sys-motion-duration-loop-slow);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-center-sm-max-width: var(--plx-ref-size-400px);
   --plx-comp-center-md-max-width: var(--plx-ref-size-600px);
   --plx-comp-center-lg-max-width: var(--plx-ref-size-900px);
@@ -3005,7 +3112,7 @@
   --plx-comp-teaching-bubble-media-margin-block-end: var(--plx-sys-space-stack-md);
   --plx-comp-teaching-bubble-header-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-teaching-bubble-header-min-height: var(--plx-sys-control-height-inline);
-  --plx-comp-teaching-bubble-title-text: var(--plx-sys-content-default);
+  --plx-comp-teaching-bubble-title-text: var(--plx-sys-brand-on-primary);
   --plx-comp-teaching-bubble-title-font-family: var(--plx-sys-font-heading);
   --plx-comp-teaching-bubble-title-font-size: var(--plx-ref-font-size-14);
   --plx-comp-teaching-bubble-title-font-weight: var(--plx-sys-font-weight-semibold);
@@ -3013,8 +3120,16 @@
   --plx-comp-teaching-bubble-text-margin-block-start: var(--plx-sys-space-stack-xs);
   --plx-comp-teaching-bubble-footer-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-teaching-bubble-footer-margin-block-start: var(--plx-sys-space-stack-md);
-  --plx-comp-teaching-bubble-step-text: var(--plx-sys-content-muted);
+  --plx-comp-teaching-bubble-step-text: var(--plx-sys-brand-on-primary);
   --plx-comp-teaching-bubble-step-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-teaching-bubble-background: var(--plx-sys-brand-primary);
+  --plx-comp-teaching-bubble-border-color: var(--plx-sys-brand-primary);
+  --plx-comp-teaching-bubble-text: var(--plx-sys-brand-on-primary);
+  --plx-comp-teaching-bubble-focus-color: var(--plx-sys-brand-on-primary);
+  --plx-comp-teaching-bubble-action-fill: var(--plx-sys-brand-on-primary);
+  --plx-comp-teaching-bubble-action-text: var(--plx-sys-brand-primary);
+  --plx-comp-teaching-bubble-action-outline: var(--plx-sys-brand-on-primary);
+  --plx-comp-teaching-bubble-action-quiet-background: transparent;
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-text-display-text: var(--plx-sys-content-default);

@@ -40,6 +40,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color focusOrderOnColor;
   final Color focusOrderWarningColor;
   final Color focusOrderWarningOnColor;
+  final Color printUrlText;
   final Color readOnlyBackground;
   final Color readOnlyContent;
   final Color readOnlyBorder;
@@ -296,6 +297,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.focusOrderOnColor,
     required this.focusOrderWarningColor,
     required this.focusOrderWarningOnColor,
+    required this.printUrlText,
     required this.readOnlyBackground,
     required this.readOnlyContent,
     required this.readOnlyBorder,
@@ -553,6 +555,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     focusOrderOnColor: Color(0xFFFFFFFF),
     focusOrderWarningColor: Color(0xFFB70000),
     focusOrderWarningOnColor: Color(0xFFFFFFFF),
+    printUrlText: Color(0xFF56585E),
     readOnlyBackground: Color(0xFFF3F3F3),
     readOnlyContent: Color(0xFF000000),
     readOnlyBorder: Color(0xFFE8E9EC),
@@ -810,6 +813,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     focusOrderOnColor: Color(0xFF1E1F22),
     focusOrderWarningColor: Color(0xFFF8ACA2),
     focusOrderWarningOnColor: Color(0xFF1E1F22),
+    printUrlText: Color(0xFFD0D0D0),
     readOnlyBackground: Color(0xFF000000),
     readOnlyContent: Color(0xFFE8E9EC),
     readOnlyBorder: Color(0xFF56585E),

@@ -363,6 +363,10 @@
   --plx-sys-motion-loading-delay: var(--plx-ref-motion-delay-long-press);
 }
 :root {
+  --plx-sys-print-page-margin: var(--plx-sys-space-layout-md);
+  --plx-sys-print-url-text: var(--plx-sys-content-muted);
+}
+:root {
   --plx-sys-read-only-background: var(--plx-sys-surface-sunken);
   --plx-sys-read-only-content: var(--plx-sys-content-default);
   --plx-sys-read-only-border: var(--plx-sys-border-subtle);

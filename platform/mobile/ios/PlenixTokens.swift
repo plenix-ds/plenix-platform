@@ -48,6 +48,7 @@ public enum Plenix {
         public static let focusOrderOnColor = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF1E1F22)
         public static let focusOrderWarningColor = Plenix.color(light: 0xFFB70000, dark: 0xFFF8ACA2)
         public static let focusOrderWarningOnColor = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF1E1F22)
+        public static let printUrlText = Plenix.color(light: 0xFF56585E, dark: 0xFFD0D0D0)
         public static let readOnlyBackground = Plenix.color(light: 0xFFF3F3F3, dark: 0xFF000000)
         public static let readOnlyContent = Plenix.color(light: 0xFF000000, dark: 0xFFE8E9EC)
         public static let readOnlyBorder = Plenix.color(light: 0xFFE8E9EC, dark: 0xFF56585E)

@@ -1,0 +1,14 @@
+{
+  "$description": "Library part w05B (wave 5, lane B): the iOS and Android counterparts of Split button, Floating action button, Context menu (both leaves), Radio menu item, Copy, Print, Details and Spotlight. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "actions|Split button": { "ios": ["ios-actions|Pull-down buttons"], "android": ["android-actions|Button", "android-actions|Menu"] },
+    "actions|Floating action button": { "ios": ["ios-actions|Buttons"], "android": ["android-actions|Floating action button"] },
+    "actions|Context menu": { "ios": ["ios-actions|Context menus"], "android": ["android-actions|Long-press menu"] },
+    "overlays|Context menu": { "ios": ["ios-actions|Context menus"], "android": ["android-actions|Long-press menu"] },
+    "actions|Radio menu item": { "ios": ["ios-actions|Menus"], "android": ["android-actions|Menu"] },
+    "actions|Copy": { "ios": ["ios-actions|Edit menus"], "android": ["android-actions|Icon button"] },
+    "actions|Print": { "ios": ["ios-actions|Printing"], "android": ["android-actions|Menu"] },
+    "overlays|Details": { "ios": ["ios-overlays|Disclosure controls"], "android": ["android-overlays|Expandable list"] },
+    "patterns|Spotlight": { "ios": ["ios-patterns|Onboarding"], "android": ["android-patterns|Onboarding"] }
+  }
+}

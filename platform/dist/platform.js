@@ -2162,29 +2162,825 @@ exports.CATEGORY_COLORS = void 0;
 */
 const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "brown", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
   } },
-  "platform/components/Menu/Menu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Portal = Portal;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _cx = require("./cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Portal
+   Summary: Draws its children outside their parent's layout, so an overlay is never clipped by a scroll area, a card or a pane and never sits under a stacking context: into one shared root at the end of the page, into the browser's top layer, or into a container you name. The density, theme and direction of the place it is written go with it.
+   Usage:
+     <Portal><div className="plx-toast-region">…</div></Portal>
+     <Portal layer="top"><div ref={panel} className="plx-menu">…</div></Portal>        // above every dialog and pane
+     <Portal container={sideRef}>…</Portal>                                          // into an element of the page
+   Props:
+     children: what to draw
+     layer ('page'): 'page' draws into the shared root at the end of <body> (plx-portal-root); 'top' into the browser's top layer (a manual popover over the whole window that lets the pointer through to the page except on its content)
+     container (null): an element, or a ref to one, to draw into instead of the shared root
+     className: more classes on the Portal's own container (plx-portal)
+   Behavior:
+     The Portal leaves an empty <template> where it is written and copies from its nearest ancestors the density (data-plx-density), the theme and mode of a theme zone (data-plx-theme, data-plx-mode), the direction (dir) and the language (lang) onto its own container, so the tokens and the reading direction inside are those of the place it came from. It copies them again on every render.
+     Its container is created with it and removed when it unmounts; the shared root stays.
+     Events from the content bubble through the React tree as if it were in place (React portals), not through the page.
+   Notes:
+     A Portal moves content, nothing else: focus into the content and back to its trigger, Escape and the modal veil are the overlay's (useLayer); the ARIA link between a trigger and its content (aria-controls, aria-describedby) is the component's, since the page order no longer shows it.
+     Do not portal content that belongs in the reading order of the page.
+     Dialog, Sheet, Toast and MediaViewer adopt it in their own tasks.
+*/
+
+const ROOT_ID = 'plx-portal-root';
+// what the Portal carries from where it is written: [attribute, the attributes that travel with it]
+const CARRIED = [['data-plx-density'], ['data-plx-mode', 'data-plx-theme'], ['dir'], ['lang']];
+const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// the shared root at the end of <body>, made once
+function sharedRoot() {
+  let root = document.getElementById(ROOT_ID);
+  if (!root) {
+    root = document.createElement('div');
+    root.id = ROOT_ID;
+    root.className = 'plx-portal-root';
+    document.body.appendChild(root);
+  }
+  return root;
+}
+
+// the origin's nearest ancestor (below <html>, whose attributes reach everything already) that sets each carried attribute
+function carry(origin, node) {
+  CARRIED.forEach(group => {
+    const from = origin && origin.parentElement ? origin.parentElement.closest('[' + group[0] + ']') : null;
+    const own = from && from !== document.documentElement ? from : null;
+    group.forEach(name => {
+      const v = own ? own.getAttribute(name) : null;
+      if (v == null) node.removeAttribute(name);else node.setAttribute(name, v);
+    });
+  });
+}
+function Portal({
+  children,
+  layer = 'page',
+  container = null,
+  className
+}) {
+  const origin = _react.default.useRef(null);
+  const [node] = _react.default.useState(() => typeof document === 'undefined' ? null : document.createElement('div'));
+  const top = layer === 'top';
+
+  // the container: placed in its parent while the Portal is mounted, in the top layer for layer="top"
+  _react.default.useLayoutEffect(() => {
+    if (!node) return undefined;
+    const target = container && 'current' in container ? container.current : container;
+    const parent = target || sharedRoot();
+    parent.appendChild(node);
+    if (top && TOP_LAYER) {
+      node.setAttribute('popover', 'manual');
+      if (node.showPopover && !node.matches(':popover-open')) node.showPopover();
+    }
+    return () => {
+      if (top && TOP_LAYER && node.matches(':popover-open')) node.hidePopover();
+      node.removeAttribute('popover');
+      if (node.parentNode) node.parentNode.removeChild(node);
+    };
+  }, [node, container, top]);
+
+  // its class and the density, theme and direction of where it is written, on every render
+  _react.default.useLayoutEffect(() => {
+    if (!node) return;
+    node.className = (0, _cx.cx)('plx-portal', top && 'plx-portal--top', className);
+    carry(origin.current, node);
+  });
+  if (!node) return null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("template", {
+    ref: origin,
+    "data-plx-portal-origin": ""
+  }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
+}
+  } },
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
+}
+  } },
+  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RTL_LANGUAGES = void 0;
+exports.arrowStep = arrowStep;
+exports.directionOf = directionOf;
+exports.getDirection = getDirection;
+exports.isRtl = isRtl;
+exports.physicalSide = physicalSide;
+/* Plenix · Writing direction (platform/utils/direction.js)
+   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
+     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
+     as the eye reads; Up and Down are the same in both directions.
+   Usage:
+     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
+     if (step) { e.preventDefault(); move(index + step); }
+     directionOf('ar-EG')          // "rtl"
+     physicalSide('start', 'rtl')  // "right"
+   Props:
+     isRtl(el): true when the element is laid out right to left (its computed direction)
+     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
+       false, Up and Down are ignored (a horizontal-only control)
+     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
+     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
+       RTL_LANGUAGES), else "ltr"
+     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
+       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     RTL_LANGUAGES: the language subtags written right to left
+   Behavior:
+     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
+       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
+       computed direction only where it measures or handles arrow keys.
+*/
+const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
+function isRtl(el) {
+  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function getDirection(el) {
+  if (typeof window === 'undefined') return 'ltr';
+  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
+}
+function directionOf(locale) {
+  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
+  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
+}
+function physicalSide(side, dir) {
+  if (side !== 'start' && side !== 'end') return side;
+  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
+}
+function arrowStep(event, el, opts) {
+  const vertical = !opts || opts.vertical !== false;
+  const rtl = isRtl(el);
+  switch (event.key) {
+    case 'ArrowRight':
+      return rtl ? -1 : 1;
+    case 'ArrowLeft':
+      return rtl ? 1 : -1;
+    case 'ArrowDown':
+      return vertical ? 1 : 0;
+    case 'ArrowUp':
+      return vertical ? -1 : 0;
+    default:
+      return 0;
+  }
+}
+  } },
+  "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.flingDistance = flingDistance;
+exports.gestureTokens = gestureTokens;
+exports.useGesture = useGesture;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useGesture
+   Summary: Touch, pen and mouse gestures from pointer events, on the gesture motion tokens: tap, long press, pan (drag),
+     swipe, fling, pinch to zoom and pull to refresh. It reports what the pointers do; the component decides what moves
+     and always offers the same action as a visible control (a button or a menu item).
+   Usage:
+     const ref = React.useRef(null);
+     useGesture(ref, { axis: 'x', onSwipe: (g) => { if (g.direction === 'left') archive(); } });          // swipe a row
+     useGesture(ref, { onLongPress: (g) => openMenuAt(g.x, g.y) });                                         // long press
+     useGesture(ref, { onPinch: (g) => setZoom(clamp(base * g.scale, 1, g.maxScale)) });                   // pinch to zoom
+     useGesture(listRef, { pull: true, onPull: (g) => setPull(g), onRefresh: reload });                      // pull to refresh
+     <div ref={ref} className="plx-gesture plx-gesture--pan-y">…</div>                                      // system/gesture.css
+   Props:
+     ref: a ref to the element that takes the gestures
+     options.axis ("both"): "x" | "y" | "both": the pan and swipe axis; movement mostly along the other axis is left to
+       the browser (the page still scrolls)
+     options.onTap({ x, y, pointerType }): a press released without moving past the slop and before the long-press delay
+     options.onLongPress({ x, y, pointerType }): held still for --plx-sys-gesture-long-press-delay
+     options.onPanStart(g), options.onPan(g), options.onPanEnd(g): a drag past --plx-sys-gesture-slop; g = { dx, dy (from
+       the start), vx, vy (px per ms), pointerType, canceled (onPanEnd: the pointer was canceled) }
+     options.onSwipe({ direction, inline, distance, velocity }): a pan released past --plx-sys-gesture-swipe-distance, or
+       faster than --plx-sys-gesture-fling-velocity; direction "left" | "right" | "up" | "down", inline "start" | "end"
+       (left and right in reading order) or null
+     options.onFling({ vx, vy, direction, travelX, travelY }): released faster than the fling velocity; travel is how
+       far it would coast on --plx-sys-gesture-fling-decay (flingDistance)
+     options.onPinch({ scale, originX, originY, maxScale, first }), options.onPinchEnd({ scale }): two pointers; scale is
+       relative to the pinch's start, maxScale the --plx-sys-gesture-pinch-max-scale token
+     options.pull (false): pull to refresh: a downward pan that starts with the element scrolled to its top
+     options.onPull({ distance, progress, ready, released }): the pull after --plx-sys-gesture-pull-resistance; ready
+       once it reaches --plx-sys-gesture-pull-distance; released when the finger lifts (distance 0)
+     options.onRefresh(): the pull was released while ready
+     options.disabled (false): no gestures
+     returns { active }: the gesture under way: null, "press", "pan", "pinch" or "pull" (to style the element)
+   Behavior:
+     Gestures end on release, so moving back before lifting cancels a swipe (WCAG 2.2, 2.5.2); a pointer that leaves the
+       window or is canceled by the system ends the pan with canceled true.
+     The pointer is captured once a pan starts, so it is followed outside the element; a tap on a child still clicks it.
+     Only the primary mouse button starts a gesture. A second finger turns a press or a pan into a pinch.
+     Every distance, time and rate is a token read when the gesture starts, so the density and interaction contexts apply.
+   Notes:
+     A gesture is a shortcut, never the only way: swipe to archive has an Archive button, pinch has zoom buttons, pull to
+       refresh has a Refresh button, a long press has the same menu on its button (WCAG 2.2, 2.5.1 and 2.5.7).
+     Give the element touch-action through system/gesture.css (plx-gesture, plx-gesture--pan-x, plx-gesture--pan-y) so
+       the browser does not scroll or zoom while the gesture is tracked.
+     Moving an element with the finger is the component's own stylesheet's work (steps through a data attribute); the
+       settle after it is .plx-gesture-settle (--plx-sys-gesture-settle-duration and -easing). Reduced motion settles at once.
+*/
+
+const VELOCITY_WINDOW = 100; // the last 100 ms of movement give the release velocity (a sampling window, not a look)
+
+// a token's value on the element: a length in px (rem converted), a time in ms, or a number
+function tokenOn(el, name) {
+  const cs = getComputedStyle(el),
+    v = cs.getPropertyValue(name).trim(),
+    n = parseFloat(v);
+  if (isNaN(n)) return NaN;
+  if (/rem$/.test(v)) return n * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  if (/ms$/.test(v)) return n;
+  if (/s$/.test(v)) return n * 1000;
+  return n;
+}
+
+// the gesture tokens as numbers, read from the element (or the page)
+function gestureTokens(el) {
+  const at = el || (typeof document !== 'undefined' ? document.documentElement : null);
+  const t = name => at ? tokenOn(at, '--plx-sys-gesture-' + name) : NaN;
+  return {
+    slop: t('slop'),
+    swipeDistance: t('swipe-distance'),
+    flingVelocity: t('fling-velocity'),
+    flingDecay: t('fling-decay'),
+    longPressDelay: t('long-press-delay'),
+    pullDistance: t('pull-distance'),
+    pullResistance: t('pull-resistance'),
+    pinchMaxScale: t('pinch-max-scale')
+  };
+}
+
+// how far something released at velocity v (px per ms) coasts when it keeps decay of its speed each millisecond
+function flingDistance(v, decay) {
+  if (!(decay > 0 && decay < 1)) return 0;
+  return v * decay / (1 - decay);
+}
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+function useGesture(ref, options = {}) {
+  const [active, setActive] = _react.default.useState(null);
+  const latest = _react.default.useRef(options);
+  latest.current = options;
+  const disabled = !!options.disabled;
+  _react.default.useEffect(() => {
+    const el = ref.current;
+    if (!el || disabled) return undefined;
+    const pointers = new Map();
+    let g = null; // the gesture: { mode, start, samples, tokens, timer, … }
+    const call = (name, arg) => {
+      const f = latest.current[name];
+      if (f) f(arg);
+    };
+    const mode = m => {
+      if (g) g.mode = m;
+      setActive(m);
+    };
+    const velocity = () => {
+      const s = g.samples,
+        last = s[s.length - 1];
+      let first = s[0];
+      for (let i = s.length - 1; i >= 0; i--) {
+        if (last.t - s[i].t > VELOCITY_WINDOW) break;
+        first = s[i];
+      }
+      const dt = last.t - first.t;
+      return dt > 0 ? {
+        vx: (last.x - first.x) / dt,
+        vy: (last.y - first.y) / dt
+      } : {
+        vx: 0,
+        vy: 0
+      };
+    };
+    const capture = e => {
+      if (el.setPointerCapture) {
+        try {
+          el.setPointerCapture(e.pointerId);
+        } catch (err) {/* the pointer is gone */}
+      }
+    };
+    const clearTimer = () => {
+      if (g && g.timer) {
+        clearTimeout(g.timer);
+        g.timer = null;
+      }
+    };
+    const finish = () => {
+      clearTimer();
+      g = null;
+      setActive(null);
+    };
+    const pinchState = () => {
+      const [a, b] = Array.from(pointers.values());
+      return {
+        a,
+        b,
+        d: dist(a, b),
+        cx: (a.x + b.x) / 2,
+        cy: (a.y + b.y) / 2
+      };
+    };
+    const onDown = e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pointers.set(e.pointerId, {
+        x: e.clientX,
+        y: e.clientY
+      });
+      const o = latest.current;
+      if (pointers.size === 2 && o.onPinch) {
+        clearTimer();
+        if (g && g.mode === 'pan') call('onPanEnd', {
+          dx: 0,
+          dy: 0,
+          vx: 0,
+          vy: 0,
+          pointerType: g.pointerType,
+          canceled: true
+        });
+        const p = pinchState();
+        g = Object.assign(g || {}, {
+          startDist: p.d || 1,
+          tokens: g && g.tokens || gestureTokens(el)
+        });
+        mode('pinch');
+        call('onPinch', {
+          scale: 1,
+          originX: p.cx,
+          originY: p.cy,
+          maxScale: g.tokens.pinchMaxScale,
+          first: true
+        });
+        return;
+      }
+      if (pointers.size > 1) return;
+      const tokens = gestureTokens(el);
+      g = {
+        mode: 'press',
+        pointerId: e.pointerId,
+        pointerType: e.pointerType || 'mouse',
+        start: {
+          x: e.clientX,
+          y: e.clientY,
+          t: e.timeStamp
+        },
+        samples: [{
+          x: e.clientX,
+          y: e.clientY,
+          t: e.timeStamp
+        }],
+        tokens,
+        timer: null,
+        long: false,
+        atTop: el.scrollTop <= 0
+      };
+      setActive('press');
+      if (o.onLongPress) {
+        g.timer = setTimeout(() => {
+          if (!g || g.mode !== 'press') return;
+          g.long = true;
+          g.timer = null;
+          call('onLongPress', {
+            x: g.start.x,
+            y: g.start.y,
+            pointerType: g.pointerType
+          });
+        }, tokens.longPressDelay || 0);
+      }
+    };
+    const onMove = e => {
+      if (!g || !pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, {
+        x: e.clientX,
+        y: e.clientY
+      });
+      const o = latest.current;
+      if (g.mode === 'pinch') {
+        if (pointers.size < 2) return;
+        const p = pinchState();
+        call('onPinch', {
+          scale: p.d / g.startDist,
+          originX: p.cx,
+          originY: p.cy,
+          maxScale: g.tokens.pinchMaxScale,
+          first: false
+        });
+        return;
+      }
+      if (e.pointerId !== g.pointerId) return;
+      g.samples.push({
+        x: e.clientX,
+        y: e.clientY,
+        t: e.timeStamp
+      });
+      if (g.samples.length > 32) g.samples.shift();
+      const dx = e.clientX - g.start.x,
+        dy = e.clientY - g.start.y;
+      if (g.mode === 'press') {
+        if (Math.hypot(dx, dy) < (g.tokens.slop || 0)) return;
+        clearTimer();
+        if (g.long) {
+          mode('none');
+          return;
+        } // moved after a long press: the long press stands, no pan
+        const vertical = Math.abs(dy) > Math.abs(dx);
+        if (o.pull && vertical && dy > 0 && g.atTop) {
+          mode('pull');
+          capture(e);
+        } else if (o.axis === 'x' && vertical || o.axis === 'y' && !vertical) {
+          mode('none');
+          return;
+        } // the browser scrolls
+        else if (o.onPan || o.onPanStart || o.onPanEnd || o.onSwipe || o.onFling) {
+          mode('pan');
+          capture(e);
+          call('onPanStart', {
+            dx,
+            dy,
+            vx: 0,
+            vy: 0,
+            pointerType: g.pointerType
+          });
+        } else {
+          mode('none');
+          return;
+        }
+      }
+      if (g.mode === 'pan') {
+        const v = velocity();
+        call('onPan', {
+          dx: o.axis === 'y' ? 0 : dx,
+          dy: o.axis === 'x' ? 0 : dy,
+          vx: v.vx,
+          vy: v.vy,
+          pointerType: g.pointerType
+        });
+      } else if (g.mode === 'pull') {
+        const distance = Math.max(0, dy) * (g.tokens.pullResistance || 0);
+        const target = g.tokens.pullDistance || 0;
+        g.ready = target > 0 && distance >= target;
+        call('onPull', {
+          distance,
+          progress: target > 0 ? Math.min(1, distance / target) : 0,
+          ready: g.ready,
+          released: false
+        });
+      }
+    };
+    const onUp = e => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.delete(e.pointerId);
+      if (!g) return;
+      const canceled = e.type === 'pointercancel';
+      if (g.mode === 'pinch') {
+        if (pointers.size < 2) {
+          call('onPinchEnd', {
+            scale: g.lastScale || 1
+          });
+          finish();
+          pointers.clear();
+        }
+        return;
+      }
+      if (e.pointerId !== g.pointerId) return;
+      const o = latest.current;
+      const dx = e.clientX - g.start.x,
+        dy = e.clientY - g.start.y;
+      if (g.mode === 'press' && !g.long && !canceled) call('onTap', {
+        x: e.clientX,
+        y: e.clientY,
+        pointerType: g.pointerType
+      });else if (g.mode === 'pan') {
+        const v = velocity(),
+          t = g.tokens;
+        const px = o.axis === 'y' ? 0 : dx,
+          py = o.axis === 'x' ? 0 : dy;
+        const vx = o.axis === 'y' ? 0 : v.vx,
+          vy = o.axis === 'x' ? 0 : v.vy;
+        call('onPanEnd', {
+          dx: px,
+          dy: py,
+          vx,
+          vy,
+          pointerType: g.pointerType,
+          canceled
+        });
+        if (!canceled) {
+          const horizontal = Math.abs(px) >= Math.abs(py);
+          const d = horizontal ? px : py,
+            vel = horizontal ? vx : vy;
+          const fast = Math.hypot(vx, vy) >= (t.flingVelocity || Infinity);
+          // a swipe ends moving the way it went: a pan dragged back toward its start does not commit
+          if ((Math.abs(d) >= t.swipeDistance || fast && Math.sign(vel) === Math.sign(d)) && d !== 0) {
+            const direction = horizontal ? d > 0 ? 'right' : 'left' : d > 0 ? 'down' : 'up';
+            const inline = horizontal ? d > 0 !== (0, _direction.isRtl)(el) ? 'end' : 'start' : null;
+            call('onSwipe', {
+              direction,
+              inline,
+              distance: Math.abs(d),
+              velocity: Math.abs(vel)
+            });
+          }
+          if (fast) {
+            const direction = horizontal ? vx > 0 ? 'right' : 'left' : vy > 0 ? 'down' : 'up';
+            call('onFling', {
+              vx,
+              vy,
+              direction,
+              travelX: flingDistance(vx, t.flingDecay),
+              travelY: flingDistance(vy, t.flingDecay)
+            });
+          }
+        }
+      } else if (g.mode === 'pull') {
+        const ready = g.ready && !canceled;
+        call('onPull', {
+          distance: 0,
+          progress: 0,
+          ready: false,
+          released: true
+        });
+        if (ready) call('onRefresh');
+      }
+      finish();
+    };
+
+    // the pinch's last scale, kept for onPinchEnd
+    const onPinchTrack = () => {
+      if (g && g.mode === 'pinch' && pointers.size === 2) g.lastScale = pinchState().d / g.startDist;
+    };
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointermove', onPinchTrack);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onUp);
+    window.addEventListener('pointerup', onUp);
+    return () => {
+      clearTimer();
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointermove', onPinchTrack);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('pointerup', onUp);
+    };
+  }, [ref, disabled]);
+  return {
+    active
+  };
+}
+  } },
+  "platform/components/Menu/Menu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/portal.jsx":"platform/utils/portal.jsx","../../utils/floating.js":"platform/utils/floating.js","../../hooks/useGesture.js":"platform/hooks/useGesture.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ContextMenu = ContextMenu;
 exports.Menu = Menu;
 exports.MenuDivider = MenuDivider;
 exports.MenuGroup = MenuGroup;
 exports.MenuItem = MenuItem;
+exports.MenuRadioGroup = MenuRadioGroup;
+exports.MenuSub = MenuSub;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _portal = require("../../utils/portal.jsx");
+var _floating = require("../../utils/floating.js");
+var _useGesture = require("../../hooks/useGesture.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Menu, MenuItem, MenuGroup, MenuDivider
-   Summary: A list of actions opened from a button (the menu button pattern).
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Menu, MenuItem, MenuGroup, MenuDivider, MenuRadioGroup, MenuSub, ContextMenu
+   Summary: A list of actions opened from a button (the menu button pattern); ContextMenu opens the same list at the
+     pointer on a right-click or a long press, or at its target on Shift+F10 or the Menu key (the context menu pattern).
+     Items are actions, checkbox items, radio items in a MenuRadioGroup (one of a set) and submenus (MenuSub).
    Usage:
      <Menu trigger={<Button caret>Actions</Button>} placement="bottom-start">
        <MenuItem icon="pencil" onSelect={rename}>Rename</MenuItem>
        <MenuDivider/>
        <MenuItem icon="trash" danger onSelect={remove}>Delete</MenuItem>
      </Menu>
+     <MenuRadioGroup label="Sort by" value={sort} onChange={setSort}>
+       <MenuItem value="name">Name</MenuItem><MenuItem value="date">Date modified</MenuItem>
+     </MenuRadioGroup>
+     <MenuSub label="Move to" icon="move"><MenuItem onSelect={…}>Brand kit</MenuItem><MenuItem onSelect={…}>Archive</MenuItem></MenuSub>
+     <ContextMenu target={<div tabIndex={0} className="…">Cross 014</div>} label="Asset actions">
+       <MenuItem icon="pencil" onSelect={rename}>Rename</MenuItem>
+     </ContextMenu>
    Props:
      Menu.trigger: the button that opens the menu (one element)
      Menu.label: the accessible name of the menu
@@ -2195,6 +2991,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MenuItem.danger: shows the item in the danger color (a destructive action); default false
      MenuItem.disabled: skips the item; it cannot be chosen; default false
      MenuItem.checked: makes it a checkbox item, checked or not; leave it out for a plain item
+     MenuItem.type: "radio" makes it a radio item (menuitemradio): one of a set, checked shows which (inside a
+       MenuRadioGroup a MenuItem with a value is a radio item without it)
+     MenuItem.value: a radio item's value in its MenuRadioGroup (checked when it is the group's value)
      MenuItem.keepOpen: leaves the menu open after choosing (for choosing several); default false
      MenuItem.href: renders the item as a link
      MenuItem.onSelect(event): runs when the item is chosen
@@ -2203,6 +3002,19 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      MenuGroup.label: the label of a set of items
      MenuGroup.children: the items in the set
      MenuDivider: a line between items; no props
+     MenuRadioGroup.label: the name of the set ("Sort by"), shown as the group's label
+     MenuRadioGroup.value: the value of the checked item; MenuRadioGroup.onChange(value): runs when another is chosen
+     MenuRadioGroup.keepOpen: the menu stays open after a choice (default false: it closes, as any item)
+     MenuRadioGroup.children: its MenuItems, each with a value
+     MenuSub.label: the submenu item's label; MenuSub.icon: its icon; MenuSub.disabled: it cannot open (default false)
+     MenuSub.className: more classes on the submenu's wrapper
+     MenuSub.children: the submenu's items (one level: no submenu inside a submenu)
+     ContextMenu.target: the element it belongs to (one element: a row, a card, a canvas); it gets the ref and the
+       context-menu handlers. Make it focusable (a row of a grid, tabIndex 0) so the keyboard can open it.
+     ContextMenu.label: the accessible name of the menu ("Asset actions")
+     ContextMenu.onOpenChange(open): runs when it opens or closes (to select the row it acts on)
+     ContextMenu.disabled: the browser's own menu shows instead (default false)
+     ContextMenu.children: the items, as Menu's
    Behavior:
      Enter, Space or Arrow Down on the trigger opens the menu on the first item; Arrow Up opens it on the last.
      Arrow keys, Home and End move between items.
@@ -2210,18 +3022,42 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Tab closes the menu and moves on.
      A click outside closes the menu.
      Choosing an item closes the menu and returns focus to the trigger, unless keepOpen.
+     A radio item checks itself and unchecks the others of its group (onChange); the menu shows the current choice
+       when it opens.
+     A submenu item shows an end-pointing chevron; Arrow Right (Arrow Left in right-to-left), Enter, Space or a click
+       opens the submenu beside it on its first item, and pointer hover opens it too; Arrow Left (Arrow Right in
+       right-to-left) or Escape closes it and returns to its item. It sits at the item's end edge and flips to the
+       other side when there is no room. Choosing an item in it closes every level.
+     ContextMenu: a right-click or a long press (touch and pen, --plx-sys-gesture-long-press-delay) opens it at the
+       pointer, kept inside the window (useFloating's point); Shift+F10 or the Menu key opens it at the target's start
+       edge, below it. Focus moves to the first item; Escape, Tab, a choice or a click outside close it and return
+       focus to where it was. It renders in the top layer (Portal), so a scroll area or a dialog never clips it.
      The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by CSS
        anchor positioning, so no card, pane or scroll area can cover or clip it. The trigger's wrapper scopes the anchor, so
        each menu finds its own trigger; near an edge the menu flips to the other side. A browser without anchor
        positioning draws it inside the wrapper as before.
    Notes:
      Menus are border-only (no shadow, D9); dialogs keep their shadow.
+     A context menu is a shortcut: every action in it is also reachable another way (a toolbar, a row's More menu).
 */
 const MenuContext = /*#__PURE__*/_react.default.createContext(null);
+const RadioContext = /*#__PURE__*/_react.default.createContext(null);
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
-const itemsIn = list => list ? Array.prototype.slice.call(list.querySelectorAll('[data-plx-menu-item]:not([aria-disabled="true"])')) : [];
+// the menu's own items (not those of a submenu inside it)
+const itemsIn = list => list ? Array.prototype.filter.call(list.querySelectorAll('[data-plx-menu-item]:not([aria-disabled="true"])'), el => el.closest('[role="menu"]') === list) : [];
+const isRtl = el => !!el && getComputedStyle(el).direction === 'rtl';
+// Arrow keys, Home and End between a list's own items; true when the key moved focus
+function moveIn(list, e) {
+  const items = itemsIn(list);
+  const at = items.indexOf(document.activeElement);
+  let next = null;
+  if (e.key === 'ArrowDown') next = (at + 1) % items.length;else if (e.key === 'ArrowUp') next = (at - 1 + items.length) % items.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = items.length - 1;else return false;
+  e.preventDefault();
+  if (items[next]) items[next].focus();
+  return true;
+}
 
 // the top layer and CSS anchor positioning (Chrome 125, Firefox 147, Safari 26), checked once
 const TOP_LAYER = typeof window !== 'undefined' && typeof CSS !== 'undefined' && CSS.supports && CSS.supports('anchor-name', '--plx-a') && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
@@ -2287,15 +3123,11 @@ function Menu({
     }
   });
   const onKeyDown = e => {
-    const items = itemsIn(list.current);
-    const at = items.indexOf(document.activeElement);
-    let next = null;
-    if (e.key === 'ArrowDown') next = (at + 1) % items.length;else if (e.key === 'ArrowUp') next = (at - 1 + items.length) % items.length;else if (e.key === 'Home') next = 0;else if (e.key === 'End') next = items.length - 1;else if (e.key === 'Tab') {
+    if (e.key === 'Tab') {
       setOpen(false);
       return;
-    } else return;
-    e.preventDefault();
-    if (items[next]) items[next].focus();
+    }
+    moveIn(list.current, e);
   };
   return /*#__PURE__*/_react.default.createElement("span", {
     ref: wrap,
@@ -2317,6 +3149,8 @@ function MenuItem({
   danger = false,
   disabled = false,
   checked,
+  type,
+  value,
   keepOpen = false,
   href,
   onSelect,
@@ -2325,12 +3159,17 @@ function MenuItem({
   ...rest
 }) {
   const close = _react.default.useContext(MenuContext);
-  const role = checked === undefined ? 'menuitem' : 'menuitemcheckbox';
+  const group = _react.default.useContext(RadioContext);
+  const radio = type === 'radio' || !!group && value !== undefined;
+  const on = radio && group && value !== undefined ? group.value === value : checked;
+  const marked = radio || checked !== undefined;
+  const role = radio ? 'menuitemradio' : checked === undefined ? 'menuitem' : 'menuitemcheckbox';
+  const stay = keepOpen || radio && !!group && group.keepOpen;
   const props = {
     role,
     tabIndex: -1,
     'data-plx-menu-item': '',
-    'aria-checked': checked === undefined ? undefined : !!checked,
+    'aria-checked': marked ? !!on : undefined,
     'aria-disabled': disabled || undefined,
     className: (0, _cx.cx)('plx-menu__item', danger && 'plx-menu__item--danger', className),
     onClick: e => {
@@ -2338,13 +3177,14 @@ function MenuItem({
         e.preventDefault();
         return;
       }
+      if (radio && group && value !== undefined && group.onChange && group.value !== value) group.onChange(value);
       if (onSelect) onSelect(e);
-      if (close && !keepOpen) close(true);
+      if (close && !stay) close(true);
     },
     ...rest
   };
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, checked !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-menu__check', checked && 'is-checked'),
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, marked ? /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-menu__check', radio && 'plx-menu__check--radio', on && 'is-checked'),
     "aria-hidden": "true"
   }) : null, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-menu__icon"
@@ -2376,6 +3216,239 @@ function MenuGroup({
     id: id,
     className: "plx-menu__group-label"
   }, label), children);
+}
+
+/* MenuRadioGroup: a labeled set of radio items, one checked (a sort order, a view) */
+function MenuRadioGroup({
+  label,
+  value,
+  onChange,
+  keepOpen = false,
+  children
+}) {
+  const id = (0, _layer.useUid)('plx-mrg');
+  const ctx = _react.default.useMemo(() => ({
+    value,
+    onChange,
+    keepOpen
+  }), [value, onChange, keepOpen]);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    role: "group",
+    "aria-labelledby": label ? id : undefined,
+    className: "plx-menu__group plx-menu__group--radio"
+  }, label ? /*#__PURE__*/_react.default.createElement("div", {
+    id: id,
+    className: "plx-menu__group-label"
+  }, label) : null, /*#__PURE__*/_react.default.createElement(RadioContext.Provider, {
+    value: ctx
+  }, children));
+}
+
+/* MenuSub: an item that opens a submenu beside it (one level) */
+function MenuSub({
+  label,
+  icon,
+  disabled = false,
+  className,
+  children
+}) {
+  const id = (0, _layer.useUid)('plx-menu-sub');
+  const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null),
+    item = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    focusFirst = _react.default.useRef(false);
+  const back = _react.default.useCallback(() => {
+    setOpen(false);
+    if (item.current) item.current.focus();
+  }, []);
+  (0, _layer.useLayer)(list, open, {
+    onEscape: back
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (!open || !focusFirst.current) return;
+    focusFirst.current = false;
+    const items = itemsIn(list.current);
+    if (items.length) items[0].focus();
+  }, [open]);
+  const openIt = withFocus => {
+    if (disabled) return;
+    focusFirst.current = withFocus;
+    setOpen(true);
+  };
+  const forward = e => isRtl(wrap.current) ? e.key === 'ArrowLeft' : e.key === 'ArrowRight';
+  const backward = e => isRtl(wrap.current) ? e.key === 'ArrowRight' : e.key === 'ArrowLeft';
+  const onItemKey = e => {
+    if (forward(e) || e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      openIt(true);
+    }
+  };
+  const onListKey = e => {
+    if (backward(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      back();
+      return;
+    }
+    if (e.key === 'Tab') return; // the root menu closes
+    if (moveIn(list.current, e)) e.stopPropagation();
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-menu-sub', className),
+    onPointerLeave: e => {
+      if (e.pointerType === 'mouse') setOpen(false);
+    },
+    onBlur: e => {
+      if (open && e.relatedTarget && wrap.current && !wrap.current.contains(e.relatedTarget)) setOpen(false);
+    }
+  }, /*#__PURE__*/_react.default.createElement("button", {
+    ref: item,
+    type: "button",
+    role: "menuitem",
+    tabIndex: -1,
+    "data-plx-menu-item": "",
+    "aria-haspopup": "menu",
+    "aria-expanded": open,
+    "aria-controls": open ? id : undefined,
+    "aria-disabled": disabled || undefined,
+    className: (0, _cx.cx)('plx-menu__item', 'plx-menu-sub__item', open && 'is-open'),
+    onClick: e => {
+      e.preventDefault();
+      if (open) setOpen(false);else openIt(true);
+    },
+    onKeyDown: onItemKey,
+    onPointerEnter: e => {
+      if (e.pointerType === 'mouse' && !open) openIt(false);
+    }
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-menu__icon"
+  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-menu__label"
+  }, label), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-menu-sub__arrow",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-right"
+  }))), open ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    id: id,
+    role: "menu",
+    "aria-label": typeof label === 'string' ? label : undefined,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    className: "plx-menu plx-menu-sub__list",
+    onKeyDown: onListKey
+  }, children) : null);
+}
+
+/* ContextMenu: the menu of a target, at the pointer (right-click, long press) or at the target (Shift+F10, Menu key) */
+function ContextMenu({
+  target,
+  label,
+  onOpenChange,
+  disabled = false,
+  children
+}) {
+  const id = (0, _layer.useUid)('plx-context-menu');
+  const [point, setPoint] = _react.default.useState(null);
+  const open = !!point;
+  const anchor = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    opener = _react.default.useRef(null);
+  const show = _react.default.useCallback(p => {
+    opener.current = document.activeElement;
+    setPoint(p);
+    if (onOpenChange) onOpenChange(true);
+  }, [onOpenChange]);
+  const close = _react.default.useCallback(refocus => {
+    setPoint(null);
+    if (onOpenChange) onOpenChange(false);
+    const back = opener.current && opener.current !== document.body && document.contains(opener.current) ? opener.current : anchor.current;
+    if (refocus && back && back.focus) back.focus();
+  }, [onOpenChange]);
+  (0, _layer.useLayer)(list, open, {
+    onEscape: () => close(true)
+  });
+  (0, _floating.useFloating)(anchor, list, {
+    open,
+    placement: 'bottom-start',
+    virtual: point
+  });
+  // at the target: its start edge, below it (where a keyboard opening puts it)
+  const atTarget = () => {
+    const r = anchor.current.getBoundingClientRect();
+    return {
+      x: Math.round(isRtl(anchor.current) ? r.right : r.left),
+      y: Math.round(r.bottom)
+    };
+  };
+  (0, _useGesture.useGesture)(anchor, {
+    disabled,
+    onLongPress: g => {
+      if (g.pointerType !== 'mouse' && !open) show({
+        x: g.x,
+        y: g.y
+      });
+    }
+  });
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const items = itemsIn(list.current);
+    if (items.length) items[0].focus({
+      preventScroll: true
+    });
+    const outside = e => {
+      if (list.current && !list.current.contains(e.target)) close(false);
+    };
+    document.addEventListener('mousedown', outside);
+    return () => document.removeEventListener('mousedown', outside);
+  }, [open]);
+  const child = _react.default.Children.only(target);
+  const targetEl = /*#__PURE__*/_react.default.cloneElement(child, disabled ? {} : {
+    ref: anchor,
+    // no popup ARIA on the target: a row or a card keeps its own role (aria-haspopup is for buttons and menu items)
+    onContextMenu: e => {
+      if (child.props.onContextMenu) child.props.onContextMenu(e);
+      e.preventDefault();
+      // a keyboard opening has no pointer position: the target's is used
+      show(e.clientX || e.clientY ? {
+        x: e.clientX,
+        y: e.clientY
+      } : atTarget());
+    },
+    onKeyDown: e => {
+      if (child.props.onKeyDown) child.props.onKeyDown(e);
+      if (e.shiftKey && e.key === 'F10' || e.key === 'ContextMenu') {
+        e.preventDefault();
+        show(atTarget());
+      }
+    }
+  });
+  const onKeyDown = e => {
+    if (e.key === 'Tab') {
+      close(false);
+      return;
+    }
+    moveIn(list.current, e);
+  };
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, targetEl, open ? /*#__PURE__*/_react.default.createElement(_portal.Portal, {
+    layer: "top"
+  }, /*#__PURE__*/_react.default.createElement(MenuContext.Provider, {
+    value: close
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    id: id,
+    role: "menu",
+    "aria-label": label,
+    className: "plx-menu plx-context-menu",
+    onKeyDown: onKeyDown
+  }, children))) : null);
 }
   } },
   "platform/utils/overflow.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -3889,75 +4962,6 @@ function Pagination({
     key: n,
     value: n
   }, n)))) : null);
-}
-  } },
-  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RTL_LANGUAGES = void 0;
-exports.arrowStep = arrowStep;
-exports.directionOf = directionOf;
-exports.getDirection = getDirection;
-exports.isRtl = isRtl;
-exports.physicalSide = physicalSide;
-/* Plenix · Writing direction (platform/utils/direction.js)
-   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
-     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
-     as the eye reads; Up and Down are the same in both directions.
-   Usage:
-     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
-     if (step) { e.preventDefault(); move(index + step); }
-     directionOf('ar-EG')          // "rtl"
-     physicalSide('start', 'rtl')  // "right"
-   Props:
-     isRtl(el): true when the element is laid out right to left (its computed direction)
-     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
-       false, Up and Down are ignored (a horizontal-only control)
-     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
-     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
-       RTL_LANGUAGES), else "ltr"
-     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
-       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
-     RTL_LANGUAGES: the language subtags written right to left
-   Behavior:
-     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
-       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
-       computed direction only where it measures or handles arrow keys.
-*/
-const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
-function isRtl(el) {
-  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
-}
-function getDirection(el) {
-  if (typeof window === 'undefined') return 'ltr';
-  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
-}
-function directionOf(locale) {
-  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
-  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
-}
-function physicalSide(side, dir) {
-  if (side !== 'start' && side !== 'end') return side;
-  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
-}
-function arrowStep(event, el, opts) {
-  const vertical = !opts || opts.vertical !== false;
-  const rtl = isRtl(el);
-  switch (event.key) {
-    case 'ArrowRight':
-      return rtl ? -1 : 1;
-    case 'ArrowLeft':
-      return rtl ? 1 : -1;
-    case 'ArrowDown':
-      return vertical ? 1 : 0;
-    case 'ArrowUp':
-      return vertical ? -1 : 0;
-    default:
-      return 0;
-  }
 }
   } },
   "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -14728,311 +15732,6 @@ function singleKeyHotkeys() {
   return singleKeys;
 }
   } },
-  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
-exports.useFloating = useFloating;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFloating
-   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
-   Usage:
-     const anchor = React.useRef(null), panel = React.useRef(null);
-     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
-     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
-     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
-     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
-     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
-   Props:
-     anchorRef: a ref to the element the floating element is placed against
-     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
-     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
-     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
-     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
-     options.flip (true): moves to the opposite side when there is no room
-     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
-     options.matchWidth (false): at least as wide as the anchor
-     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
-     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
-   Behavior:
-     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
-     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
-     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
-     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
-   Notes:
-     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
-     Menu, Tooltip and Popover adopt it in their own tasks.
-*/
-
-const SLOTS = 16;
-const taken = new Array(SLOTS + 1).fill(false);
-const take = () => {
-  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
-    taken[i] = true;
-    return i;
-  }
-  return 0;
-};
-const release = i => {
-  if (i) taken[i] = false;
-};
-
-// what the browser can do, checked once
-const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
-const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
-const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
-const OFFSETS = {
-  none: null,
-  xs: '--plx-sys-floating-offset-xs',
-  sm: '--plx-sys-floating-offset-sm',
-  md: '--plx-sys-floating-offset-md'
-};
-const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
-
-// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
-function tokenPixels(name) {
-  if (!name || typeof document === 'undefined') return 0;
-  const root = document.documentElement,
-    v = getComputedStyle(root).getPropertyValue(name).trim(),
-    n = parseFloat(v) || 0;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
-}
-const set = (el, name, value) => {
-  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
-};
-const isRtl = el => getComputedStyle(el).direction === 'rtl';
-
-// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
-function measured(anchor, floating, placement, flip, shift, gap) {
-  const a = anchor.getBoundingClientRect(),
-    f = floating.getBoundingClientRect();
-  const W = window.innerWidth,
-    H = window.innerHeight,
-    rtl = isRtl(anchor);
-  let [side, align] = placement.split('-');
-  const room = {
-    top: a.top - gap,
-    bottom: H - a.bottom - gap,
-    start: rtl ? W - a.right - gap : a.left - gap,
-    end: rtl ? a.left - gap : W - a.right - gap
-  };
-  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
-  const opposite = {
-    top: 'bottom',
-    bottom: 'top',
-    start: 'end',
-    end: 'start'
-  }[side];
-  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
-  if (shift && align && (side === 'top' || side === 'bottom')) {
-    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
-    const startEdge = rtl ? a.right : a.left,
-      endRoom = rtl ? startEdge : W - startEdge;
-    const endEdge = rtl ? a.left : a.right,
-      startRoom = rtl ? W - endEdge : endEdge;
-    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
-  }
-  if (shift && align && (side === 'start' || side === 'end')) {
-    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
-  }
-  return align ? side + '-' + align : side;
-}
-
-// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
-function pointAt(floating, x, y) {
-  const f = floating.getBoundingClientRect(),
-    W = window.innerWidth,
-    H = window.innerHeight,
-    m = tokenPixels('--plx-sys-floating-viewport-margin');
-  const rtl = isRtl(floating);
-  // the inline-start inset of the point, measured from the window's inline-start edge
-  let ix = rtl ? W - x : x,
-    iy = y;
-  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
-  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
-  ix = Math.max(m, Math.min(ix, W - m - f.width));
-  iy = Math.max(m, Math.min(iy, H - m - f.height));
-  return [Math.round(ix), Math.round(iy)];
-}
-function useFloating(anchorRef, floatingRef, options = {}) {
-  const {
-    open = true,
-    placement = 'bottom-start',
-    offset = 'xs',
-    flip = true,
-    shift = true,
-    matchWidth = false,
-    virtual = null
-  } = options;
-  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const pointer = !!(virtual && FLOATING_POINTER);
-  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
-  const [used, setUsed] = _react.default.useState(wanted);
-  const slot = _react.default.useRef(0);
-  const vx = virtual ? virtual.x : null,
-    vy = virtual ? virtual.y : null;
-  _react.default.useLayoutEffect(() => {
-    const anchor = anchorRef && anchorRef.current,
-      floating = floatingRef && floatingRef.current;
-    if (!open || !floating) return undefined;
-    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
-    if (pointer) {
-      set(floating, 'data-plx-floating-pointer', '');
-      const [ix, iy] = pointAt(floating, vx, vy);
-      set(floating, 'data-plx-floating-x', ix);
-      set(floating, 'data-plx-floating-y', iy);
-    } else if (anchor) {
-      if (!slot.current) slot.current = take();
-      set(anchor, 'data-plx-floating-anchor', slot.current || null);
-      set(floating, 'data-plx-floating', slot.current || 'inline');
-      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
-      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
-      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
-      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
-      if (host) set(host, 'data-plx-floating-host', '');
-      set(floating, 'data-plx-floating-placement', wanted);
-      let next = wanted;
-      if (mode === 'inline') {
-        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-        set(floating, 'data-plx-floating-placement', next);
-      }
-      setUsed(next);
-    }
-    return () => {
-      ATTRS.forEach(n => floating.removeAttribute(n));
-      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
-      if (host) host.removeAttribute('data-plx-floating-host');
-      release(slot.current);
-      slot.current = 0;
-    };
-  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
-
-  // the inline fallback measures again when the window changes size
-  _react.default.useEffect(() => {
-    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
-    const again = () => {
-      const anchor = anchorRef.current,
-        floating = floatingRef.current;
-      if (!anchor || !floating) return;
-      set(floating, 'data-plx-floating-placement', wanted);
-      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-      set(floating, 'data-plx-floating-placement', next);
-      setUsed(next);
-    };
-    window.addEventListener('resize', again);
-    return () => window.removeEventListener('resize', again);
-  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
-  return {
-    placement: mode === 'anchor' ? wanted : used,
-    mode
-  };
-}
-  } },
-  "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Portal = Portal;
-var _react = _interopRequireDefault(require("react"));
-var _reactDom = require("react-dom");
-var _cx = require("./cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Portal
-   Summary: Draws its children outside their parent's layout, so an overlay is never clipped by a scroll area, a card or a pane and never sits under a stacking context: into one shared root at the end of the page, into the browser's top layer, or into a container you name. The density, theme and direction of the place it is written go with it.
-   Usage:
-     <Portal><div className="plx-toast-region">…</div></Portal>
-     <Portal layer="top"><div ref={panel} className="plx-menu">…</div></Portal>        // above every dialog and pane
-     <Portal container={sideRef}>…</Portal>                                          // into an element of the page
-   Props:
-     children: what to draw
-     layer ('page'): 'page' draws into the shared root at the end of <body> (plx-portal-root); 'top' into the browser's top layer (a manual popover over the whole window that lets the pointer through to the page except on its content)
-     container (null): an element, or a ref to one, to draw into instead of the shared root
-     className: more classes on the Portal's own container (plx-portal)
-   Behavior:
-     The Portal leaves an empty <template> where it is written and copies from its nearest ancestors the density (data-plx-density), the theme and mode of a theme zone (data-plx-theme, data-plx-mode), the direction (dir) and the language (lang) onto its own container, so the tokens and the reading direction inside are those of the place it came from. It copies them again on every render.
-     Its container is created with it and removed when it unmounts; the shared root stays.
-     Events from the content bubble through the React tree as if it were in place (React portals), not through the page.
-   Notes:
-     A Portal moves content, nothing else: focus into the content and back to its trigger, Escape and the modal veil are the overlay's (useLayer); the ARIA link between a trigger and its content (aria-controls, aria-describedby) is the component's, since the page order no longer shows it.
-     Do not portal content that belongs in the reading order of the page.
-     Dialog, Sheet, Toast and MediaViewer adopt it in their own tasks.
-*/
-
-const ROOT_ID = 'plx-portal-root';
-// what the Portal carries from where it is written: [attribute, the attributes that travel with it]
-const CARRIED = [['data-plx-density'], ['data-plx-mode', 'data-plx-theme'], ['dir'], ['lang']];
-const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
-// the shared root at the end of <body>, made once
-function sharedRoot() {
-  let root = document.getElementById(ROOT_ID);
-  if (!root) {
-    root = document.createElement('div');
-    root.id = ROOT_ID;
-    root.className = 'plx-portal-root';
-    document.body.appendChild(root);
-  }
-  return root;
-}
-
-// the origin's nearest ancestor (below <html>, whose attributes reach everything already) that sets each carried attribute
-function carry(origin, node) {
-  CARRIED.forEach(group => {
-    const from = origin && origin.parentElement ? origin.parentElement.closest('[' + group[0] + ']') : null;
-    const own = from && from !== document.documentElement ? from : null;
-    group.forEach(name => {
-      const v = own ? own.getAttribute(name) : null;
-      if (v == null) node.removeAttribute(name);else node.setAttribute(name, v);
-    });
-  });
-}
-function Portal({
-  children,
-  layer = 'page',
-  container = null,
-  className
-}) {
-  const origin = _react.default.useRef(null);
-  const [node] = _react.default.useState(() => typeof document === 'undefined' ? null : document.createElement('div'));
-  const top = layer === 'top';
-
-  // the container: placed in its parent while the Portal is mounted, in the top layer for layer="top"
-  _react.default.useLayoutEffect(() => {
-    if (!node) return undefined;
-    const target = container && 'current' in container ? container.current : container;
-    const parent = target || sharedRoot();
-    parent.appendChild(node);
-    if (top && TOP_LAYER) {
-      node.setAttribute('popover', 'manual');
-      if (node.showPopover && !node.matches(':popover-open')) node.showPopover();
-    }
-    return () => {
-      if (top && TOP_LAYER && node.matches(':popover-open')) node.hidePopover();
-      node.removeAttribute('popover');
-      if (node.parentNode) node.parentNode.removeChild(node);
-    };
-  }, [node, container, top]);
-
-  // its class and the density, theme and direction of where it is written, on every render
-  _react.default.useLayoutEffect(() => {
-    if (!node) return;
-    node.className = (0, _cx.cx)('plx-portal', top && 'plx-portal--top', className);
-    carry(origin.current, node);
-  });
-  if (!node) return null;
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("template", {
-    ref: origin,
-    "data-plx-portal-origin": ""
-  }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
   "platform/hooks/useIntersection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -15379,6 +16078,16 @@ const CONTRAST_PAIRS = exports.CONTRAST_PAIRS = Object.freeze([{
   bg: 'brand-primary',
   rule: T,
   use: 'Text and icons on the brand blue (a product tile)'
+}, {
+  fg: 'brand-primary',
+  bg: 'brand-on-primary',
+  rule: T,
+  use: 'The teaching bubble primary action: the brand blue label on its fill'
+}, {
+  fg: 'brand-on-primary',
+  bg: 'brand-primary',
+  rule: N,
+  use: 'Teaching bubble focus ring and action outlines on the brand blue'
 }, {
   fg: 'status-online',
   bg: 'surface-default',
@@ -16457,413 +17166,6 @@ function useSelection(options = {}) {
     allSelected,
     someSelected,
     anchor: anchor.current
-  };
-}
-  } },
-  "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.flingDistance = flingDistance;
-exports.gestureTokens = gestureTokens;
-exports.useGesture = useGesture;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useGesture
-   Summary: Touch, pen and mouse gestures from pointer events, on the gesture motion tokens: tap, long press, pan (drag),
-     swipe, fling, pinch to zoom and pull to refresh. It reports what the pointers do; the component decides what moves
-     and always offers the same action as a visible control (a button or a menu item).
-   Usage:
-     const ref = React.useRef(null);
-     useGesture(ref, { axis: 'x', onSwipe: (g) => { if (g.direction === 'left') archive(); } });          // swipe a row
-     useGesture(ref, { onLongPress: (g) => openMenuAt(g.x, g.y) });                                         // long press
-     useGesture(ref, { onPinch: (g) => setZoom(clamp(base * g.scale, 1, g.maxScale)) });                   // pinch to zoom
-     useGesture(listRef, { pull: true, onPull: (g) => setPull(g), onRefresh: reload });                      // pull to refresh
-     <div ref={ref} className="plx-gesture plx-gesture--pan-y">…</div>                                      // system/gesture.css
-   Props:
-     ref: a ref to the element that takes the gestures
-     options.axis ("both"): "x" | "y" | "both": the pan and swipe axis; movement mostly along the other axis is left to
-       the browser (the page still scrolls)
-     options.onTap({ x, y, pointerType }): a press released without moving past the slop and before the long-press delay
-     options.onLongPress({ x, y, pointerType }): held still for --plx-sys-gesture-long-press-delay
-     options.onPanStart(g), options.onPan(g), options.onPanEnd(g): a drag past --plx-sys-gesture-slop; g = { dx, dy (from
-       the start), vx, vy (px per ms), pointerType, canceled (onPanEnd: the pointer was canceled) }
-     options.onSwipe({ direction, inline, distance, velocity }): a pan released past --plx-sys-gesture-swipe-distance, or
-       faster than --plx-sys-gesture-fling-velocity; direction "left" | "right" | "up" | "down", inline "start" | "end"
-       (left and right in reading order) or null
-     options.onFling({ vx, vy, direction, travelX, travelY }): released faster than the fling velocity; travel is how
-       far it would coast on --plx-sys-gesture-fling-decay (flingDistance)
-     options.onPinch({ scale, originX, originY, maxScale, first }), options.onPinchEnd({ scale }): two pointers; scale is
-       relative to the pinch's start, maxScale the --plx-sys-gesture-pinch-max-scale token
-     options.pull (false): pull to refresh: a downward pan that starts with the element scrolled to its top
-     options.onPull({ distance, progress, ready, released }): the pull after --plx-sys-gesture-pull-resistance; ready
-       once it reaches --plx-sys-gesture-pull-distance; released when the finger lifts (distance 0)
-     options.onRefresh(): the pull was released while ready
-     options.disabled (false): no gestures
-     returns { active }: the gesture under way: null, "press", "pan", "pinch" or "pull" (to style the element)
-   Behavior:
-     Gestures end on release, so moving back before lifting cancels a swipe (WCAG 2.2, 2.5.2); a pointer that leaves the
-       window or is canceled by the system ends the pan with canceled true.
-     The pointer is captured once a pan starts, so it is followed outside the element; a tap on a child still clicks it.
-     Only the primary mouse button starts a gesture. A second finger turns a press or a pan into a pinch.
-     Every distance, time and rate is a token read when the gesture starts, so the density and interaction contexts apply.
-   Notes:
-     A gesture is a shortcut, never the only way: swipe to archive has an Archive button, pinch has zoom buttons, pull to
-       refresh has a Refresh button, a long press has the same menu on its button (WCAG 2.2, 2.5.1 and 2.5.7).
-     Give the element touch-action through system/gesture.css (plx-gesture, plx-gesture--pan-x, plx-gesture--pan-y) so
-       the browser does not scroll or zoom while the gesture is tracked.
-     Moving an element with the finger is the component's own stylesheet's work (steps through a data attribute); the
-       settle after it is .plx-gesture-settle (--plx-sys-gesture-settle-duration and -easing). Reduced motion settles at once.
-*/
-
-const VELOCITY_WINDOW = 100; // the last 100 ms of movement give the release velocity (a sampling window, not a look)
-
-// a token's value on the element: a length in px (rem converted), a time in ms, or a number
-function tokenOn(el, name) {
-  const cs = getComputedStyle(el),
-    v = cs.getPropertyValue(name).trim(),
-    n = parseFloat(v);
-  if (isNaN(n)) return NaN;
-  if (/rem$/.test(v)) return n * parseFloat(getComputedStyle(document.documentElement).fontSize);
-  if (/ms$/.test(v)) return n;
-  if (/s$/.test(v)) return n * 1000;
-  return n;
-}
-
-// the gesture tokens as numbers, read from the element (or the page)
-function gestureTokens(el) {
-  const at = el || (typeof document !== 'undefined' ? document.documentElement : null);
-  const t = name => at ? tokenOn(at, '--plx-sys-gesture-' + name) : NaN;
-  return {
-    slop: t('slop'),
-    swipeDistance: t('swipe-distance'),
-    flingVelocity: t('fling-velocity'),
-    flingDecay: t('fling-decay'),
-    longPressDelay: t('long-press-delay'),
-    pullDistance: t('pull-distance'),
-    pullResistance: t('pull-resistance'),
-    pinchMaxScale: t('pinch-max-scale')
-  };
-}
-
-// how far something released at velocity v (px per ms) coasts when it keeps decay of its speed each millisecond
-function flingDistance(v, decay) {
-  if (!(decay > 0 && decay < 1)) return 0;
-  return v * decay / (1 - decay);
-}
-const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-function useGesture(ref, options = {}) {
-  const [active, setActive] = _react.default.useState(null);
-  const latest = _react.default.useRef(options);
-  latest.current = options;
-  const disabled = !!options.disabled;
-  _react.default.useEffect(() => {
-    const el = ref.current;
-    if (!el || disabled) return undefined;
-    const pointers = new Map();
-    let g = null; // the gesture: { mode, start, samples, tokens, timer, … }
-    const call = (name, arg) => {
-      const f = latest.current[name];
-      if (f) f(arg);
-    };
-    const mode = m => {
-      if (g) g.mode = m;
-      setActive(m);
-    };
-    const velocity = () => {
-      const s = g.samples,
-        last = s[s.length - 1];
-      let first = s[0];
-      for (let i = s.length - 1; i >= 0; i--) {
-        if (last.t - s[i].t > VELOCITY_WINDOW) break;
-        first = s[i];
-      }
-      const dt = last.t - first.t;
-      return dt > 0 ? {
-        vx: (last.x - first.x) / dt,
-        vy: (last.y - first.y) / dt
-      } : {
-        vx: 0,
-        vy: 0
-      };
-    };
-    const capture = e => {
-      if (el.setPointerCapture) {
-        try {
-          el.setPointerCapture(e.pointerId);
-        } catch (err) {/* the pointer is gone */}
-      }
-    };
-    const clearTimer = () => {
-      if (g && g.timer) {
-        clearTimeout(g.timer);
-        g.timer = null;
-      }
-    };
-    const finish = () => {
-      clearTimer();
-      g = null;
-      setActive(null);
-    };
-    const pinchState = () => {
-      const [a, b] = Array.from(pointers.values());
-      return {
-        a,
-        b,
-        d: dist(a, b),
-        cx: (a.x + b.x) / 2,
-        cy: (a.y + b.y) / 2
-      };
-    };
-    const onDown = e => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      pointers.set(e.pointerId, {
-        x: e.clientX,
-        y: e.clientY
-      });
-      const o = latest.current;
-      if (pointers.size === 2 && o.onPinch) {
-        clearTimer();
-        if (g && g.mode === 'pan') call('onPanEnd', {
-          dx: 0,
-          dy: 0,
-          vx: 0,
-          vy: 0,
-          pointerType: g.pointerType,
-          canceled: true
-        });
-        const p = pinchState();
-        g = Object.assign(g || {}, {
-          startDist: p.d || 1,
-          tokens: g && g.tokens || gestureTokens(el)
-        });
-        mode('pinch');
-        call('onPinch', {
-          scale: 1,
-          originX: p.cx,
-          originY: p.cy,
-          maxScale: g.tokens.pinchMaxScale,
-          first: true
-        });
-        return;
-      }
-      if (pointers.size > 1) return;
-      const tokens = gestureTokens(el);
-      g = {
-        mode: 'press',
-        pointerId: e.pointerId,
-        pointerType: e.pointerType || 'mouse',
-        start: {
-          x: e.clientX,
-          y: e.clientY,
-          t: e.timeStamp
-        },
-        samples: [{
-          x: e.clientX,
-          y: e.clientY,
-          t: e.timeStamp
-        }],
-        tokens,
-        timer: null,
-        long: false,
-        atTop: el.scrollTop <= 0
-      };
-      setActive('press');
-      if (o.onLongPress) {
-        g.timer = setTimeout(() => {
-          if (!g || g.mode !== 'press') return;
-          g.long = true;
-          g.timer = null;
-          call('onLongPress', {
-            x: g.start.x,
-            y: g.start.y,
-            pointerType: g.pointerType
-          });
-        }, tokens.longPressDelay || 0);
-      }
-    };
-    const onMove = e => {
-      if (!g || !pointers.has(e.pointerId)) return;
-      pointers.set(e.pointerId, {
-        x: e.clientX,
-        y: e.clientY
-      });
-      const o = latest.current;
-      if (g.mode === 'pinch') {
-        if (pointers.size < 2) return;
-        const p = pinchState();
-        call('onPinch', {
-          scale: p.d / g.startDist,
-          originX: p.cx,
-          originY: p.cy,
-          maxScale: g.tokens.pinchMaxScale,
-          first: false
-        });
-        return;
-      }
-      if (e.pointerId !== g.pointerId) return;
-      g.samples.push({
-        x: e.clientX,
-        y: e.clientY,
-        t: e.timeStamp
-      });
-      if (g.samples.length > 32) g.samples.shift();
-      const dx = e.clientX - g.start.x,
-        dy = e.clientY - g.start.y;
-      if (g.mode === 'press') {
-        if (Math.hypot(dx, dy) < (g.tokens.slop || 0)) return;
-        clearTimer();
-        if (g.long) {
-          mode('none');
-          return;
-        } // moved after a long press: the long press stands, no pan
-        const vertical = Math.abs(dy) > Math.abs(dx);
-        if (o.pull && vertical && dy > 0 && g.atTop) {
-          mode('pull');
-          capture(e);
-        } else if (o.axis === 'x' && vertical || o.axis === 'y' && !vertical) {
-          mode('none');
-          return;
-        } // the browser scrolls
-        else if (o.onPan || o.onPanStart || o.onPanEnd || o.onSwipe || o.onFling) {
-          mode('pan');
-          capture(e);
-          call('onPanStart', {
-            dx,
-            dy,
-            vx: 0,
-            vy: 0,
-            pointerType: g.pointerType
-          });
-        } else {
-          mode('none');
-          return;
-        }
-      }
-      if (g.mode === 'pan') {
-        const v = velocity();
-        call('onPan', {
-          dx: o.axis === 'y' ? 0 : dx,
-          dy: o.axis === 'x' ? 0 : dy,
-          vx: v.vx,
-          vy: v.vy,
-          pointerType: g.pointerType
-        });
-      } else if (g.mode === 'pull') {
-        const distance = Math.max(0, dy) * (g.tokens.pullResistance || 0);
-        const target = g.tokens.pullDistance || 0;
-        g.ready = target > 0 && distance >= target;
-        call('onPull', {
-          distance,
-          progress: target > 0 ? Math.min(1, distance / target) : 0,
-          ready: g.ready,
-          released: false
-        });
-      }
-    };
-    const onUp = e => {
-      if (!pointers.has(e.pointerId)) return;
-      pointers.delete(e.pointerId);
-      if (!g) return;
-      const canceled = e.type === 'pointercancel';
-      if (g.mode === 'pinch') {
-        if (pointers.size < 2) {
-          call('onPinchEnd', {
-            scale: g.lastScale || 1
-          });
-          finish();
-          pointers.clear();
-        }
-        return;
-      }
-      if (e.pointerId !== g.pointerId) return;
-      const o = latest.current;
-      const dx = e.clientX - g.start.x,
-        dy = e.clientY - g.start.y;
-      if (g.mode === 'press' && !g.long && !canceled) call('onTap', {
-        x: e.clientX,
-        y: e.clientY,
-        pointerType: g.pointerType
-      });else if (g.mode === 'pan') {
-        const v = velocity(),
-          t = g.tokens;
-        const px = o.axis === 'y' ? 0 : dx,
-          py = o.axis === 'x' ? 0 : dy;
-        const vx = o.axis === 'y' ? 0 : v.vx,
-          vy = o.axis === 'x' ? 0 : v.vy;
-        call('onPanEnd', {
-          dx: px,
-          dy: py,
-          vx,
-          vy,
-          pointerType: g.pointerType,
-          canceled
-        });
-        if (!canceled) {
-          const horizontal = Math.abs(px) >= Math.abs(py);
-          const d = horizontal ? px : py,
-            vel = horizontal ? vx : vy;
-          const fast = Math.hypot(vx, vy) >= (t.flingVelocity || Infinity);
-          // a swipe ends moving the way it went: a pan dragged back toward its start does not commit
-          if ((Math.abs(d) >= t.swipeDistance || fast && Math.sign(vel) === Math.sign(d)) && d !== 0) {
-            const direction = horizontal ? d > 0 ? 'right' : 'left' : d > 0 ? 'down' : 'up';
-            const inline = horizontal ? d > 0 !== (0, _direction.isRtl)(el) ? 'end' : 'start' : null;
-            call('onSwipe', {
-              direction,
-              inline,
-              distance: Math.abs(d),
-              velocity: Math.abs(vel)
-            });
-          }
-          if (fast) {
-            const direction = horizontal ? vx > 0 ? 'right' : 'left' : vy > 0 ? 'down' : 'up';
-            call('onFling', {
-              vx,
-              vy,
-              direction,
-              travelX: flingDistance(vx, t.flingDecay),
-              travelY: flingDistance(vy, t.flingDecay)
-            });
-          }
-        }
-      } else if (g.mode === 'pull') {
-        const ready = g.ready && !canceled;
-        call('onPull', {
-          distance: 0,
-          progress: 0,
-          ready: false,
-          released: true
-        });
-        if (ready) call('onRefresh');
-      }
-      finish();
-    };
-
-    // the pinch's last scale, kept for onPinchEnd
-    const onPinchTrack = () => {
-      if (g && g.mode === 'pinch' && pointers.size === 2) g.lastScale = pinchState().d / g.startDist;
-    };
-    el.addEventListener('pointerdown', onDown);
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointermove', onPinchTrack);
-    el.addEventListener('pointerup', onUp);
-    el.addEventListener('pointercancel', onUp);
-    window.addEventListener('pointerup', onUp);
-    return () => {
-      clearTimer();
-      el.removeEventListener('pointerdown', onDown);
-      el.removeEventListener('pointermove', onMove);
-      el.removeEventListener('pointermove', onPinchTrack);
-      el.removeEventListener('pointerup', onUp);
-      el.removeEventListener('pointercancel', onUp);
-      window.removeEventListener('pointerup', onUp);
-    };
-  }, [ref, disabled]);
-  return {
-    active
   };
 }
   } },
@@ -19734,7 +20036,167 @@ function ContextualHelp({
   }, more('standalone')) : null));
 }
   } },
-  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Spotlight/Spotlight.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/portal.jsx":"platform/utils/portal.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Spotlight = Spotlight;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _portal = require("../../utils/portal.jsx");
+var _floating = require("../../utils/floating.js");
+var _grid = require("../../utils/grid.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Spotlight
+   Summary: Draws the eye to one element: the rest of the window is dimmed in the scrim role while the element stays
+     bright and usable (a cut-out), or a small pulsing beacon marks it without dimming anything (10 Patterns ›
+     Onboarding and education › Spotlight). TeachingBubble turns it on for its target; a product tour uses it step by step.
+   Usage:
+     const ref = React.useRef(null);
+     <Button ref={ref} icon="filter">Filters</Button>
+     <Spotlight target={ref} open={step === 1} onDismiss={endTour} />                       the cut-out around the button
+     <Spotlight target={ref} open variant="beacon" />                                        a pulsing beacon on its corner
+     <div className="plx-u-relative"><Button ref={ref}>…</Button><Spotlight target={ref} open contained /></div>   within one region
+   Props:
+     target: the element to light: a ref to it (or the element itself)
+     open: whether it shows (default false)
+     variant: "cutout" (default: everything but the target is dimmed) | "beacon" (nothing is dimmed: a pulsing dot on the
+       target's top end corner, in the brand color)
+     contained: covers its nearest positioned parent instead of the window (a demo, one region of a page); default false
+     onDismiss(): Escape runs it while it shows (leave it out when the layer above handles Escape, as TeachingBubble does)
+     className: more classes on the spotlight
+   Behavior:
+     The cut-out is four dimmed panels around the target, --plx-comp-spotlight-padding clear of its edges, placed by CSS
+       anchor positioning: they follow the target on scroll and resize, and nothing is measured or written as a style.
+       The target is never covered, so it keeps its pointer, focus and actions; the dimmed panels take the pointer, so a
+       press beside it does nothing. Focus is not trapped (the page stays reachable by keyboard).
+     The spotlight is decoration: hidden from assistive technology; the explanation is the layer above it (a
+       TeachingBubble, a dialog), which names what is lit.
+     It fades in with the scrim's motion; the beacon pulses on the loop duration; with reduced motion neither moves.
+     Where the browser has no anchor positioning (Chrome before 125, Safari before 26, Firefox before 147) the panels
+       are placed from the target's measured box and the --plx-comp-spotlight-padding token, written by script as inline
+       insets (runtime geometry, owner 2026-10-13: measured layout and tokens only, never a literal), and again on
+       scroll and resize.
+   Notes:
+     One at a time, for one element at a time; never for errors or for what people must do to finish a task. Over the
+       window it covers only the window (fixed); give a contained spotlight a positioned parent.
+*/
+
+const VARIANTS = ['cutout', 'beacon'];
+const SIDES = ['top', 'bottom', 'start', 'end'];
+function Spotlight({
+  target,
+  open = false,
+  variant = 'cutout',
+  contained = false,
+  onDismiss,
+  className
+}) {
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'cutout';
+  const root = _react.default.useRef(null);
+  const shown = !!open;
+  (0, _layer.useLayer)(root, shown && !!onDismiss, {
+    onEscape: onDismiss
+  });
+  // the target names the anchor (and, contained, the parent scopes it, so each region finds its own target)
+  _react.default.useLayoutEffect(() => {
+    const el = target && 'current' in target ? target.current : target;
+    if (!shown || !el || !el.setAttribute) return undefined;
+    el.setAttribute('data-plx-spotlight-target', '');
+    const scope = contained && root.current ? root.current.parentElement : null;
+    if (scope) scope.setAttribute('data-plx-spotlight-scope', '');
+    return () => {
+      el.removeAttribute('data-plx-spotlight-target');
+      if (scope) scope.removeAttribute('data-plx-spotlight-scope');
+    };
+  }, [shown, target, contained]);
+  // no anchor positioning: the panels' insets from the target's measured box (runtime geometry, written by script)
+  _react.default.useLayoutEffect(() => {
+    const el = target && 'current' in target ? target.current : target;
+    if (!shown || _floating.FLOATING_ANCHOR || !el || !root.current) return undefined;
+    // a length token in pixels (tokens are written in px or rem)
+    const px = name => {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim(),
+        n = parseFloat(v) || 0;
+      return /rem$/.test(v) ? n * parseFloat(getComputedStyle(document.documentElement).fontSize) : n;
+    };
+    const place = () => {
+      const box = root.current;
+      if (!box) return;
+      const host = contained ? box.parentElement.getBoundingClientRect() : {
+        left: 0,
+        top: 0,
+        right: window.innerWidth,
+        bottom: window.innerHeight
+      };
+      const r = el.getBoundingClientRect(); // measured layout: not snapped
+      const pad = (0, _grid.snapToGrid)(px('--plx-comp-spotlight-padding')); // the clear space, a token, kept on the grid
+      const W = host.right - host.left,
+        Hh = host.bottom - host.top;
+      const t = r.top - host.top - pad,
+        b = host.bottom - r.bottom - pad,
+        l = r.left - host.left - pad,
+        e = host.right - r.right - pad;
+      const set = (node, v) => {
+        if (node) Object.keys(v).forEach(k => node.style.setProperty(k, v[k] + 'px'));
+      }; // inline: runtime geometry (owner 2026-10-13)
+      const dim = part => box.querySelector('.plx-spotlight__dim--' + part);
+      set(dim('top'), {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: Hh - t
+      });
+      set(dim('bottom'), {
+        top: Hh - b,
+        left: 0,
+        right: 0,
+        bottom: 0
+      });
+      set(dim('start'), {
+        top: t,
+        bottom: b,
+        left: 0,
+        right: W - l
+      });
+      set(dim('end'), {
+        top: t,
+        bottom: b,
+        left: W - e,
+        right: 0
+      });
+      const half = (0, _grid.snapToGrid)(px('--plx-comp-spotlight-beacon-size') / 2); // half the beacon's size token, on the grid
+      set(box.querySelector('.plx-spotlight__beacon'), {
+        top: r.top - host.top - half,
+        left: r.right - host.left - half
+      });
+    };
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, true);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place, true);
+    };
+  }, [shown, target, contained, v]);
+  if (!shown) return null;
+  const layer = /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    "aria-hidden": "true",
+    className: (0, _cx.cx)('plx-spotlight', 'plx-spotlight--' + v, contained && 'plx-spotlight--contained', className)
+  }, v === 'cutout' ? SIDES.map(s => /*#__PURE__*/_react.default.createElement("div", {
+    key: s,
+    className: 'plx-spotlight__dim plx-spotlight__dim--' + s
+  })) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-spotlight__beacon"
+  }));
+  return contained ? layer : /*#__PURE__*/_react.default.createElement(_portal.Portal, null, layer);
+}
+  } },
+  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19747,10 +20209,12 @@ var _layer = require("../../utils/layer.js");
 var _Button = require("../Button/Button.jsx");
 var _Text = require("../Text/Text.jsx");
 var _Popover = require("../Popover/Popover.jsx");
+var _Spotlight = require("../Spotlight/Spotlight.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · TeachingBubble
    Summary: A callout that points at a feature to introduce it once, or leads a short tour step by step: a title, one or
-     two sentences, an optional picture, a step count and its actions, in a Popover with an arrow at the feature
+     two sentences, an optional picture, a step count and its actions, in a Popover filled with the brand blue, with an
+     arrow at the feature, while a Spotlight dims the rest of the window around it
      (09 Overlays › Contextual overlays › Teaching bubble; also 10 Patterns › Coach mark).
    Usage:
      <TeachingBubble target={<Button icon="filter">Filters</Button>} open={tip} onDismiss={() => setTip(false)}
@@ -19770,6 +20234,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      secondaryAction: { label, onClick }: a second action (Back, Not now)
      placement: where it sits against the target (default "bottom"; Popover's placements)
      wide: the wide bubble (400px) for a picture or a longer step (default false: 320px)
+     spotlight: while it is open, a Spotlight dims the rest of the window and leaves the target bright and usable
+       (default true; false for a quiet hint that leaves the page as it is)
      focusOnOpen: focus moves into it when it opens (default false: a bubble that appears by itself leaves focus where it
        is; set it when a tour step opens it after an action)
      strings: the words it shows and announces, for other languages: { close: "Close", step: "{current} of {total}" }
@@ -19780,9 +20246,13 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        does not close it. Escape and Close run onDismiss and return focus to the target.
      It is a non-modal dialog named by its title: the page stays usable; Tab reaches its actions after the target.
      The arrow points at the target; the bubble keeps its side so the arrow stays true.
+     With spotlight (the default) the rest of the window is dimmed while it is open: the target is never covered and
+       keeps its actions; a press on the dim does nothing; focus is not trapped. The dim goes when the bubble closes.
    Notes:
      One at a time, and only for something new or easily missed; never for errors or what people must know to finish a
-       task. It uses the popover's surface (the overlay surface and border): there is no emphasized teaching color.
+       task. Its surface is the brand blue (plx-sys.brand-primary) with the color on the brand (plx-sys.brand-on-primary)
+       for its text, icons and actions (owner, 2026-10-13): the primary action is filled with that color, the secondary
+       action and Close are drawn in it; the pair meets the text contrast in light and dark.
 */
 
 const STRINGS = {
@@ -19810,6 +20280,7 @@ function TeachingBubble({
   secondaryAction,
   placement = 'bottom',
   wide = false,
+  spotlight = true,
   focusOnOpen = false,
   strings,
   className
@@ -19817,7 +20288,14 @@ function TeachingBubble({
   const t = Object.assign({}, STRINGS, strings);
   const id = (0, _layer.useUid)('plx-teaching-bubble');
   const actions = primaryAction || secondaryAction;
-  return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+  const spot = _react.default.useRef(null); // the target's box: the spotlight's anchor
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: spot,
+    className: "plx-teaching-bubble__target"
+  }, spotlight ? /*#__PURE__*/_react.default.createElement(_Spotlight.Spotlight, {
+    target: spot,
+    open: !!open
+  }) : null, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     trigger: _react.default.Children.only(target),
     triggerOn: "manual",
     open: !!open,
@@ -19858,7 +20336,7 @@ function TeachingBubble({
   }, secondaryAction.label) : null, primaryAction ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "primary",
     onClick: primaryAction.onClick
-  }, primaryAction.label) : null) : null) : null);
+  }, primaryAction.label) : null) : null) : null));
 }
   } },
   "platform/patterns/Popconfirm/Popconfirm.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -20099,7 +20577,474 @@ function MegaMenu({
   }, featured) : null)));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/CopyButton/CopyButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/clipboard.js":"platform/utils/clipboard.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CopyButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _clipboard = require("../../utils/clipboard.js");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CopyButton
+   Summary: A button that copies one value (an ID, a path, a link, a code sample) to the clipboard and confirms it in
+     place: the icon turns to a check (and the label to "Copied") for a moment, and the result is announced
+     (04 Actions › Clipboard › Copy). Built on Button and useClipboard (utils/clipboard.js).
+   Usage:
+     <CopyButton value="ASSET-0142" label="Copy ID" />                                  an icon button beside the value
+     <CopyButton value={link} showLabel label="Copy link" />                            the icon and its label
+     <CopyButton value={link} field fieldLabel="Share link" label="Copy link" />        the value in a read-only field, the button joined at its end
+   Props:
+     value: what is copied: text, a function that returns it when pressed, { html, text }, or a Blob (a picture)
+     label: what it copies, as a verb phrase: the accessible name, and the visible label with showLabel ("Copy ID";
+       default strings.copy)
+     showLabel: the label shows beside the icon (default false: an icon-only button named by label)
+     field: the value shows in a read-only field in the data font, with the button joined at its end (default false); the
+       button shows strings.copy ("Copy") and is named by label ("Copy link"), or shows label with showLabel
+     fieldLabel: the field's accessible name (default label's object: give it, "Share link")
+     variant: the Button variant (default "ghost" for the icon button, "secondary" with a label or in a field)
+     size: the Button size (default "md"; "xs" in a dense row or a card)
+     timeout: how long the copied state shows, in milliseconds (default the --plx-sys-clipboard-feedback-duration token)
+     onCopy(ok): runs after each copy with true, or false when the browser refused it
+     disabled: nothing to copy (default false)
+     strings: the words it shows and announces, for other languages: { copy: "Copy", copied: "Copied",
+       failed: "Couldn’t copy. Select the text and copy it by hand." }
+     className: more classes on the button (on the wrapper with field)
+     ref: forwarded to the <button>
+     Other props pass through to the Button.
+   Behavior:
+     A press, Enter or Space copies the value as it is at that moment, with nothing added. The icon turns to a check and a
+       visible label to strings.copied for the timeout, then returns to rest; a second press copies again.
+     "Copied" (or the failure message) is announced through the polite live region (assertive on failure); the
+       accessible name stays the label, so a screen reader hears what was copied and then that it worked.
+     When the browser refuses, in a field the value is selected so it can be copied by hand.
+   Notes:
+     Name it for what it copies ("Copy file path"), never only "Copy". Put it right after the value it copies. The field
+       form is for a value people may also read or select (a share link, an API endpoint).
+*/
+const STRINGS = {
+  copy: 'Copy',
+  copied: 'Copied',
+  failed: 'Couldn’t copy. Select the text and copy it by hand.'
+};
+const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(function CopyButton({
+  value,
+  label,
+  showLabel = false,
+  field = false,
+  fieldLabel,
+  variant,
+  size = 'md',
+  timeout,
+  onCopy,
+  disabled = false,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const clip = (0, _clipboard.useClipboard)({
+    timeout,
+    strings: {
+      copied: t.copied,
+      failed: t.failed
+    }
+  });
+  const input = _react.default.useRef(null);
+  const name = label || t.copy;
+  const text = typeof value === 'function' ? null : value;
+  const press = async () => {
+    const v = typeof value === 'function' ? value() : value;
+    const ok = await clip.copy(v);
+    if (!ok && input.current) input.current.select();
+    if (onCopy) onCopy(ok);
+  };
+  const labelled = showLabel || field;
+  const button = /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    ref: ref,
+    variant: variant || (labelled ? 'secondary' : 'ghost'),
+    size: size,
+    icon: clip.copied ? 'check' : 'ed-copy',
+    iconOnly: !labelled,
+    label: !labelled || field && !showLabel ? name : undefined,
+    disabled: disabled,
+    onClick: press,
+    className: (0, _cx.cx)('plx-copy-button', clip.copied && 'is-copied', field ? 'plx-copy-button__button' : className)
+  }, rest), labelled ? clip.copied ? t.copied : field && !showLabel ? t.copy : name : name);
+  if (!field) return button;
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-copy-button-field', className)
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    ref: input,
+    type: "text",
+    readOnly: true,
+    value: text == null ? '' : String(text),
+    "aria-label": fieldLabel || name,
+    className: "plx-input plx-input--data plx-copy-button-field__value",
+    onFocus: e => e.target.select()
+  }), button);
+});
+  } },
+  "platform/components/Details/Details.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Details = Details;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Details
+   Summary: One block of optional detail behind a short summary line that opens it in place: the native details and
+     summary elements, styled (09 Overlays › Disclosure › Details). It is not a section: a part of the page with a heading
+     that folds is a CollapsibleSection; a set of them is an Accordion.
+   Usage:
+     <Details summary="Why do we need your phone number?">We text you a code when you sign in from a new device.</Details>
+     <Details summary="Technical details" variant="bordered" defaultOpen>…</Details>
+     <Text as="p">The upload failed. <Details summary="Show the error" variant="inline">…</Details></Text>
+     <Details summary="Filters" open={open} onToggle={setOpen}>…</Details>
+   Props:
+     summary: the line that is always shown and opens it: a question or a short phrase (required)
+     children: the detail it reveals: a few sentences, a short list, a code sample
+     variant: "default" (a chevron and the summary in the body text; the detail indented under it) | "bordered" (in a box
+       with a border, for detail that should read as one piece: logs, technical data) | "inline" (small and muted, in a
+       line of text or under a message; the detail is not indented)
+     open, defaultOpen: whether it is open (controlled) or opens at first (default false)
+     onToggle(open): runs when it opens or closes
+     name: the native exclusive group: Details with the same name close each other (one open at a time)
+     className: more classes on the <details>
+     Other props pass through to the <details>.
+   Behavior:
+     The summary is a native disclosure: a click, Enter or Space opens and closes it, and assistive technology announces
+       it as expanded or collapsed. The chevron points to the end when closed and down when open.
+     The browser's find in page opens it when the text found is inside (the native element does this).
+     It opens at once, without an animation, so nothing moves under the pointer.
+   Notes:
+     Start closed; put only optional detail inside: what everyone needs stays on the page. Never nest one in another.
+*/
+const VARIANTS = ['default', 'bordered', 'inline'];
+function Details({
+  summary,
+  children,
+  variant = 'default',
+  open: openProp,
+  defaultOpen = false,
+  onToggle,
+  name,
+  className,
+  ...rest
+}) {
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(!!defaultOpen);
+  const open = controlled ? !!openProp : own;
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'default';
+  // the native element toggles itself; the state follows it (and a controlled value is put back if the caller keeps it)
+  const toggled = e => {
+    const now = e.currentTarget.open;
+    if (now === open) return;
+    if (!controlled) setOwn(now);
+    if (onToggle) onToggle(now);
+  };
+  return /*#__PURE__*/_react.default.createElement("details", _extends({
+    className: (0, _cx.cx)('plx-details', 'plx-details--' + v, className),
+    open: open,
+    name: name,
+    onToggle: toggled
+  }, rest), /*#__PURE__*/_react.default.createElement("summary", {
+    className: "plx-details__summary"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__marker",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-right",
+    className: "plx-details__chevron plx-details__chevron--closed"
+  }), /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down",
+    className: "plx-details__chevron plx-details__chevron--open"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-details__label"
+  }, summary)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-details__content"
+  }, children));
+}
+  } },
+  "platform/components/FloatingActionButton/FloatingActionButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FloatingActionButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FloatingActionButton
+   Summary: The one most important action of a screen (create, compose, upload) in a raised button that floats at the
+     bottom end corner, over the content, and stays in reach while the page scrolls (04 Actions › Buttons › Floating
+     action button).
+   Usage:
+     <FloatingActionButton icon="plus" label="New asset" onClick={create} />                           standard, icon only
+     <FloatingActionButton icon="upload" label="Upload" extended onClick={upload} />                   extended: the icon and its label
+     <FloatingActionButton icon="pencil" label="Compose" size="sm" variant="secondary" placement="inline" />
+   Props:
+     icon: the action's icon (an icon name or an <Icon>; required)
+     label: the action, as a verb ("New asset", "Upload"): the accessible name, and the visible label when extended (required)
+     extended: the label shows beside the icon (default false: a square, icon-only button named by label)
+     size: "md" (default; 56px) | "sm" (40px) | "lg" (96px, the hero action of a large, empty screen)
+     variant: "primary" (default; the action color) | "secondary" (the raised surface, the content color)
+     placement: "corner" (default; fixed at the bottom end corner of the window, --plx-comp-floating-action-button-inset
+       from its edges) | "inline" (in the flow: its container places it, e.g. a pane's own corner)
+     disabled: the action is not available (default false)
+     onClick(event): runs on a press, Enter or Space
+     className: more classes on the button
+     ref: forwarded to the <button>
+     Other props pass through to the <button>.
+   Behavior:
+     It is a native button: a press, Enter or Space runs the action. In the corner it stays put while the page scrolls;
+       give the scrolling content bottom space (--plx-comp-floating-action-button-clearance) so its last line can be read
+       beside it.
+     Its place in the Tab order is where it is written: write it where the action belongs (after the page header or the
+       list it adds to), not at the end of a long page.
+     Hover and press darken the fill (the action color's own steps); focus shows the focus ring.
+   Notes:
+     One per screen, and only for an action that is not already on the page. Extended when the icon alone is not clear;
+       a phone-sized window keeps it icon-only to cover less. On a desktop page with a toolbar, put the action there
+       (a primary Button) instead.
+*/
+const SIZES = ['sm', 'md', 'lg'];
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.default.forwardRef(function FloatingActionButton({
+  icon,
+  label,
+  extended = false,
+  size = 'md',
+  variant = 'primary',
+  placement = 'corner',
+  disabled = false,
+  onClick,
+  className,
+  ...rest
+}, ref) {
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  return /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: "button",
+    disabled: disabled || undefined,
+    "aria-label": extended ? undefined : label,
+    onClick: onClick,
+    className: (0, _cx.cx)('plx-floating-action-button', 'plx-floating-action-button--' + s, variant === 'secondary' ? 'plx-floating-action-button--secondary' : 'plx-floating-action-button--primary', extended && 'plx-floating-action-button--extended', placement === 'inline' ? 'plx-floating-action-button--inline' : 'plx-floating-action-button--corner', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-floating-action-button__icon",
+    "aria-hidden": "true"
+  }, asIcon(icon)), extended ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-floating-action-button__label"
+  }, label) : null);
+});
+  } },
+  "platform/components/SplitButton/SplitButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SplitButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SplitButton
+   Summary: The most common action and its close alternatives in one control: a main button that runs the action, joined
+     to a menu button that opens the related actions (04 Actions › Buttons › Split button). Built on Button and Menu.
+   Usage:
+     <SplitButton label="Save" onClick={save} menuLabel="More save options">
+       <MenuItem onSelect={saveDraft}>Save as draft</MenuItem>
+       <MenuItem onSelect={saveCopy}>Save a copy</MenuItem>
+     </SplitButton>
+     <SplitButton variant="primary" icon="upload" label="Upload" onClick={upload} menuLabel="More upload options" size="sm">…</SplitButton>
+   Props:
+     label: the main action, as a verb ("Save"): the main button's label (required)
+     onClick(event): runs the main action
+     menuLabel: the menu button's accessible name, "More <action> options" (default strings.more, filled with label)
+     children: the related actions: MenuItem, MenuGroup, MenuDivider (Menu's items)
+     variant: "secondary" (default) | "primary": both parts take the same emphasis
+     size: Button's sizes: "md" (default) | "sm" | "xs" | "lg"
+     icon: an icon before the main label
+     disabled: both parts do nothing (default false)
+     placement: where the menu opens: "bottom-end" (default: under the control, aligned with its end) | "bottom-start" |
+       "top-start" | "top-end"
+     strings: the words it announces, for other languages: { more: "More {label} options" } ({label} is filled with label)
+     className: more classes on the control
+     ref: forwarded to the main <button>
+   Behavior:
+     Two Tab stops with their own names: the main button runs the action; the menu button (aria-haspopup="menu",
+       aria-expanded) opens the menu: Enter, Space or Arrow Down on its first item, Arrow Up on its last; Escape closes it
+       and returns focus to the menu button (Menu).
+     The two parts share one edge: square where they meet, a divider between them (on primary, the pressed step of the
+       action color, so it shows on the fill).
+     Disabled: both parts are disabled.
+   Notes:
+     The main action never changes by itself to the last one chosen. Use a split button when one action is clearly the
+       most common; when all are equally likely, use a menu button (Button with caret and Menu).
+*/
+
+const STRINGS = {
+  more: 'More {label} options'
+};
+const PLACES = ['bottom-start', 'bottom-end', 'top-start', 'top-end'];
+const SplitButton = exports.SplitButton = /*#__PURE__*/_react.default.forwardRef(function SplitButton({
+  label,
+  onClick,
+  menuLabel,
+  children,
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  disabled = false,
+  placement = 'bottom-end',
+  strings,
+  className
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const v = variant === 'primary' ? 'primary' : 'secondary';
+  const more = menuLabel || t.more.replace('{label}', typeof label === 'string' ? label.toLowerCase() : '').replace(/\s+/g, ' ');
+  return /*#__PURE__*/_react.default.createElement("div", {
+    role: "group",
+    "aria-label": typeof label === 'string' ? label : undefined,
+    className: (0, _cx.cx)('plx-split-button', 'plx-split-button--' + v, className)
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: ref,
+    variant: v,
+    size: size,
+    icon: icon,
+    disabled: disabled,
+    onClick: onClick,
+    className: "plx-split-button__main"
+  }, label), disabled ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: v,
+    size: size,
+    iconOnly: true,
+    caret: true,
+    label: more,
+    disabled: true,
+    className: "plx-split-button__toggle"
+  }) : /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    placement: PLACES.indexOf(placement) >= 0 ? placement : 'bottom-end',
+    label: more,
+    className: "plx-split-button__menu",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: v,
+      size: size,
+      iconOnly: true,
+      caret: true,
+      label: more,
+      className: "plx-split-button__toggle"
+    })
+  }, children));
+});
+  } },
+  "platform/hooks/usePrint.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.usePrint = usePrint;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · usePrint
+   Summary: Prints the page laid out for paper: opens the browser's print dialog from a person's action, and while the page
+     prints (from a Print button or the browser's own Print), switches it to the light theme so it prints black on
+     white, then puts the theme back. system/print.css leaves the chrome off the paper.
+   Usage:
+     const { print, printing } = usePrint();
+     <Button onClick={print}>Print</Button>                                   the Print action
+     <Button onClick={() => print({ title: 'Invoice 2026-114' })}>Print invoice</Button>   a title for the printed page
+     usePrint({ onBeforePrint: () => setAllExpanded(true), onAfterPrint: () => setAllExpanded(false) })
+   Props:
+     options.light (true): print in the light theme whatever the page's mode
+     options.onBeforePrint(), options.onAfterPrint(): run around every print (open folded sections, load every page)
+     returns { print({ title }), printing }: print opens the dialog (title is the document title while it prints: the
+       name the browser offers for a PDF and puts in the page header); printing is true while the page prints
+   Behavior:
+     Listens to beforeprint and afterprint while mounted, so Ctrl+P and the browser's menu get the same light theme and
+       callbacks as the button. data-plx-mode is set to "light" on <html> and restored after; nothing else is changed.
+     print() calls window.print(): it must run from a press or a key (browsers block it otherwise).
+   Notes:
+     Label the action "Print" or "Print <object>". Put what only the paper needs (the date, the address) in Show print,
+       and what the paper should not show in Hide print (ResponsiveVisibility).
+*/
+
+function usePrint(options = {}) {
+  const {
+    light = true,
+    onBeforePrint,
+    onAfterPrint
+  } = options;
+  const [printing, setPrinting] = _react.default.useState(false);
+  const saved = _react.default.useRef(null);
+  const calls = _react.default.useRef({
+    onBeforePrint,
+    onAfterPrint
+  });
+  calls.current = {
+    onBeforePrint,
+    onAfterPrint
+  };
+  _react.default.useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const root = document.documentElement;
+    const before = () => {
+      setPrinting(true);
+      if (light) {
+        saved.current = {
+          mode: root.getAttribute('data-plx-mode')
+        };
+        root.setAttribute('data-plx-mode', 'light');
+      }
+      if (calls.current.onBeforePrint) calls.current.onBeforePrint();
+    };
+    const after = () => {
+      if (saved.current) {
+        if (saved.current.mode == null) root.removeAttribute('data-plx-mode');else root.setAttribute('data-plx-mode', saved.current.mode);
+        saved.current = null;
+      }
+      setPrinting(false);
+      if (calls.current.onAfterPrint) calls.current.onAfterPrint();
+    };
+    window.addEventListener('beforeprint', before);
+    window.addEventListener('afterprint', after);
+    return () => {
+      window.removeEventListener('beforeprint', before);
+      window.removeEventListener('afterprint', after);
+    };
+  }, [light]);
+  const print = _react.default.useCallback(opts => {
+    if (typeof window === 'undefined' || !window.print) return;
+    const title = opts && typeof opts === 'object' && typeof opts.title === 'string' ? opts.title : null;
+    const was = document.title;
+    if (title) document.title = title;
+    try {
+      window.print();
+    } finally {
+      if (title) document.title = was;
+    }
+  }, []);
+  return {
+    print,
+    printing
+  };
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20315,10 +21260,22 @@ Object.defineProperty(exports, "ContentGrid", {
     return _ContentGrid.ContentGrid;
   }
 });
+Object.defineProperty(exports, "ContextMenu", {
+  enumerable: true,
+  get: function () {
+    return _Menu.ContextMenu;
+  }
+});
 Object.defineProperty(exports, "ContextualHelp", {
   enumerable: true,
   get: function () {
     return _ContextualHelp.ContextualHelp;
+  }
+});
+Object.defineProperty(exports, "CopyButton", {
+  enumerable: true,
+  get: function () {
+    return _CopyButton.CopyButton;
   }
 });
 Object.defineProperty(exports, "Count", {
@@ -20379,6 +21336,12 @@ Object.defineProperty(exports, "DateBadge", {
   enumerable: true,
   get: function () {
     return _DateBadge.DateBadge;
+  }
+});
+Object.defineProperty(exports, "Details", {
+  enumerable: true,
+  get: function () {
+    return _Details.Details;
   }
 });
 Object.defineProperty(exports, "Dialog", {
@@ -20469,6 +21432,12 @@ Object.defineProperty(exports, "FilterBar", {
   enumerable: true,
   get: function () {
     return _FilterBar.FilterBar;
+  }
+});
+Object.defineProperty(exports, "FloatingActionButton", {
+  enumerable: true,
+  get: function () {
+    return _FloatingActionButton.FloatingActionButton;
   }
 });
 Object.defineProperty(exports, "GRID_TOKEN", {
@@ -20601,6 +21570,18 @@ Object.defineProperty(exports, "MenuItem", {
   enumerable: true,
   get: function () {
     return _Menu.MenuItem;
+  }
+});
+Object.defineProperty(exports, "MenuRadioGroup", {
+  enumerable: true,
+  get: function () {
+    return _Menu.MenuRadioGroup;
+  }
+});
+Object.defineProperty(exports, "MenuSub", {
+  enumerable: true,
+  get: function () {
+    return _Menu.MenuSub;
   }
 });
 Object.defineProperty(exports, "Metric", {
@@ -20913,6 +21894,18 @@ Object.defineProperty(exports, "Spinner", {
   enumerable: true,
   get: function () {
     return _Loading.Spinner;
+  }
+});
+Object.defineProperty(exports, "SplitButton", {
+  enumerable: true,
+  get: function () {
+    return _SplitButton.SplitButton;
+  }
+});
+Object.defineProperty(exports, "Spotlight", {
+  enumerable: true,
+  get: function () {
+    return _Spotlight.Spotlight;
   }
 });
 Object.defineProperty(exports, "Stack", {
@@ -21641,6 +22634,12 @@ Object.defineProperty(exports, "usePressable", {
     return _usePressable.usePressable;
   }
 });
+Object.defineProperty(exports, "usePrint", {
+  enumerable: true,
+  get: function () {
+    return _usePrint.usePrint;
+  }
+});
 Object.defineProperty(exports, "useReadOnly", {
   enumerable: true,
   get: function () {
@@ -21852,6 +22851,12 @@ var _ContextualHelp = require("./components/ContextualHelp/ContextualHelp.jsx");
 var _TeachingBubble = require("./components/TeachingBubble/TeachingBubble.jsx");
 var _Popconfirm = require("./patterns/Popconfirm/Popconfirm.jsx");
 var _MegaMenu = require("./components/MegaMenu/MegaMenu.jsx");
+var _CopyButton = require("./components/CopyButton/CopyButton.jsx");
+var _Details = require("./components/Details/Details.jsx");
+var _FloatingActionButton = require("./components/FloatingActionButton/FloatingActionButton.jsx");
+var _SplitButton = require("./components/SplitButton/SplitButton.jsx");
+var _Spotlight = require("./components/Spotlight/Spotlight.jsx");
+var _usePrint = require("./hooks/usePrint.js");
   } }
   };
   var cache = {};

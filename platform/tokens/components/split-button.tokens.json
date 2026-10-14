@@ -1,0 +1,10 @@
+{
+  "$description": "SplitButton (platform/components/SplitButton, library wave 5, lane B): its component tokens. Both parts are Buttons (their variant, size and states); these are the join.",
+  "plx-comp": {
+    "split-button-joined-radius": { "$value": "{plx-sys.shape-none}", "$type": "dimension", "$description": "SplitButton: the square corners where the two parts meet (as a button group's joined corners)." },
+    "split-button-divider-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "SplitButton: the divider between the parts." },
+    "split-button-primary-divider-color": { "$value": "{plx-sys.action-primary-background-pressed}", "$type": "color", "$description": "Primary SplitButton: the divider, the pressed step of the action color, so it shows on the fill." },
+    "split-button-disabled-divider-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Disabled primary SplitButton: the divider on the disabled fill." },
+    "split-button-focus-layer": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "SplitButton: the focused part rises one layer so its focus ring is drawn over the other part." }
+  }
+}

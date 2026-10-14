@@ -148,4 +148,13 @@ export { ContextualHelp } from './components/ContextualHelp/ContextualHelp.jsx';
 export { TeachingBubble } from './components/TeachingBubble/TeachingBubble.jsx';
 export { Popconfirm } from './patterns/Popconfirm/Popconfirm.jsx';
 export { MegaMenu } from './components/MegaMenu/MegaMenu.jsx';
+export { CopyButton } from './components/CopyButton/CopyButton.jsx';
+export { Details } from './components/Details/Details.jsx';
+export { FloatingActionButton } from './components/FloatingActionButton/FloatingActionButton.jsx';
+export { SplitButton } from './components/SplitButton/SplitButton.jsx';
+export { Spotlight } from './components/Spotlight/Spotlight.jsx';
+export { MenuRadioGroup } from './components/Menu/Menu.jsx';
+export { MenuSub } from './components/Menu/Menu.jsx';
+export { ContextMenu } from './components/Menu/Menu.jsx';
+export { usePrint } from './hooks/usePrint.js';
 /* END library parts */

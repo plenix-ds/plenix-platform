@@ -1,0 +1,26 @@
+/* Plenix · Details (platform/components/Details). The native details and summary: the summary is a row of the chevron
+   (end-pointing when closed, down when open) and the label; the content follows. Default: the body text, the content
+   indented under the label. Bordered: in a box with the border color and the card corner, the summary and content padded.
+   Inline: small and muted, the content not indented. The summary's focus is the focus ring. Anatomy and API: Details.jsx. */
+.plx-details{box-sizing:border-box;color:var(--plx-comp-details-text);font-family:var(--plx-comp-details-font-family);font-size:var(--plx-comp-details-font-size);line-height:var(--plx-comp-details-line-height);min-inline-size:0;}
+.plx-details__summary{align-items:center;color:var(--plx-comp-details-summary-text);column-gap:var(--plx-comp-details-summary-gap);cursor:pointer;display:flex;font-weight:var(--plx-comp-details-summary-font-weight);list-style-type:none;border-end-end-radius:var(--plx-comp-details-summary-radius);border-end-start-radius:var(--plx-comp-details-summary-radius);border-start-end-radius:var(--plx-comp-details-summary-radius);border-start-start-radius:var(--plx-comp-details-summary-radius);min-block-size:var(--plx-comp-details-summary-min-height);outline-style:none;}
+.plx-details__summary::-webkit-details-marker{display:none;}
+.plx-details__summary:hover{background-color:var(--plx-comp-details-summary-hover-background);}
+.plx-details__summary:focus-visible{outline-color:var(--plx-comp-details-focus-outline-color);outline-offset:var(--plx-comp-details-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-details-focus-outline-width);}
+.plx-details__marker{--plx-comp-icon-size:var(--plx-comp-details-marker-size);display:inline-flex;flex-shrink:0;}
+.plx-details__label{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+.plx-details__chevron--open{display:none;}
+.plx-details[open]>.plx-details__summary .plx-details__chevron--open{display:inline-block;}
+.plx-details[open]>.plx-details__summary .plx-details__chevron--closed{display:none;}
+.plx-details__content{margin-block-start:var(--plx-comp-details-content-margin-block-start);padding-inline-start:var(--plx-comp-details-content-indent);}
+/* bordered: one box */
+.plx-details--bordered{background-color:var(--plx-comp-details-bordered-background);border-bottom-color:var(--plx-comp-details-bordered-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-details-bordered-border-width);border-end-end-radius:var(--plx-comp-details-bordered-radius);border-end-start-radius:var(--plx-comp-details-bordered-radius);border-left-color:var(--plx-comp-details-bordered-border-color);border-left-style:solid;border-left-width:var(--plx-comp-details-bordered-border-width);border-right-color:var(--plx-comp-details-bordered-border-color);border-right-style:solid;border-right-width:var(--plx-comp-details-bordered-border-width);border-start-end-radius:var(--plx-comp-details-bordered-radius);border-start-start-radius:var(--plx-comp-details-bordered-radius);border-top-color:var(--plx-comp-details-bordered-border-color);border-top-style:solid;border-top-width:var(--plx-comp-details-bordered-border-width);}
+.plx-details--bordered>.plx-details__summary{min-block-size:var(--plx-comp-details-bordered-summary-min-height);padding-inline-end:var(--plx-comp-details-bordered-padding-inline);padding-inline-start:var(--plx-comp-details-bordered-padding-inline);}
+.plx-details--bordered>.plx-details__summary{border-end-end-radius:var(--plx-comp-details-bordered-summary-radius);border-end-start-radius:var(--plx-comp-details-bordered-summary-radius);border-start-end-radius:var(--plx-comp-details-bordered-summary-radius);border-start-start-radius:var(--plx-comp-details-bordered-summary-radius);}
+.plx-details--bordered>.plx-details__content{margin-block-start:0;padding-block-end:var(--plx-comp-details-bordered-padding-block);padding-inline-end:var(--plx-comp-details-bordered-padding-inline);padding-inline-start:var(--plx-comp-details-bordered-content-indent);}
+/* inline: small and muted, in a line of text */
+.plx-details--inline{font-size:var(--plx-comp-details-inline-font-size);}
+.plx-details--inline>.plx-details__summary{color:var(--plx-comp-details-inline-summary-text);column-gap:var(--plx-comp-details-inline-summary-gap);display:inline-flex;font-weight:var(--plx-comp-details-inline-summary-font-weight);min-block-size:0;}
+.plx-details--inline>.plx-details__summary:hover{background-color:transparent;color:var(--plx-comp-details-inline-summary-hover-text);}
+.plx-details--inline>.plx-details__summary .plx-details__marker{--plx-comp-icon-size:var(--plx-comp-details-inline-marker-size);}
+.plx-details--inline>.plx-details__content{margin-block-start:var(--plx-comp-details-inline-content-margin-block-start);padding-inline-start:0;}

@@ -44,6 +44,7 @@ object PlenixColors {
     val focusOrderOnColor = Pair(Color(0xFFFFFFFF), Color(0xFF1E1F22))
     val focusOrderWarningColor = Pair(Color(0xFFB70000), Color(0xFFF8ACA2))
     val focusOrderWarningOnColor = Pair(Color(0xFFFFFFFF), Color(0xFF1E1F22))
+    val printUrlText = Pair(Color(0xFF56585E), Color(0xFFD0D0D0))
     val readOnlyBackground = Pair(Color(0xFFF3F3F3), Color(0xFF000000))
     val readOnlyContent = Pair(Color(0xFF000000), Color(0xFFE8E9EC))
     val readOnlyBorder = Pair(Color(0xFFE8E9EC), Color(0xFF56585E))
