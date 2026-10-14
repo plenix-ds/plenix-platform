@@ -201,6 +201,8 @@ for (const { file } of files) {
       if (/^(plx-|is-)/.test(m[1])) continue;
       // the DataTable's stylesheet restyles the classes its engine writes (Tabulator, platform/vendor/tabulator): there only
       if (/^tabulator(-|$)/.test(m[1]) && /[\\/]components[\\/](DataTable[\\/]data-table|Table[\\/]table)(-steps)?\.css$/.test(file)) continue;
+      // the RichTextEditor's stylesheet styles the two classes its engine writes (ProseMirror, platform/vendor/tiptap): there only
+      if (/^ProseMirror-(separator|hideselection)$/.test(m[1]) && /[\\/]components[\\/]RichTextEditor[\\/]rich-text-editor\.css$/.test(file)) continue;
       add('classes', file, 0, '.' + m[1] + ' is not a plx- class');
     }
   }

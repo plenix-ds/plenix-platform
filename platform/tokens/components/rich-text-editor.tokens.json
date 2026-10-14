@@ -21,6 +21,7 @@
     "rich-text-editor-area-padding-block": { "$value": "{plx-comp.textarea-padding-block}", "$type": "dimension", "$description": "RichTextEditor area: the text area's padding above and below." },
     "rich-text-editor-area-padding-inline": { "$value": "{plx-comp.input-padding-inline}", "$type": "dimension", "$description": "RichTextEditor area: the text field's side padding." },
     "rich-text-editor-placeholder-text": { "$value": "{plx-comp.input-placeholder-text}", "$type": "color", "$description": "RichTextEditor area: the hint in the empty area (the placeholder's color)." },
+    "rich-text-editor-hidden-selection": { "$value": "transparent", "$type": "color", "$description": "RichTextEditor area: no visible caret or selection highlight while the engine selects a whole node (ProseMirror-hideselection)." },
     "rich-text-editor-mention-text": { "$value": "{plx-sys.content-link}", "$type": "color", "$description": "RichTextEditor mention: a mentioned person or item in the text (the link role, as the combobox's chosen option)." },
     "rich-text-editor-mention-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "RichTextEditor mention: semibold, one unit in the text." },
     "rich-text-editor-mentions-background": { "$value": "{plx-comp.combobox-list-background}", "$type": "color", "$description": "RichTextEditor mentions list: the menu surface (the combobox list's)." },
