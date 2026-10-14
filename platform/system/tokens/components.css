@@ -3265,6 +3265,7 @@
   --plx-comp-rich-text-editor-area-padding-block: var(--plx-comp-textarea-padding-block);
   --plx-comp-rich-text-editor-area-padding-inline: var(--plx-comp-input-padding-inline);
   --plx-comp-rich-text-editor-placeholder-text: var(--plx-comp-input-placeholder-text);
+  --plx-comp-rich-text-editor-hidden-selection: transparent;
   --plx-comp-rich-text-editor-mention-text: var(--plx-sys-content-link);
   --plx-comp-rich-text-editor-mention-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-rich-text-editor-mentions-background: var(--plx-comp-combobox-list-background);

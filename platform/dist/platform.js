@@ -10104,6 +10104,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.loadTabulator = loadTabulator;
 exports.prefetchTabulator = prefetchTabulator;
 exports.tablePx = tablePx;
+exports.vendorBase = vendorBase;
 var _strict = require("./strict.js");
 /* Plenix · DataTable engine (tabulator.js)
    Summary: Loads the engine every DataTable runs on: Tabulator 6.6.1 (MIT), vendored in platform/vendor/tabulator.
@@ -10115,6 +10116,7 @@ var _strict = require("./strict.js");
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
      tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
      prefetchTabulator(): fetches the two files into the browser's cache without running them (no-op when loaded)
+     vendorBase(): the address of the vendor folder (see Behavior); the RichTextEditor engine loads from it too
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
@@ -10139,6 +10141,8 @@ function platformScript() {
   const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix)(\.min)?\.js(\?|$)/.test(src));
   return s || '';
 }
+
+// the vendor folder (also used by the RichTextEditor engine loader, RichTextEditor/tiptap.js)
 function vendorBase() {
   if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
   const src = platformScript();
@@ -24474,7 +24478,64 @@ function InlineEdit({
   }, error) : null);
 }
   } },
-  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/tiptap.js": { deps: {"../DataTable/tabulator.js":"platform/components/DataTable/tabulator.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadTiptap = loadTiptap;
+var _tabulator = require("../DataTable/tabulator.js");
+/* Plenix · RichTextEditor engine (tiptap.js)
+   Summary: Loads the engine every RichTextEditor runs on: Tiptap 3.31.3 (MIT, on ProseMirror), vendored as one file in
+     platform/vendor/tiptap/tiptap.min.js that sets window.PlenixTiptap.
+   Usage:
+     loadTiptap().then((T) => new T.Editor({ element: { mount: el }, extensions: [T.StarterKit] }));
+   Props:
+     loadTiptap(win): adds the engine's script to the page once (the given window's, default this one: an editor in a
+       frame runs on its frame's engine), and resolves with that window's PlenixTiptap
+   Behavior:
+     Only the first editor on a page loads the file; later editors reuse the same promise. Pages without an editor never
+       load it (no prefetch): RichTextEditor.preload() starts the load early on a page whose first screen has an editor.
+     The file comes from the vendor folder the DataTable's engine uses (vendorBase in DataTable/tabulator.js: next to the
+       Platform script, the release's CDN copy in the npm package, or window.PlenixVendorBase).
+     The engine has no stylesheet of its own: the few rules ProseMirror needs are in rich-text-editor.css, on tokens.
+   Notes:
+     A failed load rejects and is forgotten, so the next editor that mounts tries again.
+     The bundle holds @tiptap/core, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-link, @tiptap/extension-mention
+       and their dependencies (platform/vendor/README.md: versions, licenses, how it is built). */
+
+const loading = new WeakMap();
+function loadTiptap(win) {
+  const w = win || (typeof window !== 'undefined' ? window : null);
+  if (!w) return Promise.reject(new Error('Tiptap needs a browser'));
+  if (w.PlenixTiptap) return Promise.resolve(w.PlenixTiptap);
+  if (loading.has(w)) return loading.get(w);
+  const doc = w.document;
+  const p = new Promise((resolve, reject) => {
+    const script = doc.createElement('script');
+    script.src = (0, _tabulator.vendorBase)() + 'tiptap/tiptap.min.js';
+    script.async = true;
+    script.setAttribute('data-plx-vendor', 'tiptap');
+    script.onload = () => {
+      if (w.PlenixTiptap) resolve(w.PlenixTiptap);else {
+        loading.delete(w);
+        script.remove();
+        reject(new Error('Tiptap did not load from ' + script.src));
+      }
+    };
+    script.onerror = () => {
+      loading.delete(w);
+      script.remove();
+      reject(new Error('Tiptap could not be loaded from ' + script.src));
+    };
+    doc.head.appendChild(script);
+  });
+  loading.set(w, p);
+  return p;
+}
+  } },
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24492,26 +24553,30 @@ var _Button = require("../Button/Button.jsx");
 var _Input = require("../Input/Input.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _hotkey = require("../../utils/hotkey.js");
+var _tiptap = require("./tiptap.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichTextEditor
    Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar and Buttons) over an editing area that
      shows the text as RichText does (paragraphs, bold, italic, links, lists, headings, quotes, inline code), with Markdown
-     shortcuts and an optional mentions list. It is a contenteditable area on the browser's Selection API.
+     shortcuts and an optional mentions list. The editing engine is Tiptap 3.31.3 (MIT, on ProseMirror), vendored in
+     platform/vendor/tiptap/ and loaded the first time an editor mounts.
    Usage:
      <RichTextEditor label="Description" defaultValue={html} onChange={(html) => …} />
      <RichTextEditor label="Notes" toolbar="full" placeholder="Describe the change" />
      <RichTextEditor label="Comment" mentions={{ search: (q) => people.filter((p) => p.label.startsWith(q)) }} />
      <RichTextEditor label="Description" readOnly defaultValue={html} />
+     RichTextEditor.preload()   // a page whose first screen has an editor: starts loading the engine as its script starts
    Props:
      label: the accessible name of the editing area (required; give a visible label with Field or a heading)
      defaultValue: the starting HTML; it is cleaned to the allowed elements (see Notes) before it is shown
-     onChange(html): runs after each change with the cleaned HTML of the content
+     onChange(html): runs after each change with the cleaned HTML of the content ('' when the area is empty)
      toolbar: "basic" (default: bold, italic, link, bulleted and numbered list) | "full" (also heading, quote, inline code,
        clear formatting, undo and redo) | false (no toolbar; the shortcuts still work)
-     markdownShortcuts: Markdown as you type (default true): "- " or "* " a bulleted list, "1. " a numbered list, "## " a
-       heading, "> " a quote at the start of a line; **bold**, _italic_ and `code` around words
+     markdownShortcuts: Markdown as you type (default true): "- " or "* " a bulleted list, "1. " a numbered list, "# " or
+       "## " a heading, "> " a quote at the start of a line; **bold**, _italic_ and `code` around words
      mentions: the mentions slot: { trigger: "@" (default), search(query) → options or a Promise of them ([{ value, label }]),
-       renderOption(option) (the row's content; default its label) }; typing the trigger opens the list under the caret
+       renderOption(option) (the row's content; default its label) }; typing the trigger opens the list under the caret.
+       Give it when the editor mounts (the engine is set up once); a new search function is used from the next keystroke.
      placeholder: the hint in the empty area
      readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
      invalid: marks the area invalid (aria-invalid); put the message in Field's error
@@ -24531,21 +24596,26 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Bold (⌘ B) on a Mac) and aria-keyshortcuts. Clear formatting keeps its text label (the set has no approved icon for it). Each format button
        shows whether the text at the caret has that format (aria-pressed). Pressing a button keeps the selection in the area.
      Ctrl+B bold, Ctrl+I italic, Ctrl+K link, Ctrl+Shift+7 numbered list, Ctrl+Shift+8 bulleted list (Command on a Mac);
-       a format turned on or off from the keyboard is announced. Undo and redo are the browser's (Ctrl+Z, Ctrl+Y; ⌘Z, ⇧⌘Z on a Mac).
-     Backspace after a Markdown shortcut, inline code or a link added at the caret: the caret waits behind an invisible
-       marker (a zero-width space, so typing goes on outside the element); one Backspace removes the marker and the
-       character before it, so Backspace never seems to do nothing. Both are editing commands, so Undo brings them back.
+       a format turned on or off from the keyboard is announced. Undo and redo are the editor's own history (Ctrl+Z,
+       Ctrl+Y or Ctrl+Shift+Z; ⌘Z, ⇧⌘Z on a Mac): one step per change, Markdown shortcuts included.
+     Backspace right after a Markdown shortcut turns it back into the typed characters (Tiptap's input rules); otherwise it
+       removes the character before the caret.
      Link: with the caret in a link it removes the link; otherwise a link address field opens under the toolbar (Enter adds
-       the link, Escape closes it); an address without a scheme gets https://.
-     Paste inserts plain text, so formatting from other documents never comes in.
+       the link, Escape closes it); an address without a scheme gets https://. Text typed after a link is not part of it.
+     Paste inserts plain text (a line break starts a new paragraph), so formatting from other documents never comes in.
      Mentions: ↓ / ↑ move in the list, Enter or Tab inserts the mention (one unit, removed with one Backspace), Escape closes it.
+     Tab and Shift+Tab move the focus, in a list too (they never insert a tab or nest a list item).
      The area grows with its text up to its maximum height, then scrolls inside (it is focusable, so the keyboard reaches it).
+     Until the engine has loaded (the first editor on a page) the area shows the cleaned content without editing; a failed
+       load leaves it so, and the next editor that mounts tries again.
    Notes:
-     The browser's editing commands (document.execCommand: deprecated but supported everywhere) do the formatting; the
-       Selection API reads the formats at the caret, finds Markdown shortcuts and mentions, and places the link field.
+     The engine: Tiptap (@tiptap/core, pm, starter-kit, extension-link, extension-mention 3.31.3, MIT), driven directly (no
+       @tiptap/react): the area element is ProseMirror's editing element, its attributes set through editorProps. Its
+       document schema is the allow-list below, so the editor can only hold what cleanRichText keeps. The same engine
+       carries what Plenix can add later: tables (@tiptap/extension-table), editing together (Yjs through
+       @tiptap/extension-collaboration) and embeds (custom nodes).
      Allowed elements: p, br, strong, em, a (href only: http, https, mailto or a relative address), ul, ol, li, h2, h3,
        blockquote, code, pre, and the mention span (data-mention). Everything else is unwrapped, every other attribute dropped.
-     For collaborative editing, tables or embeds, a real editor engine is needed (not part of Plenix).
 */
 const STRINGS = {
   toolbar: 'Formatting',
@@ -24593,8 +24663,6 @@ const KEYS = {
   redo: () => (0, _hotkey.isMac)() ? 'Mod+Shift+Z' : 'Mod+Y'
 };
 const keysAria = binding => binding.replace('Mod', (0, _hotkey.isMac)() ? 'Meta' : 'Control');
-// the invisible marker the caret waits behind after an element put in by place() (a zero-width space)
-const MARK = String.fromCharCode(0x200b);
 const ALLOWED = {
   P: 1,
   BR: 1,
@@ -24619,6 +24687,7 @@ const RENAME = {
 };
 const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
 const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+const MENTION_CLASS = 'plx-rich-text-editor__mention';
 
 // the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped)
 function cleanRichText(html) {
@@ -24646,7 +24715,7 @@ function cleanRichText(html) {
       }
       if (mention) {
         el.setAttribute('data-mention', n.getAttribute('data-mention'));
-        el.setAttribute('class', 'plx-rich-text-editor__mention');
+        el.setAttribute('class', MENTION_CLASS);
         el.setAttribute('contenteditable', 'false');
       }
       copy(n, el);
@@ -24658,36 +24727,155 @@ function cleanRichText(html) {
   return out.innerHTML;
 }
 
-// an element put in place of a range with the DOM (insertHTML would copy computed styles onto it), then a text after it
-// for the caret (a zero-width space, dropped from the output), so typing goes on outside the element
-const place = (range, el, tail = '​') => {
-  range.deleteContents();
-  range.insertNode(el);
-  const after = document.createTextNode(tail);
-  el.after(after);
-  const sel = window.getSelection(),
-    r = document.createRange();
-  r.setStart(after, tail.length);
-  r.collapse(true);
-  sel.removeAllRanges();
-  sel.addRange(r);
+// the formats at the caret, as the toolbar names them, read from the editor
+const FORMATS = {
+  bold: ['bold'],
+  italic: ['italic'],
+  link: ['link'],
+  bulleted: ['bulletList'],
+  numbered: ['orderedList'],
+  heading: ['heading'],
+  quote: ['blockquote'],
+  code: ['code']
 };
-const run = (cmd, arg) => {
-  try {
-    return document.execCommand(cmd, false, arg);
-  } catch (e) {
-    return false;
-  }
+const readFormats = editor => {
+  const f = {};
+  Object.keys(FORMATS).forEach(k => {
+    f[k] = editor.isActive(FORMATS[k][0]);
+  });
+  return f;
 };
-const within = (root, node) => !!(root && node && (node === root || root.contains(node)));
-const closestIn = (root, node, selector) => {
-  let el = node && node.nodeType === 3 ? node.parentElement : node;
-  while (el && el !== root) {
-    if (el.matches && el.matches(selector)) return el;
-    el = el.parentElement;
-  }
-  return null;
-};
+const sameFormats = (a, b) => Object.keys(FORMATS).every(k => !!a[k] === !!b[k]);
+
+// the engine set up for this editor: the starter kit cut to the allow-list, list items without Tab, links, the mention node (its suggestion list
+// only when the editor has a mentions slot), the Plenix shortcuts (announced) and the "# " heading rule
+function makeEditor(T, el, o) {
+  const trigger = o.trigger;
+  const PlenixKeys = T.Extension.create({
+    name: 'plenixKeys',
+    priority: 1000,
+    addKeyboardShortcuts() {
+      const key = name => () => {
+        o.apply(name, true);
+        return true;
+      };
+      return {
+        'Mod-b': key('bold'),
+        'Mod-i': key('italic'),
+        'Mod-k': key('link'),
+        'Mod-Shift-7': key('numbered'),
+        'Mod-Shift-8': key('bulleted')
+      };
+    },
+    addInputRules() {
+      return [T.textblockTypeInputRule({
+        find: /^#\s$/,
+        type: this.editor.schema.nodes.heading,
+        getAttributes: {
+          level: 2
+        }
+      })];
+    }
+  });
+  const PlenixMention = T.Mention.extend({
+    parseHTML() {
+      return [{
+        tag: 'span[data-mention]'
+      }];
+    },
+    addAttributes() {
+      return {
+        id: {
+          default: null,
+          parseHTML: e => e.getAttribute('data-mention'),
+          renderHTML: a => ({
+            'data-mention': a.id
+          })
+        },
+        label: {
+          default: null,
+          parseHTML: e => {
+            const s = e.textContent || '';
+            return s.indexOf(trigger) === 0 ? s.slice(trigger.length) : s;
+          },
+          renderHTML: () => ({})
+        },
+        mentionSuggestionChar: {
+          default: trigger,
+          parseHTML: () => trigger,
+          renderHTML: () => ({})
+        }
+      };
+    },
+    addProseMirrorPlugins() {
+      return o.mentions ? this.parent() : [];
+    }
+  }).configure({
+    deleteTriggerWithBackspace: true,
+    HTMLAttributes: {
+      class: MENTION_CLASS,
+      contenteditable: 'false'
+    },
+    suggestion: {
+      char: trigger,
+      decorationClass: 'plx-rich-text-editor__mention-query',
+      items: ({
+        query
+      }) => Promise.resolve(o.search(query)).then(items => Array.isArray(items) ? items : [], () => []),
+      render: () => ({
+        onStart: o.suggest,
+        onUpdate: o.suggest,
+        onKeyDown: o.suggestKey,
+        onExit: () => o.suggest(null)
+      })
+    }
+  });
+  return new T.Editor({
+    element: {
+      mount: el
+    },
+    injectCSS: false,
+    content: o.content,
+    editable: o.editable,
+    enableInputRules: o.markdown,
+    enablePasteRules: false,
+    extensions: [T.StarterKit.configure({
+      heading: {
+        levels: [2, 3]
+      },
+      listItem: false,
+      underline: false,
+      strike: false,
+      horizontalRule: false,
+      dropcursor: false,
+      gapcursor: false,
+      trailingNode: false,
+      link: {
+        openOnClick: false,
+        autolink: false,
+        linkOnPaste: false,
+        HTMLAttributes: {
+          target: null,
+          rel: null,
+          class: null
+        },
+        isAllowedUri: url => SAFE_HREF.test(String(url || '').trim())
+      }
+    }),
+    // a list item without Tab and Shift+Tab (nesting): Tab always leaves the area
+    T.ListItem.extend({
+      addKeyboardShortcuts() {
+        return {
+          Enter: () => this.editor.commands.splitListItem(this.name)
+        };
+      }
+    }), PlenixMention, PlenixKeys],
+    editorProps: {
+      attributes: o.attributes,
+      handlePaste: o.paste
+    }
+  });
+}
 function RichTextEditor({
   label,
   defaultValue = '',
@@ -24709,257 +24897,249 @@ function RichTextEditor({
   const areaId = id || auto + '-area';
   const area = _react.default.useRef(null),
     list = _react.default.useRef(null),
-    linkInput = _react.default.useRef(null),
-    saved = _react.default.useRef(null);
+    linkInput = _react.default.useRef(null);
+  const editorRef = _react.default.useRef(null),
+    saved = _react.default.useRef(null),
+    pasting = _react.default.useRef(false);
+  const [ready, setReady] = _react.default.useState(false);
   const [formats, setFormats] = _react.default.useState({});
-  const [empty, setEmpty] = _react.default.useState(true);
+  const [empty, setEmpty] = _react.default.useState(() => !String(defaultValue || '').replace(/<[^>]*>/g, '').trim());
   const [linking, setLinking] = _react.default.useState(false);
   const [href, setHref] = _react.default.useState('');
-  const [mention, setMention] = _react.default.useState(null); // { query, items, active, x, y }
+  const [mention, setMention] = _react.default.useState(null); // { items, active, x, y, command }
   const editable = !readOnly && !disabled;
-
-  // the starting content, cleaned, once
-  _react.default.useEffect(() => {
-    if (!area.current) return;
-    area.current.innerHTML = cleanRichText(defaultValue);
-    setEmpty(!area.current.textContent.trim() && !area.current.querySelector('li,[data-mention]'));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // the formats at the caret (Selection API), on every selection change inside the area
-  const read = _react.default.useCallback(() => {
-    const root = area.current,
-      sel = typeof window !== 'undefined' ? window.getSelection() : null;
-    if (!root || !sel || !sel.rangeCount || !within(root, sel.anchorNode)) return;
-    saved.current = sel.getRangeAt(0).cloneRange();
-    const at = s => !!closestIn(root, sel.anchorNode, s);
-    setFormats({
-      bold: at('strong,b'),
-      italic: at('em,i'),
-      link: at('a'),
-      bulleted: at('ul'),
-      numbered: at('ol'),
-      heading: at('h2,h3'),
-      quote: at('blockquote'),
-      code: at('code')
-    });
-  }, []);
-  _react.default.useEffect(() => {
-    document.addEventListener('selectionchange', read);
-    return () => document.removeEventListener('selectionchange', read);
-  }, [read]);
-  const changed = () => {
-    const root = area.current;
-    if (!root) return;
-    setEmpty(!root.textContent.trim() && !root.querySelector('li,[data-mention]'));
-    if (onChange) onChange(cleanRichText(root.innerHTML));
+  const live = _react.default.useRef({});
+  live.current = {
+    onChange,
+    editable,
+    mentions,
+    mention,
+    t
   };
-  // put the selection back in the area (a toolbar button or the link field may hold the focus)
-  const restore = () => {
-    const root = area.current,
-      sel = window.getSelection();
-    if (!root) return;
-    if (document.activeElement !== root) root.focus();
-    if (saved.current && within(root, saved.current.startContainer) && (!sel.rangeCount || !within(root, sel.anchorNode))) {
-      sel.removeAllRanges();
-      sel.addRange(saved.current);
-    }
+  const mentionOpen = !!(mention && mention.items.length);
+  // the editing area's attributes: ProseMirror owns the element, so they go through the engine (and onto the element
+  // itself until the engine has loaded)
+  const attributes = {
+    id: areaId,
+    class: (0, _cx.cx)('plx-rich-text', 'plx-rich-text--compact', 'plx-rich-text-editor__area', empty && 'is-empty'),
+    role: 'textbox',
+    'aria-multiline': 'true',
+    'aria-label': label,
+    'aria-readonly': readOnly ? 'true' : null,
+    'aria-disabled': disabled ? 'true' : null,
+    'aria-invalid': invalid ? 'true' : null,
+    'aria-placeholder': placeholder || null,
+    'data-placeholder': placeholder || null,
+    tabindex: disabled ? '-1' : '0',
+    'aria-autocomplete': mentions ? 'list' : null,
+    'aria-controls': mentionOpen ? auto + '-mentions' : null,
+    'aria-activedescendant': mentionOpen ? auto + '-m' + mention.active : null
   };
-  const inlineCode = () => {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return;
-    const code = closestIn(area.current, sel.anchorNode, 'code');
-    if (code) {
-      const text = document.createTextNode(code.textContent);
-      code.replaceWith(text);
+  Object.keys(attributes).forEach(k => {
+    if (attributes[k] == null || attributes[k] === false) delete attributes[k];
+  });
+  const attrKey = JSON.stringify(attributes);
+  const shown = _react.default.useRef({});
+  _react.default.useLayoutEffect(() => {
+    const ed = editorRef.current,
+      el = area.current;
+    if (ed && !ed.isDestroyed) {
+      ed.view.setProps({
+        attributes
+      });
       return;
     }
-    const text = sel.toString();
-    if (!text) return;
-    const el = document.createElement('code');
-    el.textContent = text;
-    place(sel.getRangeAt(0), el);
+    if (!el) return;
+    Object.keys(shown.current).forEach(k => {
+      if (!(k in attributes)) el.removeAttribute(k);
+    });
+    Object.keys(attributes).forEach(k => el.setAttribute(k, attributes[k]));
+    shown.current = attributes;
+  }, [attrKey, ready]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // the engine: the cleaned content shows at once; the editor takes over the same element once Tiptap has loaded
+  _react.default.useLayoutEffect(() => {
+    const el = area.current;
+    if (!el) return undefined;
+    const content = cleanRichText(defaultValue);
+    el.innerHTML = content;
+    let gone = false;
+    (0, _tiptap.loadTiptap)(el.ownerDocument.defaultView).then(T => {
+      if (gone) return;
+      const ed = makeEditor(T, el, {
+        content,
+        editable: live.current.editable,
+        markdown: markdownShortcuts,
+        attributes,
+        trigger: mentions && mentions.trigger || '@',
+        mentions: !!mentions,
+        apply: (name, fromKeys) => apply(name, fromKeys),
+        search: q => {
+          const m = live.current.mentions;
+          return m && m.search ? m.search(q) : [];
+        },
+        suggest: p => {
+          if (!p || !p.items || !p.items.length) {
+            setMention(null);
+            return;
+          }
+          const box = p.clientRect ? p.clientRect() : null;
+          setMention({
+            items: p.items,
+            active: 0,
+            x: box ? box.left : 0,
+            y: box ? box.bottom : 0,
+            command: p.command
+          });
+        },
+        suggestKey: ({
+          event
+        }) => {
+          const m = live.current.mention;
+          if (!m || !m.items.length) return false;
+          const n = m.items.length;
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            setMention(Object.assign({}, m, {
+              active: (m.active + (event.key === 'ArrowDown' ? 1 : n - 1)) % n
+            }));
+            return true;
+          }
+          if (event.key === 'Enter' || event.key === 'Tab') {
+            pick(m, m.items[m.active]);
+            return true;
+          }
+          if (event.key === 'Escape') {
+            setMention(null);
+            return true;
+          }
+          return false;
+        },
+        paste: (view, event) => {
+          if (pasting.current) return false;
+          const text = event.clipboardData ? event.clipboardData.getData('text/plain') : '';
+          event.preventDefault();
+          if (!text || !live.current.editable) return true;
+          pasting.current = true;
+          try {
+            view.pasteText(text, event);
+          } finally {
+            pasting.current = false;
+          }
+          return true;
+        }
+      });
+      editorRef.current = ed;
+      const sync = () => {
+        const f = readFormats(ed);
+        setFormats(prev => sameFormats(prev, f) ? prev : f);
+        setEmpty(ed.isEmpty);
+      };
+      ed.on('transaction', sync);
+      ed.on('update', () => {
+        const cb = live.current.onChange;
+        if (cb) cb(ed.isEmpty ? '' : cleanRichText(ed.getHTML()));
+      });
+      ed.on('blur', () => setMention(null));
+      sync();
+      setReady(true);
+    }, () => {});
+    return () => {
+      gone = true;
+      const ed = editorRef.current;
+      editorRef.current = null;
+      if (ed) ed.destroy();
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  _react.default.useEffect(() => {
+    const ed = editorRef.current;
+    if (ed && !ed.isDestroyed && ed.isEditable !== editable) ed.setEditable(editable);
+  }, [editable, ready]);
+  const pick = (m, o) => {
+    if (m && m.command && o) m.command({
+      id: o.value,
+      label: o.label
+    });
+    setMention(null);
   };
-  const block = tag => run('formatBlock', formats[tag === 'h2' ? 'heading' : 'quote'] ? 'p' : tag);
   const COMMANDS = {
-    bold: () => run('bold'),
-    italic: () => run('italic'),
-    bulleted: () => run('insertUnorderedList'),
-    numbered: () => run('insertOrderedList'),
-    heading: () => block('h2'),
-    quote: () => block('blockquote'),
-    code: inlineCode,
-    clear: () => {
-      run('removeFormat');
-      run('formatBlock', 'p');
-    },
-    undo: () => run('undo'),
-    redo: () => run('redo')
+    bold: c => c.toggleBold(),
+    italic: c => c.toggleItalic(),
+    code: c => c.toggleCode(),
+    bulleted: c => c.toggleBulletList(),
+    numbered: c => c.toggleOrderedList(),
+    heading: c => c.toggleHeading({
+      level: 2
+    }),
+    quote: c => c.toggleBlockquote(),
+    clear: c => c.unsetAllMarks().clearNodes(),
+    undo: c => c.undo(),
+    redo: c => c.redo()
   };
-  const apply = (name, fromKeys) => {
-    if (!editable) return;
-    restore();
+  // a format from the toolbar or the keyboard; from the keyboard it is announced
+  function apply(name, fromKeys) {
+    const ed = editorRef.current,
+      L = live.current;
+    if (!ed || !L.editable) return;
     if (name === 'link') {
       openLink();
       return;
     }
-    const was = !!formats[name];
-    COMMANDS[name]();
-    read();
-    changed();
-    if (fromKeys && name in formats) (0, _announce.announce)(was ? t.off(t[name]) : t.on(t[name]));
-  };
+    const was = name in FORMATS ? ed.isActive(FORMATS[name][0]) : false;
+    COMMANDS[name](ed.chain().focus()).run();
+    if (fromKeys && name in FORMATS) (0, _announce.announce)(was ? L.t.off(L.t[name]) : L.t.on(L.t[name]));
+  }
 
   // the link field: opens under the toolbar for the selection kept in saved; Enter adds the link
-  const openLink = () => {
-    const sel = window.getSelection();
-    const a = sel.rangeCount ? closestIn(area.current, sel.anchorNode, 'a') : null;
-    if (a) {
-      const r = document.createRange();
-      r.selectNodeContents(a);
-      sel.removeAllRanges();
-      sel.addRange(r);
-      run('unlink');
-      read();
-      changed();
+  function openLink() {
+    const ed = editorRef.current;
+    if (!ed) return;
+    if (ed.isActive('link')) {
+      ed.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
-    if (sel.rangeCount) saved.current = sel.getRangeAt(0).cloneRange();
+    const {
+      from,
+      to
+    } = ed.state.selection;
+    saved.current = {
+      from,
+      to
+    };
     setHref('');
     setLinking(true);
-  };
+  }
   _react.default.useEffect(() => {
     if (linking && linkInput.current) linkInput.current.focus();
   }, [linking]);
-  const addLink = () => {
-    let to = href.trim();
+  const closeLink = () => {
     setLinking(false);
-    restore();
-    if (!to) return;
+    const ed = editorRef.current;
+    if (!ed) return;
+    const s = saved.current;
+    if (s) ed.chain().focus().setTextSelection(s).run();else ed.commands.focus();
+  };
+  const addLink = () => {
+    const text = href.trim();
+    let to = text;
+    closeLink();
+    const ed = editorRef.current;
+    if (!ed || !to) return;
     if (!/^[a-z][a-z0-9+.-]*:/i.test(to) && !/^[/#.]/.test(to)) to = 'https://' + to;
     if (!SAFE_HREF.test(to)) return;
-    const sel = window.getSelection();
-    if (sel.rangeCount && sel.getRangeAt(0).collapsed) {
-      const a = document.createElement('a');
-      a.setAttribute('href', to);
-      a.textContent = href.trim();
-      place(sel.getRangeAt(0), a);
-    } else run('createLink', to);
-    read();
-    changed();
+    if (ed.state.selection.empty) ed.chain().focus().insertContent({
+      type: 'text',
+      text,
+      marks: [{
+        type: 'link',
+        attrs: {
+          href: to
+        }
+      }]
+    }).unsetMark('link').run();else ed.chain().focus().setLink({
+      href: to
+    }).run();
   };
-
-  // Markdown shortcuts at the start of a line (on Space) and around words (as they are typed)
-  const textBeforeCaret = () => {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return null;
-    const caret = sel.getRangeAt(0);
-    if (!caret.collapsed) return null;
-    const blockEl = closestIn(area.current, caret.startContainer, 'p,li,h2,h3,blockquote,pre') || area.current;
-    const r = document.createRange();
-    r.setStart(blockEl, 0);
-    r.setEnd(caret.startContainer, caret.startOffset);
-    return {
-      text: r.toString(),
-      range: r,
-      caret
-    };
-  };
-  const BLOCK_MARKS = {
-    '-': 'bulleted',
-    '*': 'bulleted',
-    '1.': 'numbered',
-    '#': 'heading',
-    '##': 'heading',
-    '>': 'quote'
-  };
-  const blockShortcut = () => {
-    const b = textBeforeCaret();
-    if (!b || !BLOCK_MARKS[b.text]) return false;
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(b.range);
-    run('delete');
-    COMMANDS[BLOCK_MARKS[b.text]]();
-    return true;
-  };
-  const INLINE = [[/\*\*([^*]+)\*\*$/, 'strong'], [/(?:^|\s)_([^_]+)_$/, 'em'], [/`([^`]+)`$/, 'code']];
-  const inlineShortcut = () => {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return false;
-    const caret = sel.getRangeAt(0);
-    const node = caret.startContainer;
-    if (!caret.collapsed || node.nodeType !== 3) return false;
-    const before = node.nodeValue.slice(0, caret.startOffset);
-    for (const [re, tag] of INLINE) {
-      const m = re.exec(before);
-      if (!m) continue;
-      const start = caret.startOffset - m[0].length + (m[0].length - m[0].trimStart().length);
-      const r = document.createRange();
-      r.setStart(node, start);
-      r.setEnd(node, caret.startOffset);
-      const el = document.createElement(tag);
-      el.textContent = m[1];
-      place(r, el);
-      return true;
-    }
-    return false;
-  };
-
-  // mentions: the trigger and the word after it, before the caret
-  const trigger = mentions && mentions.trigger || '@';
-  const searchRef = _react.default.useRef(null);
-  searchRef.current = mentions && mentions.search;
-  const lookup = _react.default.useRef(0);
-  const findMention = () => {
-    if (!mentions) return;
-    const sel = window.getSelection();
-    if (!sel.rangeCount) {
-      setMention(null);
-      return;
-    }
-    const caret = sel.getRangeAt(0),
-      node = caret.startContainer;
-    const before = node.nodeType === 3 ? node.nodeValue.slice(0, caret.startOffset) : '';
-    const m = new RegExp('(?:^|\\s)' + trigger.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([\\w.-]*)$').exec(before);
-    if (!m) {
-      setMention(null);
-      return;
-    }
-    const box = caret.getBoundingClientRect();
-    const n = ++lookup.current,
-      query = m[1];
-    Promise.resolve().then(() => searchRef.current(query)).then(items => {
-      if (n !== lookup.current) return;
-      setMention({
-        query,
-        items: Array.isArray(items) ? items : [],
-        active: 0,
-        x: box.left,
-        y: box.bottom
-      });
-    }, () => {
-      if (n === lookup.current) setMention(null);
-    });
-  };
-  const insertMention = o => {
-    const sel = window.getSelection();
-    if (!sel.rangeCount || !mention) return;
-    const caret = sel.getRangeAt(0),
-      node = caret.startContainer;
-    const r = document.createRange();
-    r.setStart(node, caret.startOffset - mention.query.length - trigger.length);
-    r.setEnd(node, caret.startOffset);
-    const el = document.createElement('span');
-    el.setAttribute('data-mention', o.value);
-    el.setAttribute('class', 'plx-rich-text-editor__mention');
-    el.setAttribute('contenteditable', 'false');
-    el.textContent = trigger + o.label;
-    place(r, el, ' ');
-    lookup.current++;
-    setMention(null);
-    changed();
-  };
-  const mentionOpen = !!(mention && mention.items.length);
   (0, _floating.useFloating)(area, list, {
     open: mentionOpen,
     placement: 'bottom-start',
@@ -24973,102 +25153,9 @@ function RichTextEditor({
     if (mentionOpen && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
   }, [mentionOpen]);
 
-  // the marker(s) right before a collapsed caret, as a range (null when there are none)
-  const markerBefore = () => {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return null;
-    const caret = sel.getRangeAt(0);
-    if (!caret.collapsed) return null;
-    let node = caret.startContainer,
-      at = caret.startOffset;
-    if (node.nodeType === 1) {
-      const prev = node.childNodes[at - 1];
-      if (!prev || prev.nodeType !== 3) return null;
-      node = prev;
-      at = prev.nodeValue.length;
-    }
-    if (node.nodeType !== 3 || !within(area.current, node)) return null;
-    let from = at;
-    while (from > 0 && node.nodeValue[from - 1] === MARK) from--;
-    if (from === at) return null;
-    const r = document.createRange();
-    r.setStart(node, from);
-    r.setEnd(node, at);
-    return r;
-  };
-  const onKeyDown = e => {
-    if (!editable) return;
-    // Backspace behind the marker: the marker and the character before it go together (two editing commands: undo works)
-    if (e.key === 'Backspace' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && !mentionOpen) {
-      const marker = markerBefore();
-      if (marker) {
-        e.preventDefault();
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(marker);
-        run('delete');
-        run('delete');
-        read();
-        changed();
-        return;
-      }
-    }
-    if (mentionOpen) {
-      const n = mention.items.length;
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        setMention(Object.assign({}, mention, {
-          active: (mention.active + (e.key === 'ArrowDown' ? 1 : n - 1)) % n
-        }));
-        return;
-      }
-      if (e.key === 'Enter' || e.key === 'Tab') {
-        e.preventDefault();
-        insertMention(mention.items[mention.active]);
-        return;
-      }
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        lookup.current++;
-        setMention(null);
-        return;
-      }
-    }
-    const mod = e.ctrlKey || e.metaKey,
-      k = e.key.toLowerCase();
-    if (mod && !e.shiftKey && !e.altKey && (k === 'b' || k === 'i' || k === 'k')) {
-      e.preventDefault();
-      apply(k === 'b' ? 'bold' : k === 'i' ? 'italic' : 'link', true);
-      return;
-    }
-    if (mod && e.shiftKey && (e.code === 'Digit7' || e.code === 'Digit8')) {
-      e.preventDefault();
-      apply(e.code === 'Digit7' ? 'numbered' : 'bulleted', true);
-      return;
-    }
-    if (markdownShortcuts && e.key === ' ' && !mod && blockShortcut()) {
-      e.preventDefault();
-      read();
-      changed();
-    }
-  };
-  const onInput = () => {
-    if (markdownShortcuts) inlineShortcut();
-    findMention();
-    read();
-    changed();
-  };
-  const onPaste = e => {
-    if (!editable) return;
-    e.preventDefault();
-    run('insertText', e.clipboardData && e.clipboardData.getData('text/plain') || '');
-  };
-  const onFocus = () => {
-    run('defaultParagraphSeparator', 'p');
-  };
-
   // a format button says whether the text at the caret has its format (aria-pressed); undo, redo and clear are plain buttons
   const PLAIN = ['undo', 'redo', 'clear'];
+  const usable = editable && ready;
   // icon-only, named by its word, with a tooltip of the word and its shortcut; Clear formatting keeps its text label
   const toolButton = name => {
     const icon = ICONS[name],
@@ -25081,14 +25168,14 @@ function RichTextEditor({
       iconOnly: !!icon,
       label: icon ? t[name] : undefined,
       "aria-keyshortcuts": keys ? keysAria(keys) : undefined,
-      disabled: !editable,
+      disabled: !usable,
       onMouseDown: e => e.preventDefault(),
       onClick: () => apply(name)
     }, t[name]);
     return icon ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
       key: name,
       content: keys ? t.tip(t[name], (0, _hotkey.hotkeyLabel)(keys)) : t[name],
-      disabled: !editable
+      disabled: !usable
     }, button) : /*#__PURE__*/_react.default.cloneElement(button, {
       key: name
     });
@@ -25115,8 +25202,7 @@ function RichTextEditor({
         addLink();
       } else if (e.key === 'Escape') {
         e.preventDefault();
-        setLinking(false);
-        restore();
+        closeLink();
       }
     }
   }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -25125,36 +25211,9 @@ function RichTextEditor({
     onClick: addLink
   }, t.addLink), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
-    onClick: () => {
-      setLinking(false);
-      restore();
-    }
+    onClick: closeLink
   }, t.cancel)) : null, /*#__PURE__*/_react.default.createElement("div", {
-    ref: area,
-    id: areaId,
-    className: (0, _cx.cx)('plx-rich-text', 'plx-rich-text--compact', 'plx-rich-text-editor__area', empty && 'is-empty'),
-    role: "textbox",
-    "aria-multiline": "true",
-    "aria-label": label,
-    "aria-readonly": readOnly || undefined,
-    "aria-disabled": disabled || undefined,
-    "aria-invalid": invalid || undefined,
-    "aria-placeholder": placeholder,
-    "data-placeholder": placeholder,
-    tabIndex: disabled ? -1 : 0,
-    contentEditable: editable,
-    suppressContentEditableWarning: true,
-    "aria-autocomplete": mentions ? 'list' : undefined,
-    "aria-controls": mentionOpen ? auto + '-mentions' : undefined,
-    "aria-activedescendant": mentionOpen ? auto + '-m' + mention.active : undefined,
-    onKeyDown: onKeyDown,
-    onInput: onInput,
-    onPaste: onPaste,
-    onFocus: onFocus,
-    onBlur: () => {
-      lookup.current++;
-      setMention(null);
-    }
+    ref: area
   }), mentionOpen ? /*#__PURE__*/_react.default.createElement("ul", {
     ref: list,
     id: auto + '-mentions',
@@ -25170,10 +25229,15 @@ function RichTextEditor({
     className: (0, _cx.cx)('plx-rich-text-editor__mention-option', i === mention.active && 'is-active'),
     onMouseDown: e => {
       e.preventDefault();
-      insertMention(o);
+      pick(mention, o);
     }
-  }, mentions.renderOption ? mentions.renderOption(o) : o.label))) : null);
+  }, mentions && mentions.renderOption ? mentions.renderOption(o) : o.label))) : null);
 }
+
+// starts loading the engine before the first editor mounts (a page whose first screen has an editor)
+RichTextEditor.preload = () => {
+  (0, _tiptap.loadTiptap)().catch(() => {});
+};
   } },
   "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";

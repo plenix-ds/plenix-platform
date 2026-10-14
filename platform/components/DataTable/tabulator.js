@@ -8,6 +8,7 @@
        one: a grid in a frame uses its frame's Tabulator), and resolves with that window's Tabulator
      tablePx(token, element): a size token's value in pixels (Tabulator takes column widths as numbers); 0 when unknown
      prefetchTabulator(): fetches the two files into the browser's cache without running them (no-op when loaded)
+     vendorBase(): the address of the vendor folder (see Behavior); the RichTextEditor engine loads from it too
    Behavior:
      Only the first grid on a page loads the files; later grids reuse the same promise. A page that already loaded
      Tabulator itself is used as is.
@@ -35,7 +36,8 @@ function platformScript() {
   return s || '';
 }
 
-function vendorBase() {
+// the vendor folder (also used by the RichTextEditor engine loader, RichTextEditor/tiptap.js)
+export function vendorBase() {
   if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
   const src = platformScript();
   if (src) return new URL(/\/dist\/[^/?]+(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
