@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.53] - 2026-10-14
+
+### Added
+- The complete library, wave 5, lane B (11 inventory items):
+  - Split button, Floating action button (sm, md, lg; extended), Copy button (icon, label, in a field);
+  - Menu: radio items, submenus, and the context menu (right-click, long press, Shift+F10 or the Menu key);
+  - Details (native disclosure), Print (print.css and usePrint), Spotlight (dim the rest, the target stays usable).
+### Changed
+- Teaching bubble (owner): filled with the brand blue, with on-brand text and actions; it spotlights its target by
+  default.
+
 ## [0.31.52] - 2026-10-14
 
 ### Changed
