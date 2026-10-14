@@ -22,6 +22,7 @@
        "Could not copy" when the clipboard refuses).
    Notes:
      The colors come from the --plx-sys-code-* roles.
+     The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
@@ -53,14 +54,14 @@ const RULES = {
 };
 RULES.jsx = RULES.js; RULES.html = RULES.js;
 
-function detect(title, text) {
+export function detect(title, text) {
   const ext = title ? (String(title).match(/\.(\w+)$/) || [])[1] : null;
   if (ext) return ext === 'css' ? 'css' : /^(jsx?|mjs|tsx?)$/.test(ext) ? 'jsx' : ext === 'html' ? 'html' : 'text';
   return /^\s*(?:[.#:@\w[\]*-][^{\n]*)\{[^}]*:[^}]*;/m.test(text) && !/=>|import |<[A-Z]/.test(text) ? 'css' : 'jsx';
 }
 
-// the code as a list of plain strings and colored spans
-function highlight(text, language) {
+// the code as a list of plain strings and colored spans (CodeEditor colors its text with it too)
+export function highlight(text, language) {
   const rules = RULES[language];
   if (!rules) return text;
   const all = new RegExp(rules.map(([, re]) => '(' + re.source + ')').join('|'), 'g');

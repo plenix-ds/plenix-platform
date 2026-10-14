@@ -1,0 +1,65 @@
+{
+  "$description": "FileInput (platform/components/FileInput, library wave 6, lane A): its component tokens. The button is a secondary Button (its own tokens); the Remove buttons are ghost Buttons.",
+  "plx-comp": {
+    "file-input-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "FileInput: the space between the button and the line that says what is chosen."
+    },
+    "file-input-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "FileInput: the space between the button row and the file list."
+    },
+    "file-input-summary-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "FileInput: the line beside the button (No file chosen, 3 files) and each file size: secondary text."
+    },
+    "file-input-summary-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "FileInput: the size of the line beside the button."
+    },
+    "file-input-name-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "FileInput: a chosen file name."
+    },
+    "file-input-name-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "FileInput: the size of a file name and its size in the list."
+    },
+    "file-input-data-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "FileInput: file names and sizes are technical values, in the data font (DM Mono)."
+    },
+    "file-input-list-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "FileInput: the space between the files in the list."
+    },
+    "file-input-item-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "FileInput: the space between a file row’s icon, name, size and Remove button."
+    },
+    "file-input-item-min-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension",
+      "$description": "FileInput: the height of a file row (the inline action’s height, its Remove button)."
+    },
+    "file-input-icon-size": {
+      "$value": "{plx-sys.control-icon-inline}",
+      "$type": "dimension",
+      "$description": "FileInput: the file icon at the start of a row."
+    },
+    "file-input-icon-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "FileInput: the file icon, muted."
+    }
+  }
+}

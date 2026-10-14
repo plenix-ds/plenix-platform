@@ -1,0 +1,135 @@
+{
+  "$description": "CodeEditor (platform/components/CodeEditor, library wave 6, lane A): its component tokens. The field is the Input’s (fill, border, corners, states); the code is the CodeBlock’s (font, size, line height, padding, syntax colors).",
+  "plx-comp": {
+    "code-editor-background": {
+      "$value": "{plx-comp.input-background}",
+      "$type": "color",
+      "$description": "CodeEditor: the field’s fill (the Input’s)."
+    },
+    "code-editor-border-color": {
+      "$value": "{plx-comp.input-border-color}",
+      "$type": "color",
+      "$description": "CodeEditor: the field’s border."
+    },
+    "code-editor-border-width": {
+      "$value": "{plx-comp.input-border-width}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the field’s border width, and the gutter’s divider."
+    },
+    "code-editor-radius": {
+      "$value": "{plx-comp.input-radius}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the field’s corners."
+    },
+    "code-editor-hover-border-color": {
+      "$value": "{plx-comp.input-hover-border-color}",
+      "$type": "color",
+      "$description": "CodeEditor: the border under the pointer."
+    },
+    "code-editor-focus-border-color": {
+      "$value": "{plx-comp.input-focus-border-color}",
+      "$type": "color",
+      "$description": "CodeEditor: the border while the editor has focus (border color only)."
+    },
+    "code-editor-invalid-border-color": {
+      "$value": "{plx-comp.input-invalid-border-color}",
+      "$type": "color",
+      "$description": "CodeEditor: the border of an invalid editor."
+    },
+    "code-editor-readonly-background": {
+      "$value": "{plx-comp.input-readonly-background}",
+      "$type": "color",
+      "$description": "CodeEditor read-only: the read-only fill (the Input’s)."
+    },
+    "code-editor-disabled-background": {
+      "$value": "{plx-comp.input-disabled-background}",
+      "$type": "color",
+      "$description": "CodeEditor disabled: the disabled fill."
+    },
+    "code-editor-disabled-text": {
+      "$value": "{plx-comp.input-disabled-text}",
+      "$type": "color",
+      "$description": "CodeEditor disabled: the code in the disabled color (no syntax colors read as active)."
+    },
+    "code-editor-text": {
+      "$value": "{plx-comp.code-block-pre-text}",
+      "$type": "color",
+      "$description": "CodeEditor: the code’s plain text (the CodeBlock’s); the syntax colors are the CodeBlock’s token roles."
+    },
+    "code-editor-caret-color": {
+      "$value": "{plx-comp.input-text}",
+      "$type": "color",
+      "$description": "CodeEditor: the caret (the field’s text color)."
+    },
+    "code-editor-placeholder-text": {
+      "$value": "{plx-comp.input-placeholder-text}",
+      "$type": "color",
+      "$description": "CodeEditor: the placeholder of an empty editor."
+    },
+    "code-editor-font-family": {
+      "$value": "{plx-comp.code-block-pre-font-family}",
+      "$type": "fontFamily",
+      "$description": "CodeEditor: the code font (DM Mono), as CodeBlock."
+    },
+    "code-editor-font-size": {
+      "$value": "{plx-comp.code-block-pre-font-size}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the code’s size, as CodeBlock."
+    },
+    "code-editor-line-height": {
+      "$value": "{plx-comp.code-block-pre-line-height}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the line height of the code and the line numbers (they must match), as CodeBlock."
+    },
+    "code-editor-padding-block": {
+      "$value": "{plx-comp.code-block-pre-padding-block}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the space above the first line and below the last."
+    },
+    "code-editor-padding-inline": {
+      "$value": "{plx-comp.code-block-pre-padding-inline}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the space on each side of the code."
+    },
+    "code-editor-height-sm-min-height": {
+      "$value": "{plx-ref.size-120px}",
+      "$type": "dimension",
+      "$description": "CodeEditor height sm: the least height (about 5 lines)."
+    },
+    "code-editor-height-md-min-height": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "CodeEditor height md: the least height (about 10 lines)."
+    },
+    "code-editor-height-lg-min-height": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "CodeEditor height lg: the least height (about 20 lines)."
+    },
+    "code-editor-tall-max-height": {
+      "$value": "{plx-comp.code-block-tall-pre-max-height}",
+      "$type": "dimension",
+      "$description": "CodeEditor tall: the most it grows before it scrolls (the tall CodeBlock’s)."
+    },
+    "code-editor-gutter-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "CodeEditor: the line numbers, secondary text."
+    },
+    "code-editor-gutter-border-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color",
+      "$description": "CodeEditor: the divider between the line numbers and the code."
+    },
+    "code-editor-gutter-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "CodeEditor: the space on each side of the line numbers."
+    },
+    "code-editor-gutter-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "CodeEditor: the gutter lies over the code that scrolls under it sideways."
+    }
+  }
+}

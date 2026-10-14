@@ -1,0 +1,6 @@
+/* Plenix · NumberInput (platform/components/NumberInput). An InputGroup around an Input in the data font: the box, the
+   affixes and the joined stepper buttons are the group's (input-group.css). The quantity form is a short box with the
+   count centered between its minus and plus buttons. */
+.plx-input-group.plx-number-input--quantity{inline-size:auto;}
+.plx-number-input--quantity>.plx-input-group__box{flex-basis:auto;flex-grow:0;inline-size:var(--plx-comp-number-input-quantity-width);}
+.plx-number-input--quantity .plx-input.plx-input-group__input{padding-inline-end:var(--plx-comp-number-input-quantity-padding-inline);padding-inline-start:var(--plx-comp-number-input-quantity-padding-inline);text-align:center;}

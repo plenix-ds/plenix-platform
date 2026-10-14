@@ -3904,28 +3904,41 @@ var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Fieldset
    Summary: A group of related controls with its title (a legend): no border, the legend as secondary text, the controls
-     stacked under it.
+     stacked under it, or side by side in a row when they make one value together (a field group: width and height, the
+     parts of an address line).
    Usage:
      <Fieldset legend="Export" gap="sm"><Checkbox label="Originals" /><Checkbox label="Metadata" /></Fieldset>
+     <Fieldset legend="Size" layout="row"><Field label="Width"><Input width="xs" /></Field><Field label="Height"><Input width="xs" /></Field></Fieldset>
+     <Fieldset legend="Sort by" hideLegend><RadioGroup … /></Fieldset>
    Props:
      legend: the title of the group
-     gap: the space between the stacked controls: "xs" (default) | "sm" | "md"
+     layout: "stack" (default; the controls under each other) | "row" (a field group: the controls side by side, wrapping
+       onto more lines when the row is narrow)
+     gap: the space between the stacked controls: "xs" (default) | "sm" | "md" (layout "stack")
+     hideLegend: the legend is read by assistive technology but not shown, for a group whose title is already on screen
+       (a section heading, a dialog title) (default false)
      children: the controls
      className: more classes on the <fieldset>
+   Behavior:
+     The legend names the group: a screen reader reads it when focus enters the group.
+     A row keeps its controls aligned at their tops (their labels on one line) and wraps when it runs out of room.
    Notes:
-     Other props pass through to the <fieldset>.
+     Other props pass through to the <fieldset> (disabled turns every control in it off).
 */
 function Fieldset({
   legend,
+  layout = 'stack',
   gap = 'xs',
+  hideLegend = false,
   className,
   children,
   ...rest
 }) {
+  const row = layout === 'row';
   return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-fieldset', 'plx-stack', 'plx-stack--gap-' + gap, className)
+    className: (0, _cx.cx)('plx-fieldset', row ? 'plx-fieldset--row' : 'plx-stack plx-stack--gap-' + gap, className)
   }, rest), /*#__PURE__*/_react.default.createElement("legend", {
-    className: "plx-fieldset__legend"
+    className: (0, _cx.cx)('plx-fieldset__legend', hideLegend && 'plx-visually-hidden')
   }, legend), children);
 }
   } },
@@ -4131,6 +4144,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CodeBlock = CodeBlock;
+exports.detect = detect;
+exports.highlight = highlight;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
@@ -4160,6 +4175,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        "Could not copy" when the clipboard refuses).
    Notes:
      The colors come from the --plx-sys-code-* roles.
+     The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
 */
 
 const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
@@ -4176,7 +4192,7 @@ function detect(title, text) {
   return /^\s*(?:[.#:@\w[\]*-][^{\n]*)\{[^}]*:[^}]*;/m.test(text) && !/=>|import |<[A-Z]/.test(text) ? 'css' : 'jsx';
 }
 
-// the code as a list of plain strings and colored spans
+// the code as a list of plain strings and colored spans (CodeEditor colors its text with it too)
 function highlight(text, language) {
   const rules = RULES[language];
   if (!rules) return text;
@@ -22244,6 +22260,855 @@ function BackToTop({
   }));
 }
   } },
+  "platform/components/InputGroup/InputGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InputGroup = InputGroup;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · InputGroup
+   Summary: One text field with what belongs to its value attached: text before or after it inside the field's border (a
+     prefix such as "https://" or "$", a suffix such as "kg" or "%"), an icon at its start, and a Button or a Select joined
+     to its outer edge (a search button, a unit or currency choice). The field and its affixes are one control with one
+     border and one focus state.
+   Usage:
+     <Field label="Website"><InputGroup prefix="https://"><Input value={site} onChange={…} /></InputGroup></Field>
+     <Field label="Weight"><InputGroup suffix="kg" width="sm" data><Input inputMode="decimal" /></InputGroup></Field>
+     <InputGroup icon="search" end={<Button>Search</Button>}><Input aria-label="Search assets" /></InputGroup>
+     <InputGroup start={<Select aria-label="Currency" options={CURRENCIES} />}><Input aria-label="Amount" /></InputGroup>
+   Props:
+     prefix: text before the value, inside the border (not part of the value)
+     suffix: text after the value, inside the border (not part of the value)
+     icon: an icon name shown at the start inside the border (decorative: the label says what the field is)
+     start: a Button or a Select (or an array of them) joined to the field's start edge
+     end: a Button or a Select (or an array of them) joined to the field's end edge
+     width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
+     data: the prefix and suffix in the data font (DM Mono), for technical values: units, currency codes, addresses
+       (default false); give the Input data too
+     invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
+     disabled: handed to the Input; the box takes the disabled fill
+     readOnly: handed to the Input; the box takes the read-only fill
+     required: handed to the Input (a Field sets it)
+     id: handed to the Input, with aria-describedby, which also lists the affixes (a Field sets both)
+     children: exactly one Input (Plenix Input)
+     className: more classes on the group
+   Behavior:
+     Clicking an affix or the icon focuses the field.
+     The border turns the focus color when the field has focus, and the danger color when it is invalid (border only).
+     The prefix and suffix are read with the field: they join its aria-describedby.
+     Attached buttons and selects keep their own Tab stops, after (or before) the field in reading order.
+   Notes:
+     Other props pass through to the outer <div>.
+     For a number with a unit, a currency or a percentage, use NumberInput: it builds on this group.
+*/
+const list = x => x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x];
+function InputGroup({
+  prefix,
+  suffix,
+  icon,
+  start,
+  end,
+  width,
+  data = false,
+  invalid,
+  disabled,
+  readOnly,
+  required,
+  id,
+  'aria-describedby': describedBy,
+  className,
+  children,
+  ...rest
+}) {
+  const uid = _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const preId = prefix != null ? 'plx-ig' + uid + '-p' : undefined,
+    sufId = suffix != null ? 'plx-ig' + uid + '-s' : undefined;
+  const child = _react.default.Children.only(children);
+  const inputRef = _react.default.useRef(null);
+  const starts = list(start),
+    ends = list(end);
+  const own = child.props;
+  const pass = {
+    id: own.id || id,
+    'aria-describedby': [own['aria-describedby'], describedBy, preId, sufId].filter(Boolean).join(' ') || undefined,
+    invalid: own.invalid !== undefined ? own.invalid : invalid,
+    disabled: own.disabled !== undefined ? own.disabled : disabled,
+    readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,
+    required: own.required !== undefined ? own.required : required,
+    className: (0, _cx.cx)(own.className, 'plx-input-group__input', (icon || prefix != null) && 'plx-input-group__input--after-affix', suffix != null && 'plx-input-group__input--before-affix'),
+    ref: node => {
+      inputRef.current = node;
+      const r = child.ref;
+      if (typeof r === 'function') r(node);else if (r) r.current = node;
+    }
+  };
+  const isInvalid = pass.invalid,
+    isDisabled = pass.disabled,
+    isReadOnly = pass.readOnly;
+  // a press on the box outside the field (an affix, the icon) focuses the field
+  const focusField = e => {
+    if (e.target !== inputRef.current && inputRef.current && !isDisabled) {
+      e.preventDefault();
+      inputRef.current.focus();
+    }
+  };
+  const attach = (el, i, all, side) => /*#__PURE__*/_react.default.cloneElement(el, {
+    key: side + i,
+    className: (0, _cx.cx)(el.props.className, 'plx-input-group__attached', 'plx-input-group__attached--' + side, (side === 'start' ? i > 0 : i < all.length - 1) && 'plx-input-group__attached--inner')
+  });
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-input-group', width && 'plx-input-group--width-' + width, data && 'plx-input-group--data', className)
+  }, rest), starts.map((el, i) => attach(el, i, starts, 'start')), /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-input-group__box', starts.length && 'plx-input-group__box--joined-start', ends.length && 'plx-input-group__box--joined-end', isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly'),
+    onMouseDown: focusField
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-input-group__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  })) : null, prefix != null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-input-group__affix plx-input-group__affix--prefix",
+    id: preId
+  }, prefix) : null, /*#__PURE__*/_react.default.cloneElement(child, pass), suffix != null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-input-group__affix plx-input-group__affix--suffix",
+    id: sufId
+  }, suffix) : null), ends.map((el, i) => attach(el, i, ends, 'end')));
+}
+  } },
+  "platform/components/NumberInput/NumberInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NumberInput = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Input = require("../Input/Input.jsx");
+var _Button = require("../Button/Button.jsx");
+var _InputGroup = require("../InputGroup/InputGroup.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · NumberInput
+   Summary: A field for a number: typed freely in the reader's locale, checked and formatted when the field is left,
+     stepped with the arrow keys, and shown with what it measures: a currency, a percent sign or a unit inside the field.
+     Stepper buttons (minus and plus at its end) or the quantity form (minus, the count, plus) change it one step at a time.
+     The value is in the data font (DM Mono).
+   Usage:
+     <Field label="Copies"><NumberInput value={n} onChange={setN} min={1} max={99} stepper="buttons" width="sm" /></Field>
+     <Field label="Price"><NumberInput value={price} onChange={setPrice} format="currency" currency="USD" min={0} /></Field>
+     <Field label="Discount"><NumberInput value={pct} onChange={setPct} format="percent" min={0} max={100} /></Field>
+     <Field label="Weight"><NumberInput value={kg} onChange={setKg} unit="kg" step={0.1} decimals={1} /></Field>
+     <NumberInput stepper="quantity" value={qty} onChange={setQty} min={1} max={5} aria-label="Quantity, Blue chair" />
+   Props:
+     value: the number (null when empty); with onChange, a controlled field
+     defaultValue: the first number of an uncontrolled field (default null)
+     onChange(value, event): the new number (null when the field is emptied) as it is typed, stepped or corrected
+     min: the least value; a smaller one is brought back to it when the field is left
+     max: the greatest value; a larger one is brought back to it when the field is left
+     step: the change of one step (default 1); a value is kept to the step's decimals when it is stepped
+     bigStep: the change of Page Up and Page Down, in steps (default 10)
+     decimals: the decimals shown when the field is left (default: the currency's own, else as typed)
+     format: "number" (default) | "currency" (the currency's symbol or code inside the field, where the locale puts it) |
+       "percent" (the percent sign after the value; the value is the percentage: 25 means 25%)
+     currency: an ISO 4217 code ("USD", "EUR"), with format "currency"
+     currencyDisplay: "symbol" (default; "$") | "code" ("USD", for pages that mix currencies)
+     unit: a short unit shown after the value ("kg", "px", "GB"); say it in the label too when it is not obvious
+     stepper: "none" (default) | "buttons" (minus and plus joined at the end) | "quantity" (minus before and plus after a
+       short centered count: carts, copies, seats)
+     width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
+     invalid: the danger border and aria-invalid (a Field with an error sets it)
+     disabled: turns the field and its buttons off
+     readOnly: the value can be read and copied, not changed; the buttons turn off
+     required: handed to the field (a Field sets it)
+     id: handed to the field, with aria-describedby (a Field sets both)
+     strings: the words it announces, for other languages: { decrease: "Decrease", increase: "Increase" }
+     className: more classes on the group
+     ref: forwarded to the <input>
+   Behavior:
+     The field is a spinbutton: Arrow Up and Arrow Down step it, Page Up and Page Down step it by bigStep, Home and End go
+       to min and max; screen readers read the value with its currency, percent sign or unit (aria-valuetext).
+     Typing is never blocked or reformatted while the field has focus; the locale's group and decimal marks are read.
+       Leaving the field formats the value in the locale, keeps it inside min and max, or puts back the last valid
+       number when the text is not a number.
+     The stepper buttons are not Tab stops (the arrow keys step the field); a press keeps focus where it was. Each is
+       turned off at its limit.
+   Notes:
+     It is an InputGroup around an Input in the data font; other props pass through to the <input> (name, placeholder,
+       autoComplete, onBlur, onFocus…).
+     Numbers that are really codes (ZIP codes, card numbers, phone numbers) are text: use Input.
+*/
+const STRINGS = {
+  decrease: 'Decrease',
+  increase: 'Increase'
+};
+const decimalsOf = n => {
+  const s = String(n);
+  const i = s.indexOf('.');
+  return i < 0 ? 0 : s.length - i - 1;
+};
+const SPACES = /[\s  ]/g;
+
+// the locale's marks: group, decimal and minus, read from its own formatter
+function marks(locale) {
+  const parts = new Intl.NumberFormat(locale).formatToParts(-12345.6);
+  const of = (type, d) => (parts.find(p => p.type === type) || {
+    value: d
+  }).value;
+  return {
+    group: of('group', ','),
+    decimal: of('decimal', '.'),
+    minus: of('minusSign', '-')
+  };
+}
+
+// the text a person typed as a number: null when empty, NaN when it is not a number
+function parseNumber(text, locale) {
+  const m = marks(locale || (0, _format.formatLocale)());
+  let s = String(text == null ? '' : text).replace(SPACES, '');
+  if (!s) return null;
+  if (m.group.replace(SPACES, '')) s = s.split(m.group).join('');
+  s = s.split(m.decimal).join('.').split(m.minus).join('-').replace(/−/g, '-');
+  return /^-?(\d+\.?\d*|\.\d+)$/.test(s) ? Number(s) : NaN;
+}
+
+// where the locale writes a currency's symbol or code, or the percent sign: before or after the number
+function affix(format, currency, display, locale) {
+  if (format === 'currency' && currency) {
+    const nf = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      currencyDisplay: display
+    });
+    const parts = nf.formatToParts(1),
+      c = parts.findIndex(p => p.type === 'currency'),
+      n = parts.findIndex(p => p.type === 'integer');
+    return {
+      text: parts[c].value,
+      before: c < n,
+      decimals: nf.resolvedOptions().minimumFractionDigits
+    };
+  }
+  if (format === 'percent') {
+    const parts = new Intl.NumberFormat(locale, {
+        style: 'percent'
+      }).formatToParts(1),
+      c = parts.findIndex(p => p.type === 'percentSign'),
+      n = parts.findIndex(p => p.type === 'integer');
+    return {
+      text: parts[c].value,
+      before: c < n
+    };
+  }
+  return null;
+}
+const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef(function NumberInput({
+  value,
+  defaultValue = null,
+  onChange,
+  min,
+  max,
+  step = 1,
+  bigStep = 10,
+  decimals,
+  format = 'number',
+  currency,
+  currencyDisplay = 'symbol',
+  unit,
+  stepper = 'none',
+  width,
+  invalid,
+  disabled,
+  readOnly,
+  required,
+  id,
+  'aria-describedby': describedBy,
+  strings,
+  className,
+  onFocus,
+  onBlur,
+  onKeyDown,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const locale = (0, _format.formatLocale)();
+  const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
+  const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
+  const controlled = value !== undefined;
+  const [inner, setInner] = _react.default.useState(defaultValue);
+  const num = controlled ? value : inner;
+  const show = _react.default.useCallback(n => n == null || !isFinite(n) ? '' : (0, _format.formatNumber)(n, {
+    decimals: places
+  }), [places]);
+  const [text, setText] = _react.default.useState(() => show(num));
+  const [editing, setEditing] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    if (!editing) setText(show(num));
+  }, [num, editing, show]);
+  const clamp = n => n == null ? n : Math.min(max !== undefined ? max : Infinity, Math.max(min !== undefined ? min : -Infinity, n));
+  const commit = (n, e) => {
+    if (!controlled) setInner(n);
+    if (onChange && n !== num) onChange(n, e);
+  };
+  const stepBy = (count, e) => {
+    if (disabled || readOnly) return;
+    const typed = parseNumber(text, locale);
+    const from = typed != null && !isNaN(typed) ? typed : num != null ? num : min !== undefined && min > 0 ? min - step * Math.sign(count || 1) : 0;
+    const prec = Math.max(decimalsOf(step), decimalsOf(from));
+    const next = clamp(Number((from + count * step).toFixed(prec)));
+    setText(show(next));
+    commit(next, e);
+  };
+  const atMin = num != null && min !== undefined && num <= min,
+    atMax = num != null && max !== undefined && num >= max;
+  const keys = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented) return;
+    const k = e.key;
+    if (k === 'ArrowUp' || k === 'ArrowDown') {
+      e.preventDefault();
+      stepBy(k === 'ArrowUp' ? 1 : -1, e);
+    } else if (k === 'PageUp' || k === 'PageDown') {
+      e.preventDefault();
+      stepBy((k === 'PageUp' ? 1 : -1) * bigStep, e);
+    } else if (k === 'Home' && min !== undefined && !readOnly) {
+      e.preventDefault();
+      setText(show(min));
+      commit(min, e);
+    } else if (k === 'End' && max !== undefined && !readOnly) {
+      e.preventDefault();
+      setText(show(max));
+      commit(max, e);
+    }
+  };
+  const typed = e => {
+    setText(e.target.value);
+    const n = parseNumber(e.target.value, locale);
+    if (n === null || !isNaN(n)) commit(n, e);
+  };
+  const left = e => {
+    setEditing(false);
+    const n = parseNumber(text, locale);
+    if (n !== null && isNaN(n)) setText(show(num));else {
+      const c = clamp(n == null ? n : places !== undefined ? Number(n.toFixed(places)) : n);
+      setText(show(c));
+      commit(c, e);
+    }
+    if (onBlur) onBlur(e);
+  };
+  const focused = e => {
+    setEditing(true);
+    if (onFocus) onFocus(e);
+  };
+  const full = num == null ? undefined : format === 'currency' && currency ? (0, _format.formatCurrency)(num, currency, {
+    display: currencyDisplay,
+    decimals: places
+  }) : show(num) + (aff ? aff.text : unit ? ' ' + unit : '');
+  const keep = e => e.preventDefault(); // a press on a stepper button keeps focus where it was
+  const minus = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: "minus",
+    iconOnly: true,
+    icon: "remove",
+    label: t.decrease,
+    tabIndex: -1,
+    disabled: disabled || readOnly || atMin,
+    onMouseDown: keep,
+    onClick: e => stepBy(-1, e)
+  });
+  const plus = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: "plus",
+    iconOnly: true,
+    icon: "plus",
+    label: t.increase,
+    tabIndex: -1,
+    disabled: disabled || readOnly || atMax,
+    onMouseDown: keep,
+    onClick: e => stepBy(1, e)
+  });
+  const quantity = stepper === 'quantity';
+  return /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
+    className: (0, _cx.cx)('plx-number-input', stepper !== 'none' && 'plx-number-input--' + stepper, className),
+    width: quantity ? undefined : width,
+    data: true,
+    prefix: aff && aff.before ? aff.text : undefined,
+    suffix: aff && !aff.before ? aff.text : unit || undefined,
+    start: quantity ? minus : undefined,
+    end: quantity ? plus : stepper === 'buttons' ? [minus, plus] : undefined,
+    invalid: invalid,
+    disabled: disabled,
+    readOnly: readOnly,
+    required: required,
+    id: id,
+    "aria-describedby": describedBy
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, _extends({
+    ref: ref,
+    data: true,
+    role: "spinbutton",
+    inputMode: places === 0 || decimalsOf(step) === 0 && places === undefined && format !== 'currency' ? 'numeric' : 'decimal',
+    autoComplete: "off",
+    value: text,
+    onChange: typed,
+    onKeyDown: keys,
+    onFocus: focused,
+    onBlur: left,
+    "aria-valuenow": num == null ? undefined : num,
+    "aria-valuemin": min,
+    "aria-valuemax": max,
+    "aria-valuetext": full
+  }, rest)));
+});
+  } },
+  "platform/components/ErrorSummary/ErrorSummary.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ErrorSummary = ErrorSummary;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Notice = require("../Notice/Notice.jsx");
+var _Link = require("../Link/Link.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ErrorSummary
+   Summary: The list of what stopped a form from being sent, at the top of the form after a failed submit: a danger
+     Notice with a title that says how many problems there are and one link per problem, in the form's order, each
+     taking focus to its field. Focus moves to the summary when it appears, so people hear it first.
+   Usage:
+     {errors.length ? <ErrorSummary errors={[{ target: 'asset-name', message: 'Enter a name' }, { target: 'asset-owner', message: 'Choose an owner' }]} /> : null}
+     <ErrorSummary title="The asset was not saved" errors={errors} headingLevel={3} />
+   Props:
+     errors: the problems, in the form's order: [{ target, message }]; target is the id of the field to focus (the
+       Field's control id), message the same words as the field's own error
+     title: the heading (default strings.one or strings.many with the count)
+     headingLevel: the heading's level, 2 to 6 (default 2)
+     autoFocus: moves focus to the summary when it appears and when its errors change (default true)
+     strings: the words it shows, for other languages: { one: "There is a problem", many: "There are {count} problems" }
+     className: more classes on the summary
+   Behavior:
+     The summary is a group named by its heading; it takes focus (tabindex -1) when it appears, so a screen reader reads
+       the heading and the list. It is not a live region: focus already brings it to people.
+     Each problem is a link to #target: following it moves focus into the field and scrolls the field into view, with
+       its label (block "center").
+     Keep the same message beside each field (Field error); remove the summary when the form is sent again without
+       problems.
+   Notes:
+     Other props pass through to the outer <div>.
+     For a problem that is not about a field (the server did not answer), use a Notice or a Banner instead.
+*/
+const STRINGS = {
+  one: 'There is a problem',
+  many: 'There are {count} problems'
+};
+function ErrorSummary({
+  errors = [],
+  title,
+  headingLevel = 2,
+  autoFocus = true,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const ref = _react.default.useRef(null);
+  const titleId = 'plx-es' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const key = errors.map(e => e.target + ':' + e.message).join('|');
+  _react.default.useEffect(() => {
+    if (autoFocus && errors.length && ref.current) ref.current.focus();
+  }, [key, autoFocus]);
+  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
+  const heading = title || (errors.length === 1 ? t.one : t.many.replace('{count}', errors.length));
+  const go = target => e => {
+    const field = typeof document !== 'undefined' && document.getElementById(target);
+    if (!field) return;
+    e.preventDefault();
+    field.focus({
+      preventScroll: true
+    });
+    field.scrollIntoView({
+      block: 'center'
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    className: (0, _cx.cx)('plx-error-summary', className),
+    tabIndex: -1,
+    role: "group",
+    "aria-labelledby": titleId
+  }, rest), /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger",
+    role: undefined,
+    title: /*#__PURE__*/_react.default.createElement(H, {
+      className: "plx-error-summary__title",
+      id: titleId
+    }, heading)
+  }, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-error-summary__list"
+  }, errors.map(e => /*#__PURE__*/_react.default.createElement("li", {
+    key: e.target + e.message,
+    className: "plx-error-summary__item"
+  }, /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: '#' + e.target,
+    onClick: go(e.target)
+  }, e.message))))));
+}
+  } },
+  "platform/components/FileInput/FileInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FileInput = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileInput
+   Summary: Chooses files from the device: the browser's own file input (focusable, read by assistive technology) drawn
+     as a secondary Button, a line that says what is chosen, and, with showList, the chosen files one per row with their
+     size and a Remove button.
+   Usage:
+     <Field label="Contract" description="PDF, up to 10 MB"><FileInput accept=".pdf" onChange={setFiles} /></Field>
+     <Field label="Attachments"><FileInput multiple showList onChange={setFiles} /></Field>
+   Props:
+     accept: the file types the picker offers (".pdf,.docx", "image/*"); say them in the Field's description too
+     multiple: more than one file at a time (default false)
+     showList: the chosen files in a list under the button, each with its size and a Remove button (default false)
+     onChange(files, event): the chosen files, as an array of File
+     label: the accessible name when the field has no Field (default strings.choose or strings.chooseMany)
+     name: the form field name, handed to the native <input type="file"> (as are form and capture)
+     disabled: turns the input and its button off (default false)
+     required: handed to the native input (a Field sets it)
+     invalid: marks the native input invalid, aria-invalid (a Field with an error sets it)
+     id: handed to the native input, with aria-describedby (a Field sets both)
+     strings: the words it shows and announces, for other languages: { choose: "Choose file", chooseMany: "Choose files",
+       none: "No file chosen", count: "{count} files", remove: "Remove {name}" }
+     className: more classes on the outer <div>
+     ref: forwarded to the native <input>
+   Behavior:
+     The native input is the control: it is the Tab stop, it opens the picker on Enter, Space or a click on the button,
+       and a Field's label names it. The button only draws it, and shows the focus ring while the input has focus.
+     The line beside the button names the one file chosen, or how many, and is read with the input (aria-describedby).
+     Remove takes a file out of the input's own list (the form sends what the list shows) and returns focus to the
+       input.
+   Notes:
+     Sizes are written by formatBytes in the data font, as file names are.
+     For dragging files in, use DropZone; for images with a preview, an image upload.
+*/
+const STRINGS = {
+  choose: 'Choose file',
+  chooseMany: 'Choose files',
+  none: 'No file chosen',
+  count: '{count} files',
+  remove: 'Remove {name}'
+};
+const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(function FileInput({
+  accept,
+  multiple = false,
+  showList = false,
+  onChange,
+  label,
+  disabled = false,
+  required,
+  invalid,
+  id,
+  'aria-describedby': describedBy,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const input = _react.default.useRef(null);
+  const [files, setFiles] = _react.default.useState([]);
+  const [focus, setFocus] = _react.default.useState(false);
+  const sumId = 'plx-fi' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '') + '-s';
+  const setRef = node => {
+    input.current = node;
+    if (typeof ref === 'function') ref(node);else if (ref) ref.current = node;
+  };
+  const chosen = e => {
+    const list = Array.from(e.target.files || []);
+    setFiles(list);
+    if (onChange) onChange(list, e);
+  };
+  const remove = i => e => {
+    const next = files.filter((_, j) => j !== i);
+    // the input's own list follows, so a form sends what the list shows
+    if (typeof DataTransfer !== 'undefined' && input.current) {
+      const dt = new DataTransfer();
+      next.forEach(f => dt.items.add(f));
+      input.current.files = dt.files;
+    }
+    setFiles(next);
+    if (onChange) onChange(next, e);
+    if (input.current) input.current.focus();
+  };
+  const summary = !files.length ? t.none : files.length === 1 ? files[0].name : t.count.replace('{count}', files.length);
+  const choose = multiple ? t.chooseMany : t.choose;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-file-input', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-file-input__row"
+  }, /*#__PURE__*/_react.default.createElement("label", {
+    className: "plx-file-input__trigger"
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: setRef,
+    type: "file",
+    className: "plx-file-input__native plx-visually-hidden",
+    accept: accept,
+    multiple: multiple,
+    disabled: disabled,
+    required: required,
+    "aria-invalid": invalid || undefined,
+    id: id,
+    "aria-label": label || (id ? undefined : choose),
+    "aria-describedby": [describedBy, sumId].filter(Boolean).join(' '),
+    onChange: chosen,
+    onFocus: e => setFocus(e.target.matches(':focus-visible')),
+    onBlur: () => setFocus(false)
+  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-button', 'plx-button--secondary', 'plx-file-input__button', focus && 'is-focus-visible'),
+    "aria-hidden": "true",
+    "aria-disabled": disabled || undefined
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "attachment"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__label"
+  }, choose))), /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-file-input__summary', files.length === 1 && 'plx-file-input__summary--file'),
+    id: sumId
+  }, summary)), showList && files.length ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-file-input__list"
+  }, files.map((f, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: f.name + i,
+    className: "plx-file-input__item"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "doc-text"
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-input__name"
+  }, f.name), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-file-input__size"
+  }, (0, _format.formatBytes)(f.size)), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    className: "plx-file-input__remove",
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    label: t.remove.replace('{name}', f.name),
+    onClick: remove(i)
+  })))) : null);
+});
+  } },
+  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CodeEditor = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _CodeBlock = require("../CodeBlock/CodeBlock.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CodeEditor
+   Summary: A multi-line field for code people write: the code font (DM Mono), the CodeBlock's colors as they type,
+     optional line numbers, indentation with Tab, and a read-only form. It is a native <textarea> laid over the colored
+     copy of its text, so typing, selection, undo, spell check off and assistive technology are the browser's own; no
+     editor engine is loaded.
+   Usage:
+     <Field label="Query (CSS)"><CodeEditor language="css" value={css} onChange={setCss} lineNumbers /></Field>
+     <CodeEditor language="jsx" defaultValue={sample} readOnly label="Example" />
+   Props:
+     value: the code; with onChange, a controlled field
+     defaultValue: the first code of an uncontrolled field (default "")
+     onChange(code, event): the new code after each edit
+     language: "jsx" (default) | "js" | "css" | "html" | "text" (not colored): the CodeBlock's highlighter
+     lineNumbers: a gutter with the line numbers (default false)
+     readOnly: people can read, select and copy, not edit (the read-only fill; Tab leaves) (default false)
+     height: "sm" | "md" (default) | "lg": the least height (about 5, 10 or 20 lines)
+     maxHeight: "none" (default; it grows with the code) | "tall" (a box that scrolls, for long files)
+     tabSize: the spaces Tab inserts (default 2)
+     label: the accessible name when it has no Field
+     invalid: marks the editor invalid: the danger border and aria-invalid (a Field with an error sets it)
+     disabled: turns the editor off (default false)
+     required: handed to the <textarea> (a Field sets it)
+     id: handed to the <textarea>, with aria-describedby (a Field sets both)
+     strings: the words it announces, for other languages: { hint: "Tab indents. Press Escape, then Tab, to leave the
+       editor." }
+     className: more classes on the editor
+     ref: forwarded to the <textarea>
+   Behavior:
+     Tab indents (the selected lines, or inserts spaces at the caret) and Shift+Tab outdents; Escape, then Tab, leaves the
+       editor, so the keyboard is never trapped; the hint says so (aria-describedby). Read-only and disabled editors
+       keep Tab for moving on.
+     Enter starts the new line at the indentation of the line above.
+     The editor scrolls as one: the code, the gutter's numbers (which stay in view on the start side) and the caret move
+       together; long lines scroll sideways, never wrap.
+     The border turns the focus color while the editor has focus (border only), the danger color when it is invalid.
+     Edits made with Tab, Shift+Tab and Enter join the browser's undo history where it allows (Ctrl+Z).
+   Notes:
+     Other props pass through to the <textarea> (name, placeholder, onBlur…).
+     For code people only read, use CodeBlock. A real editor engine (completion, folding, error markers) is not part of
+       Plenix; ask before adding one.
+*/
+const STRINGS = {
+  hint: 'Tab indents. Press Escape, then Tab, to leave the editor.'
+};
+
+// replaces the textarea's selection with text through the browser's editing, so it joins the undo history; falls back to
+// setting the value (and telling React) where execCommand is not available
+function insert(el, text, selStart, selEnd) {
+  el.focus();
+  if (selStart !== undefined) el.setSelectionRange(selStart, selEnd);
+  let done = false;
+  try {
+    done = typeof document !== 'undefined' && document.execCommand && document.execCommand('insertText', false, text);
+  } catch (e) {
+    done = false;
+  }
+  if (!done) {
+    el.setRangeText(text, el.selectionStart, el.selectionEnd, 'end');
+    el.dispatchEvent(new Event('input', {
+      bubbles: true
+    })); // React reads the new value as a change
+  }
+}
+const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(function CodeEditor({
+  value,
+  defaultValue = '',
+  onChange,
+  language = 'jsx',
+  lineNumbers = false,
+  readOnly = false,
+  height = 'md',
+  maxHeight = 'none',
+  tabSize = 2,
+  label,
+  invalid,
+  disabled = false,
+  required,
+  id,
+  'aria-describedby': describedBy,
+  strings,
+  className,
+  onKeyDown,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const area = _react.default.useRef(null);
+  const release = _react.default.useRef(false); // Escape was pressed: the next Tab leaves the editor
+  const controlled = value !== undefined;
+  const [inner, setInner] = _react.default.useState(defaultValue);
+  const code = controlled ? value == null ? '' : String(value) : inner;
+  const hintId = 'plx-ce' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '') + '-h';
+  const setRef = node => {
+    area.current = node;
+    if (typeof ref === 'function') ref(node);else if (ref) ref.current = node;
+  };
+  const colored = _react.default.useMemo(() => (0, _CodeBlock.highlight)(code, language), [code, language]);
+  const lines = code.split('\n').length;
+  const editable = !readOnly && !disabled;
+  const pad = ' '.repeat(tabSize);
+  const changed = e => {
+    if (!controlled) setInner(e.target.value);
+    if (onChange) onChange(e.target.value, e);
+  };
+  const keys = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || !editable) return;
+    const el = e.currentTarget;
+    if (e.key === 'Escape') {
+      release.current = true;
+      return;
+    }
+    if (e.key === 'Tab' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (release.current) {
+        release.current = false;
+        return;
+      } // leave the editor
+      e.preventDefault();
+      const v = el.value,
+        s = el.selectionStart,
+        end = el.selectionEnd;
+      const from = v.lastIndexOf('\n', s - 1) + 1;
+      if (!e.shiftKey && s === end) {
+        insert(el, pad);
+        return;
+      }
+      // indent or outdent every line the selection touches
+      const to = end > s && v[end - 1] === '\n' ? end - 1 : end;
+      const block = v.slice(from, to);
+      const next = block.split('\n').map(l => e.shiftKey ? l.replace(new RegExp('^ {1,' + tabSize + '}'), '') : pad + l).join('\n');
+      if (next === block) return;
+      insert(el, next, from, to);
+      el.setSelectionRange(s === end ? Math.max(from, s + (next.length - block.length)) : from, from + next.length);
+      return;
+    }
+    release.current = false;
+    if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const v = el.value,
+        s = el.selectionStart;
+      const indent = (/^[ \t]*/.exec(v.slice(v.lastIndexOf('\n', s - 1) + 1, s)) || [''])[0];
+      if (!indent) return;
+      e.preventDefault();
+      insert(el, '\n' + indent);
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-code-editor', lineNumbers && 'plx-code-editor--line-numbers', readOnly && 'plx-code-editor--readonly', 'plx-code-editor--height-' + height, maxHeight === 'tall' && 'plx-code-editor--tall', invalid && 'is-invalid', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-code-editor__scroller"
+  }, lineNumbers ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-code-editor__gutter",
+    "aria-hidden": "true"
+  }, Array.from({
+    length: lines
+  }, (_, i) => /*#__PURE__*/_react.default.createElement("span", {
+    key: i,
+    className: "plx-code-editor__number"
+  }, i + 1))) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-code-editor__code"
+  }, /*#__PURE__*/_react.default.createElement("textarea", _extends({
+    ref: setRef,
+    className: "plx-code-editor__input",
+    value: code,
+    onChange: changed,
+    onKeyDown: keys,
+    readOnly: readOnly,
+    disabled: disabled,
+    required: required,
+    id: id,
+    "aria-label": label,
+    "aria-invalid": invalid || undefined,
+    rows: 1,
+    wrap: "off",
+    spellCheck: false,
+    autoCapitalize: "off",
+    autoComplete: "off",
+    autoCorrect: "off",
+    "data-gramm": "false",
+    "aria-describedby": [describedBy, editable ? hintId : null].filter(Boolean).join(' ') || undefined
+  }, rest)), /*#__PURE__*/_react.default.createElement("pre", {
+    className: "plx-code-editor__pre",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("code", {
+    "data-plx-language": language
+  }, colored, code.endsWith('\n') || !code ? ' ' : '')))), editable ? /*#__PURE__*/_react.default.createElement("span", {
+    id: hintId,
+    className: "plx-visually-hidden"
+  }, t.hint) : null);
+});
+  } },
   "platform/patterns/Form/Form.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -22639,7 +23504,7 @@ function useSearchHistory(key, options = {}) {
   };
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22817,6 +23682,12 @@ Object.defineProperty(exports, "CodeBlock", {
   enumerable: true,
   get: function () {
     return _CodeBlock.CodeBlock;
+  }
+});
+Object.defineProperty(exports, "CodeEditor", {
+  enumerable: true,
+  get: function () {
+    return _CodeEditor.CodeEditor;
   }
 });
 Object.defineProperty(exports, "CollapsibleSection", {
@@ -23011,6 +23882,12 @@ Object.defineProperty(exports, "EntityHeader", {
     return _EntityHeader.EntityHeader;
   }
 });
+Object.defineProperty(exports, "ErrorSummary", {
+  enumerable: true,
+  get: function () {
+    return _ErrorSummary.ErrorSummary;
+  }
+});
 Object.defineProperty(exports, "EventChip", {
   enumerable: true,
   get: function () {
@@ -23051,6 +23928,12 @@ Object.defineProperty(exports, "Figure", {
   enumerable: true,
   get: function () {
     return _Figure.Figure;
+  }
+});
+Object.defineProperty(exports, "FileInput", {
+  enumerable: true,
+  get: function () {
+    return _FileInput.FileInput;
   }
 });
 Object.defineProperty(exports, "FilterBar", {
@@ -23141,6 +24024,12 @@ Object.defineProperty(exports, "Input", {
   enumerable: true,
   get: function () {
     return _Input.Input;
+  }
+});
+Object.defineProperty(exports, "InputGroup", {
+  enumerable: true,
+  get: function () {
+    return _InputGroup.InputGroup;
   }
 });
 Object.defineProperty(exports, "Kbd", {
@@ -23255,6 +24144,12 @@ Object.defineProperty(exports, "NotificationList", {
   enumerable: true,
   get: function () {
     return _NotificationList.NotificationList;
+  }
+});
+Object.defineProperty(exports, "NumberInput", {
+  enumerable: true,
+  get: function () {
+    return _NumberInput.NumberInput;
   }
 });
 Object.defineProperty(exports, "OtpInput", {
@@ -24522,6 +25417,11 @@ var _CommandMenu = require("./components/CommandMenu/CommandMenu.jsx");
 var _CommandPalette = require("./patterns/CommandPalette/CommandPalette.jsx");
 var _DownloadButton = require("./components/DownloadButton/DownloadButton.jsx");
 var _BackToTop = require("./components/BackToTop/BackToTop.jsx");
+var _InputGroup = require("./components/InputGroup/InputGroup.jsx");
+var _NumberInput = require("./components/NumberInput/NumberInput.jsx");
+var _ErrorSummary = require("./components/ErrorSummary/ErrorSummary.jsx");
+var _FileInput = require("./components/FileInput/FileInput.jsx");
+var _CodeEditor = require("./components/CodeEditor/CodeEditor.jsx");
 var _Form = require("./patterns/Form/Form.jsx");
 var _OtpInput = require("./components/OtpInput/OtpInput.jsx");
 var _useSearchHistory = require("./hooks/useSearchHistory.js");

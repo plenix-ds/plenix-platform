@@ -1,0 +1,79 @@
+/* Plenix · InputGroup
+   Summary: One text field with what belongs to its value attached: text before or after it inside the field's border (a
+     prefix such as "https://" or "$", a suffix such as "kg" or "%"), an icon at its start, and a Button or a Select joined
+     to its outer edge (a search button, a unit or currency choice). The field and its affixes are one control with one
+     border and one focus state.
+   Usage:
+     <Field label="Website"><InputGroup prefix="https://"><Input value={site} onChange={…} /></InputGroup></Field>
+     <Field label="Weight"><InputGroup suffix="kg" width="sm" data><Input inputMode="decimal" /></InputGroup></Field>
+     <InputGroup icon="search" end={<Button>Search</Button>}><Input aria-label="Search assets" /></InputGroup>
+     <InputGroup start={<Select aria-label="Currency" options={CURRENCIES} />}><Input aria-label="Amount" /></InputGroup>
+   Props:
+     prefix: text before the value, inside the border (not part of the value)
+     suffix: text after the value, inside the border (not part of the value)
+     icon: an icon name shown at the start inside the border (decorative: the label says what the field is)
+     start: a Button or a Select (or an array of them) joined to the field's start edge
+     end: a Button or a Select (or an array of them) joined to the field's end edge
+     width: "xs" | "sm" | "md" | "lg" (a group narrower than its row, --plx-sys-field-width-*); full width by default
+     data: the prefix and suffix in the data font (DM Mono), for technical values: units, currency codes, addresses
+       (default false); give the Input data too
+     invalid: handed to the Input; the box’s border turns the danger color (a Field with an error sets it)
+     disabled: handed to the Input; the box takes the disabled fill
+     readOnly: handed to the Input; the box takes the read-only fill
+     required: handed to the Input (a Field sets it)
+     id: handed to the Input, with aria-describedby, which also lists the affixes (a Field sets both)
+     children: exactly one Input (Plenix Input)
+     className: more classes on the group
+   Behavior:
+     Clicking an affix or the icon focuses the field.
+     The border turns the focus color when the field has focus, and the danger color when it is invalid (border only).
+     The prefix and suffix are read with the field: they join its aria-describedby.
+     Attached buttons and selects keep their own Tab stops, after (or before) the field in reading order.
+   Notes:
+     Other props pass through to the outer <div>.
+     For a number with a unit, a currency or a percentage, use NumberInput: it builds on this group.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { Icon } from '../Icon/Icon.jsx';
+
+const list = (x) => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
+
+export function InputGroup({ prefix, suffix, icon, start, end, width, data = false, invalid, disabled, readOnly, required, id, 'aria-describedby': describedBy, className, children, ...rest }) {
+  const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const preId = prefix != null ? 'plx-ig' + uid + '-p' : undefined, sufId = suffix != null ? 'plx-ig' + uid + '-s' : undefined;
+  const child = React.Children.only(children);
+  const inputRef = React.useRef(null);
+  const starts = list(start), ends = list(end);
+  const own = child.props;
+  const pass = {
+    id: own.id || id,
+    'aria-describedby': [own['aria-describedby'], describedBy, preId, sufId].filter(Boolean).join(' ') || undefined,
+    invalid: own.invalid !== undefined ? own.invalid : invalid,
+    disabled: own.disabled !== undefined ? own.disabled : disabled,
+    readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,
+    required: own.required !== undefined ? own.required : required,
+    className: cx(own.className, 'plx-input-group__input', (icon || prefix != null) && 'plx-input-group__input--after-affix', suffix != null && 'plx-input-group__input--before-affix'),
+    ref: (node) => { inputRef.current = node; const r = child.ref; if (typeof r === 'function') r(node); else if (r) r.current = node; },
+  };
+  const isInvalid = pass.invalid, isDisabled = pass.disabled, isReadOnly = pass.readOnly;
+  // a press on the box outside the field (an affix, the icon) focuses the field
+  const focusField = (e) => { if (e.target !== inputRef.current && inputRef.current && !isDisabled) { e.preventDefault(); inputRef.current.focus(); } };
+  const attach = (el, i, all, side) => React.cloneElement(el, {
+    key: side + i,
+    className: cx(el.props.className, 'plx-input-group__attached', 'plx-input-group__attached--' + side, (side === 'start' ? i > 0 : i < all.length - 1) && 'plx-input-group__attached--inner'),
+  });
+  return (
+    <div className={cx('plx-input-group', width && 'plx-input-group--width-' + width, data && 'plx-input-group--data', className)} {...rest}>
+      {starts.map((el, i) => attach(el, i, starts, 'start'))}
+      <div className={cx('plx-input-group__box', starts.length && 'plx-input-group__box--joined-start', ends.length && 'plx-input-group__box--joined-end',
+        isInvalid && 'is-invalid', isDisabled && 'is-disabled', isReadOnly && 'is-readonly')} onMouseDown={focusField}>
+        {icon ? <span className="plx-input-group__icon" aria-hidden="true"><Icon name={icon} /></span> : null}
+        {prefix != null ? <span className="plx-input-group__affix plx-input-group__affix--prefix" id={preId}>{prefix}</span> : null}
+        {React.cloneElement(child, pass)}
+        {suffix != null ? <span className="plx-input-group__affix plx-input-group__affix--suffix" id={sufId}>{suffix}</span> : null}
+      </div>
+      {ends.map((el, i) => attach(el, i, ends, 'end'))}
+    </div>
+  );
+}

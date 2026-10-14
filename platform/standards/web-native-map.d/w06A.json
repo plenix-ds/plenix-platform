@@ -1,0 +1,16 @@
+{
+  "$description": "Library part w06A (wave 6, lane A): the iOS and Android counterparts of the field group and the legend, the error summary, the input group, the number input (and its stepper, currency, percentage and quantity forms), the file input and the code editor. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "forms|Field group": { "ios": ["ios-forms|Entering data"], "android": ["android-forms|Form screen", "android-patterns|Form"] },
+    "forms|Legend": { "ios": ["ios-forms|Entering data"], "android": ["android-forms|Form screen"] },
+    "forms|Error summary": { "ios": ["ios-forms|Entering data"], "android": ["android-forms|Validation", "android-forms|Forms checks"] },
+    "forms|Input group": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|OutlinedTextField"] },
+    "forms|Number input": { "ios": ["ios-forms|Text fields", "ios-forms|Steppers", "ios-forms|Virtual keyboards"], "android": ["android-forms|OutlinedTextField", "android-forms|Keyboard types"] },
+    "forms|Stepper": { "ios": ["ios-forms|Steppers"], "android": ["android-forms|OutlinedTextField"] },
+    "forms|Currency input": { "ios": ["ios-forms|Text fields", "ios-forms|Virtual keyboards"], "android": ["android-forms|OutlinedTextField", "android-forms|Keyboard types"] },
+    "forms|Percentage input": { "ios": ["ios-forms|Text fields", "ios-forms|Virtual keyboards"], "android": ["android-forms|OutlinedTextField", "android-forms|Keyboard types"] },
+    "forms|Quantity selector": { "ios": ["ios-forms|Steppers"], "android": ["android-forms|OutlinedTextField"] },
+    "forms|File input": { "ios": ["ios-forms|Image wells"], "android": ["android-specialized|File and photo pickers"] },
+    "forms|Code editor": { "ios": ["ios-forms|Text fields"], "android": ["android-forms|Multi-line text field"] }
+  }
+}
