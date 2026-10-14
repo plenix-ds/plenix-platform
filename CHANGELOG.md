@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.61] - 2026-10-14
+
+### Changed
+- RichTextEditor runs on Tiptap 3.31.3 (MIT; StarterKit, Link, Mention), vendored as one file
+  (platform/vendor/tiptap, 132 KB gzipped, licenses recorded) and loaded only when an editor is on the page. The API,
+  toolbar, shortcuts, Markdown shortcuts, plain-text paste, links, mentions and states are unchanged; the Backspace
+  marker is gone. Later: tables, editing together (Yjs) and embeds.
+
 ## [0.31.60] - 2026-10-14
 
 ### Added
