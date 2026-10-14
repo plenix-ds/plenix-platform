@@ -1,7 +1,9 @@
 // Plenix tests · keyboard behavior, with real key presses on the components' live examples in the design system:
 // a Toolbar is one Tab stop and its arrows follow reading order; Rating moves focus with the value; Tabs and
 // SegmentedControl arrows follow reading order (right to left reverses them); the Tree opens toward the reading end; a
-// collapsible settings section opens and closes with Enter and Space.
+// collapsible settings section opens and closes with Enter and Space; the recent searches of a SearchField are a grid
+// popup (WAI-ARIA combobox with grid popup): Arrow Down moves between rows, Arrow Right into the remove cell, Enter there
+// removes the search, Delete removes the active one, Enter on a term searches it (the focus stays in the field).
 //   node tests/keyboard.test.js            (TEST_PORT: another port)
 //   TEST_SCOPE=full: every component; by default (tests/changed.js) those whose component or design-system page changed
 const fs = require('fs');
@@ -11,7 +13,7 @@ const changed = require('./changed.js');
 const PORT = +process.env.TEST_PORT || 8797, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/';
 if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'))) { console.log('KEYBOARD_SKIPPED (no design system)'); process.exit(0); }
 // each component checked: its page's record id and its Platform unit
-const PARTS = { toolbar: ['toolbar', 'components/Toolbar'], rating: ['rating', 'components/Rating'], tabs: ['tabs', 'components/Tabs'], settings: ['settings-page', 'patterns/SettingsLayout'] };
+const PARTS = { toolbar: ['toolbar', 'components/Toolbar'], rating: ['rating', 'components/Rating'], tabs: ['tabs', 'components/Tabs'], settings: ['settings-page', 'patterns/SettingsLayout'], recent: ['recent-searches', 'components/SearchField'] };
 const want = (k) => changed.wants({ ids: [PARTS[k][0]], units: [PARTS[k][1]] });
 const WANTED = Object.keys(PARTS).filter(want);
 if (!WANTED.length) changed.none('KEYBOARD_OK 0/0');
@@ -81,6 +83,42 @@ changed.report(WANTED.join(', '));
     check('Settings section: Space opens it again', s2.expanded === 'true' && s2.hidden === false, JSON.stringify(s2));
     check('Settings section: the header button names its rows (aria-controls)', sec.body, JSON.stringify(sec));
   } else check('Settings section: a collapsible section is shown', false, 'none found');
+  }
+
+  // recent searches (owner, 2026-10-14): the combobox with grid popup; each row has a term cell and a remove cell
+  if (want('recent')) {
+  at('recent searches'); await open('#/navigation/recent-searches');
+  const field = 'main .plx-search input[aria-haspopup="grid"]';
+  // (the field is marked once: after a search its popup is no longer a grid, and the selector would find another field)
+  const st = () => page.evaluate(() => {
+    const i = document.querySelector('[data-kb-recent]'); if (!i) return null;
+    const grid = document.getElementById(i.getAttribute('aria-controls')), act = i.getAttribute('aria-activedescendant'), cell = act ? document.getElementById(act) : null;
+    return { focus: document.activeElement === i, expanded: i.getAttribute('aria-expanded'), role: grid && grid.getAttribute('role'), rows: grid ? grid.querySelectorAll('[role="row"]').length : 0,
+      cell: cell ? (cell.querySelector('button') ? 'remove:' + cell.querySelector('button').getAttribute('aria-label') : 'term:' + cell.textContent.trim()) : null, value: i.value };
+  });
+  const has = await page.evaluate((sel) => { const i = document.querySelector(sel); if (!i) return false; i.setAttribute('data-kb-recent', ''); i.focus(); return true; }, field);
+  // the field may open on focus; the history demo starts with three searches
+  if (has) {
+    await sleep(200);
+    const s0 = await st();
+    check('Recent searches: the field opens a grid popup of rows (aria-haspopup grid, role grid)', s0 && s0.expanded === 'true' && s0.role === 'grid' && s0.rows >= 2, JSON.stringify(s0));
+    await page.keyboard.press('ArrowDown'); await sleep(100); const s1 = await st();
+    await page.keyboard.press('ArrowDown'); await sleep(100); const s2 = await st();
+    check('Recent searches: Arrow Down moves from row to row on the term cell', s1.cell && /^term:/.test(s1.cell) && s2.cell && /^term:/.test(s2.cell) && s1.cell !== s2.cell && s2.focus, JSON.stringify([s1, s2]));
+    await page.keyboard.press('ArrowRight'); await sleep(100); const s3 = await st();
+    check('Recent searches: Arrow Right moves into the row\'s remove cell ("Remove <term>")', s3.cell === 'remove:Remove ' + s2.cell.slice(5) && s3.focus, JSON.stringify(s3));
+    await page.keyboard.press('ArrowLeft'); await sleep(100); const s4 = await st();
+    check('Recent searches: Arrow Left moves back to the term', s4.cell === s2.cell, JSON.stringify(s4));
+    await page.keyboard.press('ArrowRight'); await sleep(100); await page.keyboard.press('Enter'); await sleep(250); const s5 = await st();
+    check('Recent searches: Enter on the remove cell removes that search; the focus stays in the field', s5.rows === s0.rows - 1 && s5.focus && s5.expanded === 'true', JSON.stringify(s5));
+    await page.keyboard.press('ArrowLeft'); await page.keyboard.press('Delete'); await sleep(250); const s6 = await st();
+    check('Recent searches: Delete removes the active search', s6.rows === s5.rows - 1 && s6.focus, JSON.stringify(s6));
+    if (s6.rows) {
+      await page.keyboard.press('ArrowLeft'); const term = (await st()).cell;
+      await page.keyboard.press('Enter'); await sleep(250); const s7 = await st();
+      check('Recent searches: Enter on a term searches it (its text in the field)', term && /^term:/.test(term) && s7.value === term.slice(5), JSON.stringify([term, s7]));
+    }
+  } else check('Recent searches: a field with removable recent searches is shown', false, 'none found');
   }
 
   await browser.close(); server.close();

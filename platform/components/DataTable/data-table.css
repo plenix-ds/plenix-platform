@@ -267,3 +267,17 @@
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key-first{font-weight:var(--plx-comp-data-table-name-font-weight);}
   .plx-data-table.plx-data-table--list .tabulator .tabulator-row .tabulator-cell.plx-data-table__cell--key:not(.plx-data-table__cell--key-first){color:var(--plx-comp-data-table-list-detail-text);padding-block-start:var(--plx-comp-data-table-list-row-gap);}
 }
+/* the footer of the modes "pages" and "load-more" (owner, 2026-10-14): under the grid, a line above it; the range or the
+   count (the data font), the rows-per-page choice and Pagination ("pages"), or Load more ("load-more") */
+.plx-data-table__footer{align-items:center;border-top-color:var(--plx-comp-data-table-footer-border-color);border-top-style:solid;border-top-width:var(--plx-comp-data-table-line-width);color:var(--plx-comp-data-table-footer-text);column-gap:var(--plx-comp-data-table-footer-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-data-table-footer-font-size);padding-block-end:var(--plx-comp-data-table-footer-padding-block);padding-block-start:var(--plx-comp-data-table-footer-padding-block);padding-inline-end:var(--plx-comp-data-table-footer-padding-inline);padding-inline-start:var(--plx-comp-data-table-footer-padding-inline);row-gap:var(--plx-comp-data-table-footer-row-gap);}
+.plx-data-table__range{color:var(--plx-comp-data-table-footer-text);}
+.plx-data-table__page-size{align-items:center;column-gap:var(--plx-comp-data-table-footer-label-gap);display:flex;white-space:nowrap;}
+.plx-data-table--pages .plx-data-table__pages{margin-inline-start:auto;}
+.plx-data-table--load-more .plx-data-table__more{margin-inline-start:auto;}
+/* printing a grid that measured its room ("fill", "load-more"): the whole grid (the measured maximum is lifted by script) */
+@media print{
+  .plx-data-table[data-plx-fit] .tabulator .tabulator-tableholder{overflow:visible;}
+}
+/* "fill" and "load-more" without a height: at most one screen until the room left is measured (so the first render is
+   already virtual); the measured room is then written on the body */
+.plx-data-table[data-plx-fit] .tabulator .tabulator-tableholder{max-block-size:var(--plx-comp-data-table-fit-max-height);}

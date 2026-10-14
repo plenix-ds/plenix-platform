@@ -4,6 +4,9 @@
 // and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own size and
 // the typeface of its kind: DM Mono in a column of kind "data" and for code and the data role, DM Sans elsewhere
 // (a grid in its error state counts as built: it shows what failed and Retry instead of its rows)
+// The three modes (owner, 2026-10-14; the DataTable record's variant pages): "fill" draws only the rows in view, "pages"
+// and "load-more" have a footer whose controls (the rows-per-page Select, the page buttons, Load more) follow the grid
+// body in the Tab order: Tab from the body reaches them, and none is out of the Tab order.
 // (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
 // component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-table.test.js            (TEST_PORT: another port)
@@ -40,6 +43,10 @@ const STATES = [
   ['settings/index.html', ['Documentation', 'Capabilities', 'main:Notes'], 2],
   // the design system's reference tables (props, states, classes, tokens), where token and class names sit in cells
   ['platform/design-system/index.html#/data-display/data-table', [], 1],
+  // the modes: fill (the default; 5,000 rows, virtual), pages (rows from a server, fetchRows), load more
+  ['platform/design-system/index.html#/data-display/data-table/v/fill-data-table', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/paged-data-table', [], 1],
+  ['platform/design-system/index.html#/data-display/data-table/v/load-more-data-table', [], 1],
   ['platform/design-system/index.html#/data-display/badge', [], 1],
   ['platform/design-system/index.html#/actions/button', [], 1],
 ];
@@ -198,15 +205,31 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
         middle(density).forEach((x) => { if (mid.length < 4) mid.push(x); });
       }
       if (was === null) html.removeAttribute('data-plx-density'); else html.setAttribute('data-plx-density', was);
-      return { type, mid, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
+      // the modes: a grid that fills its room draws only some of its rows
+      const modes = grids.map((g) => (g.hasAttribute('data-plx-fit') ? 'fill' + (g.classList.contains('plx-data-table--load-more') ? ' load-more' : '') : g.classList.contains('plx-data-table--pages') ? 'pages' : '') + (g.getAttribute('data-plx-render') === 'virtual' ? ' virtual' : '')).filter(Boolean);
+      return { type, mid, modes, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
     }, TAGS);
     const bad = [];
+    // the footer's controls (pages, load-more) are keyboard reachable: Tab from the grid body lands in the footer, and
+    // every control there is in the Tab order
+    const footed = await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-table')).filter((g) => g.offsetParent && g.querySelector('.plx-data-table__footer')).length);
+    for (let i = 0; i < footed; i++) {
+      const from = await page.evaluate((i) => { const g = Array.from(document.querySelectorAll('.plx-data-table')).filter((x) => x.offsetParent && x.querySelector('.plx-data-table__footer'))[i];
+        const h = g.querySelector('.tabulator-tableholder'); h.focus(); return document.activeElement === h; }, i);
+      await page.keyboard.press('Tab');
+      const kb = await page.evaluate((i) => { const g = Array.from(document.querySelectorAll('.plx-data-table')).filter((x) => x.offsetParent && x.querySelector('.plx-data-table__footer'))[i];
+        const f = g.querySelector('.plx-data-table__footer'), a = document.activeElement;
+        const controls = Array.from(f.querySelectorAll('button, select, a[href], input')).filter((c) => !c.disabled && c.offsetParent);
+        return { label: g.querySelector('.tabulator').getAttribute('aria-label'), inFooter: f.contains(a), at: a ? (a.getAttribute('aria-label') || a.textContent || a.tagName).trim().slice(0, 24) : '', controls: controls.length, out: controls.filter((c) => c.tabIndex < 0).length }; }, i);
+      if (!from || !kb.inFooter || !kb.controls || kb.out) bad.push(kb.label + ': footer controls not keyboard reachable (' + JSON.stringify(kb) + ')');
+      else r.modes.push('footer keyboard ok (' + kb.controls + ' controls)');
+    }
     if (r.violations.length) bad.push('axe: ' + r.violations.join('; '));
     if (r.type.length) bad.push('typography: ' + r.type.join('; '));
     if (r.audit.length) bad.push('style audit: ' + r.audit.slice(0, 3).join('; '));
     if (r.mid.length) bad.push('vertical alignment not middle: ' + r.mid.join('; '));
     r.sizes.forEach((s) => { if (!s.label) bad.push('a table has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });
-    res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')', !bad.length, bad.join(' · ')]);
+    res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')' + (r.modes.length ? ' [' + r.modes.join(', ') + ']' : ''), !bad.length, bad.join(' · ')]);
   }
   await browser.close(); server.close();
   const failed = res.filter((x) => !x[1]);

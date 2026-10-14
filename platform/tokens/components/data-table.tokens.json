@@ -1,0 +1,50 @@
+{
+  "$description": "DataTable (platform/components/DataTable): the tokens of its footer, which the modes \"pages\" (the range, the rows-per-page choice and Pagination) and \"load-more\" (the count and Load more) add under the grid (owner, 2026-10-14). The grid's own tokens are in the shared set.",
+  "plx-comp": {
+    "data-table-footer-border-color": {
+      "$value": "{plx-sys.data-table-line}",
+      "$type": "color",
+      "$description": "DataTable footer: the line above it (a row's line)."
+    },
+    "data-table-footer-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DataTable footer: its text (the range or the count, the rows-per-page label), as Pagination's."
+    },
+    "data-table-footer-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "DataTable footer: its text size (Pagination's)."
+    },
+    "data-table-footer-gap": {
+      "$value": "{plx-sys.space-cluster-md}",
+      "$type": "dimension",
+      "$description": "DataTable footer: the space between its parts (Pagination's gap)."
+    },
+    "data-table-footer-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "DataTable footer: the space between its lines when the parts wrap in a narrow grid."
+    },
+    "data-table-footer-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "DataTable footer: the space above and below its controls."
+    },
+    "data-table-footer-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "DataTable footer: the space at its start and end."
+    },
+    "data-table-footer-label-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "DataTable footer: the space between the rows-per-page label and its Select (Pagination's per-page gap)."
+    },
+    "data-table-fit-max-height": {
+      "$value": "100dvh",
+      "$type": "dimension",
+      "$description": "DataTable (fill, load-more): the body is at most one screen tall until the grid has measured the room left under where it starts (then that room, written on the body)."
+    }
+  }
+}

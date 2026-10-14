@@ -23,8 +23,9 @@
        so what JavaScript writes inline stays on the Plenix grid (owner, 2026-10-13).
      Row height and cell padding (Plenix's): never measured, never written. A row is the density's row height
        (--plx-sys-data-table-row-height plus its line); the stylesheet draws it.
-     Virtual rendering (renderVertical "virtual", for a grid with a height): Tabulator renders the rows in view; every row
-       counts as the density row height (read from the tokens, not from the rows); the room for the rows not drawn is two
+     Virtual rendering (renderVertical "virtual": a grid with a room, its height or the room fill and load-more measure):
+       Tabulator renders the rows in view; every row counts as the density row height (read from the tokens, not from the
+       rows); the room for the rows not drawn is two
        gaps of the system's virtualization (system/virtual.css: pieces of 1, 2, 4 … rows, data-plx-span), never padding.
        The grid carries aria-rowcount and each drawn row its aria-rowindex. A focused control whose row scrolls out parks
        the focus on the scrolling body and gets it back when the row is drawn again.
@@ -330,7 +331,8 @@ export function strictTabulator(Tabulator, win) {
       ['normalizeHeight'].forEach((n) => { if (typeof RM[n] === 'function') RM[n] = OFF; });
       // the body's size is the stylesheet's: nothing is written; the renderer still learns how tall its view is
       RM.adjustTableSize = function () { if (this.renderer && typeof this.renderer.resize === 'function') this.renderer.resize(); return false; };
-      // the virtual renderer: a grid with a height (its tableholder has a block size from data-plx-height) counts as one
+      // the virtual renderer: a grid with a room (its tableholder has a maximum block size: data-plx-height, or the room
+      // fill and load-more measure) counts as one
       const init = RM.initializeRenderer;
       RM.initializeRenderer = function () {
         init.apply(this, arguments);

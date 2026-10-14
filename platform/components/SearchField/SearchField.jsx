@@ -22,10 +22,11 @@
      onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
        'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
      onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
-     onRemoveRecent(text): removes one recent search (Delete on it); onClearRecent(): removes them all (the Clear button
-       in the list's heading); without them the recent searches cannot be removed here
+     onRemoveRecent(text): removes one recent search: its row's remove button (an "×" named "Remove <term>"), or Delete
+       on it; onClearRecent(): removes them all (the Clear button in the list's heading); without them the recent
+       searches cannot be removed here
      strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
-       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches' }
+       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
      className: more classes on the field
      ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
@@ -36,6 +37,14 @@
        the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
        list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
        of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
+     Recent searches with onRemoveRecent (owner, 2026-10-14): the WAI-ARIA "combobox with grid popup" pattern. The field
+       has aria-haspopup="grid"; the list is a grid named by its heading, one row per search with two cells: the term and
+       its remove button (an icon-only ghost button, "Remove <term>"). The focus stays in the field (aria-activedescendant
+       names the active cell): Arrow Down and Up move between rows (in the same cell), Arrow Right moves into the remove
+       cell and Arrow Left back to the term (mirrored right to left); Enter on the term searches it, Enter on the remove
+       cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
+       the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
+       listbox.
    Notes:
      It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
      ranks and limits the suggestions (about eight) and the recent searches (about five).
@@ -50,7 +59,7 @@ import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 
 const STRINGS = { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches', clear: 'Clear search',
-  results: '{n} suggestions', removed: '{query} removed from recent searches' };
+  results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' };
 const asItem = (kind) => (x) => (typeof x === 'string' ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind }));
 
 // the label with the part that matches the text in bold (the first match, ignoring case)
@@ -74,8 +83,11 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
   const items = (showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion')));
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(-1);
+  const [cell, setCell] = React.useState(0);   // the grid's active cell in its row: 0 the term, 1 the remove button
   const shown = hasList && open && items.length > 0;
-  React.useEffect(() => { setActive(-1); }, [text, showRecent]);
+  // recent searches that can be removed one by one: the combobox with grid popup (WAI-ARIA APG)
+  const grid = showRecent && !!onRemoveRecent;
+  React.useEffect(() => { setActive(-1); setCell(0); }, [text, showRecent]);
   React.useEffect(() => {
     if (!open) return undefined;
     const off = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
@@ -86,7 +98,7 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
   React.useEffect(() => { if (shown && !showRecent) announce(t.results.replace('{n}', formatNumber(items.length))); }, [shown, showRecent, items.length, t.results]);
   // the active option stays in view in a long list
   React.useEffect(() => {
-    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-o' + active) : null;
+    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
     if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
   }, [active, auto]);
   const setText = (v) => { if (onChange && input.current) onChange({ target: Object.assign(input.current, { value: v }), currentTarget: input.current }); };
@@ -95,26 +107,39 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
     if (onSelect) onSelect(item);
     else { setText(item.value); if (onSubmitSearch) onSubmitSearch(item.value); }
   };
+  // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
+  const removeRecent = (i) => {
+    const it = items[i]; if (!it || !onRemoveRecent) return;
+    onRemoveRecent(it.value);
+    if (active >= 0) setActive((a) => Math.min(a, items.length - 2));
+    if (items.length <= 1) setCell(0);
+    announce(t.removed.replace('{query}', it.value));
+  };
   const keys = (e) => {
     if (onKeyDown) onKeyDown(e);
     if (e.defaultPrevented || !hasList) { if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text); return; }
     if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); else if (items.length) setActive((a) => (a + 1) % items.length); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); if (!open) setOpen(true); else if (items.length) setActive((a) => (a <= 0 ? items.length - 1 : a - 1)); }
+    else if (grid && shown && active >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      // the grid's cells in reading order: toward the end is the remove cell (Arrow Left in a right-to-left page)
+      const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === 'rtl';
+      e.preventDefault(); setCell((e.key === 'ArrowRight') !== rtl ? 1 : 0);
+    }
     else if (e.key === 'Enter') {
-      if (shown && items[active]) { e.preventDefault(); choose(items[active]); }
+      if (shown && items[active] && grid && cell === 1) { e.preventDefault(); removeRecent(active); }
+      else if (shown && items[active]) { e.preventDefault(); choose(items[active]); }
       else { setOpen(false); if (onSubmitSearch) onSubmitSearch(text); }
     } else if (e.key === 'Escape') { if (shown) { e.preventDefault(); setOpen(false); } }
     else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
       e.preventDefault();
-      const q = items[active].value;
-      onRemoveRecent(q);
-      setActive((a) => Math.min(a, items.length - 2));
-      announce(t.removed.replace('{query}', q));
+      removeRecent(active);
     } else if (!open && e.key.length === 1) setOpen(true);
   };
   const optId = (i) => auto + '-o' + i;
+  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
   const comboProps = hasList ? { role: 'combobox', 'aria-expanded': shown, 'aria-controls': listId, 'aria-autocomplete': 'list',
-    'aria-activedescendant': shown && active >= 0 ? optId(active) : undefined } : {};
+    'aria-haspopup': grid ? 'grid' : undefined,
+    'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
     <div ref={wrap} className={cx('plx-search', onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label="Searching" /> : <Icon name="search" />}</span>
@@ -132,7 +157,25 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
                 onClick={() => { onClearRecent(); setOpen(false); if (input.current) input.current.focus(); }}>{t.clearRecent}</Button> : null}
             </div>
           ) : null}
-          <ul ref={list} id={listId} role="listbox" className="plx-search__list" aria-label={showRecent ? undefined : t.suggestions} aria-labelledby={showRecent ? listId + '-t' : undefined}>
+          {grid ? (
+            <div ref={list} id={listId} role="grid" className="plx-search__list plx-search__grid" aria-labelledby={listId + '-t'}>
+              {items.map((it, i) => (
+                <div key={it.kind + ':' + it.value} id={auto + '-r' + i} role="row"
+                  className={cx('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active')}
+                  onMouseDown={(e) => e.preventDefault()} onMouseEnter={() => setActive(i)}>
+                  <span id={cellId(i, 0)} role="gridcell" aria-selected={i === active && cell === 0} className="plx-search__cell" onClick={() => choose(it)}>
+                    <span className="plx-search__option-icon" aria-hidden="true"><Icon name="clock" /></span>
+                    <span className="plx-search__option-text"><span className="plx-search__option-label">{it.label}</span></span>
+                  </span>
+                  <span id={cellId(i, 1)} role="gridcell" aria-selected={i === active && cell === 1} className="plx-search__remove-cell">
+                    <Button variant="ghost" size="xs" iconOnly icon="close" tabIndex={-1} label={t.remove.replace('{query}', it.value)}
+                      className={cx('plx-search__remove', i === active && cell === 1 && 'is-focus-visible')}
+                      onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); removeRecent(i); if (input.current) input.current.focus(); }} />
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : <ul ref={list} id={listId} role="listbox" className="plx-search__list" aria-label={showRecent ? undefined : t.suggestions} aria-labelledby={showRecent ? listId + '-t' : undefined}>
             {items.map((it, i) => (
               <li key={it.kind + ':' + it.value} id={optId(i)} role="option" aria-selected={i === active}
                 className={cx('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active')}
@@ -144,7 +187,7 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
                 </span>
               </li>
             ))}
-          </ul>
+          </ul>}
         </div>
       ) : null}
     </div>
