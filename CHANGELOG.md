@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.63] - 2026-10-14
+
+### Added
+- DataTable (owner, studied from Airtable):
+  - Row height per table: Short (the density's row), Medium 56, Tall 88, Extra tall 128; record rows only; equal minimum
+    padding; top-aligned and clamped in tall rows, middle in Short rows; wrap columns clamp instead of growing rows.
+  - Airtable-style grouping: a 48px group header (chevron, the grouped-by field as an eyebrow, the value drawn as its
+    column draws it, the count in Mono), a 24px gap, sticky headers, nested groups, the grouped column tinted gray,
+    treegrid keyboard; summaries and an add row per group, off by default. Grouped tables stay virtual.
+  - Column headers: a type icon (hidden in Compact), Wrap headers as an option.
+  - The column menu in sections: app field actions, sort by type (A → Z, 1 → 9, Oldest → newest), Filter by and Group by
+    this field, width and position, Hide.
+  - New size tokens 88px and 128px; 7 icons from Material Symbols Sharp, unedited.
+
 ## [0.31.62] - 2026-10-14
 
 ### Added
