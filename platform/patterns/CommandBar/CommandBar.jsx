@@ -1,9 +1,10 @@
 /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
-   Summary: The bar over a collection (owner, 2026-10-14, the command bar study): one white framed bar, fixed at the top of
-     the content while the content scrolls. A page with a few actions has one bar: the actions at the start, the find and
-     view side at the end (1A). A page with many actions has an action bar over a separate find bar. A page with no actions
-     has a view bar (1F). The selection bar (BulkActions) sits under it, always shown; the bar itself never changes on
-     selection.
+   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
+     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
+     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
+     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
+     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
        actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
@@ -11,7 +12,8 @@
        find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
          <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
        view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
-       selection={<BulkActions count={sel.length} total={rows.length} noun="asset" actions={…} />} />
+       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
+         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
    Props:
      label: the bar's accessible name (the collection: "Assets")
      actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary }]
@@ -23,15 +25,22 @@
      find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel and the app's quick
        filters (QuickFilter)
      view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
-     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font)
-     end: more controls at the very end (Export)
-     selection: the selection bar under the bar (BulkActions); it stays fixed with the bar
-     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A: one bar) | "split" (many actions: the action
-       bar over the find bar) | "view" (1F: a view bar, no actions)
+     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
+       rows are selected ("× N selected" takes its place)
+     end: more controls at the very end (Export); hidden while rows are selected
+     selection: the selection (the swap): { count, actions, onClear, noun, plural, label }; while count is above 0 the bar
+       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
+       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
+       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
      narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
        decides)
-     strings: { more: "More actions", actions: "{label} actions", find: "Find and view" }
+     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
+       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
+       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
+       to {action}" }
      className: more classes
      CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
        icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
@@ -46,9 +55,12 @@
      Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
      Commands are never hidden by state: they are disabled, with a tooltip saying why.
      Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     Each bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
+     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
+       stay mounted through the swap, so an open panel keeps its state.
+     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
    Notes:
-     The count and the end controls sit at the end of the find bar. Pages with neither actions nor find and view have no
+     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
      bar: the plain table. */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
@@ -57,10 +69,17 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Toolbar } from '../../components/Toolbar/Toolbar.jsx';
+import { Divider } from '../../components/Divider/Divider.jsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { announce } from '../../utils/announce.jsx';
+import { formatNumber } from '../../utils/format.js';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { BarActions, foldOrder } from './BarActions.jsx';
 
-const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view' };
+const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view', selected: '{n} selected',
+  clear: 'Clear the selection', clearName: '{n} selected, clear the selection', swapped: '{n} selected. Selection actions available.',
+  cleared: 'Selection cleared.', why: 'Select {plural} to {action}', single: 'Select one {noun} to {action}' };
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 // the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
 // into More
 const ICONS = 1, SEARCH = 2;
@@ -91,43 +110,67 @@ export const CommandBarSearch = React.forwardRef(function CommandBarSearch(props
 export function CommandBar({ label, actions = [], find, view, count, end, selection, layout = 'auto', sticky = true, narrow = false, strings, className }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = React.useRef(null);
-  const shape = layout === 'auto' ? (actions.length ? 'one' : 'view') : layout;
-  const folds = foldOrder(actions).length;
+  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
+  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  const sel = selection && !React.isValidElement(selection) && typeof selection === 'object' ? selection : null;
+  const selCount = sel ? Number(sel.count) || 0 : 0;
+  const selecting = selCount > 0;
+  const selActs = selecting ? (sel.actions || []) : [];
+  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
+  const shape = layout === 'auto' || layout === 'split' ? (actions.length ? 'one' : 'view') : layout;
+  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
+  const folds = foldOrder(shown).length;
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const key = [shape, narrow, actions.map((a) => a.label + (a.disabled ? '0' : '')).join('|')].join('§');
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '')).join('|')].join('§');
   const step = useBarFit(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = React.useMemo(() => ({ iconOnly: step >= ICONS, collapsed: step >= SEARCH, step, searchOpen: searchOpen && step >= SEARCH, setSearchOpen }), [step, searchOpen]);
   const fold = Math.max(0, step - SEARCH);
-  const acts = shape !== 'view' && actions.length ? (
+  // the swap is announced (the focus stays where it is, on the table)
+  const was = React.useRef(selecting);
+  React.useEffect(() => {
+    if (was.current !== selecting) announce(selecting ? fill(t.swapped, { n: formatNumber(selCount) }) : t.cleared);
+    was.current = selecting;
+  }, [selecting]);
+  const words = { noun: (sel && sel.noun) || 'item', plural: (sel && sel.plural) || ((sel && sel.noun) || 'item') + 's' };
+  const off = (a) => !!a.disabled || !!(a.single && selCount > 1);
+  const why = (a) => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({ action: String(a.label).toLowerCase() }, words));
+  const acts = shown.length ? (
     <Toolbar.Group className="plx-command-bar__actions">
-      <BarActions actions={actions} iconOnly={ctx.iconOnly} fold={fold} moreLabel={t.more} dangerClass="plx-command-bar__danger" />
+      <BarActions actions={shown} iconOnly={ctx.iconOnly} fold={fold} moreLabel={t.more} dangerClass="plx-command-bar__danger"
+        off={selecting ? off : undefined} why={selecting ? why : undefined} />
     </Toolbar.Group>
   ) : null;
-  const findEl = find ? <Toolbar.Group className="plx-command-bar__find">{find}</Toolbar.Group> : null;
+  const findEl = find && !selecting ? <Toolbar.Group className="plx-command-bar__find">{find}</Toolbar.Group> : null;
   const viewEl = view ? <Toolbar.Group className="plx-command-bar__view">{view}</Toolbar.Group> : null;
-  const countEl = count === undefined || count === null || ctx.collapsed ? null
+  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null
     : typeof count === 'string' || typeof count === 'number' ? <Text variant="data" className="plx-command-bar__count">{count}</Text> : count;
-  const tail = countEl || end ? <Toolbar.Group className="plx-command-bar__end">{countEl}{end}</Toolbar.Group> : null;
-  const bar = (name, parts, k) => (
-    <div key={k} className="plx-command-bar__bar">
-      <Toolbar label={name} className="plx-command-bar__row" data-plx-bar-row="">{parts}</Toolbar>
-    </div>
-  );
-  let bars;
-  if (shape === 'split') {
-    bars = [acts ? bar(t.actions.replace('{label}', label || ''), acts, 'a') : null,
-      findEl || viewEl || tail ? bar(t.find, <>{findEl}<Toolbar.Spacer />{viewEl}{tail}</>, 'f') : null];
-  } else if (shape === 'view') {
-    bars = bar(label, <>{findEl}{viewEl}<Toolbar.Spacer />{tail}</>, 'v');
-  } else {
-    bars = bar(label, <>{acts}<Toolbar.Spacer />{findEl}{viewEl}{tail}</>, 'o');
-  }
+  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const [before, after] = String(t.selected).split('{n}');
+  const clearEl = selecting ? (
+    <Tooltip content={t.clear}>
+      <Button size="sm" variant="ghost" icon="close" className="plx-command-bar__clear" aria-label={fill(t.clearName, { n: formatNumber(selCount) })} onClick={() => sel.onClear && sel.onClear()}>
+        {before}<Text variant="data" className="plx-command-bar__number">{formatNumber(selCount)}</Text>{after}
+      </Button>
+    </Tooltip>
+  ) : null;
+  const tail = countEl || end || clearEl ? (
+    <Toolbar.Group className="plx-command-bar__end">
+      {selecting && viewEl ? <Divider orientation="vertical" /> : null}
+      {countEl}{selecting ? null : end}{clearEl}
+    </Toolbar.Group>
+  ) : null;
+  // Escape in the bar clears the selection (as "× N selected" does)
+  const onKeyDown = selecting && sel.onClear ? (e) => { if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) { e.preventDefault(); sel.onClear(); } } : undefined;
+  const parts = <>{acts}{acts && findEl ? <Divider orientation="vertical" /> : null}{findEl}<Toolbar.Spacer />{viewEl}{tail}</>;
+  const name = selecting ? (sel.label || fill(t.actions, { label: label || '' }).trim()) : label;
   return (
     <BarContext.Provider value={ctx}>
-      <div ref={root} className={cx('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', className)} data-plx-layout={shape} data-plx-position={sticky ? undefined : 'static'}>
-        {bars}
-        {selection}
+      <div ref={root} className={cx('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className)} data-plx-layout={shape} data-plx-position={sticky ? undefined : 'static'} onKeyDown={onKeyDown}>
+        <div className="plx-command-bar__bar">
+          <Toolbar label={name} className="plx-command-bar__row" data-plx-bar-row="">{parts}</Toolbar>
+        </div>
+        {React.isValidElement(selection) ? selection : null}
       </div>
     </BarContext.Provider>
   );

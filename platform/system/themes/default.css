@@ -251,8 +251,8 @@
   --plx-sys-table-text-muted: var(--plx-ref-color-gray-700);
   --plx-sys-data-table-text-subtle: var(--plx-ref-color-gray-500);
   --plx-sys-data-table-row-hover: var(--plx-ref-color-gray-200);
-  --plx-sys-data-table-row-selected: var(--plx-ref-color-blue-100);
-  --plx-sys-data-table-row-selected-hover: var(--plx-ref-color-blue-200);
+  --plx-sys-data-table-row-selected: var(--plx-ref-color-blue-200);
+  --plx-sys-data-table-row-selected-hover: var(--plx-ref-color-gray-100);
   --plx-sys-data-table-row-selected-text: var(--plx-ref-color-blue-600);
   --plx-sys-data-table-accent: var(--plx-ref-color-blue-400);
   --plx-sys-data-table-danger: var(--plx-ref-color-red-700);

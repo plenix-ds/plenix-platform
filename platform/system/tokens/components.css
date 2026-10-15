@@ -2902,6 +2902,12 @@
   --plx-comp-data-table-view-column-width: var(--plx-ref-size-48px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-data-table-scroll-size: var(--plx-ref-size-8px);
+  --plx-comp-data-table-scroll-thumb-color: var(--plx-sys-scrollbar-thumb);
+  --plx-comp-data-table-scroll-thumb-radius: var(--plx-sys-shape-pill);
+  --plx-comp-data-table-scroll-layer: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-date-picker-width: var(--plx-ref-size-160px);
   --plx-comp-date-picker-range-width: var(--plx-ref-size-280px);
   --plx-comp-date-picker-time-width: var(--plx-ref-size-160px);

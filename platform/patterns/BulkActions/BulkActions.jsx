@@ -1,12 +1,11 @@
 /* Plenix · SelectionSummary, BulkActions
-   Summary: What is selected, and what can be done with it. BulkActions is the selection bar (2B, owner 2026-10-14): a
-     second white framed bar under the command bar, always shown; the command bar itself never changes on selection.
-     SelectionSummary is its count with Select all and Clear, for a place that has no bar.
+   Summary: What is selected, and what can be done with it. BulkActions is a selection bar for a page WITHOUT a command
+     bar (owner, 2026-10-15: under a command bar, its selection swaps the bar instead: CommandBar selection={{ count,
+     actions, onClear }}). SelectionSummary is its count with Select all and Clear, for a place that has no bar.
    Usage:
-     <CommandBar label="Assets" … selection={
-       <BulkActions count={sel.length} total={rows.length} noun="asset" onSelectAll={() => …} onClear={() => setSel([])}
-         actions={[{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => … },
-                   { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => … }]} />} />
+     <BulkActions count={sel.length} total={rows.length} noun="asset" onSelectAll={() => …} onClear={() => setSel([])}
+       actions={[{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => … },
+                 { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => … }]} />
      <SelectionSummary count={3} total={120} noun="asset" onSelectAll={() => …} onClear={() => …} />
    Props:
      SelectionSummary.count: how many are selected

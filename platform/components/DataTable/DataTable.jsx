@@ -207,6 +207,7 @@ import { Text } from '../Text/Text.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { gridPx } from '../../utils/grid.js';
+import { floatingScroll } from './floatingScroll.js';
 
 const SEP = '\u0000';
 const MIN = '--plx-ref-size-80px';   // the narrowest a resized column gets
@@ -853,7 +854,7 @@ export function TableEngine(props) {
   const shape = JSON.stringify(columns.map((c) => Object.keys(c).sort().map((k) => (typeof c[k] === 'function' ? k + '()' : k + '=' + JSON.stringify(c[k])))));
 
   React.useEffect(() => {
-    let alive = true, table = null;
+    let alive = true, table = null, unfloat = null;
     builtRef.current = false; measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
     // (a frame that loaded again meanwhile) gets no grid
@@ -998,6 +999,8 @@ export function TableEngine(props) {
       table.on('renderComplete', () => { aria(); syncFoot(table); watchEnd(table); });
       table.on('tableBuilt', () => {
         aria(); builtRef.current = true; fitRoom(); syncFoot(table); watchEnd(table);
+        // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
+        if (!unfloat) unfloat = floatingScroll(host, host.querySelector('.tabulator-tableholder'));
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach((ev) => table.on(ev, (...a) => { const h = (latest.current.on || {})[ev]; if (h) h(...a); }));
         table.on('rowSelectionChanged', () => { const q = latest.current; if (!syncing.current && q.onSelectionChange) q.onSelectionChange(table.getSelectedData().map((x) => x[q.index || 'id'])); });
@@ -1078,7 +1081,7 @@ export function TableEngine(props) {
     win.addEventListener('beforeprint', beforePrint); win.addEventListener('afterprint', afterPrint);
 
     return () => {
-      alive = false; mo.disconnect(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
+      alive = false; mo.disconnect(); if (unfloat) unfloat(); if (ro) ro.disconnect(); if (frame) cancelAnimationFrame(frame); builtRef.current = false;
       win.removeEventListener('beforeprint', beforePrint); win.removeEventListener('afterprint', afterPrint); win.removeEventListener('resize', onWindow);
       if (ioRef.current) { ioRef.current.disconnect(); ioRef.current = null; }
       if (table) { try { table.destroy(); } catch (e) { /* already gone */ } }

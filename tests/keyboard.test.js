@@ -128,6 +128,10 @@ changed.report(WANTED.join(', '));
   // the command bar: one Tab stop per bar; the arrows move; Enter on Filter opens its panel (focus inside), Escape returns
   if (want('cmdbar')) {
   at('command bar'); await open('#/patterns/command-bar');
+  // the page's live examples build their tables after the route changes: wait until every one is built (the bars measure
+  // themselves again as the page settles)
+  await page.waitForFunction(() => { const t = document.querySelectorAll('main .plx-data-table'); return t.length > 0 && document.querySelectorAll('main .plx-data-table .tabulator-tableholder').length >= t.length; }, { timeout: 15000 }).catch(() => {});
+  await sleep(500);
   const row = 'main .plx-command-bar__row';
   const tb = await page.evaluate((sel) => { const t = document.querySelector(sel); if (!t) return null; const items = [...t.querySelectorAll('button,input')].filter((e) => e.offsetParent && !e.disabled); return { n: items.length, tabbable: items.filter((e) => e.tabIndex === 0).length }; }, row);
   check('Command bar: the bar is one Tab stop', tb && tb.n > 3 && tb.tabbable === 1, JSON.stringify(tb));
@@ -142,6 +146,16 @@ changed.report(WANTED.join(', '));
     const back = await active();
     check('Command bar: Escape closes the panel and the focus returns to Filter', /^Filter/.test(back), back);
   } else check('Command bar: a Filter button is shown', false, 'none found');
+  // the swap (owner, 2026-10-15): with rows selected the bar holds the selection's commands, keeps its height, and Escape
+  // in the bar brings the normal bar back
+  const sw = await page.evaluate(() => { const b = document.querySelector('main .plx-command-bar--selecting'); if (!b) return null; b.setAttribute('data-kb-swap', ''); const h = Math.round(b.getBoundingClientRect().height);
+    const first = b.querySelector('.plx-command-bar__row button:not([disabled])'); if (first) first.focus(); return { h, clear: !!b.querySelector('.plx-command-bar__clear'), search: !!b.querySelector('.plx-search') }; });
+  if (sw) {
+    check('Command bar: rows selected swap the bar (selection commands, "× N selected", no search)', sw.clear && !sw.search, JSON.stringify(sw));
+    await page.keyboard.press('Escape'); await sleep(300);
+    const after = await page.evaluate(() => { const b = document.querySelector('[data-kb-swap]'); return b ? { selecting: b.classList.contains('plx-command-bar--selecting'), h: Math.round(b.getBoundingClientRect().height), search: !!b.querySelector('.plx-search') } : null; });
+    check('Command bar: Escape clears the selection, the normal bar returns at the same height', after && !after.selecting && after.search && after.h === sw.h, JSON.stringify([sw, after]));
+  } else check('Command bar: an example with rows selected is shown', false, 'none found');
   }
 
   // a panel row moves with Alt + Arrow Down; the move is announced

@@ -10732,7 +10732,122 @@ function tablePx(token, el) {
   return parseFloat(v) || 0;
 }
   } },
-  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataTable/floatingScroll.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.floatingScroll = floatingScroll;
+/* Plenix · DataTable floating scrollbars (platform/components/DataTable/floatingScroll.js; internal to the DataTable)
+   Summary: The table body's scrollbars float over the rows and take no room (owner, 2026-10-15: "for the scroll bar,
+     solution is floating"). A classic scrollbar takes width, so Tabulator pushed the header aside with a margin written
+     on the header row (10px, off the grid); a floating bar needs no room, so the header stays put and nothing is written.
+   Usage:
+     const unfloat = floatingScroll(tabulatorRoot, tabulatorRoot.querySelector('.tabulator-tableholder'));   // on tableBuilt
+     unfloat();                                                                                                 // on unmount
+   Props:
+     root: the Tabulator root (.tabulator); the tracks are added to it
+     holder: the scrolling body (.tabulator-tableholder)
+     returns: a function that removes the tracks and stops watching
+   Behavior:
+     The body hides its own bars (data-table.css, where the browser has scroll-driven animations and anchor positioning;
+       elsewhere the thin native bars stay, as on every other scroll area).
+     A track per axis is anchored to the body's edges (CSS anchor positioning); its thumb moves with the body's scroll
+       position (a scroll-driven animation on the body's scroll timeline). No style is written by script.
+     The thumb's length is the visible share of the content, a step (data-plx-thumb: 10, 15 … 95) with one rule per step;
+       no step means nothing to scroll on that axis, and no track.
+     Dragging a thumb, or pressing its track, scrolls the body (scrollTop / scrollLeft only).
+     Like every Plenix scrollbar the thumbs show while the pointer is over the table or focus is in it; reduced motion
+       keeps the thumb following the scroll (it is feedback, not motion).
+   Notes:
+     The keyboard, the wheel and touch scroll the body as before: the tracks are pointer helpers (aria-hidden). */
+const STEPS = 5; // the thumb's length in steps of 5% of its track (10% at least)
+const stepOf = (view, whole) => {
+  if (!whole || whole - view < 1) return null;
+  return String(Math.max(10, Math.min(95, Math.round(view / whole * 100 / STEPS) * STEPS)));
+};
+function floatingScroll(root, holder) {
+  if (!root || !holder) return () => {};
+  const doc = root.ownerDocument;
+  const axes = [['y', 'clientHeight', 'scrollHeight', 'scrollTop', 'clientY'], ['x', 'clientWidth', 'scrollWidth', 'scrollLeft', 'clientX']];
+  const tracks = axes.map(([axis, view, whole, pos, coord]) => {
+    const track = doc.createElement('div');
+    track.className = 'plx-data-table__scroll plx-data-table__scroll--' + axis;
+    track.setAttribute('aria-hidden', 'true');
+    const thumb = doc.createElement('div');
+    thumb.className = 'plx-data-table__thumb';
+    track.appendChild(thumb);
+    root.appendChild(track);
+    // drag: the thumb follows the pointer; the body moves by the content's share of each pixel
+    let from = null;
+    const move = e => {
+      if (!from) return;
+      const room = track[view === 'clientHeight' ? 'clientHeight' : 'clientWidth'] - thumb[view === 'clientHeight' ? 'offsetHeight' : 'offsetWidth'];
+      if (room > 0) holder[pos] = from.at + (e[coord] - from.p) / room * (holder[whole] - holder[view]);
+    };
+    const up = e => {
+      from = null;
+      track.removeAttribute('data-plx-dragging');
+      try {
+        thumb.releasePointerCapture(e.pointerId);
+      } catch (x) {/* gone */}
+    };
+    thumb.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      from = {
+        p: e[coord],
+        at: holder[pos]
+      };
+      track.setAttribute('data-plx-dragging', '');
+      thumb.setPointerCapture(e.pointerId);
+    });
+    thumb.addEventListener('pointermove', move);
+    thumb.addEventListener('pointerup', up);
+    thumb.addEventListener('pointercancel', up);
+    // a press on the track pages toward it, as a native track does
+    track.addEventListener('pointerdown', e => {
+      if (e.target !== track || e.button !== 0) return;
+      e.preventDefault();
+      const r = thumb.getBoundingClientRect(),
+        before = axis === 'y' ? e.clientY < r.top : e.clientX < r.left !== (getComputedStyle(holder).direction === 'rtl');
+      holder[pos] += (before ? -1 : 1) * holder[view] * 0.9 * (axis === 'x' && getComputedStyle(holder).direction === 'rtl' ? -1 : 1);
+    });
+    return {
+      track,
+      view,
+      whole
+    };
+  });
+  // the thumb's length, whenever the body or its content changes size
+  const size = () => tracks.forEach(t => {
+    const s = stepOf(holder[t.view], holder[t.whole]);
+    if (s === null) t.track.removeAttribute('data-plx-thumb');else if (t.track.getAttribute('data-plx-thumb') !== s) t.track.setAttribute('data-plx-thumb', s);
+  });
+  const win = doc.defaultView;
+  const ro = win && win.ResizeObserver ? new win.ResizeObserver(size) : null;
+  if (ro) {
+    ro.observe(holder);
+    Array.from(holder.children).forEach(c => ro.observe(c));
+  }
+  const mo = win && win.MutationObserver ? new win.MutationObserver(() => {
+    if (ro) Array.from(holder.children).forEach(c => ro.observe(c));
+    size();
+  }) : null;
+  if (mo) mo.observe(holder, {
+    childList: true
+  });
+  size();
+  return () => {
+    if (ro) ro.disconnect();
+    if (mo) mo.disconnect();
+    tracks.forEach(t => t.track.remove());
+  };
+}
+  } },
+  "platform/components/DataTable/DataTable.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","./tabulator.js":"platform/components/DataTable/tabulator.js","./strict.js":"platform/components/DataTable/strict.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/direction.js":"platform/utils/direction.js","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/grid.js":"platform/utils/grid.js","./floatingScroll.js":"platform/components/DataTable/floatingScroll.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10756,6 +10871,7 @@ var _Text = require("../Text/Text.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
 var _grid = require("../../utils/grid.js");
+var _floatingScroll = require("./floatingScroll.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataTable (and the engine the static Table shares, components/Table)
    Summary: Every table in Plenix: a Tabulator table (6.6.1, MIT, vendored in platform/vendor/tabulator) in the Plenix
@@ -12106,7 +12222,8 @@ function TableEngine(props) {
   const shape = JSON.stringify(columns.map(c => Object.keys(c).sort().map(k => typeof c[k] === 'function' ? k + '()' : k + '=' + JSON.stringify(c[k]))));
   _react.default.useEffect(() => {
     let alive = true,
-      table = null;
+      table = null,
+      unfloat = null;
     builtRef.current = false;
     measured.current = false;
     // the grid's own window: a grid drawn into a frame runs on that frame's Tabulator; a document that has lost its window
@@ -12349,6 +12466,8 @@ function TableEngine(props) {
         fitRoom();
         syncFoot(table);
         watchEnd(table);
+        // the body's scrollbars float over the rows and take no room (owner, 2026-10-15)
+        if (!unfloat) unfloat = (0, _floatingScroll.floatingScroll)(host, host.querySelector('.tabulator-tableholder'));
         const on = isStatic ? {} : latest.current.on || {};
         Object.keys(on).forEach(ev => table.on(ev, (...a) => {
           const h = (latest.current.on || {})[ev];
@@ -12484,6 +12603,7 @@ function TableEngine(props) {
     return () => {
       alive = false;
       mo.disconnect();
+      if (unfloat) unfloat();
       if (ro) ro.disconnect();
       if (frame) cancelAnimationFrame(frame);
       builtRef.current = false;
@@ -15481,14 +15601,13 @@ var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _BarActions = require("../CommandBar/BarActions.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SelectionSummary, BulkActions
-   Summary: What is selected, and what can be done with it. BulkActions is the selection bar (2B, owner 2026-10-14): a
-     second white framed bar under the command bar, always shown; the command bar itself never changes on selection.
-     SelectionSummary is its count with Select all and Clear, for a place that has no bar.
+   Summary: What is selected, and what can be done with it. BulkActions is a selection bar for a page WITHOUT a command
+     bar (owner, 2026-10-15: under a command bar, its selection swaps the bar instead: CommandBar selection={{ count,
+     actions, onClear }}). SelectionSummary is its count with Select all and Clear, for a place that has no bar.
    Usage:
-     <CommandBar label="Assets" … selection={
-       <BulkActions count={sel.length} total={rows.length} noun="asset" onSelectAll={() => …} onClear={() => setSel([])}
-         actions={[{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => … },
-                   { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => … }]} />} />
+     <BulkActions count={sel.length} total={rows.length} noun="asset" onSelectAll={() => …} onClear={() => setSel([])}
+       actions={[{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => … },
+                 { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => … }]} />
      <SelectionSummary count={3} total={120} noun="asset" onSelectAll={() => …} onClear={() => …} />
    Props:
      SelectionSummary.count: how many are selected
@@ -32950,7 +33069,7 @@ function BottomSheetNav({
   }, body);
 }
   } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32965,15 +33084,20 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
+var _Divider = require("../../components/Divider/Divider.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _BarActions = require("./BarActions.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
-   Summary: The bar over a collection (owner, 2026-10-14, the command bar study): one white framed bar, fixed at the top of
-     the content while the content scrolls. A page with a few actions has one bar: the actions at the start, the find and
-     view side at the end (1A). A page with many actions has an action bar over a separate find bar. A page with no actions
-     has a view bar (1F). The selection bar (BulkActions) sits under it, always shown; the bar itself never changes on
-     selection.
+   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
+     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
+     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
+     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
+     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
        actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
@@ -32981,7 +33105,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
          <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
        view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
-       selection={<BulkActions count={sel.length} total={rows.length} noun="asset" actions={…} />} />
+       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
+         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
    Props:
      label: the bar's accessible name (the collection: "Assets")
      actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary }]
@@ -32993,15 +33118,22 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel and the app's quick
        filters (QuickFilter)
      view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
-     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font)
-     end: more controls at the very end (Export)
-     selection: the selection bar under the bar (BulkActions); it stays fixed with the bar
-     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A: one bar) | "split" (many actions: the action
-       bar over the find bar) | "view" (1F: a view bar, no actions)
+     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
+       rows are selected ("× N selected" takes its place)
+     end: more controls at the very end (Export); hidden while rows are selected
+     selection: the selection (the swap): { count, actions, onClear, noun, plural, label }; while count is above 0 the bar
+       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
+       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
+       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
      narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
        decides)
-     strings: { more: "More actions", actions: "{label} actions", find: "Find and view" }
+     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
+       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
+       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
+       to {action}" }
      className: more classes
      CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
        icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
@@ -33016,15 +33148,26 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
      Commands are never hidden by state: they are disabled, with a tooltip saying why.
      Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     Each bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
+     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
+       stay mounted through the swap, so an open panel keeps its state.
+     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
    Notes:
-     The count and the end controls sit at the end of the find bar. Pages with neither actions nor find and view have no
+     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
      bar: the plain table. */
 const STRINGS = {
   more: 'More actions',
   actions: '{label} actions',
-  find: 'Find and view'
+  find: 'Find and view',
+  selected: '{n} selected',
+  clear: 'Clear the selection',
+  clearName: '{n} selected, clear the selection',
+  swapped: '{n} selected. Selection actions available.',
+  cleared: 'Selection cleared.',
+  why: 'Select {plural} to {action}',
+  single: 'Select one {noun} to {action}'
 };
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 // the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
 // into More
 const ICONS = 1,
@@ -33100,11 +33243,19 @@ function CommandBar({
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = _react.default.useRef(null);
-  const shape = layout === 'auto' ? actions.length ? 'one' : 'view' : layout;
-  const folds = (0, _BarActions.foldOrder)(actions).length;
+  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
+  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
+  const selCount = sel ? Number(sel.count) || 0 : 0;
+  const selecting = selCount > 0;
+  const selActs = selecting ? sel.actions || [] : [];
+  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
+  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
+  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
+  const folds = (0, _BarActions.foldOrder)(shown).length;
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, actions.map(a => a.label + (a.disabled ? '0' : '')).join('|')].join('§');
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '')).join('|')].join('§');
   const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
   const ctx = _react.default.useMemo(() => ({
     iconOnly: step >= ICONS,
@@ -33114,52 +33265,93 @@ function CommandBar({
     setSearchOpen
   }), [step, searchOpen]);
   const fold = Math.max(0, step - SEARCH);
-  const acts = shape !== 'view' && actions.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  // the swap is announced (the focus stays where it is, on the table)
+  const was = _react.default.useRef(selecting);
+  _react.default.useEffect(() => {
+    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
+      n: (0, _format.formatNumber)(selCount)
+    }) : t.cleared);
+    was.current = selecting;
+  }, [selecting]);
+  const words = {
+    noun: sel && sel.noun || 'item',
+    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
+  };
+  const off = a => !!a.disabled || !!(a.single && selCount > 1);
+  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
+    action: String(a.label).toLowerCase()
+  }, words));
+  const acts = shown.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__actions"
   }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
-    actions: actions,
+    actions: shown,
     iconOnly: ctx.iconOnly,
     fold: fold,
     moreLabel: t.more,
-    dangerClass: "plx-command-bar__danger"
+    dangerClass: "plx-command-bar__danger",
+    off: selecting ? off : undefined,
+    why: selecting ? why : undefined
   })) : null;
-  const findEl = find ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const findEl = find && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__find"
   }, find) : null;
   const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__view"
   }, view) : null;
-  const countEl = count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data",
     className: "plx-command-bar__count"
   }, count) : count;
-  const tail = countEl || end ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const [before, after] = String(t.selected).split('{n}');
+  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: t.clear
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "close",
+    className: "plx-command-bar__clear",
+    "aria-label": fill(t.clearName, {
+      n: (0, _format.formatNumber)(selCount)
+    }),
+    onClick: () => sel.onClear && sel.onClear()
+  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__number"
+  }, (0, _format.formatNumber)(selCount)), after)) : null;
+  const tail = countEl || end || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__end"
-  }, countEl, end) : null;
-  const bar = (name, parts, k) => /*#__PURE__*/_react.default.createElement("div", {
-    key: k,
+  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, countEl, selecting ? null : end, clearEl) : null;
+  // Escape in the bar clears the selection (as "× N selected" does)
+  const onKeyDown = selecting && sel.onClear ? e => {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+      e.preventDefault();
+      sel.onClear();
+    }
+  } : undefined;
+  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
+  const name = selecting ? sel.label || fill(t.actions, {
+    label: label || ''
+  }).trim() : label;
+  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
+    value: ctx
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
+    "data-plx-layout": shape,
+    "data-plx-position": sticky ? undefined : 'static',
+    onKeyDown: onKeyDown
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-command-bar__bar"
   }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
     label: name,
     className: "plx-command-bar__row",
     "data-plx-bar-row": ""
-  }, parts));
-  let bars;
-  if (shape === 'split') {
-    bars = [acts ? bar(t.actions.replace('{label}', label || ''), acts, 'a') : null, findEl || viewEl || tail ? bar(t.find, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail), 'f') : null];
-  } else if (shape === 'view') {
-    bars = bar(label, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, findEl, viewEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), tail), 'v');
-  } else {
-    bars = bar(label, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), findEl, viewEl, tail), 'o');
-  }
-  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
-    value: ctx
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: root,
-    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', className),
-    "data-plx-layout": shape,
-    "data-plx-position": sticky ? undefined : 'static'
-  }, bars, selection));
+  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
 }
   } },
   "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

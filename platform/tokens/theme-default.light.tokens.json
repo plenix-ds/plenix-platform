@@ -1886,24 +1886,26 @@
       }
     },
     "data-table-row-selected": {
-      "$value": "{plx-ref.color-blue-100}",
+      "$value": "{plx-ref.color-blue-200}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
           "purpose": "DataTable: a selected row."
         }
-      }
+      },
+      "$description": "The selected row: blue-200 (owner, 2026-10-15)."
     },
     "data-table-row-selected-hover": {
-      "$value": "{plx-ref.color-blue-200}",
+      "$value": "{plx-ref.color-gray-100}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
           "purpose": "DataTable: a selected row under the pointer."
         }
-      }
+      },
+      "$description": "A selected row under the pointer: gray-100 (owner, 2026-10-15)."
     },
     "data-table-row-selected-text": {
       "$value": "{plx-ref.color-blue-600}",

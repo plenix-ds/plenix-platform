@@ -102,6 +102,8 @@
 .plx-data-table__header-icon{display:flex;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-title{display:flex;padding-right:0;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover .tabulator-col-title{padding-right:0;}
+/* the select-all column has no filter or menu button: it reserves no room for one, so its checkbox never moves on hover (owner, 2026-10-15) */
+.plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--select:hover .tabulator-col-title{padding-right:0;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon .tabulator-col-sorter{display:none;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--icon:hover{background-color:var(--plx-comp-data-table-cell-icon-hover-background);}
 
@@ -401,3 +403,64 @@
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--view .tabulator-col-title{display:flex;justify-content:center;padding-right:0;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.plx-data-table__cell--view:hover .tabulator-col-title{padding-right:0;}
 .plx-data-table .tabulator .plx-data-table__w-view{flex-basis:var(--plx-comp-data-table-view-column-width);flex-grow:0;flex-shrink:0;inline-size:var(--plx-comp-data-table-view-column-width);max-inline-size:var(--plx-comp-data-table-view-column-width);min-inline-size:var(--plx-comp-data-table-view-column-width);}
+/* floating scrollbars (owner, 2026-10-15; floatingScroll.js): where the browser has scroll-driven animations and anchor
+   positioning, the body hides its own bars and a track per axis, anchored to the body, carries a thumb that moves with the
+   body's scroll position; the bars take no room, so the header needs no margin. Elsewhere the thin native bars stay. */
+.plx-data-table__scroll{display:none;}
+@supports (animation-timeline: scroll()) and (anchor-name: --plx-a) and (timeline-scope: --plx-a) {
+.plx-data-table .tabulator{anchor-scope:--plx-data-table-body;timeline-scope:--plx-data-table-y,--plx-data-table-x;}
+.plx-data-table .tabulator .tabulator-tableholder{anchor-name:--plx-data-table-body;scroll-timeline:--plx-data-table-y block,--plx-data-table-x inline;scrollbar-width:none;}
+.plx-data-table__scroll[data-plx-thumb]{container-type:size;display:flex;opacity:0;pointer-events:none;position:absolute;position-anchor:--plx-data-table-body;z-index:var(--plx-comp-data-table-scroll-layer);}
+.plx-data-table__scroll--y{block-size:auto;flex-direction:column;inline-size:var(--plx-comp-data-table-scroll-size);inset-block-end:anchor(end);inset-block-start:anchor(start);inset-inline-end:anchor(end);}
+.plx-data-table__scroll--x{block-size:var(--plx-comp-data-table-scroll-size);flex-direction:row;inline-size:auto;inset-block-end:anchor(end);inset-inline-end:anchor(end);inset-inline-start:anchor(start);}
+.plx-data-table:hover .plx-data-table__scroll[data-plx-thumb],.plx-data-table:focus-within .plx-data-table__scroll[data-plx-thumb],.plx-data-table__scroll[data-plx-dragging]{opacity:1;}
+/* only a shown thumb takes the pointer: the tracks never cover the rows under them */
+.plx-data-table:hover .plx-data-table__scroll[data-plx-thumb] .plx-data-table__thumb,.plx-data-table:focus-within .plx-data-table__scroll[data-plx-thumb] .plx-data-table__thumb,.plx-data-table__scroll[data-plx-dragging] .plx-data-table__thumb{pointer-events:auto;}
+/* touch: the finger scrolls the body; no thumbs to aim at */
+:root[data-plx-interaction="touch"] .plx-data-table__scroll,:root[data-plx-interaction="mobile"] .plx-data-table__scroll{display:none;}
+.plx-data-table__thumb{animation-duration:auto;pointer-events:none;animation-fill-mode:both;animation-timing-function:linear;background-color:var(--plx-comp-data-table-scroll-thumb-color);border-bottom-left-radius:var(--plx-comp-data-table-scroll-thumb-radius);border-bottom-right-radius:var(--plx-comp-data-table-scroll-thumb-radius);border-top-left-radius:var(--plx-comp-data-table-scroll-thumb-radius);border-top-right-radius:var(--plx-comp-data-table-scroll-thumb-radius);flex-shrink:0;touch-action:none;}
+.plx-data-table__scroll--y .plx-data-table__thumb{animation-name:plx-data-table-thumb-y;animation-timeline:--plx-data-table-y;inline-size:100%;}
+.plx-data-table__scroll--x .plx-data-table__thumb{animation-name:plx-data-table-thumb-x;animation-timeline:--plx-data-table-x;block-size:100%;}
+.plx-data-table__scroll--x:dir(rtl) .plx-data-table__thumb{animation-name:plx-data-table-thumb-x-rtl;}
+/* the thumb follows the scroll position: feedback, not motion, so reduced motion (motion.css sets every animation to 0s) keeps it */
+@media(prefers-reduced-motion:reduce){.plx-data-table__thumb{animation-duration:auto !important;}}
+@keyframes plx-data-table-thumb-y{from{transform:translateY(0);}to{transform:translateY(calc(100cqb - 100%));}}
+@keyframes plx-data-table-thumb-x{from{transform:translateX(0);}to{transform:translateX(calc(100cqi - 100%));}}
+@keyframes plx-data-table-thumb-x-rtl{from{transform:translateX(0);}to{transform:translateX(calc(100% - 100cqi));}}
+.plx-data-table__scroll--y[data-plx-thumb="10"] .plx-data-table__thumb{block-size:10%;}
+.plx-data-table__scroll--y[data-plx-thumb="15"] .plx-data-table__thumb{block-size:15%;}
+.plx-data-table__scroll--y[data-plx-thumb="20"] .plx-data-table__thumb{block-size:20%;}
+.plx-data-table__scroll--y[data-plx-thumb="25"] .plx-data-table__thumb{block-size:25%;}
+.plx-data-table__scroll--y[data-plx-thumb="30"] .plx-data-table__thumb{block-size:30%;}
+.plx-data-table__scroll--y[data-plx-thumb="35"] .plx-data-table__thumb{block-size:35%;}
+.plx-data-table__scroll--y[data-plx-thumb="40"] .plx-data-table__thumb{block-size:40%;}
+.plx-data-table__scroll--y[data-plx-thumb="45"] .plx-data-table__thumb{block-size:45%;}
+.plx-data-table__scroll--y[data-plx-thumb="50"] .plx-data-table__thumb{block-size:50%;}
+.plx-data-table__scroll--y[data-plx-thumb="55"] .plx-data-table__thumb{block-size:55%;}
+.plx-data-table__scroll--y[data-plx-thumb="60"] .plx-data-table__thumb{block-size:60%;}
+.plx-data-table__scroll--y[data-plx-thumb="65"] .plx-data-table__thumb{block-size:65%;}
+.plx-data-table__scroll--y[data-plx-thumb="70"] .plx-data-table__thumb{block-size:70%;}
+.plx-data-table__scroll--y[data-plx-thumb="75"] .plx-data-table__thumb{block-size:75%;}
+.plx-data-table__scroll--y[data-plx-thumb="80"] .plx-data-table__thumb{block-size:80%;}
+.plx-data-table__scroll--y[data-plx-thumb="85"] .plx-data-table__thumb{block-size:85%;}
+.plx-data-table__scroll--y[data-plx-thumb="90"] .plx-data-table__thumb{block-size:90%;}
+.plx-data-table__scroll--y[data-plx-thumb="95"] .plx-data-table__thumb{block-size:95%;}
+.plx-data-table__scroll--x[data-plx-thumb="10"] .plx-data-table__thumb{inline-size:10%;}
+.plx-data-table__scroll--x[data-plx-thumb="15"] .plx-data-table__thumb{inline-size:15%;}
+.plx-data-table__scroll--x[data-plx-thumb="20"] .plx-data-table__thumb{inline-size:20%;}
+.plx-data-table__scroll--x[data-plx-thumb="25"] .plx-data-table__thumb{inline-size:25%;}
+.plx-data-table__scroll--x[data-plx-thumb="30"] .plx-data-table__thumb{inline-size:30%;}
+.plx-data-table__scroll--x[data-plx-thumb="35"] .plx-data-table__thumb{inline-size:35%;}
+.plx-data-table__scroll--x[data-plx-thumb="40"] .plx-data-table__thumb{inline-size:40%;}
+.plx-data-table__scroll--x[data-plx-thumb="45"] .plx-data-table__thumb{inline-size:45%;}
+.plx-data-table__scroll--x[data-plx-thumb="50"] .plx-data-table__thumb{inline-size:50%;}
+.plx-data-table__scroll--x[data-plx-thumb="55"] .plx-data-table__thumb{inline-size:55%;}
+.plx-data-table__scroll--x[data-plx-thumb="60"] .plx-data-table__thumb{inline-size:60%;}
+.plx-data-table__scroll--x[data-plx-thumb="65"] .plx-data-table__thumb{inline-size:65%;}
+.plx-data-table__scroll--x[data-plx-thumb="70"] .plx-data-table__thumb{inline-size:70%;}
+.plx-data-table__scroll--x[data-plx-thumb="75"] .plx-data-table__thumb{inline-size:75%;}
+.plx-data-table__scroll--x[data-plx-thumb="80"] .plx-data-table__thumb{inline-size:80%;}
+.plx-data-table__scroll--x[data-plx-thumb="85"] .plx-data-table__thumb{inline-size:85%;}
+.plx-data-table__scroll--x[data-plx-thumb="90"] .plx-data-table__thumb{inline-size:90%;}
+.plx-data-table__scroll--x[data-plx-thumb="95"] .plx-data-table__thumb{inline-size:95%;}
+}

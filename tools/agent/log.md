@@ -1,14 +1,16 @@
-## Batch 373 (2026-10-15): library wave 7
-- Writers in worktrees, two at a time (lane A: Calendar, DatePicker, CountrySelect, ProgressSteps, Tabs vertical, AppHeader back
-  and title; lane B: MillerColumns, Cascader, EntityPicker, TimePicker, RelativeDateInput, LoadMore, ImageUpload,
-  AvatarUpload; lane C: ChartKit (platform/charts, published by build-exports now), TimeZoneSelect, TreeSelect,
-  TransferList, BottomSheetNav, NavPane mobile records), merged with tools/agent/library/take-lane.js (new: copies a lane's sources, skips generated files,
-  refuses files changed here too). Native fragments merged (8). DataTable's load-more variant page renamed
-  "Load-more table" (the leaf now belongs to LoadMore).
-- Needs the owner (built from existing roles): Calendar today, chosen and range looks; stepper markers square; vertical
-  tabs' open tab as a navigation-list current row; country flags off by default; avatar upload has no circle (Avatar is
-  a rounded square); no rule-of-thirds guide in the crop frame.
-- Lane C notes: native token files (Swift, Kotlin) do not carry the library part tokens yet; no native fragments for
-  Outline views (iOS) and Tree (Android).
-- Tests (changed mode): SYSTEM_OK, SPEC_OK (580 records), LABS 22 + 6, VISUAL, DENSITY, LAYOUT, THEME,
-  PAGES 281/281, KEYBOARD 23/23, A11Y 0, DATA_TABLES 38/38, TYPOGRAPHY, REFLOW, TARGETS, CONTRAST, NAVIGATION. Released as {V}.
+## Batch 374 (2026-10-15): command bar swap, floating table scrollbar
+- Handoff docs/handoff/2026-10-15-command-bar-swap.md (desktop session). Owner, 2026-10-15: the count stays inside the
+  bar; while selecting, "× N selected" in the bar clears the selection (Microsoft 365).
+- CommandBar: selection object (swap), split retired, Divider between actions and find, announce on swap, Escape
+  clears; w07K records, docs and lab (variants one / selected / view; the selection-bar lab stays for BulkActions);
+  BulkActions and bulk-selection records point to the swap; keyboard test: the swap and Escape (and it waits for the
+  page's tables before focusing Filter).
+- DataTable floatingScroll.js: tracks anchored to the body (anchor positioning), thumbs on the body's scroll timeline,
+  length by data-plx-thumb steps; tokens data-table-scroll-*; reduced motion keeps the thumb (feedback, not motion).
+- Select-all checkbox moved 8.5px and shrank to 13px on header hover (the title reserve); select column excluded
+  (owner chose "exclude", 2026-10-15).
+- Selected row blue-200, hover on a selected row gray-100, no border (owner, 2026-10-15).
+- Open for the owner: BulkActions keep for pages without a bar, or retire; NavPane edge inset 12px or 16px.
+- Tests (changed mode): SYSTEM_OK, SPEC_OK, VISUAL, DENSITY, LAYOUT, THEME, PAGES 195/195, KEYBOARD 25/25,
+  A11Y 0, DATA_TABLES 38/38, TYPOGRAPHY, LABS (command-bar, bulk-action-bar fixed), REFLOW, TARGETS (coarse 18), CONTRAST,
+  NAVIGATION, FOCUS_ORDER, HIGH_CONTRAST. Released as {V}.

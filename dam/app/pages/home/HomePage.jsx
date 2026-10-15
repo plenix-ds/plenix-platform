@@ -164,11 +164,10 @@ export function HomePage() {
   const current = asset === null ? null : D.ASSETS[asset];
 
 
-  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the command bar, always shown; each command disabled with a
-     tooltip saying why until it applies; Delete last ── */
-  const catBulk = (
-    <BulkActions count={selCats.length} total={D.CATEGORY_CARDS.length} noun="category" plural="categories" onSelectAll={() => setSelCats(D.CATEGORY_CARDS.map((c) => c.id))} onClear={() => setSelCats([])}
-      label="Category actions" actions={[
+  /* ── the selection's commands (owner, 2026-10-15: the swap): while rows are selected the command bar holds them instead of
+     the page's actions, search and filters; a single-item command is disabled with a why-tooltip while several are
+     selected; Delete last ── */
+  const catActions = [
         { id: 'dl', label: 'Download', icon: 'download-tray', items: [{ id: 'd', label: 'Download', onSelect: () => bulk('Download category') }, { id: 'da', label: 'Download as', onSelect: () => bulk('Download Category as') }] },
         { id: 'move', label: 'Move', icon: 'move', onSelect: () => bulk('Move category') },
         { id: 'rename', label: 'Rename', icon: 'rename', single: true, onSelect: () => bulk('Rename category') },
@@ -176,12 +175,10 @@ export function HomePage() {
         { id: 'status', label: 'Change status', icon: 'circle-check', onSelect: () => bulk('Change category status') },
         { id: 'share', label: 'Share', icon: 'share', onSelect: () => bulk('Share category') },
         { id: 'del', label: 'Delete', icon: 'trash-detail', danger: true, onSelect: () => bulk('Delete category') },
-      ]} />
-  );
+  ];
+  const catSel = { count: selCats.length, noun: 'category', plural: 'categories', label: 'Category actions', actions: catActions, onClear: () => setSelCats([]) };
   const item = (label, action, extra) => ({ id: action, label, onSelect: () => bulk(action), ...extra });
-  const assetBulk = (
-    <BulkActions count={selAssets.length} total={D.ASSETS.length} noun="asset" onSelectAll={() => setSelAssets(D.ASSETS.map((a) => a.id))} onClear={() => setSelAssets([])}
-      label="Asset actions" actions={[
+  const assetActions = [
         { id: 'dl', label: 'Download', icon: 'download-tray', items: [item('Download', 'Download'), item('Download as', 'Download as')] },
         { id: 'edit', label: 'Edit', icon: 'fields', items: [item('Multi edit', 'Multi edit'), item('Edit image', 'Edit image', { single: true }), item('Update metadata', 'Update metadata'), item('Approve', 'Approve'), item('Reject', 'Reject'), item('Export', 'Export'), item('Delete selected assets', 'Delete', { danger: true }), item('Print assets', 'Print assets')] },
         { id: 'add', label: 'Add to', icon: 'briefcase-plus', items: [item('Cart', 'Add to Cart'), item('Bookmarks', 'Add to Bookmarks'), item('Document', 'Add to Document'), item('Person', 'Add to Person'), item('Categories', 'Add to Categories'), item('Collections', 'Add to Collections'), item('Media profile', 'Add to Media Profile')] },
@@ -189,7 +186,12 @@ export function HomePage() {
         { id: 'share', label: 'Share', icon: 'share', items: [item('Email assets', 'Email assets'), item('Publish Assets to Server', 'Publish Assets to Server')] },
         { id: 'publish', label: 'Publish', icon: 'upload', onSelect: () => bulk('Publish') },
         { id: 'thumb', label: 'Regenerate thumbnail', icon: 'image-b-2', single: true, onSelect: () => bulk('Regenerate thumbnail') },
-      ]} />
+  ];
+  const assetSel = { count: selAssets.length, noun: 'asset', label: 'Asset actions', actions: assetActions, onClear: () => setSelAssets([]) };
+  // the Search workspace keeps its own selection bar (its toolbar is not the command bar)
+  const assetBulk = (
+    <BulkActions count={selAssets.length} total={D.ASSETS.length} noun="asset" onSelectAll={() => setSelAssets(D.ASSETS.map((a) => a.id))} onClear={() => setSelAssets([])}
+      label="Asset actions" actions={assetActions} />
   );
 
   const found = findAssets(find);
@@ -274,8 +276,8 @@ export function HomePage() {
     );
   }
 
-  /* ── the command bar over the list (owner, 2026-10-14; 1A: the actions at the start, find and view at the end) and the
-     selection bar (2B) under it, both fixed at the top while the list scrolls ── */
+  /* ── the command bar over the list (owner, 2026-10-15: one bar that swaps on a selection, Microsoft 365), fixed at the
+     top while the list scrolls ── */
   const noun = view === 'categories' ? ['category', 'categories'] : view === 'collections' ? ['collection', 'collections'] : ['asset', 'assets'];
   const totals = { categories: D.CATEGORY_CARDS, collections: D.COLLECTION_CARDS, search: D.ASSETS };
   const n = view === 'find' ? 0 : cv.count(totals[view] || []);
@@ -298,7 +300,7 @@ export function HomePage() {
         <ViewMenu {...cv.viewProps} />
       </>}
       end={view === 'search' ? <Tooltip content="Save this search"><CommandBarButton icon="save" label="Save search" onClick={saveSearch} /></Tooltip> : null}
-      selection={view === 'categories' ? catBulk : view === 'search' ? assetBulk : null} />
+      selection={view === 'categories' ? catSel : view === 'search' ? assetSel : null} />
   );
   const pagination = view === 'categories' ? <Pagination page={1} pageCount={3} total={D.CATEGORY_TOTAL} perPage={16} perPageOptions={[16, 32, 64]} onPageChange={(n) => toast.show('Page ' + n, { tone: 'info' })} onPerPageChange={() => {}} />
     : view === 'collections' ? <Text as="p" variant="secondary">Showing 1–4 of 4 collections</Text>
