@@ -4,6 +4,7 @@
 <resources>
     <dimen name="plx_radius_radius_detail_4px">4dp</dimen>
     <dimen name="plx_radius_radius_compact_4px">4dp</dimen>
+    <dimen name="plx_radius_radius_pill_4px">4dp</dimen>
     <dimen name="plx_radius_radius_control_4px">4dp</dimen>
     <dimen name="plx_radius_radius_control_6px">6dp</dimen>
     <dimen name="plx_radius_radius_control_8px">8dp</dimen>
@@ -141,7 +142,7 @@
     <dimen name="plx_component_count_pill_min_height">16dp</dimen>
     <dimen name="plx_component_count_pill_min_width">16dp</dimen>
     <dimen name="plx_component_count_pill_padding_inline">4dp</dimen>
-    <dimen name="plx_component_count_pill_radius">9999dp</dimen>
+    <dimen name="plx_component_count_pill_radius">4dp</dimen>
     <dimen name="plx_component_dialog_action_gap">8dp</dimen>
     <dimen name="plx_component_dialog_action_height">36dp</dimen>
     <dimen name="plx_component_dialog_footer_border_top_width">1dp</dimen>
@@ -201,9 +202,7 @@
     <dimen name="plx_component_search_input_border_width">1dp</dimen>
     <dimen name="plx_component_search_input_min_height">28dp</dimen>
     <dimen name="plx_component_search_input_radius">6dp</dimen>
-    <dimen name="plx_component_segmented_item_min_height">28dp</dimen>
-    <dimen name="plx_component_segmented_padding_block">4dp</dimen>
-    <dimen name="plx_component_segmented_padding_inline">4dp</dimen>
+    <dimen name="plx_component_segmented_item_min_height">32dp</dimen>
     <dimen name="plx_component_segmented_radius">6dp</dimen>
     <dimen name="plx_component_select_after_inset_inline_end">12dp</dimen>
     <dimen name="plx_component_select_after_width">12dp</dimen>

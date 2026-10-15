@@ -15,39 +15,54 @@ exports.Badge = Badge;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
-   Summary: A small label with bold text: solid (white text on the tone) or soft (the tone's text on its pale fill).
+   Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
+     (owner, 2026-10-14, docs/pills-and-colors.md: every pill is soft).
    Usage:
-     <Badge tone="success">Published</Badge>
-     <Badge tone="danger" size="sm">3</Badge>
-     <Badge tone="warning" variant="soft">Draft</Badge>
+     <Badge tone="success">Approved</Badge>
+     <Badge tone="waiting">Paused</Badge>
+     <Badge tone="action-required">Changes requested</Badge>
+     <Badge tone="negative" size="sm">3</Badge>
    Props:
-     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"
-     variant: "solid" (default; white text on the tone) | "soft" (the tone's text on its pale fill: quieter, for many
-       statuses in a dense list)
+     tone: the status variant:
+       "neutral" (default; gray: no particular state, e.g. Draft, Archived)
+       "success" (green: done, approved, healthy)
+       "active" (blue: in progress, current, information)
+       "waiting" (yellow: waiting, paused)
+       "action-required" (orange: action or correction required, e.g. Changes requested, Needs attention)
+       "negative" (red: failed, error, rejected, blocked)
+       Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
+     variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
      size: "md" (default; a 20px label) | "sm" (16px, for counts)
      children: the badge text
      className: more classes on the badge
    Behavior:
-     An unknown tone, variant or size falls back to the default.
+     An unknown tone or size falls back to the default.
    Notes:
+     A badge is a workflow status. A tag or category is a Tag with its category color (never a status variant).
      Other props (title, aria-*, …) pass through to the <span>.
      A badge is text: give a count enough context nearby or an accessible name on its control.
 */
-const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
+const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
+const ALIASES = {
+  info: 'active',
+  warning: 'waiting',
+  danger: 'negative'
+};
 const SIZES = ['md', 'sm'];
-const VARIANTS = ['solid', 'soft'];
+
+// variant is taken out so it never reaches the <span>: every badge is the soft pill
 function Badge({
   tone = 'neutral',
-  variant = 'solid',
+  variant,
   size = 'md',
   className,
   children,
   ...rest
 }) {
-  const t = TONES.indexOf(tone) >= 0 ? tone : 'neutral';
+  const named = ALIASES[tone] || tone;
+  const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'solid';
-  const classes = ['plx-badge', 'plx-badge--' + t, v === 'soft' ? 'plx-badge--soft' : null, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
+  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: classes
   }, rest), children);
@@ -1094,10 +1109,12 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tag, Chip, TagList, TagInput
-   Summary: Small gray labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button.
+   Summary: Small labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button. A tag with a
+     category is a category pill: its category color as a soft pill (owner, 2026-10-14, docs/pills-and-colors.md).
    Usage:
      <TagList label="Keywords">
        <Tag onRemove={() => remove('sky')}>sky</Tag>
+       <Tag category="teal">Client</Tag>
        <Chip selected={on} onClick={() => setOn(!on)}>Favorites</Chip>
        <TagInput placeholder="Add a tag" onKeyDown={…} />
      </TagList>
@@ -1106,6 +1123,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Tag.removeLabel: the × button's accessible name; default "Remove " + the tag text
      Tag.onRename(text): makes the tag renamable: its text becomes a button; activating it turns it into a field (Enter or leaving it keeps
        the new text, Escape cancels); renameLabel: the button's accessible name (default "Rename " + the tag text)
+     Tag.category: the tag's category color, one of the 20 category colors (CATEGORY_COLORS: red, green, yellow, blue, orange,
+       purple, cyan, magenta, lime, pink, teal, lavender, brown, beige, maroon, mint, olive, apricot, navy, grey); set as
+       data-plx-category: background shade 100, a 1px border in shade 300, text in shade 700. Without it the tag is gray.
      Tag.className: more classes on the tag
      Tag.children: the tag text
      Chip.selected: the chip is pressed (aria-pressed); default false
@@ -1124,7 +1144,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      TagInput.className: more classes on the input
    Behavior:
      The × button is a 24px target in a 16px box, 44px with touch (Platforms Standard 3.1); a chip's target grows the same
-       way past its 20px look. With touch, TagList parts its tags and rows so the targets do not overlap.
+       way past its 20px look. With touch, TagList parts its tags and rows, and keeps
+       12px above and below itself, so the targets do not overlap each other or the controls beside the list.
      Selected chips are filled.
      TagInput is a + at the end of the tag list, drawn as a Chip (the tag look as a button: its height, corners, fill and
        border; owner, batch 272), its target 24px like the tag's × (owner, batch 271: "it should be a + and clicking that plus
@@ -1134,6 +1155,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        × removes it. Without onAdd the field only reports what is typed (onChange, onKeyDown).
      A tag being renamed is a small field with the input's focused border.
    Notes:
+     Category colors identify labels; they never mean a workflow state. A status is a Badge (its six variants), never a
+       category tag, and a tag is never drawn in a status variant.
      TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
      TagInput is the "add a tag" field at the end of a TagList.
      Other props reach the element: the tag, the chip's toggle button, the list, or the input.
@@ -1152,6 +1175,7 @@ function RemoveButton({
   }, "\xD7"));
 }
 function Tag({
+  category,
   onRemove,
   removeLabel,
   onRename,
@@ -1168,7 +1192,8 @@ function Tag({
     if (keep && draft.trim() && draft.trim() !== text) onRename(draft.trim());
   };
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)
+    className: (0, _cx.cx)('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className),
+    "data-plx-category": category || undefined
   }, rest), onRename && editing ? /*#__PURE__*/_react.default.createElement("input", {
     className: "plx-tag__input",
     value: draft,
@@ -5322,7 +5347,8 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SegmentedControl
-   Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System).
+   Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System): a bordered group of
+     joined segments at the button height; the chosen one is tinted blue with blue text and icon (look A, owner, 2026-10-14).
      It sets a value (a radio group).
    Usage:
      <SegmentedControl label="Theme" value={theme} onChange={setTheme}
@@ -15449,7 +15475,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      its name, the actions that act on it, and one line of facts about it. Decided with the owner on 2026-10-09 (the page
      header study, docs/page-header-study.html).
    Usage:
-     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'warning', label: 'Reconnect due' }}
+     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'action-required', label: 'Reconnect due' }}
        title="Maya Chen" facts={['Creative Director', 'Apex Co', <>Last message <Text variant="data">10:24 AM</Text></>]}
        actions={[{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }]} />
      <EntityHeader media={{ icon: 'briefcase', hue: 'blue' }} title="AI Writing Tools" description="Evaluating AI writing assistants" />
@@ -15459,8 +15485,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray), or on the surface (hue: surface, a white tile); or an element
      context: the line above the title (optional; not a breadcrumb): a placeholder such as the item's category, or a control
        that places the entity (a period navigator); what it holds is still to be defined per capability
-     status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: neutral, info, success,
-       warning, danger) or an element
+     status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: a Badge variant: neutral, success,
+       active, waiting, action-required, negative; the old info, warning, danger still work) or an element
      actions: the actions that act on this entity, as 16px icon buttons side by side: [{ icon, label, onClick, primary,
        disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
      moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
@@ -15612,8 +15638,7 @@ function EntityHeader({
     ...strings
   };
   const badge = status && ! /*#__PURE__*/_react.default.isValidElement(status) ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    tone: status.tone,
-    variant: "soft"
+    tone: status.tone
   }, status.label) : status;
   return /*#__PURE__*/_react.default.createElement("header", {
     className: (0, _cx.cx)('plx-entity-header', className)
@@ -18555,6 +18580,138 @@ const CONTRAST_PAIRS = exports.CONTRAST_PAIRS = Object.freeze([{
   bg: 'surface-default',
   rule: N,
   use: 'Workflow: not started (a dot, an icon)'
+},
+// the status pills and the category pills (owner, 2026-10-14, docs/pills-and-colors.md): every pill text on its background
+{
+  fg: 'status-pill-neutral-text',
+  bg: 'status-pill-neutral-background',
+  rule: T,
+  use: 'Status pill text: Neutral'
+}, {
+  fg: 'status-pill-success-text',
+  bg: 'status-pill-success-background',
+  rule: T,
+  use: 'Status pill text: Success'
+}, {
+  fg: 'status-pill-active-text',
+  bg: 'status-pill-active-background',
+  rule: T,
+  use: 'Status pill text: Active'
+}, {
+  fg: 'status-pill-waiting-text',
+  bg: 'status-pill-waiting-background',
+  rule: T,
+  use: 'Status pill text: Waiting'
+}, {
+  fg: 'status-pill-action-required-text',
+  bg: 'status-pill-action-required-background',
+  rule: T,
+  use: 'Status pill text: Action required'
+}, {
+  fg: 'status-pill-negative-text',
+  bg: 'status-pill-negative-background',
+  rule: T,
+  use: 'Status pill text: Negative'
+}, {
+  fg: 'category-red-on-soft',
+  bg: 'category-red-soft',
+  rule: T,
+  use: 'Category pill text: red'
+}, {
+  fg: 'category-green-on-soft',
+  bg: 'category-green-soft',
+  rule: T,
+  use: 'Category pill text: green'
+}, {
+  fg: 'category-yellow-on-soft',
+  bg: 'category-yellow-soft',
+  rule: T,
+  use: 'Category pill text: yellow'
+}, {
+  fg: 'category-blue-on-soft',
+  bg: 'category-blue-soft',
+  rule: T,
+  use: 'Category pill text: blue'
+}, {
+  fg: 'category-orange-on-soft',
+  bg: 'category-orange-soft',
+  rule: T,
+  use: 'Category pill text: orange'
+}, {
+  fg: 'category-purple-on-soft',
+  bg: 'category-purple-soft',
+  rule: T,
+  use: 'Category pill text: purple'
+}, {
+  fg: 'category-cyan-on-soft',
+  bg: 'category-cyan-soft',
+  rule: T,
+  use: 'Category pill text: cyan'
+}, {
+  fg: 'category-magenta-on-soft',
+  bg: 'category-magenta-soft',
+  rule: T,
+  use: 'Category pill text: magenta'
+}, {
+  fg: 'category-lime-on-soft',
+  bg: 'category-lime-soft',
+  rule: T,
+  use: 'Category pill text: lime'
+}, {
+  fg: 'category-pink-on-soft',
+  bg: 'category-pink-soft',
+  rule: T,
+  use: 'Category pill text: pink'
+}, {
+  fg: 'category-teal-on-soft',
+  bg: 'category-teal-soft',
+  rule: T,
+  use: 'Category pill text: teal'
+}, {
+  fg: 'category-lavender-on-soft',
+  bg: 'category-lavender-soft',
+  rule: T,
+  use: 'Category pill text: lavender'
+}, {
+  fg: 'category-brown-on-soft',
+  bg: 'category-brown-soft',
+  rule: T,
+  use: 'Category pill text: brown'
+}, {
+  fg: 'category-beige-on-soft',
+  bg: 'category-beige-soft',
+  rule: T,
+  use: 'Category pill text: beige'
+}, {
+  fg: 'category-maroon-on-soft',
+  bg: 'category-maroon-soft',
+  rule: T,
+  use: 'Category pill text: maroon'
+}, {
+  fg: 'category-mint-on-soft',
+  bg: 'category-mint-soft',
+  rule: T,
+  use: 'Category pill text: mint'
+}, {
+  fg: 'category-olive-on-soft',
+  bg: 'category-olive-soft',
+  rule: T,
+  use: 'Category pill text: olive'
+}, {
+  fg: 'category-apricot-on-soft',
+  bg: 'category-apricot-soft',
+  rule: T,
+  use: 'Category pill text: apricot'
+}, {
+  fg: 'category-navy-on-soft',
+  bg: 'category-navy-soft',
+  rule: T,
+  use: 'Category pill text: navy'
+}, {
+  fg: 'category-grey-on-soft',
+  bg: 'category-grey-soft',
+  rule: T,
+  use: 'Category pill text: grey'
 }]);
 function parseColor(color) {
   const s = String(color || '').trim().toLowerCase();
@@ -21091,7 +21248,6 @@ function Persona({
     title: name
   }, name), p ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + words[p]) : null, role ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     tone: "neutral",
-    variant: "soft",
     size: "sm",
     className: "plx-persona__role"
   }, role) : null), secondary ? /*#__PURE__*/_react.default.createElement("div", {
@@ -21679,7 +21835,6 @@ function VersionLabel({
     className: "plx-version-label__number"
   }, number), STATUSES.indexOf(status) >= 0 ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     tone: "neutral",
-    variant: "soft",
     size: s === 'sm' ? 'sm' : 'md',
     className: "plx-version-label__status"
   }, words[status]) : null);

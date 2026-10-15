@@ -48,7 +48,7 @@ export function Persona({ name, src, color, secondary, role, presence, size = 'm
           {href ? <Link href={href} variant="standalone" className="plx-persona__name" title={name}>{name}</Link>
             : <span className="plx-persona__name" title={name}>{name}</span>}
           {p ? <VisuallyHidden>{', ' + words[p]}</VisuallyHidden> : null}
-          {role ? <Badge tone="neutral" variant="soft" size="sm" className="plx-persona__role">{role}</Badge> : null}
+          {role ? <Badge tone="neutral" size="sm" className="plx-persona__role">{role}</Badge> : null}
         </div>
         {secondary ? <div className="plx-persona__secondary" title={typeof secondary === 'string' ? secondary : undefined}>{secondary}</div> : null}
       </div>

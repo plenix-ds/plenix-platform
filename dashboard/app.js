@@ -2672,11 +2672,11 @@ const ProjIco = ({
 /* ── Status badge ── */
 exports.ProjIco = ProjIco;
 const STATUS = {
-  active: ['success', 'Active'],
-  paused: ['warning', 'Paused'],
-  completed: ['info', 'Completed'],
+  active: ['active', 'Active'],
+  paused: ['waiting', 'Paused'],
+  completed: ['success', 'Completed'],
   archived: ['neutral', 'Archived']
-};
+}; // status pill variants (owner, 2026-10-14)
 const statusOf = s => {
   const v = STATUS[s] || STATUS.active;
   return {

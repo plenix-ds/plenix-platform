@@ -78,7 +78,34 @@ export const CONTRAST_PAIRS = Object.freeze([
   { fg: 'status-done', bg: 'surface-default', rule: N, use: 'Workflow: done (a dot, an icon)' },
   { fg: 'status-in-progress', bg: 'surface-default', rule: N, use: 'Workflow: in progress (a dot, an icon)' },
   { fg: 'status-blocked', bg: 'surface-default', rule: N, use: 'Workflow: blocked (a dot, an icon)' },
-  { fg: 'status-not-started', bg: 'surface-default', rule: N, use: 'Workflow: not started (a dot, an icon)' }
+  { fg: 'status-not-started', bg: 'surface-default', rule: N, use: 'Workflow: not started (a dot, an icon)' },
+  // the status pills and the category pills (owner, 2026-10-14, docs/pills-and-colors.md): every pill text on its background
+  { fg: 'status-pill-neutral-text', bg: 'status-pill-neutral-background', rule: T, use: 'Status pill text: Neutral' },
+  { fg: 'status-pill-success-text', bg: 'status-pill-success-background', rule: T, use: 'Status pill text: Success' },
+  { fg: 'status-pill-active-text', bg: 'status-pill-active-background', rule: T, use: 'Status pill text: Active' },
+  { fg: 'status-pill-waiting-text', bg: 'status-pill-waiting-background', rule: T, use: 'Status pill text: Waiting' },
+  { fg: 'status-pill-action-required-text', bg: 'status-pill-action-required-background', rule: T, use: 'Status pill text: Action required' },
+  { fg: 'status-pill-negative-text', bg: 'status-pill-negative-background', rule: T, use: 'Status pill text: Negative' },
+  { fg: 'category-red-on-soft', bg: 'category-red-soft', rule: T, use: 'Category pill text: red' },
+  { fg: 'category-green-on-soft', bg: 'category-green-soft', rule: T, use: 'Category pill text: green' },
+  { fg: 'category-yellow-on-soft', bg: 'category-yellow-soft', rule: T, use: 'Category pill text: yellow' },
+  { fg: 'category-blue-on-soft', bg: 'category-blue-soft', rule: T, use: 'Category pill text: blue' },
+  { fg: 'category-orange-on-soft', bg: 'category-orange-soft', rule: T, use: 'Category pill text: orange' },
+  { fg: 'category-purple-on-soft', bg: 'category-purple-soft', rule: T, use: 'Category pill text: purple' },
+  { fg: 'category-cyan-on-soft', bg: 'category-cyan-soft', rule: T, use: 'Category pill text: cyan' },
+  { fg: 'category-magenta-on-soft', bg: 'category-magenta-soft', rule: T, use: 'Category pill text: magenta' },
+  { fg: 'category-lime-on-soft', bg: 'category-lime-soft', rule: T, use: 'Category pill text: lime' },
+  { fg: 'category-pink-on-soft', bg: 'category-pink-soft', rule: T, use: 'Category pill text: pink' },
+  { fg: 'category-teal-on-soft', bg: 'category-teal-soft', rule: T, use: 'Category pill text: teal' },
+  { fg: 'category-lavender-on-soft', bg: 'category-lavender-soft', rule: T, use: 'Category pill text: lavender' },
+  { fg: 'category-brown-on-soft', bg: 'category-brown-soft', rule: T, use: 'Category pill text: brown' },
+  { fg: 'category-beige-on-soft', bg: 'category-beige-soft', rule: T, use: 'Category pill text: beige' },
+  { fg: 'category-maroon-on-soft', bg: 'category-maroon-soft', rule: T, use: 'Category pill text: maroon' },
+  { fg: 'category-mint-on-soft', bg: 'category-mint-soft', rule: T, use: 'Category pill text: mint' },
+  { fg: 'category-olive-on-soft', bg: 'category-olive-soft', rule: T, use: 'Category pill text: olive' },
+  { fg: 'category-apricot-on-soft', bg: 'category-apricot-soft', rule: T, use: 'Category pill text: apricot' },
+  { fg: 'category-navy-on-soft', bg: 'category-navy-soft', rule: T, use: 'Category pill text: navy' },
+  { fg: 'category-grey-on-soft', bg: 'category-grey-soft', rule: T, use: 'Category pill text: grey' }
 ]);
 
 export function parseColor(color) {

@@ -45,6 +45,7 @@
   /* ── RADIUS: roles (role + value) ── */
   --plx-sys-radius-detail-4px: var(--plx-sys-shape-xs);
   --plx-sys-radius-compact-4px: var(--plx-sys-shape-xs);
+  --plx-sys-radius-pill-4px: var(--plx-sys-shape-xs);
   --plx-sys-radius-control-4px: var(--plx-sys-shape-xs);
   --plx-sys-radius-control-6px: var(--plx-sys-shape-sm);
   --plx-sys-radius-control-8px: var(--plx-sys-shape-md);

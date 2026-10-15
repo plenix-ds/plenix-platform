@@ -193,6 +193,76 @@
       "$value": "#dff6dd",
       "$type": "color"
     },
+    "color-yellow-900": {
+      "$value": "#4d3800",
+      "$type": "color",
+      "$description": "Yellow 900: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-yellow-700": {
+      "$value": "#765600",
+      "$type": "color",
+      "$description": "Yellow 700: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-yellow-500": {
+      "$value": "#b88700",
+      "$type": "color",
+      "$description": "Yellow 500: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-yellow-400": {
+      "$value": "#d5a300",
+      "$type": "color",
+      "$description": "Yellow 400: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-yellow-300": {
+      "$value": "#e8c34a",
+      "$type": "color",
+      "$description": "Yellow 300: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-yellow-200": {
+      "$value": "#f4dfa0",
+      "$type": "color",
+      "$description": "Yellow 200: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-yellow-100": {
+      "$value": "#fff8df",
+      "$type": "color",
+      "$description": "Yellow 100: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-900": {
+      "$value": "#5c2800",
+      "$type": "color",
+      "$description": "Orange 900: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-800": {
+      "$value": "#7a3400",
+      "$type": "color",
+      "$description": "Orange 800: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-700": {
+      "$value": "#963f00",
+      "$type": "color",
+      "$description": "Orange 700: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-500": {
+      "$value": "#d96800",
+      "$type": "color",
+      "$description": "Orange 500: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-300": {
+      "$value": "#f2ad70",
+      "$type": "color",
+      "$description": "Orange 300: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-200": {
+      "$value": "#f8d0ad",
+      "$type": "color",
+      "$description": "Orange 200: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-orange-100": {
+      "$value": "#fff0e3",
+      "$type": "color",
+      "$description": "Orange 100: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-purple-visited": {
       "$value": "#551a8b",
       "$type": "color",
@@ -967,100 +1037,400 @@
       "$type": "color",
       "$description": "Category color 1 of 20: red (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-red-100": {
+      "$value": "#ffefef",
+      "$type": "color",
+      "$description": "Category red, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-red-300": {
+      "$value": "#ffb4b6",
+      "$type": "color",
+      "$description": "Category red, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-red-700": {
+      "$value": "#891f31",
+      "$type": "color",
+      "$description": "Category red, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-green": {
       "$value": "#3cb44b",
       "$type": "color",
       "$description": "Category color 2 of 20: green (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-green-100": {
+      "$value": "#e6fae5",
+      "$type": "color",
+      "$description": "Category green, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-green-300": {
+      "$value": "#9cde9e",
+      "$type": "color",
+      "$description": "Category green, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-green-700": {
+      "$value": "#025e17",
+      "$type": "color",
+      "$description": "Category green, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-yellow": {
       "$value": "#ffe119",
       "$type": "color",
       "$description": "Category color 3 of 20: yellow (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-yellow-100": {
+      "$value": "#f9f4da",
+      "$type": "color",
+      "$description": "Category yellow, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-yellow-300": {
+      "$value": "#dccc75",
+      "$type": "color",
+      "$description": "Category yellow, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-yellow-700": {
+      "$value": "#594d02",
+      "$type": "color",
+      "$description": "Category yellow, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-blue": {
       "$value": "#4363d8",
       "$type": "color",
       "$description": "Category color 4 of 20: blue (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-blue-100": {
+      "$value": "#eff3fe",
+      "$type": "color",
+      "$description": "Category blue, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-blue-300": {
+      "$value": "#b5c9fe",
+      "$type": "color",
+      "$description": "Category blue, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-blue-700": {
+      "$value": "#2d4498",
+      "$type": "color",
+      "$description": "Category blue, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-orange": {
       "$value": "#f58231",
       "$type": "color",
       "$description": "Category color 5 of 20: orange (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-orange-100": {
+      "$value": "#fff0e8",
+      "$type": "color",
+      "$description": "Category orange, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-orange-300": {
+      "$value": "#ffb890",
+      "$type": "color",
+      "$description": "Category orange, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-orange-700": {
+      "$value": "#793802",
+      "$type": "color",
+      "$description": "Category orange, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-purple": {
       "$value": "#911eb4",
       "$type": "color",
       "$description": "Category color 6 of 20: purple (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-purple-100": {
+      "$value": "#faeffe",
+      "$type": "color",
+      "$description": "Category purple, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-purple-300": {
+      "$value": "#e7b4fb",
+      "$type": "color",
+      "$description": "Category purple, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-purple-700": {
+      "$value": "#6a2e7f",
+      "$type": "color",
+      "$description": "Category purple, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-cyan": {
       "$value": "#42d4f4",
       "$type": "color",
       "$description": "Category color 7 of 20: cyan (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-cyan-100": {
+      "$value": "#e2f8fe",
+      "$type": "color",
+      "$description": "Category cyan, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-cyan-300": {
+      "$value": "#6bddf8",
+      "$type": "color",
+      "$description": "Category cyan, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-cyan-700": {
+      "$value": "#045766",
+      "$type": "color",
+      "$description": "Category cyan, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-magenta": {
       "$value": "#f032e6",
       "$type": "color",
       "$description": "Category color 8 of 20: magenta (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-magenta-100": {
+      "$value": "#ffedfc",
+      "$type": "color",
+      "$description": "Category magenta, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-magenta-300": {
+      "$value": "#f4b0ec",
+      "$type": "color",
+      "$description": "Category magenta, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-magenta-700": {
+      "$value": "#752870",
+      "$type": "color",
+      "$description": "Category magenta, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-lime": {
       "$value": "#bfef45",
       "$type": "color",
       "$description": "Category color 9 of 20: lime (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-lime-100": {
+      "$value": "#eef8df",
+      "$type": "color",
+      "$description": "Category lime, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-lime-300": {
+      "$value": "#bbd786",
+      "$type": "color",
+      "$description": "Category lime, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-lime-700": {
+      "$value": "#415601",
+      "$type": "color",
+      "$description": "Category lime, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-pink": {
       "$value": "#fabed4",
       "$type": "color",
       "$description": "Category color 10 of 20: pink (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-pink-100": {
+      "$value": "#ffeef4",
+      "$type": "color",
+      "$description": "Category pink, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-pink-300": {
+      "$value": "#f3b7cd",
+      "$type": "color",
+      "$description": "Category pink, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-pink-700": {
+      "$value": "#6c3b4f",
+      "$type": "color",
+      "$description": "Category pink, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-teal": {
       "$value": "#469990",
       "$type": "color",
       "$description": "Category color 11 of 20: teal (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-teal-100": {
+      "$value": "#dafcf7",
+      "$type": "color",
+      "$description": "Category teal, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-teal-300": {
+      "$value": "#8adcd2",
+      "$type": "color",
+      "$description": "Category teal, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-teal-700": {
+      "$value": "#065a53",
+      "$type": "color",
+      "$description": "Category teal, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-lavender": {
       "$value": "#dcbeff",
       "$type": "color",
       "$description": "Category color 12 of 20: lavender (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-lavender-100": {
+      "$value": "#f6f0fe",
+      "$type": "color",
+      "$description": "Category lavender, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-lavender-300": {
+      "$value": "#d9bbfc",
+      "$type": "color",
+      "$description": "Category lavender, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-lavender-700": {
+      "$value": "#5a3e76",
+      "$type": "color",
+      "$description": "Category lavender, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-brown": {
       "$value": "#9a6324",
       "$type": "color",
       "$description": "Category color 13 of 20: brown (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-brown-100": {
+      "$value": "#fff1e4",
+      "$type": "color",
+      "$description": "Category brown, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-brown-300": {
+      "$value": "#fabd80",
+      "$type": "color",
+      "$description": "Category brown, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-brown-700": {
+      "$value": "#6f4102",
+      "$type": "color",
+      "$description": "Category brown, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-beige": {
       "$value": "#fffac8",
       "$type": "color",
       "$description": "Category color 14 of 20: beige (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-beige-100": {
+      "$value": "#f7f5da",
+      "$type": "color",
+      "$description": "Category beige, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-beige-300": {
+      "$value": "#d2cd9c",
+      "$type": "color",
+      "$description": "Category beige, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-beige-700": {
+      "$value": "#544e22",
+      "$type": "color",
+      "$description": "Category beige, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-maroon": {
       "$value": "#800000",
       "$type": "color",
       "$description": "Category color 15 of 20: maroon (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-maroon-100": {
+      "$value": "#fff0ed",
+      "$type": "color",
+      "$description": "Category maroon, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-maroon-300": {
+      "$value": "#ffb5a9",
+      "$type": "color",
+      "$description": "Category maroon, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-maroon-700": {
+      "$value": "#892219",
+      "$type": "color",
+      "$description": "Category maroon, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-mint": {
       "$value": "#aaffc3",
       "$type": "color",
       "$description": "Category color 16 of 20: mint (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-mint-100": {
+      "$value": "#e3fbe9",
+      "$type": "color",
+      "$description": "Category mint, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-mint-300": {
+      "$value": "#91e0a8",
+      "$type": "color",
+      "$description": "Category mint, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-mint-700": {
+      "$value": "#045d2f",
+      "$type": "color",
+      "$description": "Category mint, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-olive": {
       "$value": "#808000",
       "$type": "color",
       "$description": "Category color 17 of 20: olive (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-olive-100": {
+      "$value": "#f4f6db",
+      "$type": "color",
+      "$description": "Category olive, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-olive-300": {
+      "$value": "#cfd17a",
+      "$type": "color",
+      "$description": "Category olive, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-olive-700": {
+      "$value": "#515102",
+      "$type": "color",
+      "$description": "Category olive, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-apricot": {
       "$value": "#ffd8b1",
       "$type": "color",
       "$description": "Category color 18 of 20: apricot (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-apricot-100": {
+      "$value": "#fff1e4",
+      "$type": "color",
+      "$description": "Category apricot, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-apricot-300": {
+      "$value": "#e9c39c",
+      "$type": "color",
+      "$description": "Category apricot, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-apricot-700": {
+      "$value": "#664522",
+      "$type": "color",
+      "$description": "Category apricot, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "color-category-navy": {
       "$value": "#000075",
       "$type": "color",
       "$description": "Category color 19 of 20: navy (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
     },
+    "color-category-navy-100": {
+      "$value": "#eef4fe",
+      "$type": "color",
+      "$description": "Category navy, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-navy-300": {
+      "$value": "#b1cbfe",
+      "$type": "color",
+      "$description": "Category navy, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-navy-700": {
+      "$value": "#244698",
+      "$type": "color",
+      "$description": "Category navy, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
     "color-category-grey": {
       "$value": "#a9a9a9",
       "$type": "color",
       "$description": "Category color 20 of 20: grey (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    },
+    "color-category-grey-100": {
+      "$value": "#f3f3f3",
+      "$type": "color",
+      "$description": "Category grey, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-grey-300": {
+      "$value": "#cacaca",
+      "$type": "color",
+      "$description": "Category grey, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    },
+    "color-category-grey-700": {
+      "$value": "#4d4d4d",
+      "$type": "color",
+      "$description": "Category grey, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     }
   }
 }

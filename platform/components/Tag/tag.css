@@ -13,7 +13,7 @@ button.plx-chip,.plx-chip__toggle{appearance:none;border-bottom-style:none;borde
 .plx-chip--selected .plx-tag__remove{color:inherit;opacity:var(--plx-comp-chip-selected-tag-remove-opacity);}
 .plx-chip--selected .plx-tag__remove:hover,
 .plx-chip--selected .plx-tag__remove.is-hover{color:inherit;opacity:1;}
-.plx-tag-list{align-items:center;column-gap:var(--plx-comp-tag-list-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-tag-list-row-gap);}
+.plx-tag-list{align-items:center;column-gap:var(--plx-comp-tag-list-gap);display:flex;flex-wrap:wrap;padding-block-end:var(--plx-comp-tag-list-padding-block);padding-block-start:var(--plx-comp-tag-list-padding-block);row-gap:var(--plx-comp-tag-list-row-gap);}
 /* TagInput (batch 268, owner: consistent with the input controls): .plx-input draws it (border, hover, focus, disabled); in a
    tag list it is a short field that takes the rest of the row */
 .plx-tag-input{flex-basis:var(--plx-comp-tag-input-flex-basis);flex-grow:1;inline-size:auto;min-inline-size:var(--plx-comp-tag-input-min-width);}
@@ -43,3 +43,6 @@ button.plx-chip,.plx-chip__toggle{appearance:none;border-bottom-style:none;borde
    chips (--plx-comp-tag-list-gap, -row-gap) so the targets do not overlap. The × and the + grow the same way with touch. */
 button.plx-chip,.plx-chip__toggle{position:relative;}
 button.plx-chip:not(.plx-tag-input__add)::before,.plx-chip__toggle::before{content:"";inset-block-end:var(--plx-comp-chip-target-inset);inset-block-start:var(--plx-comp-chip-target-inset);inset-inline-end:var(--plx-comp-chip-target-inset);inset-inline-start:var(--plx-comp-chip-target-inset);position:absolute;}
+/* a category tag (Tag category, owner 2026-10-14, docs/pills-and-colors.md): the category's soft pill, background shade 100,
+   a 1px border in shade 300, text in shade 700, from [data-plx-category] (system/steps.css); the same in every theme */
+.plx-tag:not(.plx-chip)[data-plx-category]{background-color:var(--plx-comp-category-soft);border-bottom-color:var(--plx-comp-category-soft-border);border-left-color:var(--plx-comp-category-soft-border);border-right-color:var(--plx-comp-category-soft-border);border-top-color:var(--plx-comp-category-soft-border);color:var(--plx-comp-category-on-soft);}

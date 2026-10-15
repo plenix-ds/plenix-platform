@@ -3,7 +3,7 @@
      its name, the actions that act on it, and one line of facts about it. Decided with the owner on 2026-10-09 (the page
      header study, docs/page-header-study.html).
    Usage:
-     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'warning', label: 'Reconnect due' }}
+     <EntityHeader media={{ person: 'Maya Chen', color: 'blue' }} context="Clients" status={{ tone: 'action-required', label: 'Reconnect due' }}
        title="Maya Chen" facts={['Creative Director', 'Apex Co', <>Last message <Text variant="data">10:24 AM</Text></>]}
        actions={[{ icon: 'phone', label: 'Call' }, { icon: 'message', label: 'Message', primary: true }, { icon: 'share', label: 'Share' }]} />
      <EntityHeader media={{ icon: 'briefcase', hue: 'blue' }} title="AI Writing Tools" description="Evaluating AI writing assistants" />
@@ -13,8 +13,8 @@
        the entity's kind, tinted in a data color (hue: blue, green, purple, red, brown, gray; default gray), or on the surface (hue: surface, a white tile); or an element
      context: the line above the title (optional; not a breadcrumb): a placeholder such as the item's category, or a control
        that places the entity (a period navigator); what it holds is still to be defined per capability
-     status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: neutral, info, success,
-       warning, danger) or an element
+     status: the entity's status, a soft Badge in the upper-right status area: { tone, label } (tone: a Badge variant: neutral, success,
+       active, waiting, action-required, negative; the old info, warning, danger still work) or an element
      actions: the actions that act on this entity, as 16px icon buttons side by side: [{ icon, label, onClick, primary,
        disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
      moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
@@ -95,7 +95,7 @@ function Actions({ actions, moreActions, strings }) {
 export function EntityHeader({ title, media, context, status, actions, moreActions, live, facts, description, headingLevel = 1, className, strings }) {
   const H = 'h' + headingLevel;
   const s = { more: 'More actions', ...strings };
-  const badge = status && !React.isValidElement(status) ? <Badge tone={status.tone} variant="soft">{status.label}</Badge> : status;
+  const badge = status && !React.isValidElement(status) ? <Badge tone={status.tone}>{status.label}</Badge> : status;
   return (
     <header className={cx('plx-entity-header', className)}>
       <Media media={media || { icon: 'doc-text' }} />

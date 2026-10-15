@@ -45,7 +45,7 @@ export function VersionLabel({ version, status, size = 'md', href, strings, clas
   return (
     <span className={cx('plx-version-label', 'plx-version-label--' + s, className)} {...rest}>
       {href ? <Link href={href} className="plx-version-label__number">{number}</Link> : <span className="plx-version-label__number">{number}</span>}
-      {STATUSES.indexOf(status) >= 0 ? <Badge tone="neutral" variant="soft" size={s === 'sm' ? 'sm' : 'md'} className="plx-version-label__status">{words[status]}</Badge> : null}
+      {STATUSES.indexOf(status) >= 0 ? <Badge tone="neutral" size={s === 'sm' ? 'sm' : 'md'} className="plx-version-label__status">{words[status]}</Badge> : null}
     </span>
   );
 }

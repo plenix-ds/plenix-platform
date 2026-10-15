@@ -122,6 +122,24 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color statusInProgress;
   final Color statusBlocked;
   final Color statusNotStarted;
+  final Color statusPillNeutralBackground;
+  final Color statusPillNeutralBorder;
+  final Color statusPillNeutralText;
+  final Color statusPillSuccessBackground;
+  final Color statusPillSuccessBorder;
+  final Color statusPillSuccessText;
+  final Color statusPillActiveBackground;
+  final Color statusPillActiveBorder;
+  final Color statusPillActiveText;
+  final Color statusPillWaitingBackground;
+  final Color statusPillWaitingBorder;
+  final Color statusPillWaitingText;
+  final Color statusPillActionRequiredBackground;
+  final Color statusPillActionRequiredBorder;
+  final Color statusPillActionRequiredText;
+  final Color statusPillNegativeBackground;
+  final Color statusPillNegativeBorder;
+  final Color statusPillNegativeText;
   final Color fillNeutral;
   final Color fillNeutralHover;
   final Color fillNeutralBorder;
@@ -225,44 +243,104 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color dataColorGrayOnSoft;
   final Color categoryRed;
   final Color categoryRedOn;
+  final Color categoryRedSoft;
+  final Color categoryRedSoftBorder;
+  final Color categoryRedOnSoft;
   final Color categoryGreen;
   final Color categoryGreenOn;
+  final Color categoryGreenSoft;
+  final Color categoryGreenSoftBorder;
+  final Color categoryGreenOnSoft;
   final Color categoryYellow;
   final Color categoryYellowOn;
+  final Color categoryYellowSoft;
+  final Color categoryYellowSoftBorder;
+  final Color categoryYellowOnSoft;
   final Color categoryBlue;
   final Color categoryBlueOn;
+  final Color categoryBlueSoft;
+  final Color categoryBlueSoftBorder;
+  final Color categoryBlueOnSoft;
   final Color categoryOrange;
   final Color categoryOrangeOn;
+  final Color categoryOrangeSoft;
+  final Color categoryOrangeSoftBorder;
+  final Color categoryOrangeOnSoft;
   final Color categoryPurple;
   final Color categoryPurpleOn;
+  final Color categoryPurpleSoft;
+  final Color categoryPurpleSoftBorder;
+  final Color categoryPurpleOnSoft;
   final Color categoryCyan;
   final Color categoryCyanOn;
+  final Color categoryCyanSoft;
+  final Color categoryCyanSoftBorder;
+  final Color categoryCyanOnSoft;
   final Color categoryMagenta;
   final Color categoryMagentaOn;
+  final Color categoryMagentaSoft;
+  final Color categoryMagentaSoftBorder;
+  final Color categoryMagentaOnSoft;
   final Color categoryLime;
   final Color categoryLimeOn;
+  final Color categoryLimeSoft;
+  final Color categoryLimeSoftBorder;
+  final Color categoryLimeOnSoft;
   final Color categoryPink;
   final Color categoryPinkOn;
+  final Color categoryPinkSoft;
+  final Color categoryPinkSoftBorder;
+  final Color categoryPinkOnSoft;
   final Color categoryTeal;
   final Color categoryTealOn;
+  final Color categoryTealSoft;
+  final Color categoryTealSoftBorder;
+  final Color categoryTealOnSoft;
   final Color categoryLavender;
   final Color categoryLavenderOn;
+  final Color categoryLavenderSoft;
+  final Color categoryLavenderSoftBorder;
+  final Color categoryLavenderOnSoft;
   final Color categoryBrown;
   final Color categoryBrownOn;
+  final Color categoryBrownSoft;
+  final Color categoryBrownSoftBorder;
+  final Color categoryBrownOnSoft;
   final Color categoryBeige;
   final Color categoryBeigeOn;
+  final Color categoryBeigeSoft;
+  final Color categoryBeigeSoftBorder;
+  final Color categoryBeigeOnSoft;
   final Color categoryMaroon;
   final Color categoryMaroonOn;
+  final Color categoryMaroonSoft;
+  final Color categoryMaroonSoftBorder;
+  final Color categoryMaroonOnSoft;
   final Color categoryMint;
   final Color categoryMintOn;
+  final Color categoryMintSoft;
+  final Color categoryMintSoftBorder;
+  final Color categoryMintOnSoft;
   final Color categoryOlive;
   final Color categoryOliveOn;
+  final Color categoryOliveSoft;
+  final Color categoryOliveSoftBorder;
+  final Color categoryOliveOnSoft;
   final Color categoryApricot;
   final Color categoryApricotOn;
+  final Color categoryApricotSoft;
+  final Color categoryApricotSoftBorder;
+  final Color categoryApricotOnSoft;
   final Color categoryNavy;
   final Color categoryNavyOn;
+  final Color categoryNavySoft;
+  final Color categoryNavySoftBorder;
+  final Color categoryNavyOnSoft;
   final Color categoryGrey;
   final Color categoryGreyOn;
+  final Color categoryGreySoft;
+  final Color categoryGreySoftBorder;
+  final Color categoryGreyOnSoft;
   const PlenixTheme({
     required this.datavizCategorical1,
     required this.datavizCategorical2,
@@ -379,6 +457,24 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.statusInProgress,
     required this.statusBlocked,
     required this.statusNotStarted,
+    required this.statusPillNeutralBackground,
+    required this.statusPillNeutralBorder,
+    required this.statusPillNeutralText,
+    required this.statusPillSuccessBackground,
+    required this.statusPillSuccessBorder,
+    required this.statusPillSuccessText,
+    required this.statusPillActiveBackground,
+    required this.statusPillActiveBorder,
+    required this.statusPillActiveText,
+    required this.statusPillWaitingBackground,
+    required this.statusPillWaitingBorder,
+    required this.statusPillWaitingText,
+    required this.statusPillActionRequiredBackground,
+    required this.statusPillActionRequiredBorder,
+    required this.statusPillActionRequiredText,
+    required this.statusPillNegativeBackground,
+    required this.statusPillNegativeBorder,
+    required this.statusPillNegativeText,
     required this.fillNeutral,
     required this.fillNeutralHover,
     required this.fillNeutralBorder,
@@ -482,44 +578,104 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.dataColorGrayOnSoft,
     required this.categoryRed,
     required this.categoryRedOn,
+    required this.categoryRedSoft,
+    required this.categoryRedSoftBorder,
+    required this.categoryRedOnSoft,
     required this.categoryGreen,
     required this.categoryGreenOn,
+    required this.categoryGreenSoft,
+    required this.categoryGreenSoftBorder,
+    required this.categoryGreenOnSoft,
     required this.categoryYellow,
     required this.categoryYellowOn,
+    required this.categoryYellowSoft,
+    required this.categoryYellowSoftBorder,
+    required this.categoryYellowOnSoft,
     required this.categoryBlue,
     required this.categoryBlueOn,
+    required this.categoryBlueSoft,
+    required this.categoryBlueSoftBorder,
+    required this.categoryBlueOnSoft,
     required this.categoryOrange,
     required this.categoryOrangeOn,
+    required this.categoryOrangeSoft,
+    required this.categoryOrangeSoftBorder,
+    required this.categoryOrangeOnSoft,
     required this.categoryPurple,
     required this.categoryPurpleOn,
+    required this.categoryPurpleSoft,
+    required this.categoryPurpleSoftBorder,
+    required this.categoryPurpleOnSoft,
     required this.categoryCyan,
     required this.categoryCyanOn,
+    required this.categoryCyanSoft,
+    required this.categoryCyanSoftBorder,
+    required this.categoryCyanOnSoft,
     required this.categoryMagenta,
     required this.categoryMagentaOn,
+    required this.categoryMagentaSoft,
+    required this.categoryMagentaSoftBorder,
+    required this.categoryMagentaOnSoft,
     required this.categoryLime,
     required this.categoryLimeOn,
+    required this.categoryLimeSoft,
+    required this.categoryLimeSoftBorder,
+    required this.categoryLimeOnSoft,
     required this.categoryPink,
     required this.categoryPinkOn,
+    required this.categoryPinkSoft,
+    required this.categoryPinkSoftBorder,
+    required this.categoryPinkOnSoft,
     required this.categoryTeal,
     required this.categoryTealOn,
+    required this.categoryTealSoft,
+    required this.categoryTealSoftBorder,
+    required this.categoryTealOnSoft,
     required this.categoryLavender,
     required this.categoryLavenderOn,
+    required this.categoryLavenderSoft,
+    required this.categoryLavenderSoftBorder,
+    required this.categoryLavenderOnSoft,
     required this.categoryBrown,
     required this.categoryBrownOn,
+    required this.categoryBrownSoft,
+    required this.categoryBrownSoftBorder,
+    required this.categoryBrownOnSoft,
     required this.categoryBeige,
     required this.categoryBeigeOn,
+    required this.categoryBeigeSoft,
+    required this.categoryBeigeSoftBorder,
+    required this.categoryBeigeOnSoft,
     required this.categoryMaroon,
     required this.categoryMaroonOn,
+    required this.categoryMaroonSoft,
+    required this.categoryMaroonSoftBorder,
+    required this.categoryMaroonOnSoft,
     required this.categoryMint,
     required this.categoryMintOn,
+    required this.categoryMintSoft,
+    required this.categoryMintSoftBorder,
+    required this.categoryMintOnSoft,
     required this.categoryOlive,
     required this.categoryOliveOn,
+    required this.categoryOliveSoft,
+    required this.categoryOliveSoftBorder,
+    required this.categoryOliveOnSoft,
     required this.categoryApricot,
     required this.categoryApricotOn,
+    required this.categoryApricotSoft,
+    required this.categoryApricotSoftBorder,
+    required this.categoryApricotOnSoft,
     required this.categoryNavy,
     required this.categoryNavyOn,
+    required this.categoryNavySoft,
+    required this.categoryNavySoftBorder,
+    required this.categoryNavyOnSoft,
     required this.categoryGrey,
     required this.categoryGreyOn,
+    required this.categoryGreySoft,
+    required this.categoryGreySoftBorder,
+    required this.categoryGreyOnSoft,
   });
   static const light = PlenixTheme(
     datavizCategorical1: Color(0xFF2A6FDB),
@@ -543,11 +699,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     datavizDiverging6: Color(0xFF2A6FDB),
     datavizDiverging7: Color(0xFF005A9E),
     datavizStatusPositive: Color(0xFF107C10),
-    datavizStatusCaution: Color(0xFF7D3C00),
+    datavizStatusCaution: Color(0xFF963F00),
     datavizStatusNegative: Color(0xFFB70000),
     datavizStatusInformative: Color(0xFF2A6FDB),
     datavizStatusNeutral: Color(0xFF6E6E6E),
-    datavizAlertWarning: Color(0xFF7D3C00),
+    datavizAlertWarning: Color(0xFF963F00),
     datavizAlertCritical: Color(0xFFB70000),
     datavizGridLine: Color(0xFFE8E9EC),
     datavizLabel: Color(0xFF56585E),
@@ -613,13 +769,13 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     feedbackSuccessSoft: Color(0xFFDFF6DD),
     feedbackSuccessSoftBorder: Color(0xFF58AD58),
     feedbackSuccessContent: Color(0xFF1B5E0C),
-    feedbackWarningSolid: Color(0xFF7D3C00),
+    feedbackWarningSolid: Color(0xFF963F00),
     feedbackWarningOnSolid: Color(0xFFFFFFFF),
-    feedbackWarningSolidLabel: Color(0xFF7D3C00),
-    feedbackWarningSolidBorder: Color(0xFF4A2400),
-    feedbackWarningSoft: Color(0xFFFEF3E2),
-    feedbackWarningSoftBorder: Color(0xFFDFAA7C),
-    feedbackWarningContent: Color(0xFF7D3C00),
+    feedbackWarningSolidLabel: Color(0xFF963F00),
+    feedbackWarningSolidBorder: Color(0xFF5C2800),
+    feedbackWarningSoft: Color(0xFFFFF0E3),
+    feedbackWarningSoftBorder: Color(0xFFF2AD70),
+    feedbackWarningContent: Color(0xFF963F00),
     feedbackDangerSolid: Color(0xFFB70000),
     feedbackDangerOnSolid: Color(0xFFFFFFFF),
     feedbackDangerSolidLabel: Color(0xFFB70000),
@@ -629,7 +785,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     feedbackDangerContent: Color(0xFFB70000),
     feedbackDangerSoftContent: Color(0xFFB70000),
     statusOnline: Color(0xFF107C10),
-    statusAway: Color(0xFF7D3C00),
+    statusAway: Color(0xFFB88700),
     statusBusy: Color(0xFFB70000),
     statusDnd: Color(0xFFB70000),
     statusOffline: Color(0xFF6E6E6E),
@@ -637,6 +793,24 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusInProgress: Color(0xFF2A6FDB),
     statusBlocked: Color(0xFFB70000),
     statusNotStarted: Color(0xFF6E6E6E),
+    statusPillNeutralBackground: Color(0xFFF3F3F3),
+    statusPillNeutralBorder: Color(0xFFD0D0D0),
+    statusPillNeutralText: Color(0xFF56585E),
+    statusPillSuccessBackground: Color(0xFFDFF6DD),
+    statusPillSuccessBorder: Color(0xFF58AD58),
+    statusPillSuccessText: Color(0xFF1B5E0C),
+    statusPillActiveBackground: Color(0xFFEBF0F7),
+    statusPillActiveBorder: Color(0xFFA2C0E3),
+    statusPillActiveText: Color(0xFF005A9E),
+    statusPillWaitingBackground: Color(0xFFFFF8DF),
+    statusPillWaitingBorder: Color(0xFFE8C34A),
+    statusPillWaitingText: Color(0xFF765600),
+    statusPillActionRequiredBackground: Color(0xFFFFF0E3),
+    statusPillActionRequiredBorder: Color(0xFFF2AD70),
+    statusPillActionRequiredText: Color(0xFF963F00),
+    statusPillNegativeBackground: Color(0xFFFDE7E7),
+    statusPillNegativeBorder: Color(0xFFE96060),
+    statusPillNegativeText: Color(0xFF990000),
     fillNeutral: Color(0xFFF3F3F3),
     fillNeutralHover: Color(0xFFE8E9EC),
     fillNeutralBorder: Color(0xFFD0D0D0),
@@ -740,44 +914,104 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     dataColorGrayOnSoft: Color(0xFF444444),
     categoryRed: Color(0xFFE6194B),
     categoryRedOn: Color(0xFF000000),
+    categoryRedSoft: Color(0xFFFFEFEF),
+    categoryRedSoftBorder: Color(0xFFFFB4B6),
+    categoryRedOnSoft: Color(0xFF891F31),
     categoryGreen: Color(0xFF3CB44B),
     categoryGreenOn: Color(0xFF000000),
+    categoryGreenSoft: Color(0xFFE6FAE5),
+    categoryGreenSoftBorder: Color(0xFF9CDE9E),
+    categoryGreenOnSoft: Color(0xFF025E17),
     categoryYellow: Color(0xFFFFE119),
     categoryYellowOn: Color(0xFF000000),
+    categoryYellowSoft: Color(0xFFF9F4DA),
+    categoryYellowSoftBorder: Color(0xFFDCCC75),
+    categoryYellowOnSoft: Color(0xFF594D02),
     categoryBlue: Color(0xFF4363D8),
     categoryBlueOn: Color(0xFFFFFFFF),
+    categoryBlueSoft: Color(0xFFEFF3FE),
+    categoryBlueSoftBorder: Color(0xFFB5C9FE),
+    categoryBlueOnSoft: Color(0xFF2D4498),
     categoryOrange: Color(0xFFF58231),
     categoryOrangeOn: Color(0xFF000000),
+    categoryOrangeSoft: Color(0xFFFFF0E8),
+    categoryOrangeSoftBorder: Color(0xFFFFB890),
+    categoryOrangeOnSoft: Color(0xFF793802),
     categoryPurple: Color(0xFF911EB4),
     categoryPurpleOn: Color(0xFFFFFFFF),
+    categoryPurpleSoft: Color(0xFFFAEFFE),
+    categoryPurpleSoftBorder: Color(0xFFE7B4FB),
+    categoryPurpleOnSoft: Color(0xFF6A2E7F),
     categoryCyan: Color(0xFF42D4F4),
     categoryCyanOn: Color(0xFF000000),
+    categoryCyanSoft: Color(0xFFE2F8FE),
+    categoryCyanSoftBorder: Color(0xFF6BDDF8),
+    categoryCyanOnSoft: Color(0xFF045766),
     categoryMagenta: Color(0xFFF032E6),
     categoryMagentaOn: Color(0xFF000000),
+    categoryMagentaSoft: Color(0xFFFFEDFC),
+    categoryMagentaSoftBorder: Color(0xFFF4B0EC),
+    categoryMagentaOnSoft: Color(0xFF752870),
     categoryLime: Color(0xFFBFEF45),
     categoryLimeOn: Color(0xFF000000),
+    categoryLimeSoft: Color(0xFFEEF8DF),
+    categoryLimeSoftBorder: Color(0xFFBBD786),
+    categoryLimeOnSoft: Color(0xFF415601),
     categoryPink: Color(0xFFFABED4),
     categoryPinkOn: Color(0xFF000000),
+    categoryPinkSoft: Color(0xFFFFEEF4),
+    categoryPinkSoftBorder: Color(0xFFF3B7CD),
+    categoryPinkOnSoft: Color(0xFF6C3B4F),
     categoryTeal: Color(0xFF469990),
     categoryTealOn: Color(0xFF000000),
+    categoryTealSoft: Color(0xFFDAFCF7),
+    categoryTealSoftBorder: Color(0xFF8ADCD2),
+    categoryTealOnSoft: Color(0xFF065A53),
     categoryLavender: Color(0xFFDCBEFF),
     categoryLavenderOn: Color(0xFF000000),
+    categoryLavenderSoft: Color(0xFFF6F0FE),
+    categoryLavenderSoftBorder: Color(0xFFD9BBFC),
+    categoryLavenderOnSoft: Color(0xFF5A3E76),
     categoryBrown: Color(0xFF9A6324),
     categoryBrownOn: Color(0xFFFFFFFF),
+    categoryBrownSoft: Color(0xFFFFF1E4),
+    categoryBrownSoftBorder: Color(0xFFFABD80),
+    categoryBrownOnSoft: Color(0xFF6F4102),
     categoryBeige: Color(0xFFFFFAC8),
     categoryBeigeOn: Color(0xFF000000),
+    categoryBeigeSoft: Color(0xFFF7F5DA),
+    categoryBeigeSoftBorder: Color(0xFFD2CD9C),
+    categoryBeigeOnSoft: Color(0xFF544E22),
     categoryMaroon: Color(0xFF800000),
     categoryMaroonOn: Color(0xFFFFFFFF),
+    categoryMaroonSoft: Color(0xFFFFF0ED),
+    categoryMaroonSoftBorder: Color(0xFFFFB5A9),
+    categoryMaroonOnSoft: Color(0xFF892219),
     categoryMint: Color(0xFFAAFFC3),
     categoryMintOn: Color(0xFF000000),
+    categoryMintSoft: Color(0xFFE3FBE9),
+    categoryMintSoftBorder: Color(0xFF91E0A8),
+    categoryMintOnSoft: Color(0xFF045D2F),
     categoryOlive: Color(0xFF808000),
     categoryOliveOn: Color(0xFF000000),
+    categoryOliveSoft: Color(0xFFF4F6DB),
+    categoryOliveSoftBorder: Color(0xFFCFD17A),
+    categoryOliveOnSoft: Color(0xFF515102),
     categoryApricot: Color(0xFFFFD8B1),
     categoryApricotOn: Color(0xFF000000),
+    categoryApricotSoft: Color(0xFFFFF1E4),
+    categoryApricotSoftBorder: Color(0xFFE9C39C),
+    categoryApricotOnSoft: Color(0xFF664522),
     categoryNavy: Color(0xFF000075),
     categoryNavyOn: Color(0xFFFFFFFF),
+    categoryNavySoft: Color(0xFFEEF4FE),
+    categoryNavySoftBorder: Color(0xFFB1CBFE),
+    categoryNavyOnSoft: Color(0xFF244698),
     categoryGrey: Color(0xFFA9A9A9),
     categoryGreyOn: Color(0xFF000000),
+    categoryGreySoft: Color(0xFFF3F3F3),
+    categoryGreySoftBorder: Color(0xFFCACACA),
+    categoryGreyOnSoft: Color(0xFF4D4D4D),
   );
   static const dark = PlenixTheme(
     datavizCategorical1: Color(0xFF2A6FDB),
@@ -801,11 +1035,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     datavizDiverging6: Color(0xFF2A6FDB),
     datavizDiverging7: Color(0xFF005A9E),
     datavizStatusPositive: Color(0xFF58AD58),
-    datavizStatusCaution: Color(0xFFDFAA7C),
+    datavizStatusCaution: Color(0xFFF2AD70),
     datavizStatusNegative: Color(0xFFF8ACA2),
     datavizStatusInformative: Color(0xFFA2C0E3),
     datavizStatusNeutral: Color(0xFF6E6E6E),
-    datavizAlertWarning: Color(0xFFDFAA7C),
+    datavizAlertWarning: Color(0xFFF2AD70),
     datavizAlertCritical: Color(0xFFF8ACA2),
     datavizGridLine: Color(0xFF56585E),
     datavizLabel: Color(0xFFD0D0D0),
@@ -871,13 +1105,13 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     feedbackSuccessSoft: Color(0xFF56585E),
     feedbackSuccessSoftBorder: Color(0xFF444444),
     feedbackSuccessContent: Color(0xFFDFF6DD),
-    feedbackWarningSolid: Color(0xFFDFAA7C),
+    feedbackWarningSolid: Color(0xFFF2AD70),
     feedbackWarningOnSolid: Color(0xFF1E1F22),
-    feedbackWarningSolidLabel: Color(0xFFDFAA7C),
-    feedbackWarningSolidBorder: Color(0xFF7D3C00),
+    feedbackWarningSolidLabel: Color(0xFFF2AD70),
+    feedbackWarningSolidBorder: Color(0xFF963F00),
     feedbackWarningSoft: Color(0xFF56585E),
     feedbackWarningSoftBorder: Color(0xFF444444),
-    feedbackWarningContent: Color(0xFFEED2BA),
+    feedbackWarningContent: Color(0xFFF8D0AD),
     feedbackDangerSolid: Color(0xFFF8ACA2),
     feedbackDangerOnSolid: Color(0xFF1E1F22),
     feedbackDangerSolidLabel: Color(0xFFF8ACA2),
@@ -887,7 +1121,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     feedbackDangerContent: Color(0xFFFDE7E7),
     feedbackDangerSoftContent: Color(0xFFFDE7E7),
     statusOnline: Color(0xFF58AD58),
-    statusAway: Color(0xFFDFAA7C),
+    statusAway: Color(0xFFE8C34A),
     statusBusy: Color(0xFFF8ACA2),
     statusDnd: Color(0xFFF8ACA2),
     statusOffline: Color(0xFFA3A6AD),
@@ -895,6 +1129,24 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     statusInProgress: Color(0xFFA2C0E3),
     statusBlocked: Color(0xFFF8ACA2),
     statusNotStarted: Color(0xFFA3A6AD),
+    statusPillNeutralBackground: Color(0xFF56585E),
+    statusPillNeutralBorder: Color(0xFF444444),
+    statusPillNeutralText: Color(0xFFD0D0D0),
+    statusPillSuccessBackground: Color(0xFF56585E),
+    statusPillSuccessBorder: Color(0xFF444444),
+    statusPillSuccessText: Color(0xFFDFF6DD),
+    statusPillActiveBackground: Color(0xFF56585E),
+    statusPillActiveBorder: Color(0xFF444444),
+    statusPillActiveText: Color(0xFFC8DFF7),
+    statusPillWaitingBackground: Color(0xFF56585E),
+    statusPillWaitingBorder: Color(0xFF444444),
+    statusPillWaitingText: Color(0xFFF4DFA0),
+    statusPillActionRequiredBackground: Color(0xFF56585E),
+    statusPillActionRequiredBorder: Color(0xFF444444),
+    statusPillActionRequiredText: Color(0xFFF8D0AD),
+    statusPillNegativeBackground: Color(0xFF56585E),
+    statusPillNegativeBorder: Color(0xFF444444),
+    statusPillNegativeText: Color(0xFFFDE7E7),
     fillNeutral: Color(0xFF444444),
     fillNeutralHover: Color(0xFF56585E),
     fillNeutralBorder: Color(0xFF34363B),
@@ -998,44 +1250,104 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     dataColorGrayOnSoft: Color(0xFF444444),
     categoryRed: Color(0xFFE6194B),
     categoryRedOn: Color(0xFF000000),
+    categoryRedSoft: Color(0xFFFFEFEF),
+    categoryRedSoftBorder: Color(0xFFFFB4B6),
+    categoryRedOnSoft: Color(0xFF891F31),
     categoryGreen: Color(0xFF3CB44B),
     categoryGreenOn: Color(0xFF000000),
+    categoryGreenSoft: Color(0xFFE6FAE5),
+    categoryGreenSoftBorder: Color(0xFF9CDE9E),
+    categoryGreenOnSoft: Color(0xFF025E17),
     categoryYellow: Color(0xFFFFE119),
     categoryYellowOn: Color(0xFF000000),
+    categoryYellowSoft: Color(0xFFF9F4DA),
+    categoryYellowSoftBorder: Color(0xFFDCCC75),
+    categoryYellowOnSoft: Color(0xFF594D02),
     categoryBlue: Color(0xFF4363D8),
     categoryBlueOn: Color(0xFFFFFFFF),
+    categoryBlueSoft: Color(0xFFEFF3FE),
+    categoryBlueSoftBorder: Color(0xFFB5C9FE),
+    categoryBlueOnSoft: Color(0xFF2D4498),
     categoryOrange: Color(0xFFF58231),
     categoryOrangeOn: Color(0xFF000000),
+    categoryOrangeSoft: Color(0xFFFFF0E8),
+    categoryOrangeSoftBorder: Color(0xFFFFB890),
+    categoryOrangeOnSoft: Color(0xFF793802),
     categoryPurple: Color(0xFF911EB4),
     categoryPurpleOn: Color(0xFFFFFFFF),
+    categoryPurpleSoft: Color(0xFFFAEFFE),
+    categoryPurpleSoftBorder: Color(0xFFE7B4FB),
+    categoryPurpleOnSoft: Color(0xFF6A2E7F),
     categoryCyan: Color(0xFF42D4F4),
     categoryCyanOn: Color(0xFF000000),
+    categoryCyanSoft: Color(0xFFE2F8FE),
+    categoryCyanSoftBorder: Color(0xFF6BDDF8),
+    categoryCyanOnSoft: Color(0xFF045766),
     categoryMagenta: Color(0xFFF032E6),
     categoryMagentaOn: Color(0xFF000000),
+    categoryMagentaSoft: Color(0xFFFFEDFC),
+    categoryMagentaSoftBorder: Color(0xFFF4B0EC),
+    categoryMagentaOnSoft: Color(0xFF752870),
     categoryLime: Color(0xFFBFEF45),
     categoryLimeOn: Color(0xFF000000),
+    categoryLimeSoft: Color(0xFFEEF8DF),
+    categoryLimeSoftBorder: Color(0xFFBBD786),
+    categoryLimeOnSoft: Color(0xFF415601),
     categoryPink: Color(0xFFFABED4),
     categoryPinkOn: Color(0xFF000000),
+    categoryPinkSoft: Color(0xFFFFEEF4),
+    categoryPinkSoftBorder: Color(0xFFF3B7CD),
+    categoryPinkOnSoft: Color(0xFF6C3B4F),
     categoryTeal: Color(0xFF469990),
     categoryTealOn: Color(0xFF000000),
+    categoryTealSoft: Color(0xFFDAFCF7),
+    categoryTealSoftBorder: Color(0xFF8ADCD2),
+    categoryTealOnSoft: Color(0xFF065A53),
     categoryLavender: Color(0xFFDCBEFF),
     categoryLavenderOn: Color(0xFF000000),
+    categoryLavenderSoft: Color(0xFFF6F0FE),
+    categoryLavenderSoftBorder: Color(0xFFD9BBFC),
+    categoryLavenderOnSoft: Color(0xFF5A3E76),
     categoryBrown: Color(0xFF9A6324),
     categoryBrownOn: Color(0xFFFFFFFF),
+    categoryBrownSoft: Color(0xFFFFF1E4),
+    categoryBrownSoftBorder: Color(0xFFFABD80),
+    categoryBrownOnSoft: Color(0xFF6F4102),
     categoryBeige: Color(0xFFFFFAC8),
     categoryBeigeOn: Color(0xFF000000),
+    categoryBeigeSoft: Color(0xFFF7F5DA),
+    categoryBeigeSoftBorder: Color(0xFFD2CD9C),
+    categoryBeigeOnSoft: Color(0xFF544E22),
     categoryMaroon: Color(0xFF800000),
     categoryMaroonOn: Color(0xFFFFFFFF),
+    categoryMaroonSoft: Color(0xFFFFF0ED),
+    categoryMaroonSoftBorder: Color(0xFFFFB5A9),
+    categoryMaroonOnSoft: Color(0xFF892219),
     categoryMint: Color(0xFFAAFFC3),
     categoryMintOn: Color(0xFF000000),
+    categoryMintSoft: Color(0xFFE3FBE9),
+    categoryMintSoftBorder: Color(0xFF91E0A8),
+    categoryMintOnSoft: Color(0xFF045D2F),
     categoryOlive: Color(0xFF808000),
     categoryOliveOn: Color(0xFF000000),
+    categoryOliveSoft: Color(0xFFF4F6DB),
+    categoryOliveSoftBorder: Color(0xFFCFD17A),
+    categoryOliveOnSoft: Color(0xFF515102),
     categoryApricot: Color(0xFFFFD8B1),
     categoryApricotOn: Color(0xFF000000),
+    categoryApricotSoft: Color(0xFFFFF1E4),
+    categoryApricotSoftBorder: Color(0xFFE9C39C),
+    categoryApricotOnSoft: Color(0xFF664522),
     categoryNavy: Color(0xFF000075),
     categoryNavyOn: Color(0xFFFFFFFF),
+    categoryNavySoft: Color(0xFFEEF4FE),
+    categoryNavySoftBorder: Color(0xFFB1CBFE),
+    categoryNavyOnSoft: Color(0xFF244698),
     categoryGrey: Color(0xFFA9A9A9),
     categoryGreyOn: Color(0xFF000000),
+    categoryGreySoft: Color(0xFFF3F3F3),
+    categoryGreySoftBorder: Color(0xFFCACACA),
+    categoryGreyOnSoft: Color(0xFF4D4D4D),
   );
   static const String fontSans = 'DM Sans'; // web --plx-sys-typeface-sans
   static const String fontMono = 'DM Mono'; // web --plx-sys-typeface-mono
@@ -1049,6 +1361,7 @@ class PlenixRadius {
   const PlenixRadius._();
   static const double radiusDetail4px = 4;
   static const double radiusCompact4px = 4;
+  static const double radiusPill4px = 4;
   static const double radiusControl4px = 4;
   static const double radiusControl6px = 6;
   static const double radiusControl8px = 8;

@@ -17,7 +17,7 @@ export const ProjIco = ({ n, size = 15 }) => {
 };
 
 /* ── Status badge ── */
-const STATUS = { active: ['success', 'Active'], paused: ['warning', 'Paused'], completed: ['info', 'Completed'], archived: ['neutral', 'Archived'] };
+const STATUS = { active: ['active', 'Active'], paused: ['waiting', 'Paused'], completed: ['success', 'Completed'], archived: ['neutral', 'Archived'] };   // status pill variants (owner, 2026-10-14)
 const statusOf = (s) => { const v = STATUS[s] || STATUS.active; return { tone: v[0], label: v[1] }; };
 export const ProjStatus = ({ s }) => { const v = STATUS[s] || STATUS.active; return <Badge tone={v[0]}>{v[1]}</Badge>; };
 
