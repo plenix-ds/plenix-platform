@@ -843,7 +843,7 @@
     "segmented-item-target-inset-outer": {
       "$value": "min(0px, calc(100% - {plx-sys.control-target-min}))",
       "$type": "dimension",
-      "$description": "How far the first option's target reaches before the track and the last option's after it, up to the minimum target width; the options between keep their own width, so no target covers a neighbor's"
+      "$description": "How far the first option's target reaches before the group and the last option's after it, up to the minimum target width; the options between keep their own width, so no target covers a neighbor's"
     },
     "check-target-inset": {
       "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
@@ -1597,8 +1597,9 @@
       "$description": "The height of a one-row ActionBar (its padding, its line and a standard button): the scroll padding at the bottom of a scrolling area with a stuck bar, so a focused element is never hidden behind it (WCAG 2.2 SC 2.4.11; Platforms Standard 8.1)"
     },
     "badge-radius": {
-      "$value": "{plx-sys.radius-compact-4px}",
-      "$type": "dimension"
+      "$value": "{plx-sys.radius-pill-4px}",
+      "$type": "dimension",
+      "$description": "Badge: 4px corners, as every pill (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "badge-font-size": {
       "$value": "{plx-ref.font-size-10}",
@@ -1637,124 +1638,94 @@
       "$type": "dimension"
     },
     "badge-neutral-background": {
-      "$value": "{plx-sys.feedback-neutral-solid-label}",
-      "$type": "color"
-    },
-    "badge-neutral-text": {
-      "$value": "{plx-sys.feedback-neutral-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-neutral-background}",
+      "$type": "color",
+      "$description": "Badge, neutral (the default: no particular state): the soft background, shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "badge-neutral-border": {
-      "$value": "{plx-sys.feedback-neutral-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-neutral-border}",
+      "$type": "color",
+      "$description": "Badge, neutral: the 1px border, shade 300."
     },
-    "badge-info-background": {
-      "$value": "{plx-sys.feedback-info-solid-label}",
-      "$type": "color"
-    },
-    "badge-info-text": {
-      "$value": "{plx-sys.feedback-info-on-solid}",
-      "$type": "color"
-    },
-    "badge-info-border": {
-      "$value": "{plx-sys.feedback-info-solid-border}",
-      "$type": "color"
+    "badge-neutral-text": {
+      "$value": "{plx-sys.status-pill-neutral-text}",
+      "$type": "color",
+      "$description": "Badge, neutral: the text, shade 700 (800 for negative)."
     },
     "badge-success-background": {
-      "$value": "{plx-sys.feedback-success-solid-label}",
-      "$type": "color"
-    },
-    "badge-success-text": {
-      "$value": "{plx-sys.feedback-success-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-success-background}",
+      "$type": "color",
+      "$description": "Badge, success (done, approved, healthy): the soft background, shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "badge-success-border": {
-      "$value": "{plx-sys.feedback-success-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-success-border}",
+      "$type": "color",
+      "$description": "Badge, success: the 1px border, shade 300."
     },
-    "badge-warning-background": {
-      "$value": "{plx-sys.feedback-warning-solid-label}",
-      "$type": "color"
+    "badge-success-text": {
+      "$value": "{plx-sys.status-pill-success-text}",
+      "$type": "color",
+      "$description": "Badge, success: the text, shade 700 (800 for negative)."
     },
-    "badge-warning-text": {
-      "$value": "{plx-sys.feedback-warning-on-solid}",
-      "$type": "color"
+    "badge-active-background": {
+      "$value": "{plx-sys.status-pill-active-background}",
+      "$type": "color",
+      "$description": "Badge, active (in progress, current, information): the soft background, shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "badge-warning-border": {
-      "$value": "{plx-sys.feedback-warning-solid-border}",
-      "$type": "color"
+    "badge-active-border": {
+      "$value": "{plx-sys.status-pill-active-border}",
+      "$type": "color",
+      "$description": "Badge, active: the 1px border, shade 300."
     },
-    "badge-danger-background": {
-      "$value": "{plx-sys.feedback-danger-solid-label}",
-      "$type": "color"
+    "badge-active-text": {
+      "$value": "{plx-sys.status-pill-active-text}",
+      "$type": "color",
+      "$description": "Badge, active: the text, shade 700 (800 for negative)."
     },
-    "badge-danger-text": {
-      "$value": "{plx-sys.feedback-danger-on-solid}",
-      "$type": "color"
+    "badge-waiting-background": {
+      "$value": "{plx-sys.status-pill-waiting-background}",
+      "$type": "color",
+      "$description": "Badge, waiting (waiting, paused): the soft background, shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "badge-danger-border": {
-      "$value": "{plx-sys.feedback-danger-solid-border}",
-      "$type": "color"
+    "badge-waiting-border": {
+      "$value": "{plx-sys.status-pill-waiting-border}",
+      "$type": "color",
+      "$description": "Badge, waiting: the 1px border, shade 300."
     },
-    "badge-soft-neutral-background": {
-      "$value": "{plx-sys.feedback-neutral-soft}",
-      "$type": "color"
+    "badge-waiting-text": {
+      "$value": "{plx-sys.status-pill-waiting-text}",
+      "$type": "color",
+      "$description": "Badge, waiting: the text, shade 700 (800 for negative)."
     },
-    "badge-soft-neutral-text": {
-      "$value": "{plx-sys.feedback-neutral-content}",
-      "$type": "color"
+    "badge-action-required-background": {
+      "$value": "{plx-sys.status-pill-action-required-background}",
+      "$type": "color",
+      "$description": "Badge, action-required (action or correction required): the soft background, shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "badge-soft-neutral-border": {
-      "$value": "{plx-sys.feedback-neutral-soft-border}",
-      "$type": "color"
+    "badge-action-required-border": {
+      "$value": "{plx-sys.status-pill-action-required-border}",
+      "$type": "color",
+      "$description": "Badge, action-required: the 1px border, shade 300."
     },
-    "badge-soft-info-background": {
-      "$value": "{plx-sys.feedback-info-soft}",
-      "$type": "color"
+    "badge-action-required-text": {
+      "$value": "{plx-sys.status-pill-action-required-text}",
+      "$type": "color",
+      "$description": "Badge, action-required: the text, shade 700 (800 for negative)."
     },
-    "badge-soft-info-text": {
-      "$value": "{plx-sys.feedback-info-content}",
-      "$type": "color"
+    "badge-negative-background": {
+      "$value": "{plx-sys.status-pill-negative-background}",
+      "$type": "color",
+      "$description": "Badge, negative (failed, error, rejected): the soft background, shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "badge-soft-info-border": {
-      "$value": "{plx-sys.feedback-info-soft-border}",
-      "$type": "color"
+    "badge-negative-border": {
+      "$value": "{plx-sys.status-pill-negative-border}",
+      "$type": "color",
+      "$description": "Badge, negative: the 1px border, shade 300."
     },
-    "badge-soft-success-background": {
-      "$value": "{plx-sys.feedback-success-soft}",
-      "$type": "color"
-    },
-    "badge-soft-success-text": {
-      "$value": "{plx-sys.feedback-success-content}",
-      "$type": "color"
-    },
-    "badge-soft-success-border": {
-      "$value": "{plx-sys.feedback-success-soft-border}",
-      "$type": "color"
-    },
-    "badge-soft-warning-background": {
-      "$value": "{plx-sys.feedback-warning-soft}",
-      "$type": "color"
-    },
-    "badge-soft-warning-text": {
-      "$value": "{plx-sys.feedback-warning-content}",
-      "$type": "color"
-    },
-    "badge-soft-warning-border": {
-      "$value": "{plx-sys.feedback-warning-soft-border}",
-      "$type": "color"
-    },
-    "badge-soft-danger-background": {
-      "$value": "{plx-sys.feedback-danger-soft}",
-      "$type": "color"
-    },
-    "badge-soft-danger-text": {
-      "$value": "{plx-sys.feedback-danger-soft-content}",
-      "$type": "color"
-    },
-    "badge-soft-danger-border": {
-      "$value": "{plx-sys.feedback-danger-soft-border}",
-      "$type": "color"
+    "badge-negative-text": {
+      "$value": "{plx-sys.status-pill-negative-text}",
+      "$type": "color",
+      "$description": "Badge, negative: the text, shade 700 (800 for negative)."
     },
     "count-plain-text": {
       "$value": "{plx-sys.content-muted}",
@@ -1765,8 +1736,9 @@
       "$type": "dimension"
     },
     "count-pill-radius": {
-      "$value": "{plx-sys.shape-pill}",
-      "$type": "dimension"
+      "$value": "{plx-sys.radius-pill-4px}",
+      "$type": "dimension",
+      "$description": "Counter pill: 4px corners, as every pill (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "count-pill-font-size": {
       "$value": "{plx-ref.font-size-10}",
@@ -2129,8 +2101,9 @@
       "$type": "color"
     },
     "tag-radius": {
-      "$value": "{plx-sys.radius-compact-4px}",
-      "$type": "dimension"
+      "$value": "{plx-sys.radius-pill-4px}",
+      "$type": "dimension",
+      "$description": "Tag and chip: 4px corners, as every pill (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "tag-text": {
       "$value": "{plx-sys.fill-neutral-content}",
@@ -2245,6 +2218,11 @@
     "tag-list-row-gap": {
       "$value": "{plx-sys.space-cluster-xs}",
       "$type": "dimension"
+    },
+    "tag-list-padding-block": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "The space above and below a tag list: none with a mouse (the touch value parts it from its neighbors)"
     },
     "tag-input-flex-basis": {
       "$value": "{plx-sys.field-width-lg}",
@@ -6851,29 +6829,35 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "segmented-background": {
-      "$value": "{plx-sys.fill-neutral}",
-      "$type": "color"
-    },
     "segmented-radius": {
       "$value": "{plx-sys.radius-control}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$description": "SegmentedControl: the outer corners of the group (the first and last segments), the control radius as a button's."
     },
-    "segmented-gap": {
-      "$value": "{plx-sys.space-cluster-xs}",
-      "$type": "dimension"
+    "segmented-joined-radius": {
+      "$value": "{plx-sys.shape-none}",
+      "$type": "dimension",
+      "$description": "SegmentedControl: the corners where two segments join (square)."
     },
-    "segmented-padding-block": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
+    "segmented-border-color": {
+      "$value": "{plx-sys.control-border}",
+      "$type": "color",
+      "$description": "SegmentedControl: the edge of the group and the line between segments (a secondary button's edge)."
     },
-    "segmented-padding-inline": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
+    "segmented-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "SegmentedControl: the width of the edge and of the lines between segments."
+    },
+    "segmented-item-background": {
+      "$value": "{plx-sys.control-background}",
+      "$type": "color",
+      "$description": "SegmentedControl: an unchosen segment's background (a secondary button's)."
     },
     "segmented-item-text": {
-      "$value": "{plx-sys.content-muted}",
-      "$type": "color"
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "SegmentedControl: an unchosen segment's text and icon."
     },
     "segmented-item-gap": {
       "$value": "{plx-sys.space-inline-xs}",
@@ -6892,8 +6876,14 @@
       "$type": "fontWeight"
     },
     "segmented-item-min-height": {
-      "$value": "{plx-sys.control-height-inline}",
-      "$type": "dimension"
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "SegmentedControl: the segment height, the button control height (a medium button)."
+    },
+    "segmented-sm-item-min-height": {
+      "$value": "{plx-sys.control-height-toolbar}",
+      "$type": "dimension",
+      "$description": "SegmentedControl size sm: the segment height of a small button."
     },
     "segmented-item-padding-inline": {
       "$value": "{plx-sys.space-inset-md}",
@@ -6903,17 +6893,20 @@
       "$value": "{plx-sys.content-default}",
       "$type": "color"
     },
-    "segmented-item-selected-background": {
-      "$value": "{plx-sys.surface-raised}",
-      "$type": "color"
+    "segmented-item-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "SegmentedControl: an unchosen segment under the pointer."
     },
-    "segmented-item-selected-shadow": {
-      "$value": "{plx-sys.shadow-card}",
-      "$type": "shadow"
+    "segmented-item-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "SegmentedControl: the chosen segment, the selected-state blue tint (owner, 2026-10-14: look A)."
     },
     "segmented-item-selected-text": {
-      "$value": "{plx-sys.content-default}",
-      "$type": "color"
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "SegmentedControl: the chosen segment's text and icon, the selected blue."
     },
     "segmented-item-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
@@ -6926,6 +6919,11 @@
     "segmented-item-focus-outline-width": {
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
+    },
+    "segmented-item-focus-layer": {
+      "$value": "{plx-sys.layer-raised}",
+      "$type": "number",
+      "$description": "SegmentedControl: a focused segment sits above its neighbors so its ring is not covered."
     },
     "segmented-sm-item-font-size": {
       "$value": "{plx-ref.font-size-11}",

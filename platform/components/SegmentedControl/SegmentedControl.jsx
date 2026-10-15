@@ -1,5 +1,6 @@
 /* Plenix · SegmentedControl
-   Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System).
+   Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System): a bordered group of
+     joined segments at the button height; the chosen one is tinted blue with blue text and icon (look A, owner, 2026-10-14).
      It sets a value (a radio group).
    Usage:
      <SegmentedControl label="Theme" value={theme} onChange={setTheme}

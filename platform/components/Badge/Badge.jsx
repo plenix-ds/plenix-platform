@@ -1,32 +1,42 @@
 /* Plenix · Badge
-   Summary: A small label with bold text: solid (white text on the tone) or soft (the tone's text on its pale fill).
+   Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
+     (owner, 2026-10-14, docs/pills-and-colors.md: every pill is soft).
    Usage:
-     <Badge tone="success">Published</Badge>
-     <Badge tone="danger" size="sm">3</Badge>
-     <Badge tone="warning" variant="soft">Draft</Badge>
+     <Badge tone="success">Approved</Badge>
+     <Badge tone="waiting">Paused</Badge>
+     <Badge tone="action-required">Changes requested</Badge>
+     <Badge tone="negative" size="sm">3</Badge>
    Props:
-     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"
-     variant: "solid" (default; white text on the tone) | "soft" (the tone's text on its pale fill: quieter, for many
-       statuses in a dense list)
+     tone: the status variant:
+       "neutral" (default; gray: no particular state, e.g. Draft, Archived)
+       "success" (green: done, approved, healthy)
+       "active" (blue: in progress, current, information)
+       "waiting" (yellow: waiting, paused)
+       "action-required" (orange: action or correction required, e.g. Changes requested, Needs attention)
+       "negative" (red: failed, error, rejected, blocked)
+       Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
+     variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
      size: "md" (default; a 20px label) | "sm" (16px, for counts)
      children: the badge text
      className: more classes on the badge
    Behavior:
-     An unknown tone, variant or size falls back to the default.
+     An unknown tone or size falls back to the default.
    Notes:
+     A badge is a workflow status. A tag or category is a Tag with its category color (never a status variant).
      Other props (title, aria-*, …) pass through to the <span>.
      A badge is text: give a count enough context nearby or an accessible name on its control.
 */
 import React from 'react';
 
-const TONES = ['neutral', 'info', 'success', 'warning', 'danger'];
+const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
+const ALIASES = { info: 'active', warning: 'waiting', danger: 'negative' };
 const SIZES = ['md', 'sm'];
-const VARIANTS = ['solid', 'soft'];
 
-export function Badge({ tone = 'neutral', variant = 'solid', size = 'md', className, children, ...rest }) {
-  const t = TONES.indexOf(tone) >= 0 ? tone : 'neutral';
+// variant is taken out so it never reaches the <span>: every badge is the soft pill
+export function Badge({ tone = 'neutral', variant, size = 'md', className, children, ...rest }) {
+  const named = ALIASES[tone] || tone;
+  const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'solid';
-  const classes = ['plx-badge', 'plx-badge--' + t, v === 'soft' ? 'plx-badge--soft' : null, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
+  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
   return <span className={classes} {...rest}>{children}</span>;
 }

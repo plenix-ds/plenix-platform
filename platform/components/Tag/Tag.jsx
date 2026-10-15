@@ -1,8 +1,10 @@
 /* Plenix · Tag, Chip, TagList, TagInput
-   Summary: Small gray labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button.
+   Summary: Small labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button. A tag with a
+     category is a category pill: its category color as a soft pill (owner, 2026-10-14, docs/pills-and-colors.md).
    Usage:
      <TagList label="Keywords">
        <Tag onRemove={() => remove('sky')}>sky</Tag>
+       <Tag category="teal">Client</Tag>
        <Chip selected={on} onClick={() => setOn(!on)}>Favorites</Chip>
        <TagInput placeholder="Add a tag" onKeyDown={…} />
      </TagList>
@@ -11,6 +13,9 @@
      Tag.removeLabel: the × button's accessible name; default "Remove " + the tag text
      Tag.onRename(text): makes the tag renamable: its text becomes a button; activating it turns it into a field (Enter or leaving it keeps
        the new text, Escape cancels); renameLabel: the button's accessible name (default "Rename " + the tag text)
+     Tag.category: the tag's category color, one of the 20 category colors (CATEGORY_COLORS: red, green, yellow, blue, orange,
+       purple, cyan, magenta, lime, pink, teal, lavender, brown, beige, maroon, mint, olive, apricot, navy, grey); set as
+       data-plx-category: background shade 100, a 1px border in shade 300, text in shade 700. Without it the tag is gray.
      Tag.className: more classes on the tag
      Tag.children: the tag text
      Chip.selected: the chip is pressed (aria-pressed); default false
@@ -29,7 +34,8 @@
      TagInput.className: more classes on the input
    Behavior:
      The × button is a 24px target in a 16px box, 44px with touch (Platforms Standard 3.1); a chip's target grows the same
-       way past its 20px look. With touch, TagList parts its tags and rows so the targets do not overlap.
+       way past its 20px look. With touch, TagList parts its tags and rows, and keeps
+       12px above and below itself, so the targets do not overlap each other or the controls beside the list.
      Selected chips are filled.
      TagInput is a + at the end of the tag list, drawn as a Chip (the tag look as a button: its height, corners, fill and
        border; owner, batch 272), its target 24px like the tag's × (owner, batch 271: "it should be a + and clicking that plus
@@ -39,6 +45,8 @@
        × removes it. Without onAdd the field only reports what is typed (onChange, onKeyDown).
      A tag being renamed is a small field with the input's focused border.
    Notes:
+     Category colors identify labels; they never mean a workflow state. A status is a Badge (its six variants), never a
+       category tag, and a tag is never drawn in a status variant.
      TagList lays tags or chips out in a wrapping row; it sets no outer margin (the parent spaces it).
      TagInput is the "add a tag" field at the end of a TagList.
      Other props reach the element: the tag, the chip's toggle button, the list, or the input.
@@ -52,13 +60,13 @@ function RemoveButton({ label, onClick }) {
   return <button type="button" className="plx-tag__remove" aria-label={label} onClick={onClick}><span aria-hidden="true">×</span></button>;
 }
 
-export function Tag({ onRemove, removeLabel, onRename, renameLabel, className, children, ...rest }) {
+export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, className, children, ...rest }) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState('');
   const text = typeof children === 'string' ? children : '';
   const done = (keep) => { setEditing(false); if (keep && draft.trim() && draft.trim() !== text) onRename(draft.trim()); };
   return (
-    <span className={cx('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)} {...rest}>
+    <span className={cx('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)} data-plx-category={category || undefined} {...rest}>
       {onRename && editing ? (
         <input className="plx-tag__input" value={draft} aria-label={renameLabel || 'Rename ' + (text || 'tag')} autoFocus size={Math.max(4, draft.length)}
           onChange={(e) => setDraft(e.target.value)} onBlur={() => done(true)}

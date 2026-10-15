@@ -560,9 +560,9 @@
       }
     },
     "feedback-warning-solid": {
-      "$value": "{plx-ref.color-brown-300}",
+      "$value": "{plx-ref.color-orange-300}",
       "$type": "color",
-      "$description": "The warning solid (dots, bars, marks): brown-300, 4.7:1 on surface-default; dark text on it (dark theme; owner, 2026-10-12).",
+      "$description": "The warning solid (dots, bars, marks): orange-300, 5.1:1 on surface-default; dark text on it (dark theme; owner, 2026-10-14, docs/pills-and-colors.md: orange replaces brown for statuses).",
       "$extensions": {
         "plenix": {
           "group": "semantic",
@@ -582,9 +582,9 @@
       }
     },
     "feedback-warning-solid-label": {
-      "$value": "{plx-ref.color-brown-300}",
+      "$value": "{plx-ref.color-orange-300}",
       "$type": "color",
-      "$description": "The warning badge and count-pill fill: brown-300, the solid, with dark text (dark theme; owner, 2026-10-12).",
+      "$description": "The warning badge and count-pill fill: orange-300, the solid, with dark text (dark theme; owner, 2026-10-14, docs/pills-and-colors.md).",
       "$extensions": {
         "plenix": {
           "group": "semantic",
@@ -593,9 +593,9 @@
       }
     },
     "feedback-warning-solid-border": {
-      "$value": "{plx-ref.color-brown-800}",
+      "$value": "{plx-ref.color-orange-700}",
       "$type": "color",
-      "$description": "The warning badge edge: brown-800, two shades darker than its brown-300 fill (dark theme; owner, 2026-10-12).",
+      "$description": "The warning solid edge: orange-700, darker than its orange-300 fill (dark theme; owner, 2026-10-14, docs/pills-and-colors.md).",
       "$extensions": {
         "plenix": {
           "group": "semantic",
@@ -624,14 +624,15 @@
       }
     },
     "feedback-warning-content": {
-      "$value": "{plx-ref.color-brown-200}",
+      "$value": "{plx-ref.color-orange-200}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "semantic",
           "purpose": "Warning text on the soft warning fill."
         }
-      }
+      },
+      "$description": "Warning text: orange-200, 4.95:1 on the soft fill (gray-700) and 6.8:1 on surface-default (dark theme; owner, 2026-10-14, docs/pills-and-colors.md)."
     },
     "feedback-danger-solid": {
       "$value": "{plx-ref.color-red-200}",
@@ -736,9 +737,9 @@
       }
     },
     "status-away": {
-      "$value": "{plx-ref.color-brown-300}",
+      "$value": "{plx-ref.color-yellow-300}",
       "$type": "color",
-      "$description": "Away: brown-300, the warning solid (dark theme).",
+      "$description": "Away: yellow-300, 5.7:1 on surface-default (dark theme; owner, 2026-10-14, docs/pills-and-colors.md: yellow means waiting or paused).",
       "$extensions": {
         "plenix": {
           "group": "status",
@@ -820,6 +821,204 @@
         "plenix": {
           "group": "status",
           "purpose": "Workflow: the work has not started."
+        }
+      }
+    },
+    "status-pill-neutral-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "The neutral status pill background: gray-700 (dark theme) (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, neutral (no particular state (the default)): its background."
+        }
+      }
+    },
+    "status-pill-neutral-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "The neutral status pill border, 1px: gray-800 (dark theme); decorative, the text carries the meaning (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, neutral: its 1px border."
+        }
+      }
+    },
+    "status-pill-neutral-text": {
+      "$value": "{plx-ref.color-gray-300}",
+      "$type": "color",
+      "$description": "The neutral status pill text: gray-300 on gray-700 (dark theme), AA (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, neutral: its text."
+        }
+      }
+    },
+    "status-pill-success-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "The success status pill background: gray-700 (dark theme) (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, success (done, approved, healthy): its background."
+        }
+      }
+    },
+    "status-pill-success-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "The success status pill border, 1px: gray-800 (dark theme); decorative, the text carries the meaning (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, success: its 1px border."
+        }
+      }
+    },
+    "status-pill-success-text": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$description": "The success status pill text: green-100 on gray-700 (dark theme), AA (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, success: its text."
+        }
+      }
+    },
+    "status-pill-active-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "The active status pill background: gray-700 (dark theme) (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, active (in progress, current, information): its background."
+        }
+      }
+    },
+    "status-pill-active-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "The active status pill border, 1px: gray-800 (dark theme); decorative, the text carries the meaning (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, active: its 1px border."
+        }
+      }
+    },
+    "status-pill-active-text": {
+      "$value": "{plx-ref.color-blue-200}",
+      "$type": "color",
+      "$description": "The active status pill text: blue-200 on gray-700 (dark theme), AA (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, active: its text."
+        }
+      }
+    },
+    "status-pill-waiting-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "The waiting status pill background: gray-700 (dark theme) (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, waiting (waiting, paused): its background."
+        }
+      }
+    },
+    "status-pill-waiting-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "The waiting status pill border, 1px: gray-800 (dark theme); decorative, the text carries the meaning (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, waiting: its 1px border."
+        }
+      }
+    },
+    "status-pill-waiting-text": {
+      "$value": "{plx-ref.color-yellow-200}",
+      "$type": "color",
+      "$description": "The waiting status pill text: yellow-200 on gray-700 (dark theme), AA (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, waiting: its text."
+        }
+      }
+    },
+    "status-pill-action-required-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "The action-required status pill background: gray-700 (dark theme) (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, action-required (action or correction required): its background."
+        }
+      }
+    },
+    "status-pill-action-required-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "The action-required status pill border, 1px: gray-800 (dark theme); decorative, the text carries the meaning (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, action-required: its 1px border."
+        }
+      }
+    },
+    "status-pill-action-required-text": {
+      "$value": "{plx-ref.color-orange-200}",
+      "$type": "color",
+      "$description": "The action-required status pill text: orange-200 on gray-700 (dark theme), AA (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, action-required: its text."
+        }
+      }
+    },
+    "status-pill-negative-background": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$description": "The negative status pill background: gray-700 (dark theme) (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, negative (failed, error, rejected): its background."
+        }
+      }
+    },
+    "status-pill-negative-border": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$description": "The negative status pill border, 1px: gray-800 (dark theme); decorative, the text carries the meaning (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, negative: its 1px border."
+        }
+      }
+    },
+    "status-pill-negative-text": {
+      "$value": "{plx-ref.color-red-100}",
+      "$type": "color",
+      "$description": "The negative status pill text: red-100 on gray-700 (dark theme), AA (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "status",
+          "purpose": "Status pill, negative: its text."
         }
       }
     },
@@ -1972,6 +2171,39 @@
         }
       }
     },
+    "category-red-soft": {
+      "$value": "{plx-ref.color-category-red-100}",
+      "$type": "color",
+      "$description": "The red category pill background: category red 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, red: its soft background."
+        }
+      }
+    },
+    "category-red-soft-border": {
+      "$value": "{plx-ref.color-category-red-300}",
+      "$type": "color",
+      "$description": "The red category pill border, 1px: category red 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, red: its 1px border."
+        }
+      }
+    },
+    "category-red-on-soft": {
+      "$value": "{plx-ref.color-category-red-700}",
+      "$type": "color",
+      "$description": "The red category pill text: category red 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, red: its text."
+        }
+      }
+    },
     "category-green": {
       "$value": "{plx-ref.color-category-green}",
       "$type": "color",
@@ -1991,6 +2223,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the green category color."
+        }
+      }
+    },
+    "category-green-soft": {
+      "$value": "{plx-ref.color-category-green-100}",
+      "$type": "color",
+      "$description": "The green category pill background: category green 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, green: its soft background."
+        }
+      }
+    },
+    "category-green-soft-border": {
+      "$value": "{plx-ref.color-category-green-300}",
+      "$type": "color",
+      "$description": "The green category pill border, 1px: category green 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, green: its 1px border."
+        }
+      }
+    },
+    "category-green-on-soft": {
+      "$value": "{plx-ref.color-category-green-700}",
+      "$type": "color",
+      "$description": "The green category pill text: category green 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, green: its text."
         }
       }
     },
@@ -2016,6 +2281,39 @@
         }
       }
     },
+    "category-yellow-soft": {
+      "$value": "{plx-ref.color-category-yellow-100}",
+      "$type": "color",
+      "$description": "The yellow category pill background: category yellow 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, yellow: its soft background."
+        }
+      }
+    },
+    "category-yellow-soft-border": {
+      "$value": "{plx-ref.color-category-yellow-300}",
+      "$type": "color",
+      "$description": "The yellow category pill border, 1px: category yellow 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, yellow: its 1px border."
+        }
+      }
+    },
+    "category-yellow-on-soft": {
+      "$value": "{plx-ref.color-category-yellow-700}",
+      "$type": "color",
+      "$description": "The yellow category pill text: category yellow 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, yellow: its text."
+        }
+      }
+    },
     "category-blue": {
       "$value": "{plx-ref.color-category-blue}",
       "$type": "color",
@@ -2035,6 +2333,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the blue category color."
+        }
+      }
+    },
+    "category-blue-soft": {
+      "$value": "{plx-ref.color-category-blue-100}",
+      "$type": "color",
+      "$description": "The blue category pill background: category blue 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, blue: its soft background."
+        }
+      }
+    },
+    "category-blue-soft-border": {
+      "$value": "{plx-ref.color-category-blue-300}",
+      "$type": "color",
+      "$description": "The blue category pill border, 1px: category blue 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, blue: its 1px border."
+        }
+      }
+    },
+    "category-blue-on-soft": {
+      "$value": "{plx-ref.color-category-blue-700}",
+      "$type": "color",
+      "$description": "The blue category pill text: category blue 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, blue: its text."
         }
       }
     },
@@ -2060,6 +2391,39 @@
         }
       }
     },
+    "category-orange-soft": {
+      "$value": "{plx-ref.color-category-orange-100}",
+      "$type": "color",
+      "$description": "The orange category pill background: category orange 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, orange: its soft background."
+        }
+      }
+    },
+    "category-orange-soft-border": {
+      "$value": "{plx-ref.color-category-orange-300}",
+      "$type": "color",
+      "$description": "The orange category pill border, 1px: category orange 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, orange: its 1px border."
+        }
+      }
+    },
+    "category-orange-on-soft": {
+      "$value": "{plx-ref.color-category-orange-700}",
+      "$type": "color",
+      "$description": "The orange category pill text: category orange 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, orange: its text."
+        }
+      }
+    },
     "category-purple": {
       "$value": "{plx-ref.color-category-purple}",
       "$type": "color",
@@ -2079,6 +2443,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the purple category color."
+        }
+      }
+    },
+    "category-purple-soft": {
+      "$value": "{plx-ref.color-category-purple-100}",
+      "$type": "color",
+      "$description": "The purple category pill background: category purple 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, purple: its soft background."
+        }
+      }
+    },
+    "category-purple-soft-border": {
+      "$value": "{plx-ref.color-category-purple-300}",
+      "$type": "color",
+      "$description": "The purple category pill border, 1px: category purple 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, purple: its 1px border."
+        }
+      }
+    },
+    "category-purple-on-soft": {
+      "$value": "{plx-ref.color-category-purple-700}",
+      "$type": "color",
+      "$description": "The purple category pill text: category purple 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, purple: its text."
         }
       }
     },
@@ -2104,6 +2501,39 @@
         }
       }
     },
+    "category-cyan-soft": {
+      "$value": "{plx-ref.color-category-cyan-100}",
+      "$type": "color",
+      "$description": "The cyan category pill background: category cyan 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, cyan: its soft background."
+        }
+      }
+    },
+    "category-cyan-soft-border": {
+      "$value": "{plx-ref.color-category-cyan-300}",
+      "$type": "color",
+      "$description": "The cyan category pill border, 1px: category cyan 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, cyan: its 1px border."
+        }
+      }
+    },
+    "category-cyan-on-soft": {
+      "$value": "{plx-ref.color-category-cyan-700}",
+      "$type": "color",
+      "$description": "The cyan category pill text: category cyan 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, cyan: its text."
+        }
+      }
+    },
     "category-magenta": {
       "$value": "{plx-ref.color-category-magenta}",
       "$type": "color",
@@ -2123,6 +2553,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the magenta category color."
+        }
+      }
+    },
+    "category-magenta-soft": {
+      "$value": "{plx-ref.color-category-magenta-100}",
+      "$type": "color",
+      "$description": "The magenta category pill background: category magenta 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, magenta: its soft background."
+        }
+      }
+    },
+    "category-magenta-soft-border": {
+      "$value": "{plx-ref.color-category-magenta-300}",
+      "$type": "color",
+      "$description": "The magenta category pill border, 1px: category magenta 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, magenta: its 1px border."
+        }
+      }
+    },
+    "category-magenta-on-soft": {
+      "$value": "{plx-ref.color-category-magenta-700}",
+      "$type": "color",
+      "$description": "The magenta category pill text: category magenta 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, magenta: its text."
         }
       }
     },
@@ -2148,6 +2611,39 @@
         }
       }
     },
+    "category-lime-soft": {
+      "$value": "{plx-ref.color-category-lime-100}",
+      "$type": "color",
+      "$description": "The lime category pill background: category lime 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, lime: its soft background."
+        }
+      }
+    },
+    "category-lime-soft-border": {
+      "$value": "{plx-ref.color-category-lime-300}",
+      "$type": "color",
+      "$description": "The lime category pill border, 1px: category lime 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, lime: its 1px border."
+        }
+      }
+    },
+    "category-lime-on-soft": {
+      "$value": "{plx-ref.color-category-lime-700}",
+      "$type": "color",
+      "$description": "The lime category pill text: category lime 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, lime: its text."
+        }
+      }
+    },
     "category-pink": {
       "$value": "{plx-ref.color-category-pink}",
       "$type": "color",
@@ -2167,6 +2663,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the pink category color."
+        }
+      }
+    },
+    "category-pink-soft": {
+      "$value": "{plx-ref.color-category-pink-100}",
+      "$type": "color",
+      "$description": "The pink category pill background: category pink 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, pink: its soft background."
+        }
+      }
+    },
+    "category-pink-soft-border": {
+      "$value": "{plx-ref.color-category-pink-300}",
+      "$type": "color",
+      "$description": "The pink category pill border, 1px: category pink 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, pink: its 1px border."
+        }
+      }
+    },
+    "category-pink-on-soft": {
+      "$value": "{plx-ref.color-category-pink-700}",
+      "$type": "color",
+      "$description": "The pink category pill text: category pink 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, pink: its text."
         }
       }
     },
@@ -2192,6 +2721,39 @@
         }
       }
     },
+    "category-teal-soft": {
+      "$value": "{plx-ref.color-category-teal-100}",
+      "$type": "color",
+      "$description": "The teal category pill background: category teal 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, teal: its soft background."
+        }
+      }
+    },
+    "category-teal-soft-border": {
+      "$value": "{plx-ref.color-category-teal-300}",
+      "$type": "color",
+      "$description": "The teal category pill border, 1px: category teal 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, teal: its 1px border."
+        }
+      }
+    },
+    "category-teal-on-soft": {
+      "$value": "{plx-ref.color-category-teal-700}",
+      "$type": "color",
+      "$description": "The teal category pill text: category teal 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, teal: its text."
+        }
+      }
+    },
     "category-lavender": {
       "$value": "{plx-ref.color-category-lavender}",
       "$type": "color",
@@ -2211,6 +2773,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the lavender category color."
+        }
+      }
+    },
+    "category-lavender-soft": {
+      "$value": "{plx-ref.color-category-lavender-100}",
+      "$type": "color",
+      "$description": "The lavender category pill background: category lavender 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, lavender: its soft background."
+        }
+      }
+    },
+    "category-lavender-soft-border": {
+      "$value": "{plx-ref.color-category-lavender-300}",
+      "$type": "color",
+      "$description": "The lavender category pill border, 1px: category lavender 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, lavender: its 1px border."
+        }
+      }
+    },
+    "category-lavender-on-soft": {
+      "$value": "{plx-ref.color-category-lavender-700}",
+      "$type": "color",
+      "$description": "The lavender category pill text: category lavender 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, lavender: its text."
         }
       }
     },
@@ -2236,6 +2831,39 @@
         }
       }
     },
+    "category-brown-soft": {
+      "$value": "{plx-ref.color-category-brown-100}",
+      "$type": "color",
+      "$description": "The brown category pill background: category brown 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, brown: its soft background."
+        }
+      }
+    },
+    "category-brown-soft-border": {
+      "$value": "{plx-ref.color-category-brown-300}",
+      "$type": "color",
+      "$description": "The brown category pill border, 1px: category brown 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, brown: its 1px border."
+        }
+      }
+    },
+    "category-brown-on-soft": {
+      "$value": "{plx-ref.color-category-brown-700}",
+      "$type": "color",
+      "$description": "The brown category pill text: category brown 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, brown: its text."
+        }
+      }
+    },
     "category-beige": {
       "$value": "{plx-ref.color-category-beige}",
       "$type": "color",
@@ -2255,6 +2883,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the beige category color."
+        }
+      }
+    },
+    "category-beige-soft": {
+      "$value": "{plx-ref.color-category-beige-100}",
+      "$type": "color",
+      "$description": "The beige category pill background: category beige 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, beige: its soft background."
+        }
+      }
+    },
+    "category-beige-soft-border": {
+      "$value": "{plx-ref.color-category-beige-300}",
+      "$type": "color",
+      "$description": "The beige category pill border, 1px: category beige 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, beige: its 1px border."
+        }
+      }
+    },
+    "category-beige-on-soft": {
+      "$value": "{plx-ref.color-category-beige-700}",
+      "$type": "color",
+      "$description": "The beige category pill text: category beige 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, beige: its text."
         }
       }
     },
@@ -2280,6 +2941,39 @@
         }
       }
     },
+    "category-maroon-soft": {
+      "$value": "{plx-ref.color-category-maroon-100}",
+      "$type": "color",
+      "$description": "The maroon category pill background: category maroon 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, maroon: its soft background."
+        }
+      }
+    },
+    "category-maroon-soft-border": {
+      "$value": "{plx-ref.color-category-maroon-300}",
+      "$type": "color",
+      "$description": "The maroon category pill border, 1px: category maroon 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, maroon: its 1px border."
+        }
+      }
+    },
+    "category-maroon-on-soft": {
+      "$value": "{plx-ref.color-category-maroon-700}",
+      "$type": "color",
+      "$description": "The maroon category pill text: category maroon 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, maroon: its text."
+        }
+      }
+    },
     "category-mint": {
       "$value": "{plx-ref.color-category-mint}",
       "$type": "color",
@@ -2299,6 +2993,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the mint category color."
+        }
+      }
+    },
+    "category-mint-soft": {
+      "$value": "{plx-ref.color-category-mint-100}",
+      "$type": "color",
+      "$description": "The mint category pill background: category mint 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, mint: its soft background."
+        }
+      }
+    },
+    "category-mint-soft-border": {
+      "$value": "{plx-ref.color-category-mint-300}",
+      "$type": "color",
+      "$description": "The mint category pill border, 1px: category mint 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, mint: its 1px border."
+        }
+      }
+    },
+    "category-mint-on-soft": {
+      "$value": "{plx-ref.color-category-mint-700}",
+      "$type": "color",
+      "$description": "The mint category pill text: category mint 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, mint: its text."
         }
       }
     },
@@ -2324,6 +3051,39 @@
         }
       }
     },
+    "category-olive-soft": {
+      "$value": "{plx-ref.color-category-olive-100}",
+      "$type": "color",
+      "$description": "The olive category pill background: category olive 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, olive: its soft background."
+        }
+      }
+    },
+    "category-olive-soft-border": {
+      "$value": "{plx-ref.color-category-olive-300}",
+      "$type": "color",
+      "$description": "The olive category pill border, 1px: category olive 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, olive: its 1px border."
+        }
+      }
+    },
+    "category-olive-on-soft": {
+      "$value": "{plx-ref.color-category-olive-700}",
+      "$type": "color",
+      "$description": "The olive category pill text: category olive 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, olive: its text."
+        }
+      }
+    },
     "category-apricot": {
       "$value": "{plx-ref.color-category-apricot}",
       "$type": "color",
@@ -2343,6 +3103,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the apricot category color."
+        }
+      }
+    },
+    "category-apricot-soft": {
+      "$value": "{plx-ref.color-category-apricot-100}",
+      "$type": "color",
+      "$description": "The apricot category pill background: category apricot 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, apricot: its soft background."
+        }
+      }
+    },
+    "category-apricot-soft-border": {
+      "$value": "{plx-ref.color-category-apricot-300}",
+      "$type": "color",
+      "$description": "The apricot category pill border, 1px: category apricot 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, apricot: its 1px border."
+        }
+      }
+    },
+    "category-apricot-on-soft": {
+      "$value": "{plx-ref.color-category-apricot-700}",
+      "$type": "color",
+      "$description": "The apricot category pill text: category apricot 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, apricot: its text."
         }
       }
     },
@@ -2368,6 +3161,39 @@
         }
       }
     },
+    "category-navy-soft": {
+      "$value": "{plx-ref.color-category-navy-100}",
+      "$type": "color",
+      "$description": "The navy category pill background: category navy 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, navy: its soft background."
+        }
+      }
+    },
+    "category-navy-soft-border": {
+      "$value": "{plx-ref.color-category-navy-300}",
+      "$type": "color",
+      "$description": "The navy category pill border, 1px: category navy 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, navy: its 1px border."
+        }
+      }
+    },
+    "category-navy-on-soft": {
+      "$value": "{plx-ref.color-category-navy-700}",
+      "$type": "color",
+      "$description": "The navy category pill text: category navy 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, navy: its text."
+        }
+      }
+    },
     "category-grey": {
       "$value": "{plx-ref.color-category-grey}",
       "$type": "color",
@@ -2387,6 +3213,39 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "Text on the grey category color."
+        }
+      }
+    },
+    "category-grey-soft": {
+      "$value": "{plx-ref.color-category-grey-100}",
+      "$type": "color",
+      "$description": "The grey category pill background: category grey 100. The same in every theme, so a category is always recognized (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, grey: its soft background."
+        }
+      }
+    },
+    "category-grey-soft-border": {
+      "$value": "{plx-ref.color-category-grey-300}",
+      "$type": "color",
+      "$description": "The grey category pill border, 1px: category grey 300 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, grey: its 1px border."
+        }
+      }
+    },
+    "category-grey-on-soft": {
+      "$value": "{plx-ref.color-category-grey-700}",
+      "$type": "color",
+      "$description": "The grey category pill text: category grey 700, AA on its 100 (owner, 2026-10-14, docs/pills-and-colors.md).",
+      "$extensions": {
+        "plenix": {
+          "group": "dataviz",
+          "purpose": "A category pill, grey: its text."
         }
       }
     }
