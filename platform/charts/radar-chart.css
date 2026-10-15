@@ -1,0 +1,17 @@
+/* Plenix · RadarChart (platform/charts/radar-chart.css): the spokes and rings are the frame's grid lines, each item's
+   outline and points the frame's line and point (system/charts.css); its area is the same data color at the low opacity,
+   so overlapping shapes stay visible. The measures' names are UI text placed off the spokes' ends; the ring values are
+   tick labels (the data font). Every value is a --plx-comp-radar-chart-* token on an existing role. */
+.plx-radar-chart__ring{fill:none;}
+.plx-radar-chart__area.plx-chart__line{fill:var(--plx-comp-chart-mark-color);fill-opacity:var(--plx-comp-radar-chart-area-opacity);}
+.plx-radar-chart__point{r:var(--plx-comp-radar-chart-point-radius);}
+.plx-radar-chart__ring-label{dominant-baseline:central;text-anchor:start;transform:translateX(var(--plx-comp-radar-chart-label-offset));}
+.plx-radar-chart__axis-label{fill:var(--plx-comp-radar-chart-axis-label-text);font-family:var(--plx-comp-radar-chart-axis-label-font-family);font-size:var(--plx-comp-radar-chart-axis-label-font-size);font-weight:var(--plx-comp-radar-chart-axis-label-font-weight);}
+.plx-radar-chart__axis-label--start{text-anchor:start;}
+.plx-radar-chart__axis-label--middle{text-anchor:middle;}
+.plx-radar-chart__axis-label--end{text-anchor:end;}
+.plx-radar-chart__axis-label--above{dominant-baseline:text-after-edge;transform:translateY(calc(-1 * var(--plx-comp-radar-chart-label-offset)));}
+.plx-radar-chart__axis-label--below{dominant-baseline:hanging;transform:translateY(var(--plx-comp-radar-chart-label-offset));}
+.plx-radar-chart__axis-label--beside{dominant-baseline:central;}
+.plx-radar-chart__axis-label--beside.plx-radar-chart__axis-label--start{transform:translateX(var(--plx-comp-radar-chart-label-offset));}
+.plx-radar-chart__axis-label--beside.plx-radar-chart__axis-label--end{transform:translateX(calc(-1 * var(--plx-comp-radar-chart-label-offset)));}

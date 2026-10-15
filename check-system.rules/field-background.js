@@ -1,6 +1,7 @@
-// Plenix · check-system rule "field-background" (owner, 2026-10-14: "the DS has the text fields having a white bg"): the
-// background of every text field (input, text area, select, combobox, search, number, OTP, input group, tag input) is the
-// control background role, plx-sys.control-background (white in light), or a field token that already points at it.
+// Plenix · check-system rule "field-background" (owner, 2026-10-14; changed 2026-10-15: "Gray-400 border all around with
+// bg of #fcfcfc"): the background of every text field (input, text area, select, combobox, search, number, OTP, input
+// group, tag input) is the field background role, plx-sys.field-background (#fcfcfc in light, gray-50), or a field token
+// that already points at it.
 // Allowed exceptions, each an owner decision:
 //   input-readonly-background                 read-only fields stay the sunken gray (they cannot be edited)
 //   input-filled-background                   the "filled" appearance, an option that is never the default
@@ -8,7 +9,7 @@
 //   search-on-accent-input-background         the search in the blue app header sits on the blue bar
 //   app-header-frost-search-input-background  the search in the frosted app header
 // So:
-//   "search-input-background": { "$value": "{plx-sys.control-background}" }   ok
+//   "search-input-background": { "$value": "{plx-sys.field-background}" }     ok
 //   "search-input-background": { "$value": "{plx-sys.fill-neutral}" }         finding
 // The rule is a module check-system.js runs (it loads every file in check-system.rules/):
 //   require('./check-system.rules/field-background.js').check({ add })   add(rule, file, line, text)
@@ -20,7 +21,7 @@ const NAME = 'field-background';
 const ROOT = path.join(__dirname, '..');
 const FIELD = /^(input|search-input|select|combobox|text-area|textarea|number-input|otp-input-cell|input-group|tag-input|pagination-select)-background$/;
 const ALLOWED = ['input-readonly-background', 'input-filled-background', 'input-underline-background', 'search-on-accent-input-background', 'app-header-frost-search-input-background'];
-const WHITE = '{plx-sys.control-background}';
+const WHITE = '{plx-sys.field-background}';
 
 // the token files with component tokens: components.tokens.json and components/*.tokens.json
 function files(root) {
@@ -38,7 +39,7 @@ function scan(comp, all) {
   for (const [name, t] of Object.entries(comp || {})) {
     if (!FIELD.test(name) || ALLOWED.includes(name) || !t) continue;
     const v = resolve(t.$value, new Set());
-    if (v !== WHITE) out.push('--plx-comp-' + name + ' is ' + t.$value + ': a text field\'s background is the control background role ' + WHITE + ' (white)');
+    if (v !== WHITE) out.push('--plx-comp-' + name + ' is ' + t.$value + ': a text field\'s background is the field background role ' + WHITE);
   }
   return out;
 }

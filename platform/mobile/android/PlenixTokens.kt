@@ -151,6 +151,8 @@ object PlenixColors {
     val fillNeutralContent = Pair(Color(0xFF56585E), Color(0xFFE8E9EC))
     val borderDivider = Pair(Color(0xFFF3F3F3), Color(0xFF56585E))
     val controlBackground = Pair(Color(0xFFFFFFFF), Color(0xFF444444))
+    val fieldBackground = Pair(Color(0xFFFCFCFC), Color(0xFF444444))
+    val fieldBorder = Pair(Color(0xFFA3A6AD), Color(0xFFA3A6AD))
     val controlBorder = Pair(Color(0xFF8E9094), Color(0xFFA3A6AD))
     val avatarBackground = Pair(Color(0xFF1F5BB8), Color(0xFFA2C0E3))
     val avatarContent = Pair(Color(0xFFFFFFFF), Color(0xFF000000))
@@ -345,6 +347,7 @@ object PlenixColors {
     val categoryGreySoft = Pair(Color(0xFFF3F3F3), Color(0xFFF3F3F3))
     val categoryGreySoftBorder = Pair(Color(0xFFCACACA), Color(0xFFCACACA))
     val categoryGreyOnSoft = Pair(Color(0xFF4D4D4D), Color(0xFF4D4D4D))
+    val listBullet = Pair(Color(0xFFA3A6AD), Color(0xFFA3A6AD))
 }
 
 object PlenixFonts { const val SANS = "DM Sans"; const val MONO = "DM Mono" } // web --plx-sys-typeface-sans, --plx-sys-typeface-mono
@@ -521,6 +524,7 @@ object PlenixComponent {
     val carouselDotTarget = 24.dp
     val carouselGap = 12.dp
     val carouselPeek = 40.dp
+    val chartInteractionFocusMarkRadius = 8.dp
     val chartLineWidth = 2.dp
     val chartPlotHeightMd = 240.dp
     val chartPlotHeightSm = 160.dp

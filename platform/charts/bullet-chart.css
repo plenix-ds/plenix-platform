@@ -1,0 +1,7 @@
+/* Plenix · BulletChart (platform/charts/bullet-chart.css): each measure's qualitative ranges in three neutral shades
+   (poor the darkest, good the lightest), the value bar (the frame's mark: system/charts.css) and the target line.
+   Every value is a --plx-comp-bullet-chart-* token on an existing role. */
+.plx-bullet-chart__range--1{fill:var(--plx-comp-bullet-chart-range-poor-background);}
+.plx-bullet-chart__range--2{fill:var(--plx-comp-bullet-chart-range-fair-background);}
+.plx-bullet-chart__range--3{fill:var(--plx-comp-bullet-chart-range-good-background);}
+.plx-bullet-chart__target{fill:none;stroke:var(--plx-comp-bullet-chart-target-color);stroke-width:var(--plx-comp-bullet-chart-target-width);}

@@ -2802,7 +2802,7 @@
    }
   },
   "android-data-display|Charts": {
-   "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values.",
+   "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values. The charts of wave 9 are drawn on the same Canvas: lines, steps, areas, heat map cells and waterfall bars; a word cloud is a custom Layout and a network graph or diagram a transformable Canvas with semantics per item.",
    "variants": [
     {
      "name": "Column chart (band scale)",
@@ -2924,6 +2924,116 @@
      "compose": "drawCircle(contentDefault, radius, center, style = Stroke(width)) and drawText(note)",
      "views": "canvas.drawCircle with a stroke Paint, then the note",
      "use": "One or two notes that explain a spike or an event."
+    },
+    {
+     "name": "Line chart",
+     "material": "A Canvas path per series (Material 3 has no chart component)",
+     "web": "data-display|Line chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawPath(linePath(values), PlenixColors.datavizCategorical1.current(), style = Stroke(PlenixBorder.borderWidthMedium.toPx()))",
+     "views": "A custom View drawing a Path in onDraw",
+     "use": "Trends over time for up to five series; a missing value leaves a gap."
+    },
+    {
+     "name": "Step chart",
+     "material": "The same path drawn with horizontal and vertical segments",
+     "web": "data-display|Step chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawPath(stepPath(values), color, style = Stroke(PlenixBorder.borderWidthMedium.toPx()))",
+     "views": "Path.lineTo for each step in onDraw",
+     "use": "Values that hold until the next change."
+    },
+    {
+     "name": "Area chart",
+     "material": "A filled Canvas path down to the baseline or the series under it",
+     "web": "data-display|Area chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-2",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawPath(areaPath(values, base), color, alpha = PlenixOpacity.opacityHigh)",
+     "views": "Path with Paint.Style.FILL in onDraw",
+     "use": "Volumes over time, stacked or as shares."
+    },
+    {
+     "name": "Heat map",
+     "material": "A grid of drawRect cells in the sequential data-viz steps",
+     "web": "data-display|Heat map",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-sequential-4",
+     "border": "plx-comp-heat-map-empty-border-color",
+     "compose": "cells.forEach { drawRect(sequentialStep(it.value), topLeft = it.origin, size = cell) }",
+     "views": "Canvas.drawRect per cell in onDraw",
+     "use": "Patterns across two dimensions."
+    },
+    {
+     "name": "Waterfall",
+     "material": "Floating bars from the running total",
+     "web": "data-display|Waterfall",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-status-positive",
+     "border": "plx-comp-waterfall-chart-connector-color",
+     "compose": "drawRect(if (step.change > 0) up else down, topLeft = Offset(x, y(step.to)), size = Size(barWidth, height))",
+     "views": "Canvas.drawRect per step in onDraw",
+     "use": "How a total changed step by step."
+    },
+    {
+     "name": "Word cloud",
+     "material": "A custom Layout of Text composables",
+     "web": "data-display|Word cloud",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-word-cloud-text",
+     "border": "plx-sys-border-subtle",
+     "compose": "Layout(content = { words.forEach { Text(it.text, fontFamily = PlenixFonts.SANS) } }) { measurables, c -> placeOnSpiral(measurables, c) }",
+     "views": "A custom ViewGroup placing TextViews on a spiral",
+     "use": "A first impression of free text."
+    },
+    {
+     "name": "Network graph",
+     "material": "A Canvas of nodes and edges with semantics per node",
+     "web": "data-display|Graph / network",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-network-graph-edge-color",
+     "compose": "Canvas(Modifier.transformable(state)) { drawEdges(); drawNodes() } with a semantics node per node",
+     "views": "A custom View with ScaleGestureDetector and an AccessibilityNodeProvider",
+     "use": "How items connect; pinch to zoom, drag to pan."
+    },
+    {
+     "name": "Diagram",
+     "material": "A Canvas of shapes and connectors in a scrollable box",
+     "web": "data-display|Diagram",
+     "background": "plx-comp-diagram-shape-background",
+     "content": "plx-comp-diagram-label-text",
+     "border": "plx-comp-diagram-shape-border-color",
+     "compose": "Box(Modifier.horizontalScroll(h).verticalScroll(v)) { PlenixDiagram(steps) }",
+     "views": "A ScrollView holding the drawn diagram",
+     "use": "Processes and structures read in one direction."
+    },
+    {
+     "name": "Gauge",
+     "material": "CircularProgressIndicator drawn as a semicircle (a determinate arc)",
+     "web": "data-display|Gauge",
+     "background": "plx-comp-gauge-track-color",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-sys-dataviz-alert-warning",
+     "compose": "Canvas { drawArc(track, startAngle = 180f, sweepAngle = 180f, useCenter = false, style = Stroke(width)) }",
+     "views": "A custom View drawing two arcs in onDraw",
+     "use": "One value in a range, with progressBarRangeInfo semantics."
+    },
+    {
+     "name": "TalkBack and keyboard exploration",
+     "material": "Semantics per value and focus with the arrow keys",
+     "web": "data-display|Chart interaction",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-tooltip-value-text",
+     "border": "plx-comp-chart-interaction-focus-border-color",
+     "compose": "Modifier.focusable().onKeyEvent { moveTo(it.key) }.semantics { liveRegion = LiveRegionMode.Polite }",
+     "views": "onKeyDown moves the selection; announceForAccessibility says the value",
+     "use": "Every value reachable by keyboard and TalkBack; the tooltip follows."
     }
    ],
    "anatomy": [
@@ -3178,6 +3288,12 @@
      "token": "plx-sys-content-subtle",
      "compose": "A message with a Retry button in place of the plot",
      "views": "A message view with a retry button in place of the chart"
+    },
+    {
+     "state": "Focused value",
+     "token": "plx-comp-chart-interaction-focus-border-color, plx-comp-chart-tooltip-background",
+     "compose": "The focused value shows the tooltip; its text is the live region’s",
+     "views": "The selected value is announced with announceForAccessibility"
     }
    ],
    "code": {
@@ -11887,7 +12003,7 @@
    }
   },
   "ios-data-display|Charts": {
-   "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web.",
+   "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web. The charts of wave 9 follow it: lines, steps and areas are LineMark and AreaMark, a heat map RectangleMark, a waterfall BarMark with a start and an end; a word cloud, a network graph and a diagram are custom layouts or a Canvas with an accessibility element per item.",
    "variants": [
     {
      "name": "Column chart (band scale)",
@@ -12020,6 +12136,114 @@
      "uikit": "The same on the hosted SwiftUI Chart",
      "appkit": "The same on the hosted SwiftUI Chart",
      "use": "One or two notes that explain a spike, a release or an outage."
+    },
+    {
+     "name": "Line chart",
+     "apple": "LineMark per series, foregroundStyle(by:) in the series order",
+     "web": "data-display|Line chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "Chart(rows) { LineMark(x: .value(\"Month\", $0.month), y: .value(\"Sign-ups\", $0.value)).foregroundStyle(by: .value(\"Platform\", $0.platform)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "Trends over time for up to five series; a missing value leaves a gap."
+    },
+    {
+     "name": "Step chart",
+     "apple": "LineMark with .interpolationMethod(.stepEnd)",
+     "web": "data-display|Step chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "LineMark(x: .value(\"Date\", $0.date), y: .value(\"Price\", $0.price)).interpolationMethod(.stepEnd)",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "Values that hold until the next change: prices, limits."
+    },
+    {
+     "name": "Area chart",
+     "apple": "AreaMark, stacked by foregroundStyle(by:); .stacking(.normalized) for percent",
+     "web": "data-display|Area chart",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-2",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "AreaMark(x: .value(\"Week\", $0.week), y: .value(\"GB\", $0.value), stacking: .standard).foregroundStyle(by: .value(\"Type\", $0.type)).opacity(Plenix.Opacity.opacityHigh)",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "A volume over time, or how its parts add up (stacked) or share it (percent)."
+    },
+    {
+     "name": "Heat map",
+     "apple": "RectangleMark with a foregroundStyle from the sequential data-viz steps",
+     "web": "data-display|Heat map",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-sequential-4",
+     "border": "plx-comp-heat-map-empty-border-color",
+     "swiftui": "RectangleMark(x: .value(\"Hour\", $0.hour), y: .value(\"Day\", $0.day)).foregroundStyle(PlenixDataviz.sequential($0.value, in: range))",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "Patterns across two dimensions; a missing value is an outlined empty cell."
+    },
+    {
+     "name": "Waterfall",
+     "apple": "BarMark with yStart and yEnd from the running total",
+     "web": "data-display|Waterfall",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-status-positive",
+     "border": "plx-comp-waterfall-chart-connector-color",
+     "swiftui": "BarMark(x: .value(\"Step\", $0.label), yStart: .value(\"From\", $0.from), yEnd: .value(\"To\", $0.to)).foregroundStyle($0.color)",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "How a total changed step by step; increases and decreases carry signs in their labels."
+    },
+    {
+     "name": "Word cloud",
+     "apple": "A custom Layout of Text views sized by the count (no Swift Charts mark)",
+     "web": "data-display|Word cloud",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-word-cloud-text",
+     "border": "plx-sys-border-subtle",
+     "swiftui": "PlenixWordCloud(words) // a Layout placing Text(word).font(Plenix.Font.sans(size, relativeTo: .body)) on a spiral",
+     "uikit": "The SwiftUI layout in a UIHostingController",
+     "appkit": "The SwiftUI layout in an NSHostingView",
+     "use": "A first impression of free text; the sorted list of terms is one tap away."
+    },
+    {
+     "name": "Network graph",
+     "apple": "A Canvas of nodes and edges with accessibilityChildren for each node",
+     "web": "data-display|Graph / network",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-network-graph-edge-color",
+     "swiftui": "Canvas { ctx, size in drawEdges(ctx); drawNodes(ctx) }.accessibilityChildren { ForEach(nodes) { Text($0.label) } }",
+     "uikit": "A UIView drawing with Core Graphics, one UIAccessibilityElement per node",
+     "appkit": "An NSView drawing with Core Graphics, one NSAccessibilityElement per node",
+     "use": "How items connect; pinch to zoom, drag to pan."
+    },
+    {
+     "name": "Diagram",
+     "apple": "A Canvas of shapes and connectors; the steps as an accessibility list",
+     "web": "data-display|Diagram",
+     "background": "plx-comp-diagram-shape-background",
+     "content": "plx-comp-diagram-label-text",
+     "border": "plx-comp-diagram-shape-border-color",
+     "swiftui": "ScrollView([.horizontal, .vertical]) { PlenixDiagram(steps) }.accessibilityElement(children: .contain)",
+     "uikit": "A UIScrollView with the drawn diagram and an accessibility element per step",
+     "appkit": "An NSScrollView with the drawn diagram",
+     "use": "Processes and structures read in one direction; read-only diagrams are images with a list."
+    },
+    {
+     "name": "Keyboard and VoiceOver exploration",
+     "apple": "Swift Charts per-mark accessibility and the audio graph (AXChartDescriptor)",
+     "web": "data-display|Chart interaction",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-tooltip-value-text",
+     "border": "plx-comp-chart-interaction-focus-border-color",
+     "swiftui": ".accessibilityChartDescriptor(PlenixChartDescriptor(rows)) and .chartXSelection(value: $selected)",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "Each value read by VoiceOver and the audio graph; scrubbing shows the tooltip."
     }
    ],
    "anatomy": [
@@ -12295,6 +12519,20 @@
      "swiftui": "ContentUnavailableView in place of the chart, with a way to try again",
      "uikit": "UIContentUnavailableConfiguration in place of the chart",
      "appkit": "A message view in place of the chart"
+    },
+    {
+     "state": "Focused value (VoiceOver)",
+     "token": "plx-comp-chart-interaction-focus-mark-radius, plx-comp-chart-tooltip-background",
+     "swiftui": "The mark VoiceOver is on reads its label and value; the selection shows the Plenix tooltip",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart"
+    },
+    {
+     "state": "Zoomed (scrolled)",
+     "token": "plx-comp-chart-interaction-brush-background",
+     "swiftui": ".chartScrollableAxes(.horizontal) with .chartXVisibleDomain(length:) for the range shown",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart"
     }
    ],
    "code": {
@@ -12359,6 +12597,195 @@
      "let host = NSHostingView(rootView: PlenixChart(title: title, plotHeight: chartPlotHeightMd, takeaway: takeaway) { marks })",
      "host.setAccessibilityLabel(title)",
      "stackView.addArrangedSubview(host)"
+    ]
+   }
+  },
+  "ios-data-display|Gauges": {
+   "summary": "The Plenix gauge on iOS is SwiftUI’s Gauge in the accessoryCircular style or a semicircle drawn the Plenix way: the track in the subtle border color, the fill in the first data-viz color, the value in DM Mono in the middle, the ends under the arc, and, with thresholds, the warning and critical ranges and a status label. Gauge keeps its own accessibility (its value and range read by VoiceOver).",
+   "variants": [
+    {
+     "name": "Semicircle",
+     "apple": "Gauge with a custom GaugeStyle drawing a half arc",
+     "web": "data-display|Gauge",
+     "background": "plx-comp-gauge-track-color",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-gauge-track-color",
+     "swiftui": "Gauge(value: used, in: 0...total) { Text(title) } currentValueLabel: { Text(percent) }.gaugeStyle(PlenixSemicircleGaugeStyle())",
+     "uikit": "The SwiftUI Gauge in a UIHostingController",
+     "appkit": "The SwiftUI Gauge in an NSHostingView",
+     "use": "One value in a known range."
+    },
+    {
+     "name": "With thresholds",
+     "apple": "The same style with the alert ranges outside the track and a status label",
+     "web": "data-display|Gauge",
+     "background": "plx-comp-gauge-track-color",
+     "content": "plx-sys-dataviz-alert-warning",
+     "border": "plx-sys-dataviz-alert-critical",
+     "swiftui": ".gaugeStyle(PlenixSemicircleGaugeStyle(thresholds: [.warning(80, \"Nearly full\"), .critical(95, \"Full\")]))",
+     "uikit": "The SwiftUI Gauge in a UIHostingController",
+     "appkit": "The SwiftUI Gauge in an NSHostingView",
+     "use": "Limits people act on, named in words."
+    },
+    {
+     "name": "Circular accessory",
+     "apple": "Gauge with .gaugeStyle(.accessoryCircular)",
+     "web": "data-display|Gauge",
+     "background": "plx-comp-gauge-track-color",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-gauge-track-color",
+     "swiftui": "Gauge(value: used, in: 0...total) { Text(title) }.gaugeStyle(.accessoryCircular).tint(Plenix.Colors.datavizCategorical1)",
+     "uikit": "The SwiftUI Gauge in a UIHostingController",
+     "appkit": "The SwiftUI Gauge in an NSHostingView",
+     "use": "Widgets and small cards (the system style, the Plenix tint)."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Track",
+     "about": "The whole range, in the subtle border color."
+    },
+    {
+     "part": "B",
+     "name": "Fill",
+     "about": "From the start of the range to the value, in the first data-viz color."
+    },
+    {
+     "part": "C",
+     "name": "Value",
+     "about": "The value in DM Mono in the middle of the arc, with a few words under it."
+    },
+    {
+     "part": "D",
+     "name": "Ends",
+     "about": "The minimum and the maximum under the ends of the arc, in DM Mono."
+    },
+    {
+     "part": "E",
+     "name": "Threshold ranges",
+     "about": "The warning and critical ranges outside the track, in the alert colors."
+    },
+    {
+     "part": "F",
+     "name": "Status",
+     "about": "The name of the range the value is in, with its icon, so color is never the only cue."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Track color",
+     "token": "plx-comp-gauge-track-color",
+     "value": "The subtle border color (plx-sys-border-subtle)",
+     "apple": "The gauge’s unfilled track",
+     "swiftui": "Circle().trim(from: 0, to: 0.5).stroke(Plenix.Colors.borderSubtle, style: StrokeStyle(lineWidth: trackWidth))",
+     "uikit": "CAShapeLayer strokeColor UIColor(Plenix.Colors.borderSubtle)",
+     "appkit": "NSColor(Plenix.Colors.borderSubtle) (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "B",
+     "attribute": "Fill color",
+     "token": "plx-sys-dataviz-categorical-1",
+     "value": "The first categorical data-viz color",
+     "apple": "The gauge’s tint",
+     "swiftui": ".tint(Plenix.Colors.datavizCategorical1)",
+     "uikit": "CAShapeLayer strokeColor UIColor(Plenix.Colors.datavizCategorical1)",
+     "appkit": "NSColor(Plenix.Colors.datavizCategorical1) (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "C",
+     "attribute": "Value font",
+     "token": "plx-comp-gauge-value-font-family",
+     "value": "DM Mono semibold: a technical value (the data role)",
+     "apple": "currentValueLabel",
+     "swiftui": "Text(percent).font(Plenix.Font.mono(Plenix.Platform.textHeadingSize, relativeTo: .title3))",
+     "uikit": "UILabel with DM Mono scaled by UIFontMetrics (Plenix.Font.mono)",
+     "appkit": "NSTextField with DM Mono (Plenix.Font.mono; a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "D",
+     "attribute": "Ends font",
+     "token": "plx-comp-gauge-end-font-family",
+     "value": "DM Mono at the data size (the data role)",
+     "apple": "minimumValueLabel and maximumValueLabel",
+     "swiftui": "Text(minText).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))",
+     "uikit": "UILabel with Plenix.Font.mono at the data size",
+     "appkit": "NSTextField with Plenix.Font.mono (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "E",
+     "attribute": "Threshold colors",
+     "token": "plx-sys-dataviz-alert-warning",
+     "value": "The alert warning and critical colors",
+     "apple": "No system equivalent: drawn outside the track",
+     "swiftui": ".stroke(Plenix.Colors.datavizAlertWarning) and .stroke(Plenix.Colors.datavizAlertCritical)",
+     "uikit": "Two CAShapeLayers in the alert colors",
+     "appkit": "NSColor(Plenix.Colors.datavizAlertWarning) (a macOS build of the tokens is needed)"
+    },
+    {
+     "part": "F",
+     "attribute": "Status label",
+     "token": "plx-sys-content-default",
+     "value": "The range’s name with its icon (a badge on the web)",
+     "apple": "A Label under the gauge",
+     "swiftui": "Label(status, systemImage: \"exclamationmark.triangle\").foregroundStyle(Plenix.Colors.contentDefault)",
+     "uikit": "UILabel with an SF Symbol attachment",
+     "appkit": "NSTextField with an SF Symbol (a macOS build of the tokens is needed)"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-gauge-track-color, plx-sys-dataviz-categorical-1",
+     "swiftui": "The value under every threshold",
+     "uikit": "The same in the hosted Gauge",
+     "appkit": "The same in the hosted Gauge"
+    },
+    {
+     "state": "Warning range",
+     "token": "plx-sys-dataviz-alert-warning",
+     "swiftui": "The status label names the warning range",
+     "uikit": "The same in the hosted Gauge",
+     "appkit": "The same in the hosted Gauge"
+    },
+    {
+     "state": "Critical range",
+     "token": "plx-sys-dataviz-alert-critical",
+     "swiftui": "The status label names the critical range",
+     "uikit": "The same in the hosted Gauge",
+     "appkit": "The same in the hosted Gauge"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// The Plenix gauge: a SwiftUI Gauge with the Plenix semicircle style and status",
+     "struct PlenixGauge: View {",
+     "    let title: String",
+     "    let value: Double",
+     "    let range: ClosedRange<Double>",
+     "    let status: String?",
+     "    var body: some View {",
+     "        VStack(spacing: Plenix.Space.spaceStackXs) {",
+     "            Gauge(value: value, in: range) { Text(title) } currentValueLabel: {",
+     "                Text(value, format: .percent).font(Plenix.Font.mono(Plenix.Platform.textHeadingSize, relativeTo: .title3))",
+     "            }",
+     "            .gaugeStyle(PlenixSemicircleGaugeStyle())",
+     "            .tint(Plenix.Colors.datavizCategorical1)",
+     "            if let status { Label(status, systemImage: \"exclamationmark.triangle\").foregroundStyle(Plenix.Colors.contentDefault) }",
+     "        }",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "// UIKit: host the SwiftUI gauge",
+     "let host = UIHostingController(rootView: PlenixGauge(title: \"Storage used\", value: 0.86, range: 0...1, status: \"Nearly full\"))"
+    ],
+    "appkit": [
+     "// AppKit: host the SwiftUI gauge (a macOS build of the tokens is needed)",
+     "let host = NSHostingView(rootView: PlenixGauge(title: \"Storage used\", value: 0.86, range: 0...1, status: \"Nearly full\"))"
     ]
    }
   },

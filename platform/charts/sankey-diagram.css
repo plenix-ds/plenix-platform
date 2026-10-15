@@ -1,0 +1,11 @@
+/* Plenix · SankeyDiagram (platform/charts/sankey-diagram.css): nodes are the frame's marks (system/charts.css); a band
+   takes its source node's data-viz color at the low opacity, the middle opacity when it or its node is under the
+   pointer (is-active). Node names are UI text and totals the data font, with a halo in the surface color so they read
+   over the bands. Every value is a --plx-comp-sankey-diagram-* token on an existing role. */
+.plx-sankey-diagram__link{--plx-comp-sankey-diagram-link-color:var(--plx-comp-chart-mark-default-color);fill:var(--plx-comp-sankey-diagram-link-color);fill-opacity:var(--plx-comp-sankey-diagram-link-opacity);}
+.plx-sankey-diagram__link[data-plx-dataviz]{--plx-comp-sankey-diagram-link-color:var(--plx-comp-data-color);}
+.plx-sankey-diagram__link.is-active{fill-opacity:var(--plx-comp-sankey-diagram-link-active-opacity);}
+.plx-sankey-diagram__label{dominant-baseline:central;fill:var(--plx-comp-sankey-diagram-label-text);font-family:var(--plx-comp-sankey-diagram-label-font-family);font-size:var(--plx-comp-sankey-diagram-label-font-size);font-weight:var(--plx-comp-sankey-diagram-label-font-weight);paint-order:stroke;stroke:var(--plx-comp-sankey-diagram-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-sankey-diagram-label-halo-width);}
+.plx-sankey-diagram__label--after{text-anchor:start;transform:translateX(var(--plx-comp-sankey-diagram-label-offset));}
+.plx-sankey-diagram__label--before{text-anchor:end;transform:translateX(calc(-1 * var(--plx-comp-sankey-diagram-label-offset)));}
+.plx-sankey-diagram__value{fill:var(--plx-comp-sankey-diagram-value-text);font-family:var(--plx-comp-sankey-diagram-value-font-family);font-weight:var(--plx-comp-sankey-diagram-value-font-weight);}

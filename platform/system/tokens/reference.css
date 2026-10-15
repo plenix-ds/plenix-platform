@@ -8,6 +8,8 @@
   --plx-ref-color-black: #000000;
   --plx-ref-color-black-alpha-50: #00000080;
   --plx-ref-color-black-alpha-14: #00000024;
+  --plx-ref-color-black-alpha-20: #00000033;
+  --plx-ref-color-black-alpha-12: #0000001f;
   --plx-ref-color-gray-950: #1e1f22;
   --plx-ref-color-gray-900: #34363b;
   --plx-ref-color-gray-800: #444444;
@@ -19,6 +21,7 @@
   --plx-ref-color-gray-300: #d0d0d0;
   --plx-ref-color-gray-200: #e8e9ec;
   --plx-ref-color-gray-100: #f3f3f3;
+  --plx-ref-color-gray-50: #fcfcfc;
   --plx-ref-color-gray-75: #f7f7f8;
   --plx-ref-color-white: #ffffff;
   --plx-ref-color-blue-900: #1f2a3a;

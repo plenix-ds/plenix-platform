@@ -1,0 +1,13 @@
+/* Plenix · WordCloud (platform/charts/word-cloud.css; the code is WordCloud.jsx): the words, centered on their places,
+   in five sizes of the type scale; a group's words in its categorical data-viz color, the rest in the content color;
+   the word in focus underlined. Every value is a --plx-comp-word-cloud-* token. */
+.plx-word-cloud__word{--plx-comp-word-cloud-word-color:var(--plx-comp-word-cloud-text);dominant-baseline:central;fill:var(--plx-comp-word-cloud-word-color);font-family:var(--plx-comp-word-cloud-font-family);font-weight:var(--plx-comp-word-cloud-font-weight);text-anchor:middle;}
+.plx-word-cloud__word[data-plx-dataviz]{--plx-comp-word-cloud-word-color:var(--plx-comp-data-color);}
+.plx-word-cloud__word--measure{visibility:hidden;}
+.plx-word-cloud__word--1{font-size:var(--plx-comp-word-cloud-size-1);}
+.plx-word-cloud__word--2{font-size:var(--plx-comp-word-cloud-size-2);}
+.plx-word-cloud__word--3{font-size:var(--plx-comp-word-cloud-size-3);}
+.plx-word-cloud__word--4{font-size:var(--plx-comp-word-cloud-size-4);}
+.plx-word-cloud__word--5{font-size:var(--plx-comp-word-cloud-size-5);font-weight:var(--plx-comp-word-cloud-large-font-weight);}
+/* the word in focus or under the pointer, and the selected word */
+.plx-word-cloud__word--active,.plx-word-cloud__word--selected{text-decoration-line:underline;text-decoration-thickness:var(--plx-comp-word-cloud-active-underline-width);}

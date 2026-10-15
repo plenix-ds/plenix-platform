@@ -1,8 +1,12 @@
-## Batch 376 (2026-10-15): touch targets, RedSave fixes, star icon
-- Writer in a worktree (rebased onto 0.31.69), merged with take-lane.js. RedSave (Redsave-v1/docs/plenix-issues.md):
-  #1 vendor path, #12 unknown icons, #14 types, #15 star fixed here; #7 decided (no dots); #11 solved by the command bar;
-  #2–#6, #8–#10, #13, #16–#26 after the waves (owner); #22 and #27 under discussion.
-- Touch targets left (9) need the owner: the splitter's width menu covers pane content with touch (A reserve, B into
-  the pane header, C into the pane's menu); AppHeader's nav collapses by viewport width, not the header's.
-- Tests (changed mode): all 21 groups OK (PAGES 211/211, TARGETS coarse 9, KEYBOARD 25/25, DATA_TABLES 38/38, LABS 12/12).
-  Released as {V}.
+## Batch 377 (2026-10-15): wave 9 A+B, fields, Fluent bar, Lifted menus, palette families, bullets
+- Wave 9 lanes A and B merged (take-lane.js); native: Charts (iOS, Android) and iOS Gauges merged; lane C follows.
+- Owner decisions today: field border gray-400 + #fcfcfc fill (accepted exception to the 3:1 field boundary); Fluent
+  overflow (commands only; toggle/choices; quick filters fold as submenus); opened surfaces Flat + Lifted; pills on
+  Badge/Tag pages; palette families by look; bullets 4px gray-400, justified; RedSave items after the waves (#11 solved
+  by the command bar, #15 star shipped in 0.31.71).
+- Needs the owner (wave 9): waterfall colors; gauge track/fill/threshold badges; interaction visuals (focus dot ring,
+  brush fill, dimmed series); area opacities; word cloud tops at 20px; heat map empty-cell dashes; diagram and network
+  surfaces; bullet chart range shades; separators in the surface color; radar/Sankey opacities; ComparisonView look;
+  donut hole 60%, bullet bar 1/3, Sankey nodes 12px.
+- Tests (changed mode): all 21 groups OK (PAGES 321/321, LABS 43/43, KEYBOARD 25/25, A11Y 0 on 101, DATA_TABLES 38/38, TARGETS coarse 4,
+  CONTRAST, REFLOW, NAVIGATION, …). Released as {V}.

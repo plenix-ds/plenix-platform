@@ -1,0 +1,17 @@
+/* Plenix · HeatMap (platform/charts/heat-map.css; the code is HeatMap.jsx): the cells, colored by their data-viz step
+   (data-plx-dataviz: sequential or diverging), the empty cell of a missing value, the cell in focus, and the color scale
+   legend under the plot. Every value is a --plx-comp-heat-map-* token. */
+.plx-heat-map__cell{--plx-comp-heat-map-cell-color:var(--plx-comp-heat-map-empty-background);fill:var(--plx-comp-heat-map-cell-color);rx:var(--plx-comp-heat-map-cell-radius);stroke:transparent;stroke-width:var(--plx-comp-heat-map-cell-border-width);}
+.plx-heat-map__cell[data-plx-dataviz]{--plx-comp-heat-map-cell-color:var(--plx-comp-data-color);}
+/* a missing value: an empty cell with a dashed edge, never the lowest color */
+.plx-heat-map__cell--empty{stroke:var(--plx-comp-heat-map-empty-border-color);stroke-dasharray:var(--plx-comp-heat-map-empty-dash) var(--plx-comp-heat-map-empty-dash);}
+/* the cell in focus or under the pointer: its edge in the strong content color */
+.plx-heat-map__cell--active{stroke:var(--plx-comp-heat-map-active-border-color);stroke-dasharray:none;stroke-width:var(--plx-comp-heat-map-active-border-width);}
+
+/* the color scale: the lowest value, the seven steps, the highest value (the data font), and the missing value's key */
+.plx-heat-map-scale{align-items:center;column-gap:var(--plx-comp-heat-map-scale-gap);color:var(--plx-comp-heat-map-scale-text);display:flex;flex-wrap:wrap;font-family:var(--plx-comp-heat-map-scale-font-family);font-size:var(--plx-comp-heat-map-scale-font-size);line-height:var(--plx-comp-heat-map-scale-line-height);row-gap:var(--plx-comp-heat-map-scale-gap);}
+.plx-heat-map-scale__end{font-family:var(--plx-comp-heat-map-scale-value-font-family);}
+.plx-heat-map-scale__steps{display:flex;}
+.plx-heat-map-scale__swatch{background-color:var(--plx-comp-data-color);block-size:var(--plx-comp-heat-map-scale-swatch-height);display:block;inline-size:var(--plx-comp-heat-map-scale-swatch-width);}
+.plx-heat-map-scale__swatch--missing{background-color:var(--plx-comp-heat-map-empty-background);border-bottom-color:var(--plx-comp-heat-map-empty-border-color);border-bottom-style:dashed;border-bottom-width:var(--plx-comp-heat-map-cell-border-width);border-left-color:var(--plx-comp-heat-map-empty-border-color);border-left-style:dashed;border-left-width:var(--plx-comp-heat-map-cell-border-width);border-right-color:var(--plx-comp-heat-map-empty-border-color);border-right-style:dashed;border-right-width:var(--plx-comp-heat-map-cell-border-width);border-top-color:var(--plx-comp-heat-map-empty-border-color);border-top-style:dashed;border-top-width:var(--plx-comp-heat-map-cell-border-width);box-sizing:border-box;inline-size:var(--plx-comp-heat-map-scale-swatch-height);}
+.plx-heat-map-scale__missing{align-items:center;column-gap:var(--plx-comp-heat-map-scale-gap);display:inline-flex;font-family:var(--plx-comp-heat-map-scale-label-font-family);}

@@ -133,6 +133,7 @@
     <dimen name="plx_component_carousel_dot_target">24dp</dimen>
     <dimen name="plx_component_carousel_gap">12dp</dimen>
     <dimen name="plx_component_carousel_peek">40dp</dimen>
+    <dimen name="plx_component_chart_interaction_focus_mark_radius">8dp</dimen>
     <dimen name="plx_component_chart_line_width">2dp</dimen>
     <dimen name="plx_component_chart_plot_height_md">240dp</dimen>
     <dimen name="plx_component_chart_plot_height_sm">160dp</dimen>

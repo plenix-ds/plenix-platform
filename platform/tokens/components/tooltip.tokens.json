@@ -1,23 +1,95 @@
 {
   "$description": "Tooltip (platform/components/Tooltip), library wave 5, lane C: the tokens of the start placement and of the rich tooltip. The rich surface is the popover's: the overlay surface, the default border, the menu radius and the menu shadow; nothing here adds a color.",
   "plx-comp": {
-    "tooltip-bubble-start-inset-inline-end": { "$value": "calc(100% + {plx-sys.space-stack-sm})", "$type": "dimension", "$description": "Tooltip placement start (drawn inside the wrapper, where anchor positioning is missing): the gap to the trigger, as the other sides." },
-    "tooltip-bubble-start-arrow-color": { "$value": "{plx-sys.tooltip-background}", "$type": "color", "$description": "Tooltip placement start: the arrow on the end edge, in the bubble's fill." },
-    "tooltip-rich-background": { "$value": "{plx-sys.surface-overlay}", "$type": "color", "$description": "Rich tooltip: the surface (the overlay surface, as Popover)." },
-    "tooltip-rich-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Rich tooltip: the body's text color." },
-    "tooltip-rich-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Rich tooltip: the border (as Popover)." },
-    "tooltip-rich-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Rich tooltip: the border width." },
-    "tooltip-rich-radius": { "$value": "{plx-sys.radius-menu-8px}", "$type": "dimension", "$description": "Rich tooltip: the corners (the menu radius, as Popover)." },
-    "tooltip-rich-shadow": { "$value": "{plx-sys.elevation-menu}", "$type": "shadow", "$description": "Rich tooltip: the shadow (the menu elevation, as Popover)." },
-    "tooltip-rich-padding": { "$value": "{plx-sys.space-inset-md}", "$type": "dimension", "$description": "Rich tooltip: the padding inside the border, on every side." },
-    "tooltip-rich-max-width": { "$value": "{plx-ref.size-320px}", "$type": "dimension", "$description": "Rich tooltip: it wraps at 320px (the popover's md width)." },
-    "tooltip-rich-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Rich tooltip: the size of the title and the body." },
-    "tooltip-rich-line-height": { "$value": "{plx-ref.line-height-normal}", "$type": "number", "$description": "Rich tooltip: the line height of a few sentences." },
-    "tooltip-rich-gap": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Rich tooltip: the space between the title and the body." },
-    "tooltip-rich-title-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Rich tooltip: the title's color." },
-    "tooltip-rich-title-font-family": { "$value": "{plx-sys.font-heading}", "$type": "fontFamily", "$description": "Rich tooltip: the title's face (as Popover)." },
-    "tooltip-rich-title-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Rich tooltip: the title's weight." },
-    "tooltip-rich-action-margin-block-start": { "$value": "{plx-sys.space-stack-xs}", "$type": "dimension", "$description": "Rich tooltip: the extra space above the action (with the gap, one sm step)." },
-    "tooltip-rich-close-delay": { "$value": "{plx-sys.motion-duration-slow}", "$type": "duration", "$description": "Rich tooltip: how long it stays after the pointer leaves the trigger and the tooltip, so the pointer can move into it (as the hover card)." }
+    "tooltip-bubble-start-inset-inline-end": {
+      "$value": "calc(100% + {plx-sys.space-stack-sm})",
+      "$type": "dimension",
+      "$description": "Tooltip placement start (drawn inside the wrapper, where anchor positioning is missing): the gap to the trigger, as the other sides."
+    },
+    "tooltip-bubble-start-arrow-color": {
+      "$value": "{plx-sys.tooltip-background}",
+      "$type": "color",
+      "$description": "Tooltip placement start: the arrow on the end edge, in the bubble's fill."
+    },
+    "tooltip-rich-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color",
+      "$description": "Rich tooltip: the surface (the overlay surface, as Popover)."
+    },
+    "tooltip-rich-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Rich tooltip: the body's text color."
+    },
+    "tooltip-rich-border-color": {
+      "$value": "{plx-sys.overlay-border}",
+      "$type": "color",
+      "$description": "Rich tooltip: the border (as Popover)."
+    },
+    "tooltip-rich-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: the border width."
+    },
+    "tooltip-rich-radius": {
+      "$value": "{plx-sys.radius-menu-8px}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: the corners (the menu radius, as Popover)."
+    },
+    "tooltip-rich-shadow": {
+      "$value": "{plx-sys.elevation-menu}",
+      "$type": "shadow",
+      "$description": "Rich tooltip: the shadow (the menu elevation, as Popover)."
+    },
+    "tooltip-rich-padding": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: the padding inside the border, on every side."
+    },
+    "tooltip-rich-max-width": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: it wraps at 320px (the popover's md width)."
+    },
+    "tooltip-rich-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: the size of the title and the body."
+    },
+    "tooltip-rich-line-height": {
+      "$value": "{plx-ref.line-height-normal}",
+      "$type": "number",
+      "$description": "Rich tooltip: the line height of a few sentences."
+    },
+    "tooltip-rich-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: the space between the title and the body."
+    },
+    "tooltip-rich-title-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Rich tooltip: the title's color."
+    },
+    "tooltip-rich-title-font-family": {
+      "$value": "{plx-sys.font-heading}",
+      "$type": "fontFamily",
+      "$description": "Rich tooltip: the title's face (as Popover)."
+    },
+    "tooltip-rich-title-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Rich tooltip: the title's weight."
+    },
+    "tooltip-rich-action-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Rich tooltip: the extra space above the action (with the gap, one sm step)."
+    },
+    "tooltip-rich-close-delay": {
+      "$value": "{plx-sys.motion-duration-slow}",
+      "$type": "duration",
+      "$description": "Rich tooltip: how long it stays after the pointer leaves the trigger and the tooltip, so the pointer can move into it (as the hover card)."
+    }
   }
 }

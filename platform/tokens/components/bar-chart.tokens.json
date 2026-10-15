@@ -1,0 +1,7 @@
+{
+  "$description": "BarChart (platform/charts/BarChart.jsx, library wave 9, lane B): its component tokens. The bars take the frame's mark color (their data-viz step); these part the touching segments and bins. No new color: the surface role.",
+  "plx-comp": {
+    "bar-chart-separator-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Bar chart: the thin line between stacked segments and between histogram bins, in the chart's surface color, so touching marks stay apart." },
+    "bar-chart-separator-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Bar chart: the width of the line between stacked segments and histogram bins." }
+  }
+}

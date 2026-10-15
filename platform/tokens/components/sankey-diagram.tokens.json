@@ -1,0 +1,17 @@
+{
+  "$description": "SankeyDiagram (platform/charts/SankeyDiagram.jsx, library wave 9, lane B): its component tokens. Nodes are the frame's marks (chart-*); a band is its source's data color at an opacity of the theme's scale; names and totals are labels with a halo. No new color: existing roles.",
+  "plx-comp": {
+    "sankey-diagram-link-opacity": { "$value": "{plx-sys.opacity-low}", "$type": "number", "$description": "Sankey diagram: a band's opacity at rest, so the bands' crossings stay visible." },
+    "sankey-diagram-link-active-opacity": { "$value": "{plx-sys.opacity-mid}", "$type": "number", "$description": "Sankey diagram: a band's opacity when it, or a node it joins, is under the pointer." },
+    "sankey-diagram-label-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Sankey diagram: a node's name." },
+    "sankey-diagram-label-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "Sankey diagram: node names are UI text: the label font." },
+    "sankey-diagram-label-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Sankey diagram: a node's name's size." },
+    "sankey-diagram-label-font-weight": { "$value": "{plx-sys.font-weight-medium}", "$type": "fontWeight", "$description": "Sankey diagram: a node's name's weight." },
+    "sankey-diagram-label-offset": { "$value": "{plx-ref.size-8px}", "$type": "dimension", "$description": "Sankey diagram: the distance between a node and its name (after it; before it in the last column)." },
+    "sankey-diagram-label-halo-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Sankey diagram: the halo under a name and total, in the surface color, so they read over the bands." },
+    "sankey-diagram-label-halo-width": { "$value": "{plx-sys.border-width-thick}", "$type": "dimension", "$description": "Sankey diagram: the halo's width." },
+    "sankey-diagram-value-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Sankey diagram: a node's total after its name." },
+    "sankey-diagram-value-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "Sankey diagram: totals are technical values: the data font (DM Mono)." },
+    "sankey-diagram-value-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "Sankey diagram: a total's weight." }
+  }
+}

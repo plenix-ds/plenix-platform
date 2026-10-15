@@ -67,7 +67,7 @@
       "$description": "EntityPicker list: background (surface-overlay)."
     },
     "entity-picker-list-border-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.overlay-border}",
       "$type": "color",
       "$description": "EntityPicker list: border color (border-default)."
     },

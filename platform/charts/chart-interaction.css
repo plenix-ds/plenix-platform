@@ -1,0 +1,28 @@
+/* Plenix · Chart interaction (platform/charts/chart-interaction.css; the code is platform/charts/interaction.js): the
+   interactive plot (one Tab stop; its border takes the focus color), the ring on the value in focus, the brush of a
+   zoom, the dimmed series and the selected mark, and the frame's actions row (Reset zoom). Every value is a
+   --plx-comp-chart-interaction-* token on an existing role; transitions use the motion tokens (none with reduced motion). */
+
+/* the plot takes focus: a border that is transparent until it is focused (no outer ring) */
+.plx-chart__plot--interactive{border-bottom-color:transparent;border-bottom-style:solid;border-bottom-width:var(--plx-comp-chart-interaction-focus-border-width);border-end-end-radius:var(--plx-comp-chart-interaction-focus-radius);border-end-start-radius:var(--plx-comp-chart-interaction-focus-radius);border-left-color:transparent;border-left-style:solid;border-left-width:var(--plx-comp-chart-interaction-focus-border-width);border-right-color:transparent;border-right-style:solid;border-right-width:var(--plx-comp-chart-interaction-focus-border-width);border-start-end-radius:var(--plx-comp-chart-interaction-focus-radius);border-start-start-radius:var(--plx-comp-chart-interaction-focus-radius);border-top-color:transparent;border-top-style:solid;border-top-width:var(--plx-comp-chart-interaction-focus-border-width);box-sizing:border-box;cursor:crosshair;outline-style:none;touch-action:pan-y;transition-duration:var(--plx-sys-motion-duration-instant);transition-property:border-color;}
+.plx-chart__plot--interactive:focus-visible{border-bottom-color:var(--plx-comp-chart-interaction-focus-border-color);border-left-color:var(--plx-comp-chart-interaction-focus-border-color);border-right-color:var(--plx-comp-chart-interaction-focus-border-color);border-top-color:var(--plx-comp-chart-interaction-focus-border-color);}
+
+/* the frame's actions: above the plot, at its end (Reset zoom, a graph's zoom buttons) */
+.plx-chart__actions{align-items:center;column-gap:var(--plx-comp-chart-interaction-actions-gap);display:flex;flex-wrap:wrap;justify-content:flex-end;min-inline-size:0;}
+
+/* the value in focus or under the pointer: a dot in the series' color with a ring of the surface around it */
+.plx-chart-focus{--plx-comp-chart-interaction-focus-mark-color:var(--plx-comp-chart-mark-default-color);fill:var(--plx-comp-chart-interaction-focus-mark-color);pointer-events:none;r:var(--plx-comp-chart-interaction-focus-mark-radius);stroke:var(--plx-comp-chart-interaction-focus-mark-outline);stroke-width:var(--plx-comp-chart-interaction-focus-mark-outline-width);}
+.plx-chart-focus[data-plx-dataviz]{--plx-comp-chart-interaction-focus-mark-color:var(--plx-comp-data-color);}
+
+/* the brush: the range marked for a zoom, shaded down the plot */
+.plx-chart-brush{fill:var(--plx-comp-chart-interaction-brush-background);pointer-events:none;stroke:var(--plx-comp-chart-interaction-brush-border-color);stroke-width:var(--plx-comp-chart-interaction-brush-border-width);}
+
+/* dimming: while one value is active (mode "point"), the marks of the other series step back */
+.plx-chart-dim{transition-duration:var(--plx-sys-motion-duration-fast);transition-property:opacity;transition-timing-function:var(--plx-sys-motion-ease-standard);}
+.plx-chart__plot--dimming .plx-chart-dim--off{opacity:var(--plx-comp-chart-interaction-dim-opacity);}
+
+/* the selected mark (a click or Enter): an outline in the strong content color */
+.plx-chart-selected{stroke:var(--plx-comp-chart-interaction-selected-outline);stroke-width:var(--plx-comp-chart-interaction-selected-outline-width);}
+
+/* a plot whose height follows its content (ChartFrame fitHeight: a diagram at its own size): the SVG's height */
+.plx-chart .plx-chart__plot.plx-chart__plot--fit{block-size:auto;}

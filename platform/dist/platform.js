@@ -4106,10 +4106,12 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      <List><List.Item icon="close" tone="danger">Avoid…</List.Item></List>
      <List ordered items={[{ children: 'Create the project' }, { children: 'Upload the files', items: [{ children: 'Photos' }], ordered: 'alpha' }]} />
      <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
+     <List variant="bullets" items={[{ children: 'Presence: online, away, busy, offline.' }, { children: 'Workflow: done, in progress.' }]} />
    Props:
      List.items: the statements: [{ icon, tone, children, items, ordered }]; or pass List.Item children
      List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
-     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow
+     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow |
+       "bullets": a plain list, each statement after a small square bullet (owner, 2026-10-15: for points of a text)
      List.label: names the list for assistive technology when its heading is not next to it
      List.children: List.Item elements, when there are no items
      List.className: more classes on the list
@@ -4139,7 +4141,7 @@ function List({
   const Tag = kind ? 'ol' : 'ul';
   return /*#__PURE__*/_react.default.createElement(Tag, {
     "aria-label": label,
-    className: (0, _cx.cx)('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', className)
+    className: (0, _cx.cx)('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', !kind && variant === 'bullets' && 'plx-list--bullets', className)
   }, items ? items.map((it, i) => /*#__PURE__*/_react.default.createElement(List.Item, {
     key: i,
     icon: it.icon,
@@ -15540,7 +15542,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
      from the end, the danger commands last. More shows only when something has folded.
    Props:
-     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single }]
+     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange }]
+     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
+       onSelect(next) runs with the new state; folded into More it is a checked menu item
+     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
+       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
      actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
      actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
        only disabled, with a why-tooltip)
@@ -15550,6 +15556,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      why(action): the tooltip of a disabled command; default action.why
      moreLabel: the More button's name ("More actions")
      dangerClass: the class that draws a ghost button in the danger color
+     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
    Notes:
      The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
      and keeps its label. */
@@ -15582,31 +15589,55 @@ function BarActions({
   why = a => a.why,
   moreLabel = 'More actions',
   dangerClass,
-  size = 'sm'
+  size = 'sm',
+  extra = []
 }) {
   const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
   const kept = actions.filter(a => !folded.has(a.id || a.label));
   const away = actions.filter(a => folded.has(a.id || a.label));
+  // a choices command: its options as radio items, and the current one's label
+  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: a.label,
+    value: a.value,
+    onChange: v => a.onChange && a.onChange(v)
+  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: c.value,
+    value: c.value,
+    icon: c.icon
+  }, c.label)));
+  const current = a => {
+    const c = (a.choices || []).find(x => x.value === a.value);
+    return c ? c.label : '';
+  };
   const one = a => {
     const disabled = off(a);
     const filled = !!a.primary;
     const only = iconOnly && !filled && !!a.icon;
+    const menu = !!a.items || !!a.choices;
+    // a choices command shows its current choice and is named by both ("Profile: Raphael")
+    const name = a.choices ? a.label + ': ' + current(a) : a.label;
+    const text = a.choices ? current(a) || a.label : a.label;
+    const click = a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
     const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: size,
       variant: filled ? 'primary' : 'ghost',
       icon: a.icon,
       iconOnly: only,
-      label: only ? a.label : undefined,
-      caret: !!a.items && !only,
+      label: only || a.choices ? name : undefined,
+      caret: menu && !only,
+      pressed: a.toggle ? !!a.pressed : undefined,
       disabled: disabled,
       className: a.danger && !filled ? dangerClass : undefined,
-      onClick: a.items ? undefined : a.onSelect
-    }, a.label);
-    const el = a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      onClick: click
+    }, text);
+    const el = a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
       label: a.label,
       trigger: button
     }, itemsOf(a, off)) : button;
-    const tip = disabled ? why(a) : only ? a.label : null;
+    const tip = disabled ? why(a) : only ? name : null;
     return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
       key: a.id || a.label
     }, tip ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
@@ -15615,8 +15646,8 @@ function BarActions({
   };
   const plain = kept.filter(a => !a.danger),
     danger = kept.filter(a => a.danger);
-  const allOff = away.length > 0 && away.every(a => off(a));
-  const more = away.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
+  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     key: "plx-more",
     content: allOff ? why(away[0]) : moreLabel
   }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
@@ -15634,7 +15665,19 @@ function BarActions({
     const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
       key: (a.id || a.label) + '-sep'
     }) : null;
-    const item = a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
+    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
+    const item = a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: a.id || a.label,
+      label: a.label + ': ' + current(a),
+      icon: a.icon,
+      disabled: off(a)
+    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      checked: !!a.pressed,
+      disabled: off(a),
+      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
+    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
       key: a.id || a.label,
       label: a.label
     }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
@@ -15645,7 +15688,9 @@ function BarActions({
       onSelect: a.onSelect
     }, a.label);
     return sep ? [sep, item] : item;
-  }))) : null;
+  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+    key: "plx-extra-sep"
+  }) : null, extra)) : null;
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
     key: "plx-danger-divider",
     className: (0, _cx.cx)('plx-bar-actions__divider'),
@@ -31817,7 +31862,7 @@ function seriesColor(index) {
   return (0, _dataviz.datavizCategory)(index);
 }
   } },
-  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31829,9 +31874,10 @@ var _cx = require("../utils/cx.js");
 var _direction = require("../utils/direction.js");
 var _Details = require("../components/Details/Details.jsx");
 var _Table = require("../components/Table/Table.jsx");
+var _Button = require("../components/Button/Button.jsx");
 var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ChartFrame
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartFrame
    Summary: The frame every Plenix chart is drawn in (07 Data Display › Charts › Chart foundations): a figure with the
      chart's title and description, a responsive SVG plot that measures itself (a ResizeObserver) and hands its size and
      inner area (the plot less its margins) to the chart, and the data as a table for people who cannot see the chart.
@@ -31840,6 +31886,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        table={{ columns: [{ title: 'Month', field: 'month', kind: 'name' }, { title: 'Uploads', field: 'n', kind: 'data' }], data: rows }}>
        {({ inner }) => { const x = scaleBand({ domain: months, range: [0, inner.width] }); … return <g>…</g>; }}
      </ChartFrame>
+     <ChartFrame title="…" interaction={useChartInteraction({ columns: rows.length, describe })}>…</ChartFrame>
    Props:
      title: the chart's name (required): the caption's title and the SVG's accessible name
      description: one or two sentences that say what the chart shows (its takeaway); the SVG's description
@@ -31855,14 +31902,24 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      legendPosition: "bottom" (default: under the plot) | "top" (between the caption and the plot: tight dashboard
        cards) | "end" (beside the
        plot, after it; give the legend orientation="vertical"); the plot keeps the rest of the width
+     interaction: the chart's interaction (useChartInteraction, platform/charts/interaction.js; wave 9): the plot becomes
+       one Tab stop named "{title}, interactive chart" with the keyboard hint as its description, and hands its keys and
+       the pointer (in plot coordinates) to the interaction; a Reset zoom button shows above the plot while it is zoomed
+     actions: controls above the plot, at its end (a network graph's zoom buttons); Buttons of size sm
+     fitHeight: (width) => the plot's height in pixels for its width, for a chart whose height follows its content (a
+       diagram drawn at its own size); the plot's height is then the SVG's, not the size's
      children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
        inside a group already moved by the margins; or SVG nodes
-     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" }
+     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" } (the
+       interaction's words are the interaction's strings)
      className: more classes on the figure
    Behavior:
      The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
      The SVG is one image to assistive technology (role img, named by the title and described by the description);
        its marks are hidden from it, so the table carries the values.
+     Interactive (interaction): the plot takes focus once (its border takes the focus color, no outer ring) and hands
+       the arrow keys, Home, End, Enter, Space, Escape and the pointer to the interaction, which says each value in the
+       live region; the tooltip and the focus ring the chart draws follow it.
      Marks take their colors from the data-viz scales: data-plx-dataviz="<scale>-<step>" on a mark (seriesColor(i))
        and the frame's mark classes (plx-chart__mark, plx-chart__line, plx-chart__point) fill or stroke it with that
        step; axis lines, grid lines and tick labels have their classes too (plx-chart__axis-line, plx-chart__grid-line,
@@ -31872,7 +31929,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Chart parts (platform/charts/parts: Axis, GridLines, ChartLegend, ChartTooltip, DataLabel, ReferenceLine,
        ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
 */
-
 const STRINGS = {
   showData: 'Show the data',
   table: '{title}: data'
@@ -31892,6 +31948,9 @@ function ChartFrame({
   legend,
   legendPosition = 'bottom',
   table,
+  interaction,
+  actions,
+  fitHeight,
   strings,
   className,
   children
@@ -31916,9 +31975,10 @@ function ChartFrame({
         tokens[k] = parseFloat(cs.getPropertyValue(MARGIN_TOKENS[k])) || 0;
       });
       const r = el.getBoundingClientRect();
+      // an interactive plot has a border (its focus border): the SVG is drawn inside it
       const next = {
-        width: Math.floor(r.width),
-        height: Math.floor(r.height),
+        width: Math.floor(r.width - el.clientLeft * 2),
+        height: Math.floor(r.height - el.clientTop * 2),
         rtl: (0, _direction.isRtl)(el),
         tokens
       };
@@ -31935,18 +31995,52 @@ function ChartFrame({
     m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0);
   });
   const left = box.rtl ? m.end : m.start;
+  const fit = typeof fitHeight === 'function';
+  const height = fit ? box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0 : box.height;
   const inner = {
     width: Math.max(0, box.width - m.start - m.end),
-    height: Math.max(0, box.height - m.top - m.bottom)
+    height: Math.max(0, height - m.top - m.bottom)
   };
   const dims = {
     width: box.width,
-    height: box.height,
+    height,
     inner,
     margin: m
   };
   const titleId = uid + '-title',
-    descId = uid + '-desc';
+    descId = uid + '-desc',
+    hintId = uid + '-hint';
+  const ia = interaction && interaction.interactive ? interaction : null;
+  // the pointer in plot coordinates: inside the border, less the margins
+  const local = e => {
+    const el = plot.current,
+      r = el.getBoundingClientRect();
+    return [e.clientX - r.left - el.clientLeft - left, e.clientY - r.top - el.clientTop - m.top];
+  };
+  const on = fn => e => {
+    const p = local(e);
+    fn(p[0], p[1], e);
+  };
+  const plotProps = ia ? {
+    tabIndex: 0,
+    role: 'group',
+    'aria-label': ia.strings.plot.replace('{title}', title || ''),
+    'aria-describedby': hintId,
+    onKeyDown: ia.keyDown,
+    onFocus: ia.onFocus,
+    onBlur: ia.onBlur,
+    onPointerDown: on(ia.pointerDown),
+    onPointerMove: on(ia.pointerMove),
+    onPointerUp: on(ia.pointerUp),
+    onPointerLeave: ia.pointerLeave
+  } : {};
+  const toolbar = ia && ia.zoomed || actions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chart__actions"
+  }, actions, ia && ia.zoomed ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    icon: "refresh",
+    onClick: ia.resetZoom
+  }, ia.strings.resetZoom) : null) : null;
   const caption = /*#__PURE__*/_react.default.createElement("figcaption", {
     className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -31961,14 +32055,17 @@ function ChartFrame({
   const key = legend ? /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-chart__legend', 'plx-chart__legend--' + lp)
   }, legend) : null;
-  const plotArea = /*#__PURE__*/_react.default.createElement("div", {
+  const plotArea = /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: plot,
-    className: "plx-chart__plot"
-  }, box.width > 0 && box.height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
+    className: (0, _cx.cx)('plx-chart__plot', fit && 'plx-chart__plot--fit', ia && 'plx-chart__plot--interactive', ia && ia.mode === 'point' && ia.active && 'plx-chart__plot--dimming')
+  }, plotProps), ia ? /*#__PURE__*/_react.default.createElement("span", {
+    id: hintId,
+    className: "plx-visually-hidden"
+  }, ia.hint) : null, box.width > 0 && height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
     className: "plx-chart__svg",
     width: box.width,
-    height: box.height,
-    viewBox: '0 0 ' + box.width + ' ' + box.height,
+    height: height,
+    viewBox: '0 0 ' + box.width + ' ' + height,
     role: "img",
     "aria-labelledby": titleId,
     "aria-describedby": description ? descId : undefined,
@@ -31980,7 +32077,7 @@ function ChartFrame({
   return /*#__PURE__*/_react.default.createElement("figure", {
     ref: frame,
     className: (0, _cx.cx)('plx-chart', 'plx-chart--' + size, className)
-  }, caption, lp === 'top' ? key : null, lp === 'end' && key ? /*#__PURE__*/_react.default.createElement("div", {
+  }, caption, toolbar, lp === 'top' ? key : null, lp === 'end' && key ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chart__body"
   }, plotArea, key) : plotArea, lp === 'bottom' ? key : null, table && table.data ? /*#__PURE__*/_react.default.createElement(_Details.Details, {
     summary: t.showData,
@@ -33155,291 +33252,6 @@ function BottomSheetNav({
   }, body);
 }
   } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CommandBar = CommandBar;
-exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _barFit = require("../../utils/barFit.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Badge = require("../../components/Badge/Badge.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
-var _Divider = require("../../components/Divider/Divider.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _BarActions = require("./BarActions.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
-   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
-     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
-     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
-   Usage:
-     <CommandBar label="Assets" count="24 assets"
-       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
-                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
-       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
-         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
-       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
-       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
-         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
-   Props:
-     label: the bar's accessible name (the collection: "Assets")
-     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary }]
-     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
-     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
-     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
-     actions[].why: the tooltip of a disabled command, saying why
-     actions[].primary: the page's one primary command (filled; it keeps its label); default none
-     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel and the app's quick
-       filters (QuickFilter)
-     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
-     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
-       rows are selected ("× N selected" takes its place)
-     end: more controls at the very end (Export); hidden while rows are selected
-     selection: the selection (the swap): { count, actions, onClear, noun, plural, label }; while count is above 0 the bar
-       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
-     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
-       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
-     sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
-     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
-       decides)
-     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
-       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
-       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
-       to {action}" }
-     className: more classes
-     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
-       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
-       count in a badge; other props reach the Button (ref too)
-     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
-     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
-   Behavior:
-     The button rule, measured (owner, 2026-10-14): every control shows its icon and label while every bar fits on one
-       line; then icons only, each with its tooltip; then the search becomes its icon, which opens the field across the bar;
-       then the actions fold into "More actions" (⋮) one per step from the end, the danger actions last. More shows only
-       when something does not fit. A change of width, labels or counts starts again from icons and labels.
-     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
-     Commands are never hidden by state: they are disabled, with a tooltip saying why.
-     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
-       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
-       stay mounted through the swap, so an open panel keeps its state.
-     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
-   Notes:
-     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
-     bar: the plain table. */
-const STRINGS = {
-  more: 'More actions',
-  actions: '{label} actions',
-  find: 'Find and view',
-  selected: '{n} selected',
-  clear: 'Clear the selection',
-  clearName: '{n} selected, clear the selection',
-  swapped: '{n} selected. Selection actions available.',
-  cleared: 'Selection cleared.',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}'
-};
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
-// into More
-const ICONS = 1,
-  SEARCH = 2;
-const BarContext = /*#__PURE__*/_react.default.createContext({
-  iconOnly: false,
-  collapsed: false,
-  step: 0,
-  searchOpen: false,
-  setSearchOpen: () => {}
-});
-const useCommandBar = () => _react.default.useContext(BarContext);
-exports.useCommandBar = useCommandBar;
-const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
-  icon,
-  label,
-  count = 0,
-  active = false,
-  caret = false,
-  iconOnly,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const ctx = useCommandBar();
-  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
-  const n = Number(count) || 0;
-  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    size: "sm",
-    tone: "active"
-  }, n) : null;
-  const name = n ? label + ', ' + n : label;
-  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
-  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
-    ref: ref,
-    size: "sm",
-    variant: "ghost",
-    icon: icon,
-    caret: caret && !only,
-    selected: active || n > 0,
-    iconOnly: only && !n,
-    label: only ? name : undefined,
-    className: (0, _cx.cx)('plx-command-bar__button', className)
-  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
-});
-const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
-  const {
-    collapsed,
-    searchOpen,
-    setSearchOpen
-  } = useCommandBar();
-  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
-    ref: ref,
-    width: "bar",
-    collapsed: collapsed,
-    open: collapsed ? searchOpen : undefined,
-    onOpenChange: collapsed ? setSearchOpen : undefined
-  }, props));
-});
-function CommandBar({
-  label,
-  actions = [],
-  find,
-  view,
-  count,
-  end,
-  selection,
-  layout = 'auto',
-  sticky = true,
-  narrow = false,
-  strings,
-  className
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
-  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
-  const selCount = sel ? Number(sel.count) || 0 : 0;
-  const selecting = selCount > 0;
-  const selActs = selecting ? sel.actions || [] : [];
-  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
-  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
-  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const folds = (0, _BarActions.foldOrder)(shown).length;
-  // the bar's search, opened across the bar: the bar holds its step while it is open
-  const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '')).join('|')].join('§');
-  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
-  const ctx = _react.default.useMemo(() => ({
-    iconOnly: step >= ICONS,
-    collapsed: step >= SEARCH,
-    step,
-    searchOpen: searchOpen && step >= SEARCH,
-    setSearchOpen
-  }), [step, searchOpen]);
-  const fold = Math.max(0, step - SEARCH);
-  // the swap is announced (the focus stays where it is, on the table)
-  const was = _react.default.useRef(selecting);
-  _react.default.useEffect(() => {
-    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
-      n: (0, _format.formatNumber)(selCount)
-    }) : t.cleared);
-    was.current = selecting;
-  }, [selecting]);
-  const words = {
-    noun: sel && sel.noun || 'item',
-    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
-  };
-  const off = a => !!a.disabled || !!(a.single && selCount > 1);
-  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
-    action: String(a.label).toLowerCase()
-  }, words));
-  const acts = shown.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__actions"
-  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
-    actions: shown,
-    iconOnly: ctx.iconOnly,
-    fold: fold,
-    moreLabel: t.more,
-    dangerClass: "plx-command-bar__danger",
-    off: selecting ? off : undefined,
-    why: selecting ? why : undefined
-  })) : null;
-  const findEl = find && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__find"
-  }, find) : null;
-  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__view"
-  }, view) : null;
-  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__count"
-  }, count) : count;
-  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
-  const [before, after] = String(t.selected).split('{n}');
-  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: t.clear
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "close",
-    className: "plx-command-bar__clear",
-    "aria-label": fill(t.clearName, {
-      n: (0, _format.formatNumber)(selCount)
-    }),
-    onClick: () => sel.onClear && sel.onClear()
-  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__number"
-  }, (0, _format.formatNumber)(selCount)), after)) : null;
-  const tail = countEl || end || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__end"
-  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, countEl, selecting ? null : end, clearEl) : null;
-  // Escape in the bar clears the selection (as "× N selected" does)
-  const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
-      e.preventDefault();
-      sel.onClear();
-    }
-  } : undefined;
-  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
-  const name = selecting ? sel.label || fill(t.actions, {
-    label: label || ''
-  }).trim() : label;
-  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
-    value: ctx
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: root,
-    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
-    "data-plx-layout": shape,
-    "data-plx-position": sticky ? undefined : 'static',
-    onKeyDown: onKeyDown
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-command-bar__bar"
-  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
-    label: name,
-    className: "plx-command-bar__row",
-    "data-plx-bar-row": ""
-  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
-}
-  } },
   "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -33938,6 +33750,545 @@ function matchesDate(range, value, today) {
   if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
   if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
   return (!range.from || d >= range.from) && (!range.to || d <= range.to);
+}
+  } },
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QuickFilter = QuickFilter;
+var _react = _interopRequireDefault(require("react"));
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · QuickFilter
+   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
+     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
+     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
+     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
+     This year) and a custom range (the Google Analytics style).
+   Usage:
+     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
+     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
+   Props:
+     kind: "list" (default) | "date"
+     label: the button's words ("Category", "Type", "Tags", "Date")
+     icon: its icon
+     noun: (list) the word for one value, for the find field ("Find a tag")
+     options: (list) the values: [{ value, label, color }] or strings; colors default to the category colors in order
+     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+     onChange(value): runs on every change
+     inline: draws the panel alone (open, in a frame); default false
+     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
+       custom: "Custom range", from: "From", to: "To" }
+   Behavior:
+     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
+     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
+     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
+     chosen.
+   Notes:
+     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
+
+const STRINGS = {
+  find: 'Find a {noun}',
+  none: 'No {noun} matches',
+  clear: 'Clear',
+  presets: _fields.DATE_PRESETS,
+  custom: 'Custom range',
+  from: 'From',
+  to: 'To'
+};
+const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
+}, o));
+function QuickFilter({
+  kind = 'list',
+  label,
+  icon,
+  noun = 'value',
+  options,
+  value,
+  onChange,
+  inline = false,
+  strings
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [q, setQ] = _react.default.useState('');
+  if (kind === 'date') {
+    const d = Object.assign({
+      preset: 'any',
+      from: '',
+      to: ''
+    }, value);
+    const range = (k, v) => onChange(Object.assign({}, d, {
+      preset: 'custom',
+      [k]: v
+    }));
+    const on = d.preset && d.preset !== 'any';
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel plx-find-panel--date"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: d.preset,
+      onChange: v => onChange(Object.assign({}, d, {
+        preset: v
+      })),
+      options: t.presets.map(x => ({
+        value: x.value,
+        label: x.label
+      })).concat({
+        value: 'custom',
+        label: t.custom
+      })
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel__range"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.from
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.from,
+      onChange: e => range('from', e.target.value)
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.to
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.to,
+      onChange: e => range('to', e.target.value)
+    }))));
+    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !on,
+      onClick: () => onChange({
+        preset: 'any',
+        from: '',
+        to: ''
+      })
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon || 'calendar',
+      label: label,
+      title: label,
+      count: on ? 1 : 0,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const list = asOptions(options),
+    chosen = value || [];
+  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel plx-find-panel--checklist"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    width: "fill",
+    value: q,
+    onChange: e => setQ(e.target.value),
+    onClear: () => setQ(''),
+    placeholder: (0, _panelParts.fill)(t.find, {
+      noun
+    }),
+    label: (0, _panelParts.fill)(t.find, {
+      noun
+    })
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__checklist"
+  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: o.value,
+    label: /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+      color: o.color
+    }, o.label),
+    checked: chosen.indexOf(o.value) >= 0,
+    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
+  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, (0, _panelParts.fill)(t.none, {
+    noun
+  }))));
+  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "filter-off",
+    disabled: !chosen.length,
+    onClick: () => onChange([])
+  }, t.clear);
+  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+    icon: icon,
+    label: label,
+    title: label,
+    count: chosen.length,
+    caret: true,
+    size: "sm",
+    footer: footer,
+    inline: inline
+  }, body);
+}
+  } },
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommandBar = CommandBar;
+exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _barFit = require("../../utils/barFit.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
+var _Divider = require("../../components/Divider/Divider.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _BarActions = require("./BarActions.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
+   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
+     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
+     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
+     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
+     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     selected", which clears the selection. A page with no actions has a view bar (1F).
+   Usage:
+     <CommandBar label="Assets" count="24 assets"
+       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
+                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
+       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
+         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
+       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
+       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
+         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
+   Props:
+     label: the bar's accessible name (the collection: "Assets")
+     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
+       pressed, choices, value, onChange }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
+       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
+       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
+       submenu of radio items. No other controls go in the bar.
+     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
+     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
+     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
+     actions[].why: the tooltip of a disabled command, saying why
+     actions[].primary: the page's one primary command (filled; it keeps its label); default none
+     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
+     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
+       options, value, onChange, kind }]; when the bar is short of room they fold into More after the commands, each a
+       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
+     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
+     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
+       rows are selected ("× N selected" takes its place)
+     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
+       is short of room, and while rows are selected
+     end: more controls at the very end (Export); hidden while rows are selected
+     selection: the selection (the swap): { count, actions, onClear, noun, plural, label }; while count is above 0 the bar
+       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
+       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
+       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
+     sticky: the bars stay at the top of the scrolling content while it scrolls (default true)
+     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
+       decides)
+     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
+       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
+       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
+       to {action}" }
+     className: more classes
+     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
+       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
+       count in a badge; other props reach the Button (ref too)
+     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
+     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
+   Behavior:
+     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
+       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
+       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
+       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
+       the danger commands last. More shows only
+       when something does not fit. A change of width, labels or counts starts again from icons and labels.
+     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
+     Commands are never hidden by state: they are disabled, with a tooltip saying why.
+     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
+     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
+       stay mounted through the swap, so an open panel keeps its state.
+     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
+   Notes:
+     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
+     bar: the plain table. */
+const STRINGS = {
+  more: 'More actions',
+  actions: '{label} actions',
+  find: 'Find and view',
+  selected: '{n} selected',
+  clear: 'Clear the selection',
+  clearName: '{n} selected, clear the selection',
+  swapped: '{n} selected. Selection actions available.',
+  cleared: 'Selection cleared.',
+  why: 'Select {plural} to {action}',
+  single: 'Select one {noun} to {action}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
+// into More
+const ICONS = 1,
+  SEARCH = 2;
+const BarContext = /*#__PURE__*/_react.default.createContext({
+  iconOnly: false,
+  collapsed: false,
+  step: 0,
+  searchOpen: false,
+  setSearchOpen: () => {}
+});
+const useCommandBar = () => _react.default.useContext(BarContext);
+exports.useCommandBar = useCommandBar;
+const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
+  icon,
+  label,
+  count = 0,
+  active = false,
+  caret = false,
+  iconOnly,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const ctx = useCommandBar();
+  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
+  const n = Number(count) || 0;
+  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    size: "sm",
+    tone: "active"
+  }, n) : null;
+  const name = n ? label + ', ' + n : label;
+  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    ref: ref,
+    size: "sm",
+    variant: "ghost",
+    icon: icon,
+    caret: caret && !only,
+    selected: active || n > 0,
+    iconOnly: only && !n,
+    label: only ? name : undefined,
+    className: (0, _cx.cx)('plx-command-bar__button', className)
+  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
+});
+const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
+  const {
+    collapsed,
+    searchOpen,
+    setSearchOpen
+  } = useCommandBar();
+  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
+    ref: ref,
+    width: "bar",
+    collapsed: collapsed,
+    open: collapsed ? searchOpen : undefined,
+    onOpenChange: collapsed ? setSearchOpen : undefined
+  }, props));
+});
+function CommandBar({
+  label,
+  actions = [],
+  find,
+  quickFilters = [],
+  view,
+  count,
+  status,
+  end,
+  selection,
+  layout = 'auto',
+  sticky = true,
+  narrow = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const root = _react.default.useRef(null);
+  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
+  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
+  const selCount = sel ? Number(sel.count) || 0 : 0;
+  const selecting = selCount > 0;
+  const selActs = selecting ? sel.actions || [] : [];
+  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
+  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
+  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
+  const quick = selecting ? [] : quickFilters;
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length;
+  // the bar's search, opened across the bar: the bar holds its step while it is open
+  const [searchOpen, setSearchOpen] = _react.default.useState(false);
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|')].join('§');
+  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
+  const ctx = _react.default.useMemo(() => ({
+    iconOnly: step >= ICONS,
+    collapsed: step >= SEARCH,
+    step,
+    searchOpen: searchOpen && step >= SEARCH,
+    setSearchOpen
+  }), [step, searchOpen]);
+  // the commands fold first (from the end, Delete last); then the quick filters, from the end
+  const foldAll = Math.max(0, step - SEARCH);
+  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
+  const quickAway = Math.min(quick.length, foldAll - fold);
+  const quickKept = quick.slice(0, quick.length - quickAway),
+    quickFolded = quick.slice(quick.length - quickAway);
+  const quickMenu = quickFolded.map(q => {
+    const id = q.id || q.label;
+    if (q.kind === 'date') {
+      const d = Object.assign({
+        preset: 'any',
+        from: '',
+        to: ''
+      }, q.value);
+      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+        key: id,
+        label: q.label,
+        icon: q.icon
+      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+        label: q.label,
+        value: d.preset,
+        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
+          preset: v
+        }))
+      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        key: p.value,
+        value: p.value
+      }, p.label))));
+    }
+    const chosen = q.value || [];
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
+      icon: q.icon
+    }, (q.options || []).map(o => typeof o === 'string' ? {
+      value: o,
+      label: o
+    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: o.value,
+      checked: chosen.indexOf(o.value) >= 0,
+      keepOpen: true,
+      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
+    }, o.label || o.value)));
+  });
+  // the swap is announced (the focus stays where it is, on the table)
+  const was = _react.default.useRef(selecting);
+  _react.default.useEffect(() => {
+    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
+      n: (0, _format.formatNumber)(selCount)
+    }) : t.cleared);
+    was.current = selecting;
+  }, [selecting]);
+  const words = {
+    noun: sel && sel.noun || 'item',
+    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
+  };
+  const off = a => !!a.disabled || !!(a.single && selCount > 1);
+  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
+    action: String(a.label).toLowerCase()
+  }, words));
+  const acts = shown.length || quickMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__actions"
+  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
+    actions: shown,
+    iconOnly: ctx.iconOnly,
+    fold: fold,
+    moreLabel: t.more,
+    dangerClass: "plx-command-bar__danger",
+    off: selecting ? off : undefined,
+    why: selecting ? why : undefined,
+    extra: quickMenu
+  })) : null;
+  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
+    key: q.id || q.label
+  }, q)));
+  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__find"
+  }, find, quickEls) : null;
+  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__view"
+  }, view) : null;
+  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__count"
+  }, count) : count;
+  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const [before, after] = String(t.selected).split('{n}');
+  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: t.clear
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "close",
+    className: "plx-command-bar__clear",
+    "aria-label": fill(t.clearName, {
+      n: (0, _format.formatNumber)(selCount)
+    }),
+    onClick: () => sel.onClear && sel.onClear()
+  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__number"
+  }, (0, _format.formatNumber)(selCount)), after)) : null;
+  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-command-bar__status"
+  }, status);
+  const tail = countEl || statusEl || end || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__end"
+  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, countEl, statusEl, selecting ? null : end, clearEl) : null;
+  // Escape in the bar clears the selection (as "× N selected" does)
+  const onKeyDown = selecting && sel.onClear ? e => {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+      e.preventDefault();
+      sel.onClear();
+    }
+  } : undefined;
+  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
+  const name = selecting ? sel.label || fill(t.actions, {
+    label: label || ''
+  }).trim() : label;
+  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
+    value: ctx
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
+    "data-plx-layout": shape,
+    "data-plx-position": sticky ? undefined : 'static',
+    onKeyDown: onKeyDown
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-bar__bar"
+  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    label: name,
+    className: "plx-command-bar__row",
+    "data-plx-bar-row": ""
+  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
 }
   } },
   "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -34997,193 +35348,6 @@ function ViewMenu({
   }, menu) : menu;
 }
   } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.QuickFilter = QuickFilter;
-var _react = _interopRequireDefault(require("react"));
-var _Button = require("../../components/Button/Button.jsx");
-var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
-var _Field = require("../../components/Field/Field.jsx");
-var _Input = require("../../components/Input/Input.jsx");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _panelParts = require("../CommandBar/panel-parts.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · QuickFilter
-   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
-     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
-     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
-     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
-     This year) and a custom range (the Google Analytics style).
-   Usage:
-     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
-     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
-   Props:
-     kind: "list" (default) | "date"
-     label: the button's words ("Category", "Type", "Tags", "Date")
-     icon: its icon
-     noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list) the values: [{ value, label, color }] or strings; colors default to the category colors in order
-     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-     onChange(value): runs on every change
-     inline: draws the panel alone (open, in a frame); default false
-     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
-       custom: "Custom range", from: "From", to: "To" }
-   Behavior:
-     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
-     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
-     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
-     chosen.
-   Notes:
-     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
-
-const STRINGS = {
-  find: 'Find a {noun}',
-  none: 'No {noun} matches',
-  clear: 'Clear',
-  presets: _fields.DATE_PRESETS,
-  custom: 'Custom range',
-  from: 'From',
-  to: 'To'
-};
-const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
-}, o));
-function QuickFilter({
-  kind = 'list',
-  label,
-  icon,
-  noun = 'value',
-  options,
-  value,
-  onChange,
-  inline = false,
-  strings
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const [q, setQ] = _react.default.useState('');
-  if (kind === 'date') {
-    const d = Object.assign({
-      preset: 'any',
-      from: '',
-      to: ''
-    }, value);
-    const range = (k, v) => onChange(Object.assign({}, d, {
-      preset: 'custom',
-      [k]: v
-    }));
-    const on = d.preset && d.preset !== 'any';
-    const body = /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel plx-find-panel--date"
-    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
-      label: label,
-      value: d.preset,
-      onChange: v => onChange(Object.assign({}, d, {
-        preset: v
-      })),
-      options: t.presets.map(x => ({
-        value: x.value,
-        label: x.label
-      })).concat({
-        value: 'custom',
-        label: t.custom
-      })
-    }), /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel__range"
-    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.from
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.from,
-      onChange: e => range('from', e.target.value)
-    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.to
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.to,
-      onChange: e => range('to', e.target.value)
-    }))));
-    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      variant: "ghost",
-      icon: "filter-off",
-      disabled: !on,
-      onClick: () => onChange({
-        preset: 'any',
-        from: '',
-        to: ''
-      })
-    }, t.clear);
-    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-      icon: icon || 'calendar',
-      label: label,
-      title: label,
-      count: on ? 1 : 0,
-      caret: true,
-      size: "sm",
-      footer: footer,
-      inline: inline
-    }, body);
-  }
-  const list = asOptions(options),
-    chosen = value || [];
-  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel plx-find-panel--checklist"
-  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
-    width: "fill",
-    value: q,
-    onChange: e => setQ(e.target.value),
-    onClear: () => setQ(''),
-    placeholder: (0, _panelParts.fill)(t.find, {
-      noun
-    }),
-    label: (0, _panelParts.fill)(t.find, {
-      noun
-    })
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__checklist"
-  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
-    key: o.value,
-    label: /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
-      color: o.color
-    }, o.label),
-    checked: chosen.indexOf(o.value) >= 0,
-    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
-  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, (0, _panelParts.fill)(t.none, {
-    noun
-  }))));
-  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "filter-off",
-    disabled: !chosen.length,
-    onClick: () => onChange([])
-  }, t.clear);
-  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-    icon: icon,
-    label: label,
-    title: label,
-    count: chosen.length,
-    caret: true,
-    size: "sm",
-    footer: footer,
-    inline: inline
-  }, body);
-}
-  } },
   "platform/hooks/useCollectionView.js": { deps: {"react":null,"../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -35669,6 +35833,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ChartTooltip = ChartTooltip;
+exports.chartTooltipText = chartTooltipText;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -35690,14 +35855,18 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      title: the point's heading: its category, date or time
      titleKind: "text" (default: a name, the UI font) | "data" (a date, a time or a number: the data font)
      items: the values: [{ label, value, color }]; label the series' name, value the formatted value (the data font), color
-       the series' data-viz step (seriesColor(i)); one item for single
+       the series' data-viz step (seriesColor(i)); an item without a color has no swatch (a value that is not a
+       series: a running total, a count); one item for single
      className: more classes on the tooltip
    Behavior:
      It does not take the pointer (pointer-events none), so moving along the chart keeps reaching the marks under it.
      The tooltip goes after the point when it is in the first half of the plot and before it in the second half, so it
        stays inside the chart.
      It shows values already in the chart's data table; with the plot it is hidden from assistive technology. The chart
-       interaction (keyboard and pointer, the chart parts' next step) moves it and says the same values in a live region.
+       interaction (useChartInteraction, platform/charts/interaction.js) moves it with the pointer and the arrow keys and
+       says the same values in the live region: chartTooltipText({ title, items }) is that sentence ("March 2026: Web
+       150, iOS 130, Android 90"), so the tooltip and the announcement never differ.
+     chartTooltipText({ title, items }): the tooltip's content as one plain sentence, for the live region
    Notes:
      Drawn in an SVG foreignObject at the point (geometry only); the surface is the popover's (overlay surface, border,
        menu radius and shadow), from the chart-parts tokens. Swatches take the series' data-viz color.
@@ -35706,6 +35875,15 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 // the room the tooltip may take beside its point, in pixels (SVG geometry): it is laid out inside this box
 const BOX_W = 240,
   BOX_H = 200;
+
+// the tooltip as one sentence: the title, then each series' name and value (what the live region says)
+function chartTooltipText({
+  title,
+  items = []
+} = {}) {
+  const values = items.map(it => [it.label, it.value].filter(x => x !== undefined && x !== null && x !== '').join(' ')).join(', ');
+  return title !== undefined && title !== null && title !== '' ? String(title) + (values ? ': ' + values : '') : values;
+}
 function ChartTooltip({
   x,
   y,
@@ -35748,10 +35926,10 @@ function ChartTooltip({
   }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
     key: i,
     className: "plx-chart-tooltip__item"
-  }, /*#__PURE__*/_react.default.createElement("span", {
+  }, it.color ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chart-tooltip__swatch",
-    "data-plx-dataviz": it.color || undefined
-  }), /*#__PURE__*/_react.default.createElement("span", {
+    "data-plx-dataviz": it.color
+  }) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chart-tooltip__label"
   }, it.label), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chart-tooltip__value"
@@ -38044,7 +38222,5974 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/charts/interaction.js": { deps: {"react":null,"../utils/announce.jsx":"platform/utils/announce.jsx","../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CHART_INTERACTION_STRINGS = void 0;
+exports.ChartBrush = ChartBrush;
+exports.ChartFocusMark = ChartFocusMark;
+exports.chartAnnounce = chartAnnounce;
+exports.useChartInteraction = useChartInteraction;
+var _react = _interopRequireDefault(require("react"));
+var _announce = require("../utils/announce.jsx");
+var _cx = require("../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Chart interaction (platform/charts/interaction.js)
+   Summary: How people explore a Plenix chart (07 Data Display › Charts › Chart interaction): one Tab stop per chart, the
+     arrow keys move between the values (columns across, series or rows up and down), the value in focus or under the
+     pointer shows the ChartTooltip and is said in the live region, a crosshair follows lines and areas, a click or Enter
+     selects a value, legend toggles show and hide series, and a brush (a drag, or Shift with the arrow keys) zooms to a
+     range with a Reset zoom button to come back. The charts of wave 9 build on it; ChartFrame wires it to its plot.
+   Usage:
+     const ia = useChartInteraction({ rows: series.length, columns: data.length, series, zoom: true, select: true,
+       describe: ({ r, c }) => chartTooltipText({ title: labels[c], items: … }), labelOf: (c) => labels[c], onSelect });
+     <ChartFrame title="…" interaction={ia} legend={<ChartLegend items={items} {...ia.legendProps} />}>
+       {({ inner }) => { ia.register({ nearest: (x, y) => …, columnAt: (x) => … }); … ia.active ? <ChartTooltip … /> : null }}
+     </ChartFrame>
+     <ChartFocusMark x={x} y={y} color={seriesColor(r)} />        // the value in focus, on its mark
+     {ia.brush ? <ChartBrush x0={x(ia.brush[0])} x1={x(ia.brush[1])} inner={inner} /> : null}
+   Props:
+     useChartInteraction(options) → the chart's interaction (pass it to ChartFrame's interaction prop). options:
+       rows: the number of series (line, area) or rows (heat map) (default 1)
+       columns: the number of values per row: x positions, cells, words, nodes (required)
+       mode: "x" (default: a column at a time, every series at that x: line and area, the shared tooltip) | "point" (one
+         value at a time; the other series are dimmed: heat maps, scatter, network nodes)
+       series: [{ id, label }] in the rows' order, for the legend toggles (legendProps) and the announcements
+       defaultHidden: ids of the series hidden at first; hidden / onToggle(id, visible): the parent controls them
+       zoom: a brush zooms to a range of columns (default false); select: Enter, Space or a click selects (default false)
+       onSelect({ r, c }): runs when a value is selected (a click on a point, Enter)
+       describe({ r, c }): the sentence the live region says for a value (chartTooltipText(…) of the tooltip it shows)
+       labelOf(c): a column's name, for the zoom announcements ("Mar")
+       move(active, key, { shift }): custom navigation for charts that are not a grid (a network: the next connected
+         node in the arrow's direction); returns the next { r, c } or null to stay
+       first(): the value the first arrow key goes to (default the first column of the first series shown)
+       strings: the words it says, for other languages (STRINGS below)
+     The interaction it returns: active ({ r, c } or null: the value under the pointer or in focus), source ("pointer" |
+       "keyboard"), selected, brush ([from, to] columns while marking a range), zoom ([from, to] or null), view() →
+       [from, to] the columns shown, visible(id), hidden, legendProps ({ interactive, hidden, onToggle }), isDimmed(r),
+       register(geometry), setActive, select, resetZoom, and the handlers ChartFrame attaches to the plot.
+     ChartFocusMark({ x, y, color, className }): the ring on the value in focus (geometry only)
+     ChartBrush({ x0, x1, inner, className }): the marked range, shaded down the plot
+     chartAnnounce(text): says a sentence in the page's polite live region (announce)
+   Behavior:
+     Keyboard: Tab reaches the plot once; ← → move along the columns, ↑ ↓ between the series or rows (hidden series are
+       skipped), Home and End go to the first and last column shown; Enter or Space selects (select), Escape clears.
+       With zoom, Shift + ← → marks a range from the value in focus and Enter zooms to it; Reset zoom (a button above the
+       plot) shows everything again. Each move says the value in the live region (polite).
+     Pointer: moving over the plot shows the nearest value (mode "x": the nearest column); a click selects it; with
+       zoom, a drag across the plot marks a range and zooms to it when released.
+     The tooltip and the ring stay inside the plot; they are hidden from assistive technology like the rest of the plot:
+       the live region and the data table carry the values. Leaving the plot or Escape clears them.
+   Notes:
+     Geometry stays in the chart: register() gives the interaction the chart's nearest() and columnAt() for the
+       pointer; the interaction keeps indices, so a resize or a zoom never loses the value in focus.
+     Dimming, the ring, the brush and the focus border are CSS on chart-interaction tokens (chart-interaction.css);
+       transitions use the motion tokens, so reduced motion removes them.
+*/
+
+const CHART_INTERACTION_STRINGS = exports.CHART_INTERACTION_STRINGS = Object.freeze({
+  hint: 'Use the arrow keys to move between the values.',
+  hintSelect: ' Enter selects a value.',
+  hintZoom: ' Shift with the left and right arrow keys marks a range; Enter zooms to it.',
+  plot: '{title}, interactive chart',
+  resetZoom: 'Reset zoom',
+  zoomed: 'Showing {from} to {to}.',
+  zoomReset: 'Showing all values.',
+  range: 'From {from} to {to}. Press Enter to zoom.',
+  shown: '{name} shown',
+  hidden: '{name} hidden',
+  selected: 'Selected. {text}'
+});
+const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (m, k) => o[k] === undefined ? m : o[k]);
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+function chartAnnounce(text) {
+  if (text) (0, _announce.announce)(text);
+}
+function useChartInteraction({
+  rows = 1,
+  columns = 0,
+  mode = 'x',
+  series,
+  defaultHidden = [],
+  hidden: hiddenProp,
+  onToggle,
+  zoom = false,
+  select = false,
+  onSelect,
+  describe,
+  labelOf,
+  move,
+  first,
+  strings
+} = {}) {
+  const t = Object.assign({}, CHART_INTERACTION_STRINGS, strings);
+  const [active, setActiveState] = _react.default.useState(null);
+  const [source, setSource] = _react.default.useState(null);
+  const [selected, setSelected] = _react.default.useState(null);
+  const [brush, setBrush] = _react.default.useState(null);
+  const [zoomRange, setZoom] = _react.default.useState(null);
+  const [ownHidden, setOwnHidden] = _react.default.useState(defaultHidden);
+  const [focused, setFocused] = _react.default.useState(false);
+  const geometry = _react.default.useRef(null);
+  const drag = _react.default.useRef(null);
+  const hidden = hiddenProp === undefined ? ownHidden : hiddenProp;
+  const ids = (series || []).map((s, i) => s.id === undefined ? i : s.id);
+  const rowShown = r => !ids.length || hidden.indexOf(ids[r]) < 0;
+  const n = Math.max(0, columns);
+  const view = () => zoomRange ? [clamp(zoomRange[0], 0, n - 1), clamp(zoomRange[1], 0, n - 1)] : [0, Math.max(0, n - 1)];
+  const say = cell => {
+    if (cell && typeof describe === 'function') chartAnnounce(describe(cell));
+  };
+  const label = c => typeof labelOf === 'function' ? labelOf(c) : String(c + 1);
+  const setActive = (cell, from) => {
+    setActiveState(a => a && cell && a.r === cell.r && a.c === cell.c ? a : cell);
+    if (from) setSource(from);
+  };
+  const doSelect = cell => {
+    if (!select || !cell) return;
+    setSelected(cell);
+    if (typeof onSelect === 'function') onSelect(cell);
+    if (typeof describe === 'function') chartAnnounce(fill(t.selected, {
+      text: describe(cell)
+    }));
+  };
+  const applyZoom = (a, b) => {
+    const from = Math.min(a, b),
+      to = Math.max(a, b);
+    if (to <= from) {
+      setBrush(null);
+      return;
+    }
+    setZoom([from, to]);
+    setBrush(null);
+    setActiveState(x => x && (x.c < from || x.c > to) ? {
+      r: x.r,
+      c: from
+    } : x);
+    chartAnnounce(fill(t.zoomed, {
+      from: label(from),
+      to: label(to)
+    }));
+  };
+  const resetZoom = () => {
+    setZoom(null);
+    setBrush(null);
+    chartAnnounce(t.zoomReset);
+  };
+  const firstRow = () => {
+    for (let r = 0; r < rows; r++) if (rowShown(r)) return r;
+    return 0;
+  };
+  const stepRow = (r, d) => {
+    for (let k = r + d; k >= 0 && k < rows; k += d) if (rowShown(k)) return k;
+    return r;
+  };
+  const keyDown = e => {
+    const k = e.key;
+    const [v0, v1] = view();
+    const cur = active && rowShown(active.r) ? active : null;
+    let next = null;
+    if (k === 'Escape') {
+      if (brush) {
+        setBrush(null);
+        e.preventDefault();
+        return;
+      }
+      if (cur || selected) {
+        setActiveState(null);
+        setSelected(null);
+        e.preventDefault();
+      }
+      return;
+    }
+    if ((k === 'Enter' || k === ' ') && (zoom && brush || select)) {
+      e.preventDefault();
+      if (zoom && brush) applyZoom(brush[0], brush[1]);else doSelect(cur);
+      return;
+    }
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].indexOf(k) < 0) return;
+    e.preventDefault();
+    const start = {
+      r: firstRow(),
+      c: v0
+    };
+    if (zoom && e.shiftKey && (k === 'ArrowLeft' || k === 'ArrowRight') && cur && !move) {
+      const anchor = brush ? brush[0] : cur.c;
+      const end = clamp((brush ? brush[1] : cur.c) + (k === 'ArrowRight' ? 1 : -1), v0, v1);
+      setBrush([anchor, end]);
+      setActive({
+        r: cur.r,
+        c: end
+      }, 'keyboard');
+      chartAnnounce(fill(t.range, {
+        from: label(Math.min(anchor, end)),
+        to: label(Math.max(anchor, end))
+      }));
+      return;
+    }
+    if (brush) setBrush(null);
+    if (!cur) next = typeof first === 'function' ? first() || start : start;else if (typeof move === 'function') next = move(cur, k, {
+      shift: e.shiftKey,
+      view: [v0, v1]
+    }) || cur;else if (k === 'ArrowLeft') next = {
+      r: cur.r,
+      c: clamp(cur.c - 1, v0, v1)
+    };else if (k === 'ArrowRight') next = {
+      r: cur.r,
+      c: clamp(cur.c + 1, v0, v1)
+    };else if (k === 'Home') next = {
+      r: cur.r,
+      c: v0
+    };else if (k === 'End') next = {
+      r: cur.r,
+      c: v1
+    };else if (k === 'ArrowUp') next = {
+      r: stepRow(cur.r, -1),
+      c: cur.c
+    };else next = {
+      r: stepRow(cur.r, 1),
+      c: cur.c
+    };
+    setActive(next, 'keyboard');
+    say(next);
+  };
+  const nearest = (x, y) => geometry.current && typeof geometry.current.nearest === 'function' ? geometry.current.nearest(x, y) : null;
+  const columnAt = x => {
+    if (geometry.current && typeof geometry.current.columnAt === 'function') return geometry.current.columnAt(x);
+    const cell = nearest(x, 0);
+    return cell ? cell.c : null;
+  };
+  const pointerDown = (x, y, e) => {
+    if (!zoom || e && e.button !== undefined && e.button !== 0) return;
+    const c = columnAt(x);
+    if (c === null || c === undefined) return;
+    drag.current = {
+      from: c,
+      moved: false
+    };
+  };
+  const pointerMove = (x, y) => {
+    if (drag.current) {
+      const c = columnAt(x);
+      if (c !== null && c !== undefined && c !== drag.current.from) {
+        drag.current.moved = true;
+        setBrush([drag.current.from, c]);
+      }
+    }
+    const cell = nearest(x, y);
+    if (cell && rowShown(cell.r)) setActive(cell, 'pointer');else if (!focused || source === 'pointer') setActiveState(null);
+  };
+  const pointerUp = (x, y) => {
+    const d = drag.current;
+    drag.current = null;
+    if (d && d.moved) {
+      const c = columnAt(x);
+      applyZoom(d.from, c === null || c === undefined ? d.from : c);
+      return;
+    }
+    const cell = nearest(x, y);
+    if (cell && rowShown(cell.r)) doSelect(cell);
+  };
+  const pointerLeave = () => {
+    drag.current = null;
+    if (!focused || source === 'pointer') setActiveState(null);
+  };
+  const onFocus = () => setFocused(true);
+  const onBlur = () => {
+    setFocused(false);
+    setActiveState(null);
+    setBrush(null);
+  };
+  const toggle = (id, visible) => {
+    if (hiddenProp === undefined) setOwnHidden(h => visible ? h.filter(x => x !== id) : h.concat([id]));
+    if (typeof onToggle === 'function') onToggle(id, visible);
+    const s = (series || []).find((x, i) => (x.id === undefined ? i : x.id) === id);
+    chartAnnounce(fill(visible ? t.shown : t.hidden, {
+      name: s ? s.label : id
+    }));
+    setActiveState(a => a && ids[a.r] === id && !visible ? null : a);
+  };
+  return {
+    interactive: true,
+    mode,
+    active,
+    source,
+    selected,
+    brush,
+    zoom: zoomRange,
+    zoomed: !!zoomRange,
+    focused,
+    hidden,
+    strings: t,
+    hint: t.hint + (select ? t.hintSelect : '') + (zoom && !move ? t.hintZoom : ''),
+    view,
+    visible: id => hidden.indexOf(id) < 0,
+    isDimmed: r => mode === 'point' && !!active && active.r !== r,
+    legendProps: {
+      interactive: true,
+      hidden,
+      onToggle: toggle
+    },
+    register: g => {
+      geometry.current = g;
+    },
+    setActive,
+    select: doSelect,
+    resetZoom,
+    setZoom: applyZoom,
+    keyDown,
+    pointerDown,
+    pointerMove,
+    pointerUp,
+    pointerLeave,
+    onFocus,
+    onBlur
+  };
+}
+function ChartFocusMark({
+  x,
+  y,
+  color,
+  className
+}) {
+  if (x === undefined || x === null || y === undefined || y === null || isNaN(x) || isNaN(y)) return null;
+  return /*#__PURE__*/_react.default.createElement('circle', {
+    className: (0, _cx.cx)('plx-chart-focus', className),
+    'data-plx-dataviz': color || undefined,
+    cx: x,
+    cy: y
+  });
+}
+function ChartBrush({
+  x0,
+  x1,
+  inner,
+  className
+}) {
+  if (x0 === undefined || x1 === undefined || !inner) return null;
+  const a = Math.min(x0, x1),
+    b = Math.max(x0, x1);
+  return /*#__PURE__*/_react.default.createElement('rect', {
+    className: (0, _cx.cx)('plx-chart-brush', className),
+    x: a,
+    y: 0,
+    width: Math.max(0, b - a),
+    height: inner.height
+  });
+}
+  } },
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LineChart = LineChart;
+exports.SeriesChart = SeriesChart;
+exports.pathOf = void 0;
+exports.stepPoints = stepPoints;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _position = require("./parts/position.js");
+var _Axis = require("./parts/Axis.jsx");
+var _GridLines = require("./parts/GridLines.jsx");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _interaction = require("./interaction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LineChart
+   Summary: A line chart (07 Data Display › Charts › Line chart, and its Step chart variant): one line per series through
+     its values over an ordered range, usually time, drawn in ChartFrame with its axes, grid lines and data table. Lines
+     are straight between values (curve "linear") or hold each value until the next change (curve "step"); points mark
+     the values when there are few of them. It is interactive: one Tab stop, the arrow keys and the pointer move a
+     crosshair with the shared tooltip, the value is said in the live region, the legend shows and hides series, and a
+     brush can zoom to a range.
+   Usage:
+     <LineChart title="Sign-ups by platform" description="Sign-ups grew on every platform; the web stays ahead."
+       data={rows} x="month" series={[{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }]} yLabel="Sign-ups" />
+     <LineChart title="Price per seat" data={prices} x="date" series={[{ id: 'price', label: 'Price' }]} curve="step" points
+       format={(v) => formatCurrency(v, 'USD')} />
+     <LineChart … zoom onSelect={({ r, c }) => openDay(rows[c])} overlay={({ inner, y }) => <ReferenceLine scale={y} value={250} inner={inner} label="Target" />} />
+   Props:
+     title, description: the chart's name and its takeaway (ChartFrame) (title required)
+     data: the rows, in the x order: [{ month: 'Jan', web: 120, ios: 80 }, …]; a missing value (null) breaks the line
+     x: the field of each row that holds its x value (default "x"): a name (categories), a Date (time) or a number
+     series: the lines, in the legend's order: [{ id, label, field }] (field defaults to id); colors follow that order
+       (seriesColor(i))
+     xType: "auto" (default: from the first x value) | "band" (categories) | "time" | "linear"
+     curve: "linear" (default: straight between values) | "step" (holds each value until the next one: the Step chart)
+     step: where a step changes: "after" (default: at the next value) | "before" (at this value)
+     points: draws a point on every value (default false; true for few values, or when the moments matter)
+     zero: starts the value axis at zero (default true); false lets a trend fill the plot (say so in the description)
+     yDomain: [min, max] of the value axis, instead of the data's
+     format: (value) => text for values (ticks, tooltip, table), default formatNumber; formatX: (x) => text for x values
+       (default: formatDate for time, formatNumber for numbers, the name for categories)
+     xLabel, yLabel: the axis titles (the measure and its unit); give margin room for them
+     size, margin, legendPosition: as ChartFrame
+     legend: "auto" (default: a legend when there are two or more series; interactive toggles) | false | a node
+     interactive: keyboard, pointer, tooltip and live region (default true)
+     zoom: a brush (a drag, or Shift with the arrow keys) zooms to a range of x values; Reset zoom shows all (default false)
+     onSelect({ r, c, row, series }): a click or Enter on a value selects it (the selected value keeps its ring)
+     overlay({ inner, x, y, at }): more SVG on top of the lines: reference lines, thresholds, annotations (x is the x
+       scale of the shown range, at(i) the x position of row i)
+     strings: the words it shows, for other languages: { category: "Category" } (the table's first column without
+       xLabel); the frame's and the interaction's words are theirs (frameStrings, interactionStrings)
+     className: more classes on the figure
+   Behavior:
+     One Tab stop: ← → move the crosshair along the values, ↑ ↓ between the series, Home and End to the ends; each move
+       says the values at that x in the live region (the series in focus first). The pointer does the same on hover.
+     A missing value is a gap: the line is not drawn across it, and the table shows a dash.
+     The legend's toggles hide and show series (the last one shown stays); the value axis follows the series shown.
+     With zoom, the axis shows the marked range only; the Reset zoom button above the plot brings back all values.
+   Notes:
+     Every color is a data-viz step (seriesColor by the series' order); lines, points and the focus ring take the frame's
+       and the chart-interaction tokens; the point radius is --plx-comp-line-chart-point-radius. No style is written.
+     Up to about five series; more lines tangle: use small multiples. Unordered categories: a bar or column chart.
+*/
+const STRINGS = {
+  category: 'Category'
+};
+const DASH = '—';
+// the room one tick label needs along the x axis, in pixels: fewer ticks on a narrow chart
+const TICK_ROOM = 64,
+  EDGE = TICK_ROOM / 2;
+const isNum = v => typeof v === 'number' && isFinite(v);
+const typeOf = v => v instanceof Date ? 'time' : typeof v === 'number' ? 'linear' : 'band';
+
+// a line's points made into a step path's corners: after (change at the next value) or before (at this value)
+function stepPoints(pts, step = 'after') {
+  const out = [];
+  pts.forEach((p, i) => {
+    if (i) {
+      const q = pts[i - 1];
+      out.push(step === 'before' ? [q[0], p[1]] : [p[0], q[1]]);
+    }
+    out.push(p);
+  });
+  return out;
+}
+const pathOf = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0] + ',' + p[1]).join('');
+// runs of consecutive present values (a missing value breaks a line or an area)
+exports.pathOf = pathOf;
+function runs(cols, has) {
+  const out = [];
+  let cur = [];
+  cols.forEach(c => {
+    if (has(c)) cur.push(c);else if (cur.length) {
+      out.push(cur);
+      cur = [];
+    }
+  });
+  if (cur.length) out.push(cur);
+  return out;
+}
+
+// the shared engine of LineChart and AreaChart (kind "area": filled down to the baseline or the series under it)
+function SeriesChart({
+  kind = 'line',
+  title,
+  description,
+  data = [],
+  x = 'x',
+  series = [],
+  xType = 'auto',
+  curve = 'linear',
+  step = 'after',
+  points = false,
+  stack = 'none',
+  zero = true,
+  yDomain,
+  format,
+  formatX,
+  xLabel,
+  yLabel,
+  size = 'md',
+  margin,
+  legend = 'auto',
+  legendPosition = 'bottom',
+  interactive = true,
+  zoom = false,
+  onSelect,
+  overlay,
+  strings,
+  frameStrings,
+  interactionStrings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const area = kind === 'area';
+  const stacked = area && (stack === 'stacked' || stack === 'percent');
+  const percent = area && stack === 'percent';
+  const list = series.map((s, i) => ({
+    id: s.id === undefined ? 'series-' + i : s.id,
+    label: s.label === undefined ? String(s.id) : s.label,
+    field: s.field || s.id,
+    color: s.color || (0, _scales.seriesColor)(i)
+  }));
+  const xv = data.map(row => row ? row[x] : undefined);
+  const type = xType === 'auto' ? typeOf(xv.find(v => v !== undefined && v !== null)) : xType;
+  const xs = type === 'time' ? xv.map(v => v instanceof Date ? v : new Date(v)) : xv;
+  const raw = (s, c) => {
+    const v = data[c] ? data[c][list[s].field] : undefined;
+    return isNum(v) ? v : null;
+  };
+  const fmtX = typeof formatX === 'function' ? formatX : type === 'time' ? v => (0, _format.formatDate)(v) : type === 'linear' ? v => (0, _format.formatNumber)(v) : v => String(v);
+  const fmtV = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
+  const shown = s => ia.visible(list[s].id);
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: list.length,
+    columns: data.length,
+    mode: 'x',
+    series: list,
+    zoom,
+    select: typeof onSelect === 'function',
+    onSelect: cell => onSelect && onSelect(Object.assign({
+      row: data[cell.c],
+      series: list[cell.r]
+    }, cell)),
+    labelOf: c => fmtX(xs[c]),
+    strings: interactionStrings,
+    describe: cell => (0, _ChartTooltip.chartTooltipText)({
+      title: fmtX(xs[cell.c]),
+      items: tipItems(cell.c, cell.r)
+    })
+  });
+
+  // stacked values: the bottom and the top of each series at each column (shown series only); percent: shares of 1
+  const level = (s, c) => {
+    if (!stacked) {
+      const v = raw(s, c);
+      return v === null ? null : [0, v];
+    }
+    let base = 0,
+      total = 0;
+    for (let k = 0; k < list.length; k++) if (shown(k)) total += raw(k, c) || 0;
+    for (let k = 0; k < s; k++) if (shown(k)) base += raw(k, c) || 0;
+    const v = raw(s, c) || 0;
+    const div = percent ? total || 1 : 1;
+    return [base / div, (base + v) / div];
+  };
+  function tipItems(c, first) {
+    const items = [];
+    list.forEach((s, i) => {
+      if (!shown(i)) return;
+      const v = raw(i, c);
+      const share = percent && v !== null ? level(i, c) : null;
+      items.push({
+        label: s.label,
+        value: v === null ? DASH : percent ? (0, _format.formatPercent)(share[1] - share[0]) + ' (' + fmtV(v) + ')' : fmtV(v),
+        color: s.color,
+        i
+      });
+    });
+    if (first !== undefined) items.sort((a, b) => a.i === first ? -1 : b.i === first ? 1 : 0);
+    return items;
+  }
+  const table = {
+    columns: [{
+      title: xLabel || t.category,
+      field: 'x',
+      kind: type === 'band' ? 'name' : 'data',
+      rowLabel: true
+    }].concat(list.map((s, i) => ({
+      title: s.label,
+      field: 's' + i,
+      kind: 'data',
+      hozAlign: 'right'
+    }))),
+    data: data.map((row, c) => {
+      const o = {
+        id: c + 1,
+        x: fmtX(xs[c])
+      };
+      list.forEach((s, i) => {
+        const v = raw(i, c);
+        o['s' + i] = v === null ? DASH : fmtV(v);
+      });
+      return o;
+    })
+  };
+  const legendNode = legend === 'auto' ? list.length > 1 ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, _extends({
+    items: list.map(s => ({
+      id: s.id,
+      label: s.label,
+      color: s.color
+    })),
+    shape: area ? 'square' : 'line'
+  }, interactive ? ia.legendProps : {})) : null : legend || null;
+  const draw = ({
+    inner,
+    margin: m
+  }) => {
+    const [v0, v1] = ia.view();
+    const cols = [];
+    for (let c = v0; c <= v1; c++) cols.push(c);
+    if (!cols.length) return null;
+    // x: categories in bands (a value at each band's middle), or a continuous time or number scale
+    let xScale, posOf;
+    if (type === 'band') {
+      xScale = (0, _scales.scaleBand)({
+        domain: cols,
+        range: [0, inner.width],
+        paddingInner: 0,
+        paddingOuter: 0
+      });
+      posOf = c => (0, _position.scalePosition)(xScale, c);
+    }
+    // a continuous axis keeps half a tick label's room at each end, so the first and last labels stay inside the chart
+    else if (type === 'time') {
+      xScale = (0, _scales.scaleTime)({
+        domain: [xs[v0], xs[v1]],
+        range: [EDGE, inner.width - EDGE]
+      });
+      posOf = c => xScale(xs[c]);
+    } else {
+      xScale = (0, _scales.scaleLinear)({
+        domain: [Number(xs[v0]), Number(xs[v1])],
+        range: [EDGE, inner.width - EDGE]
+      });
+      posOf = c => xScale(Number(xs[c]));
+    }
+    // y: the shown series' values in the shown range (stacked: the tops; percent: 0 to 100%)
+    let lo = Infinity,
+      hi = -Infinity;
+    list.forEach((s, i) => {
+      if (!shown(i)) return;
+      cols.forEach(c => {
+        const l = level(i, c);
+        if (l) {
+          lo = Math.min(lo, l[1], stacked ? l[0] : l[1]);
+          hi = Math.max(hi, l[1]);
+        }
+      });
+    });
+    if (!isFinite(lo)) {
+      lo = 0;
+      hi = 1;
+    }
+    if (zero || area) {
+      lo = Math.min(0, lo);
+      hi = Math.max(0, hi);
+    }
+    const dom = percent ? [0, 1] : Array.isArray(yDomain) ? yDomain : [lo, hi];
+    const y = (0, _scales.scaleLinear)({
+      domain: dom,
+      range: [inner.height, 0],
+      nice: !percent && !Array.isArray(yDomain),
+      count: Math.max(2, Math.min(5, Math.floor(inner.height / 40)))
+    });
+    const yFormat = percent ? v => (0, _format.formatPercent)(v) : typeof format === 'function' ? format : undefined;
+    const room = Math.max(2, Math.floor(inner.width / TICK_ROOM));
+    const every = Math.max(1, Math.ceil(cols.length / room));
+    const xTicks = type === 'band' ? cols.filter((c, k) => k % every === 0) : room;
+    const xFormat = type === 'band' ? c => fmtX(xs[c]) : typeof formatX === 'function' ? formatX : undefined;
+
+    // the pointer's geometry: the nearest shown column, then the nearest series at it
+    const columnAt = px => cols.reduce((best, c) => Math.abs(posOf(c) - px) < Math.abs(posOf(best) - px) ? c : best, cols[0]);
+    ia.register({
+      columnAt,
+      nearest: (px, py) => {
+        const c = columnAt(px);
+        let r = null,
+          d = Infinity;
+        list.forEach((s, i) => {
+          const l = shown(i) ? level(i, c) : null;
+          if (l && Math.abs(y(l[1]) - py) < d) {
+            d = Math.abs(y(l[1]) - py);
+            r = i;
+          }
+        });
+        return r === null ? null : {
+          r,
+          c
+        };
+      }
+    });
+    const marks = list.map((s, i) => {
+      if (!shown(i)) return null;
+      const segs = runs(cols, c => stacked ? true : raw(i, c) !== null);
+      const top = seg => seg.map(c => [posOf(c), y(level(i, c)[1])]);
+      const bottom = seg => seg.map(c => [posOf(c), y(stacked ? level(i, c)[0] : 0)]);
+      const shape = pts => curve === 'step' ? stepPoints(pts, step) : pts;
+      return /*#__PURE__*/_react.default.createElement("g", {
+        key: s.id,
+        className: "plx-line-chart__series"
+      }, area ? segs.map((seg, k) => /*#__PURE__*/_react.default.createElement("path", {
+        key: 'a' + k,
+        className: "plx-chart__mark plx-area-chart__area",
+        "data-plx-dataviz": s.color,
+        d: pathOf(shape(top(seg)).concat(shape(bottom(seg)).reverse())) + 'Z'
+      })) : null, segs.map((seg, k) => /*#__PURE__*/_react.default.createElement("path", {
+        key: 'l' + k,
+        className: "plx-chart__line",
+        "data-plx-dataviz": s.color,
+        d: pathOf(shape(top(seg)))
+      })), points ? cols.map(c => {
+        const l = raw(i, c) === null ? null : level(i, c);
+        return l ? /*#__PURE__*/_react.default.createElement("circle", {
+          key: c,
+          className: "plx-chart__point plx-line-chart__point",
+          "data-plx-dataviz": s.color,
+          cx: posOf(c),
+          cy: y(l[1])
+        }) : null;
+      }) : null);
+    });
+    const a = ia.active && ia.active.c >= v0 && ia.active.c <= v1 ? ia.active : null;
+    const sel = ia.selected && ia.selected.c >= v0 && ia.selected.c <= v1 && shown(ia.selected.r) ? ia.selected : null;
+    const selLevel = sel && raw(sel.r, sel.c) !== null ? level(sel.r, sel.c) : null;
+    return /*#__PURE__*/_react.default.createElement("g", {
+      className: (0, _cx.cx)('plx-line-chart__plot', area && 'plx-area-chart__plot')
+    }, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
+      scale: y,
+      inner: inner,
+      ticks: y.ticks()
+    }), ia.brush ? /*#__PURE__*/_react.default.createElement(_interaction.ChartBrush, {
+      x0: posOf(ia.brush[0]),
+      x1: posOf(ia.brush[1]),
+      inner: inner
+    }) : null, marks, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: y,
+      orient: "left",
+      inner: inner,
+      margin: m,
+      format: yFormat,
+      label: yLabel,
+      ticks: y.ticks()
+    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: xScale,
+      orient: "bottom",
+      inner: inner,
+      margin: m,
+      format: xFormat,
+      label: xLabel,
+      ticks: xTicks
+    }), typeof overlay === 'function' ? overlay({
+      inner,
+      x: xScale,
+      y,
+      at: posOf
+    }) : null, selLevel ? /*#__PURE__*/_react.default.createElement(_interaction.ChartFocusMark, {
+      className: "plx-chart-selected",
+      x: posOf(sel.c),
+      y: y(selLevel[1]),
+      color: list[sel.r].color
+    }) : null, a ? list.map((s, i) => {
+      const l = shown(i) && raw(i, a.c) !== null ? level(i, a.c) : null;
+      return l ? /*#__PURE__*/_react.default.createElement(_interaction.ChartFocusMark, {
+        key: s.id,
+        x: posOf(a.c),
+        y: y(l[1]),
+        color: s.color
+      }) : null;
+    }) : null, a ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+      variant: "shared",
+      x: posOf(a.c),
+      inner: inner,
+      title: fmtX(xs[a.c]),
+      titleKind: type === 'band' ? 'text' : 'data',
+      items: tipItems(a.c)
+    }) : null);
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    size: size,
+    margin: margin,
+    table: table,
+    legend: legendNode,
+    legendPosition: legendPosition,
+    interaction: interactive ? ia : undefined,
+    strings: frameStrings,
+    className: (0, _cx.cx)(area ? 'plx-area-chart' : 'plx-line-chart', area && stacked && 'plx-area-chart--stacked', className)
+  }, draw);
+}
+function LineChart(props) {
+  return /*#__PURE__*/_react.default.createElement(SeriesChart, _extends({}, props, {
+    kind: "line",
+    stack: "none"
+  }));
+}
+  } },
+  "platform/charts/AreaChart.jsx": { deps: {"react":null,"./LineChart.jsx":"platform/charts/LineChart.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AreaChart = AreaChart;
+var _react = _interopRequireDefault(require("react"));
+var _LineChart = require("./LineChart.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AreaChart
+   Summary: An area chart (07 Data Display › Charts › Area chart): a line chart whose lines are filled down to the zero
+     baseline, to show a volume over time; stacked, the series pile up so the top edge is their total; percent, each
+     column adds up to 100% and the areas show the shares. Built on LineChart's engine: the same axes, data table,
+     interaction (one Tab stop, crosshair, shared tooltip, live region, legend toggles, zoom) and props.
+   Usage:
+     <AreaChart title="Storage by file type" description="Video takes most of the growth." data={weeks} x="week"
+       series={[{ id: 'video', label: 'Video' }, { id: 'images', label: 'Images' }]} stack="stacked" yLabel="Storage (GB)" />
+     <AreaChart title="Share of traffic by platform" data={rows} x="month" series={platforms} stack="percent" />
+     <AreaChart title="Active users" data={days} x="date" series={[{ id: 'users', label: 'Users' }]} />
+   Props:
+     Every LineChart prop (title, description, data, x, series, xType, curve, step, points, yDomain, format, formatX,
+       xLabel, yLabel, size, margin, legend, legendPosition, interactive, zoom, onSelect, overlay, strings, className);
+       the value axis always starts at zero
+     stack: "none" (default: each area from zero, see-through where they overlap: one or two series) | "stacked" (each
+       series on top of the one before it; the top edge is the total) | "percent" (stacked to 100%: the shares; the axis
+       and the tooltip in percent, the tooltip with the value too)
+   Behavior:
+     As LineChart: ← → move the crosshair, ↑ ↓ the series, every move is said in the live region; hidden series leave
+       the stack, and the rest close up (percent: the shares of the series shown).
+     A missing value is a gap when not stacked; in a stack it counts as zero, so the stack stays closed.
+   Notes:
+     The fill is the series' data-viz color at --plx-comp-area-chart-fill-opacity (see-through, overlapping) or
+       --plx-comp-area-chart-stacked-fill-opacity (stacked); the line on top is the frame's line. Put the most stable
+       series at the bottom of a stack (first in series). More than two overlapping areas: a line chart.
+*/
+const STACKS = ['none', 'stacked', 'percent'];
+function AreaChart({
+  stack = 'none',
+  ...props
+}) {
+  return /*#__PURE__*/_react.default.createElement(_LineChart.SeriesChart, _extends({}, props, {
+    kind: "area",
+    zero: true,
+    stack: STACKS.indexOf(stack) >= 0 ? stack : 'none'
+  }));
+}
+  } },
+  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Gauge = Gauge;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _Details = require("../components/Details/Details.jsx");
+var _Table = require("../components/Table/Table.jsx");
+var _Badge = require("../components/Badge/Badge.jsx");
+var _scales = require("./scales.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Gauge
+   Summary: A gauge (07 Data Display › Charts › Gauge): one value inside a known range, as a semicircle track filled up to
+     the value, the value in the data font in its middle, the minimum and maximum at the ends, and, with thresholds, the
+     warning and critical ranges along the outside of the track with a status badge that names the range the value is in.
+     A meter to assistive technology (role meter with its value, minimum, maximum and value text).
+   Usage:
+     <Gauge title="Storage used" value={72} format={(v) => v + '%'} label="of 100 GB" />
+     <Gauge title="Storage used" value={86} format={(v) => v + '%'}
+       thresholds={[{ value: 80, level: 'warning', label: 'Nearly full' }, { value: 95, level: 'critical', label: 'Full' }]} />
+   Props:
+     title: what is measured (required): the caption's title and the meter's name
+     description: one sentence on what the value means
+     value: the value (required); min, max: the range (default 0 and 100); values outside are drawn at the ends
+     format: (value) => text for the value, the ends and the table (default formatNumber)
+     label: a few words under the value that say its unit or its whole ("of 100 GB", "score")
+     thresholds: the ranges that call for attention, from their start upward: [{ value, level: "warning" | "critical",
+       label }]; each range runs to the next threshold or the maximum, along the outside of the track in the data-viz
+       alert color; the range the value is in shows as a status badge with its label
+     size: "sm" (160px wide) | "md" (default, 200px) | "lg" (240px)
+     hideCaption: keeps the title and description for assistive technology only (default false)
+     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data",
+       measure: "Measure", value: "Value", min: "Minimum", max: "Maximum", ok: "" (a badge for the range under every
+       threshold; empty: none) }
+     className: more classes on the figure
+   Behavior:
+     Static: it has no keyboard stop of its own; the meter's value text says the value, its label and its range's name
+       ("86%, of 100 GB, Nearly full"). The data table under it lists the value, the ends and the thresholds.
+     The status badge pairs the range's color with its name and icon, so color is never the only cue.
+   Notes:
+     The track, the fill and the bands are SVG paths (geometry only) colored by classes: the fill the first categorical
+       data-viz color, the bands the alert scale; sizes, widths and type are --plx-comp-gauge-* tokens. One value per
+       gauge: to compare values, use a bar or bullet chart; for a value without a range, a metric.
+*/
+
+const STRINGS = {
+  showData: 'Show the data',
+  table: '{title}: data',
+  measure: 'Measure',
+  value: 'Value',
+  min: 'Minimum',
+  max: 'Maximum',
+  ok: ''
+};
+const SIZES = ['sm', 'md', 'lg'];
+const LEVELS = {
+  warning: {
+    tone: 'waiting',
+    icon: 'warning'
+  },
+  critical: {
+    tone: 'negative',
+    icon: 'alert'
+  }
+};
+// the dial's geometry in SVG user units (the SVG is scaled to the size's width): the center, the track's radius and the
+// thresholds' radius outside it
+const VB_W = 160,
+  VB_H = 88,
+  CX = 80,
+  CY = 80,
+  R = 60,
+  RB = 74;
+const arc = (r, t0, t1) => {
+  const at = t => {
+    const a = Math.PI * (1 - t);
+    return [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+  };
+  const p = at(t0),
+    q = at(t1);
+  return 'M' + p[0] + ',' + p[1] + 'A' + r + ',' + r + ' 0 0 1 ' + q[0] + ',' + q[1];
+};
+function Gauge({
+  title,
+  description,
+  value,
+  min = 0,
+  max = 100,
+  format,
+  label,
+  thresholds = [],
+  size = 'md',
+  hideCaption = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-gauge' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
+  const span = max - min || 1;
+  const frac = v => Math.min(1, Math.max(0, (Number(v) - min) / span));
+  const v = Number(value);
+  const bands = thresholds.filter(x => x && LEVELS[x.level]).slice().sort((a, b) => a.value - b.value);
+  const now = bands.filter(b => v >= b.value).pop();
+  const status = now ? {
+    tone: LEVELS[now.level].tone,
+    icon: LEVELS[now.level].icon,
+    label: now.label
+  } : t.ok ? {
+    tone: 'success',
+    icon: 'circle-check',
+    label: t.ok
+  } : null;
+  const valueText = [fmt(v), label, status && status.label].filter(Boolean).join(', ');
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const table = {
+    columns: [{
+      title: t.measure,
+      field: 'm',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.value,
+      field: 'v',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: [{
+      id: 1,
+      m: t.value,
+      v: fmt(v)
+    }, {
+      id: 2,
+      m: t.min,
+      v: fmt(min)
+    }, {
+      id: 3,
+      m: t.max,
+      v: fmt(max)
+    }].concat(bands.map((b, i) => ({
+      id: 4 + i,
+      m: b.label || b.level,
+      v: fmt(b.value)
+    })))
+  };
+  return /*#__PURE__*/_react.default.createElement("figure", {
+    className: (0, _cx.cx)('plx-chart', 'plx-gauge', 'plx-gauge--' + s, bands.length && 'plx-gauge--thresholds', className)
+  }, /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: uid + '-title',
+    className: "plx-chart__title"
+  }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
+    id: uid + '-desc',
+    className: "plx-chart__description"
+  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__meter",
+    role: "meter",
+    "aria-labelledby": uid + '-title',
+    "aria-describedby": description ? uid + '-desc' : undefined,
+    "aria-valuenow": v,
+    "aria-valuemin": min,
+    "aria-valuemax": max,
+    "aria-valuetext": valueText
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__dial"
+  }, /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-gauge__svg",
+    viewBox: '0 0 ' + VB_W + ' ' + VB_H,
+    "aria-hidden": "true",
+    focusable: "false"
+  }, bands.map((b, i) => /*#__PURE__*/_react.default.createElement("path", {
+    key: i,
+    className: "plx-gauge__band",
+    "data-plx-dataviz": 'alert-' + b.level,
+    d: arc(RB, frac(b.value), i + 1 < bands.length ? frac(bands[i + 1].value) : 1)
+  })), /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-gauge__track",
+    d: arc(R, 0, 1)
+  }), frac(v) > 0 ? /*#__PURE__*/_react.default.createElement("path", {
+    className: "plx-gauge__fill",
+    "data-plx-dataviz": (0, _scales.seriesColor)(0),
+    d: arc(R, 0, frac(v))
+  }) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__readout",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__value"
+  }, fmt(v)), label ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__label"
+  }, label) : null)), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-gauge__range",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__end"
+  }, fmt(min)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-gauge__end"
+  }, fmt(max))), status ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    className: "plx-gauge__status",
+    tone: status.tone,
+    icon: status.icon
+  }, status.label) : null), /*#__PURE__*/_react.default.createElement(_Details.Details, {
+    summary: t.showData,
+    variant: "inline",
+    className: "plx-chart__data"
+  }, /*#__PURE__*/_react.default.createElement(_Table.Table, {
+    label: t.table.replace('{title}', title || ''),
+    columns: table.columns,
+    data: table.data
+  })));
+}
+  } },
+  "platform/charts/HeatMap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.HeatMap = HeatMap;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _dataviz = require("../utils/dataviz.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _position = require("./parts/position.js");
+var _Axis = require("./parts/Axis.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _interaction = require("./interaction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · HeatMap
+   Summary: A heat map (07 Data Display › Charts › Heat map): a grid of cells whose color shows the value where a row and
+     a column meet (matrix: hour by weekday, team by month), or one cell per day laid out in weeks (calendar heat map),
+     colored by the sequential data-viz scale (or the diverging one around a midpoint), with a scale legend from the lowest
+     to the highest value. Interactive: one Tab stop, the arrow keys move from cell to cell, each cell's value shows in
+     the tooltip and is said in the live region.
+   Usage:
+     <HeatMap title="Uploads by hour" description="Most uploads arrive on weekday mornings." rows={['Mon', 'Tue', …]}
+       columns={['8:00', '9:00', …]} values={[[4, 12, …], …]} valueLabel="Uploads" />
+     <HeatMap variant="calendar" title="Daily edits" data={days.map((d) => ({ date: d.date, value: d.edits }))} valueLabel="Edits" />
+     <HeatMap … scale="diverging" min={-10} max={10} format={(v) => formatPercent(v / 100, { sign: true })} />
+   Props:
+     title, description: the chart's name and its takeaway (ChartFrame) (title required)
+     variant: "matrix" (default: rows × columns) | "calendar" (one cell per day: a column per week, a row per weekday)
+     rows, columns: the matrix's row and column names, top to bottom and in reading order (matrix)
+     values: the matrix's values, values[row][column]; null is a missing value (matrix)
+     data: the days, [{ date, value }] (calendar); days without a value inside the range are missing values
+     valueLabel: what a value is ("Uploads"): the tooltip's and the table's name for it (default strings.value)
+     scale: "sequential" (default: one hue, the lowest lightest) | "diverging" (two hues around the midpoint of min and max)
+     min, max: the scale's ends (default the data's lowest and highest; diverging: symmetric around zero)
+     format: (value) => text (default formatNumber)
+     size, margin: as ChartFrame (calendar defaults to size "sm")
+     interactive: keyboard, pointer, tooltip and live region (default true); onSelect({ r, c, value }): a click or Enter
+     strings: the words it shows: { value: "Value", row: "Row", column: "Column", date: "Date", missing: "No data",
+       low: "Low", high: "High", scale: "Color scale" }; weekday and month names follow the reader's locale
+     className: more classes on the figure
+   Behavior:
+     ← → move along a row (calendar: a week earlier or later), ↑ ↓ along a column (calendar: the day before or after);
+       Home and End go to the row's ends. Each move says "<row>, <column>: <value>" in the live region.
+     A missing value is drawn as an empty cell with a dashed edge (never the lowest color) and says "No data".
+     The scale legend under the plot shows the seven steps from the lowest value to the highest.
+   Notes:
+     Cell colors are data-viz steps (datavizStep, data-plx-dataviz); never a categorical palette. Exact values matter:
+       the tooltip and the table carry them. Cell gaps, edges and the legend's swatches are --plx-comp-heat-map-* tokens.
+*/
+
+const STRINGS = {
+  value: 'Value',
+  row: 'Row',
+  column: 'Column',
+  date: 'Date',
+  missing: 'No data',
+  low: 'Low',
+  high: 'High',
+  scale: 'Color scale'
+};
+const DAY = 24 * 60 * 60 * 1000;
+// the gap between cells, as a fraction of a cell (band padding: geometry)
+const GAP = 0.1;
+const dayStart = d => {
+  const x = new Date(d instanceof Date ? d.getTime() : d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+};
+const keyOf = d => d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+
+// the calendar's grid: a column per week (Sunday first), a row per weekday, and each cell's date and value
+function calendarGrid(data) {
+  const days = (data || []).filter(d => d && d.date !== undefined).map(d => ({
+    date: dayStart(d.date),
+    value: typeof d.value === 'number' && isFinite(d.value) ? d.value : null
+  }));
+  if (!days.length) return {
+    weeks: 0,
+    cells: [],
+    first: null,
+    last: null
+  };
+  days.sort((a, b) => a.date - b.date);
+  const first = days[0].date,
+    last = days[days.length - 1].date;
+  const start = new Date(first.getTime());
+  start.setDate(start.getDate() - start.getDay());
+  const byDay = {};
+  days.forEach(d => {
+    byDay[keyOf(d.date)] = d.value;
+  });
+  const weeks = Math.floor(Math.round((last - start) / DAY) / 7) + 1;
+  const cells = [];
+  for (let w = 0; w < weeks; w++) for (let r = 0; r < 7; r++) {
+    const date = new Date(start.getTime());
+    date.setDate(start.getDate() + w * 7 + r);
+    const inside = date >= first && date <= last;
+    cells.push({
+      r,
+      c: w,
+      date,
+      inside,
+      value: inside && byDay[keyOf(date)] !== undefined ? byDay[keyOf(date)] : null
+    });
+  }
+  return {
+    weeks,
+    cells,
+    first,
+    last,
+    start
+  };
+}
+function HeatMap({
+  title,
+  description,
+  variant = 'matrix',
+  rows = [],
+  columns = [],
+  values = [],
+  data,
+  valueLabel,
+  scale = 'sequential',
+  min,
+  max,
+  format,
+  size,
+  margin,
+  interactive = true,
+  onSelect,
+  strings,
+  frameStrings,
+  interactionStrings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const calendar = variant === 'calendar';
+  const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
+  const vLabel = valueLabel || t.value;
+  const locale = (0, _format.formatLocale)();
+  const cal = calendar ? calendarGrid(data) : null;
+  const weekday = r => new Intl.DateTimeFormat(locale, {
+    weekday: 'short'
+  }).format(new Date(2026, 0, 4 + r)); // Jan 4 2026 is a Sunday
+  const rowNames = calendar ? [0, 1, 2, 3, 4, 5, 6].map(weekday) : rows;
+  const nCols = calendar ? cal.weeks : columns.length;
+  const cellAt = (r, c) => calendar ? cal.cells[c * 7 + r] : {
+    r,
+    c,
+    inside: true,
+    value: values[r] && typeof values[r][c] === 'number' && isFinite(values[r][c]) ? values[r][c] : null
+  };
+  const all = [];
+  for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) {
+    const x = cellAt(r, c);
+    if (x && x.inside && x.value !== null) all.push(x.value);
+  }
+  let lo = min !== undefined ? min : all.length ? Math.min.apply(null, all) : 0;
+  let hi = max !== undefined ? max : all.length ? Math.max.apply(null, all) : 1;
+  if (scale === 'diverging' && min === undefined && max === undefined) {
+    const m = Math.max(Math.abs(lo), Math.abs(hi));
+    lo = -m;
+    hi = m;
+  }
+  const sc = scale === 'diverging' ? 'diverging' : 'sequential';
+  const titleOf = cell => calendar ? (0, _format.formatDate)(cell.date) : rowNames[cell.r] + ', ' + columns[cell.c];
+  const valueOf = cell => cell.value === null ? t.missing : fmt(cell.value);
+  const insideAt = (r, c) => {
+    const x = cellAt(r, c);
+    return !!(x && x.inside);
+  };
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: rowNames.length,
+    columns: nCols,
+    mode: 'point',
+    select: typeof onSelect === 'function',
+    strings: interactionStrings,
+    onSelect: cell => onSelect && onSelect(Object.assign({
+      value: cellAt(cell.r, cell.c).value
+    }, cell)),
+    describe: cell => {
+      const x = cellAt(cell.r, cell.c);
+      return (0, _ChartTooltip.chartTooltipText)({
+        title: titleOf(x),
+        items: [{
+          label: vLabel,
+          value: valueOf(x)
+        }]
+      });
+    },
+    labelOf: c => calendar ? (0, _format.formatDate)(cal.cells[c * 7].date) : columns[c],
+    first: () => {
+      for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) if (insideAt(r, c)) return {
+        r,
+        c
+      };
+      return null;
+    },
+    // a grid; the calendar skips the days outside its range
+    move: (a, key) => {
+      const d = {
+        ArrowLeft: [0, -1],
+        ArrowRight: [0, 1],
+        ArrowUp: [-1, 0],
+        ArrowDown: [1, 0]
+      }[key];
+      if (key === 'Home' || key === 'End') {
+        const cs = [];
+        for (let c = 0; c < nCols; c++) if (insideAt(a.r, c)) cs.push(c);
+        return cs.length ? {
+          r: a.r,
+          c: key === 'Home' ? cs[0] : cs[cs.length - 1]
+        } : a;
+      }
+      if (!d) return a;
+      for (let r = a.r + d[0], c = a.c + d[1]; r >= 0 && r < rowNames.length && c >= 0 && c < nCols; r += d[0], c += d[1]) if (insideAt(r, c)) return {
+        r,
+        c
+      };
+      return a;
+    }
+  });
+  const table = calendar ? {
+    columns: [{
+      title: t.date,
+      field: 'd',
+      kind: 'data',
+      rowLabel: true
+    }, {
+      title: vLabel,
+      field: 'v',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: cal.cells.filter(x => x.inside).map((x, i) => ({
+      id: i + 1,
+      d: (0, _format.formatDate)(x.date),
+      v: valueOf(x)
+    }))
+  } : {
+    columns: [{
+      title: t.row,
+      field: 'r',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.column,
+      field: 'c',
+      kind: 'name'
+    }, {
+      title: vLabel,
+      field: 'v',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({
+      id: r * columns.length + c + 1,
+      r: rn,
+      c: cn,
+      v: valueOf(cellAt(r, c))
+    }))))
+  };
+  const hasMissing = (() => {
+    for (let c = 0; c < nCols; c++) for (let r = 0; r < rowNames.length; r++) {
+      const x = cellAt(r, c);
+      if (x && x.inside && x.value === null) return true;
+    }
+    return false;
+  })();
+  const steps = [];
+  for (let k = 1; k <= _dataviz.DATAVIZ_SCALES[sc]; k++) steps.push(sc + '-' + k);
+  const legend = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-heat-map-scale",
+    role: "group",
+    "aria-label": t.scale
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-heat-map-scale__end"
+  }, fmt(lo)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-heat-map-scale__steps",
+    "aria-hidden": "true"
+  }, steps.map(s => /*#__PURE__*/_react.default.createElement("span", {
+    key: s,
+    className: "plx-heat-map-scale__swatch",
+    "data-plx-dataviz": s
+  }))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-heat-map-scale__end"
+  }, fmt(hi)), hasMissing ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-heat-map-scale__missing"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-heat-map-scale__swatch plx-heat-map-scale__swatch--missing",
+    "aria-hidden": "true"
+  }), t.missing) : null);
+  const draw = ({
+    inner,
+    margin: m
+  }) => {
+    if (!nCols || !rowNames.length) return null;
+    const cols = [];
+    for (let c = 0; c < nCols; c++) cols.push(c);
+    const rs = rowNames.map((x, r) => r);
+    // the calendar's cells are square: the smaller of the two steps
+    let w = inner.width,
+      h = inner.height;
+    if (calendar) {
+      const s = Math.min(inner.width / nCols, inner.height / 7);
+      w = s * nCols;
+      h = s * 7;
+    }
+    const x = (0, _scales.scaleBand)({
+      domain: cols,
+      range: [0, w],
+      paddingInner: GAP,
+      paddingOuter: 0
+    });
+    const y = (0, _scales.scaleBand)({
+      domain: rs,
+      range: [0, h],
+      paddingInner: GAP,
+      paddingOuter: 0
+    });
+    const pick = (px, py) => {
+      const c = Math.min(nCols - 1, Math.max(0, Math.floor(px / x.step()))),
+        r = Math.min(rs.length - 1, Math.max(0, Math.floor(py / y.step())));
+      return px < 0 || py < 0 || px > w || py > h || !insideAt(r, c) ? null : {
+        r,
+        c
+      };
+    };
+    ia.register({
+      nearest: pick,
+      columnAt: px => Math.min(nCols - 1, Math.max(0, Math.floor(px / x.step())))
+    });
+    const a = ia.active && insideAt(ia.active.r, ia.active.c) ? ia.active : null;
+    const sel = ia.selected;
+    // month labels over the calendar's first week of each month; weekday labels on Monday, Wednesday and Friday
+    const starts = calendar ? cols.filter(c => {
+      const d = cal.cells[c * 7].date;
+      const prev = c ? cal.cells[(c - 1) * 7].date : null;
+      return !prev || prev.getMonth() !== d.getMonth();
+    }) : [];
+    // a month that starts less than three weeks before the next one has no room for its name
+    const monthTicks = calendar ? starts.filter((c, k) => k === starts.length - 1 || starts[k + 1] - c >= 3) : null;
+    return /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-heat-map__plot"
+    }, cols.map(c => rs.map(r => {
+      const cell = cellAt(r, c);
+      if (!cell || !cell.inside) return null;
+      const empty = cell.value === null;
+      return /*#__PURE__*/_react.default.createElement("rect", {
+        key: c + '-' + r,
+        className: (0, _cx.cx)('plx-heat-map__cell', empty && 'plx-heat-map__cell--empty', a && a.r === r && a.c === c && 'plx-heat-map__cell--active', sel && sel.r === r && sel.c === c && 'plx-chart-selected'),
+        "data-plx-dataviz": empty ? undefined : (0, _dataviz.datavizStep)(sc, cell.value, lo, hi),
+        x: x(c),
+        y: y(r),
+        width: x.bandwidth(),
+        height: y.bandwidth()
+      });
+    })), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: y,
+      orient: "left",
+      inner: {
+        width: w,
+        height: h
+      },
+      margin: m,
+      ticks: calendar ? [1, 3, 5] : undefined,
+      format: r => rowNames[r]
+    }), calendar ? /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: x,
+      orient: "top",
+      inner: {
+        width: w,
+        height: h
+      },
+      margin: m,
+      line: false,
+      ticks: monthTicks,
+      format: c => new Intl.DateTimeFormat(locale, {
+        month: 'short'
+      }).format(cal.cells[c * 7].date),
+      className: "plx-heat-map__months"
+    }) : /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: x,
+      orient: "bottom",
+      inner: {
+        width: w,
+        height: h
+      },
+      margin: m,
+      line: false,
+      format: c => columns[c],
+      ticks: cols.filter((c, k) => k % Math.max(1, Math.ceil(nCols / Math.max(2, Math.floor(w / 48)))) === 0)
+    }), a ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+      x: (0, _position.scalePosition)(x, a.c),
+      y: y(a.r),
+      inner: {
+        width: w,
+        height: h
+      },
+      title: titleOf(cellAt(a.r, a.c)),
+      titleKind: calendar ? 'data' : 'text',
+      items: [{
+        label: vLabel,
+        value: valueOf(cellAt(a.r, a.c)),
+        color: cellAt(a.r, a.c).value === null ? undefined : (0, _dataviz.datavizStep)(sc, cellAt(a.r, a.c).value, lo, hi)
+      }]
+    }) : null);
+  };
+  const mg = Object.assign(calendar ? {
+    top: 24,
+    start: 40
+  } : {}, margin);
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    size: size || (calendar ? 'sm' : 'md'),
+    margin: mg,
+    table: table,
+    legend: legend,
+    interaction: interactive ? ia : undefined,
+    strings: frameStrings,
+    className: (0, _cx.cx)('plx-heat-map', 'plx-heat-map--' + (calendar ? 'calendar' : 'matrix'), className)
+  }, draw);
+}
+  } },
+  "platform/charts/WaterfallChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WaterfallChart = WaterfallChart;
+exports.waterfallSteps = waterfallSteps;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _position = require("./parts/position.js");
+var _Axis = require("./parts/Axis.jsx");
+var _GridLines = require("./parts/GridLines.jsx");
+var _DataLabel = require("./parts/DataLabel.jsx");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _interaction = require("./interaction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · WaterfallChart
+   Summary: A waterfall chart (07 Data Display › Charts › Waterfall): how a starting total becomes an end total through
+     a series of increases and decreases. Totals are columns from zero; each change floats from the running total before
+     it to the one after, with a thin connector between them, its signed value above it, and the increase, decrease and
+     total colors named in a legend. With totals, subtotal columns show the running total part way.
+   Usage:
+     <WaterfallChart title="Revenue, last year to this year" description="New customers made up for the price change."
+       data={[{ label: 'Last year', value: 820, total: true }, { label: 'New customers', value: 240 }, { label: 'Churn', value: -110 },
+         { label: 'Price change', value: -60 }, { label: 'Upsell', value: 90 }]} endLabel="This year" format={(v) => formatCurrency(v * 1000, 'USD')} />
+   Props:
+     title, description: the chart's name and its takeaway (ChartFrame) (title required)
+     data: the steps in order: [{ label, value, total }]; a change (value + or −) floats from the running total; a total
+       (total: true) is a column from zero: with a value it sets the running total (the start), without one it shows the
+       running total so far (a subtotal: the "with totals" variant)
+     endLabel: the name of the end total column added after the last step (default strings.end); false: none
+     format: (value) => text (default formatNumber); changes are written with their sign (+40, −25)
+     yLabel: the value axis's title; size, margin: as ChartFrame
+     legend: shows what the colors mean: Increase, Decrease, Total (default true)
+     interactive: keyboard, pointer, tooltip and live region (default true); onSelect({ c, step }): a click or Enter
+     strings: { end: "End", step: "Step", change: "Change", total: "Total", running: "Running total", increase: "Increase",
+       decrease: "Decrease" }
+     className: more classes on the figure
+   Behavior:
+     One Tab stop: ← → move from step to step, Home and End to the first and the end total; each says "<step>: change
+       +40, running total 1,060" in the live region and shows it in the tooltip.
+     Increases and decreases differ by color and by the sign of their labels, so color is never the only cue.
+   Notes:
+     Increase and decrease take the data-viz status steps (positive, negative), totals the first categorical color; the
+       connector and the value axis are tokens (--plx-comp-waterfall-chart-*). Up to about ten steps: group the small ones.
+*/
+
+const STRINGS = {
+  end: 'End',
+  step: 'Step',
+  change: 'Change',
+  total: 'Total',
+  running: 'Running total',
+  increase: 'Increase',
+  decrease: 'Decrease'
+};
+const COLORS = {
+  up: 'status-positive',
+  down: 'status-negative',
+  total: (0, _scales.seriesColor)(0)
+};
+
+// each bar: its kind, the running total before and after it
+function waterfallSteps(data = [], endLabel) {
+  let run = 0;
+  const out = data.map((d, i) => {
+    const v = typeof d.value === 'number' && isFinite(d.value) ? d.value : null;
+    if (d.total) {
+      if (v !== null && (i === 0 || d.value !== undefined)) run = v;
+      return {
+        label: d.label,
+        kind: 'total',
+        from: 0,
+        to: run,
+        change: null
+      };
+    }
+    const from = run;
+    run += v || 0;
+    return {
+      label: d.label,
+      kind: (v || 0) < 0 ? 'down' : 'up',
+      from,
+      to: run,
+      change: v || 0
+    };
+  });
+  if (endLabel !== false && (!out.length || out[out.length - 1].kind !== 'total')) out.push({
+    label: endLabel,
+    kind: 'total',
+    from: 0,
+    to: run,
+    change: null,
+    end: true
+  });
+  return out;
+}
+function WaterfallChart({
+  title,
+  description,
+  data = [],
+  endLabel,
+  format,
+  yLabel,
+  size = 'md',
+  margin,
+  legend = true,
+  interactive = true,
+  onSelect,
+  strings,
+  frameStrings,
+  interactionStrings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
+  const signed = v => v > 0 ? '+' + fmt(v) : v < 0 ? '−' + fmt(-v) : fmt(0);
+  const bars = waterfallSteps(data, endLabel === undefined ? t.end : endLabel);
+  const items = b => b.kind === 'total' ? [{
+    label: t.total,
+    value: fmt(b.to),
+    color: COLORS.total
+  }] : [{
+    label: t.change,
+    value: signed(b.change),
+    color: COLORS[b.kind]
+  }, {
+    label: t.running,
+    value: fmt(b.to)
+  }];
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: 1,
+    columns: bars.length,
+    mode: 'point',
+    select: typeof onSelect === 'function',
+    strings: interactionStrings,
+    onSelect: cell => onSelect && onSelect(Object.assign({
+      step: bars[cell.c]
+    }, cell)),
+    describe: cell => (0, _ChartTooltip.chartTooltipText)({
+      title: bars[cell.c].label,
+      items: items(bars[cell.c])
+    })
+  });
+  const table = {
+    columns: [{
+      title: t.step,
+      field: 's',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.change,
+      field: 'c',
+      kind: 'data',
+      hozAlign: 'right'
+    }, {
+      title: t.running,
+      field: 'r',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: bars.map((b, i) => ({
+      id: i + 1,
+      s: b.label,
+      c: b.kind === 'total' ? t.total : signed(b.change),
+      r: fmt(b.to)
+    }))
+  };
+  const legendNode = legend ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: [{
+      id: 'up',
+      label: t.increase,
+      color: COLORS.up
+    }, {
+      id: 'down',
+      label: t.decrease,
+      color: COLORS.down
+    }, {
+      id: 'total',
+      label: t.total,
+      color: COLORS.total
+    }]
+  }) : null;
+  const draw = ({
+    inner,
+    margin: m
+  }) => {
+    if (!bars.length) return null;
+    const cols = bars.map((b, i) => i);
+    const x = (0, _scales.scaleBand)({
+      domain: cols,
+      range: [0, inner.width]
+    });
+    let lo = 0,
+      hi = 0;
+    bars.forEach(b => {
+      lo = Math.min(lo, b.from, b.to);
+      hi = Math.max(hi, b.from, b.to);
+    });
+    const y = (0, _scales.scaleLinear)({
+      domain: [lo, hi],
+      range: [inner.height, 0],
+      nice: true,
+      count: Math.max(2, Math.min(5, Math.floor(inner.height / 40)))
+    });
+    const columnAt = px => Math.min(bars.length - 1, Math.max(0, Math.floor(px / x.step())));
+    ia.register({
+      columnAt,
+      nearest: px => px < 0 || px > inner.width ? null : {
+        r: 0,
+        c: columnAt(px)
+      }
+    });
+    const a = ia.active,
+      sel = ia.selected;
+    const top = b => y(Math.max(b.from, b.to));
+    return /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-waterfall-chart__plot"
+    }, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
+      scale: y,
+      inner: inner
+    }), bars.map((b, i) => i ? /*#__PURE__*/_react.default.createElement("line", {
+      key: 'k' + i,
+      className: "plx-waterfall-chart__connector",
+      x1: x(i - 1) + x.bandwidth(),
+      x2: x(i),
+      y1: y(bars[i - 1].to),
+      y2: y(bars[i - 1].to)
+    }) : null), bars.map((b, i) => /*#__PURE__*/_react.default.createElement("rect", {
+      key: i,
+      className: (0, _cx.cx)('plx-chart__mark', 'plx-waterfall-chart__bar', 'plx-waterfall-chart__bar--' + b.kind, 'plx-chart-dim', a && a.c !== i && 'plx-chart-dim--off', sel && sel.c === i && 'plx-chart-selected'),
+      "data-plx-dataviz": COLORS[b.kind],
+      x: x(i),
+      y: top(b),
+      width: x.bandwidth(),
+      height: Math.max(0, Math.abs(y(b.from) - y(b.to)))
+    })), bars.map((b, i) => /*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+      key: 'l' + i,
+      x: (0, _position.scalePosition)(x, i),
+      y: top(b),
+      value: b.kind === 'total' ? fmt(b.to) : signed(b.change)
+    })), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: y,
+      orient: "left",
+      inner: inner,
+      margin: m,
+      label: yLabel,
+      format: typeof format === 'function' ? format : undefined
+    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: x,
+      orient: "bottom",
+      inner: inner,
+      margin: m,
+      format: i => bars[i].label
+    }), a ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+      x: (0, _position.scalePosition)(x, a.c),
+      y: top(bars[a.c]),
+      inner: inner,
+      title: bars[a.c].label,
+      items: items(bars[a.c])
+    }) : null);
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    size: size,
+    margin: margin,
+    table: table,
+    legend: legendNode,
+    interaction: interactive ? ia : undefined,
+    strings: frameStrings,
+    className: (0, _cx.cx)('plx-waterfall-chart', bars.some((b, i) => b.kind === 'total' && i > 0 && !b.end) && 'plx-waterfall-chart--subtotals', className)
+  }, draw);
+}
+  } },
+  "platform/charts/WordCloud.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WordCloud = WordCloud;
+exports.wordCloudLayout = wordCloudLayout;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _interaction = require("./interaction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · WordCloud
+   Summary: A word cloud (07 Data Display › Charts › Word cloud): the main terms of a body of text, each sized by how
+     often it appears (five steps of the type scale) and placed around the middle, the largest first: on a round spiral
+     (spiral) or a square one (rectangular). Words stay horizontal; groups (a topic, a sentiment) take the categorical
+     data-viz colors with a legend. A first impression only: the table under it lists every term and its count, sorted.
+   Usage:
+     <WordCloud title="What people asked for" description="Search and sharing lead the feedback." words={[{ text: 'search',
+       value: 48 }, { text: 'sharing', value: 41 }, …]} valueLabel="Mentions" onSelect={({ word }) => filterBy(word.text)} />
+     <WordCloud … layout="rectangular" groups={[{ id: 'praise', label: 'Praise' }, { id: 'issue', label: 'Issues' }]} />
+   Props:
+     title, description: the chart's name and its takeaway (ChartFrame) (title required)
+     words: the terms: [{ text, value, group }]; group is the id of one of groups
+     layout: "spiral" (default: round, the largest word in the middle) | "rectangular" (a square spiral: a boxier cloud
+       that fills a wide plot)
+     groups: [{ id, label }]: the groups words belong to, in the legend's order (their colors follow it)
+     max: the most words drawn (default 50, the largest); the table keeps them all
+     valueLabel: what a value is ("Mentions") (default strings.value); format: (value) => text (default formatNumber)
+     size, margin: as ChartFrame
+     interactive: keyboard, pointer, tooltip and live region (default true); onSelect({ c, word }): a click or Enter on a
+       word (filter a list by it)
+     strings: { value: "Count", word: "Term", group: "Group" }
+     className: more classes on the figure
+   Behavior:
+     The words are measured in their own type (after the fonts load) and placed without overlapping; a word that does
+       not fit in the plot is left out of the picture (it stays in the table).
+     One Tab stop: ← → ↑ ↓ move to the nearest word in that direction, Home and End to the largest and the smallest; each
+       says "<word>: <count>" in the live region and shows it in the tooltip; the other words step back.
+   Notes:
+     Sizes are the --plx-comp-word-cloud-size-1 … 5 tokens (the type scale); words without a group take the content
+       color, grouped words the categorical data-viz colors. Never use it to compare values exactly: a sorted bar chart.
+*/
+
+const STRINGS = {
+  value: 'Count',
+  word: 'Term',
+  group: 'Group'
+};
+const STEPS = 5;
+// the space kept around each word while placing, and the spiral's step (SVG geometry, pixels)
+const PAD = 4,
+  STEP = 4;
+
+// where each word goes: centers of non-overlapping boxes around the middle, the largest first; null when it does not fit
+function wordCloudLayout(boxes, width, height, layout = 'spiral') {
+  const placed = [],
+    out = [];
+  const hit = b => placed.some(p => b.x0 < p.x1 && b.x1 > p.x0 && b.y0 < p.y1 && b.y1 > p.y0);
+  const ratio = width / Math.max(1, height);
+  // the candidate offsets from the middle, nearest first: an Archimedean spiral, or the rings of a square spiral; both
+  // stretched to the plot's shape
+  const reach = Math.max(width / ratio, height) / 2 + STEP * 2;
+  const candidates = [];
+  if (layout === 'rectangular') {
+    candidates.push([0, 0]);
+    for (let r = STEP; r <= reach; r += STEP) {
+      for (let a = -r; a < r; a += STEP) candidates.push([a, -r]);
+      for (let a = -r; a < r; a += STEP) candidates.push([r, a]);
+      for (let a = r; a > -r; a -= STEP) candidates.push([a, r]);
+      for (let a = r; a > -r; a -= STEP) candidates.push([-r, a]);
+    }
+  } else {
+    for (let i = 0, d = 0; d <= reach; i++) {
+      const th = i * 0.1;
+      d = STEP * th / (2 * Math.PI) * 2;
+      candidates.push([d * Math.cos(th), d * Math.sin(th)]);
+    }
+  }
+  boxes.forEach(s => {
+    const w = s.width + PAD,
+      h = s.height + PAD;
+    let spot = null;
+    for (let i = 0; i < candidates.length && !spot; i++) {
+      const cx0 = width / 2 + candidates[i][0] * ratio,
+        cy0 = height / 2 + candidates[i][1];
+      const b = {
+        x0: cx0 - w / 2,
+        x1: cx0 + w / 2,
+        y0: cy0 - h / 2,
+        y1: cy0 + h / 2
+      };
+      if (b.x0 < 0 || b.y0 < 0 || b.x1 > width || b.y1 > height) continue;
+      if (!hit(b)) spot = b;
+    }
+    if (spot) {
+      placed.push(spot);
+      out.push({
+        x: (spot.x0 + spot.x1) / 2,
+        y: (spot.y0 + spot.y1) / 2
+      });
+    } else out.push(null);
+  });
+  return out;
+}
+function WordCloud({
+  title,
+  description,
+  words = [],
+  layout = 'spiral',
+  groups,
+  max = 50,
+  valueLabel,
+  format,
+  size = 'md',
+  margin,
+  interactive = true,
+  onSelect,
+  strings,
+  frameStrings,
+  interactionStrings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
+  const vLabel = valueLabel || t.value;
+  const sorted = words.filter(w => w && w.text).slice().sort((a, b) => b.value - a.value);
+  const shown = sorted.slice(0, Math.max(0, max));
+  const vals = shown.map(w => w.value);
+  const lo = vals.length ? Math.min.apply(null, vals) : 0,
+    hi = vals.length ? Math.max.apply(null, vals) : 1;
+  // the size step: the square root of the value's place in the range, so the largest words do not crowd the rest
+  const stepOf = v => hi === lo ? 3 : Math.min(STEPS, 1 + Math.floor(Math.sqrt((v - lo) / (hi - lo)) * STEPS));
+  const gIndex = g => (groups || []).findIndex(x => x.id === g);
+  const colorOf = w => w.group !== undefined && gIndex(w.group) >= 0 ? (0, _scales.seriesColor)(gIndex(w.group)) : undefined;
+  const layer = _react.default.useRef(null);
+  const where = _react.default.useRef([]);
+  const [boxes, setBoxes] = _react.default.useState({
+    key: '',
+    list: []
+  });
+  const [fonts, setFonts] = _react.default.useState(0);
+  const key = shown.map(w => w.text + ':' + stepOf(w.value)).join('|') + '#' + fonts;
+  _react.default.useEffect(() => {
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) document.fonts.ready.then(() => setFonts(1));
+  }, []);
+  _react.default.useLayoutEffect(() => {
+    if (!layer.current || boxes.key === key) return;
+    const list = Array.from(layer.current.querySelectorAll('.plx-word-cloud__word--measure')).map(el => {
+      const b = el.getBBox();
+      return {
+        width: b.width,
+        height: b.height
+      };
+    });
+    if (list.length === shown.length) setBoxes({
+      key,
+      list
+    });
+  });
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: 1,
+    columns: shown.length,
+    mode: 'point',
+    select: typeof onSelect === 'function',
+    strings: interactionStrings,
+    onSelect: cell => onSelect && onSelect(Object.assign({
+      word: shown[cell.c]
+    }, cell)),
+    describe: cell => (0, _ChartTooltip.chartTooltipText)({
+      title: shown[cell.c].text,
+      items: [{
+        label: vLabel,
+        value: fmt(shown[cell.c].value)
+      }]
+    }),
+    // the nearest placed word in the arrow's direction; Home the largest, End the smallest
+    move: (a, k) => {
+      const at = where.current;
+      if (k === 'Home' || k === 'End') {
+        const idx = at.map((p, i) => p ? i : -1).filter(i => i >= 0);
+        return idx.length ? {
+          r: 0,
+          c: k === 'Home' ? idx[0] : idx[idx.length - 1]
+        } : a;
+      }
+      const p = at[a.c];
+      if (!p) return a;
+      const d = {
+        ArrowLeft: [-1, 0],
+        ArrowRight: [1, 0],
+        ArrowUp: [0, -1],
+        ArrowDown: [0, 1]
+      }[k];
+      let best = null,
+        bd = Infinity;
+      at.forEach((q, i) => {
+        if (!q || i === a.c) return;
+        const dx = q.x - p.x,
+          dy = q.y - p.y,
+          along = dx * d[0] + dy * d[1];
+        if (along <= 0) return;
+        const dist = along + 2 * Math.abs(dx * d[1] + dy * d[0]);
+        if (dist < bd) {
+          bd = dist;
+          best = i;
+        }
+      });
+      return best === null ? a : {
+        r: 0,
+        c: best
+      };
+    },
+    first: () => {
+      const i = where.current.findIndex(p => !!p);
+      return i >= 0 ? {
+        r: 0,
+        c: i
+      } : null;
+    }
+  });
+  const table = {
+    columns: [{
+      title: t.word,
+      field: 'w',
+      kind: 'name',
+      rowLabel: true
+    }].concat(groups ? [{
+      title: t.group,
+      field: 'g',
+      kind: 'name'
+    }] : [], [{
+      title: vLabel,
+      field: 'v',
+      kind: 'data',
+      hozAlign: 'right'
+    }]),
+    data: sorted.map((w, i) => ({
+      id: i + 1,
+      w: w.text,
+      g: groups && gIndex(w.group) >= 0 ? groups[gIndex(w.group)].label : '',
+      v: fmt(w.value)
+    }))
+  };
+  const legendNode = groups && groups.length ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: groups.map((g, i) => ({
+      id: g.id,
+      label: g.label,
+      color: (0, _scales.seriesColor)(i)
+    }))
+  }) : null;
+  const draw = ({
+    inner
+  }) => {
+    const ready = boxes.key === key && boxes.list.length === shown.length;
+    const at = ready ? wordCloudLayout(boxes.list, inner.width, inner.height, layout === 'rectangular' ? 'rectangular' : 'spiral') : [];
+    where.current = at;
+    ia.register({
+      nearest: (px, py) => {
+        let best = null;
+        at.forEach((p, i) => {
+          if (p && boxes.list[i] && Math.abs(px - p.x) <= boxes.list[i].width / 2 && Math.abs(py - p.y) <= boxes.list[i].height / 2) best = i;
+        });
+        return best === null ? null : {
+          r: 0,
+          c: best
+        };
+      }
+    });
+    const a = ia.active && at[ia.active.c] ? ia.active : null,
+      sel = ia.selected;
+    return /*#__PURE__*/_react.default.createElement("g", {
+      ref: layer,
+      className: "plx-word-cloud__plot"
+    }, !ready ? shown.map((w, i) => /*#__PURE__*/_react.default.createElement("text", {
+      key: 'm' + i,
+      className: (0, _cx.cx)('plx-word-cloud__word', 'plx-word-cloud__word--measure', 'plx-word-cloud__word--' + stepOf(w.value)),
+      x: 0,
+      y: 0
+    }, w.text)) : null, ready ? shown.map((w, i) => at[i] ? /*#__PURE__*/_react.default.createElement("text", {
+      key: i,
+      className: (0, _cx.cx)('plx-word-cloud__word', 'plx-word-cloud__word--' + stepOf(w.value), 'plx-chart-dim', a && a.c !== i && 'plx-chart-dim--off', a && a.c === i && 'plx-word-cloud__word--active', sel && sel.c === i && 'plx-word-cloud__word--selected'),
+      "data-plx-dataviz": colorOf(w),
+      x: at[i].x,
+      y: at[i].y
+    }, w.text) : null) : null, a ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+      x: at[a.c].x + (at[a.c].x > inner.width / 2 ? -1 : 1) * boxes.list[a.c].width / 2,
+      y: at[a.c].y,
+      inner: inner,
+      title: shown[a.c].text,
+      items: [{
+        label: vLabel,
+        value: fmt(shown[a.c].value),
+        color: colorOf(shown[a.c])
+      }]
+    }) : null);
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    size: size,
+    margin: Object.assign({
+      top: 8,
+      end: 8,
+      bottom: 8,
+      start: 8
+    }, margin),
+    table: table,
+    legend: legendNode,
+    interaction: interactive ? ia : undefined,
+    strings: frameStrings,
+    className: (0, _cx.cx)('plx-word-cloud', 'plx-word-cloud--' + (layout === 'rectangular' ? 'rectangular' : 'spiral'), className)
+  }, draw);
+}
+  } },
+  "platform/charts/NetworkGraph.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NetworkGraph = NetworkGraph;
+exports.directionalMove = directionalMove;
+exports.forceLayout = forceLayout;
+exports.graphLayers = graphLayers;
+exports.graphNeighbors = graphNeighbors;
+exports.layeredLayout = layeredLayout;
+exports.useGraphView = useGraphView;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _Button = require("../components/Button/Button.jsx");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _interaction = require("./interaction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · NetworkGraph
+   Summary: A graph of nodes joined by edges (07 Data Display › Specialized displays › Graph / network): how items
+     connect (dependencies, lineage, assets and the collections that use them). Laid out by a force simulation (force:
+     connected nodes pull together, all nodes push apart) or in layers from the roots (hierarchical); edges may be
+     directed (an arrowhead) and labeled, with a dashed line for a second kind of link. Zoom and pan with the buttons
+     above the plot, the keys or a drag; one Tab stop, the arrow keys move along the edges, and the node in focus and its
+     neighbors stand out while the rest step back.
+   Usage:
+     <NetworkGraph title="Where the brand assets are used" description="The logo is used by every campaign."
+       nodes={[{ id: 'logo', label: 'Logo', group: 'asset' }, { id: 'spring', label: 'Spring campaign', group: 'campaign' }]}
+       edges={[{ source: 'spring', target: 'logo', label: 'uses' }]} groups={[{ id: 'asset', label: 'Assets' }, { id: 'campaign', label: 'Campaigns' }]} directed />
+     <NetworkGraph … layout="hierarchical" direction="right" onSelect={({ node }) => open(node.id)} />
+   Props:
+     title, description: the chart's name and its takeaway (ChartFrame) (title required)
+     nodes: [{ id, label, group }] (ids unique; label short: the full name goes in the table)
+     edges: [{ source, target, label, kind }]: kind "solid" (default) | "dashed" (a second kind of link, named in the
+       description or the legend so the line style is not the only cue)
+     directed: draws an arrowhead at each edge's target (default false)
+     layout: "force" (default: the structure finds its own shape; stable for the same data) | "hierarchical" (layers
+       from the roots, nodes with no incoming edge) ; direction: "down" (default) | "right" (hierarchical)
+     groups: [{ id, label }]: the node groups in the legend's order; their colors follow it (categorical data-viz)
+     zoomable: the Zoom in, Zoom out and Fit buttons, + − 0 keys and dragging the background (default true)
+     size, margin: as ChartFrame (default size "lg")
+     interactive: keyboard, pointer, tooltip, live region and highlighting (default true); onSelect({ c, node }): a click
+       or Enter on a node
+     strings: { node: "Node", group: "Group", links: "Connected to", none: "None", zoomIn: "Zoom in", zoomOut: "Zoom out",
+       fit: "Fit", hintZoom: " Plus and minus zoom, 0 fits the graph." }
+     className: more classes on the figure
+   Behavior:
+     One Tab stop: an arrow key moves to the connected node most in that direction (or the nearest node that way when
+       none is connected), Home and End to the first and last node; each says the node, its group and what it is connected
+       to in the live region. Enter selects (onSelect); Escape clears.
+     The node in focus or under the pointer and its neighbors keep their color; the other nodes and edges step back
+       (reduced motion: at once). Zoom keeps the middle of the plot in place; Fit shows the whole graph again.
+     The table under the graph lists every node, its group and its connections: the graph's text alternative.
+   Notes:
+     Layouts are computed in plot pixels each time the plot's size or the data changes (no animation), so the same data
+     always draws the same graph. Nodes, edges, arrows and labels are classes on --plx-comp-network-graph-* tokens and
+     the categorical data-viz colors. Hundreds of nodes: filter or cluster first; a strict hierarchy: a tree view.
+*/
+
+const STRINGS = {
+  node: 'Node',
+  group: 'Group',
+  links: 'Connected to',
+  none: 'None',
+  zoomIn: 'Zoom in',
+  zoomOut: 'Zoom out',
+  fit: 'Fit',
+  hintZoom: ' Plus and minus zoom, 0 fits the graph.'
+};
+// SVG geometry, in plot pixels: the room kept around the layout for the labels (a label is centered under its node), the
+// node's hit radius, the zoom steps
+const INSET_X = 64,
+  INSET_TOP = 24,
+  INSET_BOTTOM = 40,
+  HIT = 16,
+  ZOOM_STEP = 1.25,
+  ZOOM_MIN = 0.5,
+  ZOOM_MAX = 4;
+
+// the neighbors of each node (both directions), by index
+function graphNeighbors(nodes, edges) {
+  const at = {};
+  nodes.forEach((n, i) => {
+    at[n.id] = i;
+  });
+  const out = nodes.map(() => []);
+  (edges || []).forEach(e => {
+    const a = at[e.source],
+      b = at[e.target];
+    if (a === undefined || b === undefined || a === b) return;
+    if (out[a].indexOf(b) < 0) out[a].push(b);
+    if (out[b].indexOf(a) < 0) out[b].push(a);
+  });
+  return out;
+}
+
+// a force layout (Fruchterman–Reingold), deterministic: the nodes start on a circle in their order
+function forceLayout(nodes, edges, width, height) {
+  const n = nodes.length;
+  if (!n) return [];
+  const W = Math.max(1, width - INSET_X * 2),
+    H = Math.max(1, height - INSET_TOP - INSET_BOTTOM);
+  const k = Math.sqrt(W * H / n) * 0.75;
+  const p = nodes.map((x, i) => ({
+    x: W / 2 + W / 3 * Math.cos(2 * Math.PI * i / n),
+    y: H / 2 + H / 3 * Math.sin(2 * Math.PI * i / n)
+  }));
+  const nb = graphNeighbors(nodes, edges);
+  let temp = W / 8;
+  for (let it = 0; it < 300; it++) {
+    const d = p.map(() => ({
+      x: 0,
+      y: 0
+    }));
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      let dx = p[i].x - p[j].x,
+        dy = p[i].y - p[j].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 0.01) {
+        dx = 0.01 * (i - j);
+        dy = 0.01;
+        dist = 0.02;
+      }
+      const f = k * k / dist;
+      d[i].x += dx / dist * f;
+      d[i].y += dy / dist * f;
+      d[j].x -= dx / dist * f;
+      d[j].y -= dy / dist * f;
+    }
+    nb.forEach((list, i) => list.forEach(j => {
+      if (j < i) return;
+      const dx = p[i].x - p[j].x,
+        dy = p[i].y - p[j].y,
+        dist = Math.max(0.01, Math.sqrt(dx * dx + dy * dy)),
+        f = dist * dist / k;
+      d[i].x -= dx / dist * f;
+      d[i].y -= dy / dist * f;
+      d[j].x += dx / dist * f;
+      d[j].y += dy / dist * f;
+    }));
+    // a weak pull to the middle keeps parts that are not connected on screen
+    p.forEach((q, i) => {
+      d[i].x += (W / 2 - q.x) * 0.05;
+      d[i].y += (H / 2 - q.y) * 0.05;
+    });
+    p.forEach((q, i) => {
+      const len = Math.max(0.01, Math.sqrt(d[i].x * d[i].x + d[i].y * d[i].y)),
+        step = Math.min(len, temp);
+      q.x = Math.min(W, Math.max(0, q.x + d[i].x / len * step));
+      q.y = Math.min(H, Math.max(0, q.y + d[i].y / len * step));
+    });
+    temp *= 0.985;
+  }
+  return fitInto(p, width, height);
+}
+
+// layers from the roots (longest path), ordered by the mean place of their parents: each node's rank (its layer) and
+// place (its offset across the layer, centered on 0), and the widest layer
+function graphLayers(nodes, edges) {
+  const n = nodes.length;
+  const at = {};
+  nodes.forEach((x, i) => {
+    at[x.id] = i;
+  });
+  const out = nodes.map(() => []),
+    inc = nodes.map(() => []);
+  (edges || []).forEach(e => {
+    const a = at[e.source],
+      b = at[e.target];
+    if (a === undefined || b === undefined || a === b) return;
+    out[a].push(b);
+    inc[b].push(a);
+  });
+  const rank = nodes.map(() => -1);
+  const roots = nodes.map((x, i) => i).filter(i => !inc[i].length);
+  const queue = (roots.length ? roots : [0]).slice();
+  queue.forEach(i => {
+    rank[i] = 0;
+  });
+  for (let guard = 0; queue.length && guard < n * n + n; guard++) {
+    const i = queue.shift();
+    out[i].forEach(j => {
+      if (rank[j] < rank[i] + 1 && rank[i] + 1 < n) {
+        rank[j] = rank[i] + 1;
+        queue.push(j);
+      }
+    });
+  }
+  rank.forEach((r, i) => {
+    if (r < 0) rank[i] = 0;
+  });
+  const layers = [];
+  rank.forEach((r, i) => {
+    (layers[r] = layers[r] || []).push(i);
+  });
+  const place = nodes.map(() => 0);
+  layers.forEach((l, r) => {
+    if (r) l.sort((a, b) => {
+      const m = x => inc[x].length ? inc[x].reduce((s, q) => s + place[q], 0) / inc[x].length : place[x];
+      return m(a) - m(b);
+    });
+    l.forEach((i, k) => {
+      place[i] = k - (l.length - 1) / 2;
+    });
+  });
+  return {
+    rank,
+    place,
+    wide: n ? Math.max.apply(null, layers.map(l => l.length)) : 0,
+    layers: layers.length
+  };
+}
+
+// the layers laid out in the plot; direction "down" or "right"
+function layeredLayout(nodes, edges, width, height, direction = 'down') {
+  if (!nodes.length) return [];
+  const {
+    rank,
+    place,
+    wide
+  } = graphLayers(nodes, edges);
+  const p = nodes.map((x, i) => {
+    const along = rank[i],
+      across = place[i] + (wide - 1) / 2;
+    return direction === 'right' ? {
+      x: along,
+      y: across
+    } : {
+      x: across,
+      y: along
+    };
+  });
+  return fitInto(p, width, height);
+}
+
+// scales points into the plot, keeping the insets around them (a single row or column is centered)
+function fitInto(p, width, height) {
+  const xs = p.map(q => q.x),
+    ys = p.map(q => q.y);
+  const x0 = Math.min.apply(null, xs),
+    x1 = Math.max.apply(null, xs),
+    y0 = Math.min.apply(null, ys),
+    y1 = Math.max.apply(null, ys);
+  const W = Math.max(1, width - INSET_X * 2),
+    H = Math.max(1, height - INSET_TOP - INSET_BOTTOM);
+  const sx = x1 > x0 ? W / (x1 - x0) : 1,
+    sy = y1 > y0 ? H / (y1 - y0) : 1;
+  return p.map(q => ({
+    x: x1 > x0 ? INSET_X + (q.x - x0) * sx : width / 2,
+    y: y1 > y0 ? INSET_TOP + (q.y - y0) * sy : height / 2
+  }));
+}
+
+// zoom and pan of a graph's layer: { k, x, y } with the controls, keys and the drag of the background
+function useGraphView({
+  enabled = true,
+  strings
+} = {}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [view, setView] = _react.default.useState({
+    k: 1,
+    x: 0,
+    y: 0
+  });
+  const size = _react.default.useRef({
+    width: 0,
+    height: 0
+  });
+  const drag = _react.default.useRef(null);
+  const zoomBy = f => setView(v => {
+    const k = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, v.k * f)),
+      cx0 = size.current.width / 2,
+      cy0 = size.current.height / 2;
+    return {
+      k,
+      x: cx0 - (cx0 - v.x) / v.k * k,
+      y: cy0 - (cy0 - v.y) / v.k * k
+    };
+  });
+  const fit = () => setView({
+    k: 1,
+    x: 0,
+    y: 0
+  });
+  const actions = enabled ? [/*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: "in",
+    size: "sm",
+    iconOnly: true,
+    icon: "ed-zoom-in",
+    label: t.zoomIn,
+    onClick: () => zoomBy(ZOOM_STEP)
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: "out",
+    size: "sm",
+    iconOnly: true,
+    icon: "ed-zoom-out",
+    label: t.zoomOut,
+    onClick: () => zoomBy(1 / ZOOM_STEP)
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: "fit",
+    size: "sm",
+    icon: "ed-recenter",
+    onClick: fit
+  }, t.fit)] : null;
+  // wraps an interaction: the background drags the view, + − 0 zoom; everything else goes to the interaction
+  const wrap = (ia, hitNode) => {
+    if (!enabled || !ia) return ia;
+    return Object.assign({}, ia, {
+      hint: ia.hint + t.hintZoom,
+      keyDown: e => {
+        if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          zoomBy(ZOOM_STEP);
+          return;
+        }
+        if (e.key === '-' || e.key === '_') {
+          e.preventDefault();
+          zoomBy(1 / ZOOM_STEP);
+          return;
+        }
+        if (e.key === '0') {
+          e.preventDefault();
+          fit();
+          return;
+        }
+        ia.keyDown(e);
+      },
+      pointerDown: (px, py, e) => {
+        if (!hitNode(px, py)) drag.current = {
+          px,
+          py,
+          x: view.x,
+          y: view.y,
+          moved: false
+        };else ia.pointerDown(px, py, e);
+      },
+      pointerMove: (px, py, e) => {
+        const d = drag.current;
+        if (d) {
+          if (Math.abs(px - d.px) + Math.abs(py - d.py) > 2) d.moved = true;
+          if (d.moved) {
+            setView(v => ({
+              k: v.k,
+              x: d.x + px - d.px,
+              y: d.y + py - d.py
+            }));
+            return;
+          }
+        }
+        ia.pointerMove(px, py, e);
+      },
+      pointerUp: (px, py, e) => {
+        const d = drag.current;
+        drag.current = null;
+        if (d && d.moved) return;
+        ia.pointerUp(px, py, e);
+      },
+      pointerLeave: () => {
+        drag.current = null;
+        ia.pointerLeave();
+      }
+    });
+  };
+  return {
+    view,
+    setView,
+    zoomBy,
+    fit,
+    actions,
+    wrap,
+    size,
+    transform: 'translate(' + view.x + ',' + view.y + ') scale(' + view.k + ')',
+    toScreen: p => ({
+      x: view.x + p.x * view.k,
+      y: view.y + p.y * view.k
+    }),
+    toLayer: (px, py) => ({
+      x: (px - view.x) / view.k,
+      y: (py - view.y) / view.k
+    })
+  };
+}
+
+// the next node from a in the arrow's direction: a neighbor if one lies that way, else the nearest node that way
+function directionalMove(pos, neighbors, a, key) {
+  const n = pos.length;
+  if (key === 'Home') return {
+    r: 0,
+    c: 0
+  };
+  if (key === 'End') return {
+    r: 0,
+    c: n - 1
+  };
+  const d = {
+    ArrowLeft: [-1, 0],
+    ArrowRight: [1, 0],
+    ArrowUp: [0, -1],
+    ArrowDown: [0, 1]
+  }[key];
+  const p = pos[a.c];
+  if (!d || !p) return a;
+  const pick = list => {
+    let best = null,
+      bd = Infinity;
+    list.forEach(i => {
+      const q = pos[i];
+      if (!q || i === a.c) return;
+      const dx = q.x - p.x,
+        dy = q.y - p.y,
+        along = dx * d[0] + dy * d[1],
+        off = Math.abs(dx * d[1] + dy * d[0]);
+      if (along <= 0 || off > along * 2) return;
+      const dist = along + off * 2;
+      if (dist < bd) {
+        bd = dist;
+        best = i;
+      }
+    });
+    return best;
+  };
+  const all = pos.map((q, i) => i);
+  const next = pick(neighbors[a.c] || []);
+  const any = next === null ? pick(all) : next;
+  return any === null ? a : {
+    r: 0,
+    c: any
+  };
+}
+function NetworkGraph({
+  title,
+  description,
+  nodes = [],
+  edges = [],
+  directed = false,
+  layout = 'force',
+  direction = 'down',
+  groups,
+  zoomable = true,
+  size = 'lg',
+  margin,
+  interactive = true,
+  onSelect,
+  strings,
+  frameStrings,
+  interactionStrings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-graph' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const nb = _react.default.useMemo(() => graphNeighbors(nodes, edges), [nodes, edges]);
+  const gIndex = g => (groups || []).findIndex(x => x.id === g);
+  const colorOf = node => (0, _scales.seriesColor)(Math.max(0, gIndex(node.group)));
+  const groupName = node => groups && gIndex(node.group) >= 0 ? groups[gIndex(node.group)].label : '';
+  const links = i => nb[i].length ? (0, _format.formatList)(nb[i].map(j => nodes[j].label)) : t.none;
+  const pos = _react.default.useRef([]);
+  const gv = useGraphView({
+    enabled: zoomable,
+    strings
+  });
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: 1,
+    columns: nodes.length,
+    mode: 'point',
+    select: typeof onSelect === 'function',
+    strings: interactionStrings,
+    onSelect: cell => onSelect && onSelect(Object.assign({
+      node: nodes[cell.c]
+    }, cell)),
+    describe: cell => (0, _ChartTooltip.chartTooltipText)({
+      title: nodes[cell.c].label,
+      items: (groups ? [{
+        label: t.group,
+        value: groupName(nodes[cell.c])
+      }] : []).concat([{
+        label: t.links,
+        value: links(cell.c)
+      }])
+    }),
+    move: (a, key) => directionalMove(pos.current, nb, a, key)
+  });
+  const hitNode = (px, py) => {
+    const q = gv.toLayer(px, py);
+    return pos.current.some(p => p && Math.hypot(p.x - q.x, p.y - q.y) <= HIT / gv.view.k);
+  };
+  const iaz = gv.wrap(ia, hitNode);
+  const table = {
+    columns: [{
+      title: t.node,
+      field: 'n',
+      kind: 'name',
+      rowLabel: true
+    }].concat(groups ? [{
+      title: t.group,
+      field: 'g',
+      kind: 'name'
+    }] : [], [{
+      title: t.links,
+      field: 'l',
+      kind: 'name'
+    }]),
+    data: nodes.map((x, i) => ({
+      id: i + 1,
+      n: x.label,
+      g: groupName(x),
+      l: links(i)
+    }))
+  };
+  const legendNode = groups && groups.length ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: groups.map((g, i) => ({
+      id: g.id,
+      label: g.label,
+      color: (0, _scales.seriesColor)(i)
+    }))
+  }) : null;
+  const memo = _react.default.useRef({
+    key: '',
+    pos: []
+  });
+  const draw = ({
+    inner
+  }) => {
+    gv.size.current = inner;
+    const key = inner.width + 'x' + inner.height + layout + direction + nodes.map(x => x.id).join() + edges.map(e => e.source + '>' + e.target).join();
+    if (memo.current.key !== key) memo.current = {
+      key,
+      pos: layout === 'hierarchical' ? layeredLayout(nodes, edges, inner.width, inner.height, direction) : forceLayout(nodes, edges, inner.width, inner.height)
+    };
+    const p = memo.current.pos;
+    pos.current = p;
+    const at = {};
+    nodes.forEach((x, i) => {
+      at[x.id] = i;
+    });
+    ia.register({
+      nearest: (px, py) => {
+        const q = gv.toLayer(px, py);
+        let best = null,
+          bd = HIT / gv.view.k;
+        p.forEach((v, i) => {
+          const d = Math.hypot(v.x - q.x, v.y - q.y);
+          if (d <= bd) {
+            bd = d;
+            best = i;
+          }
+        });
+        return best === null ? null : {
+          r: 0,
+          c: best
+        };
+      }
+    });
+    const a = ia.active && p[ia.active.c] ? ia.active.c : null,
+      sel = ia.selected ? ia.selected.c : null;
+    const near = i => a === null || i === a || nb[a].indexOf(i) >= 0;
+    const tip = a !== null ? gv.toScreen(p[a]) : null;
+    return /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-network-graph__plot"
+    }, directed ? /*#__PURE__*/_react.default.createElement("defs", null, /*#__PURE__*/_react.default.createElement("marker", {
+      id: uid + '-arrow',
+      viewBox: "0 0 8 8",
+      refX: "8",
+      refY: "4",
+      markerWidth: "8",
+      markerHeight: "8",
+      orient: "auto-start-reverse",
+      markerUnits: "userSpaceOnUse"
+    }, /*#__PURE__*/_react.default.createElement("path", {
+      className: "plx-network-graph__arrow",
+      d: "M0,0L8,4L0,8Z"
+    }))) : null, /*#__PURE__*/_react.default.createElement("g", {
+      transform: gv.transform
+    }, edges.map((e, k) => {
+      const i = at[e.source],
+        j = at[e.target];
+      if (i === undefined || j === undefined) return null;
+      const s = p[i],
+        d = p[j],
+        len = Math.max(0.01, Math.hypot(d.x - s.x, d.y - s.y)),
+        ux = (d.x - s.x) / len,
+        uy = (d.y - s.y) / len;
+      const r = HIT * 0.75;
+      const on = a !== null && (i === a || j === a);
+      return /*#__PURE__*/_react.default.createElement("g", {
+        key: k,
+        className: (0, _cx.cx)('plx-network-graph__link', 'plx-chart-dim', a !== null && !on && 'plx-chart-dim--off')
+      }, /*#__PURE__*/_react.default.createElement("line", {
+        className: (0, _cx.cx)('plx-network-graph__edge', e.kind === 'dashed' && 'plx-network-graph__edge--dashed', on && 'plx-network-graph__edge--active'),
+        x1: s.x + ux * r,
+        y1: s.y + uy * r,
+        x2: d.x - ux * r,
+        y2: d.y - uy * r,
+        markerEnd: directed ? 'url(#' + uid + '-arrow)' : undefined
+      }), e.label ? /*#__PURE__*/_react.default.createElement("text", {
+        className: "plx-network-graph__edge-label",
+        x: (s.x + d.x) / 2,
+        y: (s.y + d.y) / 2
+      }, e.label) : null);
+    }), nodes.map((x, i) => /*#__PURE__*/_react.default.createElement("g", {
+      key: x.id,
+      className: (0, _cx.cx)('plx-network-graph__node', 'plx-chart-dim', !near(i) && 'plx-chart-dim--off', a === i && 'plx-network-graph__node--active', sel === i && 'plx-network-graph__node--selected')
+    }, /*#__PURE__*/_react.default.createElement("circle", {
+      className: (0, _cx.cx)('plx-network-graph__dot', sel === i && 'plx-chart-selected'),
+      "data-plx-dataviz": colorOf(x),
+      cx: p[i].x,
+      cy: p[i].y
+    }), /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-network-graph__label",
+      x: p[i].x,
+      y: p[i].y
+    }, x.label)))), tip ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+      x: tip.x + (tip.x > inner.width / 2 ? -HIT : HIT),
+      y: tip.y,
+      inner: inner,
+      title: nodes[a].label,
+      items: (groups ? [{
+        label: t.group,
+        value: groupName(nodes[a]),
+        color: colorOf(nodes[a])
+      }] : []).concat([{
+        label: t.links,
+        value: String(nb[a].length)
+      }])
+    }) : null);
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    size: size,
+    margin: Object.assign({
+      top: 0,
+      end: 0,
+      bottom: 0,
+      start: 0
+    }, margin),
+    table: table,
+    legend: legendNode,
+    interaction: interactive ? iaz : undefined,
+    actions: gv.actions,
+    strings: frameStrings,
+    className: (0, _cx.cx)('plx-network-graph', 'plx-network-graph--' + (layout === 'hierarchical' ? 'hierarchical' : 'force'), className)
+  }, draw);
+}
+  } },
+  "platform/charts/Diagram.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Diagram = Diagram;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _interaction = require("./interaction.js");
+var _NetworkGraph = require("./NetworkGraph.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Diagram
+   Summary: A diagram of shapes joined by connectors (07 Data Display › Specialized displays › Diagram) that explains a
+     process, a system or a structure. Flowchart: each shape says what a step is (process, decision, start or end, data)
+     and the connectors carry the flow, with labels on the branches ("Yes", "No"). Boxes and arrows: every node a box
+     with a title and a line, inside the group it belongs to. Laid out in layers in one reading direction (down or
+     right), fitted to the plot, zoomed and panned like the network graph; interactive, one Tab stop walks the flow and
+     says each step and where it leads; read-only, it is a picture with its steps as a table.
+   Usage:
+     <Diagram title="How an upload is approved" description="Every upload is checked; rejected ones go back to the owner."
+       nodes={[{ id: 'start', label: 'Upload a file', shape: 'terminal' }, { id: 'check', label: 'Meets the rules?', shape: 'decision' },
+         { id: 'ok', label: 'Publish it' }, { id: 'back', label: 'Return to the owner' }, { id: 'end', label: 'Done', shape: 'terminal' }]}
+       edges={[{ source: 'start', target: 'check' }, { source: 'check', target: 'ok', label: 'Yes' }, { source: 'check', target: 'back', label: 'No' },
+         { source: 'ok', target: 'end' }, { source: 'back', target: 'end' }]} />
+     <Diagram variant="boxes" direction="right" groups={[{ id: 'web', label: 'Web' }, …]} nodes={[{ id: 'app', label: 'Asset app', detail: 'React', group: 'web' }, …]} edges={…} />
+     <Diagram … interactive={false} />                       // read-only: no Tab stop, no zoom buttons
+   Props:
+     title, description: the diagram's name and what it explains (ChartFrame) (title required)
+     nodes: [{ id, label, shape, detail, group }]: label short, starting with a verb for a step; shape (flowchart):
+       "process" (default: a step) | "decision" (a question with branches) | "terminal" (where the flow starts or ends) |
+       "data" (something put in or taken out); detail: a second line (boxes and arrows); group: the id of one of groups
+     edges: [{ source, target, label }]: the flow, in its direction; label names a branch ("Yes", "No")
+     variant: "flowchart" (default: shapes by meaning) | "boxes" (boxes with a title and a line, groups as containers)
+     groups: [{ id, label }]: containers drawn around their nodes (boxes and arrows)
+     direction: "down" (default: top to bottom) | "right" (left to right); one direction per diagram
+     interactive: keyboard, pointer, tooltip, live region and the zoom controls (default true); false: read-only
+     margin: as ChartFrame; the plot is as tall as the diagram (ChartFrame fitHeight): it is drawn at its own size, and
+       smaller only to fit a narrower container; onSelect({ c, node }): a click or Enter on a shape
+     strings: { step: "Step", kind: "Kind", next: "Leads to", previous: "Comes from", end: "End", process: "Step",
+       decision: "Decision", terminal: "Start or end", data: "Data", box: "Part", group: "Group" } and the zoom words of
+       the network graph
+     className: more classes on the figure
+   Behavior:
+     One Tab stop: ↓ (or → when the diagram reads right) follows the flow to the next shape, ↑ (←) goes back, the other
+       arrows move across a layer; each move says the step, its kind and where it leads in the live region. Enter
+       selects (onSelect). Zoom and pan as the network graph (+ − 0, the buttons, a drag of the background).
+     The table under it lists every step in order with its kind and where it leads: the diagram's text alternative.
+   Notes:
+     Shapes are SVG geometry on the 4px grid; labels wrap inside them (an HTML label in a foreignObject); fills, edges,
+       arrows and type are --plx-comp-diagram-* tokens on existing roles (no color carries meaning: the shapes and the
+       labels do). For data values use a chart; for a few steps in order, a numbered list.
+*/
+
+const STRINGS = {
+  step: 'Step',
+  kind: 'Kind',
+  next: 'Leads to',
+  previous: 'Comes from',
+  end: 'End',
+  process: 'Step',
+  decision: 'Decision',
+  terminal: 'Start or end',
+  data: 'Data',
+  box: 'Part',
+  group: 'Group'
+};
+const SHAPES = ['process', 'decision', 'terminal', 'data'];
+// SVG geometry, in pixels on the 4px grid: each shape's size, the gaps between layers and across them, a group's padding
+const SIZE = {
+  process: [144, 48],
+  decision: [144, 64],
+  terminal: [128, 40],
+  data: [144, 48],
+  box: [160, 64]
+};
+const GAP_ALONG = 48,
+  GAP_ACROSS = 32,
+  GROUP_PAD = 16,
+  GROUP_HEAD = 24,
+  INSET = 16,
+  SLANT = 12;
+function outline(shape, w, h) {
+  const x0 = -w / 2,
+    y0 = -h / 2;
+  if (shape === 'decision') return 'M0,' + y0 + 'L' + -x0 + ',0L0,' + -y0 + 'L' + x0 + ',0Z';
+  if (shape === 'data') return 'M' + (x0 + SLANT) + ',' + y0 + 'L' + -x0 + ',' + y0 + 'L' + (-x0 - SLANT) + ',' + -y0 + 'L' + x0 + ',' + -y0 + 'Z';
+  return null;
+}
+function Diagram({
+  title,
+  description,
+  nodes = [],
+  edges = [],
+  variant = 'flowchart',
+  groups,
+  direction = 'down',
+  interactive = true,
+  size = 'lg',
+  margin,
+  onSelect,
+  strings,
+  frameStrings,
+  interactionStrings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-diagram' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const boxes = variant === 'boxes';
+  const right = direction === 'right';
+  const shapeOf = n => boxes ? 'box' : SHAPES.indexOf(n.shape) >= 0 ? n.shape : 'process';
+  const at = {};
+  nodes.forEach((n, i) => {
+    at[n.id] = i;
+  });
+  const nb = _react.default.useMemo(() => (0, _NetworkGraph.graphNeighbors)(nodes, edges), [nodes, edges]);
+  const outs = nodes.map(n => edges.filter(e => e.source === n.id && at[e.target] !== undefined));
+  const ins = nodes.map(n => edges.filter(e => e.target === n.id && at[e.source] !== undefined));
+  const nextText = i => outs[i].length ? (0, _format.formatList)(outs[i].map(e => nodes[at[e.target]].label + (e.label ? ' (' + e.label + ')' : ''))) : t.end;
+  const kindOf = n => t[shapeOf(n)];
+
+  // the layout in diagram units: layers along the direction, the nodes of a layer side by side, centered
+  const layout = _react.default.useMemo(() => {
+    const {
+      rank,
+      place
+    } = (0, _NetworkGraph.graphLayers)(nodes, edges);
+    const cell = Object.keys(SIZE).reduce((m, k) => [Math.max(m[0], SIZE[k][0]), Math.max(m[1], SIZE[k][1])], [0, 0]);
+    const along = right ? cell[0] + GAP_ALONG : cell[1] + GAP_ALONG,
+      across = right ? cell[1] + GAP_ACROSS : cell[0] + GAP_ACROSS;
+    const p = nodes.map((n, i) => right ? {
+      x: rank[i] * along,
+      y: place[i] * across
+    } : {
+      x: place[i] * across,
+      y: rank[i] * along
+    });
+    let x0 = Infinity,
+      y0 = Infinity,
+      x1 = -Infinity,
+      y1 = -Infinity;
+    p.forEach((q, i) => {
+      const s = SIZE[shapeOf(nodes[i])];
+      x0 = Math.min(x0, q.x - s[0] / 2);
+      x1 = Math.max(x1, q.x + s[0] / 2);
+      y0 = Math.min(y0, q.y - s[1] / 2);
+      y1 = Math.max(y1, q.y + s[1] / 2);
+    });
+    const pad = groups && groups.length ? GROUP_PAD + GROUP_HEAD : 0;
+    return {
+      p: p.map(q => ({
+        x: q.x - x0 + INSET + pad,
+        y: q.y - y0 + INSET + pad
+      })),
+      width: x1 - x0 + (INSET + pad) * 2,
+      height: y1 - y0 + (INSET + pad) * 2
+    };
+  }, [nodes, edges, right, boxes, groups]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const gv = (0, _NetworkGraph.useGraphView)({
+    enabled: interactive,
+    strings
+  });
+  const fitted = _react.default.useRef({
+    key: '',
+    k: 1,
+    x: 0,
+    y: 0
+  });
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: 1,
+    columns: nodes.length,
+    mode: 'point',
+    select: typeof onSelect === 'function',
+    strings: interactionStrings,
+    onSelect: cell => onSelect && onSelect(Object.assign({
+      node: nodes[cell.c]
+    }, cell)),
+    describe: cell => {
+      const n = nodes[cell.c];
+      return (0, _ChartTooltip.chartTooltipText)({
+        title: n.label,
+        items: [{
+          label: t.kind,
+          value: kindOf(n)
+        }, {
+          label: t.next,
+          value: nextText(cell.c)
+        }]
+      });
+    },
+    // along the flow: the first next or previous shape; across: the nearest in the same direction
+    move: (a, key) => {
+      const fwd = right ? 'ArrowRight' : 'ArrowDown',
+        back = right ? 'ArrowLeft' : 'ArrowUp';
+      if (key === fwd && outs[a.c].length) return {
+        r: 0,
+        c: at[outs[a.c][0].target]
+      };
+      if (key === back && ins[a.c].length) return {
+        r: 0,
+        c: at[ins[a.c][0].source]
+      };
+      return (0, _NetworkGraph.directionalMove)(layout.p, nb, a, key);
+    }
+  });
+  const pos = i => {
+    const v = gv.view,
+      f = fitted.current;
+    return {
+      x: f.x + v.x + layout.p[i].x * f.k * v.k,
+      y: f.y + v.y + layout.p[i].y * f.k * v.k
+    };
+  };
+  const hit = (px, py) => {
+    let best = null;
+    nodes.forEach((n, i) => {
+      const c = pos(i),
+        s = SIZE[shapeOf(n)],
+        k = fitted.current.k * gv.view.k;
+      if (Math.abs(px - c.x) <= s[0] / 2 * k && Math.abs(py - c.y) <= s[1] / 2 * k) best = i;
+    });
+    return best;
+  };
+  const iaz = gv.wrap(ia, (px, py) => hit(px, py) !== null);
+  const table = {
+    columns: [{
+      title: t.step,
+      field: 's',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.kind,
+      field: 'k',
+      kind: 'name'
+    }].concat(groups ? [{
+      title: t.group,
+      field: 'g',
+      kind: 'name'
+    }] : [], [{
+      title: t.next,
+      field: 'n',
+      kind: 'name'
+    }]),
+    data: nodes.map((n, i) => ({
+      id: i + 1,
+      s: n.label + (n.detail ? ' (' + n.detail + ')' : ''),
+      k: kindOf(n),
+      g: groups ? (groups.find(g => g.id === n.group) || {}).label || '' : '',
+      n: nextText(i)
+    }))
+  };
+  const draw = ({
+    inner
+  }) => {
+    gv.size.current = inner;
+    // its own size, smaller only to fit a narrow plot (the plot is as tall as the diagram: fitHeight), centered
+    const k = Math.min(1, inner.width / layout.width);
+    fitted.current = {
+      k,
+      x: (inner.width - layout.width * k) / 2,
+      y: (inner.height - layout.height * k) / 2
+    };
+    ia.register({
+      nearest: (px, py) => {
+        const i = hit(px, py);
+        return i === null ? null : {
+          r: 0,
+          c: i
+        };
+      }
+    });
+    const P = layout.p;
+    const a = ia.active ? ia.active.c : null,
+      sel = ia.selected ? ia.selected.c : null;
+    const near = i => a === null || i === a || nb[a].indexOf(i) >= 0;
+    const half = i => SIZE[shapeOf(nodes[i])].map(v => v / 2);
+    const tip = a !== null ? pos(a) : null;
+    const groupBoxes = (groups || []).map(g => {
+      const idx = nodes.map((n, i) => n.group === g.id ? i : -1).filter(i => i >= 0);
+      if (!idx.length) return null;
+      let x0 = Infinity,
+        y0 = Infinity,
+        x1 = -Infinity,
+        y1 = -Infinity;
+      idx.forEach(i => {
+        const hs = half(i);
+        x0 = Math.min(x0, P[i].x - hs[0]);
+        x1 = Math.max(x1, P[i].x + hs[0]);
+        y0 = Math.min(y0, P[i].y - hs[1]);
+        y1 = Math.max(y1, P[i].y + hs[1]);
+      });
+      return {
+        g,
+        x: x0 - GROUP_PAD,
+        y: y0 - GROUP_PAD - GROUP_HEAD,
+        w: x1 - x0 + GROUP_PAD * 2,
+        h: y1 - y0 + GROUP_PAD * 2 + GROUP_HEAD
+      };
+    }).filter(Boolean);
+    return /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-diagram__plot"
+    }, /*#__PURE__*/_react.default.createElement("defs", null, /*#__PURE__*/_react.default.createElement("marker", {
+      id: uid + '-arrow',
+      viewBox: "0 0 8 8",
+      refX: "8",
+      refY: "4",
+      markerWidth: "8",
+      markerHeight: "8",
+      orient: "auto-start-reverse",
+      markerUnits: "userSpaceOnUse"
+    }, /*#__PURE__*/_react.default.createElement("path", {
+      className: "plx-diagram__arrow",
+      d: "M0,0L8,4L0,8Z"
+    }))), /*#__PURE__*/_react.default.createElement("g", {
+      transform: 'translate(' + (fitted.current.x + gv.view.x) + ',' + (fitted.current.y + gv.view.y) + ') scale(' + k * gv.view.k + ')'
+    }, groupBoxes.map(b => /*#__PURE__*/_react.default.createElement("g", {
+      key: b.g.id,
+      className: "plx-diagram__group"
+    }, /*#__PURE__*/_react.default.createElement("rect", {
+      className: "plx-diagram__group-box",
+      x: b.x,
+      y: b.y,
+      width: b.w,
+      height: b.h
+    }), /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-diagram__group-label",
+      x: b.x + GROUP_PAD,
+      y: b.y + GROUP_HEAD / 2 + GROUP_PAD / 2
+    }, b.g.label))), edges.map((e, n) => {
+      const i = at[e.source],
+        j = at[e.target];
+      if (i === undefined || j === undefined) return null;
+      const s = P[i],
+        d = P[j],
+        hs = half(i),
+        hd = half(j);
+      // an elbow connector: out of the source's far side, across at the middle, into the target's near side
+      // a branch's label sits at the elbow on the target's side
+      let path, lx, ly;
+      if (right) {
+        const sx = s.x + hs[0],
+          tx = d.x - hd[0],
+          mx = (sx + tx) / 2;
+        path = 'M' + sx + ',' + s.y + 'H' + mx + 'V' + d.y + 'H' + tx;
+        lx = mx;
+        ly = d.y;
+      } else {
+        const sy = s.y + hs[1],
+          ty = d.y - hd[1],
+          my = (sy + ty) / 2;
+        path = 'M' + s.x + ',' + sy + 'V' + my + 'H' + d.x + 'V' + ty;
+        lx = d.x;
+        ly = my;
+      }
+      const on = a !== null && (i === a || j === a);
+      return /*#__PURE__*/_react.default.createElement("g", {
+        key: n,
+        className: (0, _cx.cx)('plx-diagram__link', 'plx-chart-dim', a !== null && !on && 'plx-chart-dim--off')
+      }, /*#__PURE__*/_react.default.createElement("path", {
+        className: (0, _cx.cx)('plx-diagram__connector', on && 'plx-diagram__connector--active'),
+        d: path,
+        markerEnd: 'url(#' + uid + '-arrow)'
+      }), e.label ? /*#__PURE__*/_react.default.createElement("text", {
+        className: "plx-diagram__connector-label",
+        x: lx,
+        y: ly
+      }, e.label) : null);
+    }), nodes.map((n, i) => {
+      const shape = shapeOf(n),
+        s = SIZE[shape],
+        o = outline(shape, s[0], s[1]);
+      return /*#__PURE__*/_react.default.createElement("g", {
+        key: n.id,
+        transform: 'translate(' + P[i].x + ',' + P[i].y + ')',
+        className: (0, _cx.cx)('plx-diagram__node', 'plx-diagram__node--' + shape, 'plx-chart-dim', !near(i) && 'plx-chart-dim--off', a === i && 'plx-diagram__node--active', sel === i && 'plx-diagram__node--selected')
+      }, o ? /*#__PURE__*/_react.default.createElement("path", {
+        className: "plx-diagram__shape",
+        d: o
+      }) : /*#__PURE__*/_react.default.createElement("rect", {
+        className: "plx-diagram__shape",
+        x: -s[0] / 2,
+        y: -s[1] / 2,
+        width: s[0],
+        height: s[1]
+      }), /*#__PURE__*/_react.default.createElement("foreignObject", {
+        x: -s[0] / 2,
+        y: -s[1] / 2,
+        width: s[0],
+        height: s[1]
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: "plx-diagram__text"
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-diagram__label"
+      }, n.label), boxes && n.detail ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-diagram__detail"
+      }, n.detail) : null)));
+    })), tip ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+      x: tip.x + (tip.x > inner.width / 2 ? -1 : 1) * half(a)[0] * k * gv.view.k,
+      y: tip.y,
+      inner: inner,
+      title: nodes[a].label,
+      items: [{
+        label: t.kind,
+        value: kindOf(nodes[a])
+      }, {
+        label: t.next,
+        value: nextText(a)
+      }]
+    }) : null);
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    size: size,
+    margin: Object.assign({
+      top: 0,
+      end: 0,
+      bottom: 0,
+      start: 0
+    }, margin),
+    table: table,
+    interaction: interactive ? iaz : undefined,
+    actions: interactive ? gv.actions : null,
+    strings: frameStrings,
+    fitHeight: w => layout.height * Math.min(1, w / layout.width),
+    className: (0, _cx.cx)('plx-diagram', 'plx-diagram--' + (boxes ? 'boxes' : 'flowchart'), !interactive && 'plx-diagram--read-only', className)
+  }, draw);
+}
+  } },
+  "platform/charts/chart-kit.js": { deps: {"react":null,"./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AXIS_TITLE_ROOM = void 0;
+exports.finite = finite;
+exports.halfRoom = halfRoom;
+exports.labelRoom = labelRoom;
+exports.legendItems = legendItems;
+exports.useChartHover = useChartHover;
+exports.withColors = withColors;
+var _react = _interopRequireDefault(require("react"));
+var _scales = require("./scales.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · chart kit (platform/charts/chart-kit.js): the small helpers the charts of library wave 9, lane B share
+   (BarChart, ComboChart, PieChart, BulletChart, BoxPlot, RadarChart, SankeyDiagram, TimelineChart). Internal: not public.
+   Summary: The mark under the pointer (useChartHover: the minimal pointer interaction that shows a ChartTooltip), the room
+     an axis's labels need beside the plot (labelRoom), and the series' colors and legend items.
+   Usage:
+     const [active, hover] = useChartHover();
+     <rect {...hover('2:1')} … />   {active === '2:1' ? <ChartTooltip … /> : null}
+     const margin = { start: labelRoom(categories) };
+   Props:
+     useChartHover(): [active, hover, setActive]; hover(key) returns the pointer handlers of one mark (enter shows it,
+       leave hides it)
+     labelRoom(texts, extra?): the pixels a column of tick labels takes (their longest text in the data font, the tick
+       offset and a gap), plus extra (an axis title's room); snapped to the 4px grid by ChartFrame
+     halfRoom(text): the room after the plot for a tick label centered on the plot's end (the last tick of a value axis
+       along the bottom)
+     AXIS_TITLE_ROOM: the room an axis title's line takes beside the tick labels
+     withColors(series): the series with an id and a data-viz step each (seriesColor by their order in the data)
+     legendItems(series, value?): the ChartLegend items of the series; value(s, i) adds a figure after a name
+   Behavior:
+     Pointer only: keyboard and screen reader people read the values in the chart's data table ("Show the data"). The
+       chart interaction foundation (wave 9, lane A) replaces useChartHover with the keyboard, the pointer and a live
+       region in one hook.
+   Notes:
+     The label room is an estimate from the number of characters (the data font is monospaced: about 7px a character at
+       the tick labels' 11px); a margin given to the chart always wins. */
+
+// px: about one character of the data font at the tick labels' size (DM Mono 11px is 6.6px wide)
+const CHAR = 7;
+// px: the tick offset (8px, --plx-comp-chart-axis-tick-offset) and a 4px gap before the frame's edge
+const TICK_ROOM = 12;
+const AXIS_TITLE_ROOM = exports.AXIS_TITLE_ROOM = 16;
+function useChartHover() {
+  const [active, setActive] = _react.default.useState(null);
+  const hover = key => ({
+    onPointerEnter: () => setActive(key),
+    onPointerLeave: () => setActive(a => a === key ? null : a)
+  });
+  return [active, hover, setActive];
+}
+function labelRoom(texts, extra = 0) {
+  const longest = (texts || []).reduce((n, s) => Math.max(n, String(s === undefined || s === null ? '' : s).length), 0);
+  return Math.ceil((longest * CHAR + TICK_ROOM + extra) / 4) * 4;
+}
+
+// the room after the plot that a tick label centered on its end needs (half its text and a gap; at least the 8px default)
+function halfRoom(text) {
+  return Math.max(8, Math.ceil((String(text === undefined || text === null ? '' : text).length * CHAR / 2 + 4) / 4) * 4);
+}
+function withColors(series) {
+  return (series || []).map((s, i) => Object.assign({}, s, {
+    id: s.id === undefined ? String(i) : s.id,
+    color: s.color || (0, _scales.seriesColor)(i)
+  }));
+}
+function legendItems(series, value) {
+  return (series || []).map((s, i) => ({
+    id: s.id,
+    label: s.label,
+    color: s.color,
+    value: value ? value(s, i) : undefined
+  }));
+}
+function finite(v) {
+  const n = Number(v);
+  return isFinite(n) ? n : 0;
+}
+  } },
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BarChart = BarChart;
+exports.binValues = binValues;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _Axis = require("./parts/Axis.jsx");
+var _GridLines = require("./parts/GridLines.jsx");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _DataLabel = require("./parts/DataLabel.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarChart
+   Summary: Amounts compared as the lengths of bars (07 Data Display › Charts › Bar chart, Column chart, Stacked bar
+     chart, Histogram): one bar per category along a value axis that starts at zero, horizontal (bars: long names,
+     ranking) or vertical (columns: periods), one series or several side by side (grouped), stacked into a total
+     (stacked), or as shares of each category's total (percent); and the histogram, touching columns that count how
+     many values fall in each range. Drawn in ChartFrame with its axes, grid lines, legend, tooltip and data table.
+   Usage:
+     <BarChart title="Storage by team" description="Design uses the most storage." categories={['Design', 'Marketing', 'Sales']}
+       series={[{ id: 'gb', label: 'Storage (GB)', values: [420, 310, 120] }]} valueLabel="Storage (GB)" showValues />
+     <BarChart orientation="vertical" layout="stacked" title="Uploads per month" categories={months}
+       series={[{ id: 'img', label: 'Images', values: […] }, { id: 'vid', label: 'Videos', values: […] }]} />
+     <BarChart orientation="vertical" title="File sizes" histogram={{ values: sizes, bins: 8 }} categoryLabel="Size (MB)" valueLabel="Files" />
+   Props:
+     title: the chart's name (required); description: its takeaway in a sentence or two (ChartFrame)
+     categories: the category names, in the order to draw them (sort by value unless the order is natural: months, steps)
+     series: [{ id, label, values, color }]: values one per category (a missing value draws nothing); color an optional
+       data-viz step (default seriesColor by the series' order)
+     orientation: "horizontal" (default: bars, categories down the start side) | "vertical" (columns, categories along
+       the bottom)
+     layout: "grouped" (default: series side by side in each category) | "stacked" (series stacked into the category's
+       total) | "percent" (stacked to 100%: each series' share of its category)
+     histogram: { values, bins, domain, format } draws a histogram instead of categories and series: values are the raw
+       numbers, bins about how many ranges (default from the number of values), on round edges of equal width; domain
+       [min, max] limits the range; format(edge) writes the range axis's labels
+     valueLabel, categoryLabel: the axis titles (the measure with its unit); room is made for them
+     format: (value) => text for the values (tooltip, labels, table); default formatNumber in the reader's locale
+     showValues: writes each value at its bar's end (grouped), each stack's total (stacked), each share inside its segment
+       when it fits (percent), or each count (histogram) (default false)
+     legend: true | false: the series' legend (default: shown when there are two series or more)
+     legendPosition: "bottom" (default) | "top" | "end" (ChartFrame)
+     tooltip: shows the values of the bar under the pointer (default true)
+     size, margin, hideCaption, className: ChartFrame's (margin wins over the room computed for the labels)
+     strings: { category: "Category", total: "Total", range: "Range", count: "Count" } and ChartFrame's strings
+   Behavior:
+     The value axis starts at zero (negative values go the other way from a zero line); stacked bars stack positive values
+       up and negative values down; percent stacks only positive values.
+     Hover a bar: the tooltip shows its value (grouped), its category's values (stacked, percent: with each share) or its
+       range and count (histogram). The data table lists every value: the chart's keyboard and screen reader view.
+     Histogram bins touch (no gap: the range is continuous) and have equal widths on round edges.
+   Notes:
+     Colors come from the data-viz scales (seriesColor by the series' order); stacked segments and bins are parted by a
+       thin line in the surface color (bar-chart tokens). Geometry only in the markup.
+     Pointer interaction is the chart kit's minimal hover (chart-kit.js); the chart interaction foundation replaces it.
+*/
+const STRINGS = {
+  category: 'Category',
+  total: 'Total',
+  range: 'Range',
+  count: 'Count'
+};
+const LAYOUTS = ['grouped', 'stacked', 'percent'];
+// px: the least room a segment needs for its share written inside it (percent)
+const INSIDE_LABEL_MIN = 32;
+
+// equal bins on round edges: [{ x0, x1, count }]
+function binValues(values, {
+  bins,
+  domain
+} = {}) {
+  const v = (values || []).map(Number).filter(x => isFinite(x));
+  if (!v.length) return [];
+  const lo = domain ? Number(domain[0]) : Math.min.apply(null, v);
+  const hi = domain ? Number(domain[1]) : Math.max.apply(null, v);
+  const n = Math.max(1, Math.round(bins || Math.ceil(Math.log2(v.length) + 1)));
+  const t = (0, _scales.niceTicks)(lo, hi, n);
+  let edges = t.ticks;
+  if (edges.length < 2) edges = [t.start, t.start + t.step];
+  const out = edges.slice(0, -1).map((x0, i) => ({
+    x0,
+    x1: edges[i + 1],
+    count: 0
+  }));
+  v.forEach(x => {
+    if (x < edges[0] || x > edges[edges.length - 1]) return;
+    const i = Math.min(out.length - 1, Math.floor((x - edges[0]) / t.step));
+    if (i >= 0) out[i].count += 1;
+  });
+  return out;
+}
+function BarChart({
+  title,
+  description,
+  hideCaption,
+  size,
+  categories = [],
+  series = [],
+  orientation = 'horizontal',
+  layout = 'grouped',
+  histogram,
+  valueLabel,
+  categoryLabel,
+  format,
+  showValues = false,
+  legend,
+  legendPosition,
+  tooltip = true,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
+  const across = o === 'horizontal';
+  const bins = histogram && Array.isArray(histogram.values) ? binValues(histogram.values, histogram) : null;
+  const mode = bins ? 'histogram' : LAYOUTS.indexOf(layout) >= 0 ? layout : 'grouped';
+  const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
+  const edgeFmt = v => bins && typeof histogram.format === 'function' ? histogram.format(v) : (0, _format.formatNumber)(v);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const list = bins ? [{
+    id: 'count',
+    label: valueLabel || t.count,
+    values: bins.map(b => b.count),
+    color: (0, _scales.seriesColor)(0)
+  }] : (0, _chartKit.withColors)(series);
+  const cats = bins ? bins.map((b, i) => i) : categories;
+  const val = (si, ci) => {
+    const x = Number(list[si].values[ci]);
+    return isFinite(x) ? x : null;
+  };
+  const totals = cats.map((c, ci) => list.reduce((a, s, si) => a + Math.max(0, val(si, ci) || 0), 0));
+  // each bar's span on the value axis: spans[category][series] = [from, to]
+  const spans = cats.map((c, ci) => {
+    let pos = 0,
+      neg = 0;
+    return list.map((s, si) => {
+      const v = val(si, ci);
+      if (v === null) return null;
+      if (mode === 'percent') {
+        const from = pos;
+        pos += totals[ci] ? Math.max(0, v) / totals[ci] : 0;
+        return [from, pos];
+      }
+      if (mode === 'stacked') {
+        if (v >= 0) {
+          const from = pos;
+          pos += v;
+          return [from, pos];
+        }
+        const from = neg;
+        neg += v;
+        return [from, neg];
+      }
+      return [0, v];
+    });
+  });
+  let lo = 0,
+    hi = 0;
+  spans.forEach(row => row.forEach(sp => {
+    if (sp) {
+      lo = Math.min(lo, sp[0], sp[1]);
+      hi = Math.max(hi, sp[0], sp[1]);
+    }
+  }));
+  if (mode === 'percent') {
+    lo = 0;
+    hi = 1;
+  }
+  if (hi === lo) hi = lo + 1;
+  const tickFmt = mode === 'percent' ? v => (0, _format.formatPercent)(v) : typeof format === 'function' ? format : undefined;
+  const tickTexts = (0, _scales.niceTicks)(lo, hi, 5).ticks.map(v => tickFmt ? tickFmt(v) : (0, _format.formatNumber)(v));
+  const catTexts = bins ? bins.map(b => edgeFmt(b.x0)).concat([edgeFmt(bins.length ? bins[bins.length - 1].x1 : 0)]) : cats.map(String);
+  const endTexts = showValues && across ? mode === 'stacked' ? totals.map(fmt) : list.reduce((a, s, si) => a.concat(cats.map((c, ci) => val(si, ci) === null ? '' : fmt(val(si, ci)))), []) : [];
+  // the room the labels need: the category names (bars) or the value ticks (columns) before the plot, axis titles, values
+  const auto = across ? {
+    start: (0, _chartKit.labelRoom)(catTexts, categoryLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
+    bottom: valueLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined,
+    end: Math.max(showValues && mode !== 'percent' ? (0, _chartKit.labelRoom)(endTexts) : 0, (0, _chartKit.halfRoom)(tickTexts[tickTexts.length - 1]))
+  } : {
+    start: (0, _chartKit.labelRoom)(tickTexts, valueLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
+    bottom: categoryLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined,
+    top: showValues ? 24 : undefined,
+    end: bins ? (0, _chartKit.halfRoom)(catTexts[catTexts.length - 1]) : undefined
+  };
+  const m = Object.assign({}, auto, margin);
+  Object.keys(m).forEach(k => {
+    if (m[k] === undefined) delete m[k];
+  });
+  const rangeText = b => edgeFmt(b.x0) + '–' + edgeFmt(b.x1);
+  const table = bins ? {
+    columns: [{
+      title: categoryLabel || t.range,
+      field: 'range',
+      kind: 'data',
+      rowLabel: true
+    }, {
+      title: valueLabel || t.count,
+      field: 'count',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: bins.map((b, i) => ({
+      id: i + 1,
+      range: rangeText(b),
+      count: fmt(b.count)
+    }))
+  } : {
+    columns: [{
+      title: categoryLabel || t.category,
+      field: 'category',
+      kind: 'name',
+      rowLabel: true
+    }].concat(list.map((s, si) => ({
+      title: s.label,
+      field: 's' + si,
+      kind: 'data',
+      hozAlign: 'right'
+    }))).concat(mode !== 'grouped' && list.length > 1 ? [{
+      title: t.total,
+      field: 'total',
+      kind: 'data',
+      hozAlign: 'right'
+    }] : []),
+    data: cats.map((c, ci) => {
+      const row = {
+        id: ci + 1,
+        category: String(c)
+      };
+      list.forEach((s, si) => {
+        const v = val(si, ci);
+        row['s' + si] = v === null ? '' : mode === 'percent' && totals[ci] ? fmt(v) + ' (' + (0, _format.formatPercent)(Math.max(0, v) / totals[ci]) + ')' : fmt(v);
+      });
+      row.total = fmt(totals[ci]);
+      return row;
+    })
+  };
+  const showLegend = legend === undefined ? !bins && list.length > 1 : !!legend && !bins;
+  const key = showLegend ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: (0, _chartKit.legendItems)(list),
+    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-bar-chart', 'plx-bar-chart--' + o, 'plx-bar-chart--' + mode, className)
+  }, ({
+    inner,
+    margin: fm
+  }) => {
+    const L = across ? inner.height : inner.width; // the category axis's length
+    const V = across ? inner.width : inner.height; // the value axis's length
+    const vs = (0, _scales.scaleLinear)({
+      domain: [lo, hi],
+      range: across ? [0, V] : [V, 0],
+      nice: mode !== 'percent'
+    });
+    const band = bins ? null : (0, _scales.scaleBand)({
+      domain: cats,
+      range: [0, L],
+      paddingInner: 0.2,
+      paddingOuter: 0.1
+    });
+    const cs = bins ? (0, _scales.scaleLinear)({
+      domain: [bins[0].x0, bins[bins.length - 1].x1],
+      range: [0, L]
+    }) : null;
+    const sub = band && mode === 'grouped' ? (0, _scales.scaleBand)({
+      domain: list.map(s => s.id),
+      range: [0, band.bandwidth()],
+      paddingInner: list.length > 1 ? 0.1 : 0,
+      paddingOuter: 0
+    }) : null;
+    // a bar from a to b on the value axis, at start along the category axis with its thickness
+    const box = (start, thick, a, b) => {
+      const p0 = vs(a),
+        p1 = vs(b),
+        low = Math.min(p0, p1),
+        len = Math.abs(p1 - p0);
+      return across ? {
+        x: low,
+        y: start,
+        width: len,
+        height: thick
+      } : {
+        x: start,
+        y: low,
+        width: thick,
+        height: len
+      };
+    };
+    const place = (ci, si) => {
+      if (bins) return [cs(bins[ci].x0), cs(bins[ci].x1) - cs(bins[ci].x0)];
+      if (sub) return [band(cats[ci]) + sub(list[si].id), sub.bandwidth()];
+      return [band(cats[ci]), band.bandwidth()];
+    };
+    // the anchor of a bar's end: the middle of its thickness at the value's end
+    const endOf = (start, thick, v) => across ? {
+      x: vs(v),
+      y: start + thick / 2
+    } : {
+      x: start + thick / 2,
+      y: vs(v)
+    };
+    const joined = mode !== 'grouped';
+    const marks = [],
+      labels = [];
+    cats.forEach((c, ci) => list.forEach((s, si) => {
+      const sp = spans[ci][si];
+      if (!sp) return;
+      const [start, thick] = place(ci, si);
+      const k = mode === 'stacked' || mode === 'percent' ? String(ci) : ci + ':' + si;
+      marks.push(/*#__PURE__*/_react.default.createElement("rect", _extends({
+        key: ci + ':' + si,
+        className: (0, _cx.cx)('plx-chart__mark', 'plx-bar-chart__bar', joined && 'plx-bar-chart__bar--joined'),
+        "data-plx-dataviz": s.color
+      }, box(start, thick, sp[0], sp[1]), tooltip ? hover(k) : {})));
+      if (!showValues) return;
+      if (mode === 'grouped' || mode === 'histogram') {
+        const e = endOf(start, thick, Math.max(0, sp[1])); // a negative value's label sits on the empty side of the zero line
+        labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+          key: 'l' + ci + ':' + si,
+          x: e.x,
+          y: e.y,
+          value: fmt(val(si, ci)),
+          position: across ? 'end' : 'top'
+        }));
+      } else if (mode === 'percent' && Math.abs(vs(sp[1]) - vs(sp[0])) >= INSIDE_LABEL_MIN) {
+        const mid = endOf(start, thick, (sp[0] + sp[1]) / 2);
+        labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+          key: 'l' + ci + ':' + si,
+          x: mid.x,
+          y: mid.y,
+          value: (0, _format.formatPercent)(sp[1] - sp[0]),
+          position: "center"
+        }));
+      }
+    }));
+    if (showValues && mode === 'stacked') cats.forEach((c, ci) => {
+      const [start, thick] = place(ci, 0);
+      const e = endOf(start, thick, totals[ci]);
+      labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+        key: 't' + ci,
+        x: e.x,
+        y: e.y,
+        value: fmt(totals[ci]),
+        position: across ? 'end' : 'top'
+      }));
+    });
+    // the tooltip of the bar (grouped, histogram) or the category (stacked, percent) under the pointer
+    let tip = null;
+    if (tooltip && active !== null) {
+      const [ci, si] = String(active).split(':').map(Number);
+      if (cats[ci] !== undefined) {
+        if (bins) {
+          const [start, thick] = place(ci, 0),
+            e = endOf(start, thick, bins[ci].count);
+          tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+            x: e.x,
+            y: e.y,
+            inner: inner,
+            title: rangeText(bins[ci]),
+            titleKind: "data",
+            items: [{
+              label: valueLabel || t.count,
+              value: fmt(bins[ci].count),
+              color: list[0].color
+            }]
+          });
+        } else if (mode === 'grouped' && list[si]) {
+          const [start, thick] = place(ci, si),
+            v = val(si, ci),
+            e = endOf(start, thick, Math.max(0, v || 0));
+          tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+            x: e.x,
+            y: e.y,
+            inner: inner,
+            title: String(cats[ci]),
+            items: [{
+              label: list[si].label,
+              value: fmt(v),
+              color: list[si].color
+            }]
+          });
+        } else {
+          const [start, thick] = place(ci, 0),
+            e = endOf(start, thick, mode === 'percent' ? 1 : totals[ci]);
+          tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+            x: e.x,
+            y: e.y,
+            inner: inner,
+            title: String(cats[ci]) + ' · ' + fmt(totals[ci]),
+            titleKind: "text",
+            items: list.map((s, i) => {
+              const v = val(i, ci);
+              return {
+                label: s.label,
+                value: v === null ? '–' : mode === 'percent' && totals[ci] ? (0, _format.formatPercent)(Math.max(0, v) / totals[ci]) : fmt(v),
+                color: s.color
+              };
+            })
+          });
+        }
+      }
+    }
+    const catAxis = bins ? /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: cs,
+      orient: across ? 'left' : 'bottom',
+      inner: inner,
+      margin: fm,
+      line: false,
+      ticks: bins.length <= 12 ? [bins[0].x0].concat(bins.map(b => b.x1)) : undefined,
+      format: edgeFmt,
+      label: categoryLabel
+    }) : /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: band,
+      orient: across ? 'left' : 'bottom',
+      inner: inner,
+      margin: fm,
+      line: false,
+      label: categoryLabel
+    });
+    const zero = vs(0);
+    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
+      scale: vs,
+      direction: across ? 'vertical' : 'horizontal',
+      inner: inner
+    }), marks, across ? /*#__PURE__*/_react.default.createElement("line", {
+      className: "plx-chart__axis-line",
+      x1: zero,
+      x2: zero,
+      y1: 0,
+      y2: inner.height
+    }) : /*#__PURE__*/_react.default.createElement("line", {
+      className: "plx-chart__axis-line",
+      x1: 0,
+      x2: inner.width,
+      y1: zero,
+      y2: zero
+    }), labels, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: vs,
+      orient: across ? 'bottom' : 'left',
+      inner: inner,
+      margin: fm,
+      line: false,
+      format: tickFmt,
+      label: valueLabel
+    }), catAxis, tip);
+  });
+}
+  } },
+  "platform/charts/ComboChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ComboChart = ComboChart;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _Axis = require("./parts/Axis.jsx");
+var _GridLines = require("./parts/GridLines.jsx");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _position = require("./parts/position.js");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ComboChart
+   Summary: Two related measures on one category axis (07 Data Display › Charts › Combo chart): columns for the primary
+     measure (an amount from zero) and a line with points for the second (a rate, a target, a running figure), on one
+     shared value axis or on two (the columns' on the start side, the line's on the end side) when their units differ.
+     Drawn in ChartFrame with both legends, a shared tooltip per category and the data table.
+   Usage:
+     <ComboChart title="Uploads and approval rate" description="Uploads doubled while the approval rate held near 90%."
+       categories={months} bars={[{ id: 'up', label: 'Uploads', values: […] }]}
+       lines={[{ id: 'rate', label: 'Approval rate', values: […] }]} axis="dual" barLabel="Uploads" lineLabel="Approval rate"
+       formatLine={(v) => formatPercent(v)} />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     categories: the category names, in order (periods left to right)
+     bars: [{ id, label, values, color }]: the column series (grouped side by side when there are several)
+     lines: [{ id, label, values, color }]: the line series (one point per category); colors continue after the bars'
+     axis: "shared" (default: one value axis for both; same unit) | "dual" (the lines on their own axis at the end side;
+       give both axes a title with its unit)
+     barLabel, lineLabel: the value axes' titles (with dual: the start axis's and the end axis's); categoryLabel: the
+       category axis's title
+     formatBar, formatLine: (value) => text for each kind's values (axis ticks, tooltip, table); default formatNumber
+     showPoints: draws a point at each line value (default true)
+     legend: false hides the two legends (columns with square swatches, lines with line swatches)
+     legendPosition, size, margin, hideCaption, className: ChartFrame's
+     tooltip: shows every series' value at the category under the pointer (default true)
+     strings: { category: "Category", bars: "Columns", lines: "Lines" } (the legends' names) and ChartFrame's strings
+   Behavior:
+     The column axis starts at zero; with axis="dual" the line axis is fitted to the line's values (nice round ends) and
+       says so with its own ticks and title, so the two scales are never read as one.
+     Hover anywhere over a category: a crosshair and one tooltip with every series' value in the legends' order.
+   Notes:
+     Two chart types at most: never a third. Colors come from the data-viz scales by the series' order (columns first).
+     Points are the frame's point marks; their radius is a combo-chart token.
+*/
+const STRINGS = {
+  category: 'Category',
+  bars: 'Columns',
+  lines: 'Lines'
+};
+const extent = (list, from0) => {
+  let lo = from0 ? 0 : Infinity,
+    hi = from0 ? 0 : -Infinity;
+  list.forEach(s => (s.values || []).forEach(v => {
+    if (v === null || v === undefined || !isFinite(Number(v))) return;
+    lo = Math.min(lo, Number(v));
+    hi = Math.max(hi, Number(v));
+  }));
+  if (!isFinite(lo)) {
+    lo = 0;
+    hi = 1;
+  }
+  if (lo === hi) hi = lo + 1;
+  return [lo, hi];
+};
+function ComboChart({
+  title,
+  description,
+  hideCaption,
+  size,
+  categories = [],
+  bars = [],
+  lines = [],
+  axis = 'shared',
+  barLabel,
+  lineLabel,
+  categoryLabel,
+  formatBar,
+  formatLine,
+  showPoints = true,
+  legend,
+  legendPosition,
+  tooltip = true,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const dual = axis === 'dual';
+  const fb = v => typeof formatBar === 'function' ? formatBar(v) : (0, _format.formatNumber)(v);
+  const fl = v => typeof formatLine === 'function' ? formatLine(v) : (0, _format.formatNumber)(v);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const cols = bars.map((s, i) => Object.assign({}, s, {
+    id: s.id === undefined ? 'b' + i : s.id,
+    color: s.color || (0, _scales.seriesColor)(i)
+  }));
+  const lns = lines.map((s, i) => Object.assign({}, s, {
+    id: s.id === undefined ? 'l' + i : s.id,
+    color: s.color || (0, _scales.seriesColor)(cols.length + i)
+  }));
+  const barDom = dual ? extent(cols, true) : extent(cols.concat(lns), true);
+  const lineDom = dual ? extent(lns, false) : barDom;
+  const startTexts = (0, _scales.niceTicks)(barDom[0], barDom[1], 5).ticks.map(fb);
+  const endTexts = dual ? (0, _scales.niceTicks)(lineDom[0], lineDom[1], 5).ticks.map(fl) : [];
+  const auto = {
+    start: (0, _chartKit.labelRoom)(startTexts, barLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
+    end: dual ? (0, _chartKit.labelRoom)(endTexts, lineLabel ? _chartKit.AXIS_TITLE_ROOM : 0) : undefined,
+    bottom: categoryLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined
+  };
+  const m = Object.assign({}, auto, margin);
+  Object.keys(m).forEach(k => {
+    if (m[k] === undefined) delete m[k];
+  });
+  const table = {
+    columns: [{
+      title: categoryLabel || t.category,
+      field: 'category',
+      kind: 'name',
+      rowLabel: true
+    }].concat(cols.map((s, i) => ({
+      title: s.label,
+      field: 'b' + i,
+      kind: 'data',
+      hozAlign: 'right'
+    }))).concat(lns.map((s, i) => ({
+      title: s.label,
+      field: 'l' + i,
+      kind: 'data',
+      hozAlign: 'right'
+    }))),
+    data: categories.map((c, ci) => {
+      const row = {
+        id: ci + 1,
+        category: String(c)
+      };
+      cols.forEach((s, i) => {
+        const v = s.values[ci];
+        row['b' + i] = v === null || v === undefined ? '' : fb(v);
+      });
+      lns.forEach((s, i) => {
+        const v = s.values[ci];
+        row['l' + i] = v === null || v === undefined ? '' : fl(v);
+      });
+      return row;
+    })
+  };
+  const key = legend === false ? null : /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-combo-chart__legend', legendPosition === 'end' && 'plx-combo-chart__legend--vertical')
+  }, cols.length ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: (0, _chartKit.legendItems)(cols),
+    label: t.bars,
+    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
+  }) : null, lns.length ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: (0, _chartKit.legendItems)(lns),
+    shape: "line",
+    label: t.lines,
+    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
+  }) : null);
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-combo-chart', dual && 'plx-combo-chart--dual', className)
+  }, ({
+    inner,
+    margin: fm
+  }) => {
+    const x = (0, _scales.scaleBand)({
+      domain: categories,
+      range: [0, inner.width],
+      paddingInner: 0.2,
+      paddingOuter: 0.1
+    });
+    const yb = (0, _scales.scaleLinear)({
+      domain: barDom,
+      range: [inner.height, 0],
+      nice: true
+    });
+    const yl = dual ? (0, _scales.scaleLinear)({
+      domain: lineDom,
+      range: [inner.height, 0],
+      nice: true
+    }) : yb;
+    const sub = (0, _scales.scaleBand)({
+      domain: cols.map(s => s.id),
+      range: [0, x.bandwidth()],
+      paddingInner: cols.length > 1 ? 0.1 : 0,
+      paddingOuter: 0
+    });
+    const zero = yb(0);
+    const path = s => {
+      let d = '',
+        pen = false;
+      categories.forEach((c, ci) => {
+        const v = s.values[ci];
+        if (v === null || v === undefined || !isFinite(Number(v))) {
+          pen = false;
+          return;
+        }
+        d += (pen ? 'L' : 'M') + (0, _position.scalePosition)(x, c) + ',' + yl(v);
+        pen = true;
+      });
+      return d;
+    };
+    let tip = null;
+    if (tooltip && active !== null && categories[active] !== undefined) {
+      const ci = Number(active);
+      tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+        variant: "shared",
+        x: (0, _position.scalePosition)(x, categories[ci]),
+        inner: inner,
+        title: String(categories[ci]),
+        items: cols.map(s => ({
+          label: s.label,
+          value: s.values[ci] === undefined || s.values[ci] === null ? '–' : fb(s.values[ci]),
+          color: s.color
+        })).concat(lns.map(s => ({
+          label: s.label,
+          value: s.values[ci] === undefined || s.values[ci] === null ? '–' : fl(s.values[ci]),
+          color: s.color
+        })))
+      });
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
+      scale: yb,
+      inner: inner
+    }), categories.map((c, ci) => cols.map(s => {
+      const v = s.values[ci];
+      if (v === null || v === undefined || !isFinite(Number(v))) return null;
+      const p = yb(v);
+      return /*#__PURE__*/_react.default.createElement("rect", {
+        key: ci + ':' + s.id,
+        className: "plx-chart__mark plx-combo-chart__bar",
+        "data-plx-dataviz": s.color,
+        x: x(c) + sub(s.id),
+        y: Math.min(p, zero),
+        width: sub.bandwidth(),
+        height: Math.abs(zero - p)
+      });
+    })), /*#__PURE__*/_react.default.createElement("line", {
+      className: "plx-chart__axis-line",
+      x1: 0,
+      x2: inner.width,
+      y1: zero,
+      y2: zero
+    }), lns.map(s => /*#__PURE__*/_react.default.createElement("path", {
+      key: s.id,
+      className: "plx-chart__line plx-combo-chart__line",
+      "data-plx-dataviz": s.color,
+      d: path(s)
+    })), showPoints ? lns.map(s => categories.map((c, ci) => {
+      const v = s.values[ci];
+      if (v === null || v === undefined || !isFinite(Number(v))) return null;
+      return /*#__PURE__*/_react.default.createElement("circle", {
+        key: s.id + ci,
+        className: "plx-chart__point plx-combo-chart__point",
+        "data-plx-dataviz": s.color,
+        cx: (0, _position.scalePosition)(x, c),
+        cy: yl((0, _chartKit.finite)(v))
+      });
+    })) : null, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: yb,
+      orient: "left",
+      inner: inner,
+      margin: fm,
+      format: fb,
+      label: barLabel
+    }), dual ? /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: yl,
+      orient: "right",
+      inner: inner,
+      margin: fm,
+      format: fl,
+      label: lineLabel
+    }) : null, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: x,
+      orient: "bottom",
+      inner: inner,
+      margin: fm,
+      line: false,
+      label: categoryLabel
+    }), tooltip ? categories.map((c, ci) => /*#__PURE__*/_react.default.createElement("rect", _extends({
+      key: 'hit' + ci,
+      className: "plx-combo-chart__hit",
+      x: x(c) - x.step() * 0.1,
+      y: 0,
+      width: x.step(),
+      height: inner.height
+    }, hover(ci)))) : null, tip);
+  });
+}
+  } },
+  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PieChart = PieChart;
+exports.pieSlices = pieSlices;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _DataLabel = require("./parts/DataLabel.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PieChart
+   Summary: The shares of a few parts in one whole (07 Data Display › Charts › Pie chart, Donut chart): a circle cut into
+     slices from 12 o'clock, largest first, clockwise (pie); a ring with the total or a key value in its hollow center
+     (donut); or a half ring across the top with its value under it (half). Small parts are grouped into Other. Drawn in
+     ChartFrame with a legend that gives each part's share, a tooltip and the data table.
+   Usage:
+     <PieChart title="Storage by file type" description="Videos take more than half of the storage."
+       data={[{ id: 'video', label: 'Videos', value: 540 }, { id: 'img', label: 'Images', value: 260 }, { id: 'doc', label: 'Documents', value: 120 }]} />
+     <PieChart variant="donut" title="Storage by file type" data={parts} centerLabel="GB used" format={(v) => formatNumber(v)} />
+     <PieChart variant="half" title="Quota used" data={[{ id: 'used', label: 'Used', value: 72 }, { id: 'free', label: 'Free', value: 28 }]}
+       centerValue="72%" centerLabel="of 1 TB" />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     data: the parts: [{ id, label, value, color }] (values above zero; color an optional data-viz step, default by the
+       part's order in the data)
+     variant: "pie" (default) | "donut" (a ring with a center value) | "half" (a half ring across the top, the value under
+       its middle)
+     centerValue: the donut's or the half ring's value (default the total, formatted); centerLabel: the words under it
+       (default strings.total)
+     sort: slices largest first, clockwise from the top (default true; false keeps the data's order); Other stays last
+     maxSlices: the most slices drawn (default 6): the smallest parts beyond them are grouped into one Other slice
+     format: (value) => text for the values (center, tooltip, table); default formatNumber
+     showValues: writes each share on its slice when the slice is large enough (8% or more) (default false)
+     legend: false hides the legend (default shown, each part with its share); legendPosition: ChartFrame's
+     tooltip: shows the part under the pointer, its value and share (default true)
+     size, margin, hideCaption, className: ChartFrame's
+     strings: { part: "Part", value: "Value", share: "Share", total: "Total", other: "Other" } and ChartFrame's strings
+   Behavior:
+     A part keeps its color by its order in the data, not by its size; Other takes the neutral categorical color.
+     Hover a slice: the tooltip shows its name, value and share. The legend and the data table carry every part's value
+       and share: the chart's keyboard and screen reader view.
+   Notes:
+     Two to five parts read best; for many parts or parts of similar size use a bar chart. Slices are parted by a thin line
+       in the surface color (pie-chart tokens); the hole is 60% of the radius (geometry).
+*/
+const STRINGS = {
+  part: 'Part',
+  value: 'Value',
+  share: 'Share',
+  total: 'Total',
+  other: 'Other'
+};
+const VARIANTS = ['pie', 'donut', 'half'];
+const HOLE = 0.6; // the hollow center's radius, a share of the ring's radius
+const LABEL_MIN = 0.08; // the least share written on its slice
+const FULL = Math.PI * 2 - 1e-6;
+const OTHER_COLOR = 'categorical-6';
+// px: a margin that keeps the ring off the frame's edges (on the 4px grid)
+const RING_MARGIN = {
+  top: 8,
+  end: 8,
+  bottom: 8,
+  start: 8
+};
+
+// the point at an angle (0 = 12 o'clock, clockwise) and a radius from the center
+const at = (cx0, cy0, r, a) => [cx0 + r * Math.sin(a), cy0 - r * Math.cos(a)];
+function arcPath(cx0, cy0, r0, r1, a0, a1) {
+  const span = Math.min(a1 - a0, FULL);
+  const end = a0 + span,
+    large = span > Math.PI ? 1 : 0;
+  const [x0, y0] = at(cx0, cy0, r1, a0),
+    [x1, y1] = at(cx0, cy0, r1, end);
+  if (r0 <= 0) return 'M' + cx0 + ',' + cy0 + 'L' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'Z';
+  const [x2, y2] = at(cx0, cy0, r0, end),
+    [x3, y3] = at(cx0, cy0, r0, a0);
+  return 'M' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'L' + x2 + ',' + y2 + 'A' + r0 + ',' + r0 + ' 0 ' + large + ' 0 ' + x3 + ',' + y3 + 'Z';
+}
+
+// the parts to draw: colors by the data's order, the smallest beyond maxSlices grouped into Other, sorted by size
+function pieSlices(data, {
+  sort = true,
+  maxSlices = 6,
+  other = 'Other'
+} = {}) {
+  const parts = (data || []).map((d, i) => ({
+    id: d.id === undefined ? String(i) : d.id,
+    label: d.label,
+    value: Math.max(0, (0, _chartKit.finite)(d.value)),
+    color: d.color,
+    index: i
+  })).filter(d => d.value > 0);
+  let kept = parts,
+    rest = [];
+  if (parts.length > maxSlices) {
+    const bySize = parts.slice().sort((a, b) => b.value - a.value);
+    const keep = new Set(bySize.slice(0, Math.max(1, maxSlices - 1)).map(d => d.id));
+    kept = parts.filter(d => keep.has(d.id));
+    rest = parts.filter(d => !keep.has(d.id));
+  }
+  kept = kept.map((d, i) => Object.assign({}, d, {
+    color: d.color || (0, _scales.seriesColor)(i)
+  }));
+  if (sort) kept.sort((a, b) => b.value - a.value);
+  if (rest.length) kept.push({
+    id: '__other',
+    label: other,
+    value: rest.reduce((a, d) => a + d.value, 0),
+    color: OTHER_COLOR,
+    index: -1,
+    parts: rest
+  });
+  const total = kept.reduce((a, d) => a + d.value, 0);
+  return kept.map(d => Object.assign(d, {
+    share: total ? d.value / total : 0
+  }));
+}
+function PieChart({
+  title,
+  description,
+  hideCaption,
+  size,
+  data = [],
+  variant = 'pie',
+  centerValue,
+  centerLabel,
+  sort = true,
+  maxSlices = 6,
+  format,
+  showValues = false,
+  legend,
+  legendPosition,
+  tooltip = true,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'pie';
+  const fmt = x => typeof format === 'function' ? format(x) : (0, _format.formatNumber)(x);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const slices = pieSlices(data, {
+    sort,
+    maxSlices,
+    other: t.other
+  });
+  const total = slices.reduce((a, d) => a + d.value, 0);
+  const table = {
+    columns: [{
+      title: t.part,
+      field: 'part',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.value,
+      field: 'value',
+      kind: 'data',
+      hozAlign: 'right'
+    }, {
+      title: t.share,
+      field: 'share',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: slices.map((d, i) => ({
+      id: i + 1,
+      part: d.label,
+      value: fmt(d.value),
+      share: (0, _format.formatPercent)(d.share)
+    }))
+  };
+  const key = legend === false ? null : /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: (0, _chartKit.legendItems)(slices, d => (0, _format.formatPercent)(d.share)),
+    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
+  });
+  const m = Object.assign({}, RING_MARGIN, margin);
+  const center = v === 'pie' ? null : {
+    value: centerValue === undefined ? fmt(total) : centerValue,
+    label: centerLabel === undefined ? t.total : centerLabel
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-pie-chart', 'plx-pie-chart--' + v, className)
+  }, ({
+    inner
+  }) => {
+    const half = v === 'half';
+    const r1 = Math.max(0, half ? Math.min(inner.width / 2, inner.height) : Math.min(inner.width, inner.height) / 2);
+    const r0 = v === 'pie' ? 0 : r1 * HOLE;
+    const cx0 = inner.width / 2,
+      cy0 = half ? inner.height : inner.height / 2;
+    const from = half ? -Math.PI / 2 : 0,
+      sweep = half ? Math.PI : Math.PI * 2;
+    let a = from;
+    const geo = slices.map(d => {
+      const a0 = a;
+      a += d.share * sweep;
+      return {
+        d,
+        a0,
+        a1: a
+      };
+    });
+    let tip = null;
+    if (tooltip && active !== null) {
+      const g = geo.filter(x => x.d.id === active)[0];
+      if (g) {
+        const [px, py] = at(cx0, cy0, (r0 + r1) / 2, (g.a0 + g.a1) / 2);
+        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: px,
+          y: py,
+          inner: inner,
+          title: g.d.label,
+          items: [{
+            label: t.value,
+            value: fmt(g.d.value) + ' · ' + (0, _format.formatPercent)(g.d.share),
+            color: g.d.color
+          }]
+        });
+      }
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, geo.map(({
+      d,
+      a0,
+      a1
+    }) => /*#__PURE__*/_react.default.createElement("path", _extends({
+      key: d.id,
+      className: "plx-chart__mark plx-pie-chart__slice",
+      "data-plx-dataviz": d.color,
+      d: arcPath(cx0, cy0, r0, r1, a0, a1)
+    }, tooltip ? hover(d.id) : {}))), showValues ? geo.filter(g => g.d.share >= LABEL_MIN).map(({
+      d,
+      a0,
+      a1
+    }) => {
+      const [px, py] = at(cx0, cy0, r0 ? (r0 + r1) / 2 : r1 * 0.62, (a0 + a1) / 2);
+      return /*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+        key: 'l' + d.id,
+        x: px,
+        y: py,
+        value: (0, _format.formatPercent)(d.share),
+        position: "center"
+      });
+    }) : null, center ? /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-pie-chart__center"
+    }, /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-pie-chart__center-value",
+      x: cx0,
+      y: cy0
+    }, center.value), center.label ? /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-pie-chart__center-label",
+      x: cx0,
+      y: cy0
+    }, center.label) : null) : null, tip);
+  });
+}
+  } },
+  "platform/charts/BulletChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BulletChart = BulletChart;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _Axis = require("./parts/Axis.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BulletChart
+   Summary: Key measures against their targets (07 Data Display › Charts › Bullet chart): for each measure a short value
+     bar over bands that mark its qualitative ranges (poor, fair, good, in three neutral shades) and a line across at its
+     target, on one value axis from zero; horizontal (rows) or vertical (columns). Takes far less room than a gauge, so a
+     dashboard can stack several. Drawn in ChartFrame with a tooltip and the data table.
+   Usage:
+     <BulletChart title="Quarter against targets" description="Uploads and reviews are on target; approvals are behind."
+       items={[{ id: 'up', label: 'Uploads', value: 820, target: 750, ranges: [400, 700, 1000] },
+               { id: 'rv', label: 'Reviews', value: 610, target: 600, ranges: [300, 550, 1000] }]} valueLabel="Count" />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     items: the measures: [{ id, label, value, target, ranges }]; ranges are the upper ends of up to three bands, lowest
+       first (poor, fair, good); target is optional
+     orientation: "horizontal" (default: one row per measure, names on the start side) | "vertical" (one column per
+       measure, names along the bottom)
+     max: the value axis's end (default the largest range, value or target, on a round number)
+     valueLabel: the value axis's title (the measure's unit); format: (value) => text (ticks, tooltip, table)
+     tooltip: shows the measure's value, target and ranges under the pointer (default true)
+     size, margin, hideCaption, className, legend, legendPosition: ChartFrame's
+     strings: { measure: "Measure", value: "Value", target: "Target", ranges: "Ranges", poor: "Poor", fair: "Fair",
+       good: "Good" } and ChartFrame's strings
+   Behavior:
+     Every measure shares one value axis from zero: give measures of different units their own chart.
+     Hover a measure: the tooltip lists its value, its target and the range it is in. The data table lists them all.
+   Notes:
+     The value bar is the frame's mark (the first categorical color); the ranges are three neutral surface and border
+       shades and the target the default content color (bullet-chart tokens): color is not the only cue, the target is
+       a line across and the ranges are named in the tooltip and the table.
+*/
+const STRINGS = {
+  measure: 'Measure',
+  value: 'Value',
+  target: 'Target',
+  ranges: 'Ranges',
+  poor: 'Poor',
+  fair: 'Fair',
+  good: 'Good'
+};
+const BAR = 1 / 3; // the value bar's thickness, a share of the band
+const TARGET = 2 / 3; // the target line's length, a share of the band
+
+function BulletChart({
+  title,
+  description,
+  hideCaption,
+  size,
+  items = [],
+  orientation = 'horizontal',
+  max,
+  valueLabel,
+  format,
+  tooltip = true,
+  legend,
+  legendPosition,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
+  const across = o === 'horizontal';
+  const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const list = items.map((it, i) => Object.assign({}, it, {
+    id: it.id === undefined ? String(i) : it.id,
+    ranges: (it.ranges || []).slice(0, 3).map(_chartKit.finite)
+  }));
+  const top = max !== undefined ? Number(max) : list.reduce((a, it) => Math.max(a, (0, _chartKit.finite)(it.value), (0, _chartKit.finite)(it.target), Math.max.apply(null, [0].concat(it.ranges))), 0) || 1;
+  const names = [t.poor, t.fair, t.good];
+  const rangeOf = it => {
+    const v = (0, _chartKit.finite)(it.value);
+    for (let i = 0; i < it.ranges.length; i++) if (v <= it.ranges[i]) return names[i + (3 - it.ranges.length)];
+    return names[2];
+  };
+  const tickTexts = (0, _scales.niceTicks)(0, top, 5).ticks.map(fmt);
+  const auto = across ? {
+    start: (0, _chartKit.labelRoom)(list.map(it => it.label)),
+    bottom: valueLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined,
+    end: (0, _chartKit.halfRoom)(tickTexts[tickTexts.length - 1])
+  } : {
+    start: (0, _chartKit.labelRoom)(tickTexts, valueLabel ? _chartKit.AXIS_TITLE_ROOM : 0)
+  };
+  const m = Object.assign({}, auto, margin);
+  Object.keys(m).forEach(k => {
+    if (m[k] === undefined) delete m[k];
+  });
+  const table = {
+    columns: [{
+      title: t.measure,
+      field: 'measure',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.value,
+      field: 'value',
+      kind: 'data',
+      hozAlign: 'right'
+    }, {
+      title: t.target,
+      field: 'target',
+      kind: 'data',
+      hozAlign: 'right'
+    }, {
+      title: t.ranges,
+      field: 'ranges',
+      kind: 'data'
+    }],
+    data: list.map((it, i) => ({
+      id: i + 1,
+      measure: it.label,
+      value: fmt((0, _chartKit.finite)(it.value)),
+      target: it.target === undefined || it.target === null ? '' : fmt(it.target),
+      ranges: it.ranges.map(fmt).join(' · ') + (it.ranges.length ? ' (' + rangeOf(it) + ')' : '')
+    }))
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: legend,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-bullet-chart', 'plx-bullet-chart--' + o, className)
+  }, ({
+    inner,
+    margin: fm
+  }) => {
+    const L = across ? inner.height : inner.width,
+      V = across ? inner.width : inner.height;
+    const band = (0, _scales.scaleBand)({
+      domain: list.map(it => it.id),
+      range: [0, L],
+      paddingInner: 0.4,
+      paddingOuter: 0.2
+    });
+    const vs = (0, _scales.scaleLinear)({
+      domain: [0, top],
+      range: across ? [0, V] : [V, 0],
+      nice: max === undefined
+    });
+    const span = (start, thick, a, b) => {
+      const p0 = vs(a),
+        p1 = vs(b),
+        low = Math.min(p0, p1),
+        len = Math.abs(p1 - p0);
+      return across ? {
+        x: low,
+        y: start,
+        width: len,
+        height: thick
+      } : {
+        x: start,
+        y: low,
+        width: thick,
+        height: len
+      };
+    };
+    let tip = null;
+    if (tooltip && active !== null) {
+      const it = list.filter(x => x.id === active)[0];
+      if (it) {
+        const mid = band(it.id) + band.bandwidth() / 2,
+          end = vs((0, _chartKit.finite)(it.value));
+        const shown = fmt((0, _chartKit.finite)(it.value)) + (it.target === undefined || it.target === null ? '' : ' · ' + t.target + ' ' + fmt(it.target));
+        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: across ? end : mid,
+          y: across ? mid : end,
+          inner: inner,
+          title: it.label + (it.ranges.length ? ' · ' + rangeOf(it) : ''),
+          items: [{
+            label: t.value,
+            value: shown,
+            color: 'categorical-1'
+          }]
+        });
+      }
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, list.map(it => {
+      const start = band(it.id),
+        thick = band.bandwidth();
+      const n = it.ranges.length;
+      const bar = thick * BAR,
+        tl = thick * TARGET;
+      const tp = it.target === undefined || it.target === null ? null : vs((0, _chartKit.finite)(it.target));
+      return /*#__PURE__*/_react.default.createElement("g", _extends({
+        key: it.id,
+        className: "plx-bullet-chart__item"
+      }, tooltip ? hover(it.id) : {}), it.ranges.map((r, i) => i).reverse().map(i => /*#__PURE__*/_react.default.createElement("rect", _extends({
+        key: 'r' + i,
+        className: (0, _cx.cx)('plx-bullet-chart__range', 'plx-bullet-chart__range--' + (i + 1 + (3 - n)))
+      }, span(start, thick, 0, it.ranges[i])))), /*#__PURE__*/_react.default.createElement("rect", _extends({
+        className: "plx-chart__mark plx-bullet-chart__value"
+      }, span(start + (thick - bar) / 2, bar, 0, (0, _chartKit.finite)(it.value)))), tp === null ? null : across ? /*#__PURE__*/_react.default.createElement("line", {
+        className: "plx-bullet-chart__target",
+        x1: tp,
+        x2: tp,
+        y1: start + (thick - tl) / 2,
+        y2: start + (thick + tl) / 2
+      }) : /*#__PURE__*/_react.default.createElement("line", {
+        className: "plx-bullet-chart__target",
+        x1: start + (thick - tl) / 2,
+        x2: start + (thick + tl) / 2,
+        y1: tp,
+        y2: tp
+      }));
+    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: vs,
+      orient: across ? 'bottom' : 'left',
+      inner: inner,
+      margin: fm,
+      format: fmt,
+      label: valueLabel,
+      line: across
+    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: band,
+      orient: across ? 'left' : 'bottom',
+      inner: inner,
+      margin: fm,
+      line: false,
+      format: id => (list.filter(x => x.id === id)[0] || {}).label
+    }), tip);
+  });
+}
+  } },
+  "platform/charts/BoxPlot.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BoxPlot = BoxPlot;
+exports.boxStats = boxStats;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _Axis = require("./parts/Axis.jsx");
+var _GridLines = require("./parts/GridLines.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BoxPlot
+   Summary: Distributions compared by their summaries (07 Data Display › Charts › Box plot): for each group a box from
+     the first to the third quartile (the middle half of its values) with a line at the median, whiskers to the lowest
+     and highest values within 1.5 times the box's length, and the values beyond them drawn as outlier points; vertical
+     (groups along the bottom) or horizontal. Drawn in ChartFrame on one shared value axis, with a tooltip and the data
+     table of every summary.
+   Usage:
+     <BoxPlot title="Review time by team" description="Design reviews take longest and vary most." valueLabel="Hours"
+       groups={[{ id: 'design', label: 'Design', values: [4, 6, 7, 9, 12, 30] }, { id: 'legal', label: 'Legal', values: […] }]} />
+     <BoxPlot orientation="horizontal" groups={[{ label: 'Q1', stats: { min: 2, q1: 4, median: 6, q3: 9, max: 14, outliers: [22] } }]} … />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     groups: [{ id, label, values }] (the raw values: the summary is computed) or [{ id, label, stats: { min, q1, median,
+       q3, max, outliers } }] (a summary already made: min and max are the whiskers' ends)
+     orientation: "vertical" (default: one box per group along the bottom) | "horizontal" (groups down the start side)
+     showOutliers: draws the values beyond the whiskers as points (default true)
+     valueLabel, categoryLabel: the axis titles; format: (value) => text (ticks, tooltip, table)
+     tooltip: shows the group's summary under the pointer (default true)
+     size, margin, hideCaption, className, legend, legendPosition: ChartFrame's
+     strings: { group: "Group", min: "Minimum", q1: "First quartile", median: "Median", q3: "Third quartile", max: "Maximum",
+       outliers: "Outliers", n: "Values" } and ChartFrame's strings
+   Behavior:
+     Quartiles are interpolated between the sorted values (the method spreadsheets use); whiskers end at the most extreme
+       values within 1.5 × the interquartile range of the box (Tukey); say so in the description for a general audience.
+     Every group shares one value axis. Hover a group: the tooltip lists its five numbers. The table lists them all, with
+       the outliers and the number of values.
+   Notes:
+     The box is the frame's mark (the first categorical color); the median line takes the surface color across it, the
+       whiskers the subtle content color, outliers the frame's point (box-plot tokens). For a few values plot the points.
+*/
+const STRINGS = {
+  group: 'Group',
+  min: 'Minimum',
+  q1: 'First quartile',
+  median: 'Median',
+  q3: 'Third quartile',
+  max: 'Maximum',
+  outliers: 'Outliers',
+  n: 'Values'
+};
+const CAP = 0.5; // a whisker's cap, a share of the box's thickness
+
+// a quantile of sorted values, interpolated between the two nearest
+function quantile(sorted, p) {
+  if (!sorted.length) return 0;
+  const i = (sorted.length - 1) * p,
+    lo = Math.floor(i),
+    hi = Math.ceil(i);
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo);
+}
+
+// the five-number summary with Tukey's whiskers: { min, q1, median, q3, max, outliers, n }
+function boxStats(values) {
+  const v = (values || []).map(Number).filter(x => isFinite(x)).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const q1 = quantile(v, 0.25),
+    median = quantile(v, 0.5),
+    q3 = quantile(v, 0.75),
+    fence = (q3 - q1) * 1.5;
+  const inside = v.filter(x => x >= q1 - fence && x <= q3 + fence);
+  return {
+    min: inside[0],
+    q1,
+    median,
+    q3,
+    max: inside[inside.length - 1],
+    outliers: v.filter(x => x < q1 - fence || x > q3 + fence),
+    n: v.length
+  };
+}
+function BoxPlot({
+  title,
+  description,
+  hideCaption,
+  size,
+  groups = [],
+  orientation = 'vertical',
+  showOutliers = true,
+  valueLabel,
+  categoryLabel,
+  format,
+  tooltip = true,
+  legend,
+  legendPosition,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const o = orientation === 'horizontal' ? 'horizontal' : 'vertical';
+  const across = o === 'horizontal';
+  const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const list = groups.map((g, i) => ({
+    id: g.id === undefined ? String(i) : g.id,
+    label: g.label,
+    s: g.stats ? Object.assign({
+      outliers: []
+    }, g.stats) : boxStats(g.values)
+  })).filter(g => g.s);
+  let lo = Infinity,
+    hi = -Infinity;
+  list.forEach(g => {
+    [g.s.min, g.s.max].concat(showOutliers ? g.s.outliers : []).forEach(v => {
+      lo = Math.min(lo, v);
+      hi = Math.max(hi, v);
+    });
+  });
+  if (!isFinite(lo)) {
+    lo = 0;
+    hi = 1;
+  }
+  if (lo > 0 && lo < hi - lo) lo = 0; // from zero when zero is near the data
+  const tickTexts = (0, _scales.niceTicks)(lo, hi, 5).ticks.map(fmt);
+  const auto = across ? {
+    start: (0, _chartKit.labelRoom)(list.map(g => g.label), categoryLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
+    bottom: valueLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined,
+    end: (0, _chartKit.halfRoom)(tickTexts[tickTexts.length - 1])
+  } : {
+    start: (0, _chartKit.labelRoom)(tickTexts, valueLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
+    bottom: categoryLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined
+  };
+  const m = Object.assign({}, auto, margin);
+  Object.keys(m).forEach(k => {
+    if (m[k] === undefined) delete m[k];
+  });
+  const table = {
+    columns: [{
+      title: categoryLabel || t.group,
+      field: 'group',
+      kind: 'name',
+      rowLabel: true
+    }].concat(['min', 'q1', 'median', 'q3', 'max'].map(k => ({
+      title: t[k],
+      field: k,
+      kind: 'data',
+      hozAlign: 'right'
+    }))).concat([{
+      title: t.outliers,
+      field: 'outliers',
+      kind: 'data'
+    }, {
+      title: t.n,
+      field: 'n',
+      kind: 'data',
+      hozAlign: 'right'
+    }]),
+    data: list.map((g, i) => ({
+      id: i + 1,
+      group: g.label,
+      min: fmt(g.s.min),
+      q1: fmt(g.s.q1),
+      median: fmt(g.s.median),
+      q3: fmt(g.s.q3),
+      max: fmt(g.s.max),
+      outliers: (g.s.outliers || []).map(fmt).join(', '),
+      n: g.s.n === undefined ? '' : fmt(g.s.n)
+    }))
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: legend,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-box-plot', 'plx-box-plot--' + o, className)
+  }, ({
+    inner,
+    margin: fm
+  }) => {
+    const L = across ? inner.height : inner.width,
+      V = across ? inner.width : inner.height;
+    const band = (0, _scales.scaleBand)({
+      domain: list.map(g => g.id),
+      range: [0, L],
+      paddingInner: 0.4,
+      paddingOuter: 0.2
+    });
+    const vs = (0, _scales.scaleLinear)({
+      domain: [lo, hi],
+      range: across ? [0, V] : [V, 0],
+      nice: true
+    });
+    // a line along the value axis (a = b: across it) at position p of the category axis
+    const seg = (p0, p1, a, b) => across ? {
+      x1: vs(a),
+      x2: vs(b),
+      y1: p0,
+      y2: p1
+    } : {
+      x1: p0,
+      x2: p1,
+      y1: vs(a),
+      y2: vs(b)
+    };
+    let tip = null;
+    if (tooltip && active !== null) {
+      const g = list.filter(x => x.id === active)[0];
+      if (g) {
+        const mid = band(g.id) + band.bandwidth() / 2,
+          end = vs(g.s.max);
+        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: across ? end : mid,
+          y: across ? mid : end,
+          inner: inner,
+          title: g.label,
+          items: ['max', 'q3', 'median', 'q1', 'min'].map(k => ({
+            label: t[k],
+            value: fmt(g.s[k]),
+            color: 'categorical-1'
+          }))
+        });
+      }
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
+      scale: vs,
+      direction: across ? 'vertical' : 'horizontal',
+      inner: inner
+    }), list.map(g => {
+      const start = band(g.id),
+        thick = band.bandwidth(),
+        mid = start + thick / 2,
+        cap = thick * CAP;
+      const b0 = vs(g.s.q1),
+        b1 = vs(g.s.q3);
+      const boxAttrs = across ? {
+        x: Math.min(b0, b1),
+        y: start,
+        width: Math.abs(b1 - b0),
+        height: thick
+      } : {
+        x: start,
+        y: Math.min(b0, b1),
+        width: thick,
+        height: Math.abs(b1 - b0)
+      };
+      const along = (a, b) => across ? {
+        x1: vs(a),
+        x2: vs(b),
+        y1: mid,
+        y2: mid
+      } : {
+        x1: mid,
+        x2: mid,
+        y1: vs(a),
+        y2: vs(b)
+      };
+      return /*#__PURE__*/_react.default.createElement("g", _extends({
+        key: g.id,
+        className: "plx-box-plot__group"
+      }, tooltip ? hover(g.id) : {}), /*#__PURE__*/_react.default.createElement("line", _extends({
+        className: "plx-box-plot__whisker"
+      }, along(g.s.min, g.s.q1))), /*#__PURE__*/_react.default.createElement("line", _extends({
+        className: "plx-box-plot__whisker"
+      }, along(g.s.q3, g.s.max))), /*#__PURE__*/_react.default.createElement("line", _extends({
+        className: "plx-box-plot__whisker plx-box-plot__cap"
+      }, seg(mid - cap / 2, mid + cap / 2, g.s.min, g.s.min))), /*#__PURE__*/_react.default.createElement("line", _extends({
+        className: "plx-box-plot__whisker plx-box-plot__cap"
+      }, seg(mid - cap / 2, mid + cap / 2, g.s.max, g.s.max))), /*#__PURE__*/_react.default.createElement("rect", _extends({
+        className: "plx-chart__mark plx-box-plot__box"
+      }, boxAttrs)), /*#__PURE__*/_react.default.createElement("line", _extends({
+        className: "plx-box-plot__median"
+      }, seg(start, start + thick, g.s.median, g.s.median))), showOutliers ? (g.s.outliers || []).map((v, i) => /*#__PURE__*/_react.default.createElement("circle", {
+        key: i,
+        className: "plx-chart__point plx-box-plot__outlier",
+        cx: across ? vs(v) : mid,
+        cy: across ? mid : vs(v)
+      })) : null);
+    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: vs,
+      orient: across ? 'bottom' : 'left',
+      inner: inner,
+      margin: fm,
+      format: fmt,
+      label: valueLabel,
+      line: across
+    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: band,
+      orient: across ? 'left' : 'bottom',
+      inner: inner,
+      margin: fm,
+      line: !across,
+      label: categoryLabel,
+      format: id => (list.filter(x => x.id === id)[0] || {}).label
+    }), tip);
+  });
+}
+  } },
+  "platform/charts/RadarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RadarChart = RadarChart;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _ChartLegend = require("./parts/ChartLegend.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadarChart
+   Summary: The profile of one item, or of two or three compared, across several measures on one scale (07 Data Display ›
+     Charts › Radar chart): one spoke per measure from the center (zero) to the scale's end, rings at the scale's ticks,
+     and each item a closed shape through its values, its outline in the series' color and its area lightly filled so
+     overlapping shapes stay visible. Drawn in ChartFrame with a legend (compare), a tooltip and the data table.
+   Usage:
+     <RadarChart title="Asset quality" description="The hero image scores high on every measure but file size."
+       axes={[{ key: 'res', label: 'Resolution' }, { key: 'color', label: 'Color' }, { key: 'meta', label: 'Metadata' }, { key: 'size', label: 'File size' }, { key: 'rights', label: 'Rights' }]}
+       series={[{ id: 'hero', label: 'Hero image', values: { res: 9, color: 8, meta: 7, size: 4, rights: 9 } }]} max={10} />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     axes: the measures, clockwise from the top: [{ key, label }] (four to eight read best)
+     series: the items: [{ id, label, values, color }]; values an object by axis key or an array in the axes' order
+     max: the scale's end (default the largest value on a round number); every spoke starts at zero
+     rings: about how many rings (default 4: the scale's round ticks)
+     format: (value) => text (ring values, tooltip, table); default formatNumber
+     showPoints: draws a point at each value (default true); the points are the tooltip's targets
+     legend: true | false (default: shown with two items or more); legendPosition: ChartFrame's
+     tooltip: shows the item's value on the measure under the pointer (default true)
+     size, margin, hideCaption, className: ChartFrame's
+     strings: { measure: "Measure" } and ChartFrame's strings
+   Behavior:
+     Every measure shares the scale: normalize measures of different units first (to a score, a percentage), or use bars.
+     Hover a point: the tooltip shows the item and the measure's value. The data table lists every value.
+   Notes:
+     Shapes' outlines and points take the series' data-viz color (the frame's line and point); the area takes the same
+       color at the low opacity (radar-chart tokens). Spokes and rings are the frame's grid lines; the measures' names are
+       UI text, the ring values the data font. Compare three items at most.
+*/
+const STRINGS = {
+  measure: 'Measure'
+};
+// px: the room around the web for the measures' names (on the 4px grid); the start and end sides take the longest name
+const WEB_MARGIN = {
+  top: 24,
+  bottom: 24
+};
+const CHAR = 7; // px: about one character of the measures' names (the label font at 12px)
+
+function RadarChart({
+  title,
+  description,
+  hideCaption,
+  size = 'lg',
+  axes = [],
+  series = [],
+  max,
+  rings = 4,
+  format,
+  showPoints = true,
+  legend,
+  legendPosition,
+  tooltip = true,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const list = (0, _chartKit.withColors)(series);
+  const valueOf = (s, ai) => (0, _chartKit.finite)(Array.isArray(s.values) ? s.values[ai] : (s.values || {})[axes[ai].key]);
+  const top = max !== undefined ? Number(max) : list.reduce((a, s) => Math.max(a, Math.max.apply(null, [0].concat(axes.map((x, ai) => valueOf(s, ai))))), 0) || 1;
+  const side = Math.ceil((axes.reduce((n, a) => Math.max(n, String(a.label || '').length), 0) * CHAR + 8) / 4) * 4;
+  const m = Object.assign({}, WEB_MARGIN, {
+    start: side,
+    end: side
+  }, margin);
+  const table = {
+    columns: [{
+      title: t.measure,
+      field: 'measure',
+      kind: 'name',
+      rowLabel: true
+    }].concat(list.map((s, si) => ({
+      title: s.label,
+      field: 's' + si,
+      kind: 'data',
+      hozAlign: 'right'
+    }))),
+    data: axes.map((a, ai) => {
+      const row = {
+        id: ai + 1,
+        measure: a.label
+      };
+      list.forEach((s, si) => {
+        row['s' + si] = fmt(valueOf(s, ai));
+      });
+      return row;
+    })
+  };
+  const showLegend = legend === undefined ? list.length > 1 : !!legend;
+  const key = showLegend ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+    items: (0, _chartKit.legendItems)(list),
+    orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-radar-chart', list.length > 1 && 'plx-radar-chart--compare', className)
+  }, ({
+    inner
+  }) => {
+    const R = Math.max(0, Math.min(inner.width, inner.height) / 2);
+    const cx0 = inner.width / 2,
+      cy0 = inner.height / 2;
+    const r = (0, _scales.scaleLinear)({
+      domain: [0, top],
+      range: [0, R],
+      nice: max === undefined,
+      count: rings
+    });
+    const n = Math.max(1, axes.length);
+    const angle = ai => Math.PI * 2 * ai / n;
+    const pt = (ai, radius) => [cx0 + radius * Math.sin(angle(ai)), cy0 - radius * Math.cos(angle(ai))];
+    const poly = radius => axes.map((a, ai) => pt(ai, radius).join(',')).join(' ');
+    const ticks = r.ticks(rings).filter(v => v > 0);
+    const end = r(r.domain()[1]);
+    // the name's anchor at the end of its spoke: after it on the right, before it on the left, centered at the top and bottom
+    const place = ai => {
+      const s = Math.sin(angle(ai)),
+        c = Math.cos(angle(ai));
+      const h = Math.abs(s) < 0.2 ? 'middle' : s > 0 ? 'start' : 'end';
+      const v = c > 0.8 ? 'above' : c < -0.8 ? 'below' : 'beside';
+      return 'plx-radar-chart__axis-label--' + h + ' plx-radar-chart__axis-label--' + v;
+    };
+    let tip = null;
+    if (tooltip && active !== null) {
+      const [si, ai] = String(active).split(':').map(Number);
+      if (list[si] && axes[ai]) {
+        const [px, py] = pt(ai, r(valueOf(list[si], ai)));
+        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: px,
+          y: py,
+          inner: inner,
+          title: axes[ai].label,
+          items: [{
+            label: list[si].label,
+            value: fmt(valueOf(list[si], ai)),
+            color: list[si].color
+          }]
+        });
+      }
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-radar-chart__web"
+    }, ticks.map(v => /*#__PURE__*/_react.default.createElement("polygon", {
+      key: v,
+      className: "plx-chart__grid-line plx-radar-chart__ring",
+      points: poly(r(v))
+    })), axes.map((a, ai) => {
+      const [x2, y2] = pt(ai, end);
+      return /*#__PURE__*/_react.default.createElement("line", {
+        key: a.key,
+        className: "plx-chart__grid-line plx-radar-chart__spoke",
+        x1: cx0,
+        y1: cy0,
+        x2: x2,
+        y2: y2
+      });
+    })), list.map((s, si) => /*#__PURE__*/_react.default.createElement("polygon", {
+      key: s.id,
+      className: "plx-chart__line plx-radar-chart__area",
+      "data-plx-dataviz": s.color,
+      points: axes.map((a, ai) => pt(ai, r(valueOf(s, ai))).join(',')).join(' ')
+    })), showPoints ? list.map((s, si) => axes.map((a, ai) => {
+      const [px, py] = pt(ai, r(valueOf(s, ai)));
+      return /*#__PURE__*/_react.default.createElement("circle", _extends({
+        key: s.id + a.key,
+        className: "plx-chart__point plx-radar-chart__point",
+        "data-plx-dataviz": s.color,
+        cx: px,
+        cy: py
+      }, tooltip ? hover(si + ':' + ai) : {}));
+    })) : null, ticks.slice(0, -1).map(v => /*#__PURE__*/_react.default.createElement("text", {
+      key: 'v' + v,
+      className: "plx-chart__tick-label plx-radar-chart__ring-label",
+      x: cx0,
+      y: cy0 - r(v)
+    }, fmt(v))), axes.map((a, ai) => {
+      const [x2, y2] = pt(ai, end);
+      return /*#__PURE__*/_react.default.createElement("text", {
+        key: 'l' + a.key,
+        className: 'plx-radar-chart__axis-label ' + place(ai),
+        x: x2,
+        y: y2
+      }, a.label);
+    }), tip);
+  });
+}
+  } },
+  "platform/charts/SankeyDiagram.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SankeyDiagram = SankeyDiagram;
+exports.sankeyLayout = sankeyLayout;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SankeyDiagram
+   Summary: How a quantity flows, splits and merges through stages (07 Data Display › Charts › Sankey diagram): a bar
+     for each node (a source, a stage, an outcome) in columns from left to right, and between them bands whose widths
+     are the amounts that move from one node to the next. Its own layout (no dependency): columns by the longest path,
+     nodes ordered to keep bands from crossing. Drawn in ChartFrame with node names and totals, a tooltip and the data
+     table of every flow.
+   Usage:
+     <SankeyDiagram title="Where uploads end up" description="Most uploads are approved; a quarter are rejected or wait."
+       nodes={[{ id: 'web', label: 'Web' }, { id: 'app', label: 'App' }, { id: 'review', label: 'Review' }, { id: 'ok', label: 'Approved' }, { id: 'no', label: 'Rejected' }]}
+       links={[{ source: 'web', target: 'review', value: 620 }, { source: 'app', target: 'review', value: 380 }, { source: 'review', target: 'ok', value: 740 }, { source: 'review', target: 'no', value: 260 }]} />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     nodes: [{ id, label, color }] (color an optional data-viz step; default by the node's order in the data)
+     links: [{ source, target, value }]: the flows between nodes by id (values above zero; a flow back to an earlier
+       column is not drawn: the diagram flows one way)
+     format: (value) => text (node totals, tooltip, table); default formatNumber
+     showValues: writes each node's total after its name (default true)
+     tooltip: shows the flow or the node under the pointer (default true)
+     size (default "lg"), margin, hideCaption, className, legend, legendPosition: ChartFrame's
+     strings: { source: "Source", target: "Target", value: "Value", total: "Total" } and ChartFrame's strings
+   Behavior:
+     A node's height is the larger of what flows into it and out of it; nodes with no flow out sit in the last column.
+     Hover a band: it darkens and the tooltip says "Source → Target" and its amount; hover a node: its bands darken and the
+       tooltip gives its total. The data table lists every flow: the chart's keyboard and screen reader view.
+   Notes:
+     A band takes its source node's data-viz color at the low opacity (the middle opacity when highlighted); node names
+       are UI text with a halo in the surface color, totals the data font (sankey-diagram tokens). Group small flows:
+       many thin bands do not read. For a linear drop-off use a funnel.
+*/
+const STRINGS = {
+  source: 'Source',
+  target: 'Target',
+  value: 'Value',
+  total: 'Total'
+};
+// px: a node's bar and the least space between two nodes of a column (on the 4px grid)
+const NODE_WIDTH = 12,
+  NODE_GAP = 12;
+const PLOT_MARGIN = {
+  top: 8,
+  end: 8,
+  bottom: 8,
+  start: 8
+};
+
+// the layout: nodes with x0, x1, y0, y1, depth, value; links with width, y0 (at the source), y1 (at the target)
+function sankeyLayout(nodes, links, {
+  width,
+  height,
+  nodeWidth = NODE_WIDTH,
+  nodeGap = NODE_GAP,
+  iterations = 8
+} = {}) {
+  const N = (nodes || []).map((n, i) => ({
+    id: n.id === undefined ? String(i) : n.id,
+    label: n.label,
+    color: n.color || (0, _scales.seriesColor)(i),
+    index: i,
+    sourceLinks: [],
+    targetLinks: [],
+    depth: 0
+  }));
+  const byId = {};
+  N.forEach(n => {
+    byId[n.id] = n;
+  });
+  const L = (links || []).map((l, i) => ({
+    index: i,
+    source: byId[l.source],
+    target: byId[l.target],
+    value: Math.max(0, (0, _chartKit.finite)(l.value))
+  })).filter(l => l.source && l.target && l.source !== l.target && l.value > 0);
+  // columns by the longest path from a source (a flow back is dropped)
+  for (let pass = 0; pass < N.length; pass++) L.forEach(l => {
+    if (l.target.depth <= l.source.depth) l.target.depth = l.source.depth + 1;
+  });
+  const fwd = L.filter(l => l.target.depth > l.source.depth);
+  fwd.forEach(l => {
+    l.source.sourceLinks.push(l);
+    l.target.targetLinks.push(l);
+  });
+  const maxDepth = N.reduce((a, n) => Math.max(a, n.depth), 0);
+  N.forEach(n => {
+    if (!n.sourceLinks.length && n.targetLinks.length) n.depth = maxDepth;
+  });
+  N.forEach(n => {
+    n.value = Math.max(n.sourceLinks.reduce((a, l) => a + l.value, 0), n.targetLinks.reduce((a, l) => a + l.value, 0));
+  });
+  const cols = [];
+  N.forEach(n => {
+    (cols[n.depth] = cols[n.depth] || []).push(n);
+  });
+  const columns = cols.filter(Boolean);
+  const step = maxDepth ? (width - nodeWidth) / maxDepth : 0;
+  N.forEach(n => {
+    n.x0 = n.depth * step;
+    n.x1 = n.x0 + nodeWidth;
+  });
+  const ky = Math.max(0, Math.min.apply(null, columns.map(c => (height - (c.length - 1) * nodeGap) / Math.max(1e-9, c.reduce((a, n) => a + n.value, 0)))));
+  columns.forEach(c => {
+    let y = 0;
+    c.forEach(n => {
+      n.y0 = y;
+      n.y1 = y + n.value * ky;
+      y = n.y1 + nodeGap;
+    });
+  });
+  const center = n => (n.y0 + n.y1) / 2;
+  const settle = c => {
+    // nodes in order, apart by the gap, inside the height
+    c.sort((a, b) => a.y0 - b.y0);
+    let y = 0;
+    c.forEach(n => {
+      const d = y - n.y0;
+      if (d > 0) {
+        n.y0 += d;
+        n.y1 += d;
+      }
+      y = n.y1 + nodeGap;
+    });
+    let over = y - nodeGap - height;
+    for (let i = c.length - 1; i >= 0 && over > 0; i--) {
+      const n = c[i];
+      n.y0 -= over;
+      n.y1 -= over;
+      over = i > 0 ? c[i - 1].y1 + nodeGap - n.y0 : 0;
+    }
+  };
+  for (let it = 0, alpha = 1; it < iterations; it++, alpha *= 0.9) {
+    columns.slice(1).forEach(c => {
+      c.forEach(n => {
+        const w = n.targetLinks.reduce((a, l) => a + l.value, 0);
+        if (!w) return;
+        const want = n.targetLinks.reduce((a, l) => a + center(l.source) * l.value, 0) / w;
+        const d = (want - center(n)) * alpha;
+        n.y0 += d;
+        n.y1 += d;
+      });
+      settle(c);
+    });
+    columns.slice(0, -1).reverse().forEach(c => {
+      c.forEach(n => {
+        const w = n.sourceLinks.reduce((a, l) => a + l.value, 0);
+        if (!w) return;
+        const want = n.sourceLinks.reduce((a, l) => a + center(l.target) * l.value, 0) / w;
+        const d = (want - center(n)) * alpha;
+        n.y0 += d;
+        n.y1 += d;
+      });
+      settle(c);
+    });
+  }
+  N.forEach(n => {
+    n.sourceLinks.sort((a, b) => a.target.y0 - b.target.y0);
+    n.targetLinks.sort((a, b) => a.source.y0 - b.source.y0);
+    let sy = n.y0;
+    n.sourceLinks.forEach(l => {
+      l.width = l.value * ky;
+      l.y0 = sy + l.width / 2;
+      sy += l.width;
+    });
+    let ty = n.y0;
+    n.targetLinks.forEach(l => {
+      l.y1 = ty + l.value * ky / 2;
+      ty += l.value * ky;
+    });
+  });
+  return {
+    nodes: N,
+    links: fwd,
+    maxDepth
+  };
+}
+
+// a band from the source's end to the target's start, its width the flow's
+function band(l) {
+  const x0 = l.source.x1,
+    x1 = l.target.x0,
+    xm = (x0 + x1) / 2,
+    h = l.width / 2;
+  return 'M' + x0 + ',' + (l.y0 - h) + 'C' + xm + ',' + (l.y0 - h) + ' ' + xm + ',' + (l.y1 - h) + ' ' + x1 + ',' + (l.y1 - h) + 'L' + x1 + ',' + (l.y1 + h) + 'C' + xm + ',' + (l.y1 + h) + ' ' + xm + ',' + (l.y0 + h) + ' ' + x0 + ',' + (l.y0 + h) + 'Z';
+}
+function SankeyDiagram({
+  title,
+  description,
+  hideCaption,
+  size = 'lg',
+  nodes = [],
+  links = [],
+  format,
+  showValues = true,
+  tooltip = true,
+  legend,
+  legendPosition,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const nameOf = {};
+  nodes.forEach((n, i) => {
+    nameOf[n.id === undefined ? String(i) : n.id] = n.label;
+  });
+  const table = {
+    columns: [{
+      title: t.source,
+      field: 'source',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.target,
+      field: 'target',
+      kind: 'name'
+    }, {
+      title: t.value,
+      field: 'value',
+      kind: 'data',
+      hozAlign: 'right'
+    }],
+    data: links.filter(l => nameOf[l.source] !== undefined && nameOf[l.target] !== undefined).map((l, i) => ({
+      id: i + 1,
+      source: nameOf[l.source],
+      target: nameOf[l.target],
+      value: fmt((0, _chartKit.finite)(l.value))
+    }))
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: Object.assign({}, PLOT_MARGIN, margin),
+    legend: legend,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-sankey-diagram', className)
+  }, ({
+    inner
+  }) => {
+    const lay = sankeyLayout(nodes, links, {
+      width: inner.width,
+      height: inner.height
+    });
+    const on = String(active === null ? '' : active);
+    const lit = l => on === 'l' + l.index || on === 'n' + l.source.id || on === 'n' + l.target.id;
+    let tip = null;
+    if (tooltip && on) {
+      const l = on[0] === 'l' ? lay.links.filter(x => 'l' + x.index === on)[0] : null;
+      const n = on[0] === 'n' ? lay.nodes.filter(x => 'n' + x.id === on)[0] : null;
+      if (l) tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+        x: (l.source.x1 + l.target.x0) / 2,
+        y: (l.y0 + l.y1) / 2,
+        inner: inner,
+        title: l.source.label + ' → ' + l.target.label,
+        items: [{
+          label: t.value,
+          value: fmt(l.value),
+          color: l.source.color
+        }]
+      });
+      if (n) tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+        x: n.depth === lay.maxDepth ? n.x0 : n.x1,
+        y: (n.y0 + n.y1) / 2,
+        inner: inner,
+        title: n.label,
+        items: [{
+          label: t.total,
+          value: fmt(n.value),
+          color: n.color
+        }]
+      });
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement("g", {
+      className: "plx-sankey-diagram__links"
+    }, lay.links.map(l => /*#__PURE__*/_react.default.createElement("path", _extends({
+      key: l.index,
+      className: (0, _cx.cx)('plx-sankey-diagram__link', lit(l) && 'is-active'),
+      "data-plx-dataviz": l.source.color,
+      d: band(l)
+    }, tooltip ? hover('l' + l.index) : {})))), lay.nodes.filter(n => n.value > 0).map(n => /*#__PURE__*/_react.default.createElement("rect", _extends({
+      key: n.id,
+      className: "plx-chart__mark plx-sankey-diagram__node",
+      "data-plx-dataviz": n.color,
+      x: n.x0,
+      y: n.y0,
+      width: n.x1 - n.x0,
+      height: Math.max(0, n.y1 - n.y0)
+    }, tooltip ? hover('n' + n.id) : {}))), lay.nodes.filter(n => n.value > 0).map(n => {
+      const last = n.depth === lay.maxDepth && lay.maxDepth > 0;
+      return /*#__PURE__*/_react.default.createElement("text", {
+        key: 't' + n.id,
+        className: (0, _cx.cx)('plx-sankey-diagram__label', last ? 'plx-sankey-diagram__label--before' : 'plx-sankey-diagram__label--after'),
+        x: last ? n.x0 : n.x1,
+        y: (n.y0 + n.y1) / 2
+      }, /*#__PURE__*/_react.default.createElement("tspan", {
+        className: "plx-sankey-diagram__name"
+      }, n.label), showValues ? ' ' : null, showValues ? /*#__PURE__*/_react.default.createElement("tspan", {
+        className: "plx-sankey-diagram__value"
+      }, fmt(n.value)) : null);
+    }), tip);
+  });
+}
+  } },
+  "platform/charts/TimelineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TimelineChart = TimelineChart;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _format = require("../utils/format.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _scales = require("./scales.js");
+var _Axis = require("./parts/Axis.jsx");
+var _GridLines = require("./parts/GridLines.jsx");
+var _ChartTooltip = require("./parts/ChartTooltip.jsx");
+var _ReferenceLine = require("./parts/ReferenceLine.jsx");
+var _chartKit = require("./chart-kit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimelineChart
+   Summary: When things happened and how long they lasted, on one time axis (07 Data Display › Specialized displays ›
+     Timeline visualization): events as points at their date, periods as bars from their start to their end, on one
+     track or on several lanes (one per asset, team or category), each with its short name, under a time axis on
+     calendar steps and an optional today line. Drawn in ChartFrame with a tooltip and the data table.
+   Usage:
+     <TimelineChart title="Campaign assets" description="The video ran past its review; the banners shipped early."
+       lanes={[{ id: 'video', label: 'Video' }, { id: 'banners', label: 'Banners' }]}
+       items={[{ id: 1, lane: 'video', label: 'Shoot', start: '2026-09-01', end: '2026-09-12' },
+               { id: 2, lane: 'video', label: 'Approved', start: '2026-09-30' },
+               { id: 3, lane: 'banners', label: 'Design', start: '2026-09-05', end: '2026-09-19' }]} today />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     items: [{ id, lane, label, start, end, color }]: an item with an end is a period (a bar), without one an event (a
+       point); start and end are Dates or anything Date accepts (a date-only string, "2026-09-10", is that day in local
+       time); color an optional data-viz step (default the lane's)
+     lanes: [{ id, label }]: the tracks, top to bottom (default one track); each lane takes the next categorical color
+     domain: [from, to]: the time span shown (default the items' span on calendar steps)
+     today: true (now) or a date: a reference line labeled strings.today
+     labels: writes each item's name above its mark (default true)
+     formatDate: (date) => text for the tooltip and the table (default formatDate, with the year when it is not this year)
+     tooltip: shows the item under the pointer: its name, its date or its dates and length (default true)
+     size, margin, hideCaption, className, legend, legendPosition: ChartFrame's
+     strings: { item: "Item", lane: "Lane", start: "Start", end: "End", today: "Today", date: "Date", dates: "Dates" } and
+       ChartFrame's strings
+   Behavior:
+     Lanes share the time axis; their names are the start axis. Items keep the data's order inside a lane; names that
+       would overlap are better kept short (a noun phrase) or left to the tooltip (labels={false}).
+     Hover an item: the tooltip gives its name and full dates. The data table lists every item, its lane and dates.
+   Notes:
+     Bars and points are the frame's marks and points in their lane's data-viz color; names are UI text with a halo
+       (timeline-chart tokens); the today line is a ReferenceLine. For tasks with dependencies use a Gantt chart; for a
+       short activity log, the Timeline list.
+*/
+const STRINGS = {
+  item: 'Item',
+  lane: 'Lane',
+  start: 'Start',
+  end: 'End',
+  today: 'Today',
+  date: 'Date',
+  dates: 'Dates'
+};
+const MARK = 0.4; // a period's bar thickness, a share of its lane
+// a date-only string (2026-09-10) is that day in local time, as people read it; anything else as Date reads it
+const toTime = v => {
+  if (v instanceof Date) return v.getTime();
+  const d = typeof v === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+  return d ? new Date(+d[1], +d[2] - 1, +d[3]).getTime() : new Date(v).getTime();
+};
+function TimelineChart({
+  title,
+  description,
+  hideCaption,
+  size,
+  items = [],
+  lanes,
+  domain,
+  today,
+  labels = true,
+  formatDate,
+  tooltip = true,
+  legend,
+  legendPosition,
+  margin,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const fd = d => typeof formatDate === 'function' ? formatDate(new Date(toTime(d))) : (0, _format.formatDate)(new Date(toTime(d)));
+  const [active, hover] = (0, _chartKit.useChartHover)();
+  const tracks = lanes && lanes.length ? lanes.map((l, i) => ({
+    id: l.id === undefined ? String(i) : l.id,
+    label: l.label,
+    color: l.color || (0, _scales.seriesColor)(i)
+  })) : [{
+    id: '__one',
+    label: '',
+    color: (0, _scales.seriesColor)(0)
+  }];
+  const one = !(lanes && lanes.length);
+  const laneOf = {};
+  tracks.forEach(l => {
+    laneOf[l.id] = l;
+  });
+  const list = items.map((it, i) => Object.assign({}, it, {
+    id: it.id === undefined ? String(i) : it.id,
+    lane: one ? '__one' : it.lane,
+    t0: toTime(it.start),
+    t1: it.end === undefined || it.end === null ? null : toTime(it.end)
+  })).filter(it => isFinite(it.t0) && laneOf[it.lane]);
+  const now = today === true ? Date.now() : today ? toTime(today) : null;
+  let lo = Infinity,
+    hi = -Infinity;
+  list.forEach(it => {
+    lo = Math.min(lo, it.t0);
+    hi = Math.max(hi, it.t1 === null ? it.t0 : it.t1);
+  });
+  if (now !== null && isFinite(lo)) {
+    lo = Math.min(lo, now);
+    hi = Math.max(hi, now);
+  }
+  const dom = domain ? [toTime(domain[0]), toTime(domain[1])] : isFinite(lo) ? [lo, hi] : [Date.now() - 864e5 * 15, Date.now() + 864e5 * 15];
+  const m = Object.assign({
+    end: (0, _chartKit.halfRoom)('00000000')
+  }, one ? {
+    start: (0, _chartKit.halfRoom)('00000000')
+  } : {
+    start: (0, _chartKit.labelRoom)(tracks.map(l => l.label))
+  }, margin);
+  const table = {
+    columns: [{
+      title: t.item,
+      field: 'item',
+      kind: 'name',
+      rowLabel: true
+    }].concat(one ? [] : [{
+      title: t.lane,
+      field: 'lane',
+      kind: 'name'
+    }]).concat([{
+      title: t.start,
+      field: 'start',
+      kind: 'data'
+    }, {
+      title: t.end,
+      field: 'end',
+      kind: 'data'
+    }]),
+    data: list.map((it, i) => ({
+      id: i + 1,
+      item: it.label,
+      lane: laneOf[it.lane].label,
+      start: fd(it.t0),
+      end: it.t1 === null ? '' : fd(it.t1)
+    }))
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: m,
+    legend: legend,
+    legendPosition: legendPosition,
+    table: table,
+    strings: strings,
+    className: (0, _cx.cx)('plx-timeline-chart', one && 'plx-timeline-chart--single', className)
+  }, ({
+    inner,
+    margin: fm
+  }) => {
+    const x = (0, _scales.scaleTime)({
+      domain: dom,
+      range: [0, inner.width],
+      nice: !domain
+    });
+    const y = (0, _scales.scaleBand)({
+      domain: tracks.map(l => l.id),
+      range: [0, inner.height],
+      paddingInner: 0,
+      paddingOuter: 0
+    });
+    const thick = y.bandwidth();
+    // a mark sits in the lower part of its lane; its name above it
+    const markY = lane => y(lane) + thick * (1 - MARK) * 0.75;
+    const bar = thick * MARK;
+    let tip = null;
+    if (tooltip && active !== null) {
+      const it = list.filter(i => String(i.id) === String(active))[0];
+      if (it) {
+        const lane = laneOf[it.lane];
+        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: it.t1 === null ? x(it.t0) : (x(it.t0) + x(it.t1)) / 2,
+          y: markY(it.lane),
+          inner: inner,
+          title: it.label,
+          items: [{
+            label: one ? it.t1 === null ? t.date : t.dates : lane.label,
+            value: it.t1 === null ? fd(it.t0) : fd(it.t0) + ' – ' + fd(it.t1),
+            color: it.color || lane.color
+          }]
+        });
+      }
+    }
+    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
+      scale: x,
+      direction: "vertical",
+      inner: inner
+    }), tracks.slice(1).map(l => /*#__PURE__*/_react.default.createElement("line", {
+      key: l.id,
+      className: "plx-chart__grid-line plx-timeline-chart__lane-line",
+      x1: 0,
+      x2: inner.width,
+      y1: y(l.id),
+      y2: y(l.id)
+    })), list.map(it => {
+      const color = it.color || laneOf[it.lane].color,
+        top = markY(it.lane);
+      const h = tooltip ? hover(String(it.id)) : {};
+      return it.t1 === null ? /*#__PURE__*/_react.default.createElement("circle", _extends({
+        key: it.id,
+        className: "plx-chart__point plx-timeline-chart__event",
+        "data-plx-dataviz": color,
+        cx: x(it.t0),
+        cy: top + bar / 2
+      }, h)) : /*#__PURE__*/_react.default.createElement("rect", _extends({
+        key: it.id,
+        className: "plx-chart__mark plx-timeline-chart__range",
+        "data-plx-dataviz": color,
+        x: x(it.t0),
+        y: top,
+        width: Math.max(0, x(it.t1) - x(it.t0)),
+        height: bar
+      }, h));
+    }), labels ? list.map(it => /*#__PURE__*/_react.default.createElement("text", {
+      key: 'l' + it.id,
+      className: (0, _cx.cx)('plx-timeline-chart__label', it.t1 === null && 'plx-timeline-chart__label--event'),
+      x: x(it.t0),
+      y: markY(it.lane)
+    }, it.label)) : null, now !== null ? /*#__PURE__*/_react.default.createElement(_ReferenceLine.ReferenceLine, {
+      axis: "x",
+      scale: x,
+      value: new Date(now),
+      inner: inner,
+      label: t.today,
+      showValue: false
+    }) : null, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: x,
+      orient: "bottom",
+      inner: inner,
+      margin: fm
+    }), one ? null : /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
+      scale: y,
+      orient: "left",
+      inner: inner,
+      margin: fm,
+      line: false,
+      format: id => laneOf[id].label
+    }), tip);
+  });
+}
+  } },
+  "platform/patterns/ComparisonView/ComparisonView.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ComparisonView = ComparisonView;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _SegmentedControl = require("../../components/SegmentedControl/SegmentedControl.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Slider = require("../../components/Slider/Slider.jsx");
+var _Table = require("../../components/Table/Table.jsx");
+var _Image = require("../../components/Image/Image.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ComparisonView
+   Summary: Two to four items or versions side by side with their differences marked (07 Data Display › Specialized
+     displays › Comparison view; 10 Patterns › Review and approval › Compare): a pane per item with its name, its date or
+     version, its preview and its attributes in aligned rows (columns), the same attributes as a table with a column per
+     item (matrix), or two pictures over each other with a slider that moves the line between before and after
+     (slider). Values that differ from the first item carry a Changed badge, the count of differences heads the view,
+     and "Show only differences" hides the rows that match. Built from Platform components only.
+   Usage:
+     <ComparisonView label="Compare versions" items={[
+         { id: 'v2', title: 'Version 2', meta: '2 Oct 2026', image: { src: v2, alt: 'Hero banner, version 2' }, values: { format: 'JPEG', size: '2.4 MB', width: '1920 px' } },
+         { id: 'v3', title: 'Version 3', meta: '9 Oct 2026', image: { src: v3, alt: 'Hero banner, version 3' }, values: { format: 'PNG', size: '3.1 MB', width: '1920 px' } }]}
+       attributes={[{ key: 'format', label: 'Format' }, { key: 'size', label: 'Size', kind: 'data' }, { key: 'width', label: 'Width', kind: 'data' }]}
+       modes={['columns', 'matrix', 'slider']} />
+   Props:
+     items: the items, in order (the first is the baseline the others are compared with): [{ id, title, meta, image,
+       media, content, values }]; meta a short line (a version, a date: technical values are the data font), image
+       { src, alt } its picture (the preview, and the slider's layers), media a node instead of the picture, content
+       more of the item under its preview (columns), values its attributes by key (text or nodes)
+     attributes: the rows compared: [{ key, label, kind }]; kind "data" writes the values in the data font (sizes, dates,
+       IDs, versions)
+     mode: "columns" (default: panes side by side) | "matrix" (a Table: a row per attribute, a column per item) |
+       "slider" (the first two items' pictures over each other); defaultMode when uncontrolled; onModeChange(mode)
+     modes: the modes people can switch between (a segmented control when there are two or more; default [mode])
+     highlight: marks each value that differs from the first item's with a Changed badge (default true)
+     onlyDifferences, defaultOnlyDifferences, onOnlyDifferencesChange(on): "Show only differences", a switch beside the
+       count when highlight is on (default off)
+     scroll: the panes' bodies scroll at a fixed height and scroll together (columns; default false)
+     ratio: the slider's picture shape: "16-9" (default) | "4-3" | "3-2" | "1-1"
+     defaultPosition: where the slider's line starts, 0–100 (default 50)
+     headingLevel: the level of the panes' headings (default 3)
+     label: the view's accessible name (default strings.label)
+     strings: { label: "Comparison", modes: "View", columns: "Side by side", matrix: "Table", slider: "Slider",
+       onlyDifferences: "Show only differences", changed: "Changed", attribute: "Attribute", position: "Position",
+       none: "No differences", one: "1 difference", many: "{n} differences", empty: "—" }
+     className: more classes on the view
+   Behavior:
+     A value differs when its text is not the first item's; the count says how many attributes differ in any item.
+     Show only differences hides every row whose values all match, in every mode, so long lists stay short.
+     With scroll, scrolling one pane scrolls the others to the same place (linked scrolling), so matching rows stay side
+       by side; each scrolling pane is a named region in the Tab order, scrolled with the arrow keys.
+     The slider is the Platform Slider (arrows, Page Up/Down, Home, End): the first item's picture shows before the line,
+       the second's after it.
+     On a narrow view (600px or less) the panes stack, one under the other.
+   Notes:
+     Differences are marked with a badge and its word, never with color alone. Name each pane by its version and date.
+     Compare at most four items side by side; let people choose which (a picker above the view) when there are more.
+*/
+
+const STRINGS = {
+  label: 'Comparison',
+  modes: 'View',
+  columns: 'Side by side',
+  matrix: 'Table',
+  slider: 'Slider',
+  onlyDifferences: 'Show only differences',
+  changed: 'Changed',
+  attribute: 'Attribute',
+  position: 'Position',
+  none: 'No differences',
+  one: '1 difference',
+  many: '{n} differences',
+  empty: '—'
+};
+const MODES = ['columns', 'matrix', 'slider'];
+// the slider's drawing area (SVG user units; the picture fills it, cropped to the ratio)
+const RATIOS = {
+  '16-9': [1600, 900],
+  '4-3': [1600, 1200],
+  '3-2': [1500, 1000],
+  '1-1': [1200, 1200]
+};
+const text = v => v === undefined || v === null ? '' : typeof v === 'object' ? '' : String(v);
+function ComparisonView({
+  items = [],
+  attributes = [],
+  mode,
+  defaultMode = 'columns',
+  onModeChange,
+  modes,
+  highlight = true,
+  onlyDifferences,
+  defaultOnlyDifferences = false,
+  onOnlyDifferencesChange,
+  scroll = false,
+  ratio = '16-9',
+  defaultPosition = 50,
+  headingLevel = 3,
+  label,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-cmp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [ownMode, setOwnMode] = _react.default.useState(MODES.indexOf(defaultMode) >= 0 ? defaultMode : 'columns');
+  const current = mode !== undefined && MODES.indexOf(mode) >= 0 ? mode : ownMode;
+  const [ownOnly, setOwnOnly] = _react.default.useState(!!defaultOnlyDifferences);
+  const only = onlyDifferences === undefined ? ownOnly : !!onlyDifferences;
+  const [pos, setPos] = _react.default.useState(Math.min(100, Math.max(0, Number(defaultPosition) || 0)));
+  const bodies = _react.default.useRef([]);
+  const syncing = _react.default.useRef(false);
+  const choices = (modes && modes.length ? modes : [current]).filter(x => MODES.indexOf(x) >= 0);
+  const setMode = m => {
+    if (mode === undefined) setOwnMode(m);
+    if (onModeChange) onModeChange(m);
+  };
+  const setOnly = on => {
+    if (onlyDifferences === undefined) setOwnOnly(on);
+    if (onOnlyDifferencesChange) onOnlyDifferencesChange(on);
+  };
+
+  // which values differ from the first item's
+  const base = items[0] || {
+    values: {}
+  };
+  const differs = (it, a) => it !== base && text((it.values || {})[a.key]) !== text((base.values || {})[a.key]);
+  const changedRows = attributes.filter(a => items.some(it => differs(it, a)));
+  const rows = only && highlight ? changedRows : attributes;
+  const count = changedRows.length;
+  const summary = count === 0 ? t.none : count === 1 ? t.one : t.many.replace('{n}', String(count));
+  const valueOf = (it, a) => {
+    const v = (it.values || {})[a.key];
+    const shown = v === undefined || v === null || v === '' ? t.empty : v;
+    return a.kind === 'data' ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__data"
+    }, shown) : shown;
+  };
+  const badge = (it, a) => highlight && differs(it, a) ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "active",
+    icon: "pencil",
+    size: "sm"
+  }, t.changed) : null;
+  const H = 'h' + Math.min(6, Math.max(2, headingLevel));
+
+  // linked scrolling: one pane's scroll moves the others to the same place
+  const onScroll = i => e => {
+    if (syncing.current) return;
+    syncing.current = true;
+    const top = e.currentTarget.scrollTop;
+    bodies.current.forEach((el, j) => {
+      if (el && j !== i && el.scrollTop !== top) el.scrollTop = top;
+    });
+    window.requestAnimationFrame(() => {
+      syncing.current = false;
+    });
+  };
+  const bar = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-comparison-view__bar"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-comparison-view__summary",
+    "aria-live": "polite"
+  }, attributes.length && highlight ? summary : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-comparison-view__controls"
+  }, highlight && attributes.length && current !== 'slider' ? /*#__PURE__*/_react.default.createElement(_Checkbox.Switch, {
+    label: t.onlyDifferences,
+    checked: only,
+    onChange: e => setOnly(e.target.checked)
+  }) : null, choices.length > 1 ? /*#__PURE__*/_react.default.createElement(_SegmentedControl.SegmentedControl, {
+    label: t.modes,
+    size: "sm",
+    value: current,
+    onChange: setMode,
+    options: choices.map(m => ({
+      value: m,
+      label: t[m]
+    }))
+  }) : null));
+  let body = null;
+  if (current === 'matrix') {
+    body = /*#__PURE__*/_react.default.createElement(_Table.Table, {
+      label: (label || t.label) + ': ' + t.matrix,
+      index: "key",
+      columns: [{
+        title: t.attribute,
+        field: 'attribute',
+        kind: 'name',
+        rowLabel: true
+      }].concat(items.map((it, i) => ({
+        title: it.title,
+        field: 'i' + i,
+        kind: 'wrap',
+        render: row => /*#__PURE__*/_react.default.createElement("span", {
+          className: "plx-comparison-view__cell"
+        }, valueOf(it, row.a), badge(it, row.a))
+      }))),
+      data: rows.map(a => ({
+        key: a.key,
+        attribute: a.label,
+        a
+      }))
+    });
+  } else if (current === 'slider') {
+    const [before, after] = items.filter(it => it.image && it.image.src).slice(0, 2);
+    const box = RATIOS[ratio] || RATIOS['16-9'];
+    const x = box[0] * pos / 100;
+    body = before && after ? /*#__PURE__*/_react.default.createElement("figure", {
+      className: "plx-comparison-view__slider"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-comparison-view__slider-head"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__side"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__title"
+    }, before.title), before.meta ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__meta"
+    }, before.meta) : null), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__side plx-comparison-view__side--end"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__title"
+    }, after.title), after.meta ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__meta"
+    }, after.meta) : null)), /*#__PURE__*/_react.default.createElement("svg", {
+      className: "plx-comparison-view__stage",
+      viewBox: '0 0 ' + box[0] + ' ' + box[1],
+      role: "img",
+      "aria-label": before.image.alt + ' · ' + after.image.alt,
+      focusable: "false"
+    }, /*#__PURE__*/_react.default.createElement("defs", null, /*#__PURE__*/_react.default.createElement("clipPath", {
+      id: uid + '-clip'
+    }, /*#__PURE__*/_react.default.createElement("rect", {
+      x: 0,
+      y: 0,
+      width: x,
+      height: box[1]
+    }))), /*#__PURE__*/_react.default.createElement("image", {
+      href: after.image.src,
+      x: 0,
+      y: 0,
+      width: box[0],
+      height: box[1],
+      preserveAspectRatio: "xMidYMid slice"
+    }), /*#__PURE__*/_react.default.createElement("image", {
+      href: before.image.src,
+      x: 0,
+      y: 0,
+      width: box[0],
+      height: box[1],
+      preserveAspectRatio: "xMidYMid slice",
+      clipPath: 'url(#' + uid + '-clip)'
+    }), /*#__PURE__*/_react.default.createElement("line", {
+      className: "plx-comparison-view__divider",
+      x1: x,
+      x2: x,
+      y1: 0,
+      y2: box[1],
+      vectorEffect: "non-scaling-stroke"
+    })), /*#__PURE__*/_react.default.createElement(_Slider.Slider, {
+      className: "plx-comparison-view__position",
+      label: t.position,
+      value: pos,
+      min: 0,
+      max: 100,
+      unit: "%",
+      onChange: setPos
+    })) : null;
+  } else {
+    body = /*#__PURE__*/_react.default.createElement("div", {
+      className: (0, _cx.cx)('plx-comparison-view__panes', 'plx-comparison-view__panes--' + Math.min(4, Math.max(1, items.length)))
+    }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("article", {
+      key: it.id === undefined ? i : it.id,
+      className: "plx-comparison-view__pane",
+      "aria-labelledby": uid + '-t' + i
+    }, /*#__PURE__*/_react.default.createElement("header", {
+      className: "plx-comparison-view__head"
+    }, /*#__PURE__*/_react.default.createElement(H, {
+      id: uid + '-t' + i,
+      className: 'plx-comparison-view__title'
+    }, it.title), it.meta ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-comparison-view__meta"
+    }, it.meta) : null), /*#__PURE__*/_react.default.createElement("div", {
+      ref: el => {
+        bodies.current[i] = el;
+      },
+      className: (0, _cx.cx)('plx-comparison-view__body', scroll && 'plx-comparison-view__body--scroll'),
+      tabIndex: scroll ? 0 : undefined,
+      role: scroll ? 'region' : undefined,
+      "aria-label": scroll ? it.title : undefined,
+      onScroll: scroll ? onScroll(i) : undefined
+    }, it.media ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-comparison-view__media"
+    }, it.media) : it.image && it.image.src ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-comparison-view__media"
+    }, /*#__PURE__*/_react.default.createElement(_Image.Image, {
+      src: it.image.src,
+      alt: it.image.alt || '',
+      ratio: ratio
+    })) : null, it.content ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-comparison-view__content"
+    }, it.content) : null, rows.length ? /*#__PURE__*/_react.default.createElement("dl", {
+      className: "plx-comparison-view__list"
+    }, rows.map(a => /*#__PURE__*/_react.default.createElement("div", {
+      key: a.key,
+      className: "plx-comparison-view__row"
+    }, /*#__PURE__*/_react.default.createElement("dt", {
+      className: "plx-comparison-view__label"
+    }, a.label), /*#__PURE__*/_react.default.createElement("dd", {
+      className: "plx-comparison-view__value"
+    }, valueOf(it, a), badge(it, a))))) : null))));
+  }
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-comparison-view', 'plx-comparison-view--' + current, className),
+    "aria-label": label || t.label
+  }, bar, body);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38072,6 +44217,12 @@ Object.defineProperty(exports, "AppShell", {
   enumerable: true,
   get: function () {
     return _AppShell.AppShell;
+  }
+});
+Object.defineProperty(exports, "AreaChart", {
+  enumerable: true,
+  get: function () {
+    return _AreaChart.AreaChart;
   }
 });
 Object.defineProperty(exports, "Avatar", {
@@ -38122,6 +44273,12 @@ Object.defineProperty(exports, "Banner", {
     return _Banner.Banner;
   }
 });
+Object.defineProperty(exports, "BarChart", {
+  enumerable: true,
+  get: function () {
+    return _BarChart.BarChart;
+  }
+});
 Object.defineProperty(exports, "Barcode", {
   enumerable: true,
   get: function () {
@@ -38146,6 +44303,12 @@ Object.defineProperty(exports, "BottomSheetNav", {
     return _BottomSheetNav.BottomSheetNav;
   }
 });
+Object.defineProperty(exports, "BoxPlot", {
+  enumerable: true,
+  get: function () {
+    return _BoxPlot.BoxPlot;
+  }
+});
 Object.defineProperty(exports, "BrandMark", {
   enumerable: true,
   get: function () {
@@ -38164,6 +44327,12 @@ Object.defineProperty(exports, "BulkActions", {
     return _BulkActions.BulkActions;
   }
 });
+Object.defineProperty(exports, "BulletChart", {
+  enumerable: true,
+  get: function () {
+    return _BulletChart.BulletChart;
+  }
+});
 Object.defineProperty(exports, "Button", {
   enumerable: true,
   get: function () {
@@ -38180,6 +44349,12 @@ Object.defineProperty(exports, "CATEGORY_COLORS", {
   enumerable: true,
   get: function () {
     return _categoryColors.CATEGORY_COLORS;
+  }
+});
+Object.defineProperty(exports, "CHART_INTERACTION_STRINGS", {
+  enumerable: true,
+  get: function () {
+    return _interaction.CHART_INTERACTION_STRINGS;
   }
 });
 Object.defineProperty(exports, "CONTRAST_MINIMUMS", {
@@ -38228,6 +44403,18 @@ Object.defineProperty(exports, "ChartAnnotation", {
   enumerable: true,
   get: function () {
     return _ChartAnnotation.ChartAnnotation;
+  }
+});
+Object.defineProperty(exports, "ChartBrush", {
+  enumerable: true,
+  get: function () {
+    return _interaction.ChartBrush;
+  }
+});
+Object.defineProperty(exports, "ChartFocusMark", {
+  enumerable: true,
+  get: function () {
+    return _interaction.ChartFocusMark;
   }
 });
 Object.defineProperty(exports, "ChartFrame", {
@@ -38320,6 +44507,12 @@ Object.defineProperty(exports, "ColumnsMenu", {
     return _ColumnsMenu.ColumnsMenu;
   }
 });
+Object.defineProperty(exports, "ComboChart", {
+  enumerable: true,
+  get: function () {
+    return _ComboChart.ComboChart;
+  }
+});
 Object.defineProperty(exports, "Combobox", {
   enumerable: true,
   get: function () {
@@ -38354,6 +44547,12 @@ Object.defineProperty(exports, "CommandPalette", {
   enumerable: true,
   get: function () {
     return _CommandPalette.CommandPalette;
+  }
+});
+Object.defineProperty(exports, "ComparisonView", {
+  enumerable: true,
+  get: function () {
+    return _ComparisonView.ComparisonView;
   }
 });
 Object.defineProperty(exports, "ConfirmDialog", {
@@ -38468,6 +44667,12 @@ Object.defineProperty(exports, "Details", {
   enumerable: true,
   get: function () {
     return _Details.Details;
+  }
+});
+Object.defineProperty(exports, "Diagram", {
+  enumerable: true,
+  get: function () {
+    return _Diagram.Diagram;
   }
 });
 Object.defineProperty(exports, "Dialog", {
@@ -38632,6 +44837,12 @@ Object.defineProperty(exports, "GRID_TOKEN", {
     return _grid.GRID_TOKEN;
   }
 });
+Object.defineProperty(exports, "Gauge", {
+  enumerable: true,
+  get: function () {
+    return _Gauge.Gauge;
+  }
+});
 Object.defineProperty(exports, "GridLines", {
   enumerable: true,
   get: function () {
@@ -38642,6 +44853,12 @@ Object.defineProperty(exports, "GroupPanel", {
   enumerable: true,
   get: function () {
     return _GroupPanel.GroupPanel;
+  }
+});
+Object.defineProperty(exports, "HeatMap", {
+  enumerable: true,
+  get: function () {
+    return _HeatMap.HeatMap;
   }
 });
 Object.defineProperty(exports, "Hide", {
@@ -38726,6 +44943,12 @@ Object.defineProperty(exports, "Kbd", {
   enumerable: true,
   get: function () {
     return _Kbd.Kbd;
+  }
+});
+Object.defineProperty(exports, "LineChart", {
+  enumerable: true,
+  get: function () {
+    return _LineChart.LineChart;
   }
 });
 Object.defineProperty(exports, "Link", {
@@ -38842,6 +45065,12 @@ Object.defineProperty(exports, "NavPane", {
     return _NavPane.NavPane;
   }
 });
+Object.defineProperty(exports, "NetworkGraph", {
+  enumerable: true,
+  get: function () {
+    return _NetworkGraph.NetworkGraph;
+  }
+});
 Object.defineProperty(exports, "Notice", {
   enumerable: true,
   get: function () {
@@ -38918,6 +45147,12 @@ Object.defineProperty(exports, "Pictogram", {
   enumerable: true,
   get: function () {
     return _Pictogram.Pictogram;
+  }
+});
+Object.defineProperty(exports, "PieChart", {
+  enumerable: true,
+  get: function () {
+    return _PieChart.PieChart;
   }
 });
 Object.defineProperty(exports, "Popconfirm", {
@@ -39002,6 +45237,12 @@ Object.defineProperty(exports, "RTL_LANGUAGES", {
   enumerable: true,
   get: function () {
     return _direction.RTL_LANGUAGES;
+  }
+});
+Object.defineProperty(exports, "RadarChart", {
+  enumerable: true,
+  get: function () {
+    return _RadarChart.RadarChart;
   }
 });
 Object.defineProperty(exports, "Radio", {
@@ -39098,6 +45339,12 @@ Object.defineProperty(exports, "RowButton", {
   enumerable: true,
   get: function () {
     return _RowButton.RowButton;
+  }
+});
+Object.defineProperty(exports, "SankeyDiagram", {
+  enumerable: true,
+  get: function () {
+    return _SankeyDiagram.SankeyDiagram;
   }
 });
 Object.defineProperty(exports, "Scrim", {
@@ -39388,6 +45635,12 @@ Object.defineProperty(exports, "Timeline", {
     return _Timeline.Timeline;
   }
 });
+Object.defineProperty(exports, "TimelineChart", {
+  enumerable: true,
+  get: function () {
+    return _TimelineChart.TimelineChart;
+  }
+});
 Object.defineProperty(exports, "ToastProvider", {
   enumerable: true,
   get: function () {
@@ -39478,10 +45731,22 @@ Object.defineProperty(exports, "VisuallyHidden", {
     return _VisuallyHidden.VisuallyHidden;
   }
 });
+Object.defineProperty(exports, "WaterfallChart", {
+  enumerable: true,
+  get: function () {
+    return _WaterfallChart.WaterfallChart;
+  }
+});
 Object.defineProperty(exports, "WidgetGrid", {
   enumerable: true,
   get: function () {
     return _WidgetGrid.WidgetGrid;
+  }
+});
+Object.defineProperty(exports, "WordCloud", {
+  enumerable: true,
+  get: function () {
+    return _WordCloud.WordCloud;
   }
 });
 Object.defineProperty(exports, "announce", {
@@ -39518,6 +45783,30 @@ Object.defineProperty(exports, "below", {
   enumerable: true,
   get: function () {
     return _AppShell.below;
+  }
+});
+Object.defineProperty(exports, "binValues", {
+  enumerable: true,
+  get: function () {
+    return _BarChart.binValues;
+  }
+});
+Object.defineProperty(exports, "boxStats", {
+  enumerable: true,
+  get: function () {
+    return _BoxPlot.boxStats;
+  }
+});
+Object.defineProperty(exports, "chartAnnounce", {
+  enumerable: true,
+  get: function () {
+    return _interaction.chartAnnounce;
+  }
+});
+Object.defineProperty(exports, "chartTooltipText", {
+  enumerable: true,
+  get: function () {
+    return _ChartTooltip.chartTooltipText;
   }
 });
 Object.defineProperty(exports, "choosePicture", {
@@ -39614,6 +45903,12 @@ Object.defineProperty(exports, "flingDistance", {
   enumerable: true,
   get: function () {
     return _useGesture.flingDistance;
+  }
+});
+Object.defineProperty(exports, "forceLayout", {
+  enumerable: true,
+  get: function () {
+    return _NetworkGraph.forceLayout;
   }
 });
 Object.defineProperty(exports, "formatAddress", {
@@ -39748,6 +46043,18 @@ Object.defineProperty(exports, "goToParent", {
     return _ScreenLocation.goToParent;
   }
 });
+Object.defineProperty(exports, "graphLayers", {
+  enumerable: true,
+  get: function () {
+    return _NetworkGraph.graphLayers;
+  }
+});
+Object.defineProperty(exports, "graphNeighbors", {
+  enumerable: true,
+  get: function () {
+    return _NetworkGraph.graphNeighbors;
+  }
+});
 Object.defineProperty(exports, "gridPx", {
   enumerable: true,
   get: function () {
@@ -39824,6 +46131,12 @@ Object.defineProperty(exports, "joinIds", {
   enumerable: true,
   get: function () {
     return _describedBy.joinIds;
+  }
+});
+Object.defineProperty(exports, "layeredLayout", {
+  enumerable: true,
+  get: function () {
+    return _NetworkGraph.layeredLayout;
   }
 });
 Object.defineProperty(exports, "leavePage", {
@@ -39910,6 +46223,12 @@ Object.defineProperty(exports, "physicalSide", {
     return _direction.physicalSide;
   }
 });
+Object.defineProperty(exports, "pieSlices", {
+  enumerable: true,
+  get: function () {
+    return _PieChart.pieSlices;
+  }
+});
 Object.defineProperty(exports, "qrEncode", {
   enumerable: true,
   get: function () {
@@ -39938,6 +46257,12 @@ Object.defineProperty(exports, "resolveRelativeDate", {
   enumerable: true,
   get: function () {
     return _RelativeDateInput.resolveRelativeDate;
+  }
+});
+Object.defineProperty(exports, "sankeyLayout", {
+  enumerable: true,
+  get: function () {
+    return _SankeyDiagram.sankeyLayout;
   }
 });
 Object.defineProperty(exports, "scaleBand", {
@@ -40054,6 +46379,12 @@ Object.defineProperty(exports, "useAppLayout", {
     return _AppShell.useAppLayout;
   }
 });
+Object.defineProperty(exports, "useChartInteraction", {
+  enumerable: true,
+  get: function () {
+    return _interaction.useChartInteraction;
+  }
+});
 Object.defineProperty(exports, "useClipboard", {
   enumerable: true,
   get: function () {
@@ -40118,6 +46449,12 @@ Object.defineProperty(exports, "useGesture", {
   enumerable: true,
   get: function () {
     return _useGesture.useGesture;
+  }
+});
+Object.defineProperty(exports, "useGraphView", {
+  enumerable: true,
+  get: function () {
+    return _NetworkGraph.useGraphView;
   }
 });
 Object.defineProperty(exports, "useHotkey", {
@@ -40232,6 +46569,18 @@ Object.defineProperty(exports, "useVirtualizer", {
   enumerable: true,
   get: function () {
     return _useVirtualizer.useVirtualizer;
+  }
+});
+Object.defineProperty(exports, "waterfallSteps", {
+  enumerable: true,
+  get: function () {
+    return _WaterfallChart.waterfallSteps;
+  }
+});
+Object.defineProperty(exports, "wordCloudLayout", {
+  enumerable: true,
+  get: function () {
+    return _WordCloud.wordCloudLayout;
   }
 });
 var _Badge = require("./components/Badge/Badge.jsx");
@@ -40439,6 +46788,24 @@ var _RoleLabel = require("./components/RoleLabel/RoleLabel.jsx");
 var _SearchResult = require("./components/SearchResult/SearchResult.jsx");
 var _Timeline = require("./components/Timeline/Timeline.jsx");
 var _ResourceList = require("./patterns/ResourceList/ResourceList.jsx");
+var _interaction = require("./charts/interaction.js");
+var _LineChart = require("./charts/LineChart.jsx");
+var _AreaChart = require("./charts/AreaChart.jsx");
+var _Gauge = require("./charts/Gauge.jsx");
+var _HeatMap = require("./charts/HeatMap.jsx");
+var _WaterfallChart = require("./charts/WaterfallChart.jsx");
+var _WordCloud = require("./charts/WordCloud.jsx");
+var _NetworkGraph = require("./charts/NetworkGraph.jsx");
+var _Diagram = require("./charts/Diagram.jsx");
+var _BarChart = require("./charts/BarChart.jsx");
+var _ComboChart = require("./charts/ComboChart.jsx");
+var _PieChart = require("./charts/PieChart.jsx");
+var _BulletChart = require("./charts/BulletChart.jsx");
+var _BoxPlot = require("./charts/BoxPlot.jsx");
+var _RadarChart = require("./charts/RadarChart.jsx");
+var _SankeyDiagram = require("./charts/SankeyDiagram.jsx");
+var _TimelineChart = require("./charts/TimelineChart.jsx");
+var _ComparisonView = require("./patterns/ComparisonView/ComparisonView.jsx");
   } }
   };
   var cache = {};

@@ -7,6 +7,7 @@
        table={{ columns: [{ title: 'Month', field: 'month', kind: 'name' }, { title: 'Uploads', field: 'n', kind: 'data' }], data: rows }}>
        {({ inner }) => { const x = scaleBand({ domain: months, range: [0, inner.width] }); … return <g>…</g>; }}
      </ChartFrame>
+     <ChartFrame title="…" interaction={useChartInteraction({ columns: rows.length, describe })}>…</ChartFrame>
    Props:
      title: the chart's name (required): the caption's title and the SVG's accessible name
      description: one or two sentences that say what the chart shows (its takeaway); the SVG's description
@@ -22,14 +23,24 @@
      legendPosition: "bottom" (default: under the plot) | "top" (between the caption and the plot: tight dashboard
        cards) | "end" (beside the
        plot, after it; give the legend orientation="vertical"); the plot keeps the rest of the width
+     interaction: the chart's interaction (useChartInteraction, platform/charts/interaction.js; wave 9): the plot becomes
+       one Tab stop named "{title}, interactive chart" with the keyboard hint as its description, and hands its keys and
+       the pointer (in plot coordinates) to the interaction; a Reset zoom button shows above the plot while it is zoomed
+     actions: controls above the plot, at its end (a network graph's zoom buttons); Buttons of size sm
+     fitHeight: (width) => the plot's height in pixels for its width, for a chart whose height follows its content (a
+       diagram drawn at its own size); the plot's height is then the SVG's, not the size's
      children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
        inside a group already moved by the margins; or SVG nodes
-     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" }
+     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" } (the
+       interaction's words are the interaction's strings)
      className: more classes on the figure
    Behavior:
      The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
      The SVG is one image to assistive technology (role img, named by the title and described by the description);
        its marks are hidden from it, so the table carries the values.
+     Interactive (interaction): the plot takes focus once (its border takes the focus color, no outer ring) and hands
+       the arrow keys, Home, End, Enter, Space, Escape and the pointer to the interaction, which says each value in the
+       live region; the tooltip and the focus ring the chart draws follow it.
      Marks take their colors from the data-viz scales: data-plx-dataviz="<scale>-<step>" on a mark (seriesColor(i))
        and the frame's mark classes (plx-chart__mark, plx-chart__line, plx-chart__point) fill or stroke it with that
        step; axis lines, grid lines and tick labels have their classes too (plx-chart__axis-line, plx-chart__grid-line,
@@ -44,12 +55,13 @@ import { cx } from '../utils/cx.js';
 import { isRtl } from '../utils/direction.js';
 import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
+import { Button } from '../components/Button/Button.jsx';
 import { snapToGrid } from '../utils/grid.js';
 
 const STRINGS = { showData: 'Show the data', table: '{title}: data' };
 const MARGIN_TOKENS = { top: '--plx-comp-chart-margin-block-start', end: '--plx-comp-chart-margin-inline-end', bottom: '--plx-comp-chart-margin-block-end', start: '--plx-comp-chart-margin-inline-start' };
 
-export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, legend, legendPosition = 'bottom', table, strings, className, children }) {
+export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, legend, legendPosition = 'bottom', table, interaction, actions, fitHeight, strings, className, children }) {
   const t = Object.assign({}, STRINGS, strings);
   const uid = 'plx-chart' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const frame = React.useRef(null), plot = React.useRef(null);
@@ -62,7 +74,8 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
       const tokens = {};
       Object.keys(MARGIN_TOKENS).forEach((k) => { tokens[k] = parseFloat(cs.getPropertyValue(MARGIN_TOKENS[k])) || 0; });
       const r = el.getBoundingClientRect();
-      const next = { width: Math.floor(r.width), height: Math.floor(r.height), rtl: isRtl(el), tokens };
+      // an interactive plot has a border (its focus border): the SVG is drawn inside it
+      const next = { width: Math.floor(r.width - el.clientLeft * 2), height: Math.floor(r.height - el.clientTop * 2), rtl: isRtl(el), tokens };
       setBox((b) => (b.width === next.width && b.height === next.height && b.rtl === next.rtl && JSON.stringify(b.tokens) === JSON.stringify(tokens) ? b : next));
     };
     measure();
@@ -74,9 +87,29 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
   const m = {};
   Object.keys(MARGIN_TOKENS).forEach((k) => { m[k] = snapToGrid(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0); });
   const left = box.rtl ? m.end : m.start;
-  const inner = { width: Math.max(0, box.width - m.start - m.end), height: Math.max(0, box.height - m.top - m.bottom) };
-  const dims = { width: box.width, height: box.height, inner, margin: m };
-  const titleId = uid + '-title', descId = uid + '-desc';
+  const fit = typeof fitHeight === 'function';
+  const height = fit ? (box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0) : box.height;
+  const inner = { width: Math.max(0, box.width - m.start - m.end), height: Math.max(0, height - m.top - m.bottom) };
+  const dims = { width: box.width, height, inner, margin: m };
+  const titleId = uid + '-title', descId = uid + '-desc', hintId = uid + '-hint';
+  const ia = interaction && interaction.interactive ? interaction : null;
+  // the pointer in plot coordinates: inside the border, less the margins
+  const local = (e) => {
+    const el = plot.current, r = el.getBoundingClientRect();
+    return [e.clientX - r.left - el.clientLeft - left, e.clientY - r.top - el.clientTop - m.top];
+  };
+  const on = (fn) => (e) => { const p = local(e); fn(p[0], p[1], e); };
+  const plotProps = ia ? {
+    tabIndex: 0, role: 'group', 'aria-label': ia.strings.plot.replace('{title}', title || ''), 'aria-describedby': hintId,
+    onKeyDown: ia.keyDown, onFocus: ia.onFocus, onBlur: ia.onBlur, onPointerDown: on(ia.pointerDown), onPointerMove: on(ia.pointerMove),
+    onPointerUp: on(ia.pointerUp), onPointerLeave: ia.pointerLeave,
+  } : {};
+  const toolbar = (ia && ia.zoomed) || actions ? (
+    <div className="plx-chart__actions">
+      {actions}
+      {ia && ia.zoomed ? <Button size="sm" icon="refresh" onClick={ia.resetZoom}>{ia.strings.resetZoom}</Button> : null}
+    </div>
+  ) : null;
   const caption = (
     <figcaption className={cx('plx-chart__caption', hideCaption && 'plx-visually-hidden')}>
       <span id={titleId} className="plx-chart__title">{title}</span>
@@ -87,9 +120,10 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
   const lp = ['top', 'bottom', 'end'].indexOf(legendPosition) >= 0 ? legendPosition : 'bottom';
   const key = legend ? <div className={cx('plx-chart__legend', 'plx-chart__legend--' + lp)}>{legend}</div> : null;
   const plotArea = (
-    <div ref={plot} className="plx-chart__plot">
-      {box.width > 0 && box.height > 0 ? (
-        <svg className="plx-chart__svg" width={box.width} height={box.height} viewBox={'0 0 ' + box.width + ' ' + box.height}
+    <div ref={plot} className={cx('plx-chart__plot', fit && 'plx-chart__plot--fit', ia && 'plx-chart__plot--interactive', ia && ia.mode === 'point' && ia.active && 'plx-chart__plot--dimming')} {...plotProps}>
+      {ia ? <span id={hintId} className="plx-visually-hidden">{ia.hint}</span> : null}
+      {box.width > 0 && height > 0 ? (
+        <svg className="plx-chart__svg" width={box.width} height={height} viewBox={'0 0 ' + box.width + ' ' + height}
           role="img" aria-labelledby={titleId} aria-describedby={description ? descId : undefined} focusable="false">
           <g transform={'translate(' + left + ',' + m.top + ')'} aria-hidden="true">
             {typeof children === 'function' ? children(dims) : children}
@@ -101,6 +135,7 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
   return (
     <figure ref={frame} className={cx('plx-chart', 'plx-chart--' + size, className)}>
       {caption}
+      {toolbar}
       {lp === 'top' ? key : null}
       {lp === 'end' && key ? <div className="plx-chart__body">{plotArea}{key}</div> : plotArea}
       {lp === 'bottom' ? key : null}

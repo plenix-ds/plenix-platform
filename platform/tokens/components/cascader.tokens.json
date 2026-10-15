@@ -87,7 +87,7 @@
       "$description": "Cascader popup: background (surface-overlay)."
     },
     "cascader-popup-border-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.overlay-border}",
       "$type": "color",
       "$description": "Cascader popup: border color (border-default)."
     },

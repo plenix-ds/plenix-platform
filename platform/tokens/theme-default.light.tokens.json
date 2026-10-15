@@ -235,6 +235,17 @@
         }
       }
     },
+    "overlay-border": {
+      "$value": "transparent",
+      "$type": "color",
+      "$description": "The edge of a menu, list or popover that opens: none (owner, 2026-10-15: Flat + Lifted); the width stays, so nothing moves.",
+      "$extensions": {
+        "plenix": {
+          "group": "border",
+          "purpose": "The (invisible) edge of an opened surface."
+        }
+      }
+    },
     "border-subtle": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color",
@@ -1036,6 +1047,11 @@
       "$value": "0 0 40px {plx-ref.color-black-alpha-14}, 0 0 8px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
       "$type": "shadow"
     },
+    "shadow-lifted": {
+      "$value": "0 0 1px {plx-ref.color-black-alpha-20}, 0 0 2px {plx-ref.color-black-alpha-14}, 0 0 5px {plx-ref.color-black-alpha-12}",
+      "$type": "shadow",
+      "$description": "Lifted (owner, 2026-10-15, the card builder): a fuller even shadow with no offset (Material elevation 2 without its offsets); every menu, list and popover that opens, and Lifted cards. Dark: black."
+    },
     "shadow-modal": {
       "$value": "0 0 40px {plx-ref.color-gray-800}, 0 0 0 1px {plx-ref.color-gray-800}",
       "$type": "shadow"
@@ -1061,7 +1077,7 @@
       "$type": "shadow"
     },
     "elevation-menu": {
-      "$value": "{plx-sys.shadow-menu}",
+      "$value": "{plx-sys.shadow-lifted}",
       "$description": "D9: menus are border-only",
       "$extensions": {
         "com.plenix": {
@@ -1142,6 +1158,28 @@
         "plenix": {
           "group": "interactive",
           "purpose": "The background of fields and controls."
+        }
+      }
+    },
+    "field-background": {
+      "$value": "{plx-ref.color-gray-50}",
+      "$type": "color",
+      "$description": "Every form field's fill (input, select, textarea, combobox, search, tag input, OTP); the same when focused (owner, 2026-10-15).",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The fill of every form field, focused or not."
+        }
+      }
+    },
+    "field-border": {
+      "$value": "{plx-ref.color-gray-400}",
+      "$type": "color",
+      "$description": "Every form field's border, all round (owner, 2026-10-15: gray-400, softer than the controls' gray-500; an accepted exception to the 3:1 field-boundary contrast in light).",
+      "$extensions": {
+        "plenix": {
+          "group": "interactive",
+          "purpose": "The border of every form field, all round."
         }
       }
     },
@@ -3236,6 +3274,17 @@
         "plenix": {
           "group": "dataviz",
           "purpose": "A category pill, grey: its text."
+        }
+      }
+    },
+    "list-bullet": {
+      "$value": "{plx-ref.color-gray-400}",
+      "$type": "color",
+      "$description": "The square bullet of a bulleted list (owner, 2026-10-15: gray-400, 4px).",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "The bullet of a bulleted list."
         }
       }
     }

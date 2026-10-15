@@ -660,11 +660,11 @@
       "$type": "dimension"
     },
     "input-background": {
-      "$value": "{plx-sys.control-background}",
+      "$value": "{plx-sys.field-background}",
       "$type": "color"
     },
     "input-border-color": {
-      "$value": "{plx-sys.control-border}",
+      "$value": "{plx-sys.field-border}",
       "$type": "color"
     },
     "input-radius": {
@@ -2260,7 +2260,7 @@
       "$type": "dimension"
     },
     "tag-input-background": {
-      "$value": "{plx-sys.control-background}",
+      "$value": "{plx-sys.field-background}",
       "$type": "color"
     },
     "tag-input-radius": {
@@ -3268,7 +3268,7 @@
       "$type": "dimension"
     },
     "app-switcher-panel-border-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.overlay-border}",
       "$type": "color"
     },
     "app-switcher-panel-border-width": {
@@ -3572,7 +3572,7 @@
       "$type": "color"
     },
     "menu-border-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.overlay-border}",
       "$type": "color"
     },
     "menu-radius": {
@@ -4988,7 +4988,7 @@
       "$type": "color"
     },
     "combobox-list-border-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.overlay-border}",
       "$type": "color"
     },
     "combobox-list-radius": {
@@ -6374,11 +6374,11 @@
       "$type": "dimension"
     },
     "pagination-select-background": {
-      "$value": "{plx-sys.control-background}",
+      "$value": "{plx-sys.field-background}",
       "$type": "color"
     },
     "pagination-select-border-color": {
-      "$value": "{plx-sys.control-border}",
+      "$value": "{plx-sys.field-border}",
       "$type": "color"
     },
     "pagination-select-radius": {
@@ -6666,11 +6666,11 @@
       "$type": "color"
     },
     "search-input-background": {
-      "$value": "{plx-sys.control-background}",
+      "$value": "{plx-sys.field-background}",
       "$type": "color"
     },
     "search-input-border-color": {
-      "$value": "{plx-sys.control-border}",
+      "$value": "{plx-sys.field-border}",
       "$type": "color"
     },
     "search-input-radius": {

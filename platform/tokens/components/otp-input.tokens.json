@@ -1,20 +1,80 @@
 {
   "$description": "OtpInput (platform/components/OtpInput), library wave 6, lane B: its component tokens. Each box is drawn with the input roles (the text field's), square at the prominent control height, the code in the data font.",
   "plx-comp": {
-    "otp-input-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "OtpInput: the space between two boxes." },
-    "otp-input-cell-width": { "$value": "{plx-sys.control-height-prominent}", "$type": "dimension", "$description": "OtpInput box: its width (a square: the prominent control height)." },
-    "otp-input-cell-height": { "$value": "{plx-sys.control-height-prominent}", "$type": "dimension", "$description": "OtpInput box: its height (the prominent control height)." },
-    "otp-input-cell-background": { "$value": "{plx-sys.control-background}", "$type": "color", "$description": "OtpInput box: the field surface." },
-    "otp-input-cell-border-color": { "$value": "{plx-sys.control-border}", "$type": "color", "$description": "OtpInput box: the field border." },
-    "otp-input-cell-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "OtpInput box: the border width." },
-    "otp-input-cell-radius": { "$value": "{plx-sys.radius-control}", "$type": "dimension", "$description": "OtpInput box: the control corners." },
-    "otp-input-cell-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "OtpInput box: the character's color." },
-    "otp-input-cell-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "OtpInput box: a code is a technical value, in the data font." },
-    "otp-input-cell-font-size": { "$value": "{plx-ref.font-size-15}", "$type": "dimension", "$description": "OtpInput box: the character's size (the lead step, readable at a glance)." },
-    "otp-input-cell-hover-border-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "OtpInput box: the border under the pointer." },
-    "otp-input-cell-focus-border-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "OtpInput box: the border of the box in focus (no ring outside it)." },
-    "otp-input-cell-invalid-border-color": { "$value": "{plx-sys.feedback-danger-solid}", "$type": "color", "$description": "OtpInput box: the border when the code is wrong, kept while focused." },
-    "otp-input-cell-disabled-background": { "$value": "{plx-sys.fill-neutral}", "$type": "color", "$description": "OtpInput box: the neutral fill when disabled." },
-    "otp-input-cell-disabled-text": { "$value": "{plx-sys.content-disabled}", "$type": "color", "$description": "OtpInput box: the character's color when disabled." }
+    "otp-input-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "OtpInput: the space between two boxes."
+    },
+    "otp-input-cell-width": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "OtpInput box: its width (a square: the prominent control height)."
+    },
+    "otp-input-cell-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "OtpInput box: its height (the prominent control height)."
+    },
+    "otp-input-cell-background": {
+      "$value": "{plx-sys.field-background}",
+      "$type": "color",
+      "$description": "OtpInput box: the field surface."
+    },
+    "otp-input-cell-border-color": {
+      "$value": "{plx-sys.field-border}",
+      "$type": "color",
+      "$description": "OtpInput box: the field border."
+    },
+    "otp-input-cell-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "OtpInput box: the border width."
+    },
+    "otp-input-cell-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "OtpInput box: the control corners."
+    },
+    "otp-input-cell-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "OtpInput box: the character's color."
+    },
+    "otp-input-cell-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "OtpInput box: a code is a technical value, in the data font."
+    },
+    "otp-input-cell-font-size": {
+      "$value": "{plx-ref.font-size-15}",
+      "$type": "dimension",
+      "$description": "OtpInput box: the character's size (the lead step, readable at a glance)."
+    },
+    "otp-input-cell-hover-border-color": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color",
+      "$description": "OtpInput box: the border under the pointer."
+    },
+    "otp-input-cell-focus-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "OtpInput box: the border of the box in focus (no ring outside it)."
+    },
+    "otp-input-cell-invalid-border-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "OtpInput box: the border when the code is wrong, kept while focused."
+    },
+    "otp-input-cell-disabled-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "OtpInput box: the neutral fill when disabled."
+    },
+    "otp-input-cell-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "OtpInput box: the character's color when disabled."
+    }
   }
 }

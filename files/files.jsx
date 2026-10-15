@@ -3,7 +3,7 @@
    the open one in a SidePanel.
    Screens (Platforms Standard 4.3): the list (#/) and an open file (#/file/<n>), a history entry each: Back closes the
    file; closing the panel goes to the list. */
-import { EntityHeader, CommandBar, CommandBarSearch, FilterPanel, QuickFilter, SortPanel, ColumnsMenu, ViewMenu, useCollectionView, DataTable, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
+import { EntityHeader, CommandBar, CommandBarSearch, FilterPanel, SortPanel, ColumnsMenu, ViewMenu, useCollectionView, DataTable, Inline, PageContent, SidePanel, Stack, Tag, Text } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { ALL_FILES } from '../suite/shared.jsx';
 const { useState } = React;
@@ -33,8 +33,8 @@ export function FilesScreen({ screen }) {
           <EntityHeader title="Files" media={{ icon: 'folder', hue: 'gray' }} facts={[ALL_FILES.length + ' files']} actions={[{ icon: 'share', label: 'Share' }]} />
           {/* the capability's own action is the bar's (1A: the actions at the start, find and view at the end) */}
           <CommandBar label="Files" actions={[{ id: 'upload', label: 'Upload', icon: 'upload' }]} count={n + (n === 1 ? ' file' : ' files')}
-            find={<><CommandBarSearch {...v.searchProps} placeholder="Search files" /><FilterPanel {...v.filterProps} />
-              <QuickFilter label="Type" icon="image-b" noun="type" options={FIELDS[1].options} {...v.quickProps('t')} /></>}
+            find={<><CommandBarSearch {...v.searchProps} placeholder="Search files" /><FilterPanel {...v.filterProps} /></>}
+            quickFilters={[Object.assign({ id: 't', label: 'Type', icon: 'image-b', noun: 'type', options: FIELDS[1].options }, v.quickProps('t'))]}
             view={<><SortPanel {...v.sortProps} /><ColumnsMenu {...v.columnsProps} fields={FIELDS.filter((f) => COLUMNS.indexOf(f.value) >= 0)} /><ViewMenu {...v.viewProps} gallery={false} /></>} />
           <DataTable label="Files" data={ROWS} selected={sel === null ? [] : [sel]} options={{ selectableRows: 1 }} {...v.tableProps}
             on={{ rowClick: (e, row) => { const i = row.getData().id; setSel(sel === i ? null : i); } }} columns={[

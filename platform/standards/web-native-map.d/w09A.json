@@ -1,0 +1,15 @@
+{
+  "$description": "Library part w09A (wave 9, lane A): the iOS and Android counterparts of the chart interaction and the charts of lane A (Swift Charts marks and selection on iOS, the Plenix Compose charts on Android); the gauge is a Gauge on iOS and a progress indicator on Android; the network graph and the diagram are drawn on the charts' canvas on both. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Line chart": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Step chart": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Area chart": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Heat map": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Waterfall": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Word cloud": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Chart interaction": { "ios": ["ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Gauge": { "ios": ["ios-data-display|Gauges"], "android": ["android-feedback|Progress indicators"] },
+    "data-display|Graph / network": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Diagram": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] }
+  }
+}

@@ -155,6 +155,8 @@ public enum Plenix {
         public static let fillNeutralContent = Plenix.color(light: 0xFF56585E, dark: 0xFFE8E9EC)
         public static let borderDivider = Plenix.color(light: 0xFFF3F3F3, dark: 0xFF56585E)
         public static let controlBackground = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF444444)
+        public static let fieldBackground = Plenix.color(light: 0xFFFCFCFC, dark: 0xFF444444)
+        public static let fieldBorder = Plenix.color(light: 0xFFA3A6AD, dark: 0xFFA3A6AD)
         public static let controlBorder = Plenix.color(light: 0xFF8E9094, dark: 0xFFA3A6AD)
         public static let avatarBackground = Plenix.color(light: 0xFF1F5BB8, dark: 0xFFA2C0E3)
         public static let avatarContent = Plenix.color(light: 0xFFFFFFFF, dark: 0xFF000000)
@@ -349,6 +351,7 @@ public enum Plenix {
         public static let categoryGreySoft = Plenix.color(light: 0xFFF3F3F3, dark: 0xFFF3F3F3)
         public static let categoryGreySoftBorder = Plenix.color(light: 0xFFCACACA, dark: 0xFFCACACA)
         public static let categoryGreyOnSoft = Plenix.color(light: 0xFF4D4D4D, dark: 0xFF4D4D4D)
+        public static let listBullet = Plenix.color(light: 0xFFA3A6AD, dark: 0xFFA3A6AD)
     }
     public enum Radius {
         public static let radiusDetail4px: CGFloat = 4
@@ -514,6 +517,7 @@ public enum Plenix {
         public static let carouselDotTarget: CGFloat = 24
         public static let carouselGap: CGFloat = 12
         public static let carouselPeek: CGFloat = 40
+        public static let chartInteractionFocusMarkRadius: CGFloat = 8
         public static let chartLineWidth: CGFloat = 2
         public static let chartPlotHeightMd: CGFloat = 240
         public static let chartPlotHeightSm: CGFloat = 160

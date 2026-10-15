@@ -6,10 +6,12 @@
      <List><List.Item icon="close" tone="danger">Avoid…</List.Item></List>
      <List ordered items={[{ children: 'Create the project' }, { children: 'Upload the files', items: [{ children: 'Photos' }], ordered: 'alpha' }]} />
      <List ordered variant="steps" items={[{ children: 'Choose the files' }, { children: 'Add the details' }]} />
+     <List variant="bullets" items={[{ children: 'Presence: online, away, busy, offline.' }, { children: 'Workflow: done, in progress.' }]} />
    Props:
      List.items: the statements: [{ icon, tone, children, items, ordered }]; or pass List.Item children
      List.ordered: an ordered list (<ol>): "decimal" (true is the same) | "alpha"; without it, the icon list (<ul>)
-     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow
+     List.variant: "icons" (default) | "steps": an ordered list whose numbers sit in a circle, for steps to follow |
+       "bullets": a plain list, each statement after a small square bullet (owner, 2026-10-15: for points of a text)
      List.label: names the list for assistive technology when its heading is not next to it
      List.children: List.Item elements, when there are no items
      List.className: more classes on the list
@@ -36,7 +38,7 @@ export function List({ items, label, ordered, variant = 'icons', className, chil
   const Tag = kind ? 'ol' : 'ul';
   return (
     <Tag aria-label={label}
-      className={cx('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', className)}>
+      className={cx('plx-list', kind && 'plx-list--ordered', kind === 'alpha' && 'plx-list--alpha', kind && variant === 'steps' && 'plx-list--steps', !kind && variant === 'bullets' && 'plx-list--bullets', className)}>
       {items ? items.map((it, i) => <List.Item key={i} icon={it.icon} tone={it.tone} items={it.items}
         ordered={it.ordered === undefined ? kind : it.ordered}>{it.children}</List.Item>) : children}
     </Tag>

@@ -67,7 +67,7 @@
       "$description": "TimePicker list: background (surface-overlay)."
     },
     "time-picker-list-border-color": {
-      "$value": "{plx-sys.border-default}",
+      "$value": "{plx-sys.overlay-border}",
       "$type": "color",
       "$description": "TimePicker list: border color (border-default)."
     },

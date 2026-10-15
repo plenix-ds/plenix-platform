@@ -27,6 +27,16 @@
       "$value": "#00000024",
       "$type": "color"
     },
+    "color-black-alpha-20": {
+      "$value": "#00000033",
+      "$type": "color",
+      "$description": "Black at 20% (owner, 2026-10-15): the closest layer of the Lifted shadow (Material elevation)."
+    },
+    "color-black-alpha-12": {
+      "$value": "#0000001f",
+      "$type": "color",
+      "$description": "Black at 12% (owner, 2026-10-15): the widest layer of the Lifted shadow (Material elevation)."
+    },
     "color-gray-950": {
       "$value": "#1e1f22",
       "$type": "color"
@@ -70,6 +80,11 @@
     "color-gray-100": {
       "$value": "#f3f3f3",
       "$type": "color"
+    },
+    "color-gray-50": {
+      "$value": "#fcfcfc",
+      "$type": "color",
+      "$description": "The form fields' fill (owner, 2026-10-15): one step above white, lighter than gray-75."
     },
     "color-gray-75": {
       "$value": "#f7f7f8",

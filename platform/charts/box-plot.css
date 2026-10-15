@@ -1,0 +1,6 @@
+/* Plenix · BoxPlot (platform/charts/box-plot.css): the box is the frame's mark and an outlier the frame's point
+   (system/charts.css); the median line crosses the box in the surface color, the whiskers and their caps are thin lines
+   in the subtle content color. Every value is a --plx-comp-box-plot-* token on an existing role. */
+.plx-box-plot__whisker{fill:none;stroke:var(--plx-comp-box-plot-whisker-color);stroke-width:var(--plx-comp-box-plot-whisker-width);}
+.plx-box-plot__median{fill:none;stroke:var(--plx-comp-box-plot-median-color);stroke-width:var(--plx-comp-box-plot-median-width);}
+.plx-box-plot__outlier{r:var(--plx-comp-box-plot-outlier-radius);}

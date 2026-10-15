@@ -1,0 +1,4 @@
+/* Plenix · BarChart (platform/charts/bar-chart.css): the bars are the frame's marks (plx-chart__mark, their data-viz
+   color: system/charts.css); stacked segments, shares and histogram bins touch, so a thin line in the surface color
+   parts them. Every value is a --plx-comp-bar-chart-* token on an existing role. */
+.plx-bar-chart__bar--joined{stroke:var(--plx-comp-bar-chart-separator-color);stroke-width:var(--plx-comp-bar-chart-separator-width);}

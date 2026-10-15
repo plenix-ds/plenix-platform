@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { CommandBar, CommandBarButton, CommandBarSearch, FilterPanel, QuickFilter, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, Tooltip, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -283,23 +283,23 @@ export function HomePage() {
   const n = view === 'find' ? 0 : cv.count(totals[view] || []);
   const barActions = view === 'categories' ? [{ id: 'new', label: 'New category', icon: 'add', onSelect: () => openDialog('newCatModal') }]
     : view === 'collections' ? [{ id: 'new', label: 'New collection', icon: 'add', onSelect: () => openDialog('newCollectionModal') }]
-      : [{ id: 'upload', label: 'Upload', icon: 'upload', onSelect: () => openDialog('uploadModal') }];
-  const quick = (key, label, icon, word) => <QuickFilter label={label} icon={icon} noun={word} options={(ASSET_FIELDS.find((f) => f.value === key) || {}).options} {...cv.quickProps(key)} />;
+      : [{ id: 'upload', label: 'Upload', icon: 'upload', onSelect: () => openDialog('uploadModal') }, { id: 'save', label: 'Save search', icon: 'save', onSelect: saveSearch }];
+  // the app's quick filters (Category, Type, Tags): when the bar is short of room they fold into More after the commands
+  const quick = (key, label, icon, word) => Object.assign({ id: key, label, icon, noun: word, options: (ASSET_FIELDS.find((f) => f.value === key) || {}).options }, cv.quickProps(key));
   const bar = view === 'find' ? null : (
     <CommandBar label={view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : 'Assets'} actions={barActions}
       count={n + ' ' + (n === 1 ? noun[0] : noun[1])}
       find={<>
         <CommandBarSearch {...cv.searchProps} placeholder={'Search ' + noun[1]} />
         <FilterPanel {...cv.filterProps} />
-        {view === 'search' ? <>{quick('cat', 'Category', 'grid-2x2', 'category')}{quick('badge', 'Type', 'image-b', 'type')}{quick('tags', 'Tags', 'tags', 'tag')}</> : null}
       </>}
+      quickFilters={view === 'search' ? [quick('cat', 'Category', 'grid-2x2', 'category'), quick('badge', 'Type', 'image-b', 'type'), quick('tags', 'Tags', 'tags', 'tag')] : []}
       view={<>
         <SortPanel {...cv.sortProps} />
         <GroupPanel {...cv.groupProps} />
         <ColumnsMenu {...cv.columnsProps} fields={fieldsOf.filter((f) => COLUMNS[view === 'search' ? 'assets' : view].indexOf(f.value) >= 0)} />
         <ViewMenu {...cv.viewProps} />
       </>}
-      end={view === 'search' ? <Tooltip content="Save this search"><CommandBarButton icon="save" label="Save search" onClick={saveSearch} /></Tooltip> : null}
       selection={view === 'categories' ? catSel : view === 'search' ? assetSel : null} />
   );
   const pagination = view === 'categories' ? <Pagination page={1} pageCount={3} total={D.CATEGORY_TOTAL} perPage={16} perPageOptions={[16, 32, 64]} onPageChange={(n) => toast.show('Page ' + n, { tone: 'info' })} onPerPageChange={() => {}} />

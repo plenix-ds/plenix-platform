@@ -49,7 +49,7 @@ Mapping from today's Badge tones: neutral → Neutral, success → Success, info
 
 ## Reference palette
 
-### New scales (owner's final values)
+### Yellow and orange
 
 **Yellow: waiting / paused**
 
@@ -75,7 +75,7 @@ Mapping from today's Badge tones: neutral → Neutral, success → Success, info
 | `--plx-ref-color-orange-800` | `#7a3400` |
 | `--plx-ref-color-orange-900` | `#5c2800` |
 
-### Existing scales (unchanged)
+### The other families
 
 | Family | 50 / 75 | 100 | 200 | 250 / 350 | 300 | 400 | 500 | 600 / 650 | 700 | 800 | 900 | 950 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|

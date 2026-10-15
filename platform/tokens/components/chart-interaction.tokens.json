@@ -1,0 +1,18 @@
+{
+  "$description": "Chart interaction (platform/charts/interaction.js and chart-interaction.css, library wave 9, lane A): the interactive plot's focus border, the ring on the value in focus, the brush of a zoom, dimming, the selected mark and the frame's actions row. Existing roles only.",
+  "plx-comp": {
+    "chart-interaction-focus-border-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Chart interaction: the interactive plot's border, transparent until it is focused." },
+    "chart-interaction-focus-border-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "Chart interaction: the plot's border while it has keyboard focus (focus = border color only)." },
+    "chart-interaction-focus-radius": { "$value": "{plx-sys.shape-xs}", "$type": "dimension", "$description": "Chart interaction: the corners of the plot's focus border." },
+    "chart-interaction-actions-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Chart interaction: the space between the buttons above the plot (Reset zoom, zoom controls)." },
+    "chart-interaction-focus-mark-radius": { "$value": "{plx-ref.size-8px}", "$type": "dimension", "$description": "Chart interaction: the radius of the dot on the value in focus or under the pointer." },
+    "chart-interaction-focus-mark-outline": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Chart interaction: the ring of the surface around the dot, so it stands off the line." },
+    "chart-interaction-focus-mark-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Chart interaction: the width of the ring around the dot." },
+    "chart-interaction-brush-background": { "$value": "{plx-sys.state-selected}", "$type": "color", "$description": "Chart interaction: the shade of the range marked for a zoom." },
+    "chart-interaction-brush-border-color": { "$value": "{plx-sys.selected-border}", "$type": "color", "$description": "Chart interaction: the edge of the range marked for a zoom." },
+    "chart-interaction-brush-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Chart interaction: the width of the brush's edge." },
+    "chart-interaction-dim-opacity": { "$value": "{plx-sys.opacity-low}", "$type": "number", "$description": "Chart interaction: the opacity of the other series' marks while one value is active." },
+    "chart-interaction-selected-outline": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Chart interaction: the outline of the selected mark." },
+    "chart-interaction-selected-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Chart interaction: the width of the selected mark's outline." }
+  }
+}

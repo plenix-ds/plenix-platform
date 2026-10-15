@@ -14,3 +14,4 @@
 .plx-button.plx-command-bar__danger{--plx-comp-button-ghost-hover-text:var(--plx-comp-command-bar-danger-hover-text);--plx-comp-button-ghost-text:var(--plx-comp-command-bar-danger-text);}
 /* the divider before the danger commands (and, in the selection bar, before Select all and Clear) */
 .plx-bar-actions__divider{block-size:var(--plx-comp-command-bar-divider-height);border-inline-start-color:var(--plx-comp-command-bar-divider-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-command-bar-divider-width);flex-shrink:0;inline-size:0;}
+.plx-command-bar__status{white-space:nowrap;}

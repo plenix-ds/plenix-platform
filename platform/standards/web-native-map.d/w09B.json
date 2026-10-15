@@ -1,0 +1,19 @@
+{
+  "$description": "Library part w09B (wave 9, lane B): the iOS and Android counterparts of the bar (column, stacked, histogram), combo, pie (donut), bullet, box, radar, Sankey and timeline charts (Swift Charts on iOS: the Charts and Charting data pages; the Compose charts on Android: Charts) and of the comparison view and its Compare pattern (panes side by side: iOS split views; Android's window size classes, side by side when expanded, stacked when compact). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Bar chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Column chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Stacked bar chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Histogram": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Combo chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Pie chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Donut chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Bullet chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Box plot": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Radar chart": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Sankey diagram": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Timeline visualization": { "ios": ["ios-data-display|Charts", "ios-data-display|Charting data"], "android": ["android-data-display|Charts"] },
+    "data-display|Comparison view": { "ios": ["ios-layout|Split views"], "android": ["android-layout|Window classes"] },
+    "patterns|Compare": { "ios": ["ios-layout|Split views"], "android": ["android-layout|Window classes"] }
+  }
+}

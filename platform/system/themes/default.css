@@ -78,6 +78,7 @@
   --plx-sys-content-link: var(--plx-ref-color-blue-600);
   --plx-sys-content-link-visited: var(--plx-ref-color-purple-visited);
   --plx-sys-border-default: var(--plx-ref-color-gray-300);
+  --plx-sys-overlay-border: transparent;
   --plx-sys-border-subtle: var(--plx-ref-color-gray-200);
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);
   --plx-sys-action-primary-background: var(--plx-ref-color-blue-400);
@@ -159,13 +160,14 @@
   --plx-sys-shadow-card: 0 0 4px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
   --plx-sys-shadow-raised: 0 0 16px var(--plx-ref-color-black-alpha-14), 0 0 4px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
   --plx-sys-shadow-menu: 0 0 40px var(--plx-ref-color-black-alpha-14), 0 0 8px var(--plx-ref-color-black-alpha-14), 0 0 0 1px var(--plx-ref-color-gray-200);
+  --plx-sys-shadow-lifted: 0 0 1px var(--plx-ref-color-black-alpha-20), 0 0 2px var(--plx-ref-color-black-alpha-14), 0 0 5px var(--plx-ref-color-black-alpha-12);
   --plx-sys-shadow-modal: 0 0 40px var(--plx-ref-color-gray-800), 0 0 0 1px var(--plx-ref-color-gray-800);
   --plx-sys-shadow-ring: 0 0 0 2px var(--plx-ref-color-blue-400);
   --plx-sys-shadow-ring-subtle: 0 0 0 2px var(--plx-ref-color-blue-100);
   --plx-sys-shadow-underline-focus: 0 1px 0 var(--plx-ref-color-blue-400);
   --plx-sys-elevation-raised-shadow: var(--plx-sys-shadow-card);
   --plx-sys-elevation-overlay-shadow: var(--plx-sys-shadow-modal);
-  --plx-sys-elevation-menu: var(--plx-sys-shadow-menu);   /* D9: menus are border-only */
+  --plx-sys-elevation-menu: var(--plx-sys-shadow-lifted);   /* D9: menus are border-only */
 
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-100);
@@ -175,6 +177,8 @@
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-700);
   --plx-sys-border-divider: var(--plx-ref-color-gray-100);
   --plx-sys-control-background: var(--plx-ref-color-white);
+  --plx-sys-field-background: var(--plx-ref-color-gray-50);
+  --plx-sys-field-border: var(--plx-ref-color-gray-400);
   --plx-sys-control-border: var(--plx-ref-color-gray-500);
   --plx-sys-avatar-background: var(--plx-ref-color-blue-600);
   --plx-sys-avatar-content: var(--plx-ref-color-white);
@@ -375,6 +379,7 @@
   --plx-sys-category-grey-soft: var(--plx-ref-color-category-grey-100);
   --plx-sys-category-grey-soft-border: var(--plx-ref-color-category-grey-300);
   --plx-sys-category-grey-on-soft: var(--plx-ref-color-category-grey-700);
+  --plx-sys-list-bullet: var(--plx-ref-color-gray-400);
 }
 :root[data-plx-mode="dark"],[data-plx-theme="default"][data-plx-mode="dark"]{
   color-scheme: dark;
@@ -401,6 +406,7 @@
   --plx-sys-content-link: var(--plx-ref-color-blue-200);
   --plx-sys-content-link-visited: var(--plx-ref-color-purple-visited-light);
   --plx-sys-border-default: var(--plx-ref-color-gray-700);
+  --plx-sys-overlay-border: transparent;
   --plx-sys-border-subtle: var(--plx-ref-color-gray-700);
   --plx-sys-border-strong: var(--plx-ref-color-gray-500);
   --plx-sys-action-primary-background: var(--plx-ref-color-blue-400);
@@ -482,13 +488,14 @@
   --plx-sys-shadow-card: 0 0 4px var(--plx-ref-color-black), 0 0 0 1px var(--plx-ref-color-gray-700);
   --plx-sys-shadow-raised: 0 0 16px var(--plx-ref-color-black), 0 0 0 1px var(--plx-ref-color-gray-700);
   --plx-sys-shadow-menu: 0 0 40px var(--plx-ref-color-black), 0 0 0 1px var(--plx-ref-color-gray-700);
+  --plx-sys-shadow-lifted: 0 0 1px var(--plx-ref-color-black), 0 0 2px var(--plx-ref-color-black), 0 0 5px var(--plx-ref-color-black);
   --plx-sys-shadow-modal: 0 0 40px var(--plx-ref-color-gray-800), 0 0 0 1px var(--plx-ref-color-gray-800);
   --plx-sys-shadow-ring: 0 0 0 2px var(--plx-ref-color-blue-400);
   --plx-sys-shadow-ring-subtle: 0 0 0 2px var(--plx-ref-color-black);
   --plx-sys-shadow-underline-focus: 0 1px 0 var(--plx-ref-color-blue-400);
   --plx-sys-elevation-raised-shadow: var(--plx-sys-shadow-card);
   --plx-sys-elevation-overlay-shadow: var(--plx-sys-shadow-modal);
-  --plx-sys-elevation-menu: var(--plx-sys-shadow-menu);   /* D9: menus are border-only */
+  --plx-sys-elevation-menu: var(--plx-sys-shadow-lifted);   /* D9: menus are border-only */
 
   /* component families: neutral fills (tags, chips), dividers, control surfaces, avatars, the accent header, loading, rating */
   --plx-sys-fill-neutral: var(--plx-ref-color-gray-800);
@@ -498,6 +505,8 @@
   --plx-sys-fill-neutral-content: var(--plx-ref-color-gray-200);
   --plx-sys-border-divider: var(--plx-ref-color-gray-700);
   --plx-sys-control-background: var(--plx-ref-color-gray-800);
+  --plx-sys-field-background: var(--plx-ref-color-gray-800);
+  --plx-sys-field-border: var(--plx-ref-color-gray-400);
   --plx-sys-control-border: var(--plx-ref-color-gray-400);
   --plx-sys-avatar-background: var(--plx-ref-color-blue-300);
   --plx-sys-avatar-content: var(--plx-ref-color-black);
@@ -697,4 +706,5 @@
   --plx-sys-category-grey-soft: var(--plx-ref-color-category-grey-100);
   --plx-sys-category-grey-soft-border: var(--plx-ref-color-category-grey-300);
   --plx-sys-category-grey-on-soft: var(--plx-ref-color-category-grey-700);
+  --plx-sys-list-bullet: var(--plx-ref-color-gray-400);
 }

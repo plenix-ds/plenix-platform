@@ -55,6 +55,21 @@
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension",
       "$description": "List: the space between a statement and the list nested under it."
+    },
+    "list-bullet-color": {
+      "$value": "{plx-sys.list-bullet}",
+      "$type": "color",
+      "$description": "List bullets: the square's color (blue-650 in light)."
+    },
+    "list-bullet-size": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension",
+      "$description": "List bullets: the square's side."
+    },
+    "list-bullet-offset": {
+      "$value": "calc(({plx-ref.size-20px} - {plx-ref.size-4px}) / 2)",
+      "$type": "dimension",
+      "$description": "List bullets: the square centered on the first line (20px line)."
     }
   }
 }

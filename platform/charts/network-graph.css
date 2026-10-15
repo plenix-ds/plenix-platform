@@ -1,0 +1,16 @@
+/* Plenix · NetworkGraph (platform/charts/network-graph.css; the code is NetworkGraph.jsx): nodes (a dot in the group's
+   categorical data-viz color and its label under it), edges (solid or dashed, an arrowhead when directed, a label with
+   a halo), the node in focus and its edges, and the plot that clips the zoomed graph. Every value is a
+   --plx-comp-network-graph-* token. */
+.plx-network-graph .plx-chart__svg{overflow-x:hidden;overflow-y:hidden;}
+.plx-network-graph__dot{--plx-comp-network-graph-node-color:var(--plx-comp-chart-mark-default-color);fill:var(--plx-comp-network-graph-node-color);r:var(--plx-comp-network-graph-node-radius);stroke:var(--plx-comp-network-graph-node-outline);stroke-width:var(--plx-comp-network-graph-node-outline-width);}
+.plx-network-graph__dot[data-plx-dataviz]{--plx-comp-network-graph-node-color:var(--plx-comp-data-color);}
+.plx-network-graph__label{dominant-baseline:hanging;fill:var(--plx-comp-network-graph-label-text);font-family:var(--plx-comp-network-graph-label-font-family);font-size:var(--plx-comp-network-graph-label-font-size);paint-order:stroke;stroke:var(--plx-comp-network-graph-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-network-graph-label-halo-width);text-anchor:middle;transform:translateY(var(--plx-comp-network-graph-label-offset));transform-box:fill-box;}
+.plx-network-graph__edge{fill:none;stroke:var(--plx-comp-network-graph-edge-color);stroke-width:var(--plx-comp-network-graph-edge-width);}
+.plx-network-graph__edge--dashed{stroke-dasharray:var(--plx-comp-network-graph-edge-dash) var(--plx-comp-network-graph-edge-dash);}
+.plx-network-graph__arrow{fill:var(--plx-comp-network-graph-edge-color);}
+.plx-network-graph__edge-label{dominant-baseline:central;fill:var(--plx-comp-network-graph-edge-label-text);font-family:var(--plx-comp-network-graph-label-font-family);font-size:var(--plx-comp-network-graph-edge-label-font-size);paint-order:stroke;stroke:var(--plx-comp-network-graph-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-network-graph-label-halo-width);text-anchor:middle;}
+/* the node in focus or under the pointer: its edges in the strong color, its label in the default text weight */
+.plx-network-graph__edge--active{stroke:var(--plx-comp-network-graph-active-edge-color);stroke-width:var(--plx-comp-network-graph-active-edge-width);}
+.plx-network-graph__node--active .plx-network-graph__dot{stroke:var(--plx-comp-network-graph-active-outline);stroke-width:var(--plx-comp-network-graph-active-outline-width);}
+.plx-network-graph__node--active .plx-network-graph__label{font-weight:var(--plx-comp-network-graph-active-label-font-weight);}

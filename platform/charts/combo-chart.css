@@ -1,0 +1,8 @@
+/* Plenix · ComboChart (platform/charts/combo-chart.css): columns and lines are the frame's marks, lines and points
+   (system/charts.css); these set the two legends side by side, the points' radius and the categories' pointer targets.
+   Every value is a --plx-comp-combo-chart-* token on an existing role. */
+.plx-combo-chart__legend{column-gap:var(--plx-comp-combo-chart-legend-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-combo-chart-legend-row-gap);}
+.plx-combo-chart__point{r:var(--plx-comp-combo-chart-point-radius);}
+/* each category's band takes the pointer for the shared tooltip; it draws nothing */
+.plx-combo-chart__hit{fill:none;pointer-events:all;}
+.plx-combo-chart__legend--vertical{flex-direction:column;}

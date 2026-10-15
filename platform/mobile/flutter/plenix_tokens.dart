@@ -147,6 +147,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color fillNeutralContent;
   final Color borderDivider;
   final Color controlBackground;
+  final Color fieldBackground;
+  final Color fieldBorder;
   final Color controlBorder;
   final Color avatarBackground;
   final Color avatarContent;
@@ -341,6 +343,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color categoryGreySoft;
   final Color categoryGreySoftBorder;
   final Color categoryGreyOnSoft;
+  final Color listBullet;
   const PlenixTheme({
     required this.datavizCategorical1,
     required this.datavizCategorical2,
@@ -482,6 +485,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.fillNeutralContent,
     required this.borderDivider,
     required this.controlBackground,
+    required this.fieldBackground,
+    required this.fieldBorder,
     required this.controlBorder,
     required this.avatarBackground,
     required this.avatarContent,
@@ -676,6 +681,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.categoryGreySoft,
     required this.categoryGreySoftBorder,
     required this.categoryGreyOnSoft,
+    required this.listBullet,
   });
   static const light = PlenixTheme(
     datavizCategorical1: Color(0xFF2A6FDB),
@@ -818,6 +824,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     fillNeutralContent: Color(0xFF56585E),
     borderDivider: Color(0xFFF3F3F3),
     controlBackground: Color(0xFFFFFFFF),
+    fieldBackground: Color(0xFFFCFCFC),
+    fieldBorder: Color(0xFFA3A6AD),
     controlBorder: Color(0xFF8E9094),
     avatarBackground: Color(0xFF1F5BB8),
     avatarContent: Color(0xFFFFFFFF),
@@ -1012,6 +1020,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     categoryGreySoft: Color(0xFFF3F3F3),
     categoryGreySoftBorder: Color(0xFFCACACA),
     categoryGreyOnSoft: Color(0xFF4D4D4D),
+    listBullet: Color(0xFFA3A6AD),
   );
   static const dark = PlenixTheme(
     datavizCategorical1: Color(0xFF2A6FDB),
@@ -1154,6 +1163,8 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     fillNeutralContent: Color(0xFFE8E9EC),
     borderDivider: Color(0xFF56585E),
     controlBackground: Color(0xFF444444),
+    fieldBackground: Color(0xFF444444),
+    fieldBorder: Color(0xFFA3A6AD),
     controlBorder: Color(0xFFA3A6AD),
     avatarBackground: Color(0xFFA2C0E3),
     avatarContent: Color(0xFF000000),
@@ -1348,6 +1359,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     categoryGreySoft: Color(0xFFF3F3F3),
     categoryGreySoftBorder: Color(0xFFCACACA),
     categoryGreyOnSoft: Color(0xFF4D4D4D),
+    listBullet: Color(0xFFA3A6AD),
   );
   static const String fontSans = 'DM Sans'; // web --plx-sys-typeface-sans
   static const String fontMono = 'DM Mono'; // web --plx-sys-typeface-mono

@@ -1,0 +1,31 @@
+{
+  "$description": "Diagram (platform/charts/Diagram.jsx, diagram.css; library wave 9, lane A): its component tokens. Neutral roles only: no color carries meaning in a diagram, the shapes and the labels do.",
+  "plx-comp": {
+    "diagram-shape-background": { "$value": "{plx-sys.surface-raised}", "$type": "color", "$description": "Diagram: the inside of a shape." },
+    "diagram-shape-border-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "Diagram: a shape's outline." },
+    "diagram-shape-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Diagram: the width of a shape's outline (and a group's)." },
+    "diagram-shape-radius": { "$value": "{plx-sys.shape-sm}", "$type": "dimension", "$description": "Diagram: the corners of a step's box." },
+    "diagram-terminal-radius": { "$value": "{plx-sys.shape-pill}", "$type": "dimension", "$description": "Diagram: the round ends of a start or end shape (a pill)." },
+    "diagram-label-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Diagram: a shape's label." },
+    "diagram-label-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "Diagram: labels are words: the UI font." },
+    "diagram-label-font-size": { "$value": "{plx-ref.font-size-12}", "$type": "dimension", "$description": "Diagram: a shape label's size." },
+    "diagram-label-font-weight": { "$value": "{plx-sys.font-weight-medium}", "$type": "fontWeight", "$description": "Diagram: a shape label's weight (and a group's name)." },
+    "diagram-label-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "Diagram: a label's line height when it wraps." },
+    "diagram-label-padding-inline": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "Diagram: the room at a label's sides inside its shape." },
+    "diagram-decision-padding-inline": { "$value": "{plx-ref.size-24px}", "$type": "dimension", "$description": "Diagram: the room at a decision's sides, so the label stays inside the diamond." },
+    "diagram-detail-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Diagram: a box's second line (boxes and arrows)." },
+    "diagram-detail-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Diagram: the second line's size." },
+    "diagram-connector-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "Diagram: a connector and its arrowhead." },
+    "diagram-connector-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Diagram: a connector's width." },
+    "diagram-connector-label-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Diagram: a branch's label on its connector." },
+    "diagram-connector-label-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Diagram: a branch label's size (and a group's name)." },
+    "diagram-connector-label-halo-color": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Diagram: the halo under a branch label, so it reads over its connector." },
+    "diagram-connector-label-halo-width": { "$value": "{plx-ref.size-4px}", "$type": "dimension", "$description": "Diagram: the width of the branch labels' halo." },
+    "diagram-group-background": { "$value": "{plx-sys.surface-sunken}", "$type": "color", "$description": "Diagram: a group container behind its shapes." },
+    "diagram-group-border-color": { "$value": "{plx-sys.border-subtle}", "$type": "color", "$description": "Diagram: a group container's outline." },
+    "diagram-group-radius": { "$value": "{plx-sys.shape-md}", "$type": "dimension", "$description": "Diagram: a group container's corners." },
+    "diagram-group-label-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Diagram: a group's name at its top." },
+    "diagram-active-border-color": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Diagram: the outline of the shape in focus and its connectors." },
+    "diagram-active-border-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Diagram: the width of the active outline." }
+  }
+}

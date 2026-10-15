@@ -1,0 +1,7 @@
+/* Plenix · TimelineChart (platform/charts/timeline-chart.css): periods are the frame's marks and events its points
+   (system/charts.css), in their lane's data-viz color; lanes are parted by the frame's grid lines. An item's name sits
+   above its mark: from a period's start, centered on an event. Every value is a --plx-comp-timeline-chart-* token on an
+   existing role. */
+.plx-timeline-chart__event{r:var(--plx-comp-timeline-chart-event-radius);}
+.plx-timeline-chart__label{dominant-baseline:text-after-edge;fill:var(--plx-comp-timeline-chart-label-text);font-family:var(--plx-comp-timeline-chart-label-font-family);font-size:var(--plx-comp-timeline-chart-label-font-size);paint-order:stroke;stroke:var(--plx-comp-timeline-chart-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-timeline-chart-label-halo-width);text-anchor:start;transform:translateY(calc(-1 * var(--plx-comp-timeline-chart-label-offset)));}
+.plx-timeline-chart__label--event{text-anchor:middle;}

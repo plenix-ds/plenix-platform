@@ -6803,30 +6803,31 @@ function HomePage() {
     label: 'Upload',
     icon: 'upload',
     onSelect: () => openDialog('uploadModal')
+  }, {
+    id: 'save',
+    label: 'Save search',
+    icon: 'save',
+    onSelect: saveSearch
   }];
-  const quick = (key, label, icon, word) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.QuickFilter, _extends({
-    label: label,
-    icon: icon,
+  // the app's quick filters (Category, Type, Tags): when the bar is short of room they fold into More after the commands
+  const quick = (key, label, icon, word) => Object.assign({
+    id: key,
+    label,
+    icon,
     noun: word,
     options: (ASSET_FIELDS.find(f => f.value === key) || {}).options
-  }, cv.quickProps(key)));
+  }, cv.quickProps(key));
   const bar = view === 'find' ? null : /*#__PURE__*/_react.default.createElement(_plenixPlatform.CommandBar, {
     label: view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : 'Assets',
     actions: barActions,
     count: n + ' ' + (n === 1 ? noun[0] : noun[1]),
     find: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.CommandBarSearch, _extends({}, cv.searchProps, {
       placeholder: 'Search ' + noun[1]
-    })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.FilterPanel, cv.filterProps), view === 'search' ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, quick('cat', 'Category', 'grid-2x2', 'category'), quick('badge', 'Type', 'image-b', 'type'), quick('tags', 'Tags', 'tags', 'tag')) : null),
+    })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.FilterPanel, cv.filterProps)),
+    quickFilters: view === 'search' ? [quick('cat', 'Category', 'grid-2x2', 'category'), quick('badge', 'Type', 'image-b', 'type'), quick('tags', 'Tags', 'tags', 'tag')] : [],
     view: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SortPanel, cv.sortProps), /*#__PURE__*/_react.default.createElement(_plenixPlatform.GroupPanel, cv.groupProps), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColumnsMenu, _extends({}, cv.columnsProps, {
       fields: fieldsOf.filter(f => COLUMNS[view === 'search' ? 'assets' : view].indexOf(f.value) >= 0)
     })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ViewMenu, cv.viewProps)),
-    end: view === 'search' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tooltip, {
-      content: "Save this search"
-    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.CommandBarButton, {
-      icon: "save",
-      label: "Save search",
-      onClick: saveSearch
-    })) : null,
     selection: view === 'categories' ? catSel : view === 'search' ? assetSel : null
   });
   const pagination = view === 'categories' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Pagination, {

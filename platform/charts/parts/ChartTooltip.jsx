@@ -16,14 +16,18 @@
      title: the point's heading: its category, date or time
      titleKind: "text" (default: a name, the UI font) | "data" (a date, a time or a number: the data font)
      items: the values: [{ label, value, color }]; label the series' name, value the formatted value (the data font), color
-       the series' data-viz step (seriesColor(i)); one item for single
+       the series' data-viz step (seriesColor(i)); an item without a color has no swatch (a value that is not a
+       series: a running total, a count); one item for single
      className: more classes on the tooltip
    Behavior:
      It does not take the pointer (pointer-events none), so moving along the chart keeps reaching the marks under it.
      The tooltip goes after the point when it is in the first half of the plot and before it in the second half, so it
        stays inside the chart.
      It shows values already in the chart's data table; with the plot it is hidden from assistive technology. The chart
-       interaction (keyboard and pointer, the chart parts' next step) moves it and says the same values in a live region.
+       interaction (useChartInteraction, platform/charts/interaction.js) moves it with the pointer and the arrow keys and
+       says the same values in the live region: chartTooltipText({ title, items }) is that sentence ("March 2026: Web
+       150, iOS 130, Android 90"), so the tooltip and the announcement never differ.
+     chartTooltipText({ title, items }): the tooltip's content as one plain sentence, for the live region
    Notes:
      Drawn in an SVG foreignObject at the point (geometry only); the surface is the popover's (overlay surface, border,
        menu radius and shadow), from the chart-parts tokens. Swatches take the series' data-viz color.
@@ -33,6 +37,12 @@ import { cx } from '../../utils/cx.js';
 
 // the room the tooltip may take beside its point, in pixels (SVG geometry): it is laid out inside this box
 const BOX_W = 240, BOX_H = 200;
+
+// the tooltip as one sentence: the title, then each series' name and value (what the live region says)
+export function chartTooltipText({ title, items = [] } = {}) {
+  const values = items.map((it) => [it.label, it.value].filter((x) => x !== undefined && x !== null && x !== '').join(' ')).join(', ');
+  return title !== undefined && title !== null && title !== '' ? String(title) + (values ? ': ' + values : '') : values;
+}
 
 export function ChartTooltip({ x, y, inner, variant = 'single', title, titleKind = 'text', items = [], className }) {
   if (x === undefined || x === null || !inner) return null;
@@ -52,7 +62,7 @@ export function ChartTooltip({ x, y, inner, variant = 'single', title, titleKind
             <ul className="plx-chart-tooltip__list">
               {items.map((it, i) => (
                 <li key={i} className="plx-chart-tooltip__item">
-                  <span className="plx-chart-tooltip__swatch" data-plx-dataviz={it.color || undefined} />
+                  {it.color ? <span className="plx-chart-tooltip__swatch" data-plx-dataviz={it.color} /> : null}
                   <span className="plx-chart-tooltip__label">{it.label}</span>
                   <span className="plx-chart-tooltip__value">{it.value}</span>
                 </li>

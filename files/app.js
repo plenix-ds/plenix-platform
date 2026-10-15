@@ -2533,12 +2533,14 @@ function FilesScreen({
     count: n + (n === 1 ? ' file' : ' files'),
     find: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarSearch, _extends({}, v.searchProps, {
       placeholder: "Search files"
-    })), /*#__PURE__*/React.createElement(_plenixPlatform.FilterPanel, v.filterProps), /*#__PURE__*/React.createElement(_plenixPlatform.QuickFilter, _extends({
-      label: "Type",
-      icon: "image-b",
-      noun: "type",
+    })), /*#__PURE__*/React.createElement(_plenixPlatform.FilterPanel, v.filterProps)),
+    quickFilters: [Object.assign({
+      id: 't',
+      label: 'Type',
+      icon: 'image-b',
+      noun: 'type',
       options: FIELDS[1].options
-    }, v.quickProps('t')))),
+    }, v.quickProps('t'))],
     view: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.SortPanel, v.sortProps), /*#__PURE__*/React.createElement(_plenixPlatform.ColumnsMenu, _extends({}, v.columnsProps, {
       fields: FIELDS.filter(f => COLUMNS.indexOf(f.value) >= 0)
     })), /*#__PURE__*/React.createElement(_plenixPlatform.ViewMenu, _extends({}, v.viewProps, {
