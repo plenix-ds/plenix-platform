@@ -5,9 +5,10 @@
      <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
    Props:
      value: the number; with no value nothing renders
-     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px solid pill for unread
-       or pending counts)
-     tone: the pill color: "neutral" | "info" | "success" | "warning" | "danger" (default)
+     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
+       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
+     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
+       default), on the same roles as Badge's neutral, active, success, waiting and negative
      max: above it the count shows max + "+" (e.g. "99+")
      label: the accessible name when the number alone is unclear ("3 unread notifications")
      moreThan: what screen readers hear for a capped count without a label (default "More than {max}")

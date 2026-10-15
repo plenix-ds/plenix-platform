@@ -1759,64 +1759,79 @@
       "$type": "dimension"
     },
     "count-pill-neutral-background": {
-      "$value": "{plx-sys.feedback-neutral-solid-label}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-neutral-background}",
+      "$type": "color",
+      "$description": "Count pill, neutral: the neutral status pill background, shade 100 (owner, 2026-10-14: unread counters become soft pills, docs/pills-and-colors.md)."
     },
     "count-pill-neutral-text": {
-      "$value": "{plx-sys.feedback-neutral-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-neutral-text}",
+      "$type": "color",
+      "$description": "Count pill, neutral: the neutral status pill text."
     },
     "count-pill-neutral-border": {
-      "$value": "{plx-sys.feedback-neutral-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-neutral-border}",
+      "$type": "color",
+      "$description": "Count pill, neutral: the neutral status pill border, shade 300."
     },
     "count-pill-info-background": {
-      "$value": "{plx-sys.feedback-info-solid-label}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-active-background}",
+      "$type": "color",
+      "$description": "Count pill, info: the active status pill background, shade 100 (owner, 2026-10-14: unread counters become soft pills, docs/pills-and-colors.md)."
     },
     "count-pill-info-text": {
-      "$value": "{plx-sys.feedback-info-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-active-text}",
+      "$type": "color",
+      "$description": "Count pill, info: the active status pill text."
     },
     "count-pill-info-border": {
-      "$value": "{plx-sys.feedback-info-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-active-border}",
+      "$type": "color",
+      "$description": "Count pill, info: the active status pill border, shade 300."
     },
     "count-pill-success-background": {
-      "$value": "{plx-sys.feedback-success-solid-label}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-success-background}",
+      "$type": "color",
+      "$description": "Count pill, success: the success status pill background, shade 100 (owner, 2026-10-14: unread counters become soft pills, docs/pills-and-colors.md)."
     },
     "count-pill-success-text": {
-      "$value": "{plx-sys.feedback-success-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-success-text}",
+      "$type": "color",
+      "$description": "Count pill, success: the success status pill text."
     },
     "count-pill-success-border": {
-      "$value": "{plx-sys.feedback-success-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-success-border}",
+      "$type": "color",
+      "$description": "Count pill, success: the success status pill border, shade 300."
     },
     "count-pill-warning-background": {
-      "$value": "{plx-sys.feedback-warning-solid-label}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-waiting-background}",
+      "$type": "color",
+      "$description": "Count pill, warning: the waiting status pill background, shade 100 (owner, 2026-10-14: unread counters become soft pills, docs/pills-and-colors.md)."
     },
     "count-pill-warning-text": {
-      "$value": "{plx-sys.feedback-warning-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-waiting-text}",
+      "$type": "color",
+      "$description": "Count pill, warning: the waiting status pill text."
     },
     "count-pill-warning-border": {
-      "$value": "{plx-sys.feedback-warning-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-waiting-border}",
+      "$type": "color",
+      "$description": "Count pill, warning: the waiting status pill border, shade 300."
     },
     "count-pill-danger-background": {
-      "$value": "{plx-sys.feedback-danger-solid-label}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-negative-background}",
+      "$type": "color",
+      "$description": "Count pill, danger: the negative status pill background, shade 100 (owner, 2026-10-14: unread counters become soft pills, docs/pills-and-colors.md)."
     },
     "count-pill-danger-text": {
-      "$value": "{plx-sys.feedback-danger-on-solid}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-negative-text}",
+      "$type": "color",
+      "$description": "Count pill, danger: the negative status pill text."
     },
     "count-pill-danger-border": {
-      "$value": "{plx-sys.feedback-danger-solid-border}",
-      "$type": "color"
+      "$value": "{plx-sys.status-pill-negative-border}",
+      "$type": "color",
+      "$description": "Count pill, danger: the negative status pill border, shade 300."
     },
     "status-dot-height": {
       "$value": "{plx-ref.glyph-size-6px}",
@@ -2799,45 +2814,73 @@
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
-    "tabs-segmented-list-background": {
-      "$value": "{plx-sys.fill-neutral}",
-      "$type": "color"
-    },
-    "tabs-segmented-list-radius": {
-      "$value": "{plx-sys.radius-control}",
-      "$type": "dimension"
-    },
     "tabs-segmented-list-gap": {
       "$value": "{plx-sys.space-inline-xs}",
-      "$type": "dimension"
+      "$type": "dimension",
+      "$description": "Segmented tabs: the gap between the joined tabs and the More button."
     },
-    "tabs-segmented-list-padding-block": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
+    "tabs-segmented-tab-background": {
+      "$value": "{plx-comp.segmented-item-background}",
+      "$type": "color",
+      "$description": "Segmented tabs take SegmentedControl look A (owner, 2026-10-14): a segment's background."
     },
-    "tabs-segmented-list-padding-inline": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "tabs-segmented-tab-font-size": {
-      "$value": "{plx-ref.font-size-12}",
-      "$type": "dimension"
-    },
-    "tabs-segmented-tab-min-height": {
-      "$value": "calc({plx-sys.control-height-toolbar} - {plx-sys.space-inset-xs} * 2)",
-      "$type": "dimension"
-    },
-    "tabs-segmented-tab-padding-inline": {
-      "$value": "{plx-sys.space-inset-sm}",
-      "$type": "dimension"
-    },
-    "tabs-segmented-tab-selected-background": {
-      "$value": "{plx-sys.surface-raised}",
+    "tabs-segmented-tab-text": {
+      "$value": "{plx-comp.segmented-item-text}",
       "$type": "color"
     },
-    "tabs-segmented-tab-selected-shadow": {
-      "$value": "{plx-sys.elevation-raised-shadow}",
-      "$type": "shadow"
+    "tabs-segmented-tab-border-color": {
+      "$value": "{plx-comp.segmented-border-color}",
+      "$type": "color",
+      "$description": "One line between two joined tabs; the group's outer edge."
+    },
+    "tabs-segmented-tab-border-width": {
+      "$value": "{plx-comp.segmented-border-width}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-radius": {
+      "$value": "{plx-comp.segmented-radius}",
+      "$type": "dimension",
+      "$description": "The group's outer corners."
+    },
+    "tabs-segmented-tab-joined-radius": {
+      "$value": "{plx-comp.segmented-joined-radius}",
+      "$type": "dimension",
+      "$description": "The corners where two tabs join (square)."
+    },
+    "tabs-segmented-tab-font-size": {
+      "$value": "{plx-comp.segmented-item-font-size}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-font-weight": {
+      "$value": "{plx-comp.segmented-item-font-weight}",
+      "$type": "fontWeight",
+      "$description": "The same weight selected or not: the tint marks the selected tab."
+    },
+    "tabs-segmented-tab-min-height": {
+      "$value": "{plx-comp.segmented-item-min-height}",
+      "$type": "dimension",
+      "$description": "The button control height."
+    },
+    "tabs-segmented-tab-padding-inline": {
+      "$value": "{plx-comp.segmented-item-padding-inline}",
+      "$type": "dimension"
+    },
+    "tabs-segmented-tab-hover-background": {
+      "$value": "{plx-comp.segmented-item-hover-background}",
+      "$type": "color"
+    },
+    "tabs-segmented-tab-hover-text": {
+      "$value": "{plx-comp.segmented-item-hover-text}",
+      "$type": "color"
+    },
+    "tabs-segmented-tab-selected-background": {
+      "$value": "{plx-comp.segmented-item-selected-background}",
+      "$type": "color",
+      "$description": "The selected-state blue tint."
+    },
+    "tabs-segmented-tab-selected-text": {
+      "$value": "{plx-comp.segmented-item-selected-text}",
+      "$type": "color"
     },
     "tabs-segmented-panel-padding-block-start": {
       "$value": "{plx-sys.space-stack-md}",

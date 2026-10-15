@@ -1,7 +1,10 @@
-## Batch 370 (2026-10-15): command bar standard
-- Branch impl-cmdbar (merge 2d50f8c1): CommandBar pattern, barFit, BarActions, the find panels, useCollectionView,
-  BulkActions 2B, SearchField bar/fill/collapsed, DataTable props and header chevron, thin caret; part w07K (six records).
-- Open for the owner: the count at narrow widths (hidden now). Not done: native fragments for the new components; DAM
-  toolbar still DataToolbar (adoption next).
-- Tests (changed mode): SYSTEM_OK 570, SPEC_OK 548, CONTRAST 158 checks, PAGES 213/213, VISUAL, A11Y 0 on 85,
-  KEYBOARD 23/23, DATA_TABLES 38/38, LABS, TARGETS, TYPOGRAPHY. Released as {V}.
+## Batch 371 (2026-10-15): soft counters, segmented tabs look A
+- First release from VM 101. Count pill tokens point to --plx-sys-status-pill-* (warning -> waiting, info -> active,
+  danger -> negative, as Badge's aliases); segmented Tabs on the segmented-* tokens; the first and last shown tab round
+  the outer corners even when tabs are moved into More. Spec text for segmented tabs updated.
+- Tabs lab: the segmented style edits the tab border color, outer radius and the segmented-tab-* text tokens.
+- Preview server: .claude/launch.json now runs tests/lib.js serve() on 8767 (no Python on the VM).
+- Not done: native-design.json still describes the solid count pill and the raised segment (native step, item 4).
+- Tests (changed mode): SYSTEM_OK 570, VISUAL, DENSITY 18/18, LAYOUT 16/16, THEME 12/12, PAGES 152/152, KEYBOARD
+  23/23, A11Y 0 on 62, DATA_TABLES 38/38, TYPOGRAPHY, LABS 8/8 (tabs lab remapped), REFLOW, TARGETS, CONTRAST 158.
+  Released as {V}.

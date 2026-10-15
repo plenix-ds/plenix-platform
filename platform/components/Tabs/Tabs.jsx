@@ -33,7 +33,8 @@
      "contained" is the standard: folder tabs joined to a bordered panel.
      "folder" (owner, batch 259) is the tab strip alone: the folder tabs over a baseline, the open tab joined to it, and the
      content below with no frame of its own; for tabs inside a pane or a card that is already framed.
-     "segmented" is a compact switch.
+     "segmented" is a compact switch with SegmentedControl's look A (owner, 2026-10-14): joined segments at the button
+       control height, the selected one in the selected-state blue tint.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */

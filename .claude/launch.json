@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "plenix-static",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8766"],
-      "port": 8766
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["-e", "require('./tests/lib.js').serve(8767).then(() => console.log('Serving /Plenix/ on 8767'))"],
+      "port": 8767
     }
   ]
 }
