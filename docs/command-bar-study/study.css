@@ -127,3 +127,6 @@
 .study-bar{position:relative;}
 .study-search-over{align-items:center;background-color:var(--plx-sys-surface-default);border-radius:var(--plx-sys-radius-control-8px);display:flex;inset-block:0;inset-inline:0;padding-inline:var(--plx-ref-space-8px);position:absolute;z-index:var(--plx-sys-layer-overlay);}
 .study-query{inline-size:var(--plx-ref-size-360px);}
+/* D and E (owner, 2026-10-15): one command bar; the selection row sits in the same frame under a thin gray line */
+.study-bar.study-bar--rows{align-items:stretch;flex-direction:column;gap:var(--plx-ref-space-8px);}
+.study-bar--rows>.plx-toolbar+.plx-toolbar{border-block-start-color:var(--plx-sys-border-divider);border-block-start-style:solid;border-block-start-width:var(--plx-sys-border-width-thin);padding-block-start:var(--plx-ref-space-8px);}

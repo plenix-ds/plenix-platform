@@ -2390,6 +2390,9 @@ function Built({
   // actions live in the main bar, grayed until a selection, no 2B; c = a and b: always one bar
   const layout = sit === 'filters' ? '1f' : sit === 'both' && many && (bars === 'now' || bars === 'b') ? '1b' : '1a';
   const selInMain = bars === 'b' || bars === 'c';
+  // d (owner, 2026-10-15): one command bar; a selection adds a second row in the same frame, under a thin gray line;
+  // e: the same second row, always there, grayed until a selection
+  const rowsIn = bars === 'd' || bars === 'e';
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -2467,7 +2470,7 @@ function Built({
   const selVerbs = verbs.map(v => Object.assign({
     sel: true
   }, v));
-  const foldList = bars === 'a' ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
+  const foldList = bars === 'a' || rowsIn ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
   const foldable = foldList.filter(v => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
@@ -2763,13 +2766,16 @@ function Built({
         label: "Find and view"
       }, findGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), viewGroup)));
     }
+    const row2 = rowsIn && mode === 'bulk' && (bars === 'e' || selecting);
     return /*#__PURE__*/React.createElement("div", {
-      className: "study-bar"
+      className: 'study-bar' + (row2 ? ' study-bar--rows' : '')
     }, /*#__PURE__*/React.createElement(Toolbar, {
       label: c.title
-    }, actionGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), findGroup, viewGroup));
+    }, actionGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), findGroup, viewGroup), row2 ? /*#__PURE__*/React.createElement(Toolbar, {
+      label: "Selection actions"
+    }, selEl()) : null);
   };
-  const bulkEl = mode !== 'bulk' || selInMain ? null : shape === 'ghost' ? /*#__PURE__*/React.createElement("div", {
+  const bulkEl = mode !== 'bulk' || selInMain || rowsIn ? null : shape === 'ghost' ? /*#__PURE__*/React.createElement("div", {
     className: "study-bar"
   }, /*#__PURE__*/React.createElement(Toolbar, {
     label: "Selection actions"
@@ -4455,6 +4461,14 @@ const FEWER = [{
   k: 'now',
   title: 'Now (decided)',
   lines: ['Few actions: one bar and the selection bar (2 bars). Many actions: an action bar, the find bar and the selection bar (3 bars).']
+}, {
+  k: 'd',
+  title: 'D · One command bar; a selection adds a second row inside it',
+  lines: ['One framed bar. When rows are selected, a second row appears in the same frame under a thin gray line, with the selection actions, Select all and Clear; it goes away when the selection is cleared. Many actions fold into More in the first row.']
+}, {
+  k: 'e',
+  title: 'E · Like D, the second row always there, grayed until you select',
+  lines: ['The same one frame with two rows, but the second row never comes and goes: its actions are grayed with a tooltip until rows are selected (the "see all options, even grayed" rule).']
 }, {
   k: 'a',
   title: 'A · One main bar; the selection bar stays',

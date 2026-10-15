@@ -758,6 +758,9 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
   // actions live in the main bar, grayed until a selection, no 2B; c = a and b: always one bar
   const layout = sit === 'filters' ? '1f' : sit === 'both' && many && (bars === 'now' || bars === 'b') ? '1b' : '1a';
   const selInMain = bars === 'b' || bars === 'c';
+  // d (owner, 2026-10-15): one command bar; a selection adds a second row in the same frame, under a thin gray line;
+  // e: the same second row, always there, grayed until a selection
+  const rowsIn = bars === 'd' || bars === 'e';
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -787,7 +790,7 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
       { icon: 'trash', label: 'Delete', danger: true, onClick: () => removeSel() }];
   const extra = many && bars !== 'now' ? [['folder-add', 'New folder'], ['import', 'Import'], ['export', 'Export'], ['share', 'Share'], ['settings-permissions', 'Permissions'], ['gear', 'Settings']].map(([icon, label]) => ({ icon, label })) : [];
   const selVerbs = verbs.map((v) => Object.assign({ sel: true }, v));
-  const foldList = bars === 'a' ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
+  const foldList = bars === 'a' || rowsIn ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
   const foldable = foldList.filter((v) => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
@@ -896,9 +899,11 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
       return <><div className="study-bar study-part--actions"><Toolbar label={c.title + ' actions'}>{actionGroup}</Toolbar></div>
         <div className="study-bar study-part--find"><Toolbar label="Find and view">{findGroup}<Toolbar.Spacer />{viewGroup}</Toolbar></div></>;
     }
-    return <div className="study-bar"><Toolbar label={c.title}>{actionGroup}<Toolbar.Spacer />{findGroup}{viewGroup}</Toolbar></div>;
+    const row2 = rowsIn && mode === 'bulk' && (bars === 'e' || selecting);
+    return <div className={'study-bar' + (row2 ? ' study-bar--rows' : '')}><Toolbar label={c.title}>{actionGroup}<Toolbar.Spacer />{findGroup}{viewGroup}</Toolbar>
+      {row2 ? <Toolbar label="Selection actions">{selEl()}</Toolbar> : null}</div>;
   };
-  const bulkEl = mode !== 'bulk' || selInMain ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
+  const bulkEl = mode !== 'bulk' || selInMain || rowsIn ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
     : <BulkActions className={PART_A} count={sel.length} total={data.length} noun={c.noun} onSelectAll={() => setSel(data.map((r) => r.id))} onClear={() => setSel([])}
     actions={verbs.filter((v) => !v.more).map((v) => ({ id: v.label, label: v.label, icon: v.icon, danger: v.danger, onSelect: v.onClick || noop }))} />;
   const rowMenu = sit === 'menu'
@@ -1475,6 +1480,8 @@ function PanelsNow() {
 // Fewer bars (owner, 2026-10-15: "after seeing the 3 bars, I don't like it"): the decided stack next to three ways to fewer bars
 const FEWER = [
   { k: 'now', title: 'Now (decided)', lines: ['Few actions: one bar and the selection bar (2 bars). Many actions: an action bar, the find bar and the selection bar (3 bars).'] },
+  { k: 'd', title: 'D · One command bar; a selection adds a second row inside it', lines: ['One framed bar. When rows are selected, a second row appears in the same frame under a thin gray line, with the selection actions, Select all and Clear; it goes away when the selection is cleared. Many actions fold into More in the first row.'] },
+  { k: 'e', title: 'E · Like D, the second row always there, grayed until you select', lines: ['The same one frame with two rows, but the second row never comes and goes: its actions are grayed with a tooltip until rows are selected (the "see all options, even grayed" rule).'] },
   { k: 'a', title: 'A · One main bar; the selection bar stays', lines: ['Many actions share the one bar and fold into More (⋮) from the end when they do not fit. The selection bar (2B) stays under it: always 2 bars.'] },
   { k: 'b', title: 'B · Selection actions in the main bar, grayed until you select', lines: ['No selection bar. Download, Move, Share and the rest sit in the main bar, grayed with a tooltip until rows are selected, like MS Office: the bar never changes, buttons only turn on. "N selected" at the end. Select all and Clear: the table header checkbox. Many actions keep their own action bar: 1 or 2 bars.'] },
   { k: 'c', title: 'C · A and B together: always one bar', lines: ['Every action (the selection ones grayed until you select), then search, filters and view, in one bar; what does not fit folds into More. Always 1 bar.'] },
