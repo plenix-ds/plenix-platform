@@ -747,9 +747,17 @@ function HideFieldsMenu({ names, hidden, setHidden, iconOnly, variant = 'ghost' 
 // (Plenix BulkActions). Find and view: Search, Filter, Sort, Group (1F: Hide fields), View, the count, each its own button
 // (ghost, decided; never merged, also when narrow); every bar's buttons are ghost, the selection bar's too. narrow: a side
 // panel's width
-function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'ghost', height = '--plx-ref-size-240px' }) {
+// the count (owner, 2026-10-15: "remove this from the menu bar"): never in a bar; above the table, or under the card in
+// small type. CountAt says where; CountSlot is the screen's line under its card
+const CountAt = React.createContext('below');
+const CountSlot = React.createContext(null);
+
+function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now', shape = 'ghost', height = '--plx-ref-size-240px' }) {
   const c = SIT[sit];
-  const layout = sit === 'filters' ? '1f' : sit === 'both' && many ? '1b' : '1a';
+  // bars (fewer-bars study, 2026-10-15): now = as decided; a = many actions fold into More in one bar, 2B stays; b = the selection
+  // actions live in the main bar, grayed until a selection, no 2B; c = a and b: always one bar
+  const layout = sit === 'filters' ? '1f' : sit === 'both' && many && (bars === 'now' || bars === 'b') ? '1b' : '1a';
+  const selInMain = bars === 'b' || bars === 'c';
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -777,11 +785,14 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'gh
     : [{ icon: 'download-arrow', label: 'Download', primary: true }, { icon: 'move', label: 'Move' }, { icon: 'share', label: 'Share' },
       { icon: 'rename', label: 'Rename' }, { icon: 'tags', label: 'Edit tags' }, { icon: 'refresh', label: 'Regenerate thumbnail' },
       { icon: 'trash', label: 'Delete', danger: true, onClick: () => removeSel() }];
-  const foldable = verbs.filter((v) => !v.danger);
+  const extra = many && bars !== 'now' ? [['folder-add', 'New folder'], ['import', 'Import'], ['export', 'Export'], ['share', 'Share'], ['settings-permissions', 'Permissions'], ['gear', 'Settings']].map(([icon, label]) => ({ icon, label })) : [];
+  const selVerbs = verbs.map((v) => Object.assign({ sel: true }, v));
+  const foldList = bars === 'a' ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
+  const foldable = foldList.filter((v) => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
   const iconStep = narrow ? 0 : 1;
-  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, shape].join('|'), iconStep + foldable.length);
+  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, bars, shape].join('|'), iconStep + foldable.length);
   const s = fit === 0 && !narrow ? 'icon-label' : 'icon';
   const foldN = Math.max(0, fit - iconStep);
   // the button shape (parked): the main bar ghost (the mix, ghost) or outlined; the selection bar outlined (BulkActions) or ghost
@@ -792,19 +803,25 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'gh
   // the commands
   function removeSel() { setRows((list) => list.filter((r) => !sel.includes(r.id) || r.role === 'Owner')); setSel([]); }
   function setRole(ids, role) { setRows((list) => list.map((m) => (ids.includes(m.id) && m.role !== 'Owner' ? Object.assign({}, m, { role }) : m))); }
-  const verbsEl = (off) => {
+  // a list of commands with the fold rule: the selection ones (sel) grayed with a why-tooltip until rows are selected
+  const verbsEl = (list, folds) => {
     const why = (words) => 'Select ' + c.nouns + ' to ' + words;
-    const keep = foldable.slice(0, foldable.length - foldN), folded = foldable.slice(keep.length);
-    const danger = verbs.filter((v) => v.danger);
+    const off = (v) => !!v.sel && !selecting;
+    const plain = list.filter((v) => !v.danger);
+    const keep = plain.slice(0, plain.length - folds), folded = plain.slice(keep.length);
+    const danger = list.filter((v) => v.danger);
+    const moreOff = folded.length > 0 && folded.every(off);
     return <>
-      {keep.map((v) => <Verb key={v.label} v={v} s={s} primary={primary} disabled={off} why={why(v.label.toLowerCase())} />)}
-      {folded.length > 0 ? <Tooltip content={off ? why('see more actions') : 'More actions'}><Menu label="More actions" trigger={<Button size="sm" variant="ghost" icon="more" iconOnly label="More actions" disabled={off} />}>
-        {folded.map((v) => (v.items ? <MenuGroup key={v.label} label={v.label}>{v.items}</MenuGroup> : <MenuItem key={v.label} icon={v.icon}>{v.label}</MenuItem>))}
+      {keep.map((v, i) => <React.Fragment key={v.label}>{i > 0 && v.sel && !keep[i - 1].sel ? <Divider orientation="vertical" /> : null}<Verb v={v} s={s} primary={primary} disabled={off(v)} why={why(v.label.toLowerCase())} /></React.Fragment>)}
+      {folded.length > 0 ? <Tooltip content={moreOff ? why('see more actions') : 'More actions'}><Menu label="More actions" trigger={<Button size="sm" variant="ghost" icon="more" iconOnly label="More actions" disabled={moreOff} />}>
+        {folded.map((v) => (v.items ? <MenuGroup key={v.label} label={v.label}>{v.items}</MenuGroup> : <MenuItem key={v.label} icon={v.icon} disabled={off(v)}>{v.label}</MenuItem>))}
       </Menu></Tooltip> : null}
       {danger.length ? <Divider orientation="vertical" /> : null}
-      {danger.map((v) => <Verb key={v.label} v={v} s={s} disabled={off} why={why(v.label.toLowerCase())} />)}
+      {danger.map((v) => <Verb key={v.label} v={v} s={s} disabled={off(v)} why={why(v.label.toLowerCase())} />)}
     </>;
   };
+  const mainActs = () => (bars === 'now' ? (layout === '1b' ? manyEl() : restEl())
+    : <>{restEl()}{foldList.length ? <><Divider orientation="vertical" />{verbsEl(foldList, foldN)}</> : null}</>);
   // many actions (1B): eight commands, in their own bar
   const MANY = [['folder-add', 'New folder'], ['import', 'Import'], ['export', 'Export'], ['share', 'Share'], ['settings-permissions', 'Permissions'], ['gear', 'Settings']];
   const manyEl = () => <>{restEl()}{MANY.map(([icon, label]) => <Act key={label} s={ms} icon={icon} label={label} />)}</>;
@@ -821,15 +838,13 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'gh
   const all = data.length > 0 && data.every((r) => sel.includes(r.id));
   const selEl = () => <>
     <Toolbar.Group>
-      {verbsEl(!selecting)}
+      {verbsEl(selVerbs, bars === 'now' ? foldN : 0)}
       <Divider orientation="vertical" />
       {all ? <Tooltip content={'Every ' + c.noun + ' is selected'}><Button size="sm" variant="ghost" disabled>Select all</Button></Tooltip>
         : <Button size="sm" variant="ghost" onClick={() => setSel(data.map((r) => r.id))}>Select all</Button>}
       {selecting ? <Button size="sm" variant="ghost" onClick={() => setSel([])}>Clear</Button>
         : <Tooltip content={'Nothing to clear: select ' + c.nouns + ' first'}><Button size="sm" variant="ghost" disabled>Clear</Button></Tooltip>}
     </Toolbar.Group>
-    <Toolbar.Spacer />
-    <Toolbar.Group><Text variant="label" className="study-count">{N(sel.length)} selected</Text></Toolbar.Group>
   </>;
 
   // find and view: each control its own button, ghost (decided); icons only when the bar
@@ -848,11 +863,17 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'gh
     {layout === '1f' ? <HideFieldsMenu names={c.hideable} hidden={hidden} setHidden={setHidden} iconOnly={io} variant={fv} /> : null}
     <ViewMenu value={view} onChange={setView} iconOnly={io} variant={fv} gallery={sit === 'both'} />
   </>;
-  const countEl = narrow ? null : <Text variant="data" className="study-count">{data.length + ' ' + (data.length === 1 ? c.noun : c.nouns)}</Text>;
+  const countEl = null;
+  const countAt = React.useContext(CountAt);
+  const slot = React.useContext(CountSlot);
+  const shown = finds ? data.length : rows.length;
+  const countLine = <>{N(shown)} {shown === 1 ? c.noun : c.nouns}{mode === 'bulk' ? <> · {N(sel.length)} selected</> : null}</>;
+  const countKey = shown + '|' + sel.length + '|' + mode;
+  React.useEffect(() => { if (slot) slot(countAt === 'below' ? countLine : null); }, [countKey, countAt]);
 
   // the bars, for one find-and-view style
   const barsOf = (fv) => {
-    const actionGroup = sit !== 'filters' && layout !== '1f' ? <Toolbar.Group className={PART_A}>{layout === '1b' ? manyEl() : restEl()}</Toolbar.Group> : null;
+    const actionGroup = sit !== 'filters' && layout !== '1f' ? <Toolbar.Group className={PART_A}>{mainActs()}</Toolbar.Group> : null;
     const findGroup = finds ? <Toolbar.Group className={PART_F}>{findEls(fv)}</Toolbar.Group> : null;
     const viewGroup = finds ? <Toolbar.Group className={PART_F}>{viewEls(fv)}{countEl}{sit === 'filters' ? <Act s={ms} icon="export" label="Export" /> : null}</Toolbar.Group> : null;
     if (layout === '1f') {
@@ -877,7 +898,7 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'gh
     }
     return <div className="study-bar"><Toolbar label={c.title}>{actionGroup}<Toolbar.Spacer />{findGroup}{viewGroup}</Toolbar></div>;
   };
-  const bulkEl = mode !== 'bulk' ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
+  const bulkEl = mode !== 'bulk' || selInMain ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
     : <BulkActions className={PART_A} count={sel.length} total={data.length} noun={c.noun} onSelectAll={() => setSel(data.map((r) => r.id))} onClear={() => setSel([])}
     actions={verbs.filter((v) => !v.more).map((v) => ({ id: v.label, label: v.label, icon: v.icon, danger: v.danger, onSelect: v.onClick || noop }))} />;
   const rowMenu = sit === 'menu'
@@ -893,6 +914,7 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, shape = 'gh
         actions={layout === '1f' && sit !== 'filters' ? <Inline gap="sm">{restEl()}</Inline> : undefined} />
       {barsOf('ghost')}
       {bulkEl}
+      {countAt === 'above' ? <Text variant="caption" className="study-count-line">{countLine}</Text> : null}
       <div className="study-table-room">
         {view.layout === 'gallery'
           ? <div className={'study-gallery-room' + (fixed ? ' study-gallery-room--fill' : '')}><ContentGrid size={view.size === 's' ? 'xs' : view.size === 'l' ? 'md' : 'sm'} label={c.title}>
@@ -1397,6 +1419,7 @@ const PLATFORM_LATER = [
 function DecidedScreen({ id, title, standard, lines = [], canSelect, notes, setNotes, render }) {
   const [on, setOn] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [count, setCount] = useState(null);
   return <Stack gap="sm">
     <div className="study-head">
       <Inline gap="sm" wrap><Text variant="heading" as="h3">{title}</Text>{standard ? <Badge tone="info" variant="soft">{standard}</Badge> : null}</Inline>
@@ -1407,7 +1430,8 @@ function DecidedScreen({ id, title, standard, lines = [], canSelect, notes, setN
     </div>
     {lines.map((l) => <Text key={l} variant="secondary">{l}</Text>)}
     <NoteBox k={'decided|' + id} label={title} notes={notes} setNotes={setNotes} editing={editing} setEditing={setEditing} />
-    <div className="study-option">{render(on)}</div>
+    <CountSlot.Provider value={setCount}><div className="study-option">{render(on)}</div></CountSlot.Provider>
+    {count ? <Text variant="caption" className="study-count-line">{count}</Text> : null}
   </Stack>;
 }
 
@@ -1448,6 +1472,36 @@ function PanelsNow() {
   </Stack>;
 }
 
+// Fewer bars (owner, 2026-10-15: "after seeing the 3 bars, I don't like it"): the decided stack next to three ways to fewer bars
+const FEWER = [
+  { k: 'now', title: 'Now (decided)', lines: ['Few actions: one bar and the selection bar (2 bars). Many actions: an action bar, the find bar and the selection bar (3 bars).'] },
+  { k: 'a', title: 'A · One main bar; the selection bar stays', lines: ['Many actions share the one bar and fold into More (⋮) from the end when they do not fit. The selection bar (2B) stays under it: always 2 bars.'] },
+  { k: 'b', title: 'B · Selection actions in the main bar, grayed until you select', lines: ['No selection bar. Download, Move, Share and the rest sit in the main bar, grayed with a tooltip until rows are selected, like MS Office: the bar never changes, buttons only turn on. "N selected" at the end. Select all and Clear: the table header checkbox. Many actions keep their own action bar: 1 or 2 bars.'] },
+  { k: 'c', title: 'C · A and B together: always one bar', lines: ['Every action (the selection ones grayed until you select), then search, filters and view, in one bar; what does not fit folds into More. Always 1 bar.'] },
+];
+const CountSet = React.createContext(null);
+function CountSwitch() {
+  const at = React.useContext(CountAt), set = React.useContext(CountSet);
+  return <Inline gap="sm"><Text variant="label">The count</Text>
+    <Seg label="Where the count sits" value={at} onChange={set} options={[{ value: 'above', label: 'Above the table' }, { value: 'below', label: 'Under the card' }]} /></Inline>;
+}
+function FewerBarsPage({ notes, setNotes }) {
+  const sp = { notes, setNotes };
+  return <Stack gap="xl">
+    <Stack gap="sm">
+      <Text variant="title" as="h1">Fewer bars</Text>
+      <CountSwitch />
+      <Text variant="secondary">The decided stack next to three ways to fewer bars, each with few and with many actions. Live: use "2 items selected" to see the selection state.</Text>
+    </Stack>
+    {FEWER.map((f) => <Stack key={f.k} gap="lg">
+      <DecidedScreen id={'fewer-' + f.k} title={f.title + ': few actions'} lines={f.lines} canSelect {...sp}
+        render={(on) => <Built key={f.k + (on ? 'sel' : 'rest')} sit="both" bars={f.k} initial={on ? SIT.both.initial : []} />} />
+      <DecidedScreen id={'fewer-' + f.k + '-many'} title={f.title + ': many actions'} canSelect {...sp}
+        render={(on) => <Built key={f.k + 'm' + (on ? 'sel' : 'rest')} sit="both" many bars={f.k} initial={on ? SIT.both.initial : []} />} />
+    </Stack>)}
+  </Stack>;
+}
+
 function DecidedPage({ elim, setElim, notes, setNotes }) {
   const sp = { notes, setNotes, elim, setElim };
   const recRows = EARLIER.map((e) => ({ id: e.id, option: e.id.toUpperCase() + ' · ' + e.name, how: 'Eliminated earlier' }))
@@ -1455,6 +1509,7 @@ function DecidedPage({ elim, setElim, notes, setNotes }) {
   return <Stack gap="xl">
     <Stack gap="sm">
       <Text variant="title" as="h1">Decided so far</Text>
+      <CountSwitch />
       <Text variant="secondary">The composed bars as they are decided, live: filter, sort, group, change the view and select rows.</Text>
       <Text variant="body">Buttons: ghost (no outline), in every bar. Row height: View menu only; the table has no view button.</Text>
     </Stack>
@@ -1495,7 +1550,8 @@ function DecidedPage({ elim, setElim, notes, setNotes }) {
 }
 
 function App() {
-  const [id, setId] = useState('decided');
+  const [id, setId] = useState('fewer');
+  const [countAt, setCountAt] = useStored('plenix-command-bar-study-count', 'below', (v) => v === 'above' || v === 'below');
   const [open, setOpen] = useState(true);
   const [types, setTypes] = useState([]);
   const [cats, setCats] = useState(['Projects']);
@@ -1506,25 +1562,26 @@ function App() {
   const item = (x) => ({ id: x.id, label: optionLabel(x) });
   const variants = GROUPS.find((g) => g.variants), refs = GROUPS.find((g) => g.reference);
   const groups = [
-    { heading: 'Command bar', collapsible: false, items: [{ id: 'decided', label: 'Decided so far', icon: 'check' }, { id: 'controls', label: 'Controls, side by side', icon: 'view-table' }] },
+    { heading: 'Command bar', collapsible: false, items: [{ id: 'fewer', label: 'Fewer bars', icon: 'view-table' }, { id: 'decided', label: 'Decided so far', icon: 'check' }, { id: 'controls', label: 'Controls, side by side', icon: 'view-table' }] },
     { heading: 'Kept variants', items: variants.options.map(item) },
     { heading: 'Reference', defaultExpanded: false, items: refs.options.filter((x) => !elim.includes(x.id)).map(item) },
   ];
-  const page = id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
+  const page = id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
   return (
     <AppShell page="dam"
       header={<AppHeader tone="accent" appName="Command bar study" brandHref="#" />}
       sideNav={<NavPane label="Pages" title="Menus over a collection"><NavList label="Pages" value={id} onSelect={setId} groups={groups} /></NavPane>}
       panel={o && o.panel ? <FiltersPanel open={open} onOpenChange={setOpen} types={types} setTypes={setTypes} cats={cats} setCats={setCats} /> : undefined}
       footer={<StatusBar start={<span>{o ? o.id.toUpperCase() + ' · ' + o.name : page}</span>} end={<span>{o ? o.standard : 'Eliminations and notes are kept in this browser'}</span>} />}>
-      <div className="plx-app-shell__page"><PageContent>
-        {id === 'decided' ? <DecidedPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />
+      <div className="plx-app-shell__page"><CountSet.Provider value={setCountAt}><CountAt.Provider value={countAt}><PageContent>
+        {id === 'fewer' ? <FewerBarsPage notes={notes} setNotes={setNotes} />
+          : id === 'decided' ? <DecidedPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />
           : id === 'controls' ? <ControlsPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />
           : o ? <Stack gap="lg">
             <StudyNote o={o} />
             <o.View key={o.id} panel={panel} />
           </Stack> : null}
-      </PageContent></div>
+      </PageContent></CountAt.Provider></CountSet.Provider></div>
     </AppShell>
   );
 }

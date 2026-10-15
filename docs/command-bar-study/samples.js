@@ -2370,6 +2370,10 @@ function HideFieldsMenu({
 // (Plenix BulkActions). Find and view: Search, Filter, Sort, Group (1F: Hide fields), View, the count, each its own button
 // (ghost, decided; never merged, also when narrow); every bar's buttons are ghost, the selection bar's too. narrow: a side
 // panel's width
+// the count (owner, 2026-10-15: "remove this from the menu bar"): never in a bar; above the table, or under the card in
+// small type. CountAt says where; CountSlot is the screen's line under its card
+const CountAt = React.createContext('below');
+const CountSlot = React.createContext(null);
 function Built({
   sit,
   narrow,
@@ -2377,11 +2381,15 @@ function Built({
   primary = false,
   fixed,
   many,
+  bars = 'now',
   shape = 'ghost',
   height = '--plx-ref-size-240px'
 }) {
   const c = SIT[sit];
-  const layout = sit === 'filters' ? '1f' : sit === 'both' && many ? '1b' : '1a';
+  // bars (fewer-bars study, 2026-10-15): now = as decided; a = many actions fold into More in one bar, 2B stays; b = the selection
+  // actions live in the main bar, grayed until a selection, no 2B; c = a and b: always one bar
+  const layout = sit === 'filters' ? '1f' : sit === 'both' && many && (bars === 'now' || bars === 'b') ? '1b' : '1a';
+  const selInMain = bars === 'b' || bars === 'c';
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -2452,11 +2460,19 @@ function Built({
     danger: true,
     onClick: () => removeSel()
   }];
-  const foldable = verbs.filter(v => !v.danger);
+  const extra = many && bars !== 'now' ? [['folder-add', 'New folder'], ['import', 'Import'], ['export', 'Export'], ['share', 'Share'], ['settings-permissions', 'Permissions'], ['gear', 'Settings']].map(([icon, label]) => ({
+    icon,
+    label
+  })) : [];
+  const selVerbs = verbs.map(v => Object.assign({
+    sel: true
+  }, v));
+  const foldList = bars === 'a' ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
+  const foldable = foldList.filter(v => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
   const iconStep = narrow ? 0 : 1;
-  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, shape].join('|'), iconStep + foldable.length);
+  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, bars, shape].join('|'), iconStep + foldable.length);
   const s = fit === 0 && !narrow ? 'icon-label' : 'icon';
   const foldN = Math.max(0, fit - iconStep);
   // the button shape (parked): the main bar ghost (the mix, ghost) or outlined; the selection bar outlined (BulkActions) or ghost
@@ -2474,20 +2490,27 @@ function Built({
       role
     }) : m));
   }
-  const verbsEl = off => {
+  // a list of commands with the fold rule: the selection ones (sel) grayed with a why-tooltip until rows are selected
+  const verbsEl = (list, folds) => {
     const why = words => 'Select ' + c.nouns + ' to ' + words;
-    const keep = foldable.slice(0, foldable.length - foldN),
-      folded = foldable.slice(keep.length);
-    const danger = verbs.filter(v => v.danger);
-    return /*#__PURE__*/React.createElement(React.Fragment, null, keep.map(v => /*#__PURE__*/React.createElement(Verb, {
-      key: v.label,
+    const off = v => !!v.sel && !selecting;
+    const plain = list.filter(v => !v.danger);
+    const keep = plain.slice(0, plain.length - folds),
+      folded = plain.slice(keep.length);
+    const danger = list.filter(v => v.danger);
+    const moreOff = folded.length > 0 && folded.every(off);
+    return /*#__PURE__*/React.createElement(React.Fragment, null, keep.map((v, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+      key: v.label
+    }, i > 0 && v.sel && !keep[i - 1].sel ? /*#__PURE__*/React.createElement(Divider, {
+      orientation: "vertical"
+    }) : null, /*#__PURE__*/React.createElement(Verb, {
       v: v,
       s: s,
       primary: primary,
-      disabled: off,
+      disabled: off(v),
       why: why(v.label.toLowerCase())
-    })), folded.length > 0 ? /*#__PURE__*/React.createElement(Tooltip, {
-      content: off ? why('see more actions') : 'More actions'
+    }))), folded.length > 0 ? /*#__PURE__*/React.createElement(Tooltip, {
+      content: moreOff ? why('see more actions') : 'More actions'
     }, /*#__PURE__*/React.createElement(Menu, {
       label: "More actions",
       trigger: /*#__PURE__*/React.createElement(Button, {
@@ -2496,24 +2519,28 @@ function Built({
         icon: "more",
         iconOnly: true,
         label: "More actions",
-        disabled: off
+        disabled: moreOff
       })
     }, folded.map(v => v.items ? /*#__PURE__*/React.createElement(MenuGroup, {
       key: v.label,
       label: v.label
     }, v.items) : /*#__PURE__*/React.createElement(MenuItem, {
       key: v.label,
-      icon: v.icon
+      icon: v.icon,
+      disabled: off(v)
     }, v.label)))) : null, danger.length ? /*#__PURE__*/React.createElement(Divider, {
       orientation: "vertical"
     }) : null, danger.map(v => /*#__PURE__*/React.createElement(Verb, {
       key: v.label,
       v: v,
       s: s,
-      disabled: off,
+      disabled: off(v),
       why: why(v.label.toLowerCase())
     })));
   };
+  const mainActs = () => bars === 'now' ? layout === '1b' ? manyEl() : restEl() : /*#__PURE__*/React.createElement(React.Fragment, null, restEl(), foldList.length ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Divider, {
+    orientation: "vertical"
+  }), verbsEl(foldList, foldN)) : null);
   // many actions (1B): eight commands, in their own bar
   const MANY = [['folder-add', 'New folder'], ['import', 'Import'], ['export', 'Export'], ['share', 'Share'], ['settings-permissions', 'Permissions'], ['gear', 'Settings']];
   const manyEl = () => /*#__PURE__*/React.createElement(React.Fragment, null, restEl(), MANY.map(([icon, label]) => /*#__PURE__*/React.createElement(Act, {
@@ -2565,7 +2592,7 @@ function Built({
   // the selection bar (owner, 2026-10-14): the actions, then Select all and Clear (grayed with a why-tooltip until they
   // apply); the count at the far right, "N selected", the number in the data font, no noun
   const all = data.length > 0 && data.every(r => sel.includes(r.id));
-  const selEl = () => /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toolbar.Group, null, verbsEl(!selecting), /*#__PURE__*/React.createElement(Divider, {
+  const selEl = () => /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toolbar.Group, null, verbsEl(selVerbs, bars === 'now' ? foldN : 0), /*#__PURE__*/React.createElement(Divider, {
     orientation: "vertical"
   }), all ? /*#__PURE__*/React.createElement(Tooltip, {
     content: 'Every ' + c.noun + ' is selected'
@@ -2587,10 +2614,7 @@ function Built({
     size: "sm",
     variant: "ghost",
     disabled: true
-  }, "Clear"))), /*#__PURE__*/React.createElement(Toolbar.Spacer, null), /*#__PURE__*/React.createElement(Toolbar.Group, null, /*#__PURE__*/React.createElement(Text, {
-    variant: "label",
-    className: "study-count"
-  }, N(sel.length), " selected")));
+  }, "Clear"))));
 
   // find and view: each control its own button, ghost (decided); icons only when the bar
   // does not fit or is narrow; never merged
@@ -2657,16 +2681,21 @@ function Built({
     variant: fv,
     gallery: sit === 'both'
   }));
-  const countEl = narrow ? null : /*#__PURE__*/React.createElement(Text, {
-    variant: "data",
-    className: "study-count"
-  }, data.length + ' ' + (data.length === 1 ? c.noun : c.nouns));
+  const countEl = null;
+  const countAt = React.useContext(CountAt);
+  const slot = React.useContext(CountSlot);
+  const shown = finds ? data.length : rows.length;
+  const countLine = /*#__PURE__*/React.createElement(React.Fragment, null, N(shown), " ", shown === 1 ? c.noun : c.nouns, mode === 'bulk' ? /*#__PURE__*/React.createElement(React.Fragment, null, " \xB7 ", N(sel.length), " selected") : null);
+  const countKey = shown + '|' + sel.length + '|' + mode;
+  React.useEffect(() => {
+    if (slot) slot(countAt === 'below' ? countLine : null);
+  }, [countKey, countAt]);
 
   // the bars, for one find-and-view style
   const barsOf = fv => {
     const actionGroup = sit !== 'filters' && layout !== '1f' ? /*#__PURE__*/React.createElement(Toolbar.Group, {
       className: PART_A
-    }, layout === '1b' ? manyEl() : restEl()) : null;
+    }, mainActs()) : null;
     const findGroup = finds ? /*#__PURE__*/React.createElement(Toolbar.Group, {
       className: PART_F
     }, findEls(fv)) : null;
@@ -2740,7 +2769,7 @@ function Built({
       label: c.title
     }, actionGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), findGroup, viewGroup));
   };
-  const bulkEl = mode !== 'bulk' ? null : shape === 'ghost' ? /*#__PURE__*/React.createElement("div", {
+  const bulkEl = mode !== 'bulk' || selInMain ? null : shape === 'ghost' ? /*#__PURE__*/React.createElement("div", {
     className: "study-bar"
   }, /*#__PURE__*/React.createElement(Toolbar, {
     label: "Selection actions"
@@ -2805,7 +2834,10 @@ function Built({
     actions: layout === '1f' && sit !== 'filters' ? /*#__PURE__*/React.createElement(Inline, {
       gap: "sm"
     }, restEl()) : undefined
-  }), barsOf('ghost'), bulkEl, /*#__PURE__*/React.createElement("div", {
+  }), barsOf('ghost'), bulkEl, countAt === 'above' ? /*#__PURE__*/React.createElement(Text, {
+    variant: "caption",
+    className: "study-count-line"
+  }, countLine) : null, /*#__PURE__*/React.createElement("div", {
     className: "study-table-room"
   }, view.layout === 'gallery' ? /*#__PURE__*/React.createElement("div", {
     className: 'study-gallery-room' + (fixed ? ' study-gallery-room--fill' : '')
@@ -4238,6 +4270,7 @@ function DecidedScreen({
 }) {
   const [on, setOn] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [count, setCount] = useState(null);
   return /*#__PURE__*/React.createElement(Stack, {
     gap: "sm"
   }, /*#__PURE__*/React.createElement("div", {
@@ -4276,9 +4309,14 @@ function DecidedScreen({
     setNotes: setNotes,
     editing: editing,
     setEditing: setEditing
-  }), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement(CountSlot.Provider, {
+    value: setCount
+  }, /*#__PURE__*/React.createElement("div", {
     className: "study-option"
-  }, render(on)));
+  }, render(on))), count ? /*#__PURE__*/React.createElement(Text, {
+    variant: "caption",
+    className: "study-count-line"
+  }, count) : null);
 }
 
 // the panels as they now are, drawn open (each in a popover's frame) and live
@@ -4411,6 +4449,92 @@ function PanelsNow() {
     onClick: () => setTD('date', DATE_ANY)
   }, "Clear"))))))));
 }
+
+// Fewer bars (owner, 2026-10-15: "after seeing the 3 bars, I don't like it"): the decided stack next to three ways to fewer bars
+const FEWER = [{
+  k: 'now',
+  title: 'Now (decided)',
+  lines: ['Few actions: one bar and the selection bar (2 bars). Many actions: an action bar, the find bar and the selection bar (3 bars).']
+}, {
+  k: 'a',
+  title: 'A · One main bar; the selection bar stays',
+  lines: ['Many actions share the one bar and fold into More (⋮) from the end when they do not fit. The selection bar (2B) stays under it: always 2 bars.']
+}, {
+  k: 'b',
+  title: 'B · Selection actions in the main bar, grayed until you select',
+  lines: ['No selection bar. Download, Move, Share and the rest sit in the main bar, grayed with a tooltip until rows are selected, like MS Office: the bar never changes, buttons only turn on. "N selected" at the end. Select all and Clear: the table header checkbox. Many actions keep their own action bar: 1 or 2 bars.']
+}, {
+  k: 'c',
+  title: 'C · A and B together: always one bar',
+  lines: ['Every action (the selection ones grayed until you select), then search, filters and view, in one bar; what does not fit folds into More. Always 1 bar.']
+}];
+const CountSet = React.createContext(null);
+function CountSwitch() {
+  const at = React.useContext(CountAt),
+    set = React.useContext(CountSet);
+  return /*#__PURE__*/React.createElement(Inline, {
+    gap: "sm"
+  }, /*#__PURE__*/React.createElement(Text, {
+    variant: "label"
+  }, "The count"), /*#__PURE__*/React.createElement(Seg, {
+    label: "Where the count sits",
+    value: at,
+    onChange: set,
+    options: [{
+      value: 'above',
+      label: 'Above the table'
+    }, {
+      value: 'below',
+      label: 'Under the card'
+    }]
+  }));
+}
+function FewerBarsPage({
+  notes,
+  setNotes
+}) {
+  const sp = {
+    notes,
+    setNotes
+  };
+  return /*#__PURE__*/React.createElement(Stack, {
+    gap: "xl"
+  }, /*#__PURE__*/React.createElement(Stack, {
+    gap: "sm"
+  }, /*#__PURE__*/React.createElement(Text, {
+    variant: "title",
+    as: "h1"
+  }, "Fewer bars"), /*#__PURE__*/React.createElement(CountSwitch, null), /*#__PURE__*/React.createElement(Text, {
+    variant: "secondary"
+  }, "The decided stack next to three ways to fewer bars, each with few and with many actions. Live: use \"2 items selected\" to see the selection state.")), FEWER.map(f => /*#__PURE__*/React.createElement(Stack, {
+    key: f.k,
+    gap: "lg"
+  }, /*#__PURE__*/React.createElement(DecidedScreen, _extends({
+    id: 'fewer-' + f.k,
+    title: f.title + ': few actions',
+    lines: f.lines,
+    canSelect: true
+  }, sp, {
+    render: on => /*#__PURE__*/React.createElement(Built, {
+      key: f.k + (on ? 'sel' : 'rest'),
+      sit: "both",
+      bars: f.k,
+      initial: on ? SIT.both.initial : []
+    })
+  })), /*#__PURE__*/React.createElement(DecidedScreen, _extends({
+    id: 'fewer-' + f.k + '-many',
+    title: f.title + ': many actions',
+    canSelect: true
+  }, sp, {
+    render: on => /*#__PURE__*/React.createElement(Built, {
+      key: f.k + 'm' + (on ? 'sel' : 'rest'),
+      sit: "both",
+      many: true,
+      bars: f.k,
+      initial: on ? SIT.both.initial : []
+    })
+  })))));
+}
 function DecidedPage({
   elim,
   setElim,
@@ -4439,7 +4563,7 @@ function DecidedPage({
   }, /*#__PURE__*/React.createElement(Text, {
     variant: "title",
     as: "h1"
-  }, "Decided so far"), /*#__PURE__*/React.createElement(Text, {
+  }, "Decided so far"), /*#__PURE__*/React.createElement(CountSwitch, null), /*#__PURE__*/React.createElement(Text, {
     variant: "secondary"
   }, "The composed bars as they are decided, live: filter, sort, group, change the view and select rows."), /*#__PURE__*/React.createElement(Text, {
     variant: "body"
@@ -4560,7 +4684,8 @@ function DecidedPage({
   })));
 }
 function App() {
-  const [id, setId] = useState('decided');
+  const [id, setId] = useState('fewer');
+  const [countAt, setCountAt] = useStored('plenix-command-bar-study-count', 'below', v => v === 'above' || v === 'below');
   const [open, setOpen] = useState(true);
   const [types, setTypes] = useState([]);
   const [cats, setCats] = useState(['Projects']);
@@ -4585,6 +4710,10 @@ function App() {
     heading: 'Command bar',
     collapsible: false,
     items: [{
+      id: 'fewer',
+      label: 'Fewer bars',
+      icon: 'view-table'
+    }, {
       id: 'decided',
       label: 'Decided so far',
       icon: 'check'
@@ -4601,7 +4730,7 @@ function App() {
     defaultExpanded: false,
     items: refs.options.filter(x => !elim.includes(x.id)).map(item)
   }];
-  const page = id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
+  const page = id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
   return /*#__PURE__*/React.createElement(AppShell, {
     page: "dam",
     header: /*#__PURE__*/React.createElement(AppHeader, {
@@ -4632,7 +4761,14 @@ function App() {
     })
   }, /*#__PURE__*/React.createElement("div", {
     className: "plx-app-shell__page"
-  }, /*#__PURE__*/React.createElement(PageContent, null, id === 'decided' ? /*#__PURE__*/React.createElement(DecidedPage, {
+  }, /*#__PURE__*/React.createElement(CountSet.Provider, {
+    value: setCountAt
+  }, /*#__PURE__*/React.createElement(CountAt.Provider, {
+    value: countAt
+  }, /*#__PURE__*/React.createElement(PageContent, null, id === 'fewer' ? /*#__PURE__*/React.createElement(FewerBarsPage, {
+    notes: notes,
+    setNotes: setNotes
+  }) : id === 'decided' ? /*#__PURE__*/React.createElement(DecidedPage, {
     elim: elim,
     setElim: setElim,
     notes: notes,
@@ -4649,7 +4785,7 @@ function App() {
   }), /*#__PURE__*/React.createElement(o.View, {
     key: o.id,
     panel: panel
-  })) : null)));
+  })) : null)))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(SessionProvider, null, /*#__PURE__*/React.createElement(App, null)));
 })();
