@@ -1,14 +1,14 @@
 # The Plenix iOS design: brief for each writer
 
-Plenix is a design system (repo D:/Documents/Projects/Projects_Applications/Plenix; the spec site is
+Plenix is a design system (repo: your working directory; the spec site is
 platform/design-system). Its owner wants every iOS component shown the way the iOS Buttons page now is: the Plenix
 guidance turned into an actual Plenix control, Apple's kit default beside the same kit component styled with the Plenix
 tokens (in Figma), its anatomy, every attribute from the Plenix token to SwiftUI, UIKit and AppKit, its states and code.
-You do this for the iOS pages in your task. Scratchpad = C:/Users/AdminMan/AppData/Local/Temp/claude/D--Documents-Projects-Projects-Applications-Plenix---DAM/633e9d8d-5072-4d7b-9af9-d499099bde09/scratchpad
+You do this for the iOS pages in your task. Scratchpad = your own session scratchpad (temporary files only); the shared tools are in tools/agent/
 
 ## Learn the model first (read, do not edit)
-- scratchpad/native/ios-buttons.json: the finished Buttons entry. Your entries have exactly this shape.
-- scratchpad/native/button-figma.js: the Figma script that drew the Buttons comparison (and the rules in its header).
+- tools/agent/native/ios-buttons.json: the finished Buttons entry. Your entries have exactly this shape.
+- tools/agent/native/button-figma.js: the Figma script that drew the Buttons comparison (and the rules in its header).
 - platform/standards/figma-map.json: the kit components of each iOS page (page id = the kit page to draw on, component
   ids, variant axes). platform/standards/native-guidance.json pages["<key>"]: Plenix's rules for the page; an
   attribute's "follows" must be one of its rule "section" values.
@@ -40,16 +40,16 @@ You do this for the iOS pages in your task. Scratchpad = C:/Users/AdminMan/AppDa
    If a component cannot be drawn this way (a system surface you cannot restyle), draw what you can and say why.
 
 ## Data
-Write scratchpad/native/ios-<slug>.json: { "<page key>": { summary, figma: { compare, anatomy, page }, images: { compare:
+Write tools/agent/native/ios-<slug>.json: { "<page key>": { summary, figma: { compare, anatomy, page }, images: { compare:
 {src: "native/ios-<slug>-compare.png", alt}, anatomy: {...} }, variants[], anatomy[], attributes[], states[], code:
 { swiftui[], uikit[], appkit[] } } } with the Buttons fields. Plenix's own words, American English, sentence case, the
 typographic apostrophe ’ in prose. Never copy Apple's text. Variants map to the Plenix Web variants (web: a Web page key
 such as "forms|Switch" that exists in inventory-taxonomy.js). AppKit: PlenixTokens.swift is iOS-only (UIColor), so AppKit
 code names the tokens with a one-line comment that a macOS build of the tokens is needed (see the Buttons entry).
-Run: node scratchpad/native/check.js scratchpad/native/ios-<slug>.json — it must print ALL OK.
+Run: node tools/agent/native/check.js tools/agent/native/ios-<slug>.json — it must print ALL OK.
 
 ## Rules
-- Write only: your scratchpad/native/ios-<slug>.json files, the PNGs in platform/design-system/native/, and your Figma
+- Write only: your tools/agent/native/ios-<slug>.json files, the PNGs in platform/design-system/native/, and your Figma
   frames. Do not edit any other file, do not run builds, releases or deploys, do not commit.
 - If Figma refuses (rate limit), wait and retry a few times; if it keeps failing, write the data without images
   (omit images/figma) and report it.

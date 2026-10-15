@@ -1,11 +1,11 @@
 # Plenix library: the brief for each lane writer
 
-Repo D:/Documents/Projects/Projects_Applications/Plenix (the design system, platform/design-system, is its own git repo).
-Scratchpad = C:/Users/AdminMan/AppData/Local/Temp/claude/D--Documents-Projects-Projects-Applications-Plenix---DAM/633e9d8d-5072-4d7b-9af9-d499099bde09/scratchpad
+Repo: your working directory (C:/Users/Administrator/Documents/Plenix, or your git worktree of it) (the design system, platform/design-system, is its own git repo).
+Scratchpad = your own session scratchpad (temporary files only); the shared tools are in tools/agent/
 
 Your task names a wave NN and a lane L (A, B or C). Your leaves, their targets, kinds, variants, dependencies and the
-files they touch are in scratchpad/library/plan.json (`leaves[]` with `wave`, `lane`, `files`, `laneFiles`; `targets[]`)
-and plan.md (Waves, Recipe per kind). The house rules and checks are scratchpad/web/BRIEF-web.md: read it first.
+files they touch are in tools/agent/library/plan.json (`leaves[]` with `wave`, `lane`, `files`, `laneFiles`; `targets[]`)
+and plan.md (Waves, Recipe per kind). The house rules and checks are tools/agent/web/BRIEF-web.md: read it first.
 Two other lanes of your wave work at the same time on disjoint files. Never edit a file another lane could edit.
 
 ## What you own (wNNL = your wave and lane, e.g. w04B)
@@ -16,7 +16,7 @@ Two other lanes of your wave work at the same time on disjoint files. Never edit
 - platform/tokens/components/<name>.tokens.json for each new component (and <name>.<context>.tokens.json, below);
   platform/tokens/semantic/<topic>.tokens.json for a foundation
 - platform/standards/web-native-map.d/wNNL.json
-- scratchpad/native/ios-<slug>.json and android-<slug>.json for the native designs of your components
+- tools/agent/native/ios-<slug>.json and android-<slug>.json for the native designs of your components
 - build-packages.d/<name>.js (package lanes of wave 15 only)
 
 Never edit: inventory.js, inventory-docs.js, inventory-guidance.js, index.html, any *-labs.js or ds-sample-*.css,
@@ -56,7 +56,7 @@ DSParts.records.push(function (H) {
   variantPages for the new variants only.
 
 parts/wNNL.labs.js (component-lab.js documents the spec; display-labs.js, overlay-labs.js, navigation-labs.js are finished
-examples; scratchpad/variants/BRIEF.md is the recipe):
+examples; the finished labs in display-labs.js and parts/w06*.labs.js are the recipe):
 ```js
 if (window.DS && DS.registerLab) {
   DS.registerLab('<record id>', { name, title, file, compPrefix, store, sizes, variants, states, content, labels, defaults, props, token, every, html, labelSelector, parts });
@@ -100,10 +100,10 @@ An extended component's new tokens go in components/<component>.tokens.json too 
 - web-native-map.d/wNNL.json: `{ "map": { "<sec>|<leaf>": { "ios": ["ios-…|<page>"], "android": ["android-…|<page>"] } } }`
   for every record you add (build-native-guidance.js fails a record without an iOS and an Android counterpart, and a web
   page mapped twice). Keys and pages must exist in inventory-taxonomy.js; look at web-native-map.json for the pages used.
-- Native designs (data only, no Figma): scratchpad/native/ios-<slug>.json and android-<slug>.json in the shape of
-  scratchpad/native/ios-buttons.json, as scratchpad/native/BRIEF-ios.md and BRIEF-android.md describe (for iOS: no
+- Native designs (data only, no Figma): tools/agent/native/ios-<slug>.json and android-<slug>.json in the shape of
+  tools/agent/native/ios-buttons.json, as tools/agent/native/BRIEF-ios.md and BRIEF-android.md describe (for iOS: no
   figma/images fields, data only). Only for components with a native counterpart page. Run
-  node scratchpad/native/check.js <your fragments> → ALL OK. The integrator merges them (scratchpad/native/merge.js).
+  node tools/agent/native/check.js <your fragments> → ALL OK. The integrator merges them (tools/agent/native/merge.js).
 
 ## Recipe per kind (plan.md › Recipe per kind is the full text)
 - component / pattern: JSX with the header comment (Summary / Usage / Props / Behavior / Notes; strings prop for every
@@ -126,8 +126,8 @@ An extended component's new tokens go in components/<component>.tokens.json too 
 - LABS_ONLY=<your lab ids> LABS_PORT=<8831 lane A | 8832 lane B | 8833 lane C> node tests/labs.test.js → ok for each
 - the tests for what you touched (BRIEF-web.md list), with your own ports; node tests/pages.test.js once at the end
 - look at each new page in Chrome, light and dark (a small puppeteer script in the scratchpad with tests/lib.js serve and
-  launch on a port of your own; scratchpad/wave0/look.js is one)
-- node scratchpad/native/check.js on your native fragments → ALL OK
+  launch on a port of your own; tools/agent/web/s3/look.js is one)
+- node tools/agent/native/check.js on your native fragments → ALL OK
 
 ## Report
 Per target: files written, record ids, lab ids with checks/tokens from the labs test, variant pages, native map and

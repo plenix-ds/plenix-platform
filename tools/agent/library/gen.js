@@ -5,7 +5,7 @@ const WV = require('./waves.js');
 Object.values(T).forEach((t) => { if (!WV.W[t.name]) throw new Error('no wave for ' + t.name); t.wave = WV.W[t.name]; t.lane = null; });
 Object.keys(WV.W).forEach((n) => { if (!T[n]) throw new Error('wave names unknown target ' + n); });
 const ROWS = require('./leaves.js').trim().split('\n').map((l) => { const [sec, leaf, target, role, note] = l.split('|'); return { sec, leaf, target, role, note: note || '' }; });
-const missing = JSON.parse(fs.readFileSync('C:/Users/AdminMan/AppData/Local/Temp/missing.json', 'utf8'));
+const missing = JSON.parse(fs.readFileSync('missing.json', 'utf8'));
 const SECIDS = ['foundations', 'layout', 'content', 'actions', 'forms', 'navigation', 'data-display', 'feedback', 'overlays', 'patterns', 'page-structures', 'specialized', 'interaction', 'implementation'];
 const SECNAME = {}; Object.keys(missing).forEach((k, i) => { SECNAME[SECIDS[i]] = k; });
 const errors = [];

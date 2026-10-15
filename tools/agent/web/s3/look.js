@@ -1,5 +1,5 @@
 // a look at the Narrow forms: search view and the side panel sheet (files), at 375px with touch
-const { serve, launch, sleep } = require('D:/Documents/Projects/Projects_Applications/Plenix/tests/lib.js');
+const { serve, launch, sleep } = require('../../../../tests/lib.js');
 const OUT = __dirname + '/';
 (async () => {
   const PORT = 8971, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';

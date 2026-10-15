@@ -1,7 +1,7 @@
 // Checks one native design fragment (scratchpad/native/<platform>-<slug>.json: { "<page key>": { ... } }) the way
 // build-native-guidance.js will, plus the code names. Usage: node check.js <fragment.json> [...]
 const fs = require('fs'), path = require('path'), vm = require('vm');
-const ROOT = 'D:/Documents/Projects/Projects_Applications/Plenix/';
+const ROOT = path.resolve(__dirname, '../../..').split(path.sep).join('/') + '/';
 const DS = ROOT + 'platform/design-system/';
 const ctx = { window: {} }; vm.runInNewContext(fs.readFileSync(DS + 'inventory-taxonomy.js', 'utf8'), ctx);
 const leaves = new Set(); ctx.window.DSTaxonomy.forEach((s) => s.subs.forEach((x) => x[1].split('|').forEach((l) => leaves.add(s.id + '|' + l))));

@@ -1,8 +1,8 @@
 # Plenix Platforms Standard on the web: brief for each writer
 
-Repo D:/Documents/Projects/Projects_Applications/Plenix. The standard is platform/standards/platforms.md (read 1.6,
+Repo: your working directory (C:/Users/Administrator/Documents/Plenix, or your git worktree of it). The standard is platform/standards/platforms.md (read 1.6,
 3.1–3.5, 4.3, 5.2–5.5, 6.5, 8.1). The audit of what is missing is in
-C:/Users/AdminMan/AppData/Local/Temp/claude/D--Documents-Projects-Projects-Applications-Plenix---DAM/633e9d8d-5072-4d7b-9af9-d499099bde09/scratchpad/web/AUDIT.md.
+tools/agent/web/AUDIT.md.
 You fix the items in your task, in the files your task names. Other writers work on other files at the same time.
 
 ## The house rules (strict; the checks enforce most of them)
