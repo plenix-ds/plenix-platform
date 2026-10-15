@@ -765,6 +765,10 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
   // the actions; b = search leads row 1, the actions start row 2; c = Category and Type only in the Filter panel; d = one
   // style per zone: the actions go to icons first, find and view keep their labels longest, carets only on menus
   const T = (k) => tidy.includes(k);
+  // swap (owner, 2026-10-15: "do what Carbon and Microsoft do"): one bar of one height; a selection swaps its content.
+  // ms = Microsoft 365 (OneDrive, SharePoint): the actions swap to the selection's commands, view stays, "N selected ×" at
+  // the end; carbon = IBM Carbon batch actions: the whole bar becomes the selection bar (count, actions, Cancel)
+  const swap = bars === 'ms' || bars === 'carbon';
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -794,7 +798,7 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
       { icon: 'trash', label: 'Delete', danger: true, onClick: () => removeSel() }];
   const extra = many && bars !== 'now' ? [['folder-add', 'New folder'], ['import', 'Import'], ['export', 'Export'], ['share', 'Share'], ['settings-permissions', 'Permissions'], ['gear', 'Settings']].map(([icon, label]) => ({ icon, label })) : [];
   const selVerbs = verbs.map((v) => Object.assign({ sel: true }, v));
-  const foldList = bars === 'a' || rowsIn ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
+  const foldList = swap ? (selecting ? selVerbs : extra) : bars === 'a' || rowsIn ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
   const foldable = foldList.filter((v) => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
@@ -903,6 +907,21 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
       return <><div className="study-bar study-part--actions"><Toolbar label={c.title + ' actions'}>{actionGroup}</Toolbar></div>
         <div className="study-bar study-part--find"><Toolbar label="Find and view">{findGroup}<Toolbar.Spacer />{viewGroup}</Toolbar></div></>;
     }
+    if (swap && selecting && mode === 'bulk') {
+      const clear = () => setSel([]);
+      if (bars === 'carbon') {
+        return <div className="study-bar study-bar--selection"><Toolbar label="Batch actions">
+          <Toolbar.Group><Text variant="label" className="study-count">{N(sel.length)} {sel.length === 1 ? 'item' : 'items'} selected</Text></Toolbar.Group>
+          <Toolbar.Spacer />
+          <Toolbar.Group>{verbsEl(selVerbs, foldN)}<Divider orientation="vertical" /><Button size="sm" variant="ghost" onClick={clear}>Cancel</Button></Toolbar.Group>
+        </Toolbar></div>;
+      }
+      return <div className="study-bar"><Toolbar label="Selection actions">
+        <Toolbar.Group className={PART_A}>{verbsEl(selVerbs, foldN)}</Toolbar.Group>
+        <Toolbar.Spacer />
+        <Toolbar.Group>{viewEls(fv)}<Divider orientation="vertical" /><Tooltip content="Clear the selection"><Button size="sm" variant="ghost" icon="close" onClick={clear}>{N(sel.length)} selected</Button></Tooltip></Toolbar.Group>
+      </Toolbar></div>;
+    }
     const row2 = rowsIn && mode === 'bulk' && (bars === 'e' || selecting);
     if (rowsIn && T('b')) {
       return <div className="study-bar study-bar--rows"><Toolbar label="Find and view">{findGroup}<Toolbar.Spacer />{viewGroup}</Toolbar>
@@ -913,7 +932,7 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
     return <div className={'study-bar' + (row2 ? ' study-bar--rows' : '')}><Toolbar label={c.title}>{row1}</Toolbar>
       {row2 ? <Toolbar label="Selection actions">{selEl()}</Toolbar> : null}</div>;
   };
-  const bulkEl = mode !== 'bulk' || selInMain || rowsIn ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
+  const bulkEl = mode !== 'bulk' || selInMain || rowsIn || swap ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
     : <BulkActions className={PART_A} count={sel.length} total={data.length} noun={c.noun} onSelectAll={() => setSel(data.map((r) => r.id))} onClear={() => setSel([])}
     actions={verbs.filter((v) => !v.more).map((v) => ({ id: v.label, label: v.label, icon: v.icon, danger: v.danger, onSelect: v.onClick || noop }))} />;
   const rowMenu = sit === 'menu'
@@ -1512,6 +1531,27 @@ const TIDY = [
   { k: 'ad', title: 'A + D', lines: ['Zones, and one style per zone.'] },
   { k: 'acd', title: 'A + C + D', lines: ['Zones, Category and Type in the Filter panel, and one style per zone.'] },
 ];
+// Swap (owner, 2026-10-15): what Microsoft and Carbon do; earlier 2A and 2C, eliminated on 2026-10-14, drawn again to compare
+const SWAP = [
+  { k: 'ms', title: 'Microsoft 365 (OneDrive, SharePoint): the actions swap', lines: ['One bar, one height. Select rows and New and Upload give way to the selection\'s commands (Download, Move, Share…, Delete last); Sort, Group and View stay; "2 selected ×" at the end clears the selection. Search and filters step aside while rows are selected. Nothing moves: the table never shifts.'] },
+  { k: 'carbon', title: 'IBM Carbon: the whole bar becomes the selection bar', lines: ['One bar, one height. Select rows and the bar turns into the batch-action bar in the selected tint: "2 items selected" on the left, the actions on the right, then Cancel. Clear the selection and the normal bar returns. Nothing moves.'] },
+];
+function SwapPage({ notes, setNotes }) {
+  const sp = { notes, setNotes };
+  return <Stack gap="xl">
+    <Stack gap="sm">
+      <Text variant="title" as="h1">Swap</Text>
+      <CountSwitch />
+      <Text variant="secondary">One bar whose content swaps when rows are selected, as Microsoft and IBM Carbon do. Use "2 items selected" to switch each screen between its two states; the bar keeps its height, so the table never moves.</Text>
+    </Stack>
+    {SWAP.map((f) => <Stack key={f.k} gap="lg">
+      <DecidedScreen id={'swap-' + f.k} title={f.title + ': few actions'} lines={f.lines} canSelect {...sp}
+        render={(on) => <Built key={f.k + (on ? 'sel' : 'rest')} sit="both" bars={f.k} tidy="a" initial={on ? SIT.both.initial : []} />} />
+      <DecidedScreen id={'swap-' + f.k + '-many'} title={f.title + ': many actions'} canSelect {...sp}
+        render={(on) => <Built key={f.k + 'm' + (on ? 'sel' : 'rest')} sit="both" many bars={f.k} tidy="a" initial={on ? SIT.both.initial : []} />} />
+    </Stack>)}
+  </Stack>;
+}
 function TidyBarPage({ notes, setNotes }) {
   const sp = { notes, setNotes };
   return <Stack gap="xl">
@@ -1591,7 +1631,7 @@ function DecidedPage({ elim, setElim, notes, setNotes }) {
 }
 
 function App() {
-  const [id, setId] = useState('tidy');
+  const [id, setId] = useState('swap');
   const [countAt, setCountAt] = useStored('plenix-command-bar-study-count', 'below', (v) => v === 'above' || v === 'below');
   const [open, setOpen] = useState(true);
   const [types, setTypes] = useState([]);
@@ -1603,11 +1643,11 @@ function App() {
   const item = (x) => ({ id: x.id, label: optionLabel(x) });
   const variants = GROUPS.find((g) => g.variants), refs = GROUPS.find((g) => g.reference);
   const groups = [
-    { heading: 'Command bar', collapsible: false, items: [{ id: 'tidy', label: 'Tidy bar', icon: 'view-table' }, { id: 'fewer', label: 'Fewer bars', icon: 'view-table' }, { id: 'decided', label: 'Decided so far', icon: 'check' }, { id: 'controls', label: 'Controls, side by side', icon: 'view-table' }] },
+    { heading: 'Command bar', collapsible: false, items: [{ id: 'swap', label: 'Swap', icon: 'view-table' }, { id: 'tidy', label: 'Tidy bar', icon: 'view-table' }, { id: 'fewer', label: 'Fewer bars', icon: 'view-table' }, { id: 'decided', label: 'Decided so far', icon: 'check' }, { id: 'controls', label: 'Controls, side by side', icon: 'view-table' }] },
     { heading: 'Kept variants', items: variants.options.map(item) },
     { heading: 'Reference', defaultExpanded: false, items: refs.options.filter((x) => !elim.includes(x.id)).map(item) },
   ];
-  const page = id === 'tidy' ? 'Tidy bar' : id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
+  const page = id === 'swap' ? 'Swap' : id === 'tidy' ? 'Tidy bar' : id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
   return (
     <AppShell page="dam"
       header={<AppHeader tone="accent" appName="Command bar study" brandHref="#" />}
@@ -1615,7 +1655,8 @@ function App() {
       panel={o && o.panel ? <FiltersPanel open={open} onOpenChange={setOpen} types={types} setTypes={setTypes} cats={cats} setCats={setCats} /> : undefined}
       footer={<StatusBar start={<span>{o ? o.id.toUpperCase() + ' · ' + o.name : page}</span>} end={<span>{o ? o.standard : 'Eliminations and notes are kept in this browser'}</span>} />}>
       <div className="plx-app-shell__page"><CountSet.Provider value={setCountAt}><CountAt.Provider value={countAt}><PageContent>
-        {id === 'tidy' ? <TidyBarPage notes={notes} setNotes={setNotes} />
+        {id === 'swap' ? <SwapPage notes={notes} setNotes={setNotes} />
+          : id === 'tidy' ? <TidyBarPage notes={notes} setNotes={setNotes} />
           : id === 'fewer' ? <FewerBarsPage notes={notes} setNotes={setNotes} />
           : id === 'decided' ? <DecidedPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />
           : id === 'controls' ? <ControlsPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />

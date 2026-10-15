@@ -2398,6 +2398,10 @@ function Built({
   // the actions; b = search leads row 1, the actions start row 2; c = Category and Type only in the Filter panel; d = one
   // style per zone: the actions go to icons first, find and view keep their labels longest, carets only on menus
   const T = k => tidy.includes(k);
+  // swap (owner, 2026-10-15: "do what Carbon and Microsoft do"): one bar of one height; a selection swaps its content.
+  // ms = Microsoft 365 (OneDrive, SharePoint): the actions swap to the selection's commands, view stays, "N selected ×" at
+  // the end; carbon = IBM Carbon batch actions: the whole bar becomes the selection bar (count, actions, Cancel)
+  const swap = bars === 'ms' || bars === 'carbon';
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -2475,7 +2479,7 @@ function Built({
   const selVerbs = verbs.map(v => Object.assign({
     sel: true
   }, v));
-  const foldList = bars === 'a' || rowsIn ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
+  const foldList = swap ? selecting ? selVerbs : extra : bars === 'a' || rowsIn ? extra : selInMain ? extra.concat(selVerbs) : selVerbs;
   const foldable = foldList.filter(v => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
@@ -2776,6 +2780,41 @@ function Built({
         label: "Find and view"
       }, findGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), viewGroup)));
     }
+    if (swap && selecting && mode === 'bulk') {
+      const clear = () => setSel([]);
+      if (bars === 'carbon') {
+        return /*#__PURE__*/React.createElement("div", {
+          className: "study-bar study-bar--selection"
+        }, /*#__PURE__*/React.createElement(Toolbar, {
+          label: "Batch actions"
+        }, /*#__PURE__*/React.createElement(Toolbar.Group, null, /*#__PURE__*/React.createElement(Text, {
+          variant: "label",
+          className: "study-count"
+        }, N(sel.length), " ", sel.length === 1 ? 'item' : 'items', " selected")), /*#__PURE__*/React.createElement(Toolbar.Spacer, null), /*#__PURE__*/React.createElement(Toolbar.Group, null, verbsEl(selVerbs, foldN), /*#__PURE__*/React.createElement(Divider, {
+          orientation: "vertical"
+        }), /*#__PURE__*/React.createElement(Button, {
+          size: "sm",
+          variant: "ghost",
+          onClick: clear
+        }, "Cancel"))));
+      }
+      return /*#__PURE__*/React.createElement("div", {
+        className: "study-bar"
+      }, /*#__PURE__*/React.createElement(Toolbar, {
+        label: "Selection actions"
+      }, /*#__PURE__*/React.createElement(Toolbar.Group, {
+        className: PART_A
+      }, verbsEl(selVerbs, foldN)), /*#__PURE__*/React.createElement(Toolbar.Spacer, null), /*#__PURE__*/React.createElement(Toolbar.Group, null, viewEls(fv), /*#__PURE__*/React.createElement(Divider, {
+        orientation: "vertical"
+      }), /*#__PURE__*/React.createElement(Tooltip, {
+        content: "Clear the selection"
+      }, /*#__PURE__*/React.createElement(Button, {
+        size: "sm",
+        variant: "ghost",
+        icon: "close",
+        onClick: clear
+      }, N(sel.length), " selected")))));
+    }
     const row2 = rowsIn && mode === 'bulk' && (bars === 'e' || selecting);
     if (rowsIn && T('b')) {
       return /*#__PURE__*/React.createElement("div", {
@@ -2801,7 +2840,7 @@ function Built({
       label: "Selection actions"
     }, selEl()) : null);
   };
-  const bulkEl = mode !== 'bulk' || selInMain || rowsIn ? null : shape === 'ghost' ? /*#__PURE__*/React.createElement("div", {
+  const bulkEl = mode !== 'bulk' || selInMain || rowsIn || swap ? null : shape === 'ghost' ? /*#__PURE__*/React.createElement("div", {
     className: "study-bar"
   }, /*#__PURE__*/React.createElement(Toolbar, {
     label: "Selection actions"
@@ -4560,6 +4599,64 @@ const TIDY = [{
   title: 'A + C + D',
   lines: ['Zones, Category and Type in the Filter panel, and one style per zone.']
 }];
+// Swap (owner, 2026-10-15): what Microsoft and Carbon do; earlier 2A and 2C, eliminated on 2026-10-14, drawn again to compare
+const SWAP = [{
+  k: 'ms',
+  title: 'Microsoft 365 (OneDrive, SharePoint): the actions swap',
+  lines: ['One bar, one height. Select rows and New and Upload give way to the selection\'s commands (Download, Move, Share…, Delete last); Sort, Group and View stay; "2 selected ×" at the end clears the selection. Search and filters step aside while rows are selected. Nothing moves: the table never shifts.']
+}, {
+  k: 'carbon',
+  title: 'IBM Carbon: the whole bar becomes the selection bar',
+  lines: ['One bar, one height. Select rows and the bar turns into the batch-action bar in the selected tint: "2 items selected" on the left, the actions on the right, then Cancel. Clear the selection and the normal bar returns. Nothing moves.']
+}];
+function SwapPage({
+  notes,
+  setNotes
+}) {
+  const sp = {
+    notes,
+    setNotes
+  };
+  return /*#__PURE__*/React.createElement(Stack, {
+    gap: "xl"
+  }, /*#__PURE__*/React.createElement(Stack, {
+    gap: "sm"
+  }, /*#__PURE__*/React.createElement(Text, {
+    variant: "title",
+    as: "h1"
+  }, "Swap"), /*#__PURE__*/React.createElement(CountSwitch, null), /*#__PURE__*/React.createElement(Text, {
+    variant: "secondary"
+  }, "One bar whose content swaps when rows are selected, as Microsoft and IBM Carbon do. Use \"2 items selected\" to switch each screen between its two states; the bar keeps its height, so the table never moves.")), SWAP.map(f => /*#__PURE__*/React.createElement(Stack, {
+    key: f.k,
+    gap: "lg"
+  }, /*#__PURE__*/React.createElement(DecidedScreen, _extends({
+    id: 'swap-' + f.k,
+    title: f.title + ': few actions',
+    lines: f.lines,
+    canSelect: true
+  }, sp, {
+    render: on => /*#__PURE__*/React.createElement(Built, {
+      key: f.k + (on ? 'sel' : 'rest'),
+      sit: "both",
+      bars: f.k,
+      tidy: "a",
+      initial: on ? SIT.both.initial : []
+    })
+  })), /*#__PURE__*/React.createElement(DecidedScreen, _extends({
+    id: 'swap-' + f.k + '-many',
+    title: f.title + ': many actions',
+    canSelect: true
+  }, sp, {
+    render: on => /*#__PURE__*/React.createElement(Built, {
+      key: f.k + 'm' + (on ? 'sel' : 'rest'),
+      sit: "both",
+      many: true,
+      bars: f.k,
+      tidy: "a",
+      initial: on ? SIT.both.initial : []
+    })
+  })))));
+}
 function TidyBarPage({
   notes,
   setNotes
@@ -4802,7 +4899,7 @@ function DecidedPage({
   })));
 }
 function App() {
-  const [id, setId] = useState('tidy');
+  const [id, setId] = useState('swap');
   const [countAt, setCountAt] = useStored('plenix-command-bar-study-count', 'below', v => v === 'above' || v === 'below');
   const [open, setOpen] = useState(true);
   const [types, setTypes] = useState([]);
@@ -4828,6 +4925,10 @@ function App() {
     heading: 'Command bar',
     collapsible: false,
     items: [{
+      id: 'swap',
+      label: 'Swap',
+      icon: 'view-table'
+    }, {
       id: 'tidy',
       label: 'Tidy bar',
       icon: 'view-table'
@@ -4852,7 +4953,7 @@ function App() {
     defaultExpanded: false,
     items: refs.options.filter(x => !elim.includes(x.id)).map(item)
   }];
-  const page = id === 'tidy' ? 'Tidy bar' : id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
+  const page = id === 'swap' ? 'Swap' : id === 'tidy' ? 'Tidy bar' : id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
   return /*#__PURE__*/React.createElement(AppShell, {
     page: "dam",
     header: /*#__PURE__*/React.createElement(AppHeader, {
@@ -4887,7 +4988,10 @@ function App() {
     value: setCountAt
   }, /*#__PURE__*/React.createElement(CountAt.Provider, {
     value: countAt
-  }, /*#__PURE__*/React.createElement(PageContent, null, id === 'tidy' ? /*#__PURE__*/React.createElement(TidyBarPage, {
+  }, /*#__PURE__*/React.createElement(PageContent, null, id === 'swap' ? /*#__PURE__*/React.createElement(SwapPage, {
+    notes: notes,
+    setNotes: setNotes
+  }) : id === 'tidy' ? /*#__PURE__*/React.createElement(TidyBarPage, {
     notes: notes,
     setNotes: setNotes
   }) : id === 'fewer' ? /*#__PURE__*/React.createElement(FewerBarsPage, {
