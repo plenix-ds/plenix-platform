@@ -49,42 +49,7 @@ Mapping from today's Badge tones: neutral → Neutral, success → Success, info
 
 ## Reference palette
 
-### Yellow and orange
-
-**Yellow: waiting / paused**
-
-| Token | Value |
-|---|---|
-| `--plx-ref-color-yellow-100` | `#fff8df` |
-| `--plx-ref-color-yellow-200` | `#f4dfa0` |
-| `--plx-ref-color-yellow-300` | `#e8c34a` |
-| `--plx-ref-color-yellow-400` | `#d5a300` |
-| `--plx-ref-color-yellow-500` | `#b88700` |
-| `--plx-ref-color-yellow-700` | `#765600` |
-| `--plx-ref-color-yellow-900` | `#4d3800` |
-
-**Orange: action / correction required**
-
-| Token | Value |
-|---|---|
-| `--plx-ref-color-orange-100` | `#fff0e3` |
-| `--plx-ref-color-orange-200` | `#f8d0ad` |
-| `--plx-ref-color-orange-300` | `#f2ad70` |
-| `--plx-ref-color-orange-500` | `#d96800` |
-| `--plx-ref-color-orange-700` | `#963f00` |
-| `--plx-ref-color-orange-800` | `#7a3400` |
-| `--plx-ref-color-orange-900` | `#5c2800` |
-
-### The other families
-
-| Family | 50 / 75 | 100 | 200 | 250 / 350 | 300 | 400 | 500 | 600 / 650 | 700 | 800 | 900 | 950 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Gray | 75 `#f7f7f8` | `#f3f3f3` | `#e8e9ec` | 350 `#c0c2c8` | `#d0d0d0` | `#a3a6ad` | `#8e9094` | 600 `#6e6e6e` | `#56585e` | `#444444` | `#34363b` | `#1e1f22` |
-| Blue | 50 `#f8fafd` | `#ebf0f7` | `#c8dff7` | 250 `#c0ccda` | `#a2c0e3` | `#2a6fdb` | | 600 `#1f5bb8`, 650 `#3d5a80` | `#005a9e` | | `#1f2a3a` | |
-| Red | | `#fde7e7` | `#f8aca2` | | `#e96060` | | `#f60000` | | `#b70000` | `#990000` | | |
-| Brown | | `#fef3e2` | `#eed2ba` | | `#dfaa7c` | | `#c05a00` | | | `#7d3c00` | `#3a2e22` | `#4a2400` |
-| Green | | `#dff6dd` | `#9bd39b` | | `#58ad58` | | `#107c10` | | `#1b5e0c` | | | |
-| White / black | white `#ffffff` | | | | | | | | | | black `#000000` | |
+The whole canonical palette, 83 colors in 12 families, is in [palette.md](palette.md), generated from the tokens. Pills take every color from it by token name.
 
 ## Status pills and category pills
 
@@ -92,14 +57,14 @@ Status pills and category pills use separate color systems.
 
 Status pills use the six semantic variants to communicate workflow meaning: neutral, success, active, waiting, action required, and negative.
 
-Tags and categories retain the 20-color category palette. Each category color uses a soft shade-100 background, a shade-300 border, dark text from the same family, and 4px corners. Category colors identify labels; they do not indicate workflow status.
+Tags and categories keep their 20 categories, each mapped to canonical palette tokens. Each category color uses a soft shade-100 background, a shade-300 border, dark text from the same family, and 4px corners. Category colors identify labels; they do not indicate workflow status.
 
 Do not map tags or categories to the six semantic status variants. The two systems share a consistent pill appearance while preserving their separate purposes.
 
 | Pill type | Color system | Purpose |
 |---|---|---|
 | Status | The six semantic variants | Communicate workflow meaning |
-| Tag / category | The 20-color category palette, with soft shades for each color | Identify and distinguish labels without implying a workflow state |
+| Tag / category | The 20 categories, each mapped to canonical palette tokens | Identify and distinguish labels without implying a workflow state |
 
 Examples:
 
@@ -108,31 +73,35 @@ Examples:
 - Client, Internal, Print, Web and Hero are descriptive labels: category colors.
 - Archive: neutral gray for an Archived workflow state; a category color when it is a user-defined tag.
 
-Brown remains in the category palette. Orange replaces brown only in the semantic status system.
+Brown remains a category. Orange replaces brown only in the semantic status system.
 
-## Category palette: soft shades
+## Category palette
 
-Each category color keeps its hue; the shades were computed in OKLCH (lightness changed). Every text color passes WCAG AA on its background. Softened, a few pairs come out close (red and maroon, blue and navy, brown and apricot); their borders and text still differ.
+Categories keep their names and roles (`--plx-sys-category-<name>`, `-soft`, `-soft-border`, `-on-soft`), but every role points to a token of the canonical palette (owner, 2026-10-15, the palette consolidation; `docs/color-consolidation/`). The category primitives (`--plx-ref-color-category-*`) are retired: they remain one release as deprecated aliases.
 
-| Category | Base (today) | 100 (background) | 300 (border) | 700 (text) | Text contrast |
+- A component that needs a category color reads the role, never a value; the role names its canonical token.
+- Several categories now share soft shades (Green, Lime and Mint; Blue and Navy; Red and Maroon); their base colors and names still tell them apart.
+- Every text color passes WCAG AA (4.5 : 1) on its background.
+
+| Category | Base | Background (soft) | Border (soft-border) | Text (on-soft) | Text contrast |
 |---|---|---|---|---|---|
-| Red | `#e6194b` | `#ffefef` | `#ffb4b6` | `#891f31` | 8.18 |
-| Green | `#3cb44b` | `#e6fae5` | `#9cde9e` | `#025e17` | 7.33 |
-| Yellow | `#ffe119` | `#f9f4da` | `#dccc75` | `#594d02` | 7.63 |
-| Blue | `#4363d8` | `#eff3fe` | `#b5c9fe` | `#2d4498` | 7.91 |
-| Orange | `#f58231` | `#fff0e8` | `#ffb890` | `#793802` | 7.93 |
-| Purple | `#911eb4` | `#faeffe` | `#e7b4fb` | `#6a2e7f` | 8.16 |
-| Cyan | `#42d4f4` | `#e2f8fe` | `#6bddf8` | `#045766` | 7.46 |
-| Magenta | `#f032e6` | `#ffedfc` | `#f4b0ec` | `#752870` | 8.18 |
-| Lime | `#bfef45` | `#eef8df` | `#bbd786` | `#415601` | 7.48 |
-| Pink | `#fabed4` | `#ffeef4` | `#f3b7cd` | `#6c3b4f` | 7.91 |
-| Teal | `#469990` | `#dafcf7` | `#8adcd2` | `#065a53` | 7.42 |
-| Lavender | `#dcbeff` | `#f6f0fe` | `#d9bbfc` | `#5a3e76` | 7.89 |
-| Brown | `#9a6324` | `#fff1e4` | `#fabd80` | `#6f4102` | 7.79 |
-| Beige | `#fffac8` | `#f7f5da` | `#d2cd9c` | `#544e22` | 7.64 |
-| Maroon | `#800000` | `#fff0ed` | `#ffb5a9` | `#892219` | 8.21 |
-| Mint | `#aaffc3` | `#e3fbe9` | `#91e0a8` | `#045d2f` | 7.37 |
-| Olive | `#808000` | `#f4f6db` | `#cfd17a` | `#515102` | 7.54 |
-| Apricot | `#ffd8b1` | `#fff1e4` | `#e9c39c` | `#664522` | 7.77 |
-| Navy | `#000075` | `#eef4fe` | `#b1cbfe` | `#244698` | 7.90 |
-| Grey | `#a9a9a9` | `#f3f3f3` | `#cacaca` | `#4d4d4d` | 7.62 |
+| Red | red-500 `#f60000` | red-100 `#fde7e7` | red-200 `#f8aca2` | red-800 `#990000` | 7.54 |
+| Green | green-300 `#58ad58` | green-100 `#dff6dd` | green-200 `#9bd39b` | green-700 `#1b5e0c` | 6.92 |
+| Yellow | yellow-175 `#ffe119` | yellow-100 `#fff8df` | yellow-300 `#e8c34a` | yellow-700 `#765600` | 6.37 |
+| Blue | blue-500 `#4363d8` | blue-100 `#ebf0f7` | blue-300 `#a2c0e3` | blue-800 `#2d4498` | 7.67 |
+| Orange | orange-500 `#d96800` | orange-100 `#fff0e3` | orange-300 `#f2ad70` | orange-800 `#7a3400` | 8.12 |
+| Purple | purple-500 `#911eb4` | purple-100 `#f6f0fe` | purple-300 `#d7aefb` | purple-700 `#6a2e7f` | 8.14 |
+| Cyan | cyan-500 `#42d4f4` | cyan-100 `#e2f8fe` | cyan-300 `#6bddf8` | cyan-700 `#045766` | 7.46 |
+| Magenta | magenta-500 `#f032e6` | magenta-100 `#ffedfc` | magenta-300 `#f4b0ec` | magenta-700 `#752870` | 8.18 |
+| Lime | green-150 `#bfef45` | green-100 `#dff6dd` | green-200 `#9bd39b` | green-700 `#1b5e0c` | 6.92 |
+| Pink | pink-300 `#f3b7cd` | pink-100 `#ffeef4` | pink-300 `#f3b7cd` | pink-700 `#6c3b4f` | 7.91 |
+| Teal | teal-500 `#469990` | teal-100 `#dafcf7` | teal-300 `#8adcd2` | teal-700 `#065a53` | 7.42 |
+| Lavender | purple-300 `#d7aefb` | purple-100 `#f6f0fe` | purple-300 `#d7aefb` | purple-700 `#6a2e7f` | 8.14 |
+| Brown | brown-500 `#c05a00` | brown-100 `#fef3e2` | brown-300 `#dfaa7c` | brown-800 `#7d3c00` | 7.60 |
+| Beige | yellow-100 `#fff8df` | yellow-100 `#fff8df` | yellow-250 `#d2cd9c` | yellow-700 `#765600` | 6.37 |
+| Maroon | red-800 `#990000` | red-100 `#fde7e7` | red-200 `#f8aca2` | red-800 `#990000` | 7.54 |
+| Mint | green-100 `#dff6dd` | green-100 `#dff6dd` | green-200 `#9bd39b` | green-700 `#1b5e0c` | 6.92 |
+| Olive | yellow-600 `#808000` | yellow-100 `#fff8df` | yellow-250 `#d2cd9c` | yellow-700 `#765600` | 6.37 |
+| Apricot | orange-200 `#f8d0ad` | orange-100 `#fff0e3` | orange-300 `#f2ad70` | brown-800 `#7d3c00` | 7.48 |
+| Navy | blue-950 `#000075` | blue-100 `#ebf0f7` | blue-300 `#a2c0e3` | blue-800 `#2d4498` | 7.67 |
+| Grey | gray-400 `#a3a6ad` | gray-100 `#f3f3f3` | gray-300 `#d0d0d0` | gray-700 `#56585e` | 6.41 |

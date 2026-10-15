@@ -8,17 +8,6 @@
     }
   },
   "plx-ref": {
-    "color-black": {
-      "$value": "#000000",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "before": [
-            "  /* ── COLOR: palette ── */"
-          ]
-        }
-      }
-    },
     "color-black-alpha-50": {
       "$value": "#00000080",
       "$type": "color"
@@ -36,257 +25,6 @@
       "$value": "#0000001f",
       "$type": "color",
       "$description": "Black at 12% (owner, 2026-10-15): the widest layer of the Lifted shadow (Material elevation)."
-    },
-    "color-gray-950": {
-      "$value": "#1e1f22",
-      "$type": "color"
-    },
-    "color-gray-900": {
-      "$value": "#34363b",
-      "$type": "color"
-    },
-    "color-gray-800": {
-      "$value": "#444444",
-      "$type": "color"
-    },
-    "color-gray-700": {
-      "$value": "#56585e",
-      "$type": "color"
-    },
-    "color-gray-600": {
-      "$value": "#6e6e6e",
-      "$type": "color"
-    },
-    "color-gray-500": {
-      "$value": "#8e9094",
-      "$type": "color"
-    },
-    "color-gray-400": {
-      "$value": "#a3a6ad",
-      "$type": "color"
-    },
-    "color-gray-350": {
-      "$value": "#c0c2c8",
-      "$type": "color"
-    },
-    "color-gray-300": {
-      "$value": "#d0d0d0",
-      "$type": "color"
-    },
-    "color-gray-200": {
-      "$value": "#e8e9ec",
-      "$type": "color"
-    },
-    "color-gray-100": {
-      "$value": "#f3f3f3",
-      "$type": "color"
-    },
-    "color-gray-50": {
-      "$value": "#fcfcfc",
-      "$type": "color",
-      "$description": "The form fields' fill (owner, 2026-10-15): one step above white, lighter than gray-75."
-    },
-    "color-gray-75": {
-      "$value": "#f7f7f8",
-      "$type": "color"
-    },
-    "color-white": {
-      "$value": "#ffffff",
-      "$type": "color"
-    },
-    "color-blue-900": {
-      "$value": "#1f2a3a",
-      "$type": "color"
-    },
-    "color-blue-700": {
-      "$value": "#005a9e",
-      "$type": "color"
-    },
-    "color-blue-650": {
-      "$value": "#3d5a80",
-      "$type": "color"
-    },
-    "color-blue-600": {
-      "$value": "#1f5bb8",
-      "$type": "color"
-    },
-    "color-blue-400": {
-      "$value": "#2a6fdb",
-      "$type": "color"
-    },
-    "color-blue-300": {
-      "$value": "#a2c0e3",
-      "$type": "color"
-    },
-    "color-blue-250": {
-      "$value": "#c0ccda",
-      "$type": "color"
-    },
-    "color-blue-200": {
-      "$value": "#c8dff7",
-      "$type": "color"
-    },
-    "color-blue-100": {
-      "$value": "#ebf0f7",
-      "$type": "color"
-    },
-    "color-blue-50": {
-      "$value": "#f8fafd",
-      "$type": "color"
-    },
-    "color-red-700": {
-      "$value": "#b70000",
-      "$type": "color"
-    },
-    "color-red-800": {
-      "$value": "#990000",
-      "$type": "color",
-      "$description": "Two shades darker than red-500, same hue (the danger solid border; owner, 2026-10-09). red-700 is plum."
-    },
-    "color-red-500": {
-      "$value": "#f60000",
-      "$type": "color"
-    },
-    "color-red-300": {
-      "$value": "#e96060",
-      "$type": "color"
-    },
-    "color-red-200": {
-      "$value": "#f8aca2",
-      "$type": "color"
-    },
-    "color-red-100": {
-      "$value": "#fde7e7",
-      "$type": "color"
-    },
-    "color-brown-900": {
-      "$value": "#3a2e22",
-      "$type": "color"
-    },
-    "color-brown-950": {
-      "$value": "#4a2400",
-      "$type": "color",
-      "$description": "Two shades darker than brown-800, same hue (the warning solid border; owner, 2026-10-09)."
-    },
-    "color-brown-800": {
-      "$value": "#7d3c00",
-      "$type": "color"
-    },
-    "color-brown-500": {
-      "$value": "#c05a00",
-      "$type": "color"
-    },
-    "color-brown-300": {
-      "$value": "#dfaa7c",
-      "$type": "color"
-    },
-    "color-brown-200": {
-      "$value": "#eed2ba",
-      "$type": "color"
-    },
-    "color-brown-100": {
-      "$value": "#fef3e2",
-      "$type": "color"
-    },
-    "color-green-700": {
-      "$value": "#1b5e0c",
-      "$type": "color"
-    },
-    "color-green-500": {
-      "$value": "#107c10",
-      "$type": "color"
-    },
-    "color-green-300": {
-      "$value": "#58ad58",
-      "$type": "color"
-    },
-    "color-green-200": {
-      "$value": "#9bd39b",
-      "$type": "color"
-    },
-    "color-green-100": {
-      "$value": "#dff6dd",
-      "$type": "color"
-    },
-    "color-yellow-900": {
-      "$value": "#4d3800",
-      "$type": "color",
-      "$description": "Yellow 900: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-700": {
-      "$value": "#765600",
-      "$type": "color",
-      "$description": "Yellow 700: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-500": {
-      "$value": "#b88700",
-      "$type": "color",
-      "$description": "Yellow 500: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-400": {
-      "$value": "#d5a300",
-      "$type": "color",
-      "$description": "Yellow 400: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-300": {
-      "$value": "#e8c34a",
-      "$type": "color",
-      "$description": "Yellow 300: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-200": {
-      "$value": "#f4dfa0",
-      "$type": "color",
-      "$description": "Yellow 200: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-yellow-100": {
-      "$value": "#fff8df",
-      "$type": "color",
-      "$description": "Yellow 100: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-900": {
-      "$value": "#5c2800",
-      "$type": "color",
-      "$description": "Orange 900: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-800": {
-      "$value": "#7a3400",
-      "$type": "color",
-      "$description": "Orange 800: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-700": {
-      "$value": "#963f00",
-      "$type": "color",
-      "$description": "Orange 700: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-500": {
-      "$value": "#d96800",
-      "$type": "color",
-      "$description": "Orange 500: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-300": {
-      "$value": "#f2ad70",
-      "$type": "color",
-      "$description": "Orange 300: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-200": {
-      "$value": "#f8d0ad",
-      "$type": "color",
-      "$description": "Orange 200: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-orange-100": {
-      "$value": "#fff0e3",
-      "$type": "color",
-      "$description": "Orange 100: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-purple-visited": {
-      "$value": "#551a8b",
-      "$type": "color",
-      "$description": "The standard visited-link purple (the browsers' default :visited color, #551A8B): visited links in the light theme (owner, 2026-10-12). 11.0:1 on white."
-    },
-    "color-purple-visited-light": {
-      "$value": "#d7aefb",
-      "$type": "color",
-      "$description": "The light counterpart of purple-visited for the dark theme (Google's purple 200, #D7AEFB): 5.3:1 on surface-default (#444444) and 8.9:1 on the dark canvas (owner, 2026-10-12)."
     },
     "font-size-09": {
       "$value": "0.5625rem",
@@ -1047,405 +785,885 @@
       "$value": "2600px",
       "$type": "dimension"
     },
-    "color-category-red": {
-      "$value": "#e6194b",
+    "color-black": {
+      "$value": "#000000",
       "$type": "color",
-      "$description": "Category color 1 of 20: red (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* ── COLOR: palette ── */"
+          ]
+        }
+      }
     },
-    "color-category-red-100": {
-      "$value": "#ffefef",
+    "color-gray-950": {
+      "$value": "#1e1f22",
+      "$type": "color"
+    },
+    "color-gray-900": {
+      "$value": "#34363b",
+      "$type": "color"
+    },
+    "color-gray-800": {
+      "$value": "#444444",
+      "$type": "color"
+    },
+    "color-gray-700": {
+      "$value": "#56585e",
+      "$type": "color"
+    },
+    "color-gray-600": {
+      "$value": "#6e6e6e",
+      "$type": "color"
+    },
+    "color-gray-500": {
+      "$value": "#8e9094",
+      "$type": "color"
+    },
+    "color-gray-400": {
+      "$value": "#a3a6ad",
+      "$type": "color"
+    },
+    "color-gray-350": {
+      "$value": "#c0c2c8",
+      "$type": "color"
+    },
+    "color-gray-300": {
+      "$value": "#d0d0d0",
+      "$type": "color"
+    },
+    "color-gray-200": {
+      "$value": "#e8e9ec",
+      "$type": "color"
+    },
+    "color-gray-100": {
+      "$value": "#f3f3f3",
+      "$type": "color"
+    },
+    "color-gray-75": {
+      "$value": "#f7f7f8",
+      "$type": "color"
+    },
+    "color-gray-50": {
+      "$value": "#fcfcfc",
       "$type": "color",
-      "$description": "Category red, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "The form fields' fill (owner, 2026-10-15): one step above white, lighter than gray-75."
     },
-    "color-category-red-300": {
-      "$value": "#ffb4b6",
+    "color-white": {
+      "$value": "#ffffff",
+      "$type": "color"
+    },
+    "color-red-800": {
+      "$value": "#990000",
       "$type": "color",
-      "$description": "Category red, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Two shades darker than red-500, same hue (the danger solid border; owner, 2026-10-09). red-700 is plum."
     },
-    "color-category-red-700": {
-      "$value": "#891f31",
-      "$type": "color",
-      "$description": "Category red, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    "color-red-700": {
+      "$value": "#b70000",
+      "$type": "color"
     },
-    "color-category-green": {
-      "$value": "#3cb44b",
-      "$type": "color",
-      "$description": "Category color 2 of 20: green (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+    "color-red-500": {
+      "$value": "#f60000",
+      "$type": "color"
     },
-    "color-category-green-100": {
-      "$value": "#e6fae5",
-      "$type": "color",
-      "$description": "Category green, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+    "color-red-300": {
+      "$value": "#e96060",
+      "$type": "color"
     },
-    "color-category-green-300": {
-      "$value": "#9cde9e",
-      "$type": "color",
-      "$description": "Category green, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+    "color-red-200": {
+      "$value": "#f8aca2",
+      "$type": "color"
     },
-    "color-category-green-700": {
-      "$value": "#025e17",
-      "$type": "color",
-      "$description": "Category green, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+    "color-red-100": {
+      "$value": "#fde7e7",
+      "$type": "color"
     },
-    "color-category-yellow": {
-      "$value": "#ffe119",
-      "$type": "color",
-      "$description": "Category color 3 of 20: yellow (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-yellow-100": {
-      "$value": "#f9f4da",
-      "$type": "color",
-      "$description": "Category yellow, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-yellow-300": {
-      "$value": "#dccc75",
-      "$type": "color",
-      "$description": "Category yellow, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-yellow-700": {
-      "$value": "#594d02",
-      "$type": "color",
-      "$description": "Category yellow, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-blue": {
-      "$value": "#4363d8",
-      "$type": "color",
-      "$description": "Category color 4 of 20: blue (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-blue-100": {
-      "$value": "#eff3fe",
-      "$type": "color",
-      "$description": "Category blue, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-blue-300": {
-      "$value": "#b5c9fe",
-      "$type": "color",
-      "$description": "Category blue, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-blue-700": {
-      "$value": "#2d4498",
-      "$type": "color",
-      "$description": "Category blue, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-orange": {
-      "$value": "#f58231",
-      "$type": "color",
-      "$description": "Category color 5 of 20: orange (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-orange-100": {
-      "$value": "#fff0e8",
-      "$type": "color",
-      "$description": "Category orange, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-orange-300": {
-      "$value": "#ffb890",
-      "$type": "color",
-      "$description": "Category orange, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-orange-700": {
-      "$value": "#793802",
-      "$type": "color",
-      "$description": "Category orange, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-purple": {
-      "$value": "#911eb4",
-      "$type": "color",
-      "$description": "Category color 6 of 20: purple (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-purple-100": {
-      "$value": "#faeffe",
-      "$type": "color",
-      "$description": "Category purple, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-purple-300": {
-      "$value": "#e7b4fb",
-      "$type": "color",
-      "$description": "Category purple, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-purple-700": {
-      "$value": "#6a2e7f",
-      "$type": "color",
-      "$description": "Category purple, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-cyan": {
-      "$value": "#42d4f4",
-      "$type": "color",
-      "$description": "Category color 7 of 20: cyan (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-cyan-100": {
-      "$value": "#e2f8fe",
-      "$type": "color",
-      "$description": "Category cyan, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-cyan-300": {
-      "$value": "#6bddf8",
-      "$type": "color",
-      "$description": "Category cyan, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-cyan-700": {
-      "$value": "#045766",
-      "$type": "color",
-      "$description": "Category cyan, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-magenta": {
-      "$value": "#f032e6",
-      "$type": "color",
-      "$description": "Category color 8 of 20: magenta (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-magenta-100": {
-      "$value": "#ffedfc",
-      "$type": "color",
-      "$description": "Category magenta, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-magenta-300": {
-      "$value": "#f4b0ec",
-      "$type": "color",
-      "$description": "Category magenta, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-magenta-700": {
-      "$value": "#752870",
-      "$type": "color",
-      "$description": "Category magenta, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-lime": {
-      "$value": "#bfef45",
-      "$type": "color",
-      "$description": "Category color 9 of 20: lime (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-lime-100": {
-      "$value": "#eef8df",
-      "$type": "color",
-      "$description": "Category lime, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-lime-300": {
-      "$value": "#bbd786",
-      "$type": "color",
-      "$description": "Category lime, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-lime-700": {
-      "$value": "#415601",
-      "$type": "color",
-      "$description": "Category lime, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-pink": {
-      "$value": "#fabed4",
-      "$type": "color",
-      "$description": "Category color 10 of 20: pink (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-pink-100": {
-      "$value": "#ffeef4",
-      "$type": "color",
-      "$description": "Category pink, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-pink-300": {
-      "$value": "#f3b7cd",
-      "$type": "color",
-      "$description": "Category pink, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-pink-700": {
+    "color-pink-700": {
       "$value": "#6c3b4f",
       "$type": "color",
-      "$description": "Category pink, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-teal": {
-      "$value": "#469990",
+    "color-pink-300": {
+      "$value": "#f3b7cd",
       "$type": "color",
-      "$description": "Category color 11 of 20: teal (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-teal-100": {
-      "$value": "#dafcf7",
+    "color-pink-100": {
+      "$value": "#ffeef4",
       "$type": "color",
-      "$description": "Category teal, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-teal-300": {
-      "$value": "#8adcd2",
+    "color-magenta-700": {
+      "$value": "#752870",
       "$type": "color",
-      "$description": "Category teal, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-teal-700": {
-      "$value": "#065a53",
+    "color-magenta-500": {
+      "$value": "#f032e6",
       "$type": "color",
-      "$description": "Category teal, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-lavender": {
-      "$value": "#dcbeff",
+    "color-magenta-300": {
+      "$value": "#f4b0ec",
       "$type": "color",
-      "$description": "Category color 12 of 20: lavender (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-lavender-100": {
-      "$value": "#f6f0fe",
+    "color-magenta-100": {
+      "$value": "#ffedfc",
       "$type": "color",
-      "$description": "Category lavender, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-lavender-300": {
-      "$value": "#d9bbfc",
+    "color-orange-900": {
+      "$value": "#5c2800",
       "$type": "color",
-      "$description": "Category lavender, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Orange 900: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-lavender-700": {
-      "$value": "#5a3e76",
+    "color-orange-800": {
+      "$value": "#7a3400",
       "$type": "color",
-      "$description": "Category lavender, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Orange 800: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-brown": {
-      "$value": "#9a6324",
+    "color-orange-700": {
+      "$value": "#963f00",
       "$type": "color",
-      "$description": "Category color 13 of 20: brown (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Orange 700: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-brown-100": {
-      "$value": "#fff1e4",
+    "color-orange-500": {
+      "$value": "#d96800",
       "$type": "color",
-      "$description": "Category brown, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Orange 500: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-brown-300": {
-      "$value": "#fabd80",
+    "color-orange-300": {
+      "$value": "#f2ad70",
       "$type": "color",
-      "$description": "Category brown, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Orange 300: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-brown-700": {
-      "$value": "#6f4102",
+    "color-orange-200": {
+      "$value": "#f8d0ad",
       "$type": "color",
-      "$description": "Category brown, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Orange 200: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-beige": {
-      "$value": "#fffac8",
+    "color-orange-100": {
+      "$value": "#fff0e3",
       "$type": "color",
-      "$description": "Category color 14 of 20: beige (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Orange 100: the action / correction required family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-beige-100": {
-      "$value": "#f7f5da",
+    "color-brown-900": {
+      "$value": "#3a2e22",
+      "$type": "color"
+    },
+    "color-brown-800": {
+      "$value": "#7d3c00",
+      "$type": "color"
+    },
+    "color-brown-500": {
+      "$value": "#c05a00",
+      "$type": "color"
+    },
+    "color-brown-300": {
+      "$value": "#dfaa7c",
+      "$type": "color"
+    },
+    "color-brown-200": {
+      "$value": "#eed2ba",
+      "$type": "color"
+    },
+    "color-brown-100": {
+      "$value": "#fef3e2",
+      "$type": "color"
+    },
+    "color-yellow-900": {
+      "$value": "#4d3800",
       "$type": "color",
-      "$description": "Category beige, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 900: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-beige-300": {
-      "$value": "#d2cd9c",
+    "color-yellow-700": {
+      "$value": "#765600",
       "$type": "color",
-      "$description": "Category beige, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 700: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-beige-700": {
-      "$value": "#544e22",
-      "$type": "color",
-      "$description": "Category beige, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-maroon": {
-      "$value": "#800000",
-      "$type": "color",
-      "$description": "Category color 15 of 20: maroon (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-maroon-100": {
-      "$value": "#fff0ed",
-      "$type": "color",
-      "$description": "Category maroon, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-maroon-300": {
-      "$value": "#ffb5a9",
-      "$type": "color",
-      "$description": "Category maroon, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-maroon-700": {
-      "$value": "#892219",
-      "$type": "color",
-      "$description": "Category maroon, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-mint": {
-      "$value": "#aaffc3",
-      "$type": "color",
-      "$description": "Category color 16 of 20: mint (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
-    },
-    "color-category-mint-100": {
-      "$value": "#e3fbe9",
-      "$type": "color",
-      "$description": "Category mint, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-mint-300": {
-      "$value": "#91e0a8",
-      "$type": "color",
-      "$description": "Category mint, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-mint-700": {
-      "$value": "#045d2f",
-      "$type": "color",
-      "$description": "Category mint, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
-    },
-    "color-category-olive": {
+    "color-yellow-600": {
       "$value": "#808000",
       "$type": "color",
-      "$description": "Category color 17 of 20: olive (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-olive-100": {
-      "$value": "#f4f6db",
+    "color-yellow-500": {
+      "$value": "#b88700",
       "$type": "color",
-      "$description": "Category olive, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 500: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-olive-300": {
-      "$value": "#cfd17a",
+    "color-yellow-400": {
+      "$value": "#d5a300",
       "$type": "color",
-      "$description": "Category olive, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 400: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-olive-700": {
-      "$value": "#515102",
+    "color-yellow-300": {
+      "$value": "#e8c34a",
       "$type": "color",
-      "$description": "Category olive, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 300: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-apricot": {
-      "$value": "#ffd8b1",
+    "color-yellow-250": {
+      "$value": "#d2cd9c",
       "$type": "color",
-      "$description": "Category color 18 of 20: apricot (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-apricot-100": {
-      "$value": "#fff1e4",
+    "color-yellow-200": {
+      "$value": "#f4dfa0",
       "$type": "color",
-      "$description": "Category apricot, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 200: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-apricot-300": {
-      "$value": "#e9c39c",
+    "color-yellow-175": {
+      "$value": "#ffe119",
       "$type": "color",
-      "$description": "Category apricot, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
     },
-    "color-category-apricot-700": {
-      "$value": "#664522",
+    "color-yellow-100": {
+      "$value": "#fff8df",
       "$type": "color",
-      "$description": "Category apricot, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$description": "Yellow 100: the waiting / paused family (owner, 2026-10-14, docs/pills-and-colors.md)."
     },
-    "color-category-navy": {
+    "color-green-700": {
+      "$value": "#1b5e0c",
+      "$type": "color"
+    },
+    "color-green-500": {
+      "$value": "#107c10",
+      "$type": "color"
+    },
+    "color-green-300": {
+      "$value": "#58ad58",
+      "$type": "color"
+    },
+    "color-green-200": {
+      "$value": "#9bd39b",
+      "$type": "color"
+    },
+    "color-green-150": {
+      "$value": "#bfef45",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-green-100": {
+      "$value": "#dff6dd",
+      "$type": "color"
+    },
+    "color-teal-700": {
+      "$value": "#065a53",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-teal-500": {
+      "$value": "#469990",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-teal-300": {
+      "$value": "#8adcd2",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-teal-100": {
+      "$value": "#dafcf7",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-cyan-700": {
+      "$value": "#045766",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-cyan-500": {
+      "$value": "#42d4f4",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-cyan-300": {
+      "$value": "#6bddf8",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-cyan-100": {
+      "$value": "#e2f8fe",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-blue-950": {
       "$value": "#000075",
       "$type": "color",
-      "$description": "Category color 19 of 20: navy (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-blue-900": {
+      "$value": "#1f2a3a",
+      "$type": "color"
+    },
+    "color-blue-800": {
+      "$value": "#2d4498",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-blue-700": {
+      "$value": "#005a9e",
+      "$type": "color"
+    },
+    "color-blue-650": {
+      "$value": "#3d5a80",
+      "$type": "color"
+    },
+    "color-blue-600": {
+      "$value": "#1f5bb8",
+      "$type": "color"
+    },
+    "color-blue-500": {
+      "$value": "#4363d8",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-blue-400": {
+      "$value": "#2a6fdb",
+      "$type": "color"
+    },
+    "color-blue-300": {
+      "$value": "#a2c0e3",
+      "$type": "color"
+    },
+    "color-blue-250": {
+      "$value": "#c0ccda",
+      "$type": "color"
+    },
+    "color-blue-200": {
+      "$value": "#c8dff7",
+      "$type": "color"
+    },
+    "color-blue-100": {
+      "$value": "#ebf0f7",
+      "$type": "color"
+    },
+    "color-blue-50": {
+      "$value": "#f8fafd",
+      "$type": "color"
+    },
+    "color-purple-900": {
+      "$value": "#551a8b",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-purple-700": {
+      "$value": "#6a2e7f",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-purple-500": {
+      "$value": "#911eb4",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-purple-300": {
+      "$value": "#d7aefb",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-purple-100": {
+      "$value": "#f6f0fe",
+      "$type": "color",
+      "$description": "Canonical palette (owner, 2026-10-15, the palette consolidation)."
+    },
+    "color-brown-950": {
+      "$value": "{plx-ref.color-brown-900}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-900.",
+      "$description": "Deprecated alias of brown-900 (was #4a2400; merge with value change)."
+    },
+    "color-purple-visited": {
+      "$value": "{plx-ref.color-purple-900}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-900.",
+      "$description": "Deprecated alias of purple-900 (was #551a8b; rename or exact alias)."
+    },
+    "color-purple-visited-light": {
+      "$value": "{plx-ref.color-purple-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
+      "$description": "Deprecated alias of purple-300 (was #d7aefb; rename or exact alias)."
+    },
+    "color-category-red": {
+      "$value": "{plx-ref.color-red-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-500.",
+      "$description": "Deprecated alias of red-500 (was #e6194b; merge with value change)."
+    },
+    "color-category-red-100": {
+      "$value": "{plx-ref.color-red-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-100.",
+      "$description": "Deprecated alias of red-100 (was #ffefef; merge with value change)."
+    },
+    "color-category-red-300": {
+      "$value": "{plx-ref.color-red-200}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-200.",
+      "$description": "Deprecated alias of red-200 (was #ffb4b6; merge with value change)."
+    },
+    "color-category-red-700": {
+      "$value": "{plx-ref.color-red-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-800.",
+      "$description": "Deprecated alias of red-800 (was #891f31; merge with value change)."
+    },
+    "color-category-green": {
+      "$value": "{plx-ref.color-green-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-300.",
+      "$description": "Deprecated alias of green-300 (was #3cb44b; merge with value change)."
+    },
+    "color-category-green-100": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
+      "$description": "Deprecated alias of green-100 (was #e6fae5; merge with value change)."
+    },
+    "color-category-green-300": {
+      "$value": "{plx-ref.color-green-200}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-200.",
+      "$description": "Deprecated alias of green-200 (was #9cde9e; merge with value change)."
+    },
+    "color-category-green-700": {
+      "$value": "{plx-ref.color-green-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-700.",
+      "$description": "Deprecated alias of green-700 (was #025e17; merge with value change)."
+    },
+    "color-category-yellow": {
+      "$value": "{plx-ref.color-yellow-175}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-175.",
+      "$description": "Deprecated alias of yellow-175 (was #ffe119; rename or exact alias)."
+    },
+    "color-category-yellow-100": {
+      "$value": "{plx-ref.color-yellow-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
+      "$description": "Deprecated alias of yellow-100 (was #f9f4da; merge with value change)."
+    },
+    "color-category-yellow-300": {
+      "$value": "{plx-ref.color-yellow-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-300.",
+      "$description": "Deprecated alias of yellow-300 (was #dccc75; merge with value change)."
+    },
+    "color-category-yellow-700": {
+      "$value": "{plx-ref.color-yellow-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-700.",
+      "$description": "Deprecated alias of yellow-700 (was #594d02; merge with value change)."
+    },
+    "color-category-blue": {
+      "$value": "{plx-ref.color-blue-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-500.",
+      "$description": "Deprecated alias of blue-500 (was #4363d8; rename or exact alias)."
+    },
+    "color-category-blue-100": {
+      "$value": "{plx-ref.color-blue-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-100.",
+      "$description": "Deprecated alias of blue-100 (was #eff3fe; merge with value change)."
+    },
+    "color-category-blue-300": {
+      "$value": "{plx-ref.color-blue-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-300.",
+      "$description": "Deprecated alias of blue-300 (was #b5c9fe; merge with value change)."
+    },
+    "color-category-blue-700": {
+      "$value": "{plx-ref.color-blue-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-800.",
+      "$description": "Deprecated alias of blue-800 (was #2d4498; rename or exact alias)."
+    },
+    "color-category-orange": {
+      "$value": "{plx-ref.color-orange-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-500.",
+      "$description": "Deprecated alias of orange-500 (was #f58231; merge with value change)."
+    },
+    "color-category-orange-100": {
+      "$value": "{plx-ref.color-orange-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-100.",
+      "$description": "Deprecated alias of orange-100 (was #fff0e8; merge with value change)."
+    },
+    "color-category-orange-300": {
+      "$value": "{plx-ref.color-orange-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-300.",
+      "$description": "Deprecated alias of orange-300 (was #ffb890; merge with value change)."
+    },
+    "color-category-orange-700": {
+      "$value": "{plx-ref.color-orange-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-800.",
+      "$description": "Deprecated alias of orange-800 (was #793802; merge with value change)."
+    },
+    "color-category-purple": {
+      "$value": "{plx-ref.color-purple-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-500.",
+      "$description": "Deprecated alias of purple-500 (was #911eb4; rename or exact alias)."
+    },
+    "color-category-purple-100": {
+      "$value": "{plx-ref.color-purple-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-100.",
+      "$description": "Deprecated alias of purple-100 (was #faeffe; merge with value change)."
+    },
+    "color-category-purple-300": {
+      "$value": "{plx-ref.color-purple-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
+      "$description": "Deprecated alias of purple-300 (was #e7b4fb; merge with value change)."
+    },
+    "color-category-purple-700": {
+      "$value": "{plx-ref.color-purple-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-700.",
+      "$description": "Deprecated alias of purple-700 (was #6a2e7f; rename or exact alias)."
+    },
+    "color-category-cyan": {
+      "$value": "{plx-ref.color-cyan-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-500.",
+      "$description": "Deprecated alias of cyan-500 (was #42d4f4; rename or exact alias)."
+    },
+    "color-category-cyan-100": {
+      "$value": "{plx-ref.color-cyan-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-100.",
+      "$description": "Deprecated alias of cyan-100 (was #e2f8fe; rename or exact alias)."
+    },
+    "color-category-cyan-300": {
+      "$value": "{plx-ref.color-cyan-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-300.",
+      "$description": "Deprecated alias of cyan-300 (was #6bddf8; rename or exact alias)."
+    },
+    "color-category-cyan-700": {
+      "$value": "{plx-ref.color-cyan-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-cyan-700.",
+      "$description": "Deprecated alias of cyan-700 (was #045766; rename or exact alias)."
+    },
+    "color-category-magenta": {
+      "$value": "{plx-ref.color-magenta-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-500.",
+      "$description": "Deprecated alias of magenta-500 (was #f032e6; rename or exact alias)."
+    },
+    "color-category-magenta-100": {
+      "$value": "{plx-ref.color-magenta-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-100.",
+      "$description": "Deprecated alias of magenta-100 (was #ffedfc; rename or exact alias)."
+    },
+    "color-category-magenta-300": {
+      "$value": "{plx-ref.color-magenta-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-300.",
+      "$description": "Deprecated alias of magenta-300 (was #f4b0ec; rename or exact alias)."
+    },
+    "color-category-magenta-700": {
+      "$value": "{plx-ref.color-magenta-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-magenta-700.",
+      "$description": "Deprecated alias of magenta-700 (was #752870; rename or exact alias)."
+    },
+    "color-category-lime": {
+      "$value": "{plx-ref.color-green-150}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-150.",
+      "$description": "Deprecated alias of green-150 (was #bfef45; rename or exact alias)."
+    },
+    "color-category-lime-100": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
+      "$description": "Deprecated alias of green-100 (was #eef8df; merge with value change)."
+    },
+    "color-category-lime-300": {
+      "$value": "{plx-ref.color-green-200}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-200.",
+      "$description": "Deprecated alias of green-200 (was #bbd786; merge with value change)."
+    },
+    "color-category-lime-700": {
+      "$value": "{plx-ref.color-green-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-700.",
+      "$description": "Deprecated alias of green-700 (was #415601; merge with value change)."
+    },
+    "color-category-pink": {
+      "$value": "{plx-ref.color-pink-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-300.",
+      "$description": "Deprecated alias of pink-300 (was #fabed4; merge with value change)."
+    },
+    "color-category-pink-100": {
+      "$value": "{plx-ref.color-pink-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-100.",
+      "$description": "Deprecated alias of pink-100 (was #ffeef4; rename or exact alias)."
+    },
+    "color-category-pink-300": {
+      "$value": "{plx-ref.color-pink-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-300.",
+      "$description": "Deprecated alias of pink-300 (was #f3b7cd; rename or exact alias)."
+    },
+    "color-category-pink-700": {
+      "$value": "{plx-ref.color-pink-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-pink-700.",
+      "$description": "Deprecated alias of pink-700 (was #6c3b4f; rename or exact alias)."
+    },
+    "color-category-teal": {
+      "$value": "{plx-ref.color-teal-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-500.",
+      "$description": "Deprecated alias of teal-500 (was #469990; rename or exact alias)."
+    },
+    "color-category-teal-100": {
+      "$value": "{plx-ref.color-teal-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-100.",
+      "$description": "Deprecated alias of teal-100 (was #dafcf7; rename or exact alias)."
+    },
+    "color-category-teal-300": {
+      "$value": "{plx-ref.color-teal-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-300.",
+      "$description": "Deprecated alias of teal-300 (was #8adcd2; rename or exact alias)."
+    },
+    "color-category-teal-700": {
+      "$value": "{plx-ref.color-teal-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-teal-700.",
+      "$description": "Deprecated alias of teal-700 (was #065a53; rename or exact alias)."
+    },
+    "color-category-lavender": {
+      "$value": "{plx-ref.color-purple-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
+      "$description": "Deprecated alias of purple-300 (was #dcbeff; merge with value change)."
+    },
+    "color-category-lavender-100": {
+      "$value": "{plx-ref.color-purple-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-100.",
+      "$description": "Deprecated alias of purple-100 (was #f6f0fe; rename or exact alias)."
+    },
+    "color-category-lavender-300": {
+      "$value": "{plx-ref.color-purple-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-300.",
+      "$description": "Deprecated alias of purple-300 (was #d9bbfc; merge with value change)."
+    },
+    "color-category-lavender-700": {
+      "$value": "{plx-ref.color-purple-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-purple-700.",
+      "$description": "Deprecated alias of purple-700 (was #5a3e76; merge with value change)."
+    },
+    "color-category-brown": {
+      "$value": "{plx-ref.color-brown-500}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-500.",
+      "$description": "Deprecated alias of brown-500 (was #9a6324; merge with value change)."
+    },
+    "color-category-brown-100": {
+      "$value": "{plx-ref.color-brown-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-100.",
+      "$description": "Deprecated alias of brown-100 (was #fff1e4; merge with value change)."
+    },
+    "color-category-brown-300": {
+      "$value": "{plx-ref.color-brown-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-300.",
+      "$description": "Deprecated alias of brown-300 (was #fabd80; merge with value change)."
+    },
+    "color-category-brown-700": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-800.",
+      "$description": "Deprecated alias of brown-800 (was #6f4102; merge with value change)."
+    },
+    "color-category-beige": {
+      "$value": "{plx-ref.color-yellow-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
+      "$description": "Deprecated alias of yellow-100 (was #fffac8; merge with value change)."
+    },
+    "color-category-beige-100": {
+      "$value": "{plx-ref.color-yellow-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
+      "$description": "Deprecated alias of yellow-100 (was #f7f5da; merge with value change)."
+    },
+    "color-category-beige-300": {
+      "$value": "{plx-ref.color-yellow-250}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-250.",
+      "$description": "Deprecated alias of yellow-250 (was #d2cd9c; rename or exact alias)."
+    },
+    "color-category-beige-700": {
+      "$value": "{plx-ref.color-yellow-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-700.",
+      "$description": "Deprecated alias of yellow-700 (was #544e22; merge with value change)."
+    },
+    "color-category-maroon": {
+      "$value": "{plx-ref.color-red-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-800.",
+      "$description": "Deprecated alias of red-800 (was #800000; merge with value change)."
+    },
+    "color-category-maroon-100": {
+      "$value": "{plx-ref.color-red-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-100.",
+      "$description": "Deprecated alias of red-100 (was #fff0ed; merge with value change)."
+    },
+    "color-category-maroon-300": {
+      "$value": "{plx-ref.color-red-200}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-200.",
+      "$description": "Deprecated alias of red-200 (was #ffb5a9; merge with value change)."
+    },
+    "color-category-maroon-700": {
+      "$value": "{plx-ref.color-red-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-red-800.",
+      "$description": "Deprecated alias of red-800 (was #892219; merge with value change)."
+    },
+    "color-category-mint": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
+      "$description": "Deprecated alias of green-100 (was #aaffc3; merge with value change)."
+    },
+    "color-category-mint-100": {
+      "$value": "{plx-ref.color-green-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-100.",
+      "$description": "Deprecated alias of green-100 (was #e3fbe9; merge with value change)."
+    },
+    "color-category-mint-300": {
+      "$value": "{plx-ref.color-green-200}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-200.",
+      "$description": "Deprecated alias of green-200 (was #91e0a8; merge with value change)."
+    },
+    "color-category-mint-700": {
+      "$value": "{plx-ref.color-green-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-green-700.",
+      "$description": "Deprecated alias of green-700 (was #045d2f; merge with value change)."
+    },
+    "color-category-olive": {
+      "$value": "{plx-ref.color-yellow-600}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-600.",
+      "$description": "Deprecated alias of yellow-600 (was #808000; rename or exact alias)."
+    },
+    "color-category-olive-100": {
+      "$value": "{plx-ref.color-yellow-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-100.",
+      "$description": "Deprecated alias of yellow-100 (was #f4f6db; merge with value change)."
+    },
+    "color-category-olive-300": {
+      "$value": "{plx-ref.color-yellow-250}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-250.",
+      "$description": "Deprecated alias of yellow-250 (was #cfd17a; merge with value change)."
+    },
+    "color-category-olive-700": {
+      "$value": "{plx-ref.color-yellow-700}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-yellow-700.",
+      "$description": "Deprecated alias of yellow-700 (was #515102; merge with value change)."
+    },
+    "color-category-apricot": {
+      "$value": "{plx-ref.color-orange-200}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-200.",
+      "$description": "Deprecated alias of orange-200 (was #ffd8b1; merge with value change)."
+    },
+    "color-category-apricot-100": {
+      "$value": "{plx-ref.color-orange-100}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-100.",
+      "$description": "Deprecated alias of orange-100 (was #fff1e4; merge with value change)."
+    },
+    "color-category-apricot-300": {
+      "$value": "{plx-ref.color-orange-300}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-orange-300.",
+      "$description": "Deprecated alias of orange-300 (was #e9c39c; merge with value change)."
+    },
+    "color-category-apricot-700": {
+      "$value": "{plx-ref.color-brown-800}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-brown-800.",
+      "$description": "Deprecated alias of brown-800 (was #664522; merge with value change)."
+    },
+    "color-category-navy": {
+      "$value": "{plx-ref.color-blue-950}",
+      "$type": "color",
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-950.",
+      "$description": "Deprecated alias of blue-950 (was #000075; rename or exact alias)."
     },
     "color-category-navy-100": {
-      "$value": "#eef4fe",
+      "$value": "{plx-ref.color-blue-100}",
       "$type": "color",
-      "$description": "Category navy, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-100.",
+      "$description": "Deprecated alias of blue-100 (was #eef4fe; merge with value change)."
     },
     "color-category-navy-300": {
-      "$value": "#b1cbfe",
+      "$value": "{plx-ref.color-blue-300}",
       "$type": "color",
-      "$description": "Category navy, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-300.",
+      "$description": "Deprecated alias of blue-300 (was #b1cbfe; merge with value change)."
     },
     "color-category-navy-700": {
-      "$value": "#244698",
+      "$value": "{plx-ref.color-blue-800}",
       "$type": "color",
-      "$description": "Category navy, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-blue-800.",
+      "$description": "Deprecated alias of blue-800 (was #244698; merge with value change)."
     },
     "color-category-grey": {
-      "$value": "#a9a9a9",
+      "$value": "{plx-ref.color-gray-400}",
       "$type": "color",
-      "$description": "Category color 20 of 20: grey (Sasha Trubetskoy, List of 20 Simple, Distinct Colors (sashamaps.net/resources/20-colors), convenient order; batch 290)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-400.",
+      "$description": "Deprecated alias of gray-400 (was #a9a9a9; merge with value change)."
     },
     "color-category-grey-100": {
-      "$value": "#f3f3f3",
+      "$value": "{plx-ref.color-gray-100}",
       "$type": "color",
-      "$description": "Category grey, shade 100: the soft pill background (the category hue, lighter in OKLCH; owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-100.",
+      "$description": "Deprecated alias of gray-100 (was #f3f3f3; rename or exact alias)."
     },
     "color-category-grey-300": {
-      "$value": "#cacaca",
+      "$value": "{plx-ref.color-gray-300}",
       "$type": "color",
-      "$description": "Category grey, shade 300: the soft pill border (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-300.",
+      "$description": "Deprecated alias of gray-300 (was #cacaca; merge with value change)."
     },
     "color-category-grey-700": {
-      "$value": "#4d4d4d",
+      "$value": "{plx-ref.color-gray-700}",
       "$type": "color",
-      "$description": "Category grey, shade 700: the soft pill text, AA on shade 100 (owner, 2026-10-14, docs/pills-and-colors.md)."
+      "$deprecated": "Retired 2026-10-15 (palette consolidation): use --plx-ref-color-gray-700.",
+      "$description": "Deprecated alias of gray-700 (was #4d4d4d; merge with value change)."
     }
   }
 }
