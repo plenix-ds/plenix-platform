@@ -2382,6 +2382,7 @@ function Built({
   fixed,
   many,
   bars = 'now',
+  tidy = '',
   shape = 'ghost',
   height = '--plx-ref-size-240px'
 }) {
@@ -2393,6 +2394,10 @@ function Built({
   // d (owner, 2026-10-15): one command bar; a selection adds a second row in the same frame, under a thin gray line;
   // e: the same second row, always there, grayed until a selection
   const rowsIn = bars === 'd' || bars === 'e';
+  // tidy (owner, 2026-10-15: "messy and scattered"): a = zones (actions | search and filters … view), the search right after
+  // the actions; b = search leads row 1, the actions start row 2; c = Category and Type only in the Filter panel; d = one
+  // style per zone: the actions go to icons first, find and view keep their labels longest, carets only on menus
+  const T = k => tidy.includes(k);
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -2474,8 +2479,8 @@ function Built({
   const foldable = foldList.filter(v => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
-  const iconStep = narrow ? 0 : 1;
-  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, bars, shape].join('|'), iconStep + foldable.length);
+  const iconStep = narrow ? 0 : T('d') ? 2 : 1;
+  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, bars, tidy, shape].join('|'), iconStep + foldable.length);
   const s = fit === 0 && !narrow ? 'icon-label' : 'icon';
   const foldN = Math.max(0, fit - iconStep);
   // the button shape (parked): the main bar ghost (the mix, ghost) or outlined; the selection bar outlined (BulkActions) or ghost
@@ -2602,26 +2607,30 @@ function Built({
   }, /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: "ghost",
+    icon: T('d') ? 'checklist' : undefined,
     disabled: true
   }, "Select all")) : /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: "ghost",
+    icon: T('d') ? 'checklist' : undefined,
     onClick: () => setSel(data.map(r => r.id))
   }, "Select all"), selecting ? /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: "ghost",
+    icon: T('d') ? 'close' : undefined,
     onClick: () => setSel([])
   }, "Clear") : /*#__PURE__*/React.createElement(Tooltip, {
     content: 'Nothing to clear: select ' + c.nouns + ' first'
   }, /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: "ghost",
+    icon: T('d') ? 'close' : undefined,
     disabled: true
   }, "Clear"))));
 
   // find and view: each control its own button, ghost (decided); icons only when the bar
   // does not fit or is narrow; never merged
-  const io = s === 'icon';
+  const io = narrow || fit >= iconStep;
   const gfields = fields.filter(f => f.kind === 'select');
   const findEls = fv => /*#__PURE__*/React.createElement(React.Fragment, null, c.search ? /*#__PURE__*/React.createElement(BarSearch, {
     value: q,
@@ -2638,8 +2647,9 @@ function Built({
     fields: fields,
     value: filt,
     setValue: setFilt
-  })), (c.quick || []).map(k => /*#__PURE__*/React.createElement(QuickFilter, {
+  })), (T('c') ? [] : c.quick || []).map(k => /*#__PURE__*/React.createElement(QuickFilter, {
     key: k.key,
+    caret: !T('d'),
     label: k.label,
     icon: k.icon,
     noun: k.noun,
@@ -2767,11 +2777,27 @@ function Built({
       }, findGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), viewGroup)));
     }
     const row2 = rowsIn && mode === 'bulk' && (bars === 'e' || selecting);
+    if (rowsIn && T('b')) {
+      return /*#__PURE__*/React.createElement("div", {
+        className: "study-bar study-bar--rows"
+      }, /*#__PURE__*/React.createElement(Toolbar, {
+        label: "Find and view"
+      }, findGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), viewGroup), /*#__PURE__*/React.createElement(Toolbar, {
+        label: c.title + ' actions'
+      }, /*#__PURE__*/React.createElement(Toolbar.Group, {
+        className: PART_A
+      }, mainActs()), mode === 'bulk' ? /*#__PURE__*/React.createElement(Divider, {
+        orientation: "vertical"
+      }) : null, mode === 'bulk' ? selEl() : null));
+    }
+    const row1 = T('a') ? /*#__PURE__*/React.createElement(React.Fragment, null, actionGroup, actionGroup && findGroup ? /*#__PURE__*/React.createElement(Divider, {
+      orientation: "vertical"
+    }) : null, findGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), viewGroup) : /*#__PURE__*/React.createElement(React.Fragment, null, actionGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), findGroup, viewGroup);
     return /*#__PURE__*/React.createElement("div", {
       className: 'study-bar' + (row2 ? ' study-bar--rows' : '')
     }, /*#__PURE__*/React.createElement(Toolbar, {
       label: c.title
-    }, actionGroup, /*#__PURE__*/React.createElement(Toolbar.Spacer, null), findGroup, viewGroup), row2 ? /*#__PURE__*/React.createElement(Toolbar, {
+    }, row1), row2 ? /*#__PURE__*/React.createElement(Toolbar, {
       label: "Selection actions"
     }, selEl()) : null);
   };
@@ -4078,14 +4104,15 @@ function QuickFilter({
   value,
   setValue,
   iconOnly,
-  variant = 'ghost'
+  variant = 'ghost',
+  caret = true
 }) {
   const n = value.length;
   const trigger = iconOnly ? /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: variant,
     icon: icon,
-    caret: true,
+    caret: caret,
     selected: n > 0,
     label: n ? label + ', ' + n : label
   }, n ? /*#__PURE__*/React.createElement(Badge, {
@@ -4095,7 +4122,7 @@ function QuickFilter({
     size: "sm",
     variant: variant,
     icon: icon,
-    caret: true,
+    caret: caret,
     selected: n > 0
   }, label, n ? /*#__PURE__*/React.createElement(React.Fragment, null, " ", /*#__PURE__*/React.createElement(Badge, {
     size: "sm",
@@ -4503,6 +4530,83 @@ function CountSwitch() {
     }]
   }));
 }
+// Tidy bar (owner, 2026-10-15: E "looks messy and scattered"): E as drawn, then the four fixes and two combinations
+const TIDY = [{
+  k: '',
+  title: 'E as drawn',
+  lines: ['The actions on the left, a spacer, then search, filters and view on the right: the search box floats mid-bar; nine controls with the same gaps; mixed carets; row 2 text-only buttons.']
+}, {
+  k: 'a',
+  title: 'A · Zones',
+  lines: ['Actions | search and filters, then a spacer, then Sort, Group and View. The search starts its zone right after the actions (no longer floating); a divider between the zones.']
+}, {
+  k: 'b',
+  title: 'B · Search leads',
+  lines: ['Row 1: search and filters, a spacer, Sort, Group and View. Row 2: the actions, then the selection actions (grayed until you select), Select all and Clear.']
+}, {
+  k: 'c',
+  title: 'C · Fewer things',
+  lines: ['Category and Type are not buttons in the bar; they are fields in the Filter panel (Filter holds every possibility). 9 controls become 7.']
+}, {
+  k: 'd',
+  title: 'D · One style per zone',
+  lines: ['The actions are the first to go to icons; find and view keep their labels longest. Carets only on real menus (New, View); the panels (Filter, Category, Type, Sort, Group) have none. Select all and Clear get icons.']
+}, {
+  k: 'ad',
+  title: 'A + D',
+  lines: ['Zones, and one style per zone.']
+}, {
+  k: 'acd',
+  title: 'A + C + D',
+  lines: ['Zones, Category and Type in the Filter panel, and one style per zone.']
+}];
+function TidyBarPage({
+  notes,
+  setNotes
+}) {
+  const sp = {
+    notes,
+    setNotes
+  };
+  return /*#__PURE__*/React.createElement(Stack, {
+    gap: "xl"
+  }, /*#__PURE__*/React.createElement(Stack, {
+    gap: "sm"
+  }, /*#__PURE__*/React.createElement(Text, {
+    variant: "title",
+    as: "h1"
+  }, "Tidy bar"), /*#__PURE__*/React.createElement(CountSwitch, null), /*#__PURE__*/React.createElement(Text, {
+    variant: "secondary"
+  }, "E (one frame, the selection row always there) made tidy. Few actions; the last two also with many. Live: use \"2 items selected\" to see the selection state.")), TIDY.map(f => /*#__PURE__*/React.createElement(DecidedScreen, _extends({
+    key: f.k || 'e',
+    id: 'tidy-' + (f.k || 'e'),
+    title: f.title,
+    lines: f.lines,
+    canSelect: true
+  }, sp, {
+    render: on => /*#__PURE__*/React.createElement(Built, {
+      key: f.k + (on ? 'sel' : 'rest'),
+      sit: "both",
+      bars: "e",
+      tidy: f.k,
+      initial: on ? SIT.both.initial : []
+    })
+  }))), ['ad', 'acd'].map(k => /*#__PURE__*/React.createElement(DecidedScreen, _extends({
+    key: k + 'm',
+    id: 'tidy-' + k + '-many',
+    title: TIDY.find(f => f.k === k).title + ': many actions',
+    canSelect: true
+  }, sp, {
+    render: on => /*#__PURE__*/React.createElement(Built, {
+      key: k + 'm' + (on ? 'sel' : 'rest'),
+      sit: "both",
+      many: true,
+      bars: "e",
+      tidy: k,
+      initial: on ? SIT.both.initial : []
+    })
+  }))));
+}
 function FewerBarsPage({
   notes,
   setNotes
@@ -4698,7 +4802,7 @@ function DecidedPage({
   })));
 }
 function App() {
-  const [id, setId] = useState('fewer');
+  const [id, setId] = useState('tidy');
   const [countAt, setCountAt] = useStored('plenix-command-bar-study-count', 'below', v => v === 'above' || v === 'below');
   const [open, setOpen] = useState(true);
   const [types, setTypes] = useState([]);
@@ -4724,6 +4828,10 @@ function App() {
     heading: 'Command bar',
     collapsible: false,
     items: [{
+      id: 'tidy',
+      label: 'Tidy bar',
+      icon: 'view-table'
+    }, {
       id: 'fewer',
       label: 'Fewer bars',
       icon: 'view-table'
@@ -4744,7 +4852,7 @@ function App() {
     defaultExpanded: false,
     items: refs.options.filter(x => !elim.includes(x.id)).map(item)
   }];
-  const page = id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
+  const page = id === 'tidy' ? 'Tidy bar' : id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
   return /*#__PURE__*/React.createElement(AppShell, {
     page: "dam",
     header: /*#__PURE__*/React.createElement(AppHeader, {
@@ -4779,7 +4887,10 @@ function App() {
     value: setCountAt
   }, /*#__PURE__*/React.createElement(CountAt.Provider, {
     value: countAt
-  }, /*#__PURE__*/React.createElement(PageContent, null, id === 'fewer' ? /*#__PURE__*/React.createElement(FewerBarsPage, {
+  }, /*#__PURE__*/React.createElement(PageContent, null, id === 'tidy' ? /*#__PURE__*/React.createElement(TidyBarPage, {
+    notes: notes,
+    setNotes: setNotes
+  }) : id === 'fewer' ? /*#__PURE__*/React.createElement(FewerBarsPage, {
     notes: notes,
     setNotes: setNotes
   }) : id === 'decided' ? /*#__PURE__*/React.createElement(DecidedPage, {

@@ -752,7 +752,7 @@ function HideFieldsMenu({ names, hidden, setHidden, iconOnly, variant = 'ghost' 
 const CountAt = React.createContext('below');
 const CountSlot = React.createContext(null);
 
-function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now', shape = 'ghost', height = '--plx-ref-size-240px' }) {
+function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now', tidy = '', shape = 'ghost', height = '--plx-ref-size-240px' }) {
   const c = SIT[sit];
   // bars (fewer-bars study, 2026-10-15): now = as decided; a = many actions fold into More in one bar, 2B stays; b = the selection
   // actions live in the main bar, grayed until a selection, no 2B; c = a and b: always one bar
@@ -761,6 +761,10 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
   // d (owner, 2026-10-15): one command bar; a selection adds a second row in the same frame, under a thin gray line;
   // e: the same second row, always there, grayed until a selection
   const rowsIn = bars === 'd' || bars === 'e';
+  // tidy (owner, 2026-10-15: "messy and scattered"): a = zones (actions | search and filters … view), the search right after
+  // the actions; b = search leads row 1, the actions start row 2; c = Category and Type only in the Filter panel; d = one
+  // style per zone: the actions go to icons first, find and view keep their labels longest, carets only on menus
+  const T = (k) => tidy.includes(k);
   const mode = modeOf(sit);
   const finds = sit !== 'menu';
   const [rows, setRows] = useState(c.data);
@@ -794,8 +798,8 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
   const foldable = foldList.filter((v) => !v.danger);
   // the button rule, measured (owner, 2026-10-14): step 0 icon and label; 1 icons with tooltips; then one more action goes into
   // More (⋮) per step, from the end; More only appears when something does not fit. A narrow bar starts at icons
-  const iconStep = narrow ? 0 : 1;
-  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, bars, shape].join('|'), iconStep + foldable.length);
+  const iconStep = narrow ? 0 : T('d') ? 2 : 1;
+  const fit = useFitStep(root, [selecting, mode, primary, nF, JSON.stringify(quick), sortLv.length, groups.length, hidden.length, view.layout, narrow, many, bars, tidy, shape].join('|'), iconStep + foldable.length);
   const s = fit === 0 && !narrow ? 'icon-label' : 'icon';
   const foldN = Math.max(0, fit - iconStep);
   // the button shape (parked): the main bar ghost (the mix, ghost) or outlined; the selection bar outlined (BulkActions) or ghost
@@ -843,21 +847,21 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
     <Toolbar.Group>
       {verbsEl(selVerbs, bars === 'now' ? foldN : 0)}
       <Divider orientation="vertical" />
-      {all ? <Tooltip content={'Every ' + c.noun + ' is selected'}><Button size="sm" variant="ghost" disabled>Select all</Button></Tooltip>
-        : <Button size="sm" variant="ghost" onClick={() => setSel(data.map((r) => r.id))}>Select all</Button>}
-      {selecting ? <Button size="sm" variant="ghost" onClick={() => setSel([])}>Clear</Button>
-        : <Tooltip content={'Nothing to clear: select ' + c.nouns + ' first'}><Button size="sm" variant="ghost" disabled>Clear</Button></Tooltip>}
+      {all ? <Tooltip content={'Every ' + c.noun + ' is selected'}><Button size="sm" variant="ghost" icon={T('d') ? 'checklist' : undefined} disabled>Select all</Button></Tooltip>
+        : <Button size="sm" variant="ghost" icon={T('d') ? 'checklist' : undefined} onClick={() => setSel(data.map((r) => r.id))}>Select all</Button>}
+      {selecting ? <Button size="sm" variant="ghost" icon={T('d') ? 'close' : undefined} onClick={() => setSel([])}>Clear</Button>
+        : <Tooltip content={'Nothing to clear: select ' + c.nouns + ' first'}><Button size="sm" variant="ghost" icon={T('d') ? 'close' : undefined} disabled>Clear</Button></Tooltip>}
     </Toolbar.Group>
   </>;
 
   // find and view: each control its own button, ghost (decided); icons only when the bar
   // does not fit or is narrow; never merged
-  const io = s === 'icon';
+  const io = narrow || fit >= iconStep;
   const gfields = fields.filter((f) => f.kind === 'select');
   const findEls = (fv) => <>
     {c.search ? <BarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder={c.search} narrow={narrow} /> : null}
     <PanelButton kind="filter" n={nF} iconOnly={io} variant={fv}><FilterPanel fields={fields} value={filt} setValue={setFilt} /></PanelButton>
-    {(c.quick || []).map((k) => <QuickFilter key={k.key} label={k.label} icon={k.icon} noun={k.noun} iconOnly={io} variant={fv} options={fieldOf(fields, k.key).options}
+    {(T('c') ? [] : c.quick || []).map((k) => <QuickFilter key={k.key} caret={!T('d')} label={k.label} icon={k.icon} noun={k.noun} iconOnly={io} variant={fv} options={fieldOf(fields, k.key).options}
       value={quick[k.key] || []} setValue={(v) => setQuick((o) => Object.assign({}, o, { [k.key]: v }))} />)}
   </>;
   const viewEls = (fv) => <>
@@ -900,7 +904,13 @@ function Built({ sit, narrow, initial, primary = false, fixed, many, bars = 'now
         <div className="study-bar study-part--find"><Toolbar label="Find and view">{findGroup}<Toolbar.Spacer />{viewGroup}</Toolbar></div></>;
     }
     const row2 = rowsIn && mode === 'bulk' && (bars === 'e' || selecting);
-    return <div className={'study-bar' + (row2 ? ' study-bar--rows' : '')}><Toolbar label={c.title}>{actionGroup}<Toolbar.Spacer />{findGroup}{viewGroup}</Toolbar>
+    if (rowsIn && T('b')) {
+      return <div className="study-bar study-bar--rows"><Toolbar label="Find and view">{findGroup}<Toolbar.Spacer />{viewGroup}</Toolbar>
+        <Toolbar label={c.title + ' actions'}><Toolbar.Group className={PART_A}>{mainActs()}</Toolbar.Group>{mode === 'bulk' ? <Divider orientation="vertical" /> : null}{mode === 'bulk' ? selEl() : null}</Toolbar></div>;
+    }
+    const row1 = T('a') ? <>{actionGroup}{actionGroup && findGroup ? <Divider orientation="vertical" /> : null}{findGroup}<Toolbar.Spacer />{viewGroup}</>
+      : <>{actionGroup}<Toolbar.Spacer />{findGroup}{viewGroup}</>;
+    return <div className={'study-bar' + (row2 ? ' study-bar--rows' : '')}><Toolbar label={c.title}>{row1}</Toolbar>
       {row2 ? <Toolbar label="Selection actions">{selEl()}</Toolbar> : null}</div>;
   };
   const bulkEl = mode !== 'bulk' || selInMain || rowsIn ? null : shape === 'ghost' ? <div className="study-bar"><Toolbar label="Selection actions">{selEl()}</Toolbar></div>
@@ -1327,10 +1337,10 @@ function ChecklistBody({ noun, options, value, setValue }) {
       : <Text variant="secondary">{'No ' + noun + ' matches'}</Text>}</Stack>
   </Stack>;
 }
-function QuickFilter({ label, icon, noun, options, value, setValue, iconOnly, variant = 'ghost' }) {
+function QuickFilter({ label, icon, noun, options, value, setValue, iconOnly, variant = 'ghost', caret = true }) {
   const n = value.length;
-  const trigger = iconOnly ? <Button size="sm" variant={variant} icon={icon} caret selected={n > 0} label={n ? label + ', ' + n : label}>{n ? <Badge size="sm" tone="info">{n}</Badge> : null}</Button>
-    : <Button size="sm" variant={variant} icon={icon} caret selected={n > 0}>{label}{n ? <> <Badge size="sm" tone="info">{n}</Badge></> : null}</Button>;
+  const trigger = iconOnly ? <Button size="sm" variant={variant} icon={icon} caret={caret} selected={n > 0} label={n ? label + ', ' + n : label}>{n ? <Badge size="sm" tone="info">{n}</Badge> : null}</Button>
+    : <Button size="sm" variant={variant} icon={icon} caret={caret} selected={n > 0}>{label}{n ? <> <Badge size="sm" tone="info">{n}</Badge></> : null}</Button>;
   const pop = <Popover title={label} size="sm" trigger={trigger} footer={<Button size="sm" variant="ghost" icon="filter-off" disabled={!n} onClick={() => setValue([])}>Clear</Button>}>
     <ChecklistBody noun={noun} options={options} value={value} setValue={setValue} /></Popover>;
   return iconOnly ? <Tooltip content={label}>{pop}</Tooltip> : pop;
@@ -1492,6 +1502,30 @@ function CountSwitch() {
   return <Inline gap="sm"><Text variant="label">The count</Text>
     <Seg label="Where the count sits" value={at} onChange={set} options={[{ value: 'above', label: 'Above the table' }, { value: 'below', label: 'Under the card' }]} /></Inline>;
 }
+// Tidy bar (owner, 2026-10-15: E "looks messy and scattered"): E as drawn, then the four fixes and two combinations
+const TIDY = [
+  { k: '', title: 'E as drawn', lines: ['The actions on the left, a spacer, then search, filters and view on the right: the search box floats mid-bar; nine controls with the same gaps; mixed carets; row 2 text-only buttons.'] },
+  { k: 'a', title: 'A · Zones', lines: ['Actions | search and filters, then a spacer, then Sort, Group and View. The search starts its zone right after the actions (no longer floating); a divider between the zones.'] },
+  { k: 'b', title: 'B · Search leads', lines: ['Row 1: search and filters, a spacer, Sort, Group and View. Row 2: the actions, then the selection actions (grayed until you select), Select all and Clear.'] },
+  { k: 'c', title: 'C · Fewer things', lines: ['Category and Type are not buttons in the bar; they are fields in the Filter panel (Filter holds every possibility). 9 controls become 7.'] },
+  { k: 'd', title: 'D · One style per zone', lines: ['The actions are the first to go to icons; find and view keep their labels longest. Carets only on real menus (New, View); the panels (Filter, Category, Type, Sort, Group) have none. Select all and Clear get icons.'] },
+  { k: 'ad', title: 'A + D', lines: ['Zones, and one style per zone.'] },
+  { k: 'acd', title: 'A + C + D', lines: ['Zones, Category and Type in the Filter panel, and one style per zone.'] },
+];
+function TidyBarPage({ notes, setNotes }) {
+  const sp = { notes, setNotes };
+  return <Stack gap="xl">
+    <Stack gap="sm">
+      <Text variant="title" as="h1">Tidy bar</Text>
+      <CountSwitch />
+      <Text variant="secondary">E (one frame, the selection row always there) made tidy. Few actions; the last two also with many. Live: use "2 items selected" to see the selection state.</Text>
+    </Stack>
+    {TIDY.map((f) => <DecidedScreen key={f.k || 'e'} id={'tidy-' + (f.k || 'e')} title={f.title} lines={f.lines} canSelect {...sp}
+      render={(on) => <Built key={f.k + (on ? 'sel' : 'rest')} sit="both" bars="e" tidy={f.k} initial={on ? SIT.both.initial : []} />} />)}
+    {['ad', 'acd'].map((k) => <DecidedScreen key={k + 'm'} id={'tidy-' + k + '-many'} title={TIDY.find((f) => f.k === k).title + ': many actions'} canSelect {...sp}
+      render={(on) => <Built key={k + 'm' + (on ? 'sel' : 'rest')} sit="both" many bars="e" tidy={k} initial={on ? SIT.both.initial : []} />} />)}
+  </Stack>;
+}
 function FewerBarsPage({ notes, setNotes }) {
   const sp = { notes, setNotes };
   return <Stack gap="xl">
@@ -1557,7 +1591,7 @@ function DecidedPage({ elim, setElim, notes, setNotes }) {
 }
 
 function App() {
-  const [id, setId] = useState('fewer');
+  const [id, setId] = useState('tidy');
   const [countAt, setCountAt] = useStored('plenix-command-bar-study-count', 'below', (v) => v === 'above' || v === 'below');
   const [open, setOpen] = useState(true);
   const [types, setTypes] = useState([]);
@@ -1569,11 +1603,11 @@ function App() {
   const item = (x) => ({ id: x.id, label: optionLabel(x) });
   const variants = GROUPS.find((g) => g.variants), refs = GROUPS.find((g) => g.reference);
   const groups = [
-    { heading: 'Command bar', collapsible: false, items: [{ id: 'fewer', label: 'Fewer bars', icon: 'view-table' }, { id: 'decided', label: 'Decided so far', icon: 'check' }, { id: 'controls', label: 'Controls, side by side', icon: 'view-table' }] },
+    { heading: 'Command bar', collapsible: false, items: [{ id: 'tidy', label: 'Tidy bar', icon: 'view-table' }, { id: 'fewer', label: 'Fewer bars', icon: 'view-table' }, { id: 'decided', label: 'Decided so far', icon: 'check' }, { id: 'controls', label: 'Controls, side by side', icon: 'view-table' }] },
     { heading: 'Kept variants', items: variants.options.map(item) },
     { heading: 'Reference', defaultExpanded: false, items: refs.options.filter((x) => !elim.includes(x.id)).map(item) },
   ];
-  const page = id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
+  const page = id === 'tidy' ? 'Tidy bar' : id === 'fewer' ? 'Fewer bars' : id === 'decided' ? 'Decided so far' : id === 'controls' ? 'Controls, side by side' : null;
   return (
     <AppShell page="dam"
       header={<AppHeader tone="accent" appName="Command bar study" brandHref="#" />}
@@ -1581,7 +1615,8 @@ function App() {
       panel={o && o.panel ? <FiltersPanel open={open} onOpenChange={setOpen} types={types} setTypes={setTypes} cats={cats} setCats={setCats} /> : undefined}
       footer={<StatusBar start={<span>{o ? o.id.toUpperCase() + ' · ' + o.name : page}</span>} end={<span>{o ? o.standard : 'Eliminations and notes are kept in this browser'}</span>} />}>
       <div className="plx-app-shell__page"><CountSet.Provider value={setCountAt}><CountAt.Provider value={countAt}><PageContent>
-        {id === 'fewer' ? <FewerBarsPage notes={notes} setNotes={setNotes} />
+        {id === 'tidy' ? <TidyBarPage notes={notes} setNotes={setNotes} />
+          : id === 'fewer' ? <FewerBarsPage notes={notes} setNotes={setNotes} />
           : id === 'decided' ? <DecidedPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />
           : id === 'controls' ? <ControlsPage elim={elim} setElim={setElim} notes={notes} setNotes={setNotes} />
           : o ? <Stack gap="lg">
