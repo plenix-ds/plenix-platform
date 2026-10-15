@@ -6,6 +6,20 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.31.64] - 2026-10-15
+
+### Added
+- Yellow (waiting, paused) and orange (action or correction required) reference scales, and soft 100/300/700 shades
+  for the 20 category colors (owner's approved values; docs/pills-and-colors.md).
+### Changed
+- Pills (owner): every pill is soft, a shade-100 background, a 1px shade-300 border, dark text of the same family and
+  4px corners. Badge has six status variants: neutral, success, active, waiting, action required, negative (info,
+  warning and danger still work as active, waiting and negative). Tags and categories use their own soft category
+  colors, never the status variants.
+- Warnings are orange and "away" is yellow; brown is no longer used for any status.
+- SegmentedControl: a bordered group of joined segments; the chosen one takes the selected tint.
+- Projects: Active, Paused, Completed and Archived use the active, waiting, success and neutral variants.
+
 ## [0.31.63] - 2026-10-14
 
 ### Added
