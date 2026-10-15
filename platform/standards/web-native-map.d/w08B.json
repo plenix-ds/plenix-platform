@@ -1,0 +1,11 @@
+{
+  "$description": "Library part w08B (wave 8, lane B): the iOS and Android counterparts of the virtualized list, the carousel, the team and the group, the permission summary and the query builder. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Virtualized list": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|List", "android-layout|Lazy grids"] },
+    "data-display|Carousel": { "ios": ["ios-navigation|Page controls", "ios-layout|Scroll views"], "android": ["android-data-display|Carousel"] },
+    "content|Team": { "ios": ["ios-specialized|Collaboration and sharing"], "android": ["android-content|Avatar", "android-data-display|List"] },
+    "content|Group": { "ios": ["ios-specialized|Collaboration and sharing"], "android": ["android-specialized|Share", "android-data-display|List"] },
+    "content|Permission summary": { "ios": ["ios-specialized|Collaboration and sharing"], "android": ["android-specialized|Share"] },
+    "navigation|Query builder": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search and filters"] }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "android-navigation|Search screen": {
+    "summary": "Plenix search results on Android keep Material 3’s search (the SearchBar expanding into the search view, the keyboard and Back) and draw each result as a Plenix list item: a leading thumbnail or avatar, the path as the overline, the name with the words searched for in bold, a two-line snippet and the details, technical values in DM Mono. Results of several kinds sit under a header per kind with its count, each with a Show all item.",
+    "variants": [
+      { "name": "Page (default)", "material": "ListItem in the search view", "web": "navigation|Search result item", "background": "plx-sys-surface-default", "content": "plx-comp-search-result-title-text", "border": "plx-comp-search-result-border-bottom-color", "compose": "ListItem(leadingContent = thumbnail, overlineContent = path, headlineContent = title, supportingContent = snippet)", "views": "A RecyclerView row with the Plenix item layout", "use": "Notes, pages, projects and other records." },
+      { "name": "File", "material": "ListItem with a leading image", "web": "navigation|Search result item", "background": "plx-sys-surface-default", "content": "plx-comp-search-result-meta-text", "border": "plx-comp-search-result-border-bottom-color", "compose": "The same item with the file’s thumbnail and its size and date in DM Mono", "views": "The row’s ImageView loaded with the file’s thumbnail", "use": "Documents, images, uploads." },
+      { "name": "Person", "material": "ListItem with a leading avatar", "web": "navigation|Search result item", "background": "plx-sys-surface-default", "content": "plx-comp-search-result-title-text", "border": "plx-comp-search-result-border-bottom-color", "compose": "The item with the Plenix avatar (a rounded square with initials)", "views": "The row with the avatar view", "use": "Members, contacts, authors." },
+      { "name": "Grouped by kind", "material": "List with section headers", "web": "navigation|Search result groups", "background": "plx-sys-surface-default", "content": "plx-comp-search-result-group-count-text", "border": null, "compose": "LazyColumn { stickyHeader { kind and count } items(first) { … } item { Show all } }", "views": "A header view type per kind in the adapter", "use": "A search across pages, files and people." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Thumbnail or avatar", "about": "What the result is: a page’s icon on the sunken surface, a file’s picture, a person’s avatar." },
+      { "part": "B", "name": "Path", "about": "Where the result sits, as the item’s overline, in the muted color." },
+      { "part": "C", "name": "Title", "about": "The result’s name as the headline; the words searched for are bold, never colored." },
+      { "part": "D", "name": "Snippet and details", "about": "Two lines at most around the match, then the type, size and date (technical values in DM Mono)." },
+      { "part": "E", "name": "Section header", "about": "The kind in the plural and its count, when results of several kinds are shown." }
+    ],
+    "attributes": [
+      { "part": "C", "attribute": "Title", "token": "plx-comp-search-result-title-text", "value": "Default content color, DM Sans medium at the Body large role", "material": "List item headline", "compose": "Text(title, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize)", "views": "titleView.setTextColor(PlenixColors.contentDefault.light.toArgb())", "follows": "Material 3: Lists", "followsUrl": "https://m3.material.io/components/lists/overview" },
+      { "part": "C", "attribute": "Match", "token": "plx-comp-search-result-match-font-weight", "value": "Bold, in the title’s color", "material": "None (Material leaves highlighting to the app)", "compose": "buildAnnotatedString { withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(match) } }", "views": "SpannableString with a StyleSpan(Typeface.BOLD) on each match", "follows": "Material 3: Search", "followsUrl": "https://m3.material.io/components/search/overview" },
+      { "part": "B", "attribute": "Path", "token": "plx-comp-search-result-path-text", "value": "Muted content color at the Body medium role", "material": "List item overline", "compose": "overlineContent = { Text(path, color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize) }", "views": "overlineView.setTextColor(PlenixColors.contentMuted.light.toArgb())", "follows": "Material 3: Lists", "followsUrl": "https://m3.material.io/components/lists/overview" },
+      { "part": "D", "attribute": "Details", "token": "plx-comp-search-result-meta-text", "value": "Subtle content color; sizes and dates in the data font (DM Mono)", "material": "Supporting text", "compose": "Text(meta, color = PlenixColors.contentSubtle.current(), fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textSecondarySize) // PlenixFonts.MONO", "views": "metaView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/overview" },
+      { "part": "A", "attribute": "Row spacing", "token": "plx-comp-search-result-gap", "value": "The inline medium space between the thumbnail and the text", "material": "List item leading padding", "compose": "Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineMd))", "views": "the leading view’s marginEnd from PlenixSpace.spaceInlineMd", "follows": "Material 3: Lists", "followsUrl": "https://m3.material.io/components/lists/overview" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-comp-search-result-title-text", "compose": "the item at rest", "views": "the row at rest" },
+      { "state": "Pressed", "token": "plx-comp-search-result-hover-background", "compose": "the ripple in the state color (Modifier.clickable with the Plenix ripple)", "views": "a RippleDrawable in PlenixColors.stateHover" },
+      { "state": "Selected (its preview shown, large screens)", "token": "plx-comp-search-result-selected-background", "compose": "ListItemDefaults.colors(containerColor = PlenixColors.stateSelected.current())", "views": "the row’s activated background" },
+      { "state": "No results", "token": "plx-sys-content-muted", "compose": "a Plenix empty state in the search view", "views": "an empty view in the adapter" }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.layout.*",
+        "import androidx.compose.material3.*",
+        "import androidx.compose.runtime.Composable",
+        "import androidx.compose.ui.text.*",
+        "import androidx.compose.ui.text.font.*",
+        "import plenix.tokens.*",
+        "",
+        "// the text with every match of the query in bold (never a color)",
+        "fun highlighted(text: String, query: String): AnnotatedString = buildAnnotatedString {",
+        "    val at = text.indexOf(query, ignoreCase = true)",
+        "    if (query.isBlank() || at < 0) { append(text); return@buildAnnotatedString }",
+        "    append(text.substring(0, at))",
+        "    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(text.substring(at, at + query.length)) }",
+        "    append(text.substring(at + query.length))",
+        "}",
+        "",
+        "@Composable",
+        "fun PlenixSearchResult(result: SearchResult, query: String, onOpen: () -> Unit) {",
+        "    val mono = FontFamily(Font(R.font.dm_mono)) // PlenixFonts.MONO",
+        "    ListItem(",
+        "        modifier = Modifier.clickable(onClick = onOpen),",
+        "        leadingContent = { PlenixThumbnail(result.kind) },",
+        "        overlineContent = { Text(result.path.joinToString(\" › \"), color = PlenixColors.contentMuted.current()) },",
+        "        headlineContent = { Text(highlighted(result.title, query), color = PlenixColors.contentDefault.current()) },",
+        "        supportingContent = {",
+        "            Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+        "                Text(highlighted(result.snippet, query), maxLines = 2, color = PlenixColors.contentMuted.current())",
+        "                Text(result.meta, fontFamily = mono, color = PlenixColors.contentSubtle.current())",
+        "            }",
+        "        }",
+        "    )",
+        "}"
+      ],
+      "views": [
+        "<!-- res/layout/plenix_search_result.xml: a ConstraintLayout with the thumbnail, the path, the title, the snippet and the meta -->",
+        "<TextView android:id=\"@+id/meta\" android:fontFamily=\"@font/dm_mono\" android:textColor=\"@color/plenix_content_subtle\" />",
+        "",
+        "val title = SpannableString(result.title)",
+        "val at = result.title.indexOf(query, ignoreCase = true)",
+        "if (at >= 0) title.setSpan(StyleSpan(Typeface.BOLD), at, at + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)",
+        "binding.title.text = title"
+      ]
+    }
+  }
+}

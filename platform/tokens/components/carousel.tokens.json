@@ -1,0 +1,95 @@
+{
+  "$description": "Carousel (platform/components/Carousel), library wave 8, lane B: its component tokens. The gap between slides and the peek of the next one, the controls row, the page dots (the iOS page control’s roles: the current page in the default content color, the others in the strong border color) with their 24px targets, the focus outlines and the autoplay interval.",
+  "plx-comp": {
+    "carousel-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "Carousel: gap between slides (space-inline-md)."
+    },
+    "carousel-peek": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "Carousel: how much of the next slide shows with several per view (size-40px)."
+    },
+    "carousel-controls-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Carousel: gap between the strip and the controls (space-stack-sm)."
+    },
+    "carousel-controls-column-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Carousel: gap between the controls (space-inline-sm)."
+    },
+    "carousel-track-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Carousel: strip focus outline color (focus-ring-color)."
+    },
+    "carousel-track-focus-outline-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension",
+      "$description": "Carousel: strip focus outline width (focus-ring-width)."
+    },
+    "carousel-track-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "Carousel: strip focus outline offset (focus-ring-offset)."
+    },
+    "carousel-dot-target": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "Carousel: a page dot’s target size (WCAG 2.5.8) (size-24px)."
+    },
+    "carousel-dot-target-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "Carousel: a page dot target’s corner radius (its focus outline) (radius-control)."
+    },
+    "carousel-dot-size": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension",
+      "$description": "Carousel: a page dot’s size (size-8px)."
+    },
+    "carousel-dot-radius": {
+      "$value": "{plx-sys.radius-pill-4px}",
+      "$type": "dimension",
+      "$description": "Carousel: a page dot’s corner radius (round at its size) (radius-pill-4px)."
+    },
+    "carousel-dot-background": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color",
+      "$description": "Carousel: page dot color (border-strong)."
+    },
+    "carousel-dot-hover-background": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Carousel: page dot color on hover (content-muted)."
+    },
+    "carousel-dot-current-background": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "Carousel: current page dot color (content-default)."
+    },
+    "carousel-dot-focus-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Carousel: page dot focus outline color (focus-ring-color)."
+    },
+    "carousel-dot-focus-outline-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension",
+      "$description": "Carousel: page dot focus outline width (focus-ring-width)."
+    },
+    "carousel-dot-focus-outline-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension",
+      "$description": "Carousel: page dot focus outline offset (focus-ring-offset)."
+    },
+    "carousel-autoplay-interval": {
+      "$value": "6s",
+      "$type": "duration",
+      "$description": "Carousel: how long a page shows before autoplay moves on (read by the component) (6s)."
+    }
+  }
+}

@@ -507,6 +507,13 @@ public enum Plenix {
         public static let cardRadius: CGFloat = 12
         public static let cardTitleContentGap: CGFloat = 12
         public static let cardTitleFontSize: CGFloat = 13
+        public static let carouselAutoplayInterval: Double = 6
+        public static let carouselControlsColumnGap: CGFloat = 8
+        public static let carouselControlsGap: CGFloat = 8
+        public static let carouselDotSize: CGFloat = 8
+        public static let carouselDotTarget: CGFloat = 24
+        public static let carouselGap: CGFloat = 12
+        public static let carouselPeek: CGFloat = 40
         public static let chartLineWidth: CGFloat = 2
         public static let chartPlotHeightMd: CGFloat = 240
         public static let chartPlotHeightSm: CGFloat = 160
@@ -589,12 +596,14 @@ public enum Plenix {
         public static let radioTileBorderWidth: CGFloat = 1
         public static let radioTileDisabledOpacity: Double = 0.5
         public static let radioTileRadius: CGFloat = 8
+        public static let roleLabelIconSize: CGFloat = 12
         public static let rowButtonFocusOutlineWidth: CGFloat = 2
         public static let searchClearWidth: CGFloat = 28
         public static let searchIconInsetInlineStart: CGFloat = 12
         public static let searchInputBorderWidth: CGFloat = 1
         public static let searchInputMinHeight: CGFloat = 28
         public static let searchInputRadius: CGFloat = 6
+        public static let searchResultGap: CGFloat = 12
         public static let segmentedItemMinHeight: CGFloat = 32
         public static let segmentedRadius: CGFloat = 6
         public static let selectAfterInsetInlineEnd: CGFloat = 12
@@ -619,6 +628,7 @@ public enum Plenix {
         public static let switchTrackWidth: CGFloat = 36
         public static let tableCellPaddingInline: CGFloat = 8
         public static let tableRadius: CGFloat = 8
+        public static let timelineItemGap: CGFloat = 12
         public static let toastAnimationDuration: Double = 0.25
         public static let toastBorderInlineStartWidth: CGFloat = 3
         public static let toastCloseHeight: CGFloat = 24

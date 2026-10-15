@@ -1,0 +1,15 @@
+/* Plenix · PermissionSummary (platform/patterns/PermissionSummary). The access line (its icon, the access in words over a
+   muted detail, Manage access at the end), then Can and Cannot side by side while they fit (stacked when narrow), each a
+   small heading over a List of checks in the success color or crosses in the danger color. Compact: one List of two
+   sentences. Anatomy and API: PermissionSummary.jsx. */
+.plx-permission-summary{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-permission-summary-gap);}
+.plx-permission-summary__head{align-items:flex-start;column-gap:var(--plx-comp-permission-summary-head-gap);display:flex;}
+.plx-permission-summary__icon{align-items:center;block-size:var(--plx-comp-permission-summary-icon-box);color:var(--plx-comp-permission-summary-icon-text);display:inline-flex;flex-shrink:0;}
+.plx-permission-summary__access{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-inline-size:0;}
+.plx-permission-summary__level{color:var(--plx-comp-permission-summary-level-text);font-size:var(--plx-comp-permission-summary-level-font-size);font-weight:var(--plx-comp-permission-summary-level-font-weight);line-height:var(--plx-comp-permission-summary-level-line-height);}
+.plx-permission-summary__detail{color:var(--plx-comp-permission-summary-detail-text);font-size:var(--plx-comp-permission-summary-detail-font-size);}
+.plx-permission-summary__manage{flex-shrink:0;}
+.plx-permission-summary__lists{column-gap:var(--plx-comp-permission-summary-lists-gap);display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--plx-comp-permission-summary-section-min-width),1fr));row-gap:var(--plx-comp-permission-summary-gap);}
+.plx-permission-summary__section{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-permission-summary-section-gap);}
+.plx-permission-summary__heading{color:var(--plx-comp-permission-summary-heading-text);font-size:var(--plx-comp-permission-summary-heading-font-size);font-weight:var(--plx-comp-permission-summary-heading-font-weight);margin-block-end:0;margin-block-start:0;}
+.plx-permission-summary--compact{row-gap:var(--plx-comp-permission-summary-compact-gap);}

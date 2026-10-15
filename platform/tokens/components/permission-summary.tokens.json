@@ -1,0 +1,90 @@
+{
+  "$description": "PermissionSummary (platform/patterns/PermissionSummary), library wave 8, lane B: its pattern tokens. The access line (icon, the access in words, the muted detail), the Can and Cannot sections and their headings, and the gaps of the list and compact forms; the checks and crosses are List’s success and danger icons.",
+  "plx-comp": {
+    "permission-summary-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: gap between the access line and the lists (space-stack-md)."
+    },
+    "permission-summary-compact-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: gap between the access line and the sentences (compact) (space-stack-sm)."
+    },
+    "permission-summary-head-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: gap between the icon, the access and Manage access (space-inline-sm)."
+    },
+    "permission-summary-icon-box": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: the icon’s box (the access line’s line height) (size-20px)."
+    },
+    "permission-summary-icon-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "PermissionSummary: access icon color (content-muted)."
+    },
+    "permission-summary-level-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "PermissionSummary: access text color (content-default)."
+    },
+    "permission-summary-level-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: access text size (font-size-13)."
+    },
+    "permission-summary-level-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "PermissionSummary: access text weight (font-weight-semibold)."
+    },
+    "permission-summary-level-line-height": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: access line height (size-20px)."
+    },
+    "permission-summary-detail-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "PermissionSummary: detail color (content-muted)."
+    },
+    "permission-summary-detail-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: detail text size (font-size-12)."
+    },
+    "permission-summary-lists-gap": {
+      "$value": "{plx-sys.space-inline-lg}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: gap between Can and Cannot side by side (space-inline-lg)."
+    },
+    "permission-summary-section-min-width": {
+      "$value": "{plx-ref.size-180px}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: the narrowest a section gets before Can and Cannot stack (size-180px)."
+    },
+    "permission-summary-section-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: gap between a heading and its list (space-stack-xs)."
+    },
+    "permission-summary-heading-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "PermissionSummary: Can and Cannot heading color (content-muted)."
+    },
+    "permission-summary-heading-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "PermissionSummary: Can and Cannot heading size (font-size-12)."
+    },
+    "permission-summary-heading-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "PermissionSummary: Can and Cannot heading weight (font-weight-semibold)."
+    }
+  }
+}

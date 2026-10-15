@@ -1,0 +1,90 @@
+{
+  "android-data-display|Carousel": {
+    "summary": "A Plenix carousel on Android is Material 3’s carousel, kept native in behavior (the fling and snap, the keyline layout that shrinks the items at the edge, TalkBack’s scroll actions, font scale) and drawn with the Plenix roles: each slide keeps its own Plenix shape (a media card’s 12 dp corners) instead of Material’s large mask, the items are 12 dp apart, and the page dots under it use the iOS page control’s roles, the current page in the default content color and the others in the strong border color, each on a 48 dp target. It never advances by itself unless the app turns autoplay on, and then a Pause button comes first. Material’s default masks every item with its extra-large corner and has no page dots; Plenix keeps Material’s carousel and replaces the look.",
+    "variants": [
+      { "name": "One per view (default)", "material": "Full-screen carousel (HorizontalPager with one item a page)", "web": "data-display|Carousel", "background": null, "content": "plx-comp-carousel-dot-current-background", "border": null, "compose": "HorizontalPager(state = rememberPagerState { slides.size }, pageSpacing = PlenixSpace.spaceInlineMd)", "views": "ViewPager2 with a RecyclerView adapter and an item decoration of PlenixSpace.spaceInlineMd", "use": "A picture or a panel that needs the whole width." },
+      { "name": "Several per view", "material": "Multi-browse carousel", "web": "data-display|Carousel", "background": null, "content": null, "border": null, "compose": "HorizontalMultiBrowseCarousel(state, preferredItemWidth, itemSpacing = PlenixSpace.spaceInlineMd)", "views": "RecyclerView with CarouselLayoutManager(MultiBrowseCarouselStrategy())", "use": "Cards and thumbnails people compare as they browse." },
+      { "name": "Dots", "material": "None (Material has no page indicator; a row of dots under the carousel)", "web": "data-display|Carousel", "background": "plx-comp-carousel-dot-background", "content": "plx-comp-carousel-dot-current-background", "border": null, "compose": "PlenixPageDots(count, current, onSelect) under the pager", "views": "a LinearLayout of 48 dp dot buttons updated from registerOnPageChangeCallback", "use": "Short sets where the dots show the length." },
+      { "name": "Arrows", "material": "IconButton (Previous and Next)", "web": "data-display|Carousel", "background": null, "content": "plx-sys-content-default", "border": null, "compose": "IconButton(onClick = { scope.launch { state.animateScrollToPage(page + 1) } })", "views": "MaterialButton with the Icon button style and setCurrentItem(page + 1, true)", "use": "Pointer and keyboard use on tablets and Chromebooks, and longer sets." },
+      { "name": "Autoplay with Pause", "material": "None (Material advises against auto-advance)", "web": "data-display|Carousel", "background": null, "content": null, "border": null, "compose": "LaunchedEffect(playing, page) { if (playing) { delay(interval); state.animateScrollToPage((page + 1) % count) } }", "views": "a Handler posting the next page while playing; removed in onPause", "use": "Decorative highlights only, always with Pause first." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Strip", "about": "The slides side by side; it flings and snaps to a slide." },
+      { "part": "B", "name": "Slide", "about": "One item in its own Plenix shape; TalkBack reads its place, “2 of 5”." },
+      { "part": "C", "name": "Previous and Next", "about": "Icon buttons that move a page and turn off at the ends." },
+      { "part": "D", "name": "Page dots", "about": "A dot per page on a 48 dp target; the current one in the default content color." },
+      { "part": "E", "name": "Pause", "about": "The first control, only with autoplay." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Gap between slides", "token": "plx-comp-carousel-gap", "value": "12 dp (PlenixSpace.spaceInlineMd)", "material": "8 dp item spacing", "compose": "itemSpacing = PlenixSpace.spaceInlineMd", "views": "addItemDecoration(SpacingDecoration(px(PlenixSpace.spaceInlineMd)))", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/specs" },
+      { "part": "A", "attribute": "Peek of the next slide", "token": "plx-comp-carousel-peek", "value": "40 dp, the smallest item the multi-browse layout keeps at the edge", "material": "40 dp small item minimum", "compose": "minSmallItemWidth = CarouselDefaults.MinSmallItemSize // Material’s 40 dp, the web peek", "views": "CarouselLayoutManager(MultiBrowseCarouselStrategy()) // Material’s small item size", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/specs" },
+      { "part": "B", "attribute": "Slide shape", "token": "plx-comp-card-radius", "value": "The slide’s own shape: 12 dp for a media card (PlenixRadius.radiusCard12px)", "material": "28 dp extra-large mask", "compose": "Modifier.maskClip(RoundedCornerShape(PlenixRadius.radiusCard12px))", "views": "MaskableFrameLayout with a ShapeAppearanceModel of px(PlenixRadius.radiusCard12px)", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/specs" },
+      { "part": "D", "attribute": "Dot target", "token": "plx-comp-carousel-dot-target", "value": "48 dp on Android (PlenixPlatform.controlTargetMin); the web’s 24 px gives way to Material’s target", "material": "48 dp touch target", "compose": "Modifier.minimumInteractiveComponentSize() // Material’s 48 dp target", "views": "minWidth and minHeight = px(PlenixPlatform.controlTargetMin)", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/foundations/designing/structure" },
+      { "part": "D", "attribute": "Dot size", "token": "plx-comp-carousel-dot-size", "value": "8 dp, round", "material": "None (no page indicator)", "compose": "Modifier.size(8.dp).clip(CircleShape) // the web dot size; Material has no indicator to follow", "views": "a ShapeDrawable OvalShape of 8 dp // the web dot size; Material has no indicator", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/guidelines" },
+      { "part": "D", "attribute": "Dot color", "token": "plx-comp-carousel-dot-background", "value": "The strong border color (PlenixColors.borderStrong)", "material": "None", "compose": "color = PlenixColors.borderStrong.current()", "views": "setTint(argb(PlenixColors.borderStrong.light, PlenixColors.borderStrong.dark))", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/guidelines" },
+      { "part": "D", "attribute": "Current dot color", "token": "plx-comp-carousel-dot-current-background", "value": "The default content color (PlenixColors.contentDefault)", "material": "None", "compose": "color = if (i == current) PlenixColors.contentDefault.current() else PlenixColors.borderStrong.current()", "views": "setTint(argb(PlenixColors.contentDefault.light, PlenixColors.contentDefault.dark)) on the current dot", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/guidelines" },
+      { "part": "C", "attribute": "Gap between controls", "token": "plx-comp-carousel-controls-column-gap", "value": "8 dp (PlenixSpace.spaceInlineSm)", "material": "8 dp target spacing", "compose": "Arrangement.spacedBy(PlenixSpace.spaceInlineSm)", "views": "a LinearLayout divider of px(PlenixSpace.spaceInlineSm)", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/foundations/designing/structure" },
+      { "part": "A", "attribute": "Gap to the controls", "token": "plx-comp-carousel-controls-gap", "value": "8 dp (PlenixSpace.spaceStackSm)", "material": "None", "compose": "Spacer(Modifier.height(PlenixSpace.spaceStackSm))", "views": "layout_marginTop = px(PlenixSpace.spaceStackSm) on the controls row", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/specs" },
+      { "part": "E", "attribute": "Autoplay interval", "token": "plx-comp-carousel-autoplay-interval", "value": "6 s, only when the app turns autoplay on; paused while touched or focused", "material": "None (no auto-advance)", "compose": "delay(6000L) // the web interval; Material advises no auto-advance", "views": "handler.postDelayed(next, 6000L) // the web interval; Material advises no auto-advance", "follows": "Material 3: Carousel", "followsUrl": "https://m3.material.io/components/carousel/guidelines" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-comp-carousel-dot-background", "compose": "HorizontalMultiBrowseCarousel / HorizontalPager", "views": "RecyclerView with CarouselLayoutManager" },
+      { "state": "Current page", "token": "plx-comp-carousel-dot-current-background", "compose": "state.currentItem (carousel) or pagerState.currentPage", "views": "the snapped position from the layout manager" },
+      { "state": "Pressed", "token": "plx-sys-state-pressed", "compose": "the item’s ripple in PlenixColors.statePressed (LocalRippleConfiguration)", "views": "rippleColor = ColorStateList.valueOf(argb(PlenixColors.statePressed.light, PlenixColors.statePressed.dark))" },
+      { "state": "Focused", "token": "plx-comp-carousel-dot-focus-outline-color", "compose": "Modifier.border(PlenixBorder.borderWidthMedium, PlenixColors.focusRingColor.current(), CircleShape) while focused", "views": "a focused state drawable stroked in PlenixColors.focusRingColor" },
+      { "state": "Disabled (an end)", "token": "plx-sys-content-disabled", "compose": "IconButton(enabled = page < count - 1)", "views": "isEnabled = page < count - 1" }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.layout.*",
+        "import androidx.compose.foundation.shape.CircleShape",
+        "import androidx.compose.foundation.shape.RoundedCornerShape",
+        "import androidx.compose.material3.*",
+        "import androidx.compose.material3.carousel.*",
+        "import androidx.compose.ui.Modifier",
+        "import androidx.compose.ui.draw.clip",
+        "import plenix.tokens.*",
+        "",
+        "/** Plenix carousel: Material’s multi-browse carousel, the slides in their own shape, Plenix page dots under it. */",
+        "@OptIn(ExperimentalMaterial3Api::class)",
+        "@Composable",
+        "fun PlenixCarousel(slides: List<Slide>, label: String) {",
+        "    val state = rememberCarouselState { slides.size }",
+        "    Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "        HorizontalMultiBrowseCarousel(",
+        "            state = state,",
+        "            preferredItemWidth = 186.dp, // Material’s multi-browse default",
+        "            itemSpacing = PlenixSpace.spaceInlineMd,",
+        "            modifier = Modifier.semantics { contentDescription = label },",
+        "        ) { i ->",
+        "            PlenixMediaCard(slides[i], Modifier.maskClip(RoundedCornerShape(PlenixRadius.radiusCard12px)))",
+        "        }",
+        "    }",
+        "}",
+        "",
+        "@Composable",
+        "fun PlenixPageDots(count: Int, current: Int, onSelect: (Int) -> Unit) {",
+        "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)) {",
+        "        repeat(count) { i ->",
+        "            Box(Modifier.minimumInteractiveComponentSize().clickable(onClickLabel = \"Go to slide ${i + 1}\") { onSelect(i) }) {",
+        "                Box(Modifier.size(8.dp).clip(CircleShape) // the web dot size; Material has no indicator to follow",
+        "                    .background(if (i == current) PlenixColors.contentDefault.current() else PlenixColors.borderStrong.current()))",
+        "            }",
+        "        }",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "import com.google.android.material.carousel.CarouselLayoutManager",
+        "import com.google.android.material.carousel.MultiBrowseCarouselStrategy",
+        "import plenix.tokens.*",
+        "",
+        "recycler.layoutManager = CarouselLayoutManager(MultiBrowseCarouselStrategy())",
+        "recycler.addItemDecoration(SpacingDecoration(px(PlenixSpace.spaceInlineMd)))",
+        "CarouselSnapHelper().attachToRecyclerView(recycler)",
+        "// each item: a MaskableFrameLayout with the media card’s shape, px(PlenixRadius.radiusCard12px)",
+        "// the dots: 48 dp buttons (px(PlenixPlatform.controlTargetMin)) tinted PlenixColors.borderStrong, the current one PlenixColors.contentDefault"
+      ]
+    }
+  }
+}

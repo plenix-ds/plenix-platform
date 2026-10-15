@@ -1801,6 +1801,351 @@
     ]
    }
   },
+  "android-content|Label": {
+   "summary": "A Plenix role on Android is a small read-only label in the tag look: the role’s icon and its name (Owner, Editor, Viewer, or a custom role’s own name) on the neutral fill with a hairline border and 4 dp corners, or a custom role’s category color. It is a label, not a chip: it takes no touch and no focus; the control that changes the role is a menu beside it. A role is never drawn in a status color.",
+   "variants": [
+    {
+     "name": "Owner",
+     "material": "None (a read-only label, not an assist chip)",
+     "web": "content|Role",
+     "background": "plx-comp-tag-background",
+     "content": "plx-comp-tag-text",
+     "border": "plx-comp-tag-border-color",
+     "compose": "PlenixRoleLabel(role = Role.Owner)",
+     "views": "A Plenix label view with the owner icon and text",
+     "use": "The person who owns an item and decides who else has access."
+    },
+    {
+     "name": "Editor",
+     "material": "None",
+     "web": "content|Role",
+     "background": "plx-comp-tag-background",
+     "content": "plx-comp-tag-text",
+     "border": "plx-comp-tag-border-color",
+     "compose": "PlenixRoleLabel(role = Role.Editor)",
+     "views": "The label view with the pencil icon",
+     "use": "People who can change the item."
+    },
+    {
+     "name": "Viewer",
+     "material": "None",
+     "web": "content|Role",
+     "background": "plx-comp-tag-background",
+     "content": "plx-comp-tag-text",
+     "border": "plx-comp-tag-border-color",
+     "compose": "PlenixRoleLabel(role = Role.Viewer)",
+     "views": "The label view with the eye icon",
+     "use": "Read-only access."
+    },
+    {
+     "name": "Custom (a category color)",
+     "material": "None",
+     "web": "content|Role",
+     "background": null,
+     "content": null,
+     "border": null,
+     "compose": "PlenixRoleLabel(name = \"Billing admin\", category = Category.Teal)",
+     "views": "The label view tinted with the category’s soft colors",
+     "use": "Roles the organization defined."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Label",
+     "about": "The tag look: the neutral fill, a hairline border in the neutral border color, 4 dp corners."
+    },
+    {
+     "part": "B",
+     "name": "Icon",
+     "about": "The role’s icon before the name, in the label’s text color; decorative."
+    },
+    {
+     "part": "C",
+     "name": "Name",
+     "about": "The role in one short noun, DM Sans medium at the Label role."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Fill",
+     "token": "plx-comp-tag-background",
+     "value": "The neutral fill (plx-sys-fill-neutral)",
+     "material": "None",
+     "compose": "Modifier.background(PlenixColors.fillNeutral.current(), RoundedCornerShape(PlenixRadius.radiusPill4px))",
+     "views": "a GradientDrawable with PlenixColors.fillNeutral and PlenixRadius.radiusPill4px",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "A",
+     "attribute": "Border",
+     "token": "plx-comp-tag-border-color",
+     "value": "A hairline in the neutral border color",
+     "material": "None",
+     "compose": "Modifier.border(PlenixBorder.borderWidthThin, PlenixColors.fillNeutralBorder.current(), RoundedCornerShape(PlenixRadius.radiusPill4px))",
+     "views": "drawable.setStroke(PlenixBorder.borderWidthThin, PlenixColors.fillNeutralBorder)",
+     "follows": "Material 3: Shape",
+     "followsUrl": "https://m3.material.io/styles/shape/overview"
+    },
+    {
+     "part": "C",
+     "attribute": "Name",
+     "token": "plx-comp-tag-text",
+     "value": "The neutral fill’s text color, DM Sans medium at the Label role",
+     "material": "Label medium",
+     "compose": "Text(name, color = PlenixColors.fillNeutralContent.current(), fontSize = PlenixPlatform.textLabelSize, fontWeight = FontWeight.Medium)",
+     "views": "nameView.setTextColor(PlenixColors.fillNeutralContent.light.toArgb())",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "B",
+     "attribute": "Icon",
+     "token": "plx-comp-role-label-icon-size",
+     "value": "The extra-small icon size, before the name with the inline extra-small space",
+     "material": "None",
+     "compose": "Icon(role.icon, null, Modifier.size(PlenixIcon.iconSizeXs))",
+     "views": "the icon’s size from PlenixIcon.iconSizeXs",
+     "follows": "Material 3: Icons",
+     "followsUrl": "https://m3.material.io/styles/icons/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-tag-background",
+     "compose": "the label at rest; it is static",
+     "views": "the view at rest"
+    },
+    {
+     "state": "Custom with a category",
+     "token": "plx-comp-tag-text",
+     "compose": "the category’s soft fill, its 300 border and dark text, from PlenixColors",
+     "views": "the category’s colors from the Plenix resources"
+    },
+    {
+     "state": "Dark",
+     "token": "plx-sys-fill-neutral",
+     "compose": "PlenixColors pairs follow isSystemInDarkTheme()",
+     "views": "the dark values from the night resources"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.*",
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.foundation.shape.RoundedCornerShape",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.runtime.Composable",
+     "import androidx.compose.ui.Modifier",
+     "import androidx.compose.ui.text.font.FontWeight",
+     "import plenix.tokens.*",
+     "",
+     "// a role: a read-only label (no click, no focus), never a status color",
+     "@Composable",
+     "fun PlenixRoleLabel(name: String, icon: ImageVector?) {",
+     "    val shape = RoundedCornerShape(PlenixRadius.radiusPill4px)",
+     "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineXs), verticalAlignment = Alignment.CenterVertically,",
+     "        modifier = Modifier.background(PlenixColors.fillNeutral.current(), shape)",
+     "            .border(PlenixBorder.borderWidthThin, PlenixColors.fillNeutralBorder.current(), shape)",
+     "            .padding(horizontal = PlenixSpace.spaceInsetSm)) {",
+     "        icon?.let { Icon(it, null, Modifier.size(PlenixIcon.iconSizeXs), tint = PlenixColors.fillNeutralContent.current()) }",
+     "        Text(name, color = PlenixColors.fillNeutralContent.current(), fontSize = PlenixPlatform.textLabelSize, fontWeight = FontWeight.Medium)",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "<!-- res/layout/plenix_role_label.xml: a horizontal LinearLayout with the icon and the name; not clickable, not focusable -->",
+     "<TextView android:id=\"@+id/name\" android:textColor=\"@color/plenix_fill_neutral_content\" android:clickable=\"false\" android:focusable=\"false\" />"
+    ]
+   }
+  },
+  "android-data-display|Activity feed": {
+   "summary": "A Plenix timeline on Android is a column of events in order, each a neutral marker on one line with its date in DM Mono, a title and a line or two about it; down the screen on a phone, across it for a few milestones on a large screen. Material 3 has no timeline component: Plenix draws the markers and the line in Compose (or a RecyclerView item decoration) with its own roles, and an event’s state is a Plenix badge after its title, never the marker’s color. TalkBack reads each event as one node: its time, title and description.",
+   "variants": [
+    {
+     "name": "Vertical (default)",
+     "material": "None (a LazyColumn of Plenix events)",
+     "web": "data-display|Timeline",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-timeline-title-text",
+     "border": "plx-comp-timeline-line-color",
+     "compose": "LazyColumn { items(events) { PlenixTimelineEvent(it, last = it == events.last()) } }",
+     "views": "A RecyclerView with a Plenix item decoration that draws the line and the markers",
+     "use": "A record’s history on a phone."
+    },
+    {
+     "name": "Horizontal",
+     "material": "None (a LazyRow of Plenix events)",
+     "web": "data-display|Timeline",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-timeline-title-text",
+     "border": "plx-comp-timeline-line-color",
+     "compose": "LazyRow { items(milestones) { PlenixTimelineMilestone(it) } }",
+     "views": "A horizontal RecyclerView with the same decoration",
+     "use": "Three to six milestones on a large screen."
+    },
+    {
+     "name": "With icons",
+     "material": "None (an Icon in a circle as the marker)",
+     "web": "data-display|Timeline",
+     "background": "plx-comp-timeline-icon-marker-background",
+     "content": "plx-comp-timeline-icon-color",
+     "border": "plx-comp-timeline-icon-marker-border-color",
+     "compose": "The marker is Icon(event.icon) in a circle on the sunken surface",
+     "views": "The marker view shows the event’s vector drawable",
+     "use": "Histories that mix kinds of events."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Line",
+     "about": "Joins the markers in the order of the events, in the strong border color."
+    },
+    {
+     "part": "B",
+     "name": "Marker",
+     "about": "A small ringed circle, or the event’s icon in a circle; neutral, never a state color."
+    },
+    {
+     "part": "C",
+     "name": "Time",
+     "about": "The date or time in DM Mono, in the muted color, as tall as the marker so the two share a middle."
+    },
+    {
+     "part": "D",
+     "name": "Title and badge",
+     "about": "What happened, semibold, with a Plenix badge after it for the event’s state."
+    },
+    {
+     "part": "E",
+     "name": "Description",
+     "about": "A line or two about the event, in the muted color."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Line",
+     "token": "plx-comp-timeline-line-color",
+     "value": "Strong border color at the medium border width",
+     "material": "None",
+     "compose": "drawLine(PlenixColors.borderStrong.current(), start, end, strokeWidth = PlenixBorder.borderWidthMedium.toPx())",
+     "views": "paint.color = PlenixColors.borderStrong.light.toArgb() in the item decoration",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "B",
+     "attribute": "Marker",
+     "token": "plx-comp-timeline-dot-border-color",
+     "value": "A ringed circle on the raised surface, its ring in the strong border color",
+     "material": "None",
+     "compose": "Box(Modifier.size(PlenixIcon.iconSizeXs).border(PlenixBorder.borderWidthMedium, PlenixColors.borderStrong.current(), CircleShape))",
+     "views": "a GradientDrawable oval with setStroke in PlenixColors.borderStrong",
+     "follows": "Material 3: Shape",
+     "followsUrl": "https://m3.material.io/styles/shape/overview"
+    },
+    {
+     "part": "C",
+     "attribute": "Time",
+     "token": "plx-comp-timeline-time-font-family",
+     "value": "The data font (DM Mono) in the muted color",
+     "material": "Label small",
+     "compose": "Text(event.time, fontFamily = FontFamily(Font(R.font.dm_mono)), color = PlenixColors.contentMuted.current()) // PlenixFonts.MONO",
+     "views": "timeView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "D",
+     "attribute": "Title",
+     "token": "plx-comp-timeline-title-text",
+     "value": "Default content color, DM Sans semibold at the Body large role",
+     "material": "Title small",
+     "compose": "Text(event.title, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize, fontWeight = FontWeight.SemiBold)",
+     "views": "titleView with the Plenix title text appearance",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "E",
+     "attribute": "Space between events",
+     "token": "plx-comp-timeline-item-gap",
+     "value": "The stack medium space",
+     "material": "None",
+     "compose": "Modifier.padding(bottom = PlenixSpace.spaceStackMd)",
+     "views": "the item decoration’s bottom offset PlenixSpace.spaceStackMd",
+     "follows": "Material 3: Layout",
+     "followsUrl": "https://m3.material.io/foundations/layout/understanding-layout/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-timeline-line-color",
+     "compose": "the timeline at rest; it is static",
+     "views": "the list at rest"
+    },
+    {
+     "state": "Event with a status",
+     "token": "plx-sys-content-default",
+     "compose": "a PlenixBadge after the title (its icon and word); the marker stays neutral",
+     "views": "a Plenix badge view in the title row"
+    },
+    {
+     "state": "Dark",
+     "token": "plx-sys-border-strong",
+     "compose": "PlenixColors pairs follow isSystemInDarkTheme()",
+     "views": "the dark values from the night resources"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.*",
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.foundation.shape.CircleShape",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.runtime.Composable",
+     "import androidx.compose.ui.Modifier",
+     "import androidx.compose.ui.semantics.*",
+     "import androidx.compose.ui.text.font.*",
+     "import plenix.tokens.*",
+     "",
+     "@Composable",
+     "fun PlenixTimelineEvent(event: TimelineEvent, last: Boolean) {",
+     "    val line = PlenixColors.borderStrong.current()",
+     "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineMd),",
+     "        modifier = Modifier.height(IntrinsicSize.Min).semantics(mergeDescendants = true) {}) {",
+     "        Column(horizontalAlignment = Alignment.CenterHorizontally) {",
+     "            Box(Modifier.size(PlenixIcon.iconSizeXs).border(PlenixBorder.borderWidthMedium, line, CircleShape))",
+     "            if (!last) Box(Modifier.width(PlenixBorder.borderWidthMedium).fillMaxHeight().background(line))",
+     "        }",
+     "        Column(Modifier.padding(bottom = PlenixSpace.spaceStackMd), verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+     "            Text(event.time, fontFamily = FontFamily(Font(R.font.dm_mono)), color = PlenixColors.contentMuted.current()) // PlenixFonts.MONO",
+     "            Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)) {",
+     "                Text(event.title, color = PlenixColors.contentDefault.current(), fontWeight = FontWeight.SemiBold)",
+     "                event.status?.let { PlenixBadge(it) }",
+     "            }",
+     "            event.description?.let { Text(it, color = PlenixColors.contentMuted.current()) }",
+     "        }",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "<!-- res/layout/plenix_timeline_event.xml: the marker column and the text column -->",
+     "<TextView android:id=\"@+id/time\" android:fontFamily=\"@font/dm_mono\" android:textColor=\"@color/plenix_content_muted\" />",
+     "",
+     "class PlenixTimelineDecoration(context: Context) : RecyclerView.ItemDecoration() {",
+     "    private val paint = Paint().apply { color = PlenixColors.borderStrong.light.toArgb() }",
+     "    // onDraw: a line from each marker to the next; the last event draws none",
+     "}"
+    ]
+   }
+  },
   "android-data-display|Card": {
    "summary": "A Plenix card on Android is the Material 3 OutlinedCard, kept native in behavior (ripple, one TalkBack stop for a card that opens, font scale) and styled with the Plenix tokens: a 12 dp rounded rectangle on the raised surface with a 1 dp border and no elevation, a DM Sans semibold title at the heading role, a muted details line, and the Plenix selected border and accent edge. Material’s default is a filled, elevated or outlined card on a tonal surface with Roboto text; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -2173,6 +2518,289 @@
     ]
    }
   },
+  "android-data-display|Carousel": {
+   "summary": "A Plenix carousel on Android is Material 3’s carousel, kept native in behavior (the fling and snap, the keyline layout that shrinks the items at the edge, TalkBack’s scroll actions, font scale) and drawn with the Plenix roles: each slide keeps its own Plenix shape (a media card’s 12 dp corners) instead of Material’s large mask, the items are 12 dp apart, and the page dots under it use the iOS page control’s roles, the current page in the default content color and the others in the strong border color, each on a 48 dp target. It never advances by itself unless the app turns autoplay on, and then a Pause button comes first. Material’s default masks every item with its extra-large corner and has no page dots; Plenix keeps Material’s carousel and replaces the look.",
+   "variants": [
+    {
+     "name": "One per view (default)",
+     "material": "Full-screen carousel (HorizontalPager with one item a page)",
+     "web": "data-display|Carousel",
+     "background": null,
+     "content": "plx-comp-carousel-dot-current-background",
+     "border": null,
+     "compose": "HorizontalPager(state = rememberPagerState { slides.size }, pageSpacing = PlenixSpace.spaceInlineMd)",
+     "views": "ViewPager2 with a RecyclerView adapter and an item decoration of PlenixSpace.spaceInlineMd",
+     "use": "A picture or a panel that needs the whole width."
+    },
+    {
+     "name": "Several per view",
+     "material": "Multi-browse carousel",
+     "web": "data-display|Carousel",
+     "background": null,
+     "content": null,
+     "border": null,
+     "compose": "HorizontalMultiBrowseCarousel(state, preferredItemWidth, itemSpacing = PlenixSpace.spaceInlineMd)",
+     "views": "RecyclerView with CarouselLayoutManager(MultiBrowseCarouselStrategy())",
+     "use": "Cards and thumbnails people compare as they browse."
+    },
+    {
+     "name": "Dots",
+     "material": "None (Material has no page indicator; a row of dots under the carousel)",
+     "web": "data-display|Carousel",
+     "background": "plx-comp-carousel-dot-background",
+     "content": "plx-comp-carousel-dot-current-background",
+     "border": null,
+     "compose": "PlenixPageDots(count, current, onSelect) under the pager",
+     "views": "a LinearLayout of 48 dp dot buttons updated from registerOnPageChangeCallback",
+     "use": "Short sets where the dots show the length."
+    },
+    {
+     "name": "Arrows",
+     "material": "IconButton (Previous and Next)",
+     "web": "data-display|Carousel",
+     "background": null,
+     "content": "plx-sys-content-default",
+     "border": null,
+     "compose": "IconButton(onClick = { scope.launch { state.animateScrollToPage(page + 1) } })",
+     "views": "MaterialButton with the Icon button style and setCurrentItem(page + 1, true)",
+     "use": "Pointer and keyboard use on tablets and Chromebooks, and longer sets."
+    },
+    {
+     "name": "Autoplay with Pause",
+     "material": "None (Material advises against auto-advance)",
+     "web": "data-display|Carousel",
+     "background": null,
+     "content": null,
+     "border": null,
+     "compose": "LaunchedEffect(playing, page) { if (playing) { delay(interval); state.animateScrollToPage((page + 1) % count) } }",
+     "views": "a Handler posting the next page while playing; removed in onPause",
+     "use": "Decorative highlights only, always with Pause first."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Strip",
+     "about": "The slides side by side; it flings and snaps to a slide."
+    },
+    {
+     "part": "B",
+     "name": "Slide",
+     "about": "One item in its own Plenix shape; TalkBack reads its place, “2 of 5”."
+    },
+    {
+     "part": "C",
+     "name": "Previous and Next",
+     "about": "Icon buttons that move a page and turn off at the ends."
+    },
+    {
+     "part": "D",
+     "name": "Page dots",
+     "about": "A dot per page on a 48 dp target; the current one in the default content color."
+    },
+    {
+     "part": "E",
+     "name": "Pause",
+     "about": "The first control, only with autoplay."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Gap between slides",
+     "token": "plx-comp-carousel-gap",
+     "value": "12 dp (PlenixSpace.spaceInlineMd)",
+     "material": "8 dp item spacing",
+     "compose": "itemSpacing = PlenixSpace.spaceInlineMd",
+     "views": "addItemDecoration(SpacingDecoration(px(PlenixSpace.spaceInlineMd)))",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/specs"
+    },
+    {
+     "part": "A",
+     "attribute": "Peek of the next slide",
+     "token": "plx-comp-carousel-peek",
+     "value": "40 dp, the smallest item the multi-browse layout keeps at the edge",
+     "material": "40 dp small item minimum",
+     "compose": "minSmallItemWidth = CarouselDefaults.MinSmallItemSize // Material’s 40 dp, the web peek",
+     "views": "CarouselLayoutManager(MultiBrowseCarouselStrategy()) // Material’s small item size",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/specs"
+    },
+    {
+     "part": "B",
+     "attribute": "Slide shape",
+     "token": "plx-comp-card-radius",
+     "value": "The slide’s own shape: 12 dp for a media card (PlenixRadius.radiusCard12px)",
+     "material": "28 dp extra-large mask",
+     "compose": "Modifier.maskClip(RoundedCornerShape(PlenixRadius.radiusCard12px))",
+     "views": "MaskableFrameLayout with a ShapeAppearanceModel of px(PlenixRadius.radiusCard12px)",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/specs"
+    },
+    {
+     "part": "D",
+     "attribute": "Dot target",
+     "token": "plx-comp-carousel-dot-target",
+     "value": "48 dp on Android (PlenixPlatform.controlTargetMin); the web’s 24 px gives way to Material’s target",
+     "material": "48 dp touch target",
+     "compose": "Modifier.minimumInteractiveComponentSize() // Material’s 48 dp target",
+     "views": "minWidth and minHeight = px(PlenixPlatform.controlTargetMin)",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/foundations/designing/structure"
+    },
+    {
+     "part": "D",
+     "attribute": "Dot size",
+     "token": "plx-comp-carousel-dot-size",
+     "value": "8 dp, round",
+     "material": "None (no page indicator)",
+     "compose": "Modifier.size(8.dp).clip(CircleShape) // the web dot size; Material has no indicator to follow",
+     "views": "a ShapeDrawable OvalShape of 8 dp // the web dot size; Material has no indicator",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/guidelines"
+    },
+    {
+     "part": "D",
+     "attribute": "Dot color",
+     "token": "plx-comp-carousel-dot-background",
+     "value": "The strong border color (PlenixColors.borderStrong)",
+     "material": "None",
+     "compose": "color = PlenixColors.borderStrong.current()",
+     "views": "setTint(argb(PlenixColors.borderStrong.light, PlenixColors.borderStrong.dark))",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/guidelines"
+    },
+    {
+     "part": "D",
+     "attribute": "Current dot color",
+     "token": "plx-comp-carousel-dot-current-background",
+     "value": "The default content color (PlenixColors.contentDefault)",
+     "material": "None",
+     "compose": "color = if (i == current) PlenixColors.contentDefault.current() else PlenixColors.borderStrong.current()",
+     "views": "setTint(argb(PlenixColors.contentDefault.light, PlenixColors.contentDefault.dark)) on the current dot",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/guidelines"
+    },
+    {
+     "part": "C",
+     "attribute": "Gap between controls",
+     "token": "plx-comp-carousel-controls-column-gap",
+     "value": "8 dp (PlenixSpace.spaceInlineSm)",
+     "material": "8 dp target spacing",
+     "compose": "Arrangement.spacedBy(PlenixSpace.spaceInlineSm)",
+     "views": "a LinearLayout divider of px(PlenixSpace.spaceInlineSm)",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/foundations/designing/structure"
+    },
+    {
+     "part": "A",
+     "attribute": "Gap to the controls",
+     "token": "plx-comp-carousel-controls-gap",
+     "value": "8 dp (PlenixSpace.spaceStackSm)",
+     "material": "None",
+     "compose": "Spacer(Modifier.height(PlenixSpace.spaceStackSm))",
+     "views": "layout_marginTop = px(PlenixSpace.spaceStackSm) on the controls row",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/specs"
+    },
+    {
+     "part": "E",
+     "attribute": "Autoplay interval",
+     "token": "plx-comp-carousel-autoplay-interval",
+     "value": "6 s, only when the app turns autoplay on; paused while touched or focused",
+     "material": "None (no auto-advance)",
+     "compose": "delay(6000L) // the web interval; Material advises no auto-advance",
+     "views": "handler.postDelayed(next, 6000L) // the web interval; Material advises no auto-advance",
+     "follows": "Material 3: Carousel",
+     "followsUrl": "https://m3.material.io/components/carousel/guidelines"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-carousel-dot-background",
+     "compose": "HorizontalMultiBrowseCarousel / HorizontalPager",
+     "views": "RecyclerView with CarouselLayoutManager"
+    },
+    {
+     "state": "Current page",
+     "token": "plx-comp-carousel-dot-current-background",
+     "compose": "state.currentItem (carousel) or pagerState.currentPage",
+     "views": "the snapped position from the layout manager"
+    },
+    {
+     "state": "Pressed",
+     "token": "plx-sys-state-pressed",
+     "compose": "the item’s ripple in PlenixColors.statePressed (LocalRippleConfiguration)",
+     "views": "rippleColor = ColorStateList.valueOf(argb(PlenixColors.statePressed.light, PlenixColors.statePressed.dark))"
+    },
+    {
+     "state": "Focused",
+     "token": "plx-comp-carousel-dot-focus-outline-color",
+     "compose": "Modifier.border(PlenixBorder.borderWidthMedium, PlenixColors.focusRingColor.current(), CircleShape) while focused",
+     "views": "a focused state drawable stroked in PlenixColors.focusRingColor"
+    },
+    {
+     "state": "Disabled (an end)",
+     "token": "plx-sys-content-disabled",
+     "compose": "IconButton(enabled = page < count - 1)",
+     "views": "isEnabled = page < count - 1"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.foundation.shape.CircleShape",
+     "import androidx.compose.foundation.shape.RoundedCornerShape",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.material3.carousel.*",
+     "import androidx.compose.ui.Modifier",
+     "import androidx.compose.ui.draw.clip",
+     "import plenix.tokens.*",
+     "",
+     "/** Plenix carousel: Material’s multi-browse carousel, the slides in their own shape, Plenix page dots under it. */",
+     "@OptIn(ExperimentalMaterial3Api::class)",
+     "@Composable",
+     "fun PlenixCarousel(slides: List<Slide>, label: String) {",
+     "    val state = rememberCarouselState { slides.size }",
+     "    Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+     "        HorizontalMultiBrowseCarousel(",
+     "            state = state,",
+     "            preferredItemWidth = 186.dp, // Material’s multi-browse default",
+     "            itemSpacing = PlenixSpace.spaceInlineMd,",
+     "            modifier = Modifier.semantics { contentDescription = label },",
+     "        ) { i ->",
+     "            PlenixMediaCard(slides[i], Modifier.maskClip(RoundedCornerShape(PlenixRadius.radiusCard12px)))",
+     "        }",
+     "    }",
+     "}",
+     "",
+     "@Composable",
+     "fun PlenixPageDots(count: Int, current: Int, onSelect: (Int) -> Unit) {",
+     "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)) {",
+     "        repeat(count) { i ->",
+     "            Box(Modifier.minimumInteractiveComponentSize().clickable(onClickLabel = \"Go to slide ${i + 1}\") { onSelect(i) }) {",
+     "                Box(Modifier.size(8.dp).clip(CircleShape) // the web dot size; Material has no indicator to follow",
+     "                    .background(if (i == current) PlenixColors.contentDefault.current() else PlenixColors.borderStrong.current()))",
+     "            }",
+     "        }",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "import com.google.android.material.carousel.CarouselLayoutManager",
+     "import com.google.android.material.carousel.MultiBrowseCarouselStrategy",
+     "import plenix.tokens.*",
+     "",
+     "recycler.layoutManager = CarouselLayoutManager(MultiBrowseCarouselStrategy())",
+     "recycler.addItemDecoration(SpacingDecoration(px(PlenixSpace.spaceInlineMd)))",
+     "CarouselSnapHelper().attachToRecyclerView(recycler)",
+     "// each item: a MaskableFrameLayout with the media card’s shape, px(PlenixRadius.radiusCard12px)",
+     "// the dots: 48 dp buttons (px(PlenixPlatform.controlTargetMin)) tinted PlenixColors.borderStrong, the current one PlenixColors.contentDefault"
+    ]
+   }
+  },
   "android-data-display|Charts": {
    "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values.",
    "variants": [
@@ -2208,6 +2836,94 @@
      "compose": "The same frame with a log scale (log10 of each value mapped to the plot height)",
      "views": "The same View with a log scale",
      "use": "Values that span several orders of magnitude, said in the description."
+    },
+    {
+     "name": "Legend under the plot",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Chart legend",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-legend-label-text",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "FlowRow { series.forEach { LegendItem(it.label, it.color) } } under the Canvas",
+     "views": "A ChipGroup-like row of TextViews with a colored square drawable under the chart",
+     "use": "Two or more series whose marks cannot be labeled directly."
+    },
+    {
+     "name": "Selection tooltip",
+     "material": "Plain tooltip surface (as a rich tooltip)",
+     "web": "data-display|Chart tooltip",
+     "background": "plx-comp-chart-tooltip-background",
+     "content": "plx-comp-chart-tooltip-value-text",
+     "border": "plx-comp-chart-tooltip-border-color",
+     "compose": "pointerInput { detectDragGestures { … selected = xAt(it) } } and a Surface card at the selection",
+     "views": "A PopupWindow at the touched position, updated from onTouchEvent",
+     "use": "The exact values where people drag along the chart."
+    },
+    {
+     "name": "Data labels",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Data label",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-data-label-text",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawText(measurer, value, topLeft, style = TextStyle(fontFamily = Mono))",
+     "views": "canvas.drawText(value, x, y, monoPaint)",
+     "use": "The values people compare on a bar or column chart with few marks."
+    },
+    {
+     "name": "Right value axis",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Axis",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-tick-label-text",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "Tick labels drawn after the plot’s end edge, start-aligned",
+     "views": "Labels drawn after the plot in onDraw",
+     "use": "The latest value read at the end edge."
+    },
+    {
+     "name": "Vertical grid lines",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Grid line",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawLine(borderSubtle, Offset(x, 0f), Offset(x, height)) per tick",
+     "views": "canvas.drawLine per tick with gridPaint",
+     "use": "Bar charts, whose values run across."
+    },
+    {
+     "name": "Reference line",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Reference line",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-reference-line-color",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawLine(contentSubtle, start, end, pathEffect = PathEffect.dashPathEffect(dash))",
+     "views": "refPaint.pathEffect = DashPathEffect(dash, 0f)",
+     "use": "A target, an average or a date, named at its end."
+    },
+    {
+     "name": "Threshold",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Threshold",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-alert-critical",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "drawLine(datavizAlertCritical, start, end, pathEffect = dashed)",
+     "views": "thresholdPaint.color = PlenixColors.datavizAlertCritical.light.toArgb()",
+     "use": "A limit the data should stay under or above, with its name and value."
+    },
+    {
+     "name": "Point annotation",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Annotation",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-annotation-label-text",
+     "border": "plx-comp-chart-annotation-ring-color",
+     "compose": "drawCircle(contentDefault, radius, center, style = Stroke(width)) and drawText(note)",
+     "views": "canvas.drawCircle with a stroke Paint, then the note",
+     "use": "One or two notes that explain a spike or an event."
     }
    ],
    "anatomy": [
@@ -2245,6 +2961,36 @@
      "part": "G",
      "name": "Data",
      "about": "The same values as a list one tap away (Show the data)."
+    },
+    {
+     "part": "H",
+     "name": "Legend",
+     "about": "Each series’ swatch and name under the plot; hidden when there is one series."
+    },
+    {
+     "part": "I",
+     "name": "Selection tooltip",
+     "about": "The exact values where people drag: a rule at the position and a card on the overlay surface, values in DM Mono."
+    },
+    {
+     "part": "J",
+     "name": "Data labels",
+     "about": "Values written by their marks in DM Mono."
+    },
+    {
+     "part": "K",
+     "name": "Reference line or threshold",
+     "about": "A dashed rule at a value that matters, named at its end; a threshold in the alert colors."
+    },
+    {
+     "part": "L",
+     "name": "Annotation",
+     "about": "A ring on a point with a short note, or a shaded span with its name."
+    },
+    {
+     "part": "M",
+     "name": "Axis title",
+     "about": "The measure and its unit beside the axis, in secondary text."
     }
    ],
    "attributes": [
@@ -2335,6 +3081,83 @@
      "views": "chartView.contentDescription = title; ViewCompat.setStateDescription(chartView, takeaway)",
      "follows": "Material 3: Accessible design",
      "followsUrl": "https://m3.material.io/foundations/designing/overview"
+    },
+    {
+     "part": "H",
+     "attribute": "Legend name color",
+     "token": "plx-comp-chart-legend-label-text",
+     "value": "The default content color, DM Sans; swatches 12 dp squares in the series colors",
+     "material": "On surface",
+     "compose": "Text(label, color = PlenixColors.contentDefault.current())",
+     "views": "label.setTextColor(PlenixColors.contentDefault.light.toArgb())",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "I",
+     "attribute": "Tooltip surface",
+     "token": "plx-comp-chart-tooltip-background",
+     "value": "The overlay surface with the default border, the menu radius (8 dp) and the menu shadow",
+     "material": "Surface container",
+     "compose": "Surface(color = PlenixColors.surfaceOverlay.current(), shape = RoundedCornerShape(PlenixRadius.radiusMenu8px))",
+     "views": "card.setCardBackgroundColor(PlenixColors.surfaceOverlay.light.toArgb())",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "I",
+     "attribute": "Tooltip value font",
+     "token": "plx-comp-chart-tooltip-value-font-family",
+     "value": "DM Mono (the data role) at the data size",
+     "material": "Body small",
+     "compose": "Text(value, fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textDataSize)",
+     "views": "value.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/applying-type"
+    },
+    {
+     "part": "J",
+     "attribute": "Data label font",
+     "token": "plx-comp-chart-data-label-font-family",
+     "value": "DM Mono (the data role) at the caption size",
+     "material": "Label small",
+     "compose": "drawText(measurer, value, topLeft, style = TextStyle(fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textCaptionSize))",
+     "views": "monoPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/applying-type"
+    },
+    {
+     "part": "K",
+     "attribute": "Reference line color",
+     "token": "plx-comp-chart-reference-line-color",
+     "value": "The subtle content color, 1 dp, dashed; a threshold 2 dp in the alert warning or critical color",
+     "material": "Outline",
+     "compose": "drawLine(PlenixColors.contentSubtle.current(), start, end, strokeWidth = PlenixBorder.borderWidthThin.toPx(), pathEffect = dashed)",
+     "views": "refPaint.color = PlenixColors.contentSubtle.light.toArgb()",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "L",
+     "attribute": "Annotation ring",
+     "token": "plx-comp-chart-annotation-ring-color",
+     "value": "The default content color, 2 dp; the note in DM Sans, medium weight",
+     "material": "On surface",
+     "compose": "drawCircle(PlenixColors.contentDefault.current(), radius, center, style = Stroke(PlenixBorder.borderWidthMedium.toPx()))",
+     "views": "ringPaint.strokeWidth = px(PlenixBorder.borderWidthMedium)",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "M",
+     "attribute": "Axis title color",
+     "token": "plx-comp-chart-axis-label-text",
+     "value": "Secondary text (plx-sys-content-subtle), DM Sans medium",
+     "material": "On surface variant",
+     "compose": "Text(title, color = PlenixColors.contentSubtle.current())",
+     "views": "axisTitle.setTextColor(PlenixColors.contentSubtle.light.toArgb())",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
     }
    ],
    "states": [
@@ -6897,6 +7720,210 @@
     ]
    }
   },
+  "android-navigation|Search screen": {
+   "summary": "Plenix search results on Android keep Material 3’s search (the SearchBar expanding into the search view, the keyboard and Back) and draw each result as a Plenix list item: a leading thumbnail or avatar, the path as the overline, the name with the words searched for in bold, a two-line snippet and the details, technical values in DM Mono. Results of several kinds sit under a header per kind with its count, each with a Show all item.",
+   "variants": [
+    {
+     "name": "Page (default)",
+     "material": "ListItem in the search view",
+     "web": "navigation|Search result item",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-title-text",
+     "border": "plx-comp-search-result-border-bottom-color",
+     "compose": "ListItem(leadingContent = thumbnail, overlineContent = path, headlineContent = title, supportingContent = snippet)",
+     "views": "A RecyclerView row with the Plenix item layout",
+     "use": "Notes, pages, projects and other records."
+    },
+    {
+     "name": "File",
+     "material": "ListItem with a leading image",
+     "web": "navigation|Search result item",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-meta-text",
+     "border": "plx-comp-search-result-border-bottom-color",
+     "compose": "The same item with the file’s thumbnail and its size and date in DM Mono",
+     "views": "The row’s ImageView loaded with the file’s thumbnail",
+     "use": "Documents, images, uploads."
+    },
+    {
+     "name": "Person",
+     "material": "ListItem with a leading avatar",
+     "web": "navigation|Search result item",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-title-text",
+     "border": "plx-comp-search-result-border-bottom-color",
+     "compose": "The item with the Plenix avatar (a rounded square with initials)",
+     "views": "The row with the avatar view",
+     "use": "Members, contacts, authors."
+    },
+    {
+     "name": "Grouped by kind",
+     "material": "List with section headers",
+     "web": "navigation|Search result groups",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-group-count-text",
+     "border": null,
+     "compose": "LazyColumn { stickyHeader { kind and count } items(first) { … } item { Show all } }",
+     "views": "A header view type per kind in the adapter",
+     "use": "A search across pages, files and people."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Thumbnail or avatar",
+     "about": "What the result is: a page’s icon on the sunken surface, a file’s picture, a person’s avatar."
+    },
+    {
+     "part": "B",
+     "name": "Path",
+     "about": "Where the result sits, as the item’s overline, in the muted color."
+    },
+    {
+     "part": "C",
+     "name": "Title",
+     "about": "The result’s name as the headline; the words searched for are bold, never colored."
+    },
+    {
+     "part": "D",
+     "name": "Snippet and details",
+     "about": "Two lines at most around the match, then the type, size and date (technical values in DM Mono)."
+    },
+    {
+     "part": "E",
+     "name": "Section header",
+     "about": "The kind in the plural and its count, when results of several kinds are shown."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "C",
+     "attribute": "Title",
+     "token": "plx-comp-search-result-title-text",
+     "value": "Default content color, DM Sans medium at the Body large role",
+     "material": "List item headline",
+     "compose": "Text(title, color = PlenixColors.contentDefault.current(), fontSize = PlenixPlatform.textBodySize)",
+     "views": "titleView.setTextColor(PlenixColors.contentDefault.light.toArgb())",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "part": "C",
+     "attribute": "Match",
+     "token": "plx-comp-search-result-match-font-weight",
+     "value": "Bold, in the title’s color",
+     "material": "None (Material leaves highlighting to the app)",
+     "compose": "buildAnnotatedString { withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(match) } }",
+     "views": "SpannableString with a StyleSpan(Typeface.BOLD) on each match",
+     "follows": "Material 3: Search",
+     "followsUrl": "https://m3.material.io/components/search/overview"
+    },
+    {
+     "part": "B",
+     "attribute": "Path",
+     "token": "plx-comp-search-result-path-text",
+     "value": "Muted content color at the Body medium role",
+     "material": "List item overline",
+     "compose": "overlineContent = { Text(path, color = PlenixColors.contentMuted.current(), fontSize = PlenixPlatform.textSecondarySize) }",
+     "views": "overlineView.setTextColor(PlenixColors.contentMuted.light.toArgb())",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    },
+    {
+     "part": "D",
+     "attribute": "Details",
+     "token": "plx-comp-search-result-meta-text",
+     "value": "Subtle content color; sizes and dates in the data font (DM Mono)",
+     "material": "Supporting text",
+     "compose": "Text(meta, color = PlenixColors.contentSubtle.current(), fontFamily = FontFamily(Font(R.font.dm_mono)), fontSize = PlenixPlatform.textSecondarySize) // PlenixFonts.MONO",
+     "views": "metaView.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "A",
+     "attribute": "Row spacing",
+     "token": "plx-comp-search-result-gap",
+     "value": "The inline medium space between the thumbnail and the text",
+     "material": "List item leading padding",
+     "compose": "Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineMd))",
+     "views": "the leading view’s marginEnd from PlenixSpace.spaceInlineMd",
+     "follows": "Material 3: Lists",
+     "followsUrl": "https://m3.material.io/components/lists/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-search-result-title-text",
+     "compose": "the item at rest",
+     "views": "the row at rest"
+    },
+    {
+     "state": "Pressed",
+     "token": "plx-comp-search-result-hover-background",
+     "compose": "the ripple in the state color (Modifier.clickable with the Plenix ripple)",
+     "views": "a RippleDrawable in PlenixColors.stateHover"
+    },
+    {
+     "state": "Selected (its preview shown, large screens)",
+     "token": "plx-comp-search-result-selected-background",
+     "compose": "ListItemDefaults.colors(containerColor = PlenixColors.stateSelected.current())",
+     "views": "the row’s activated background"
+    },
+    {
+     "state": "No results",
+     "token": "plx-sys-content-muted",
+     "compose": "a Plenix empty state in the search view",
+     "views": "an empty view in the adapter"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.runtime.Composable",
+     "import androidx.compose.ui.text.*",
+     "import androidx.compose.ui.text.font.*",
+     "import plenix.tokens.*",
+     "",
+     "// the text with every match of the query in bold (never a color)",
+     "fun highlighted(text: String, query: String): AnnotatedString = buildAnnotatedString {",
+     "    val at = text.indexOf(query, ignoreCase = true)",
+     "    if (query.isBlank() || at < 0) { append(text); return@buildAnnotatedString }",
+     "    append(text.substring(0, at))",
+     "    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(text.substring(at, at + query.length)) }",
+     "    append(text.substring(at + query.length))",
+     "}",
+     "",
+     "@Composable",
+     "fun PlenixSearchResult(result: SearchResult, query: String, onOpen: () -> Unit) {",
+     "    val mono = FontFamily(Font(R.font.dm_mono)) // PlenixFonts.MONO",
+     "    ListItem(",
+     "        modifier = Modifier.clickable(onClick = onOpen),",
+     "        leadingContent = { PlenixThumbnail(result.kind) },",
+     "        overlineContent = { Text(result.path.joinToString(\" › \"), color = PlenixColors.contentMuted.current()) },",
+     "        headlineContent = { Text(highlighted(result.title, query), color = PlenixColors.contentDefault.current()) },",
+     "        supportingContent = {",
+     "            Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+     "                Text(highlighted(result.snippet, query), maxLines = 2, color = PlenixColors.contentMuted.current())",
+     "                Text(result.meta, fontFamily = mono, color = PlenixColors.contentSubtle.current())",
+     "            }",
+     "        }",
+     "    )",
+     "}"
+    ],
+    "views": [
+     "<!-- res/layout/plenix_search_result.xml: a ConstraintLayout with the thumbnail, the path, the title, the snippet and the meta -->",
+     "<TextView android:id=\"@+id/meta\" android:fontFamily=\"@font/dm_mono\" android:textColor=\"@color/plenix_content_subtle\" />",
+     "",
+     "val title = SpannableString(result.title)",
+     "val at = result.title.indexOf(query, ignoreCase = true)",
+     "if (at >= 0) title.setSpan(StyleSpan(Typeface.BOLD), at, at + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)",
+     "binding.title.text = title"
+    ]
+   }
+  },
   "android-navigation|Tabs and segmented buttons": {
    "summary": "Plenix tabs and segmented buttons on Android are Material 3’s tabs and segmented buttons, kept native in behavior (swiping between tab pages, scrollable tab rows, single or multiple selection, ripple, TalkBack tab and selection semantics, font scaling) and styled with the Plenix tokens: tabs on the default surface with DM Sans labels in the label role, the selected tab in the default content color and semibold over an indicator in the selected color, and segmented buttons on the neutral fill with the 6 dp control radius, the control border and the selected segment raised. Material’s default colors the selected tab and its indicator in the primary color and fills the selected segment in the secondary container with a check; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -10897,6 +11924,102 @@
      "uikit": "The SwiftUI Chart in a UIHostingController",
      "appkit": "The SwiftUI Chart in an NSHostingView",
      "use": "Values that span several orders of magnitude, said in the description."
+    },
+    {
+     "name": "Legend under the plot",
+     "apple": "chartLegend(position: .bottom)",
+     "web": "data-display|Chart legend",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-legend-label-text",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": ".chartLegend(position: .bottom, alignment: .leading, spacing: Plenix.Space.spaceStackXs)",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "Two or more series whose marks cannot be labeled directly; one series needs no legend."
+    },
+    {
+     "name": "Selection tooltip",
+     "apple": "chartXSelection with a RuleMark and an annotation",
+     "web": "data-display|Chart tooltip",
+     "background": "plx-comp-chart-tooltip-background",
+     "content": "plx-comp-chart-tooltip-value-text",
+     "border": "plx-comp-chart-tooltip-border-color",
+     "swiftui": "RuleMark(x: .value(\"Month\", selected)).annotation(position: .top, overflowResolution: .init(x: .fit, y: .disabled)) { PlenixChartTooltip(rows) }",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "The exact values at the scrubbed position; shared across series on line and area charts."
+    },
+    {
+     "name": "Data labels",
+     "apple": "BarMark annotation(position: .top)",
+     "web": "data-display|Data label",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-data-label-text",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "BarMark(…).annotation(position: .top) { Text(value, format: .number).font(Plenix.Font.mono(Plenix.Platform.textCaptionSize, relativeTo: .caption)) }",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "The values people compare on a bar or column chart with few marks."
+    },
+    {
+     "name": "Right value axis",
+     "apple": "chartYAxis { AxisMarks(position: .trailing) }",
+     "web": "data-display|Axis",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-tick-label-text",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": ".chartYAxis { AxisMarks(position: .trailing) }",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "The latest value read at the trailing edge; the axis title names the measure (chartYAxisLabel)."
+    },
+    {
+     "name": "Vertical grid lines",
+     "apple": "chartXAxis { AxisMarks { AxisGridLine() } }",
+     "web": "data-display|Grid line",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": ".chartXAxis { AxisMarks { AxisGridLine().foregroundStyle(Plenix.Colors.borderSubtle) } }",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "Bar charts, whose values run across."
+    },
+    {
+     "name": "Reference line",
+     "apple": "RuleMark(y:) with a dashed StrokeStyle",
+     "web": "data-display|Reference line",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-reference-line-color",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "RuleMark(y: .value(\"Average\", average)).lineStyle(StrokeStyle(lineWidth: Plenix.Border.borderWidthThin, dash: [Plenix.Shape.shape2xs * 2]))",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "A target, an average or a date that gives the data context, named at its end."
+    },
+    {
+     "name": "Threshold",
+     "apple": "RuleMark(y:) in the alert color",
+     "web": "data-display|Threshold",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-alert-critical",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "RuleMark(y: .value(\"Limit\", 90)).foregroundStyle(Plenix.Colors.datavizAlertCritical).lineStyle(StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, dash: [Plenix.Shape.shape2xs * 2]))",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "A limit the data should stay under or above, with its name and value."
+    },
+    {
+     "name": "Point annotation",
+     "apple": "PointMark with an annotation",
+     "web": "data-display|Annotation",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-chart-annotation-label-text",
+     "border": "plx-comp-chart-annotation-ring-color",
+     "swiftui": "PointMark(x: .value(\"Month\", \"Apr\"), y: .value(\"Sign-ups\", 240)).symbol(Circle().strokeBorder(lineWidth: Plenix.Border.borderWidthMedium)).annotation(position: .top) { Text(\"Campaign\") }",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "use": "One or two notes that explain a spike, a release or an outage."
     }
    ],
    "anatomy": [
@@ -10934,6 +12057,36 @@
      "part": "G",
      "name": "Data",
      "about": "The same values as a list one tap away (Show the data), and the Swift Charts audio graph."
+    },
+    {
+     "part": "H",
+     "name": "Legend",
+     "about": "Each series’ swatch and name under the plot (the Swift Charts legend in the Plenix look); hidden when there is one series."
+    },
+    {
+     "part": "I",
+     "name": "Selection tooltip",
+     "about": "The exact values where people scrub: a rule at the position and a card on the overlay surface, values in DM Mono."
+    },
+    {
+     "part": "J",
+     "name": "Data labels",
+     "about": "Values written by their marks in DM Mono, for the marks people compare."
+    },
+    {
+     "part": "K",
+     "name": "Reference line or threshold",
+     "about": "A dashed rule at a value that matters, named at its end; a threshold in the alert colors."
+    },
+    {
+     "part": "L",
+     "name": "Annotation",
+     "about": "A ring on a point with a short note, or a shaded span with its name."
+    },
+    {
+     "part": "M",
+     "name": "Axis title",
+     "about": "The measure and its unit beside the axis, in secondary text."
     }
    ],
    "attributes": [
@@ -11035,6 +12188,83 @@
      "uikit": "hosting.view.accessibilityLabel = title",
      "appkit": "hosting.setAccessibilityLabel(title)",
      "follows": "Enhancing the accessibility of a chart"
+    },
+    {
+     "part": "H",
+     "attribute": "Legend name color",
+     "token": "plx-comp-chart-legend-label-text",
+     "value": "The default content color, DM Sans at the secondary size; swatches 12 pt squares in the series colors",
+     "apple": "Secondary label color",
+     "swiftui": ".chartLegend(position: .bottom) { PlenixLegend(series) }, names .foregroundStyle(Plenix.Colors.contentDefault)",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "follows": "Descriptive content"
+    },
+    {
+     "part": "I",
+     "attribute": "Tooltip surface",
+     "token": "plx-comp-chart-tooltip-background",
+     "value": "The overlay surface with the default border, the menu radius (8 pt) and the menu shadow",
+     "apple": "Regular material",
+     "swiftui": "PlenixChartTooltip(rows).padding(Plenix.Space.spaceInsetSm).background(Plenix.Colors.surfaceOverlay, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusMenu8px))",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "follows": "Best practices"
+    },
+    {
+     "part": "I",
+     "attribute": "Tooltip value font",
+     "token": "plx-comp-chart-tooltip-value-font-family",
+     "value": "DM Mono (the data role) at the data size",
+     "apple": "SF Pro",
+     "swiftui": "Text(value).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+     "uikit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
+     "appkit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
+     "follows": "Descriptive content"
+    },
+    {
+     "part": "J",
+     "attribute": "Data label font",
+     "token": "plx-comp-chart-data-label-font-family",
+     "value": "DM Mono (the data role) at the caption size, the default content color",
+     "apple": "SF Pro caption",
+     "swiftui": "Text(value, format: .number).font(Plenix.Font.mono(Plenix.Platform.textCaptionSize, relativeTo: .caption))",
+     "uikit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
+     "appkit": "The same on the hosted SwiftUI Chart (Plenix.Font.mono)",
+     "follows": "Marks"
+    },
+    {
+     "part": "K",
+     "attribute": "Reference line color",
+     "token": "plx-comp-chart-reference-line-color",
+     "value": "The subtle content color, 1 pt, dashed 4 on 4; a threshold 2 pt in the alert warning or critical color",
+     "apple": "The mark’s foreground style",
+     "swiftui": "RuleMark(y: .value(\"Target\", target)).foregroundStyle(Plenix.Colors.contentSubtle)",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "follows": "Marks"
+    },
+    {
+     "part": "L",
+     "attribute": "Annotation ring",
+     "token": "plx-comp-chart-annotation-ring-color",
+     "value": "The default content color, 2 pt; the note in DM Sans, medium weight",
+     "apple": "The mark’s symbol",
+     "swiftui": "PointMark(…).symbol(Circle().strokeBorder(Plenix.Colors.contentDefault, lineWidth: Plenix.Border.borderWidthMedium))",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "follows": "Marks"
+    },
+    {
+     "part": "M",
+     "attribute": "Axis title color",
+     "token": "plx-comp-chart-axis-label-text",
+     "value": "Secondary text (plx-sys-content-subtle), DM Sans medium",
+     "apple": "Secondary label color",
+     "swiftui": ".chartYAxisLabel(\"Sign-ups\").foregroundStyle(Plenix.Colors.contentSubtle)",
+     "uikit": "The same on the hosted SwiftUI Chart",
+     "appkit": "The same on the hosted SwiftUI Chart",
+     "follows": "Axes"
     }
    ],
    "states": [
@@ -15177,6 +16407,224 @@
      "search.sendsSearchStringImmediately = true       // results update as the person types",
      "let item = NSSearchToolbarItem(itemIdentifier: .init(\"search\"))   // the trailing end of the toolbar",
      "item.searchField = search"
+    ]
+   }
+  },
+  "ios-navigation|Searching": {
+   "summary": "Plenix search results on iOS keep the system’s search (the searchable modifier or UISearchController, its scope bar and keyboard) and draw each result as a Plenix row: what it is (a page’s icon in a thumbnail, a file’s picture, a person’s avatar), the name with the words searched for in bold, the path above it, a line around the match and its details, the technical values in DM Mono. Results of several kinds sit in sections headed by the kind and its count, each with a row that shows all of that kind.",
+   "variants": [
+    {
+     "name": "Page (default)",
+     "apple": "A List row in the search results",
+     "web": "navigation|Search result item",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-title-text",
+     "border": "plx-comp-search-result-border-bottom-color",
+     "swiftui": "List row: Label(title, systemImage:) with the Plenix thumbnail, the snippet and the meta",
+     "uikit": "UICollectionViewListCell with a Plenix content configuration",
+     "appkit": "NSTableCellView with the Plenix row (a macOS build of the tokens is needed)",
+     "use": "Notes, pages, projects and other records."
+    },
+    {
+     "name": "File",
+     "apple": "A List row with a thumbnail",
+     "web": "navigation|Search result item",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-meta-text",
+     "border": "plx-comp-search-result-border-bottom-color",
+     "swiftui": "The same row with the file’s QuickLook thumbnail and its size and date in DM Mono",
+     "uikit": "The cell’s image from QLThumbnailGenerator",
+     "appkit": "QLThumbnailGenerator in the cell (a macOS build of the tokens is needed)",
+     "use": "Documents, images, uploads."
+    },
+    {
+     "name": "Person",
+     "apple": "A List row with an avatar",
+     "web": "navigation|Search result item",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-title-text",
+     "border": "plx-comp-search-result-border-bottom-color",
+     "swiftui": "The row with the Plenix avatar (a rounded square with initials)",
+     "uikit": "The cell with the avatar view",
+     "appkit": "The cell with the avatar view (a macOS build of the tokens is needed)",
+     "use": "Members, contacts, authors."
+    },
+    {
+     "name": "Grouped by kind",
+     "apple": "List sections in the search results",
+     "web": "navigation|Search result groups",
+     "background": "plx-sys-surface-default",
+     "content": "plx-comp-search-result-group-count-text",
+     "border": null,
+     "swiftui": "Section(header: kind and count) with the first few rows and a Show all row",
+     "uikit": "Collection view sections with a list header",
+     "appkit": "Table view group rows (a macOS build of the tokens is needed)",
+     "use": "A search across pages, files and people."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Thumbnail or avatar",
+     "about": "What the result is: a page’s icon on the sunken surface, a file’s picture, a person’s avatar."
+    },
+    {
+     "part": "B",
+     "name": "Path",
+     "about": "Where the result sits, from the top, with chevrons between the places, in secondary text."
+    },
+    {
+     "part": "C",
+     "name": "Title",
+     "about": "The result’s name; the words searched for are bold, never colored."
+    },
+    {
+     "part": "D",
+     "name": "Snippet and details",
+     "about": "Two lines at most around the match, then the type, size and date (technical values in DM Mono)."
+    },
+    {
+     "part": "E",
+     "name": "Section header",
+     "about": "The kind in the plural and its count, when results of several kinds are shown."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "C",
+     "attribute": "Title",
+     "token": "plx-comp-search-result-title-text",
+     "value": "Default content color, DM Sans medium at the Body role",
+     "apple": "The row’s primary text",
+     "swiftui": "Text(title).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.contentDefault)",
+     "uikit": "content.textProperties.color = Plenix.Colors.contentDefault",
+     "appkit": "textField.textColor = Plenix.Colors.contentDefault (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "C",
+     "attribute": "Match",
+     "token": "plx-comp-search-result-match-font-weight",
+     "value": "Bold, in the title’s color",
+     "apple": "None (Apple leaves highlighting to the app)",
+     "swiftui": "AttributedString with .inlinePresentationIntent = .stronglyEmphasized on each match",
+     "uikit": "NSAttributedString with a bold DM Sans font on each match range",
+     "appkit": "NSAttributedString with a bold font on each match (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Path",
+     "token": "plx-comp-search-result-path-text",
+     "value": "Muted content color at the Secondary role",
+     "apple": "Secondary text",
+     "swiftui": "Text(path).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "uikit": "content.secondaryTextProperties.color = Plenix.Colors.contentMuted",
+     "appkit": "secondary field textColor = Plenix.Colors.contentMuted (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Details",
+     "token": "plx-comp-search-result-meta-text",
+     "value": "Subtle content color; sizes and dates in the data font (DM Mono)",
+     "apple": "Tertiary text",
+     "swiftui": "Text(meta).font(Plenix.Font.mono(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentSubtle)",
+     "uikit": "label.font = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textSecondarySize)!)",
+     "appkit": "NSFont named DM Mono at the secondary size, Plenix.Font.mono (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "A",
+     "attribute": "Row spacing",
+     "token": "plx-comp-search-result-gap",
+     "value": "The inline medium space between the thumbnail and the text",
+     "apple": "The list row’s image-to-text padding",
+     "swiftui": "HStack(alignment: .top, spacing: Plenix.Space.spaceInlineMd)",
+     "uikit": "content.imageToTextPadding = Plenix.Space.spaceInlineMd",
+     "appkit": "stack view spacing Plenix.Space.spaceInlineMd (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-search-result-title-text",
+     "swiftui": "the row at rest",
+     "uikit": "the cell at rest",
+     "appkit": "the row at rest"
+    },
+    {
+     "state": "Pressed",
+     "token": "plx-comp-search-result-hover-background",
+     "swiftui": "the List’s own press highlight, tinted with the state color",
+     "uikit": "backgroundConfiguration for the highlighted state: Plenix.Colors.stateHover",
+     "appkit": "the row’s highlight"
+    },
+    {
+     "state": "Selected (its preview shown, iPad)",
+     "token": "plx-comp-search-result-selected-background",
+     "swiftui": "List(selection:) with the selected fill",
+     "uikit": "backgroundConfiguration for the selected state: Plenix.Colors.stateSelected",
+     "appkit": "selectionHighlightStyle with the selected fill"
+    },
+    {
+     "state": "No results",
+     "token": "plx-sys-content-muted",
+     "swiftui": "ContentUnavailableView.search(text:)",
+     "uikit": "a Plenix empty state in the results controller",
+     "appkit": "an empty state view"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// A Plenix search result row: thumbnail, path, title with the matches in bold, snippet and details.",
+     "struct PlenixSearchResultRow: View {",
+     "    let result: SearchResult",
+     "    let query: String",
+     "",
+     "    var body: some View {",
+     "        HStack(alignment: .top, spacing: Plenix.Space.spaceInlineMd) {",
+     "            PlenixThumbnail(kind: result.kind)",
+     "            VStack(alignment: .leading, spacing: Plenix.Space.spaceStackXs) {",
+     "                if !result.path.isEmpty {",
+     "                    Text(result.path.joined(separator: \" › \"))",
+     "                        .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote))",
+     "                        .foregroundStyle(Plenix.Colors.contentMuted)",
+     "                }",
+     "                Text(highlighted(result.title, query))",
+     "                    .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "                    .foregroundStyle(Plenix.Colors.contentDefault)",
+     "                Text(highlighted(result.snippet, query)).lineLimit(2)",
+     "                    .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote))",
+     "                    .foregroundStyle(Plenix.Colors.contentMuted)",
+     "                Text(result.meta)",
+     "                    .font(Plenix.Font.mono(Plenix.Platform.textSecondarySize, relativeTo: .footnote))",
+     "                    .foregroundStyle(Plenix.Colors.contentSubtle)",
+     "            }",
+     "        }",
+     "    }",
+     "}",
+     "",
+     "// in the search screen: one section per kind, with its count and a row that shows all of them",
+     "// List { ForEach(groups) { g in Section { ForEach(g.first) { PlenixSearchResultRow(result: $0, query: text) } } header: { Text(g.kind + \" \" + String(g.count)) } } }",
+     "//     .searchable(text: $text)"
+    ],
+    "uikit": [
+     "var content = UIListContentConfiguration.subtitleCell()",
+     "content.attributedText = highlighted(result.title, query)",
+     "content.secondaryText = result.snippet",
+     "content.secondaryTextProperties.color = Plenix.Colors.contentMuted",
+     "content.secondaryTextProperties.numberOfLines = 2",
+     "content.imageToTextPadding = Plenix.Space.spaceInlineMd",
+     "cell.contentConfiguration = content"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "let title = NSTextField(labelWithAttributedString: highlighted(result.title, query))",
+     "title.textColor = Plenix.Colors.contentDefault"
     ]
    }
   },

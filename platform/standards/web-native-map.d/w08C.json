@@ -1,0 +1,12 @@
+{
+  "$description": "Library part w08C (wave 8, lane C): the iOS and Android counterparts of Role, Search result item, Search result groups, Resource list, Object list, Timeline and Expandable card. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "content|Role": { "ios": ["ios-content|Labels"], "android": ["android-content|Label"] },
+    "navigation|Search result item": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search screen"] },
+    "navigation|Search result groups": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search screen"] },
+    "data-display|Resource list": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|List"] },
+    "data-display|Object list": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|List"] },
+    "data-display|Timeline": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|Activity feed"] },
+    "data-display|Expandable card": { "ios": ["ios-layout|Boxes"], "android": ["android-data-display|Card"] }
+  }
+}

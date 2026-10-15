@@ -1,0 +1,14 @@
+/* Plenix · FeatureCard (platform/patterns/FeatureCard): a Card whose body (the media) comes first. Card draws the
+   surface, the title (its opener covers the card) and the description (its meta line); this sheet places the media. */
+.plx-feature-card > .plx-card__body{display:flex;order:-1;}
+.plx-feature-card .plx-card__title{white-space:normal;}
+.plx-feature-card__media{display:flex;min-inline-size:0;}
+/* a picture across the top: out to the card's edges, in its top corners */
+.plx-feature-card--image .plx-feature-card__media--image{border-start-end-radius:var(--plx-comp-feature-card-media-radius);border-start-start-radius:var(--plx-comp-feature-card-media-radius);flex-grow:1;margin-block-start:var(--plx-comp-feature-card-media-bleed-block);margin-inline-end:var(--plx-comp-feature-card-media-bleed-inline);margin-inline-start:var(--plx-comp-feature-card-media-bleed-inline);overflow-x:hidden;overflow-y:hidden;}
+.plx-feature-card--image .plx-feature-card__image{flex-grow:1;}
+/* horizontal: the media before the title and the description */
+.plx-card.plx-feature-card--horizontal{align-items:start;column-gap:var(--plx-comp-feature-card-horizontal-gap);display:grid;grid-template-areas:"media header" "media meta";grid-template-columns:auto minmax(0, 1fr);}
+.plx-feature-card--horizontal > .plx-card__header{grid-area:header;}
+.plx-feature-card--horizontal > .plx-card__meta{grid-area:meta;}
+.plx-feature-card--horizontal > .plx-card__body{grid-area:media;}
+.plx-feature-card--horizontal .plx-feature-card__image{block-size:var(--plx-comp-feature-card-horizontal-image-size);inline-size:var(--plx-comp-feature-card-horizontal-image-size);}

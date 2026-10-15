@@ -1,16 +1,12 @@
-## Batch 374 (2026-10-15): command bar swap, floating table scrollbar
-- Handoff docs/handoff/2026-10-15-command-bar-swap.md (desktop session). Owner, 2026-10-15: the count stays inside the
-  bar; while selecting, "× N selected" in the bar clears the selection (Microsoft 365).
-- CommandBar: selection object (swap), split retired, Divider between actions and find, announce on swap, Escape
-  clears; w07K records, docs and lab (variants one / selected / view; the selection-bar lab stays for BulkActions);
-  BulkActions and bulk-selection records point to the swap; keyboard test: the swap and Escape (and it waits for the
-  page's tables before focusing Filter).
-- DataTable floatingScroll.js: tracks anchored to the body (anchor positioning), thumbs on the body's scroll timeline,
-  length by data-plx-thumb steps; tokens data-table-scroll-*; reduced motion keeps the thumb (feedback, not motion).
-- Select-all checkbox moved 8.5px and shrank to 13px on header hover (the title reserve); select column excluded
-  (owner chose "exclude", 2026-10-15).
-- Selected row blue-200, hover on a selected row gray-100, no border (owner, 2026-10-15).
-- Open for the owner: BulkActions keep for pages without a bar, or retire; NavPane edge inset 12px or 16px.
-- Tests (changed mode): SYSTEM_OK, SPEC_OK, VISUAL, DENSITY, LAYOUT, THEME, PAGES 195/195, KEYBOARD 25/25,
-  A11Y 0, DATA_TABLES 38/38, TYPOGRAPHY, LABS (command-bar, bulk-action-bar fixed), REFLOW, TARGETS (coarse 18), CONTRAST,
-  NAVIGATION, FOCUS_ORDER, HIGH_CONTRAST. Released as {V}.
+## Batch 375 (2026-10-15): library wave 8
+- Lanes A (chart parts, FeatureCard, UserCard), B (VirtualList, Carousel, PeopleGroup, PermissionSummary, QueryBuilder)
+  and C (RoleLabel, SearchResult, ResourceList, Timeline, Card expandable) in worktrees, merged with take-lane.js;
+  native fragments merged (7). Skipped as answered: Action list, Grouped list, Search template, Filter panel, Sort control.
+- Needs the owner (existing roles): dashed reference/threshold lines; the range shade in dark mode; label halos; hollow
+  hidden-series swatches; tooltip on the popover surface; the avatar over a user card's cover; legend under the plot;
+  carousel Pause as text (no pause icon), dots differ by color only, 6s autoplay token; nested query groups with a rail;
+  role icons; timeline line and markers; bold search matches; expandable cards closed by default.
+- Follow-ups: ResourceList's command-bar example can pass `selection` now; ChartTooltip keyboard and announcing in wave 9
+  (chart interaction); native card designs for FeatureCard and UserCard.
+- Tests (changed mode): all 21 groups OK (SYSTEM, SPEC 597 records, LABS 29 + 7, VISUAL, PAGES 202 + 260, KEYBOARD 25,
+  A11Y 0, DATA_TABLES 38, TYPOGRAPHY, REFLOW, TARGETS, CONTRAST, NAVIGATION, …). Released as {V}.

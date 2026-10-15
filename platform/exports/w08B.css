@@ -1,0 +1,6 @@
+/* Library part w08B (wave 8, lane B): VirtualList, Carousel, PeopleGroup, PermissionSummary and QueryBuilder. */
+@import url("../components/VirtualList/virtual-list.css");
+@import url("../components/Carousel/carousel.css");
+@import url("../patterns/PeopleGroup/people-group.css");
+@import url("../patterns/PermissionSummary/permission-summary.css");
+@import url("../patterns/QueryBuilder/query-builder.css");

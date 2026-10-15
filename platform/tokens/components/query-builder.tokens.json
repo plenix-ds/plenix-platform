@@ -1,0 +1,130 @@
+{
+  "$description": "QueryBuilder (platform/patterns/QueryBuilder), library wave 8, lane B: its pattern tokens. The regions’ gaps, the match count (its number in the data font), a group’s head and hint, the join column, the rule’s control widths, the rail that marks a nested group (instead of a frame) and the empty text.",
+  "plx-comp": {
+    "query-builder-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between the switch bar and the query (space-stack-md)."
+    },
+    "query-builder-bar-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between the switch and the match count (space-inline-md)."
+    },
+    "query-builder-matches-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "QueryBuilder: match count color (content-muted)."
+    },
+    "query-builder-matches-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: match count text size (font-size-12)."
+    },
+    "query-builder-number-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "QueryBuilder: the match count’s number (the data font) (font-data)."
+    },
+    "query-builder-group-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between a group’s head, rules and add buttons (space-stack-sm)."
+    },
+    "query-builder-rail-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "QueryBuilder: nested group rail color (border-default)."
+    },
+    "query-builder-rail-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: nested group rail width (border-width-medium)."
+    },
+    "query-builder-rail-padding": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: space between the rail and the nested group (space-inset-sm)."
+    },
+    "query-builder-head-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between the And or Or switch, its words and Remove group (space-inline-sm)."
+    },
+    "query-builder-hint-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "QueryBuilder: the words of the join (\"All rules\") color (content-muted)."
+    },
+    "query-builder-hint-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: the words of the join text size (font-size-12)."
+    },
+    "query-builder-items-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between rules (space-stack-xs)."
+    },
+    "query-builder-item-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between the join word and its rule (space-inline-sm)."
+    },
+    "query-builder-join-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "QueryBuilder: join word (\"Where\", \"and\") color (content-muted)."
+    },
+    "query-builder-join-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: join word text size (font-size-13)."
+    },
+    "query-builder-join-width": {
+      "$value": "{plx-ref.size-52px}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: the join column’s width (size-52px)."
+    },
+    "query-builder-join-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: the join word’s height (the controls’ height, so it sits on their line) (control-height-standard)."
+    },
+    "query-builder-rule-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between a rule’s controls (space-inline-sm)."
+    },
+    "query-builder-field-width": {
+      "$value": "{plx-ref.size-160px}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: field select width (size-160px)."
+    },
+    "query-builder-operator-width": {
+      "$value": "{plx-ref.size-152px}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: operator select width (size-152px)."
+    },
+    "query-builder-value-min-width": {
+      "$value": "{plx-ref.size-200px}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: the value control’s narrowest width (size-200px)."
+    },
+    "query-builder-empty-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "QueryBuilder: empty group text color (content-muted)."
+    },
+    "query-builder-empty-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: empty group text size (font-size-13)."
+    },
+    "query-builder-add-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "QueryBuilder: gap between Add rule and Add group (space-inline-sm)."
+    }
+  }
+}

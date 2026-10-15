@@ -1,0 +1,86 @@
+/* Plenix · Chart parts (platform/charts/parts/chart-parts.css): Axis, GridLines, ChartLegend, ChartTooltip, DataLabel,
+   ReferenceLine and ChartAnnotation, drawn in ChartFrame (system/charts.css). Every value is a --plx-comp-chart-* token on
+   an existing role; a series' or a threshold's color is its data-viz step (data-plx-dataviz, system/dataviz.css sets
+   --plx-comp-data-color). The parts write only geometry; offsets from an anchor are CSS transforms on tokens. */
+
+/* ── Axis: tick labels at their value, moved off the plot by the offset; the axis title at the margin's edge ── */
+.plx-chart-axis--bottom .plx-chart-axis__tick{dominant-baseline:hanging;text-anchor:middle;transform:translateY(var(--plx-comp-chart-axis-tick-offset));}
+.plx-chart-axis--top .plx-chart-axis__tick{dominant-baseline:text-after-edge;text-anchor:middle;transform:translateY(calc(-1 * var(--plx-comp-chart-axis-tick-offset)));}
+.plx-chart-axis--left .plx-chart-axis__tick{dominant-baseline:central;text-anchor:end;transform:translateX(calc(-1 * var(--plx-comp-chart-axis-tick-offset)));}
+.plx-chart-axis--right .plx-chart-axis__tick{dominant-baseline:central;text-anchor:start;transform:translateX(var(--plx-comp-chart-axis-tick-offset));}
+.plx-chart-axis__label{fill:var(--plx-comp-chart-axis-label-text);font-family:var(--plx-comp-chart-axis-label-font-family);font-size:var(--plx-comp-chart-axis-label-font-size);font-weight:var(--plx-comp-chart-axis-label-font-weight);text-anchor:middle;}
+.plx-chart-axis--bottom .plx-chart-axis__label{dominant-baseline:text-after-edge;}
+.plx-chart-axis--top .plx-chart-axis__label,.plx-chart-axis--left .plx-chart-axis__label,.plx-chart-axis--right .plx-chart-axis__label{dominant-baseline:hanging;}
+
+/* ── GridLines: the frame's grid line class (plx-chart__grid-line); the group itself draws nothing ── */
+.plx-chart-grid{pointer-events:none;}
+
+/* ── The frame's legend slot (ChartFrame legend, legendPosition): before or after the plot, or beside it ── */
+.plx-chart__legend{min-inline-size:0;}
+.plx-chart__body{align-items:flex-start;column-gap:var(--plx-comp-chart-body-gap);display:flex;min-inline-size:0;}
+.plx-chart__body > .plx-chart__plot{flex-basis:0%;flex-grow:1;}
+.plx-chart__legend--end{flex-shrink:0;max-inline-size:var(--plx-comp-chart-legend-end-max-width);}
+
+/* ── ChartLegend: swatch, name and value per series; a row that wraps, or one per line ── */
+.plx-chart-legend{min-inline-size:0;}
+.plx-chart-legend__list{column-gap:var(--plx-comp-chart-legend-column-gap);display:flex;flex-wrap:wrap;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-chart-legend-row-gap);}
+.plx-chart-legend--vertical .plx-chart-legend__list{flex-direction:column;flex-wrap:nowrap;}
+.plx-chart-legend__item{display:flex;min-inline-size:0;}
+.plx-chart-legend__entry,.plx-chart-legend__toggle{align-items:center;color:var(--plx-comp-chart-legend-label-text);column-gap:var(--plx-comp-chart-legend-item-gap);display:inline-flex;font-family:var(--plx-comp-chart-legend-label-font-family);font-size:var(--plx-comp-chart-legend-label-font-size);line-height:var(--plx-comp-chart-legend-label-line-height);min-inline-size:0;}
+.plx-chart-legend__label{min-inline-size:0;overflow-wrap:anywhere;}
+.plx-chart-legend__value{color:var(--plx-comp-chart-legend-value-text);font-family:var(--plx-comp-chart-legend-value-font-family);}
+/* the swatch: the series' data-viz color (the first categorical color without one), filled and outlined */
+.plx-chart-legend__swatch{--plx-comp-chart-legend-swatch-color:var(--plx-comp-chart-mark-default-color);background-color:var(--plx-comp-chart-legend-swatch-color);border-bottom-color:var(--plx-comp-chart-legend-swatch-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-chart-legend-swatch-border-width);border-left-color:var(--plx-comp-chart-legend-swatch-color);border-left-style:solid;border-left-width:var(--plx-comp-chart-legend-swatch-border-width);border-right-color:var(--plx-comp-chart-legend-swatch-color);border-right-style:solid;border-right-width:var(--plx-comp-chart-legend-swatch-border-width);border-top-color:var(--plx-comp-chart-legend-swatch-color);border-top-style:solid;border-top-width:var(--plx-comp-chart-legend-swatch-border-width);box-sizing:border-box;flex-shrink:0;}
+.plx-chart-legend__swatch[data-plx-dataviz]{--plx-comp-chart-legend-swatch-color:var(--plx-comp-data-color);}
+.plx-chart-legend__swatch--square{block-size:var(--plx-comp-chart-legend-swatch-size);border-end-end-radius:var(--plx-comp-chart-legend-swatch-radius);border-end-start-radius:var(--plx-comp-chart-legend-swatch-radius);border-start-end-radius:var(--plx-comp-chart-legend-swatch-radius);border-start-start-radius:var(--plx-comp-chart-legend-swatch-radius);inline-size:var(--plx-comp-chart-legend-swatch-size);}
+.plx-chart-legend__swatch--line{block-size:var(--plx-comp-chart-legend-line-swatch-height);border-bottom-width:0;border-left-width:0;border-right-width:0;border-top-width:0;inline-size:var(--plx-comp-chart-legend-line-swatch-width);}
+/* interactive: a toggle button per series (aria-pressed = shown); a hidden series keeps a hollow swatch and a muted name */
+.plx-chart-legend__toggle{background-color:transparent;border-bottom-color:transparent;border-bottom-style:solid;border-bottom-width:var(--plx-comp-chart-legend-toggle-border-width);border-end-end-radius:var(--plx-comp-chart-legend-toggle-radius);border-end-start-radius:var(--plx-comp-chart-legend-toggle-radius);border-left-color:transparent;border-left-style:solid;border-left-width:var(--plx-comp-chart-legend-toggle-border-width);border-right-color:transparent;border-right-style:solid;border-right-width:var(--plx-comp-chart-legend-toggle-border-width);border-start-end-radius:var(--plx-comp-chart-legend-toggle-radius);border-start-start-radius:var(--plx-comp-chart-legend-toggle-radius);border-top-color:transparent;border-top-style:solid;border-top-width:var(--plx-comp-chart-legend-toggle-border-width);box-sizing:border-box;cursor:pointer;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-block-size:var(--plx-comp-chart-legend-toggle-min-height);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-chart-legend-toggle-padding-inline);padding-inline-start:var(--plx-comp-chart-legend-toggle-padding-inline);text-align:start;}
+.plx-chart-legend__toggle:hover{background-color:var(--plx-comp-chart-legend-toggle-hover-background);}
+.plx-chart-legend__toggle:focus-visible{border-bottom-color:var(--plx-comp-chart-legend-toggle-focus-border-color);border-left-color:var(--plx-comp-chart-legend-toggle-focus-border-color);border-right-color:var(--plx-comp-chart-legend-toggle-focus-border-color);border-top-color:var(--plx-comp-chart-legend-toggle-focus-border-color);outline-style:none;}
+.plx-chart-legend__toggle[aria-pressed="false"]{color:var(--plx-comp-chart-legend-off-text);}
+.plx-chart-legend__toggle[aria-pressed="false"] .plx-chart-legend__swatch{background-color:transparent;}
+.plx-chart-legend__toggle[aria-pressed="false"] .plx-chart-legend__swatch--line{background-color:var(--plx-comp-chart-legend-off-line-color);}
+
+/* ── ChartTooltip: laid out in its foreignObject on the point's side with room; the popover's surface ── */
+.plx-chart-tooltip-layer{pointer-events:none;}
+.plx-chart-tooltip__crosshair{fill:none;stroke:var(--plx-comp-chart-tooltip-crosshair-color);stroke-width:var(--plx-comp-chart-tooltip-crosshair-width);}
+.plx-chart-tooltip__room{overflow-x:visible;overflow-y:visible;pointer-events:none;}
+.plx-chart-tooltip__place{block-size:100%;box-sizing:border-box;display:flex;flex-direction:column;inline-size:100%;}
+.plx-chart-tooltip__place--end{align-items:flex-start;padding-inline-start:var(--plx-comp-chart-tooltip-offset);}
+.plx-chart-tooltip__place--start{align-items:flex-end;padding-inline-end:var(--plx-comp-chart-tooltip-offset);}
+.plx-chart-tooltip__place--below{justify-content:flex-start;padding-block-start:var(--plx-comp-chart-tooltip-offset);}
+.plx-chart-tooltip__place--above{justify-content:flex-end;padding-block-end:var(--plx-comp-chart-tooltip-offset);}
+.plx-chart-tooltip{background-color:var(--plx-comp-chart-tooltip-background);border-bottom-color:var(--plx-comp-chart-tooltip-border-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-chart-tooltip-border-width);border-end-end-radius:var(--plx-comp-chart-tooltip-radius);border-end-start-radius:var(--plx-comp-chart-tooltip-radius);border-left-color:var(--plx-comp-chart-tooltip-border-color);border-left-style:solid;border-left-width:var(--plx-comp-chart-tooltip-border-width);border-right-color:var(--plx-comp-chart-tooltip-border-color);border-right-style:solid;border-right-width:var(--plx-comp-chart-tooltip-border-width);border-start-end-radius:var(--plx-comp-chart-tooltip-radius);border-start-start-radius:var(--plx-comp-chart-tooltip-radius);border-top-color:var(--plx-comp-chart-tooltip-border-color);border-top-style:solid;border-top-width:var(--plx-comp-chart-tooltip-border-width);box-shadow:var(--plx-comp-chart-tooltip-shadow);box-sizing:border-box;color:var(--plx-comp-chart-tooltip-text);display:flex;flex-direction:column;font-family:var(--plx-comp-chart-tooltip-font-family);font-size:var(--plx-comp-chart-tooltip-font-size);inline-size:max-content;line-height:var(--plx-comp-chart-tooltip-line-height);max-inline-size:100%;padding-block-end:var(--plx-comp-chart-tooltip-padding-block);padding-block-start:var(--plx-comp-chart-tooltip-padding-block);padding-inline-end:var(--plx-comp-chart-tooltip-padding-inline);padding-inline-start:var(--plx-comp-chart-tooltip-padding-inline);row-gap:var(--plx-comp-chart-tooltip-gap);}
+.plx-chart-tooltip__title{color:var(--plx-comp-chart-tooltip-title-text);font-weight:var(--plx-comp-chart-tooltip-title-font-weight);}
+.plx-chart-tooltip__title--data{font-family:var(--plx-comp-chart-tooltip-value-font-family);}
+.plx-chart-tooltip__list{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-chart-tooltip-list-gap);}
+.plx-chart-tooltip__item{align-items:center;column-gap:var(--plx-comp-chart-tooltip-item-gap);display:flex;}
+.plx-chart-tooltip__swatch{--plx-comp-chart-tooltip-swatch-color:var(--plx-comp-chart-mark-default-color);background-color:var(--plx-comp-chart-tooltip-swatch-color);block-size:var(--plx-comp-chart-tooltip-swatch-size);border-end-end-radius:var(--plx-comp-chart-tooltip-swatch-radius);border-end-start-radius:var(--plx-comp-chart-tooltip-swatch-radius);border-start-end-radius:var(--plx-comp-chart-tooltip-swatch-radius);border-start-start-radius:var(--plx-comp-chart-tooltip-swatch-radius);flex-shrink:0;inline-size:var(--plx-comp-chart-tooltip-swatch-size);}
+.plx-chart-tooltip__swatch[data-plx-dataviz]{--plx-comp-chart-tooltip-swatch-color:var(--plx-comp-data-color);}
+.plx-chart-tooltip__label{color:var(--plx-comp-chart-tooltip-label-text);flex-grow:1;min-inline-size:0;}
+.plx-chart-tooltip__value{color:var(--plx-comp-chart-tooltip-value-text);font-family:var(--plx-comp-chart-tooltip-value-font-family);margin-inline-start:var(--plx-comp-chart-tooltip-value-margin-inline-start);text-align:end;}
+
+/* ── DataLabel: the data font, off its anchor by the offset; centered labels with a halo in the surface color ── */
+.plx-chart-data-label{fill:var(--plx-comp-chart-data-label-text);font-family:var(--plx-comp-chart-data-label-font-family);font-size:var(--plx-comp-chart-data-label-font-size);}
+.plx-chart-data-label--top{dominant-baseline:text-after-edge;text-anchor:middle;transform:translateY(calc(-1 * var(--plx-comp-chart-data-label-offset)));}
+.plx-chart-data-label--end{dominant-baseline:central;text-anchor:start;transform:translateX(var(--plx-comp-chart-data-label-offset));}
+.plx-chart-data-label--center{dominant-baseline:central;paint-order:stroke;stroke:var(--plx-comp-chart-data-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-chart-data-label-halo-width);text-anchor:middle;}
+
+/* ── ReferenceLine: a dashed rule; a threshold's in its alert color (data-plx-dataviz="alert-…"); its name and value ── */
+.plx-chart-reference__line{--plx-comp-chart-reference-line-stroke:var(--plx-comp-chart-reference-line-color);fill:none;stroke:var(--plx-comp-chart-reference-line-stroke);stroke-dasharray:var(--plx-comp-chart-reference-line-dash) var(--plx-comp-chart-reference-line-gap);stroke-width:var(--plx-comp-chart-reference-line-width);}
+.plx-chart-reference__line[data-plx-dataviz]{--plx-comp-chart-reference-line-stroke:var(--plx-comp-data-color);}
+.plx-chart-reference--threshold .plx-chart-reference__line{stroke-width:var(--plx-comp-chart-threshold-line-width);}
+.plx-chart-reference__label{fill:var(--plx-comp-chart-reference-label-text);paint-order:stroke;stroke:var(--plx-comp-chart-reference-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-chart-reference-label-halo-width);font-family:var(--plx-comp-chart-reference-label-font-family);font-size:var(--plx-comp-chart-reference-label-font-size);font-weight:var(--plx-comp-chart-reference-label-font-weight);}
+.plx-chart-reference--y .plx-chart-reference__label{dominant-baseline:text-after-edge;text-anchor:end;transform:translateY(calc(-1 * var(--plx-comp-chart-reference-label-offset)));}
+.plx-chart-reference--x .plx-chart-reference__label{dominant-baseline:hanging;text-anchor:start;transform:translateX(var(--plx-comp-chart-reference-label-offset));}
+.plx-chart-reference__value{fill:var(--plx-comp-chart-reference-value-text);font-family:var(--plx-comp-chart-reference-value-font-family);font-weight:var(--plx-comp-chart-reference-value-font-weight);}
+
+/* ── ChartAnnotation: a ring on the point, a leader, the note; or a shaded span with its name ── */
+.plx-chart-annotation__ring{fill:none;stroke:var(--plx-comp-chart-annotation-ring-color);stroke-width:var(--plx-comp-chart-annotation-ring-width);}
+.plx-chart-annotation__leader{fill:none;stroke:var(--plx-comp-chart-annotation-leader-color);stroke-width:var(--plx-comp-chart-annotation-leader-width);}
+.plx-chart-annotation__band{fill:var(--plx-comp-chart-annotation-band-background);}
+.plx-chart-annotation__label{fill:var(--plx-comp-chart-annotation-label-text);paint-order:stroke;stroke:var(--plx-comp-chart-annotation-label-halo-color);stroke-linejoin:round;stroke-width:var(--plx-comp-chart-annotation-label-halo-width);font-family:var(--plx-comp-chart-annotation-label-font-family);font-size:var(--plx-comp-chart-annotation-label-font-size);font-weight:var(--plx-comp-chart-annotation-label-font-weight);}
+.plx-chart-annotation--top .plx-chart-annotation__label{dominant-baseline:text-after-edge;text-anchor:middle;transform:translateY(calc(-1 * var(--plx-comp-chart-annotation-label-offset)));}
+.plx-chart-annotation--bottom .plx-chart-annotation__label{dominant-baseline:hanging;text-anchor:middle;transform:translateY(var(--plx-comp-chart-annotation-label-offset));}
+.plx-chart-annotation--range .plx-chart-annotation__label{dominant-baseline:hanging;stroke-width:0;text-anchor:start;transform:translate(var(--plx-comp-chart-annotation-label-offset), var(--plx-comp-chart-annotation-label-offset));}

@@ -1,0 +1,60 @@
+{
+  "$description": "PeopleGroup (platform/patterns/PeopleGroup), library wave 8, lane B: its pattern tokens. The row’s gaps, the name, the muted line with the kind, the member count (its number in the data font) and a group’s source, and the description.",
+  "plx-comp": {
+    "people-group-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "PeopleGroup: gap between the picture, the text and the members (space-inline-md)."
+    },
+    "people-group-body-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "PeopleGroup: gap between the text lines (space-4px)."
+    },
+    "people-group-name-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "PeopleGroup: name color (content-default)."
+    },
+    "people-group-name-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "PeopleGroup: name text size (font-size-13)."
+    },
+    "people-group-name-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "PeopleGroup: name weight (font-weight-semibold)."
+    },
+    "people-group-meta-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "PeopleGroup: kind, count and source color (content-muted)."
+    },
+    "people-group-meta-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "PeopleGroup: kind, count and source text size (font-size-12)."
+    },
+    "people-group-meta-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "PeopleGroup: gap between the kind, the count and the source (space-inline-xs)."
+    },
+    "people-group-number-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "PeopleGroup: the member count’s number (the data font) (font-data)."
+    },
+    "people-group-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "PeopleGroup: description color (content-muted)."
+    },
+    "people-group-description-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "PeopleGroup: description text size (font-size-12)."
+    }
+  }
+}

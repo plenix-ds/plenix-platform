@@ -2621,6 +2621,40 @@
   --plx-comp-calendar-week-number-font-size: var(--plx-ref-font-size-11);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-card-toggle-height: var(--plx-sys-control-height-inline);
+  --plx-comp-card-toggle-width: var(--plx-sys-control-height-inline);
+  --plx-comp-card-toggle-radius: var(--plx-sys-radius-control);
+  --plx-comp-card-toggle-text: var(--plx-sys-content-muted);
+  --plx-comp-card-toggle-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-card-toggle-hover-text: var(--plx-sys-content-default);
+  --plx-comp-card-toggle-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-card-toggle-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-card-toggle-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-card-toggle-icon-duration: var(--plx-sys-motion-duration-fast);
+  --plx-comp-card-toggle-icon-easing: var(--plx-sys-motion-ease-standard);
+  --plx-comp-card-toggle-z-index: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-carousel-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-carousel-peek: var(--plx-ref-size-40px);
+  --plx-comp-carousel-controls-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-carousel-controls-column-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-carousel-track-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-carousel-track-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-carousel-track-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-carousel-dot-target: var(--plx-ref-size-24px);
+  --plx-comp-carousel-dot-target-radius: var(--plx-sys-radius-control);
+  --plx-comp-carousel-dot-size: var(--plx-ref-size-8px);
+  --plx-comp-carousel-dot-radius: var(--plx-sys-radius-pill-4px);
+  --plx-comp-carousel-dot-background: var(--plx-sys-border-strong);
+  --plx-comp-carousel-dot-hover-background: var(--plx-sys-content-muted);
+  --plx-comp-carousel-dot-current-background: var(--plx-sys-content-default);
+  --plx-comp-carousel-dot-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-carousel-dot-focus-outline-width: var(--plx-sys-focus-ring-width);
+  --plx-comp-carousel-dot-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+  --plx-comp-carousel-autoplay-interval: 6s;
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-cascader-max-width: var(--plx-ref-size-400px);
   --plx-comp-cascader-field-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-cascader-field-row-gap: var(--plx-sys-space-inline-xs);
@@ -2696,6 +2730,95 @@
   --plx-comp-chart-tick-label-text: var(--plx-sys-content-subtle);
   --plx-comp-chart-tick-label-font-family: var(--plx-sys-font-data);
   --plx-comp-chart-tick-label-font-size: var(--plx-ref-font-size-11);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-chart-axis-tick-offset: var(--plx-ref-size-8px);
+  --plx-comp-chart-axis-label-text: var(--plx-sys-content-subtle);
+  --plx-comp-chart-axis-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-chart-axis-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-axis-label-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-chart-body-gap: var(--plx-sys-space-inline-lg);
+  --plx-comp-chart-legend-end-max-width: var(--plx-ref-size-200px);
+  --plx-comp-chart-legend-column-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-chart-legend-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-chart-legend-item-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-chart-legend-label-text: var(--plx-sys-content-default);
+  --plx-comp-chart-legend-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-chart-legend-label-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-chart-legend-label-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-chart-legend-value-text: var(--plx-sys-content-subtle);
+  --plx-comp-chart-legend-value-font-family: var(--plx-sys-font-data);
+  --plx-comp-chart-legend-swatch-size: var(--plx-ref-size-12px);
+  --plx-comp-chart-legend-swatch-radius: var(--plx-sys-shape-2xs);
+  --plx-comp-chart-legend-swatch-border-width: var(--plx-sys-border-width-medium);
+  --plx-comp-chart-legend-line-swatch-width: var(--plx-ref-size-16px);
+  --plx-comp-chart-legend-line-swatch-height: var(--plx-sys-border-width-medium);
+  --plx-comp-chart-legend-toggle-min-height: var(--plx-sys-control-target-min);
+  --plx-comp-chart-legend-toggle-padding-inline: var(--plx-sys-space-inline-xs);
+  --plx-comp-chart-legend-toggle-radius: var(--plx-sys-radius-control-4px);
+  --plx-comp-chart-legend-toggle-border-width: var(--plx-sys-border-width-medium);
+  --plx-comp-chart-legend-toggle-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-chart-legend-toggle-focus-border-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-chart-legend-off-text: var(--plx-sys-content-subtle);
+  --plx-comp-chart-legend-off-line-color: var(--plx-sys-content-disabled);
+  --plx-comp-chart-tooltip-offset: var(--plx-ref-size-8px);
+  --plx-comp-chart-tooltip-background: var(--plx-sys-surface-overlay);
+  --plx-comp-chart-tooltip-text: var(--plx-sys-content-default);
+  --plx-comp-chart-tooltip-border-color: var(--plx-sys-border-default);
+  --plx-comp-chart-tooltip-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-chart-tooltip-radius: var(--plx-sys-radius-menu-8px);
+  --plx-comp-chart-tooltip-shadow: var(--plx-sys-elevation-menu);
+  --plx-comp-chart-tooltip-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-chart-tooltip-padding-inline: var(--plx-sys-space-inset-md);
+  --plx-comp-chart-tooltip-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-chart-tooltip-list-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-chart-tooltip-item-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-chart-tooltip-font-family: var(--plx-sys-font-label);
+  --plx-comp-chart-tooltip-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-chart-tooltip-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-chart-tooltip-title-text: var(--plx-sys-content-default);
+  --plx-comp-chart-tooltip-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-chart-tooltip-label-text: var(--plx-sys-content-subtle);
+  --plx-comp-chart-tooltip-value-text: var(--plx-sys-content-default);
+  --plx-comp-chart-tooltip-value-font-family: var(--plx-sys-font-data);
+  --plx-comp-chart-tooltip-value-margin-inline-start: var(--plx-sys-space-inline-md);
+  --plx-comp-chart-tooltip-swatch-size: var(--plx-ref-size-12px);
+  --plx-comp-chart-tooltip-swatch-radius: var(--plx-sys-shape-2xs);
+  --plx-comp-chart-tooltip-crosshair-color: var(--plx-sys-border-strong);
+  --plx-comp-chart-tooltip-crosshair-width: var(--plx-sys-border-width-thin);
+  --plx-comp-chart-data-label-text: var(--plx-sys-content-default);
+  --plx-comp-chart-data-label-font-family: var(--plx-sys-font-data);
+  --plx-comp-chart-data-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-data-label-offset: var(--plx-ref-size-4px);
+  --plx-comp-chart-data-label-halo-color: var(--plx-sys-surface-default);
+  --plx-comp-chart-data-label-halo-width: var(--plx-sys-border-width-thick);
+  --plx-comp-chart-reference-line-color: var(--plx-sys-content-subtle);
+  --plx-comp-chart-reference-line-width: var(--plx-sys-border-width-thin);
+  --plx-comp-chart-reference-line-dash: var(--plx-ref-size-4px);
+  --plx-comp-chart-reference-line-gap: var(--plx-ref-size-4px);
+  --plx-comp-chart-threshold-line-width: var(--plx-sys-border-width-medium);
+  --plx-comp-chart-reference-label-text: var(--plx-sys-content-default);
+  --plx-comp-chart-reference-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-chart-reference-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-reference-label-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-chart-reference-label-offset: var(--plx-ref-size-4px);
+  --plx-comp-chart-reference-label-halo-color: var(--plx-sys-surface-default);
+  --plx-comp-chart-reference-label-halo-width: var(--plx-sys-border-width-thick);
+  --plx-comp-chart-reference-value-text: var(--plx-sys-content-subtle);
+  --plx-comp-chart-reference-value-font-family: var(--plx-sys-font-data);
+  --plx-comp-chart-reference-value-font-weight: var(--plx-sys-font-weight-regular);
+  --plx-comp-chart-annotation-ring-color: var(--plx-sys-content-default);
+  --plx-comp-chart-annotation-ring-width: var(--plx-sys-border-width-medium);
+  --plx-comp-chart-annotation-leader-color: var(--plx-sys-content-subtle);
+  --plx-comp-chart-annotation-leader-width: var(--plx-sys-border-width-thin);
+  --plx-comp-chart-annotation-band-background: var(--plx-sys-surface-sunken);
+  --plx-comp-chart-annotation-label-text: var(--plx-sys-content-default);
+  --plx-comp-chart-annotation-label-font-family: var(--plx-sys-font-label);
+  --plx-comp-chart-annotation-label-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-chart-annotation-label-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-chart-annotation-label-halo-color: var(--plx-sys-surface-default);
+  --plx-comp-chart-annotation-label-halo-width: var(--plx-sys-border-width-thick);
+  --plx-comp-chart-annotation-label-offset: var(--plx-ref-size-4px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-code-background: var(--plx-sys-fill-neutral);
@@ -3022,6 +3145,13 @@
   --plx-comp-error-summary-list-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-error-summary-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-error-summary-focus-border-width: var(--plx-sys-border-width-medium);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-feature-card-media-bleed-block: calc(-1 * var(--plx-comp-card-padding-block));
+  --plx-comp-feature-card-media-bleed-inline: calc(-1 * var(--plx-comp-card-padding-inline));
+  --plx-comp-feature-card-media-radius: calc(var(--plx-comp-card-radius) - var(--plx-comp-card-border-width));
+  --plx-comp-feature-card-horizontal-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-feature-card-horizontal-image-size: var(--plx-ref-size-40px);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-field-foot-gap: var(--plx-sys-space-inline-sm);
@@ -3503,6 +3633,38 @@
   --plx-comp-otp-input-cell-disabled-text: var(--plx-sys-content-disabled);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-people-group-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-people-group-body-gap: var(--plx-ref-space-4px);
+  --plx-comp-people-group-name-text: var(--plx-sys-content-default);
+  --plx-comp-people-group-name-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-people-group-name-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-people-group-meta-text: var(--plx-sys-content-muted);
+  --plx-comp-people-group-meta-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-people-group-meta-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-people-group-number-font-family: var(--plx-sys-font-data);
+  --plx-comp-people-group-description-text: var(--plx-sys-content-muted);
+  --plx-comp-people-group-description-font-size: var(--plx-ref-font-size-12);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-permission-summary-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-permission-summary-compact-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-permission-summary-head-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-permission-summary-icon-box: var(--plx-ref-size-20px);
+  --plx-comp-permission-summary-icon-text: var(--plx-sys-content-muted);
+  --plx-comp-permission-summary-level-text: var(--plx-sys-content-default);
+  --plx-comp-permission-summary-level-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-permission-summary-level-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-permission-summary-level-line-height: var(--plx-ref-size-20px);
+  --plx-comp-permission-summary-detail-text: var(--plx-sys-content-muted);
+  --plx-comp-permission-summary-detail-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-permission-summary-lists-gap: var(--plx-sys-space-inline-lg);
+  --plx-comp-permission-summary-section-min-width: var(--plx-ref-size-180px);
+  --plx-comp-permission-summary-section-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-permission-summary-heading-text: var(--plx-sys-content-muted);
+  --plx-comp-permission-summary-heading-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-permission-summary-heading-font-weight: var(--plx-sys-font-weight-semibold);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-persona-name-color: var(--plx-sys-content-default);
   --plx-comp-persona-name-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-persona-secondary-color: var(--plx-sys-content-muted);
@@ -3684,6 +3846,33 @@
   --plx-comp-qr-code-on-accent-value-color: var(--plx-sys-accent-content-muted);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-query-builder-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-query-builder-bar-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-query-builder-matches-text: var(--plx-sys-content-muted);
+  --plx-comp-query-builder-matches-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-query-builder-number-font-family: var(--plx-sys-font-data);
+  --plx-comp-query-builder-group-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-query-builder-rail-color: var(--plx-sys-border-default);
+  --plx-comp-query-builder-rail-width: var(--plx-sys-border-width-medium);
+  --plx-comp-query-builder-rail-padding: var(--plx-sys-space-inset-sm);
+  --plx-comp-query-builder-head-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-query-builder-hint-text: var(--plx-sys-content-muted);
+  --plx-comp-query-builder-hint-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-query-builder-items-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-query-builder-item-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-query-builder-join-text: var(--plx-sys-content-muted);
+  --plx-comp-query-builder-join-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-query-builder-join-width: var(--plx-ref-size-52px);
+  --plx-comp-query-builder-join-height: var(--plx-sys-control-height-standard);
+  --plx-comp-query-builder-rule-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-query-builder-field-width: var(--plx-ref-size-160px);
+  --plx-comp-query-builder-operator-width: var(--plx-ref-size-152px);
+  --plx-comp-query-builder-value-min-width: var(--plx-ref-size-200px);
+  --plx-comp-query-builder-empty-text: var(--plx-sys-content-muted);
+  --plx-comp-query-builder-empty-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-query-builder-add-gap: var(--plx-sys-space-inline-sm);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-relative-date-input-row-gap: var(--plx-ref-space-4px);
   --plx-comp-relative-date-input-row-column-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-relative-date-input-row-row-gap: var(--plx-sys-space-inline-sm);
@@ -3694,6 +3883,38 @@
   --plx-comp-relative-date-input-range-text: var(--plx-sys-content-muted);
   --plx-comp-relative-date-input-range-font-family: var(--plx-sys-font-data);
   --plx-comp-relative-date-input-range-font-size: var(--plx-ref-font-size-12);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-resource-list-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-resource-list-header-min-height: var(--plx-sys-data-table-row-height);
+  --plx-comp-resource-list-header-border-bottom-color: var(--plx-sys-border-divider);
+  --plx-comp-resource-list-header-border-bottom-width: var(--plx-sys-border-width-thin);
+  --plx-comp-resource-list-count-text: var(--plx-sys-content-muted);
+  --plx-comp-resource-list-count-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-resource-list-group-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-resource-list-group-count-font-family: var(--plx-sys-font-data);
+  --plx-comp-resource-list-group-count-margin-inline-start: var(--plx-sys-space-inline-xs);
+  --plx-comp-resource-list-item-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-resource-list-item-min-height: var(--plx-sys-data-table-row-height);
+  --plx-comp-resource-list-item-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-resource-list-item-border-bottom-color: var(--plx-sys-border-divider);
+  --plx-comp-resource-list-item-border-bottom-width: var(--plx-sys-border-width-thin);
+  --plx-comp-resource-list-item-interactive-margin-inline: calc(var(--plx-sys-space-inset-sm) * -1);
+  --plx-comp-resource-list-item-interactive-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-resource-list-item-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-resource-list-item-selected-background: var(--plx-sys-state-selected);
+  --plx-comp-resource-list-item-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-resource-list-item-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-resource-list-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
+  --plx-comp-resource-list-control-z-index: var(--plx-sys-layer-raised);
+  --plx-comp-resource-list-name-text: var(--plx-sys-content-default);
+  --plx-comp-resource-list-name-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-resource-list-name-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-resource-list-description-text: var(--plx-sys-content-muted);
+  --plx-comp-resource-list-description-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-resource-list-meta-text: var(--plx-sys-content-muted);
+  --plx-comp-resource-list-meta-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-resource-list-actions-gap: var(--plx-sys-space-cluster-xs);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-retry-status-gap: var(--plx-sys-space-cluster-sm);
@@ -3801,6 +4022,10 @@
   --plx-comp-rich-text-editor-selected-node-outline-width: var(--plx-comp-link-focus-outline-width);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-role-label-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-role-label-icon-size: var(--plx-sys-icon-size-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-scrim-background: var(--plx-sys-scrim);
   --plx-comp-scrim-opacity: var(--plx-sys-opacity-mid);
   --plx-comp-scrim-light-opacity: var(--plx-sys-opacity-low);
@@ -3846,6 +4071,38 @@
   --plx-comp-search-over-radius: var(--plx-sys-radius-control-8px);
   --plx-comp-search-over-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-search-over-z-index: var(--plx-sys-layer-raised);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-search-result-group-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-search-result-group-count-text: var(--plx-sys-content-muted);
+  --plx-comp-search-result-group-count-font-family: var(--plx-sys-font-data);
+  --plx-comp-search-result-group-count-margin-inline-start: var(--plx-sys-space-inline-xs);
+  --plx-comp-search-result-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-search-result-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-search-result-border-bottom-color: var(--plx-sys-border-divider);
+  --plx-comp-search-result-border-bottom-width: var(--plx-sys-border-width-thin);
+  --plx-comp-search-result-interactive-margin-inline: calc(var(--plx-sys-space-inset-sm) * -1);
+  --plx-comp-search-result-interactive-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-search-result-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-search-result-selected-background: var(--plx-sys-state-selected);
+  --plx-comp-search-result-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-search-result-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-search-result-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
+  --plx-comp-search-result-text-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-search-result-path-text: var(--plx-sys-content-muted);
+  --plx-comp-search-result-path-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-search-result-path-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-search-result-separator-size: var(--plx-sys-icon-size-xs);
+  --plx-comp-search-result-title-text: var(--plx-sys-content-default);
+  --plx-comp-search-result-title-font-size: var(--plx-ref-font-size-14);
+  --plx-comp-search-result-title-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-search-result-match-font-weight: var(--plx-sys-font-weight-bold);
+  --plx-comp-search-result-snippet-text: var(--plx-sys-content-muted);
+  --plx-comp-search-result-snippet-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-search-result-meta-text: var(--plx-sys-content-subtle);
+  --plx-comp-search-result-meta-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-search-result-actions-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-search-result-actions-z-index: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-slider-track-height: var(--plx-ref-size-4px);
@@ -4049,6 +4306,37 @@
   --plx-comp-time-zone-select-field-offset-margin-inline-end: var(--plx-sys-space-inline-lg);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-timeline-item-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-timeline-column-gap: var(--plx-sys-space-inline-md);
+  --plx-comp-timeline-marker-size: var(--plx-ref-size-24px);
+  --plx-comp-timeline-marker-radius: var(--plx-sys-shape-pill);
+  --plx-comp-timeline-dot-size: var(--plx-ref-size-12px);
+  --plx-comp-timeline-dot-background: var(--plx-sys-surface-raised);
+  --plx-comp-timeline-dot-border-color: var(--plx-sys-border-strong);
+  --plx-comp-timeline-dot-border-width: var(--plx-sys-border-width-medium);
+  --plx-comp-timeline-icon-marker-background: var(--plx-sys-surface-sunken);
+  --plx-comp-timeline-icon-marker-border-color: var(--plx-sys-border-default);
+  --plx-comp-timeline-icon-marker-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-timeline-icon-color: var(--plx-sys-content-muted);
+  --plx-comp-timeline-icon-size: var(--plx-sys-icon-size-sm);
+  --plx-comp-timeline-line-color: var(--plx-sys-border-strong);
+  --plx-comp-timeline-line-width: var(--plx-sys-border-width-medium);
+  --plx-comp-timeline-content-row-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-timeline-heading-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-timeline-time-text: var(--plx-sys-content-muted);
+  --plx-comp-timeline-time-font-family: var(--plx-sys-font-data);
+  --plx-comp-timeline-time-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-timeline-title-text: var(--plx-sys-content-default);
+  --plx-comp-timeline-title-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-timeline-title-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-timeline-description-text: var(--plx-sys-content-muted);
+  --plx-comp-timeline-description-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-timeline-horizontal-item-width: var(--plx-ref-size-200px);
+  --plx-comp-timeline-focus-outline-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-timeline-focus-outline-width: var(--plx-sys-border-width-medium);
+  --plx-comp-timeline-focus-outline-offset: var(--plx-sys-focus-ring-offset);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-tooltip-bubble-start-inset-inline-end: calc(100% + var(--plx-sys-space-stack-sm));
   --plx-comp-tooltip-bubble-start-arrow-color: var(--plx-sys-tooltip-background);
   --plx-comp-tooltip-rich-background: var(--plx-sys-surface-overlay);
@@ -4119,10 +4407,70 @@
   --plx-comp-tree-select-empty-padding-block: var(--plx-sys-space-inset-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-user-card-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-user-card-identity-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-user-card-text-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-user-card-name-text: var(--plx-sys-content-default);
+  --plx-comp-user-card-name-font-family: var(--plx-sys-font-heading);
+  --plx-comp-user-card-name-font-size: var(--plx-ref-font-size-15);
+  --plx-comp-user-card-name-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-user-card-name-line-height: var(--plx-sys-label-height-20px);
+  --plx-comp-user-card-secondary-text: var(--plx-sys-content-subtle);
+  --plx-comp-user-card-secondary-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-user-card-secondary-line-height: var(--plx-sys-label-height-16px);
+  --plx-comp-user-card-role-margin-block-start: var(--plx-sys-space-stack-xs);
+  --plx-comp-user-card-actions-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-user-card-cover-bleed-block: calc(-1 * var(--plx-comp-card-padding-block));
+  --plx-comp-user-card-cover-bleed-inline: calc(-1 * var(--plx-comp-card-padding-inline));
+  --plx-comp-user-card-cover-radius: calc(var(--plx-comp-card-radius) - var(--plx-comp-card-border-width));
+  --plx-comp-user-card-cover-avatar-overlap: calc(-1 * (var(--plx-ref-size-32px) + var(--plx-sys-space-stack-md)));
+  --plx-comp-user-card-cover-avatar-ring-color: var(--plx-comp-card-background);
+  --plx-comp-user-card-cover-avatar-ring-width: var(--plx-sys-border-width-medium);
+  --plx-comp-user-card-compact-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-user-card-compact-name-font-size: var(--plx-ref-font-size-13);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-version-label-color: var(--plx-sys-content-default);
   --plx-comp-version-label-font-family: var(--plx-sys-font-data);
   --plx-comp-version-label-line-height: var(--plx-ref-line-height-snug);
   --plx-comp-version-label-md-font-size: var(--plx-ref-font-size-12);
   --plx-comp-version-label-sm-font-size: var(--plx-ref-font-size-11);
   --plx-comp-version-label-gap: var(--plx-sys-space-inline-xs);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-virtual-list-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-virtual-list-count-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-count-font-family: var(--plx-sys-font-data);
+  --plx-comp-virtual-list-count-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-virtual-list-background: var(--plx-sys-surface-default);
+  --plx-comp-virtual-list-border-color: var(--plx-sys-border-default);
+  --plx-comp-virtual-list-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-virtual-list-radius: var(--plx-sys-radius-surface-8px);
+  --plx-comp-virtual-list-focus-border-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-virtual-list-text: var(--plx-sys-content-default);
+  --plx-comp-virtual-list-font-size: var(--plx-ref-font-size-13);
+  --plx-comp-virtual-list-height-sm: var(--plx-ref-size-240px);
+  --plx-comp-virtual-list-height-md: var(--plx-ref-size-320px);
+  --plx-comp-virtual-list-height-lg: var(--plx-ref-size-500px);
+  --plx-comp-virtual-list-item-height: var(--plx-sys-control-height-standard);
+  --plx-comp-virtual-list-item-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-virtual-list-item-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-virtual-list-item-divider-color: var(--plx-sys-border-subtle);
+  --plx-comp-virtual-list-item-divider-width: var(--plx-sys-border-width-thin);
+  --plx-comp-virtual-list-icon-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-description-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-description-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-virtual-list-meta-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-meta-font-family: var(--plx-sys-font-data);
+  --plx-comp-virtual-list-meta-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-virtual-list-variable-padding-block: var(--plx-sys-space-inset-xs);
+  --plx-comp-virtual-list-header-background: var(--plx-sys-virtual-sticky-background);
+  --plx-comp-virtual-list-header-text: var(--plx-sys-content-default);
+  --plx-comp-virtual-list-header-font-size: var(--plx-ref-font-size-12);
+  --plx-comp-virtual-list-header-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-virtual-list-header-count-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-loading-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-loading-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-virtual-list-empty-text: var(--plx-sys-content-muted);
+  --plx-comp-virtual-list-empty-padding: var(--plx-sys-space-inset-sm);
 }

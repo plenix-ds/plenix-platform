@@ -1,0 +1,15 @@
+/* Plenix · PeopleGroup (platform/patterns/PeopleGroup). One row: the team's avatar or the group's icon tile, then its
+   name over a muted line (the kind, the member count with its number in the data font, a group's source) and an optional
+   description, then the members' avatars (a team) or Show members (a group) at the end. Anatomy and API: PeopleGroup.jsx. */
+.plx-people-group{align-items:center;column-gap:var(--plx-comp-people-group-gap);display:flex;min-inline-size:0;}
+.plx-people-group__media{display:inline-flex;flex-shrink:0;}
+.plx-people-group__body{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-people-group-body-gap);}
+.plx-people-group__name{color:var(--plx-comp-people-group-name-text);font-size:var(--plx-comp-people-group-name-font-size);font-weight:var(--plx-comp-people-group-name-font-weight);overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-people-group__meta{align-items:baseline;color:var(--plx-comp-people-group-meta-text);column-gap:var(--plx-comp-people-group-meta-gap);display:flex;font-size:var(--plx-comp-people-group-meta-font-size);min-inline-size:0;}
+.plx-people-group__kind,
+.plx-people-group__count{flex-shrink:0;}
+.plx-people-group__number{font-family:var(--plx-comp-people-group-number-font-family);}
+.plx-people-group__source{min-inline-size:0;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-people-group__description{color:var(--plx-comp-people-group-description-text);font-size:var(--plx-comp-people-group-description-font-size);overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-people-group__members,
+.plx-people-group__show{flex-shrink:0;}

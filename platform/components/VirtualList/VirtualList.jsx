@@ -1,0 +1,126 @@
+/* Plenix · VirtualList
+   Summary: A long list (hundreds to many thousands of items) that renders only the rows in and near its view, in a
+     bordered scroll area: rows of one height (fixed), rows that take their own height (variable), or rows under group
+     headers that stay at the top while their group scrolls (groups). The scroll bar keeps the length of the whole list
+     and every row its place in it ("12 of 4,000"). It is useVirtualizer drawn as a Platform list.
+   Usage:
+     <VirtualList label="Activity" items={events} showCount />
+     <VirtualList label="Notes" mode="variable" items={notes} renderItem={(note) => <NoteRow note={note} />} />
+     <VirtualList label="People" groups={[{ id: 'a', label: 'A', items: [...] }, …]} height="lg" />
+     <VirtualList label="Log" count={total} renderItem={(item, index) => line(index)} loading={busy} onEndReached={more} />
+   Props:
+     label: the list's accessible name (required: the scroll area is a Tab stop and screen readers name it)
+     items: the rows: [{ id, label, description, meta, icon }] drawn as a row (an icon, the label, a muted description and
+       a technical value in the data font at the end), or anything renderItem draws
+     groups: instead of items, rows under headers: [{ id, label, items }]; each header stays at the top while its group
+       scrolls and says how many items it holds
+     count: instead of items, how many rows there are; renderItem(undefined, index) draws each one (rows built on demand)
+     renderItem(item, index): draws a row's content (default: the row of icon, label, description and meta)
+     getKey(item, index): a stable key for a row (default item.id, else its index)
+     mode: "fixed" (default: every row one line at the list row height, cut with an ellipsis) | "variable" (rows take
+       their own height and wrap; the row height is the estimate for the rows not drawn)
+     height: the scroll area's height: "sm" | "md" (default) | "lg" | "fill" (its container's height)
+     showCount: the number of items above the list ("4,000 items", in the data font); default false
+     loading: a row with a spinner and Loading… at the end while more rows come; default false
+     onEndReached(): runs once each time the end of the list nears the view (load the next rows)
+     overscan: rows drawn beyond each edge of the view (default 4)
+     strings: the words, for other languages: { count: (n) => "4,000 items", group: (n) => "12 items", loading:
+       "Loading…", empty: "No items" }
+     className: more classes on the wrapper
+     ref: { scrollToIndex(index), element } (the scroll area): jump to a row (search results, "go to today")
+   Behavior:
+     The scroll area is one Tab stop named by label: the arrow keys, Page Up and Page Down, Home and End scroll it. Links
+       and buttons inside rows are Tab stops of their own; a row that holds focus stays drawn while it scrolls out of view.
+     Each row is a list item with its place in the whole list (aria-posinset of aria-setsize). Rows outside the view are
+       stood in for by gaps the stylesheet sizes (system/virtual.css): nothing is written as a style.
+     Groups: the header of the group in view stays at the top (sticky) on the list's surface.
+     onEndReached runs when the last rows come into the drawn window and nothing is loading; again after more rows arrive.
+   Notes:
+     Not for short lists (under a few hundred rows): use List or render them all. Not where browser find (Ctrl F) across
+       every row matters, unless the page offers its own search. Tables are the DataTable, which has its own rendering.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { Icon } from '../Icon/Icon.jsx';
+import { Spinner } from '../Loading/Loading.jsx';
+import { formatNumber } from '../../utils/format.js';
+import { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS } from '../../hooks/useVirtualizer.js';
+
+const STRINGS = {
+  count: (n) => formatNumber(n) + (n === 1 ? ' item' : ' items'),
+  group: (n) => formatNumber(n) + (n === 1 ? ' item' : ' items'),
+  loading: 'Loading…', empty: 'No items',
+};
+const HEIGHTS = ['sm', 'md', 'lg', 'fill'];
+
+function Row({ item }) {
+  if (!item || typeof item !== 'object') return <span className="plx-virtual-list__text"><span className="plx-virtual-list__label">{String(item)}</span></span>;
+  return (
+    <>
+      {item.icon ? <span className="plx-virtual-list__icon" aria-hidden="true"><Icon name={item.icon} /></span> : null}
+      <span className="plx-virtual-list__text">
+        <span className="plx-virtual-list__label">{item.label}</span>
+        {item.description ? <span className="plx-virtual-list__description">{item.description}</span> : null}
+      </span>
+      {item.meta !== undefined && item.meta !== null ? <span className="plx-virtual-list__meta">{item.meta}</span> : null}
+    </>
+  );
+}
+
+export const VirtualList = React.forwardRef(function VirtualList({ label, items, groups, count, renderItem, getKey, mode = 'fixed', height = 'md',
+  showCount = false, loading = false, onEndReached, overscan, strings, className, ...rest }, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  // the rows in order: a group's header, then its items
+  const rows = React.useMemo(() => {
+    if (groups) {
+      const out = [];
+      groups.forEach((g) => { const list = g.items || []; out.push({ header: true, group: g, n: list.length }); list.forEach((it) => out.push({ item: it })); });
+      return out;
+    }
+    return items ? items.map((it) => ({ item: it })) : null;
+  }, [items, groups]);
+  const total = rows ? rows.length : Math.max(0, count || 0);
+  const itemCount = groups ? groups.reduce((n, g) => n + (g.items || []).length, 0) : total;
+  const sticky = React.useMemo(() => (groups && rows ? rows.reduce((l, r, i) => (r.header ? l.concat(i) : l), []) : undefined), [groups, rows]);
+  const v = useVirtualizer({ count: total, mode: mode === 'variable' ? 'measured' : 'fixed', overscan, sticky });
+  React.useImperativeHandle(ref, () => ({ scrollToIndex: v.scrollToIndex, get element() { return v.viewportRef.current; } }), [v.scrollToIndex]);
+
+  // the end of the list in the drawn window: ask for more once per length
+  const asked = React.useRef(-1);
+  React.useEffect(() => {
+    if (!onEndReached || loading || !total) return;
+    if (v.range.end >= total && asked.current !== total) { asked.current = total; onEndReached(); }
+  }, [v.range.end, total, loading]);
+
+  const draw = (index) => {
+    const r = rows ? rows[index] : null;
+    if (r && r.header) {
+      return (
+        <div key={'h' + index} role="listitem" className={cx('plx-virtual-list__item', 'plx-virtual-list__header', VIRTUAL_STICKY_CLASS)} {...v.itemProps(index)}>
+          <span className="plx-virtual-list__header-label">{r.group.label}</span>
+          <span className="plx-virtual-list__header-count">{t.group(r.n)}</span>
+        </div>
+      );
+    }
+    const item = r ? r.item : undefined;
+    const key = getKey ? getKey(item, index) : item && typeof item === 'object' && item.id !== undefined ? item.id : index;
+    return (
+      <div key={key} role="listitem" className="plx-virtual-list__item" {...v.itemProps(index)}>
+        {renderItem ? renderItem(item, index) : <Row item={item} />}
+      </div>
+    );
+  };
+
+  return (
+    <div className={cx('plx-virtual-list', 'plx-virtual-list--' + (mode === 'variable' ? 'variable' : 'fixed'), groups && 'plx-virtual-list--groups', className)} {...rest}>
+      {showCount ? <div className="plx-virtual-list__count">{t.count(itemCount)}</div> : null}
+      <div ref={v.viewportRef} role={total || loading ? 'list' : undefined} aria-label={label} aria-busy={loading || undefined}
+        className="plx-virtual-list__viewport" data-plx-height={HEIGHTS.indexOf(height) >= 0 ? height : 'md'}>
+        {total ? <VirtualProbe /> : null}
+        {v.segments.map((s) => (s.gap ? <VirtualGap key={s.key} count={s.count} /> : draw(s.index)))}
+        {loading ? <div role="listitem" className="plx-virtual-list__loading"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></div> : null}
+        {!total && !loading ? <p className="plx-virtual-list__empty">{t.empty}</p> : null}
+      </div>
+    </div>
+  );
+});

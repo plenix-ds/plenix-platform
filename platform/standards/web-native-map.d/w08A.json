@@ -1,0 +1,15 @@
+{
+  "$description": "Library part w08A (wave 8, lane A): the iOS and Android counterparts of the chart parts (tooltip, data label, axis, grid line, threshold, reference line, annotation: Swift Charts marks and modifiers on iOS, the Compose chart parts on Android), the feature card, and the user card with its duplicate profile card. Chart legend is named by its iOS guidance page (Charts) in native-guidance.json. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "data-display|Chart tooltip": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Data label": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Axis": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Grid line": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Threshold": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Reference line": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Annotation": { "ios": ["ios-data-display|Charts"], "android": ["android-data-display|Charts"] },
+    "data-display|Feature card": { "ios": ["ios-layout|Boxes"], "android": ["android-data-display|Card"] },
+    "content|User card": { "ios": ["ios-layout|Boxes", "ios-content|Image views"], "android": ["android-data-display|Card", "android-content|Avatar"] },
+    "data-display|Profile card": { "ios": ["ios-layout|Boxes", "ios-content|Image views"], "android": ["android-data-display|Card", "android-content|Avatar"] }
+  }
+}

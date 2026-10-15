@@ -1,0 +1,7 @@
+{
+  "$description": "RoleLabel (platform/components/RoleLabel, library wave 8, lane C): its component tokens, the icon before the role's name. The label itself is the Tag's (--plx-comp-tag-*).",
+  "plx-comp": {
+    "role-label-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "RoleLabel: the space between the icon and the name." },
+    "role-label-icon-size": { "$value": "{plx-sys.icon-size-xs}", "$type": "dimension", "$description": "RoleLabel: the icon's size (12px, inside the 20px tag)." }
+  }
+}

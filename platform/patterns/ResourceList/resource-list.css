@@ -1,0 +1,32 @@
+/* Plenix · ResourceList (platform/patterns/ResourceList). Anatomy and API: ResourceList.jsx. The bar is the CommandBar, the
+   checkboxes, pictures and headings are Checkbox, Thumbnail, Avatar and SectionHeading on their own tokens; this lays out
+   the header (select all and the count), the groups and the rows: checkbox, picture, name over its line, details,
+   actions. A row's content starts at the list's edges (ActivityList's rule): a row that opens keeps a small inset for its
+   fill, pulled back by the same token. */
+.plx-resource-list{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-resource-list-gap);}
+.plx-resource-list__header{align-items:center;border-bottom-color:var(--plx-comp-resource-list-header-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-resource-list-header-border-bottom-width);column-gap:var(--plx-comp-resource-list-item-gap);display:flex;min-block-size:var(--plx-comp-resource-list-header-min-height);}
+.plx-resource-list__count{color:var(--plx-comp-resource-list-count-text);font-size:var(--plx-comp-resource-list-count-font-size);}
+.plx-resource-list__count .plx-text{font-size:inherit;}
+.plx-resource-list__group{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-resource-list-group-gap);}
+.plx-resource-list__group-count{color:var(--plx-comp-resource-list-count-text);font-family:var(--plx-comp-resource-list-group-count-font-family);margin-inline-start:var(--plx-comp-resource-list-group-count-margin-inline-start);text-transform:none;}
+.plx-resource-list__list{list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-resource-list__item{align-items:center;border-bottom-color:var(--plx-comp-resource-list-item-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-resource-list-item-border-bottom-width);column-gap:var(--plx-comp-resource-list-item-gap);display:flex;min-block-size:var(--plx-comp-resource-list-item-min-height);padding-block-end:var(--plx-comp-resource-list-item-padding-block);padding-block-start:var(--plx-comp-resource-list-item-padding-block);padding-inline-end:0;padding-inline-start:0;position:relative;}
+.plx-resource-list__item:last-child{border-bottom-style:none;border-bottom-width:0;}
+.plx-resource-list__item.is-interactive{margin-inline-end:var(--plx-comp-resource-list-item-interactive-margin-inline);margin-inline-start:var(--plx-comp-resource-list-item-interactive-margin-inline);padding-inline-end:var(--plx-comp-resource-list-item-interactive-padding-inline);padding-inline-start:var(--plx-comp-resource-list-item-interactive-padding-inline);}
+.plx-resource-list__item.is-interactive:hover,
+.plx-resource-list__item.is-interactive.is-hover{background-color:var(--plx-comp-resource-list-item-hover-background);}
+.plx-resource-list__item.is-selected,.plx-resource-list__item.is-selected:hover,.plx-resource-list__item.is-selected.is-hover{background-color:var(--plx-comp-resource-list-item-selected-background);}
+.plx-resource-list__item.is-interactive:has(.plx-resource-list__opener:focus-visible),
+.plx-resource-list__item.is-interactive:has(.plx-resource-list__opener.is-focus-visible){outline-color:var(--plx-comp-resource-list-item-focus-outline-color);outline-offset:var(--plx-comp-resource-list-item-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-resource-list-item-focus-outline-width);}
+.plx-resource-list__select{display:inline-flex;flex-shrink:0;position:relative;z-index:var(--plx-comp-resource-list-control-z-index);}
+.plx-resource-list__media{display:inline-flex;flex-shrink:0;}
+.plx-resource-list__text{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-inline-size:0;}
+.plx-resource-list__name{color:var(--plx-comp-resource-list-name-text);font-size:var(--plx-comp-resource-list-name-font-size);font-weight:var(--plx-comp-resource-list-name-font-weight);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-resource-list__opener{background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:inherit;cursor:pointer;font-family:inherit;font-size:inherit;font-weight:inherit;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;text-align:start;text-decoration-line:none;}
+.plx-resource-list__item.is-interactive .plx-resource-list__opener::after{content:"";inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;position:absolute;}
+.plx-resource-list__opener:focus-visible,
+.plx-resource-list__opener.is-focus-visible{outline-style:none;}
+.plx-resource-list__description{color:var(--plx-comp-resource-list-description-text);font-size:var(--plx-comp-resource-list-description-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-resource-list__meta{align-items:center;color:var(--plx-comp-resource-list-meta-text);column-gap:var(--plx-comp-resource-list-actions-gap);display:inline-flex;flex-shrink:0;font-size:var(--plx-comp-resource-list-meta-font-size);white-space:nowrap;}
+.plx-resource-list__meta .plx-text{font-size:inherit;}
+.plx-resource-list__actions{align-items:center;column-gap:var(--plx-comp-resource-list-actions-gap);display:flex;flex-shrink:0;position:relative;z-index:var(--plx-comp-resource-list-control-z-index);}

@@ -1,0 +1,180 @@
+{
+  "$description": "VirtualList (platform/components/VirtualList), library wave 8, lane B: its component tokens. The scroll area’s frame and heights, the row height the virtualizer sizes its gaps by (it follows density and touch through the standard control height), the row parts, the sticky group header and the loading and empty rows.",
+  "plx-comp": {
+    "virtual-list-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "VirtualList: gap between the count and the list (space-stack-xs)."
+    },
+    "virtual-list-count-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: count text color (content-muted)."
+    },
+    "virtual-list-count-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "VirtualList: count font (the data font) (font-data)."
+    },
+    "virtual-list-count-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "VirtualList: count text size (font-size-12)."
+    },
+    "virtual-list-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "VirtualList: scroll area background (surface-default)."
+    },
+    "virtual-list-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "VirtualList: scroll area border color (border-default)."
+    },
+    "virtual-list-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "VirtualList: scroll area border width (border-width-thin)."
+    },
+    "virtual-list-radius": {
+      "$value": "{plx-sys.radius-surface-8px}",
+      "$type": "dimension",
+      "$description": "VirtualList: scroll area corner radius (radius-surface-8px)."
+    },
+    "virtual-list-focus-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "VirtualList: scroll area border color in keyboard focus (focus-ring-color)."
+    },
+    "virtual-list-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "VirtualList: row text color (content-default)."
+    },
+    "virtual-list-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "VirtualList: row text size (font-size-13)."
+    },
+    "virtual-list-height-sm": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "VirtualList: scroll area height, height=\"sm\" (size-240px)."
+    },
+    "virtual-list-height-md": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "VirtualList: scroll area height (default) (size-320px)."
+    },
+    "virtual-list-height-lg": {
+      "$value": "{plx-ref.size-500px}",
+      "$type": "dimension",
+      "$description": "VirtualList: scroll area height, height=\"lg\" (size-500px)."
+    },
+    "virtual-list-item-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "VirtualList: row height (fixed rows; the estimate for variable rows); follows density and touch (control-height-standard)."
+    },
+    "virtual-list-item-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "VirtualList: gap between a row’s parts (space-inline-sm)."
+    },
+    "virtual-list-item-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "VirtualList: row padding at the start and end (space-inset-sm)."
+    },
+    "virtual-list-item-divider-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "VirtualList: divider under each row (border-subtle)."
+    },
+    "virtual-list-item-divider-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "VirtualList: divider width (border-width-thin)."
+    },
+    "virtual-list-icon-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: row icon color (content-muted)."
+    },
+    "virtual-list-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: description text color (content-muted)."
+    },
+    "virtual-list-description-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "VirtualList: description text size (font-size-12)."
+    },
+    "virtual-list-meta-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: technical value text color (content-muted)."
+    },
+    "virtual-list-meta-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "VirtualList: technical value font (the data font) (font-data)."
+    },
+    "virtual-list-meta-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "VirtualList: technical value text size (font-size-12)."
+    },
+    "virtual-list-variable-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "VirtualList: variable row padding top and bottom (space-inset-xs)."
+    },
+    "virtual-list-header-background": {
+      "$value": "{plx-sys.virtual-sticky-background}",
+      "$type": "color",
+      "$description": "VirtualList: group header background (the sticky surface) (virtual-sticky-background)."
+    },
+    "virtual-list-header-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "VirtualList: group header text color (content-default)."
+    },
+    "virtual-list-header-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "VirtualList: group header text size (font-size-12)."
+    },
+    "virtual-list-header-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "VirtualList: group header weight (font-weight-semibold)."
+    },
+    "virtual-list-header-count-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: group header count color (content-muted)."
+    },
+    "virtual-list-loading-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: loading row text color (content-muted)."
+    },
+    "virtual-list-loading-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "VirtualList: gap between the spinner and its words (space-inline-sm)."
+    },
+    "virtual-list-empty-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "VirtualList: empty list text color (content-muted)."
+    },
+    "virtual-list-empty-padding": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "VirtualList: empty list padding (space-inset-sm)."
+    }
+  }
+}

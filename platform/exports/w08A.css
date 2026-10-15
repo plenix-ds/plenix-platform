@@ -1,0 +1,4 @@
+/* Library part w08A (wave 8, lane A): the chart parts, FeatureCard and UserCard. */
+@import url("../charts/parts/chart-parts.css");
+@import url("../patterns/FeatureCard/feature-card.css");
+@import url("../patterns/UserCard/user-card.css");

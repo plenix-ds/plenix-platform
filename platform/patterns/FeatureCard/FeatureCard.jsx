@@ -1,0 +1,50 @@
+/* Plenix · FeatureCard
+   Summary: A card that presents one feature, capability or entry point (07 Data Display › Cards and objects › Feature
+     card): its icon tile or picture, its name and a sentence on what it does; the whole card opens it. Built from Card,
+     IconTile and Image.
+   Usage:
+     <FeatureCard icon="sparkle" hue="purple" title="Smart tags" description="Tags your pictures as they upload." href="#/tags" />
+     <FeatureCard variant="image" image="../dam/assets/thumb-12.svg" title="Brand kit" description="Logos, colors and fonts in one place." href="#/brand" />
+     <FeatureCard variant="horizontal" icon="share" hue="blue" title="Share links" description="Send a folder without accounts." onOpen={() => …} />
+   Props:
+     title: the feature's name (required): the card's heading, and its link or button with href or onOpen
+     description: one sentence on what the feature does for people
+     variant: "icon" (default: an IconTile above the name) | "image" (a picture across the top, 16:9) | "horizontal" (the
+       icon tile, or the picture as a square, before the name and description: lists and narrow columns)
+     icon: the icon name of the tile (platform/icons/map.json); hue: the tile's data color (IconTile hue, default "gray");
+       tone: a status tone instead (IconTile tone)
+     image: the picture's address (variant image, or horizontal); imageAlt: its text alternative (default "": decorative,
+       the name says what the card is)
+     href: the card opens this address (its title is a link that covers the card)
+     onOpen(): the card runs this (its title is a button that covers the card); without href or onOpen it is not interactive
+     headingLevel: the heading level of the title (default 3)
+     className: more classes on the card
+   Behavior:
+     With href or onOpen the whole card is one target (Card's opener) and one Tab stop; hover raises it, focus outlines it.
+     The picture keeps its 16:9 frame before it loads, so nothing moves; it is decorative unless imageAlt says otherwise.
+     Descriptions wrap; keep them to one or two lines.
+   Notes:
+     A grid of feature cards: ContentGrid or WidgetGrid around them, every card the same variant. Other props pass through
+       to Card's <article>.
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { Card } from '../../components/Card/Card.jsx';
+import { IconTile } from '../../components/IconTile/IconTile.jsx';
+import { Image } from '../../components/Image/Image.jsx';
+
+const VARIANTS = ['icon', 'image', 'horizontal'];
+
+export function FeatureCard({ title, description, variant = 'icon', icon, hue, tone, image, imageAlt = '', href, onOpen, headingLevel = 3, className, ...rest }) {
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'icon';
+  const picture = v === 'image' || (v === 'horizontal' && image && !icon);
+  const media = picture && image
+    ? <Image src={image} alt={imageAlt} ratio={v === 'image' ? '16-9' : '1-1'} rounded={v === 'horizontal'} className="plx-feature-card__image" />
+    : <IconTile icon={icon || 'sparkle'} hue={hue} tone={tone} size="md" className="plx-feature-card__tile" />;
+  return (
+    <Card title={title} meta={description} href={href} onOpen={onOpen} headingLevel={headingLevel}
+      className={cx('plx-feature-card', 'plx-feature-card--' + v, className)} {...rest}>
+      <span className={cx('plx-feature-card__media', picture && 'plx-feature-card__media--image')}>{media}</span>
+    </Card>
+  );
+}

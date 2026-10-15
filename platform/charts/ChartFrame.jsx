@@ -18,6 +18,10 @@
        direction
      table: the data as a table under the chart: { columns, data } as the Table takes them (technical values kind
        "data"); shown behind a Details line ("Show the data") so it is always one click away
+     legend: the chart's legend (a ChartLegend), placed by legendPosition (chart parts, wave 8)
+     legendPosition: "bottom" (default: under the plot) | "top" (between the caption and the plot: tight dashboard
+       cards) | "end" (beside the
+       plot, after it; give the legend orientation="vertical"); the plot keeps the rest of the width
      children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
        inside a group already moved by the margins; or SVG nodes
      strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" }
@@ -32,7 +36,8 @@
        plx-chart__tick-label: the data font).
    Notes:
      No color, size or font is written in a chart: only SVG geometry (x, y, width, height, d, transform) and classes.
-     Chart parts (legend, tooltip, axis, grid line; wave 8) and the charts themselves (wave 9) build on this frame.
+     Chart parts (platform/charts/parts: Axis, GridLines, ChartLegend, ChartTooltip, DataLabel, ReferenceLine,
+       ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
@@ -44,7 +49,7 @@ import { snapToGrid } from '../utils/grid.js';
 const STRINGS = { showData: 'Show the data', table: '{title}: data' };
 const MARGIN_TOKENS = { top: '--plx-comp-chart-margin-block-start', end: '--plx-comp-chart-margin-inline-end', bottom: '--plx-comp-chart-margin-block-end', start: '--plx-comp-chart-margin-inline-start' };
 
-export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, table, strings, className, children }) {
+export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, legend, legendPosition = 'bottom', table, strings, className, children }) {
   const t = Object.assign({}, STRINGS, strings);
   const uid = 'plx-chart' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const frame = React.useRef(null), plot = React.useRef(null);
@@ -78,19 +83,27 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
       {description ? <span id={descId} className="plx-chart__description">{description}</span> : null}
     </figcaption>
   );
+  // the legend (chart parts): before the plot, after it, or beside it in a row with it
+  const lp = ['top', 'bottom', 'end'].indexOf(legendPosition) >= 0 ? legendPosition : 'bottom';
+  const key = legend ? <div className={cx('plx-chart__legend', 'plx-chart__legend--' + lp)}>{legend}</div> : null;
+  const plotArea = (
+    <div ref={plot} className="plx-chart__plot">
+      {box.width > 0 && box.height > 0 ? (
+        <svg className="plx-chart__svg" width={box.width} height={box.height} viewBox={'0 0 ' + box.width + ' ' + box.height}
+          role="img" aria-labelledby={titleId} aria-describedby={description ? descId : undefined} focusable="false">
+          <g transform={'translate(' + left + ',' + m.top + ')'} aria-hidden="true">
+            {typeof children === 'function' ? children(dims) : children}
+          </g>
+        </svg>
+      ) : null}
+    </div>
+  );
   return (
     <figure ref={frame} className={cx('plx-chart', 'plx-chart--' + size, className)}>
       {caption}
-      <div ref={plot} className="plx-chart__plot">
-        {box.width > 0 && box.height > 0 ? (
-          <svg className="plx-chart__svg" width={box.width} height={box.height} viewBox={'0 0 ' + box.width + ' ' + box.height}
-            role="img" aria-labelledby={titleId} aria-describedby={description ? descId : undefined} focusable="false">
-            <g transform={'translate(' + left + ',' + m.top + ')'} aria-hidden="true">
-              {typeof children === 'function' ? children(dims) : children}
-            </g>
-          </svg>
-        ) : null}
-      </div>
+      {lp === 'top' ? key : null}
+      {lp === 'end' && key ? <div className="plx-chart__body">{plotArea}{key}</div> : plotArea}
+      {lp === 'bottom' ? key : null}
       {table && table.data ? (
         <Details summary={t.showData} variant="inline" className="plx-chart__data">
           <Table label={t.table.replace('{title}', title || '')} columns={table.columns} data={table.data} index={table.index} />

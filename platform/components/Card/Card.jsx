@@ -4,6 +4,7 @@
    Usage:
      <Panel title="Storage" description="…" actions={<Button…/>} footer={…} flush headingLevel={2}>…</Panel>
      <Card title="Brand kit" meta="12 assets" actions={<…/>} selected onOpen={() => …}>…</Card>
+     <Card title="Kitchen renovation" meta="Personal · 12 files" expandable>…</Card>
      <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
        selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
    Props:
@@ -33,6 +34,13 @@
      Card.headingLevel: the heading level of the title (default 3)
      Card.children: the body
      Card.className: more classes on the <article>
+     Card.expandable: true adds an Expand/Collapse button at the end of the header that shows or hides the body; the title,
+       the meta and the actions stay (Expandable card, library wave 8); default false
+     Card.defaultExpanded: whether an expandable card starts open (default false: its summary only)
+     Card.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
+     Card.onToggle(next): runs when an expandable card opens or closes
+     Card.strings: the words it announces, for other languages: { expand: "Expand {title}", collapse: "Collapse {title}",
+       card: "card" } ({title} is the title, or the card word when the title is not text)
      MediaCard.src: the image URL; without it the tile shows the icon
      MediaCard.alt: the image's alternative text (default "")
      MediaCard.icon: an <Icon> (or an icon name) shown when there is no image
@@ -55,6 +63,9 @@
    Behavior:
      Panel is a section landmark named by its title.
      With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
+     An expandable card's toggle is a button with aria-expanded and aria-controls (the body); it sits above the title's
+       target, so a card can both open and expand: the toggle shows more, the title opens the record. Closed, the card keeps
+       its header and meta (its summary) and its body is hidden from everyone.
      The MediaCard selection box appears on hover, focus and selection, and always while anything is selected (selecting).
      MediaCard images load lazily.
      A selectable MediaCard's title is at least 24px tall (44px with touch): its target extends invisibly above and below the
@@ -70,6 +81,7 @@ import { Icon } from '../Icon/Icon.jsx';
 
 const PANEL_STRINGS = { collapse: 'Collapse {title}', expand: 'Expand {title}', section: 'section' };
 const MEDIA_CARD_STRINGS = { select: 'Select {title}', item: 'item' };
+const CARD_STRINGS = { expand: 'Expand {title}', collapse: 'Collapse {title}', card: 'card' };
 
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
 
@@ -107,18 +119,31 @@ function Opener({ href, onOpen, current, className, children }) {
   return <span className={className}>{children}</span>;
 }
 
-export function Card({ title, meta, actions, selected = false, href, onOpen, headingLevel = 3, accent, className, children, ...rest }) {
+export function Card({ title, meta, actions, selected = false, href, onOpen, headingLevel = 3, accent, expandable = false, defaultExpanded = false, expanded, onToggle,
+  strings, className, children, ...rest }) {
   const interactive = !!(href || onOpen);
+  const t = Object.assign({}, CARD_STRINGS, strings);
+  const id = useUid('plx-card');
+  const [own, setOwn] = React.useState(defaultExpanded);
+  const open = !expandable || (expanded === undefined ? own : expanded);
+  const toggle = () => { if (expanded === undefined) setOwn(!open); if (onToggle) onToggle(!open); };
+  const hasBody = children !== undefined && children !== null;
   return (
-    <article className={cx('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', className)} data-plx-color={accent || undefined} {...rest}>
-      {title ? (
+    <article className={cx('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} data-plx-color={accent || undefined} {...rest}>
+      {title || expandable ? (
         <div className="plx-card__header">
-          <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H>
+          {title ? <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H> : null}
           {actions ? <div className="plx-card__actions">{actions}</div> : null}
+          {expandable ? (
+            <button type="button" className="plx-card__toggle" aria-expanded={open} aria-controls={hasBody ? id + '-body' : undefined}
+              aria-label={(open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.card)} onClick={toggle}>
+              <Icon name="chevron-down" />
+            </button>
+          ) : null}
         </div>
       ) : null}
       {meta ? <div className="plx-card__meta">{meta}</div> : null}
-      {children !== undefined && children !== null ? <div className="plx-card__body">{children}</div> : null}
+      {hasBody ? <div id={expandable ? id + '-body' : undefined} hidden={!open} className="plx-card__body">{children}</div> : null}
     </article>
   );
 }

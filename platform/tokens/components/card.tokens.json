@@ -1,0 +1,17 @@
+{
+  "$description": "Card (platform/components/Card), the expandable card (library wave 8, lane C): the tokens of its Expand/Collapse button. The card's other tokens are in the shared set (components.tokens.json).",
+  "plx-comp": {
+    "card-toggle-height": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "Expandable card: the toggle's height (the inline action height; it follows the density)." },
+    "card-toggle-width": { "$value": "{plx-sys.control-height-inline}", "$type": "dimension", "$description": "Expandable card: the toggle's width (a square)." },
+    "card-toggle-radius": { "$value": "{plx-sys.radius-control}", "$type": "dimension", "$description": "Expandable card: the toggle's corners (its hover fill)." },
+    "card-toggle-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Expandable card: the chevron." },
+    "card-toggle-hover-background": { "$value": "{plx-sys.state-hover}", "$type": "color", "$description": "Expandable card: the toggle's fill under the pointer." },
+    "card-toggle-hover-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "Expandable card: the chevron under the pointer." },
+    "card-toggle-focus-outline-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "Expandable card: the toggle's focus ring." },
+    "card-toggle-focus-outline-offset": { "$value": "{plx-sys.focus-ring-offset}", "$type": "dimension", "$description": "Expandable card: the focus ring's offset." },
+    "card-toggle-focus-outline-width": { "$value": "{plx-sys.border-width-medium}", "$type": "dimension", "$description": "Expandable card: the focus ring's width." },
+    "card-toggle-icon-duration": { "$value": "{plx-sys.motion-duration-fast}", "$type": "duration", "$description": "Expandable card: how long the chevron takes to turn." },
+    "card-toggle-icon-easing": { "$value": "{plx-sys.motion-ease-standard}", "$type": "cubicBezier", "$description": "Expandable card: the chevron's easing." },
+    "card-toggle-z-index": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "Expandable card: the toggle sits above the title's target of a card that opens." }
+  }
+}

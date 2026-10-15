@@ -9001,6 +9001,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      <Panel title="Storage" description="…" actions={<Button…/>} footer={…} flush headingLevel={2}>…</Panel>
      <Card title="Brand kit" meta="12 assets" actions={<…/>} selected onOpen={() => …}>…</Card>
+     <Card title="Kitchen renovation" meta="Personal · 12 files" expandable>…</Card>
      <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
        selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
    Props:
@@ -9030,6 +9031,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Card.headingLevel: the heading level of the title (default 3)
      Card.children: the body
      Card.className: more classes on the <article>
+     Card.expandable: true adds an Expand/Collapse button at the end of the header that shows or hides the body; the title,
+       the meta and the actions stay (Expandable card, library wave 8); default false
+     Card.defaultExpanded: whether an expandable card starts open (default false: its summary only)
+     Card.expanded: the open state when the parent controls it; onToggle(next) then runs on each press
+     Card.onToggle(next): runs when an expandable card opens or closes
+     Card.strings: the words it announces, for other languages: { expand: "Expand {title}", collapse: "Collapse {title}",
+       card: "card" } ({title} is the title, or the card word when the title is not text)
      MediaCard.src: the image URL; without it the tile shows the icon
      MediaCard.alt: the image's alternative text (default "")
      MediaCard.icon: an <Icon> (or an icon name) shown when there is no image
@@ -9052,6 +9060,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      Panel is a section landmark named by its title.
      With onOpen or href the title's target covers the whole card, so the card has one Tab stop; actions stay separately reachable.
+     An expandable card's toggle is a button with aria-expanded and aria-controls (the body); it sits above the title's
+       target, so a card can both open and expand: the toggle shows more, the title opens the record. Closed, the card keeps
+       its header and meta (its summary) and its body is hidden from everyone.
      The MediaCard selection box appears on hover, focus and selection, and always while anything is selected (selecting).
      MediaCard images load lazily.
      A selectable MediaCard's title is at least 24px tall (44px with touch): its target extends invisibly above and below the
@@ -9068,6 +9079,11 @@ const PANEL_STRINGS = {
 const MEDIA_CARD_STRINGS = {
   select: 'Select {title}',
   item: 'item'
+};
+const CARD_STRINGS = {
+  expand: 'Expand {title}',
+  collapse: 'Collapse {title}',
+  card: 'card'
 };
 const H = ({
   level,
@@ -9166,17 +9182,31 @@ function Card({
   onOpen,
   headingLevel = 3,
   accent,
+  expandable = false,
+  defaultExpanded = false,
+  expanded,
+  onToggle,
+  strings,
   className,
   children,
   ...rest
 }) {
   const interactive = !!(href || onOpen);
+  const t = Object.assign({}, CARD_STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-card');
+  const [own, setOwn] = _react.default.useState(defaultExpanded);
+  const open = !expandable || (expanded === undefined ? own : expanded);
+  const toggle = () => {
+    if (expanded === undefined) setOwn(!open);
+    if (onToggle) onToggle(!open);
+  };
+  const hasBody = children !== undefined && children !== null;
   return /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', className),
+    className: (0, _cx.cx)('plx-card', interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
     "data-plx-color": accent || undefined
-  }, rest), title ? /*#__PURE__*/_react.default.createElement("div", {
+  }, rest), title || expandable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__header"
-  }, /*#__PURE__*/_react.default.createElement(H, {
+  }, title ? /*#__PURE__*/_react.default.createElement(H, {
     level: headingLevel,
     className: "plx-card__title"
   }, /*#__PURE__*/_react.default.createElement(Opener, {
@@ -9184,11 +9214,22 @@ function Card({
     onOpen: onOpen,
     current: selected,
     className: "plx-card__opener"
-  }, title)), actions ? /*#__PURE__*/_react.default.createElement("div", {
+  }, title)) : null, actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__actions"
-  }, actions) : null) : null, meta ? /*#__PURE__*/_react.default.createElement("div", {
+  }, actions) : null, expandable ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-card__toggle",
+    "aria-expanded": open,
+    "aria-controls": hasBody ? id + '-body' : undefined,
+    "aria-label": (open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.card),
+    onClick: toggle
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-down"
+  })) : null) : null, meta ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-card__meta"
-  }, meta) : null, children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("div", {
+  }, meta) : null, hasBody ? /*#__PURE__*/_react.default.createElement("div", {
+    id: expandable ? id + '-body' : undefined,
+    hidden: !open,
     className: "plx-card__body"
   }, children) : null);
 }
@@ -31780,6 +31821,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        direction
      table: the data as a table under the chart: { columns, data } as the Table takes them (technical values kind
        "data"); shown behind a Details line ("Show the data") so it is always one click away
+     legend: the chart's legend (a ChartLegend), placed by legendPosition (chart parts, wave 8)
+     legendPosition: "bottom" (default: under the plot) | "top" (between the caption and the plot: tight dashboard
+       cards) | "end" (beside the
+       plot, after it; give the legend orientation="vertical"); the plot keeps the rest of the width
      children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
        inside a group already moved by the margins; or SVG nodes
      strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" }
@@ -31794,7 +31839,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        plx-chart__tick-label: the data font).
    Notes:
      No color, size or font is written in a chart: only SVG geometry (x, y, width, height, d, transform) and classes.
-     Chart parts (legend, tooltip, axis, grid line; wave 8) and the charts themselves (wave 9) build on this frame.
+     Chart parts (platform/charts/parts: Axis, GridLines, ChartLegend, ChartTooltip, DataLabel, ReferenceLine,
+       ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
 */
 
 const STRINGS = {
@@ -31813,6 +31859,8 @@ function ChartFrame({
   hideCaption = false,
   size = 'md',
   margin,
+  legend,
+  legendPosition = 'bottom',
   table,
   strings,
   className,
@@ -31878,10 +31926,12 @@ function ChartFrame({
     id: descId,
     className: "plx-chart__description"
   }, description) : null);
-  return /*#__PURE__*/_react.default.createElement("figure", {
-    ref: frame,
-    className: (0, _cx.cx)('plx-chart', 'plx-chart--' + size, className)
-  }, caption, /*#__PURE__*/_react.default.createElement("div", {
+  // the legend (chart parts): before the plot, after it, or beside it in a row with it
+  const lp = ['top', 'bottom', 'end'].indexOf(legendPosition) >= 0 ? legendPosition : 'bottom';
+  const key = legend ? /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart__legend', 'plx-chart__legend--' + lp)
+  }, legend) : null;
+  const plotArea = /*#__PURE__*/_react.default.createElement("div", {
     ref: plot,
     className: "plx-chart__plot"
   }, box.width > 0 && box.height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
@@ -31896,7 +31946,13 @@ function ChartFrame({
   }, /*#__PURE__*/_react.default.createElement("g", {
     transform: 'translate(' + left + ',' + m.top + ')',
     "aria-hidden": "true"
-  }, typeof children === 'function' ? children(dims) : children)) : null), table && table.data ? /*#__PURE__*/_react.default.createElement(_Details.Details, {
+  }, typeof children === 'function' ? children(dims) : children)) : null);
+  return /*#__PURE__*/_react.default.createElement("figure", {
+    ref: frame,
+    className: (0, _cx.cx)('plx-chart', 'plx-chart--' + size, className)
+  }, caption, lp === 'top' ? key : null, lp === 'end' && key ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chart__body"
+  }, plotArea, key) : plotArea, lp === 'bottom' ? key : null, table && table.data ? /*#__PURE__*/_react.default.createElement(_Details.Details, {
     summary: t.showData,
     variant: "inline",
     className: "plx-chart__data"
@@ -35261,7 +35317,2704 @@ function useCollectionView(fields, options = {}) {
   };
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/charts/parts/position.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.scaleLabel = scaleLabel;
+exports.scalePosition = scalePosition;
+exports.scaleTicks = scaleTicks;
+/* Plenix · scalePosition (platform/charts/parts/position.js): where a value sits on a scale, for the chart parts.
+   Summary: The position of a value on any Plenix scale (platform/charts/scales.js): a linear, log or time scale's own
+     position, and the middle of the band for a band scale, so an axis label, a grid line, a data label or a reference
+     line lines up with the mark it belongs to.
+   Usage:
+     import { scalePosition, scaleTicks } from 'plenix-platform';
+     const x = scaleBand({ domain: months, range: [0, inner.width] });
+     scalePosition(x, 'Mar')          // the middle of March's band
+     scaleTicks(y, 5)                 // the values to label: the scale's ticks (a count) or the list given
+   Props:
+     scalePosition(scale, value): the position in pixels (undefined for a value a band scale does not have)
+     scaleTicks(scale, ticks): ticks as an array is returned as it is; a number (or nothing) asks the scale for its ticks
+     scaleLabel(scale, value, ticks, format): the label of a tick: format(value) when given, else the scale's own format
+       (the reader's locale, the decimals of the tick step), else String(value)
+   Notes:
+     Geometry only: no color, size or font. */
+
+function scalePosition(scale, value) {
+  const p = scale(value);
+  if (p === undefined || p === null || isNaN(p)) return undefined;
+  return typeof scale.bandwidth === 'function' ? p + scale.bandwidth() / 2 : p;
+}
+function scaleTicks(scale, ticks) {
+  if (Array.isArray(ticks)) return ticks.slice();
+  return typeof scale.ticks === 'function' ? scale.ticks(typeof ticks === 'number' ? ticks : undefined) : [];
+}
+function scaleLabel(scale, value, ticks, format) {
+  if (typeof format === 'function') return format(value);
+  if (typeof scale.format === 'function') return scale.format(value, typeof ticks === 'number' ? ticks : undefined);
+  return String(value);
+}
+  } },
+  "platform/charts/parts/Axis.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./position.js":"platform/charts/parts/position.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Axis = Axis;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _position = require("./position.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Axis
+   Summary: A chart's axis (07 Data Display › Charts › Axis): the axis line and the tick labels of one scale on one side
+     of the plot, and an optional axis title, drawn inside ChartFrame. Tick labels are technical values: the data font.
+   Usage:
+     <ChartFrame title="Uploads per month" margin={{ bottom: 44, start: 56 }} table={…}>
+       {({ inner, margin }) => {
+         const x = scaleBand({ domain: months, range: [0, inner.width] }), y = scaleLinear({ domain: [0, 310], range: [inner.height, 0], nice: true });
+         return <g><Axis scale={y} orient="left" inner={inner} margin={margin} label="Uploads" />…<Axis scale={x} orient="bottom" inner={inner} margin={margin} /></g>;
+       }}
+     </ChartFrame>
+   Props:
+     scale: the axis's scale (scaleLinear, scaleLog, scaleBand or scaleTime from platform/charts/scales.js) (required)
+     orient: the side of the plot: "bottom" (default) | "left" | "right" | "top"
+     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
+     margin: the frame's margins, { top, end, bottom, start } (ChartFrame's margin); the axis title sits at their edge
+     ticks: the number of ticks to aim for (the scale's own count by default), or the values to label (an array)
+     format: (value) => label, instead of the scale's own format (the reader's locale, the tick step's decimals)
+     label: the axis title (what is measured, with its unit: "Uploads", "Size (MB)"); give the frame margin room for it
+     line: draws the axis line (default true for bottom and top, false for left and right, where grid lines carry it)
+     className: more classes on the <g>
+   Behavior:
+     Each tick label sits at its value (the middle of a band on a band scale), at the --plx-comp-chart-axis-tick-offset
+       distance from the plot: under it (bottom), above it (top), ending before it (left) or starting after it (right).
+     The axis title is centered along the axis at the margin's edge; on the left and right it reads along the axis.
+     Hidden from assistive technology with the rest of the plot: the chart's data table carries the values.
+   Notes:
+     No color, size or font is written: the axis line and tick labels take the frame's classes (plx-chart__axis-line,
+       plx-chart__tick-label), the offset and the title their tokens (chart-parts.css).
+*/
+
+const ORIENTS = ['bottom', 'left', 'right', 'top'];
+const NO_MARGIN = {
+  top: 0,
+  end: 0,
+  bottom: 0,
+  start: 0
+};
+function Axis({
+  scale,
+  orient = 'bottom',
+  inner,
+  margin,
+  ticks,
+  format,
+  label,
+  line,
+  className
+}) {
+  if (!scale || !inner) return null;
+  const o = ORIENTS.indexOf(orient) >= 0 ? orient : 'bottom';
+  const m = Object.assign({}, NO_MARGIN, margin);
+  const across = o === 'bottom' || o === 'top';
+  const showLine = line === undefined ? across : !!line;
+  const edge = o === 'bottom' ? inner.height : o === 'right' ? inner.width : 0;
+  const values = (0, _position.scaleTicks)(scale, ticks);
+  const axisLine = !showLine ? null : across ? /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart__axis-line",
+    x1: 0,
+    x2: inner.width,
+    y1: edge,
+    y2: edge
+  }) : /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart__axis-line",
+    x1: edge,
+    x2: edge,
+    y1: 0,
+    y2: inner.height
+  });
+  const title = !label ? null : o === 'bottom' ? /*#__PURE__*/_react.default.createElement("text", {
+    className: "plx-chart-axis__label",
+    x: inner.width / 2,
+    y: inner.height + m.bottom
+  }, label) : o === 'top' ? /*#__PURE__*/_react.default.createElement("text", {
+    className: "plx-chart-axis__label",
+    x: inner.width / 2,
+    y: -m.top
+  }, label) : o === 'left' ? /*#__PURE__*/_react.default.createElement("text", {
+    className: "plx-chart-axis__label",
+    transform: 'translate(' + -m.start + ',' + inner.height / 2 + ') rotate(-90)'
+  }, label) : /*#__PURE__*/_react.default.createElement("text", {
+    className: "plx-chart-axis__label",
+    transform: 'translate(' + (inner.width + m.end) + ',' + inner.height / 2 + ') rotate(90)'
+  }, label);
+  return /*#__PURE__*/_react.default.createElement("g", {
+    className: (0, _cx.cx)('plx-chart-axis', 'plx-chart-axis--' + o, className)
+  }, axisLine, values.map((v, i) => {
+    const p = (0, _position.scalePosition)(scale, v);
+    if (p === undefined) return null;
+    return /*#__PURE__*/_react.default.createElement("text", {
+      key: i,
+      className: "plx-chart__tick-label plx-chart-axis__tick",
+      x: across ? p : edge,
+      y: across ? edge : p
+    }, (0, _position.scaleLabel)(scale, v, ticks, format));
+  }), title);
+}
+  } },
+  "platform/charts/parts/GridLines.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./position.js":"platform/charts/parts/position.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GridLines = GridLines;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _position = require("./position.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · GridLines
+   Summary: The grid lines behind a chart's marks (07 Data Display › Charts › Grid line): one thin line across the plot
+     at each tick of a scale, so values can be read against the value axis. Drawn first, under the marks.
+   Usage:
+     <GridLines scale={y} inner={inner} />                                   // horizontal lines at the value axis's ticks
+     <GridLines scale={x} direction="vertical" inner={inner} ticks={6} />     // vertical lines at a time axis's ticks
+   Props:
+     scale: the scale whose ticks the lines follow (required)
+     direction: "horizontal" (default: lines across, at a vertical scale's ticks) | "vertical" (lines up the plot, at a
+       horizontal scale's ticks)
+     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
+     ticks: the number of ticks to aim for, or the values (an array): the same as the axis beside them
+     className: more classes on the <g>
+   Behavior:
+     The lines sit at the same positions as the axis's tick labels (the middle of a band on a band scale).
+     Hidden from assistive technology with the rest of the plot.
+   Notes:
+     Lines take the frame's grid line class (plx-chart__grid-line: --plx-comp-chart-grid-line-color and -width); no color is
+       written. Use the lines of one direction in most charts: horizontal for columns and lines, vertical for bars.
+*/
+
+function GridLines({
+  scale,
+  direction = 'horizontal',
+  inner,
+  ticks,
+  className
+}) {
+  if (!scale || !inner) return null;
+  const d = direction === 'vertical' ? 'vertical' : 'horizontal';
+  return /*#__PURE__*/_react.default.createElement("g", {
+    className: (0, _cx.cx)('plx-chart-grid', 'plx-chart-grid--' + d, className)
+  }, (0, _position.scaleTicks)(scale, ticks).map((v, i) => {
+    const p = (0, _position.scalePosition)(scale, v);
+    if (p === undefined) return null;
+    return d === 'horizontal' ? /*#__PURE__*/_react.default.createElement("line", {
+      key: i,
+      className: "plx-chart__grid-line",
+      x1: 0,
+      x2: inner.width,
+      y1: p,
+      y2: p
+    }) : /*#__PURE__*/_react.default.createElement("line", {
+      key: i,
+      className: "plx-chart__grid-line",
+      x1: p,
+      x2: p,
+      y1: 0,
+      y2: inner.height
+    });
+  }));
+}
+  } },
+  "platform/charts/parts/ChartLegend.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartLegend = ChartLegend;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartLegend
+   Summary: The key of a chart's series (07 Data Display › Charts › Chart legend): each series' color swatch and name,
+     and its value when it helps; above the plot, beside it, or under it, and, interactive, a toggle per series that shows
+     or hides it.
+   Usage:
+     const series = [{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }, { id: 'android', label: 'Android' }]
+       .map((s, i) => ({ ...s, color: seriesColor(i) }));
+     <ChartFrame title="Sign-ups by platform" legend={<ChartLegend items={series} />} …>…</ChartFrame>
+     <ChartFrame … legendPosition="end" legend={<ChartLegend items={series} orientation="vertical" />}>…</ChartFrame>
+     <ChartLegend items={series} interactive hidden={off} onToggle={(id, visible) => …} />
+   Props:
+     items: the series, in the chart's order: [{ id, label, color, value }]; color is the series' data-viz step
+       ("categorical-1", seriesColor(i)); value is an optional figure after the name (a total, a share), the data font
+     orientation: "horizontal" (default: items in a row that wraps, above or under the plot) | "vertical" (one per line,
+       beside the plot)
+     shape: the swatch: "square" (default: bars, areas, slices) | "line" (line series)
+     interactive: each item is a toggle button that shows or hides its series (default false)
+     hidden: the ids of the hidden series, when the parent controls them; defaultHidden: the first ones, otherwise
+     onToggle(id, visible): runs when a series is shown or hidden; the chart draws only the visible ones
+     label: the legend's accessible name (default strings.legend)
+     strings: the words it says, for other languages: { legend: "Legend" }
+     className: more classes on the legend
+   Behavior:
+     The legend is real text next to the plot (not inside the image), so assistive technology reads the series names.
+     Interactive: each toggle has aria-pressed (pressed = shown); Tab moves between them, Enter or Space toggles. A hidden
+       series keeps its place with a hollow swatch (a line swatch in the disabled color) and a muted name, so it can
+       be shown again. The last series shown cannot
+       be hidden: its toggle does nothing.
+     Names wrap rather than being cut; a vertical legend keeps its width to the longest name.
+   Notes:
+     Colors come from the data-viz scales through data-plx-dataviz (no color is written). Color is never the only cue: the
+       names are always shown; on a line chart label the lines directly when there is room.
+*/
+const STRINGS = {
+  legend: 'Legend'
+};
+function ChartLegend({
+  items = [],
+  orientation = 'horizontal',
+  shape = 'square',
+  interactive = false,
+  hidden,
+  defaultHidden = [],
+  onToggle,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [own, setOwn] = _react.default.useState(defaultHidden);
+  const off = hidden === undefined ? own : hidden;
+  const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
+  const s = shape === 'line' ? 'line' : 'square';
+  const toggle = id => {
+    const visible = off.indexOf(id) >= 0;
+    // the last series shown stays shown: a chart never goes empty from its legend
+    if (!visible && items.length - off.length <= 1) return;
+    if (hidden === undefined) setOwn(visible ? off.filter(x => x !== id) : off.concat([id]));
+    if (onToggle) onToggle(id, visible);
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-chart-legend', 'plx-chart-legend--' + o, interactive && 'plx-chart-legend--interactive', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-chart-legend__list",
+    "aria-label": label || t.legend
+  }, items.map((it, i) => {
+    const id = it.id === undefined ? i : it.id;
+    const shown = off.indexOf(id) < 0;
+    const inside = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)('plx-chart-legend__swatch', 'plx-chart-legend__swatch--' + s),
+      "data-plx-dataviz": it.color || undefined,
+      "aria-hidden": "true"
+    }), /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-chart-legend__label"
+    }, it.label), it.value !== undefined && it.value !== null ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-chart-legend__value"
+    }, it.value) : null);
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: id,
+      className: "plx-chart-legend__item"
+    }, interactive ? /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-chart-legend__toggle",
+      "aria-pressed": shown,
+      onClick: () => toggle(id)
+    }, inside) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-chart-legend__entry"
+    }, inside));
+  })));
+}
+  } },
+  "platform/charts/parts/ChartTooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartTooltip = ChartTooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ChartTooltip
+   Summary: The values at one point of a chart (07 Data Display › Charts › Chart tooltip), shown where the pointer or the
+     keyboard is: one point's value (single), or every series' value at one x position with a crosshair line (shared).
+     Drawn inside ChartFrame's plot, beside the point, on the side with room.
+   Usage:
+     {active ? <ChartTooltip x={x(active.date)} y={y(active.value)} inner={inner} title={formatDate(active.date)} titleKind="data"
+       items={[{ label: 'Downloads', value: formatNumber(active.value), color: seriesColor(0) }]} /> : null}
+     <ChartTooltip variant="shared" x={x('Mar')} inner={inner} title="March"
+       items={series.map((s, i) => ({ label: s.label, value: formatNumber(s.values[2]), color: seriesColor(i) }))} />
+   Props:
+     x: the point's position across the plot, in pixels (scalePosition(xScale, value)) (required)
+     y: the point's position down the plot (single; shared tooltips sit at the top of the plot)
+     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
+     variant: "single" (default: one point; the tooltip sits above it, or under it near the top) | "shared" (every series
+       at one x: a crosshair line down the plot and the tooltip at its top)
+     title: the point's heading: its category, date or time
+     titleKind: "text" (default: a name, the UI font) | "data" (a date, a time or a number: the data font)
+     items: the values: [{ label, value, color }]; label the series' name, value the formatted value (the data font), color
+       the series' data-viz step (seriesColor(i)); one item for single
+     className: more classes on the tooltip
+   Behavior:
+     It does not take the pointer (pointer-events none), so moving along the chart keeps reaching the marks under it.
+     The tooltip goes after the point when it is in the first half of the plot and before it in the second half, so it
+       stays inside the chart.
+     It shows values already in the chart's data table; with the plot it is hidden from assistive technology. The chart
+       interaction (keyboard and pointer, the chart parts' next step) moves it and says the same values in a live region.
+   Notes:
+     Drawn in an SVG foreignObject at the point (geometry only); the surface is the popover's (overlay surface, border,
+       menu radius and shadow), from the chart-parts tokens. Swatches take the series' data-viz color.
+*/
+
+// the room the tooltip may take beside its point, in pixels (SVG geometry): it is laid out inside this box
+const BOX_W = 240,
+  BOX_H = 200;
+function ChartTooltip({
+  x,
+  y,
+  inner,
+  variant = 'single',
+  title,
+  titleKind = 'text',
+  items = [],
+  className
+}) {
+  if (x === undefined || x === null || !inner) return null;
+  const v = variant === 'shared' ? 'shared' : 'single';
+  const side = x > inner.width / 2 ? 'start' : 'end';
+  const py = v === 'shared' || y === undefined || y === null ? 0 : y;
+  const vert = v === 'shared' ? 'below' : py < BOX_H / 2 ? 'below' : 'above';
+  const fx = side === 'end' ? x : x - BOX_W;
+  const fy = vert === 'below' ? py : py - BOX_H;
+  return /*#__PURE__*/_react.default.createElement("g", {
+    className: (0, _cx.cx)('plx-chart-tooltip-layer', 'plx-chart-tooltip-layer--' + v)
+  }, v === 'shared' ? /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart-tooltip__crosshair",
+    x1: x,
+    x2: x,
+    y1: 0,
+    y2: inner.height
+  }) : null, /*#__PURE__*/_react.default.createElement("foreignObject", {
+    className: "plx-chart-tooltip__room",
+    x: fx,
+    y: fy,
+    width: BOX_W,
+    height: BOX_H
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart-tooltip__place', 'plx-chart-tooltip__place--' + side, 'plx-chart-tooltip__place--' + vert)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart-tooltip', 'plx-chart-tooltip--' + v, className)
+  }, title !== undefined && title !== null ? /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chart-tooltip__title', titleKind === 'data' && 'plx-chart-tooltip__title--data')
+  }, title) : null, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-chart-tooltip__list"
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: i,
+    className: "plx-chart-tooltip__item"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chart-tooltip__swatch",
+    "data-plx-dataviz": it.color || undefined
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chart-tooltip__label"
+  }, it.label), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chart-tooltip__value"
+  }, it.value))))))));
+}
+  } },
+  "platform/charts/parts/DataLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataLabel = DataLabel;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DataLabel
+   Summary: A value written on a chart beside its mark (07 Data Display › Charts › Data label): above a column, after the
+     end of a bar, or centered on a point or a slice with a halo in the surface color, in the data font.
+   Usage:
+     {months.map((m) => <DataLabel key={m.name} x={scalePosition(x, m.name)} y={y(m.value)} value={m.value} />)}
+     <DataLabel x={x(bar.value)} y={scalePosition(y, bar.name)} value={bar.value} position="end" />
+     <DataLabel x={cx} y={cy} value="42%" position="center" />
+   Props:
+     x, y: the mark's anchor in plot pixels: the top middle of a column, the end middle of a bar, a point's center (required)
+     value: the value: a number is formatted in the reader's locale (formatNumber); a string is shown as it is (already
+       formatted: "42%", "1.2 MB")
+     format: (value) => text, instead of formatNumber
+     position: "top" (default: above the anchor, centered: columns) | "end" (after the anchor, centered on it: bars) |
+       "center" (on the anchor, with a halo: points, slices, inside a large mark)
+     className: more classes on the <text>
+   Behavior:
+     The label sits --plx-comp-chart-data-label-offset from its anchor (top, end), or on it (center); the halo is a stroke
+       in the surface color painted under the text, so it stays readable over a mark or a line.
+     Hidden from assistive technology with the rest of the plot: the data table carries the values.
+   Notes:
+     Label the marks people compare, not every mark: a few labeled values (the last, the highest) read better than a full
+       set. Values are technical: the data font; no color is written (the label's tokens).
+*/
+
+const POSITIONS = ['top', 'end', 'center'];
+function DataLabel({
+  x,
+  y,
+  value,
+  format,
+  position = 'top',
+  className
+}) {
+  if (x === undefined || y === undefined || x === null || y === null) return null;
+  const p = POSITIONS.indexOf(position) >= 0 ? position : 'top';
+  const text = typeof format === 'function' ? format(value) : typeof value === 'number' ? (0, _format.formatNumber)(value) : value;
+  return /*#__PURE__*/_react.default.createElement("text", {
+    className: (0, _cx.cx)('plx-chart-data-label', 'plx-chart-data-label--' + p, className),
+    x: x,
+    y: y
+  }, text);
+}
+  } },
+  "platform/charts/parts/ReferenceLine.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","./position.js":"platform/charts/parts/position.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReferenceLine = ReferenceLine;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _position = require("./position.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ReferenceLine
+   Summary: A line across a chart at a value that matters (07 Data Display › Charts › Reference line, Threshold): a target,
+     an average or last year's figure (reference), or a limit the data should stay under or above (threshold, in the alert
+     colors), with its name and value.
+   Usage:
+     <ReferenceLine scale={y} value={250} inner={inner} label="Target" />
+     <ReferenceLine scale={y} value={avg} inner={inner} label="Average" />
+     <ReferenceLine kind="threshold" level="critical" scale={y} value={90} inner={inner} label="Limit" format={(v) => v + '%'} />
+     <ReferenceLine axis="x" scale={x} value={new Date(2026, 8, 15)} inner={inner} label="Release" />
+   Props:
+     scale: the scale the value is on (required)
+     value: where the line goes (required)
+     axis: "y" (default: a horizontal line at a value of the vertical scale) | "x" (a vertical line at a value of the
+       horizontal scale: a date, a category)
+     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
+     kind: "reference" (default: a dashed line in the subtle content color) | "threshold" (a dashed line in an alert color)
+     level: a threshold's color: "warning" (default) | "critical" (the data-viz alert scale)
+     label: the line's name ("Target", "Average", "Limit"); shown at the line's end with its value
+     showValue: shows the value after the name (default true), from format or the scale's own format (the data font)
+     format: (value) => text, instead of the scale's format
+     className: more classes on the <g>
+   Behavior:
+     A horizontal line's label sits above the line at its end; a vertical line's label at the top of the plot, after it.
+     A value outside the scale's domain draws nothing. Hidden from assistive technology with the plot: say the reference in
+       the chart's description ("The target is 250") and give it a row or a column in the data table.
+   Notes:
+     The dash pattern tells a reference from a series (series are solid); a threshold's color is the alert scale's, never
+       a series color, and its name says what it is, so color is not the only cue.
+*/
+
+const LEVELS = ['warning', 'critical'];
+function ReferenceLine({
+  scale,
+  value,
+  axis = 'y',
+  inner,
+  kind = 'reference',
+  level = 'warning',
+  label,
+  showValue = true,
+  format,
+  className
+}) {
+  if (!scale || !inner || value === undefined || value === null) return null;
+  const p = (0, _position.scalePosition)(scale, value);
+  const a = axis === 'x' ? 'x' : 'y';
+  const span = a === 'y' ? inner.height : inner.width;
+  if (p === undefined || p < -0.5 || p > span + 0.5) return null;
+  const k = kind === 'threshold' ? 'threshold' : 'reference';
+  const color = k === 'threshold' ? 'alert-' + (LEVELS.indexOf(level) >= 0 ? level : 'warning') : undefined;
+  const shown = showValue ? typeof format === 'function' ? format(value) : typeof scale.format === 'function' ? scale.format(value) : String(value) : null;
+  return /*#__PURE__*/_react.default.createElement("g", {
+    className: (0, _cx.cx)('plx-chart-reference', 'plx-chart-reference--' + k, 'plx-chart-reference--' + a, className)
+  }, a === 'y' ? /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart-reference__line",
+    "data-plx-dataviz": color,
+    x1: 0,
+    x2: inner.width,
+    y1: p,
+    y2: p
+  }) : /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart-reference__line",
+    "data-plx-dataviz": color,
+    x1: p,
+    x2: p,
+    y1: 0,
+    y2: inner.height
+  }), label || shown !== null ? /*#__PURE__*/_react.default.createElement("text", {
+    className: "plx-chart-reference__label",
+    x: a === 'y' ? inner.width : p,
+    y: a === 'y' ? p : 0
+  }, label ? /*#__PURE__*/_react.default.createElement("tspan", {
+    className: "plx-chart-reference__name"
+  }, label) : null, label && shown !== null ? ' ' : null, shown !== null ? /*#__PURE__*/_react.default.createElement("tspan", {
+    className: "plx-chart-reference__value"
+  }, shown) : null) : null);
+}
+  } },
+  "platform/charts/parts/ChartAnnotation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartAnnotation = ChartAnnotation;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ChartAnnotation
+   Summary: A note written on a chart (07 Data Display › Charts › Annotation): a ring on one data point with a short
+     leader line to its note (point), or a shaded span of the plot with its name (range), to explain a spike, a release or
+     a period.
+   Usage:
+     <ChartAnnotation x={x(peak.date)} y={y(peak.value)} inner={inner} label="Launch day" />
+     <ChartAnnotation x={x(peak.date)} y={y(peak.value)} inner={inner} label="Outage" placement="bottom" />
+     <ChartAnnotation kind="range" x={x(sale.start)} x2={x(sale.end)} inner={inner} label="Holiday sale" />
+   Props:
+     x: the point's position across the plot, or the start of the range, in plot pixels (required)
+     y: the point's position down the plot (point)
+     x2: the end of the range (range)
+     inner: the plot area's size, { width, height } (ChartFrame's inner) (required)
+     kind: "point" (default) | "range"
+     label: the note: a few words, sentence case (required)
+     placement: where a point's note goes: "top" (default: above the point) | "bottom" (under it)
+     className: more classes on the <g>
+   Behavior:
+     A point note sits at the end of a leader line 24px above (or under) the ring; a range is shaded down the whole plot,
+       behind the marks (draw it before them), its name at its top start.
+     Hidden from assistive technology with the plot: put the same note in the chart's description or the data table.
+   Notes:
+     One or two notes per chart; more becomes noise. No color is written: the ring, the leader, the shade and the note take
+       the chart-parts tokens (existing roles: content colors and the sunken surface).
+*/
+
+// SVG geometry, in pixels on the 4px grid: the ring's radius and the leader line's length
+const RING = 6,
+  LEADER = 24;
+function ChartAnnotation({
+  x,
+  y,
+  x2,
+  inner,
+  kind = 'point',
+  label,
+  placement = 'top',
+  className
+}) {
+  if (x === undefined || x === null || !inner) return null;
+  if (kind === 'range') {
+    const a = Math.min(x, x2 === undefined ? x : x2),
+      b = Math.max(x, x2 === undefined ? x : x2);
+    return /*#__PURE__*/_react.default.createElement("g", {
+      className: (0, _cx.cx)('plx-chart-annotation', 'plx-chart-annotation--range', className)
+    }, /*#__PURE__*/_react.default.createElement("rect", {
+      className: "plx-chart-annotation__band",
+      x: a,
+      y: 0,
+      width: Math.max(0, b - a),
+      height: inner.height
+    }), label ? /*#__PURE__*/_react.default.createElement("text", {
+      className: "plx-chart-annotation__label",
+      x: a,
+      y: 0
+    }, label) : null);
+  }
+  if (y === undefined || y === null) return null;
+  const down = placement === 'bottom';
+  const end = down ? y + LEADER : y - LEADER;
+  return /*#__PURE__*/_react.default.createElement("g", {
+    className: (0, _cx.cx)('plx-chart-annotation', 'plx-chart-annotation--point', 'plx-chart-annotation--' + (down ? 'bottom' : 'top'), className)
+  }, /*#__PURE__*/_react.default.createElement("line", {
+    className: "plx-chart-annotation__leader",
+    x1: x,
+    x2: x,
+    y1: down ? y + RING : y - RING,
+    y2: end
+  }), /*#__PURE__*/_react.default.createElement("circle", {
+    className: "plx-chart-annotation__ring",
+    cx: x,
+    cy: y,
+    r: RING
+  }), label ? /*#__PURE__*/_react.default.createElement("text", {
+    className: "plx-chart-annotation__label",
+    x: x,
+    y: end
+  }, label) : null);
+}
+  } },
+  "platform/patterns/FeatureCard/FeatureCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FeatureCard = FeatureCard;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Card = require("../../components/Card/Card.jsx");
+var _IconTile = require("../../components/IconTile/IconTile.jsx");
+var _Image = require("../../components/Image/Image.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FeatureCard
+   Summary: A card that presents one feature, capability or entry point (07 Data Display › Cards and objects › Feature
+     card): its icon tile or picture, its name and a sentence on what it does; the whole card opens it. Built from Card,
+     IconTile and Image.
+   Usage:
+     <FeatureCard icon="sparkle" hue="purple" title="Smart tags" description="Tags your pictures as they upload." href="#/tags" />
+     <FeatureCard variant="image" image="../dam/assets/thumb-12.svg" title="Brand kit" description="Logos, colors and fonts in one place." href="#/brand" />
+     <FeatureCard variant="horizontal" icon="share" hue="blue" title="Share links" description="Send a folder without accounts." onOpen={() => …} />
+   Props:
+     title: the feature's name (required): the card's heading, and its link or button with href or onOpen
+     description: one sentence on what the feature does for people
+     variant: "icon" (default: an IconTile above the name) | "image" (a picture across the top, 16:9) | "horizontal" (the
+       icon tile, or the picture as a square, before the name and description: lists and narrow columns)
+     icon: the icon name of the tile (platform/icons/map.json); hue: the tile's data color (IconTile hue, default "gray");
+       tone: a status tone instead (IconTile tone)
+     image: the picture's address (variant image, or horizontal); imageAlt: its text alternative (default "": decorative,
+       the name says what the card is)
+     href: the card opens this address (its title is a link that covers the card)
+     onOpen(): the card runs this (its title is a button that covers the card); without href or onOpen it is not interactive
+     headingLevel: the heading level of the title (default 3)
+     className: more classes on the card
+   Behavior:
+     With href or onOpen the whole card is one target (Card's opener) and one Tab stop; hover raises it, focus outlines it.
+     The picture keeps its 16:9 frame before it loads, so nothing moves; it is decorative unless imageAlt says otherwise.
+     Descriptions wrap; keep them to one or two lines.
+   Notes:
+     A grid of feature cards: ContentGrid or WidgetGrid around them, every card the same variant. Other props pass through
+       to Card's <article>.
+*/
+const VARIANTS = ['icon', 'image', 'horizontal'];
+function FeatureCard({
+  title,
+  description,
+  variant = 'icon',
+  icon,
+  hue,
+  tone,
+  image,
+  imageAlt = '',
+  href,
+  onOpen,
+  headingLevel = 3,
+  className,
+  ...rest
+}) {
+  const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'icon';
+  const picture = v === 'image' || v === 'horizontal' && image && !icon;
+  const media = picture && image ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: image,
+    alt: imageAlt,
+    ratio: v === 'image' ? '16-9' : '1-1',
+    rounded: v === 'horizontal',
+    className: "plx-feature-card__image"
+  }) : /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+    icon: icon || 'sparkle',
+    hue: hue,
+    tone: tone,
+    size: "md",
+    className: "plx-feature-card__tile"
+  });
+  return /*#__PURE__*/_react.default.createElement(_Card.Card, _extends({
+    title: title,
+    meta: description,
+    href: href,
+    onOpen: onOpen,
+    headingLevel: headingLevel,
+    className: (0, _cx.cx)('plx-feature-card', 'plx-feature-card--' + v, className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-feature-card__media', picture && 'plx-feature-card__media--image')
+  }, media));
+}
+  } },
+  "platform/patterns/UserCard/UserCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.UserCard = UserCard;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Card = require("../../components/Card/Card.jsx");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Image = require("../../components/Image/Image.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _List = require("../../components/List/List.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · UserCard
+   Summary: A person on a card (03 Content & Identity › Identity › User card; also the Profile card): their avatar, name,
+     title or team, role and presence, a few ways to reach them, and the actions that concern them (Message, Call). The
+     compact form is one row; a cover picture can head the card. Built from Card, Avatar, Badge, Link, List and Image.
+   Usage:
+     <UserCard name="Maya Chen" secondary="Designer · Brand team" presence="online"
+       details={[{ icon: 'mail', label: 'maya.chen@example.org' }, { icon: 'phone', label: '+1 415 555 0134', data: true }]} />
+     <UserCard name="Maya Chen" secondary="Designer" role="Owner" href="../contacts/?id=12"
+       actions={<><Button variant="secondary" icon="message">Message</Button><Button variant="ghost" icon="phone">Call</Button></>} />
+     <UserCard variant="compact" name="Alex Kim" secondary="alex.kim@example.org" actions={<Button variant="ghost">Follow</Button>} />
+     <UserCard name="Maya Chen" cover="../dam/assets/thumb-14.svg" secondary="Designer" />
+   Props:
+     name: the person's display name (required): the card's heading; the avatar's initials come from it
+     src: the person's picture; color: their data color (Avatar's color)
+     secondary: one line under the name: a job title, a team, an email
+     role: a short role on a neutral badge under the name ("Owner", "Admin"); the default variant only
+     presence: "online" | "away" | "busy" | "dnd" | "offline": the avatar's presence, and the state in words after the
+       name for assistive technology
+     details: ways to reach or place them, one per line with an icon: [{ icon, label, data }]; data true sets the label in
+       the data font (a phone number, a local time)
+     actions: the buttons for this person (Message, Call, Follow), at the card's foot; or at the row's end (compact)
+     cover: a picture across the top of the card (21:9), the avatar overlapping its lower edge (default variant)
+     variant: "default" (the avatar above the name) | "compact" (one row: a smaller avatar, the name and the line beside it,
+       the actions at the end; no details or cover)
+     href: the person's profile: the name becomes a link to it
+     headingLevel: the heading level of the name (default 3)
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
+     className: more classes on the card
+   Behavior:
+     The name is the card's heading; with href it is a link (one Tab stop), and the actions are buttons of their own, so
+       the card itself is not one target.
+     The avatar is decorative (the name is beside it); the presence is read after the name ("Maya Chen, Online").
+     Long names and lines wrap in the default card and are cut with an ellipsis in the compact row (full text on hover).
+     The cover keeps its frame before it loads and is decorative.
+   Notes:
+     A list of people in a table is the DataTable with Persona in its name column; a person inline is Persona; a person's
+       preview on hover is the hover card. Other props pass through to Card's <article>.
+*/
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const STRINGS = {
+  online: 'Online',
+  away: 'Away',
+  busy: 'Busy',
+  dnd: 'Do not disturb',
+  offline: 'Offline'
+};
+const H = ({
+  level,
+  ...props
+}) => /*#__PURE__*/_react.default.createElement(level ? 'h' + level : 'div', props);
+function UserCard({
+  name,
+  src,
+  color,
+  secondary,
+  role,
+  presence,
+  details,
+  actions,
+  cover,
+  variant = 'default',
+  href,
+  headingLevel = 3,
+  strings,
+  className,
+  ...rest
+}) {
+  const compact = variant === 'compact';
+  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
+  const words = Object.assign({}, STRINGS, strings);
+  const withCover = !compact && !!cover;
+  const hasActions = actions !== undefined && actions !== null && actions !== false;
+  return /*#__PURE__*/_react.default.createElement(_Card.Card, _extends({
+    className: (0, _cx.cx)('plx-user-card', 'plx-user-card--' + (compact ? 'compact' : 'default'), withCover && 'plx-user-card--cover', hasActions && 'plx-user-card--actions', className)
+  }, rest), withCover ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-user-card__cover"
+  }, /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: cover,
+    alt: "",
+    ratio: "21-9",
+    className: "plx-user-card__cover-image"
+  })) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-user-card__identity"
+  }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: name,
+    src: src,
+    color: color,
+    presence: p || undefined,
+    size: compact ? 'lg' : '2xl',
+    className: "plx-user-card__avatar"
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-user-card__text"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    level: headingLevel,
+    className: "plx-user-card__name",
+    title: compact && typeof name === 'string' ? name : undefined
+  }, href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: href,
+    variant: "standalone"
+  }, name) : name, p ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + words[p]) : null), secondary ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-user-card__secondary",
+    title: compact && typeof secondary === 'string' ? secondary : undefined
+  }, secondary) : null, role && !compact ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-user-card__role"
+  }, /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    size: "sm"
+  }, role)) : null), compact && hasActions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-user-card__actions"
+  }, actions) : null), !compact && details && details.length ? /*#__PURE__*/_react.default.createElement(_List.List, {
+    className: "plx-user-card__details",
+    items: details.map(d => ({
+      icon: d.icon,
+      children: d.data ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, d.label) : d.label
+    }))
+  }) : null, !compact && hasActions ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-user-card__actions"
+  }, actions) : null);
+}
+  } },
+  "platform/components/VirtualList/VirtualList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VirtualList = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _format = require("../../utils/format.js");
+var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VirtualList
+   Summary: A long list (hundreds to many thousands of items) that renders only the rows in and near its view, in a
+     bordered scroll area: rows of one height (fixed), rows that take their own height (variable), or rows under group
+     headers that stay at the top while their group scrolls (groups). The scroll bar keeps the length of the whole list
+     and every row its place in it ("12 of 4,000"). It is useVirtualizer drawn as a Platform list.
+   Usage:
+     <VirtualList label="Activity" items={events} showCount />
+     <VirtualList label="Notes" mode="variable" items={notes} renderItem={(note) => <NoteRow note={note} />} />
+     <VirtualList label="People" groups={[{ id: 'a', label: 'A', items: [...] }, …]} height="lg" />
+     <VirtualList label="Log" count={total} renderItem={(item, index) => line(index)} loading={busy} onEndReached={more} />
+   Props:
+     label: the list's accessible name (required: the scroll area is a Tab stop and screen readers name it)
+     items: the rows: [{ id, label, description, meta, icon }] drawn as a row (an icon, the label, a muted description and
+       a technical value in the data font at the end), or anything renderItem draws
+     groups: instead of items, rows under headers: [{ id, label, items }]; each header stays at the top while its group
+       scrolls and says how many items it holds
+     count: instead of items, how many rows there are; renderItem(undefined, index) draws each one (rows built on demand)
+     renderItem(item, index): draws a row's content (default: the row of icon, label, description and meta)
+     getKey(item, index): a stable key for a row (default item.id, else its index)
+     mode: "fixed" (default: every row one line at the list row height, cut with an ellipsis) | "variable" (rows take
+       their own height and wrap; the row height is the estimate for the rows not drawn)
+     height: the scroll area's height: "sm" | "md" (default) | "lg" | "fill" (its container's height)
+     showCount: the number of items above the list ("4,000 items", in the data font); default false
+     loading: a row with a spinner and Loading… at the end while more rows come; default false
+     onEndReached(): runs once each time the end of the list nears the view (load the next rows)
+     overscan: rows drawn beyond each edge of the view (default 4)
+     strings: the words, for other languages: { count: (n) => "4,000 items", group: (n) => "12 items", loading:
+       "Loading…", empty: "No items" }
+     className: more classes on the wrapper
+     ref: { scrollToIndex(index), element } (the scroll area): jump to a row (search results, "go to today")
+   Behavior:
+     The scroll area is one Tab stop named by label: the arrow keys, Page Up and Page Down, Home and End scroll it. Links
+       and buttons inside rows are Tab stops of their own; a row that holds focus stays drawn while it scrolls out of view.
+     Each row is a list item with its place in the whole list (aria-posinset of aria-setsize). Rows outside the view are
+       stood in for by gaps the stylesheet sizes (system/virtual.css): nothing is written as a style.
+     Groups: the header of the group in view stays at the top (sticky) on the list's surface.
+     onEndReached runs when the last rows come into the drawn window and nothing is loading; again after more rows arrive.
+   Notes:
+     Not for short lists (under a few hundred rows): use List or render them all. Not where browser find (Ctrl F) across
+       every row matters, unless the page offers its own search. Tables are the DataTable, which has its own rendering.
+*/
+const STRINGS = {
+  count: n => (0, _format.formatNumber)(n) + (n === 1 ? ' item' : ' items'),
+  group: n => (0, _format.formatNumber)(n) + (n === 1 ? ' item' : ' items'),
+  loading: 'Loading…',
+  empty: 'No items'
+};
+const HEIGHTS = ['sm', 'md', 'lg', 'fill'];
+function Row({
+  item
+}) {
+  if (!item || typeof item !== 'object') return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__label"
+  }, String(item)));
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, item.icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: item.icon
+  })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__label"
+  }, item.label), item.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__description"
+  }, item.description) : null), item.meta !== undefined && item.meta !== null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-virtual-list__meta"
+  }, item.meta) : null);
+}
+const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef(function VirtualList({
+  label,
+  items,
+  groups,
+  count,
+  renderItem,
+  getKey,
+  mode = 'fixed',
+  height = 'md',
+  showCount = false,
+  loading = false,
+  onEndReached,
+  overscan,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  // the rows in order: a group's header, then its items
+  const rows = _react.default.useMemo(() => {
+    if (groups) {
+      const out = [];
+      groups.forEach(g => {
+        const list = g.items || [];
+        out.push({
+          header: true,
+          group: g,
+          n: list.length
+        });
+        list.forEach(it => out.push({
+          item: it
+        }));
+      });
+      return out;
+    }
+    return items ? items.map(it => ({
+      item: it
+    })) : null;
+  }, [items, groups]);
+  const total = rows ? rows.length : Math.max(0, count || 0);
+  const itemCount = groups ? groups.reduce((n, g) => n + (g.items || []).length, 0) : total;
+  const sticky = _react.default.useMemo(() => groups && rows ? rows.reduce((l, r, i) => r.header ? l.concat(i) : l, []) : undefined, [groups, rows]);
+  const v = (0, _useVirtualizer.useVirtualizer)({
+    count: total,
+    mode: mode === 'variable' ? 'measured' : 'fixed',
+    overscan,
+    sticky
+  });
+  _react.default.useImperativeHandle(ref, () => ({
+    scrollToIndex: v.scrollToIndex,
+    get element() {
+      return v.viewportRef.current;
+    }
+  }), [v.scrollToIndex]);
+
+  // the end of the list in the drawn window: ask for more once per length
+  const asked = _react.default.useRef(-1);
+  _react.default.useEffect(() => {
+    if (!onEndReached || loading || !total) return;
+    if (v.range.end >= total && asked.current !== total) {
+      asked.current = total;
+      onEndReached();
+    }
+  }, [v.range.end, total, loading]);
+  const draw = index => {
+    const r = rows ? rows[index] : null;
+    if (r && r.header) {
+      return /*#__PURE__*/_react.default.createElement("div", _extends({
+        key: 'h' + index,
+        role: "listitem",
+        className: (0, _cx.cx)('plx-virtual-list__item', 'plx-virtual-list__header', _useVirtualizer.VIRTUAL_STICKY_CLASS)
+      }, v.itemProps(index)), /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-virtual-list__header-label"
+      }, r.group.label), /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-virtual-list__header-count"
+      }, t.group(r.n)));
+    }
+    const item = r ? r.item : undefined;
+    const key = getKey ? getKey(item, index) : item && typeof item === 'object' && item.id !== undefined ? item.id : index;
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      key: key,
+      role: "listitem",
+      className: "plx-virtual-list__item"
+    }, v.itemProps(index)), renderItem ? renderItem(item, index) : /*#__PURE__*/_react.default.createElement(Row, {
+      item: item
+    }));
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-virtual-list', 'plx-virtual-list--' + (mode === 'variable' ? 'variable' : 'fixed'), groups && 'plx-virtual-list--groups', className)
+  }, rest), showCount ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-virtual-list__count"
+  }, t.count(itemCount)) : null, /*#__PURE__*/_react.default.createElement("div", {
+    ref: v.viewportRef,
+    role: total || loading ? 'list' : undefined,
+    "aria-label": label,
+    "aria-busy": loading || undefined,
+    className: "plx-virtual-list__viewport",
+    "data-plx-height": HEIGHTS.indexOf(height) >= 0 ? height : 'md'
+  }, total ? /*#__PURE__*/_react.default.createElement(_useVirtualizer.VirtualProbe, null) : null, v.segments.map(s => s.gap ? /*#__PURE__*/_react.default.createElement(_useVirtualizer.VirtualGap, {
+    key: s.key,
+    count: s.count
+  }) : draw(s.index)), loading ? /*#__PURE__*/_react.default.createElement("div", {
+    role: "listitem",
+    className: "plx-virtual-list__loading"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.loading
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, t.loading)) : null, !total && !loading ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-virtual-list__empty"
+  }, t.empty) : null));
+});
+  } },
+  "platform/components/Carousel/Carousel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Carousel = Carousel;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _direction = require("../../utils/direction.js");
+var _tokenTime = require("../../utils/tokenTime.js");
+var _useGesture = require("../../hooks/useGesture.js");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Carousel
+   Summary: A set of equal items shown one (or a few) at a time in a strip people move through: Previous and Next
+     buttons, a dot for each page, swipe on touch and drag with the mouse. It never moves by itself unless the page asks
+     for autoplay, and then it shows a Pause button and stops while it is pointed at or holds focus (WCAG 2.2.2).
+   Usage:
+     <Carousel label="Featured assets">{assets.map((a) => <MediaCard key={a.id} {...a} />)}</Carousel>
+     <Carousel label="Recent uploads" perView={3}>{…}</Carousel>
+     <Carousel label="Announcements" controls="dots" autoplay>{…}</Carousel>
+   Props:
+     label: the carousel's accessible name (required)
+     children: the slides, one child each (cards, images, short panels of equal weight)
+     perView: how many slides show at once: 1 (default) | 2 | 3 | 4; with more than one, a part of the next slide shows
+       at the end so people see there is more
+     controls: "both" (default: Previous and Next and the dots) | "arrows" | "dots"
+     autoplay: the pages advance by themselves every --plx-comp-carousel-autoplay-interval (default false); a Pause
+       button shows; people who ask their system for less motion get it paused
+     page, onPageChange(page): the page shown (0-based), when the page controls it; otherwise the carousel keeps its own
+     strings: the words, for other languages: { slide: "{n} of {total}", previous: "Previous slide", next: "Next slide",
+       goTo: "Go to slide {n}", goToPage: "Go to page {n}" (perView above 1), pages: "Slides", strip: "Slides",
+       pause: "Pause", play: "Play", pauseLabel: "Pause the slides", playLabel: "Play the slides" }
+     className: more classes on the carousel
+   Behavior:
+     The strip scrolls sideways and snaps to a slide: touch and trackpads scroll it, a mouse drags it (useGesture: a swipe
+       goes to the next or the previous page), and in focus the arrow keys scroll it. Previous and Next move one page and
+       turn off at the ends; a dot goes to its page. The page in view is read from the scroll position.
+     The carousel is a region named by label with the role description "carousel"; each slide a group named "2 of 5".
+       While it is still, the strip is a polite live region so a page change is read; while it plays, it is not.
+     Autoplay waits while the pointer is over the carousel or focus is in it, and stops for good once Pause is pressed;
+       after the last page it starts again from the first.
+   Notes:
+     Do not hide what people need in later slides: put it on the page. For a long set use a grid or a list. On iOS this
+       is a paged scroll view with the system page control; on Android, Material's carousel.
+*/
+const STRINGS = {
+  slide: '{n} of {total}',
+  previous: 'Previous slide',
+  next: 'Next slide',
+  goTo: 'Go to slide {n}',
+  goToPage: 'Go to page {n}',
+  pages: 'Slides',
+  pause: 'Pause',
+  play: 'Play',
+  pauseLabel: 'Pause the slides',
+  playLabel: 'Play the slides',
+  strip: 'Slides'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+function Carousel({
+  label,
+  children,
+  perView = 1,
+  controls = 'both',
+  autoplay = false,
+  page: pageProp,
+  onPageChange,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const slides = _react.default.Children.toArray(children).filter(Boolean);
+  const n = slides.length;
+  const per = clamp(Math.round(perView) || 1, 1, 4);
+  const pages = Math.max(1, Math.ceil(n / per));
+  const [own, setOwn] = _react.default.useState(0);
+  const page = clamp(pageProp !== undefined ? pageProp : own, 0, pages - 1);
+  const [playing, setPlaying] = _react.default.useState(() => !!autoplay && !reduced());
+  const [held, setHeld] = _react.default.useState(false); // pointer over it or focus in it: autoplay waits
+  const root = _react.default.useRef(null),
+    track = _react.default.useRef(null);
+  const setPage = p => {
+    if (pageProp === undefined) setOwn(p);
+    if (onPageChange && p !== page) onPageChange(p);
+  };
+
+  // scrolls the strip so the page's first slide is at its start edge
+  const scrollTo = _react.default.useCallback(p => {
+    const el = track.current;
+    if (!el || !el.children.length) return;
+    const slide = el.children[clamp(p * per, 0, Math.max(0, n - per))];
+    const a = slide.getBoundingClientRect(),
+      b = el.getBoundingClientRect();
+    const delta = (0, _direction.isRtl)(el) ? a.right - b.right : a.left - b.left;
+    el.scrollBy({
+      left: delta,
+      behavior: reduced() ? 'auto' : 'smooth'
+    });
+  }, [per, n]);
+  const go = p => {
+    const q = clamp(p, 0, pages - 1);
+    setPage(q);
+    scrollTo(q);
+  };
+
+  // the page in view, from the scroll position (the strip may have been scrolled by touch, a trackpad or the keys)
+  _react.default.useEffect(() => {
+    const el = track.current;
+    if (!el) return undefined;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      if (el.children.length < 1) return;
+      const first = el.children[0].getBoundingClientRect(),
+        second = el.children[1] ? el.children[1].getBoundingClientRect() : null;
+      const pitch = second ? Math.abs(second.left - first.left) : first.width;
+      const offset = Math.abs(el.scrollLeft),
+        max = el.scrollWidth - el.clientWidth;
+      const p = Math.ceil(offset) >= max ? pages - 1 : clamp(Math.round(offset / (pitch || 1) / per), 0, pages - 1);
+      if (p !== page) setPage(p);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+    el.addEventListener('scroll', onScroll, {
+      passive: true
+    });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  });
+
+  // a page set from outside scrolls the strip
+  _react.default.useEffect(() => {
+    if (pageProp !== undefined) scrollTo(pageProp);
+  }, [pageProp]);
+
+  // a mouse drags the strip: a swipe toward the start goes on, toward the end goes back (touch scrolls natively)
+  (0, _useGesture.useGesture)(track, {
+    axis: 'x',
+    disabled: n < 2,
+    onSwipe: g => {
+      if (g.inline === 'start') go(page + 1);else if (g.inline === 'end') go(page - 1);
+    }
+  });
+
+  // autoplay: the next page every interval while playing and not held; after the last page, the first
+  _react.default.useEffect(() => {
+    if (!autoplay || !playing || held || pages < 2) return undefined;
+    const ms = (0, _tokenTime.tokenMs)('--plx-comp-carousel-autoplay-interval', 6000, root.current);
+    const id = setTimeout(() => go(page + 1 >= pages ? 0 : page + 1), ms);
+    return () => clearTimeout(id);
+  }, [autoplay, playing, held, page, pages]);
+  _react.default.useEffect(() => {
+    if (!autoplay) setPlaying(false);
+  }, [autoplay]);
+  const hold = {
+    onPointerEnter: () => setHeld(true),
+    onPointerLeave: () => setHeld(false),
+    onFocus: () => setHeld(true),
+    onBlur: e => {
+      if (!root.current || !root.current.contains(e.relatedTarget)) setHeld(false);
+    }
+  };
+  const arrows = controls !== 'dots' && pages > 1,
+    dots = controls !== 'arrows' && pages > 1;
+  const live = autoplay && playing ? 'off' : 'polite';
+  return /*#__PURE__*/_react.default.createElement("section", _extends({
+    ref: root,
+    "aria-roledescription": "carousel",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-carousel', per > 1 && 'plx-carousel--multiple', className),
+    "data-plx-per-view": per
+  }, hold, rest), /*#__PURE__*/_react.default.createElement("div", {
+    ref: track,
+    className: "plx-carousel__track",
+    tabIndex: 0,
+    "aria-label": t.strip,
+    "aria-live": live
+  }, slides.map((s, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: s.key || i,
+    role: "group",
+    "aria-roledescription": "slide",
+    "aria-label": fill(t.slide, {
+      n: i + 1,
+      total: n
+    }),
+    className: "plx-carousel__slide"
+  }, s))), arrows || dots || autoplay ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-carousel__controls"
+  }, autoplay ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "plx-carousel__play",
+    "aria-label": playing ? t.pauseLabel : t.playLabel,
+    onClick: () => setPlaying(!playing)
+  }, playing ? t.pause : t.play) : null, arrows ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    iconOnly: true,
+    icon: "chevron-left",
+    label: t.previous,
+    className: "plx-carousel__previous",
+    disabled: page <= 0,
+    onClick: () => go(page - 1)
+  }) : null, dots ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-carousel__dots",
+    role: "group",
+    "aria-label": t.pages
+  }, Array.from({
+    length: pages
+  }, (_, i) => /*#__PURE__*/_react.default.createElement("button", {
+    key: i,
+    type: "button",
+    className: (0, _cx.cx)('plx-carousel__dot', i === page && 'is-current'),
+    "aria-current": i === page ? 'true' : undefined,
+    "aria-label": fill(per > 1 ? t.goToPage : t.goTo, {
+      n: i + 1
+    }),
+    onClick: () => go(i)
+  }))) : null, arrows ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    iconOnly: true,
+    icon: "chevron-right",
+    label: t.next,
+    className: "plx-carousel__next",
+    disabled: page >= pages - 1,
+    onClick: () => go(page + 1)
+  }) : null) : null);
+}
+  } },
+  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PeopleGroup = PeopleGroup;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _AvatarGroup = require("../../components/AvatarGroup/AvatarGroup.jsx");
+var _IconTile = require("../../components/IconTile/IconTile.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PeopleGroup
+   Summary: A set of people shown as one identity in a single row: a team (its own picture or initials, its name, what it
+     does and its members' avatars) or a group (a permission or directory group: the group icon, its name, where it comes
+     from and how many it holds, its members on demand). It says in words which it is ("Team", "Group"), so it is never
+     taken for a person (03 Content & Identity › Identity › Team and Group).
+   Usage:
+     <PeopleGroup name="Brand team" description="Design and print" members={people} count={8} href="/teams/brand" />
+     <PeopleGroup kind="group" name="Archive editors" count={48} source="Synced from directory" onShowMembers={open} />
+   Props:
+     name: the team's or group's name
+     kind: "team" (default) | "group"
+     description: one line about it ("Design and print")
+     members: [{ id, name, src, presence }]: the people shown as an AvatarGroup (a team; a group shows them on demand)
+     count: how many members it has: "8 members", the number in the data font (default: not shown)
+     max: how many avatars show before +N (default 4)
+     src: a team's own picture (default: its initials)
+     source: where a group comes from ("Synced from directory"); a synced group is managed there
+     href: the team's or group's page: its name becomes a link to it
+     onShowMembers(): opens the full member list: a Show members button (a group), or the avatars' +N tile (a team)
+     strings: the words, for other languages: { team: "Team", group: "Group", members: "{n} members", member: "{n} member",
+       showMembers: "Show members", membersOf: "Members of {name}" }
+     className: more classes on the row
+   Behavior:
+     The kind is read first, then the name ("Team, Brand team"); the picture or icon is decorative because the name is
+       next to it. Avatars and the +N tile are AvatarGroup's: the tile is a button only with onShowMembers.
+     A long name, description or source is cut with an ellipsis on one line; the full text is in its title.
+     Not interactive itself: the name is a link with href, and Show members a button.
+   Notes:
+     A list of people with no shared identity is an AvatarGroup. A single person is a Persona. Granting a team or a group
+       access shows it with a role (PermissionSummary for what that role allows).
+*/
+const STRINGS = {
+  team: 'Team',
+  group: 'Group',
+  members: '{n} members',
+  member: '{n} member',
+  showMembers: 'Show members',
+  membersOf: 'Members of {name}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+
+// "8 members" with the number in the data font
+function Members({
+  n,
+  t
+}) {
+  const words = n === 1 ? t.member : t.members;
+  const [before, after] = words.split('{n}');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__count"
+  }, before, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__number"
+  }, (0, _format.formatNumber)(n)), after);
+}
+function PeopleGroup({
+  name,
+  kind = 'team',
+  description,
+  members,
+  count,
+  max = 4,
+  src,
+  source,
+  href,
+  onShowMembers,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const group = kind === 'group';
+  const kindWord = group ? t.group : t.team;
+  const showAvatars = !group && members && members.length;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-people-group', 'plx-people-group--' + (group ? 'group' : 'team'), className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__media",
+    "aria-hidden": "true"
+  }, group ? /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+    icon: "settings-users",
+    size: "md"
+  }) : /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: name,
+    src: src,
+    size: "lg"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__body"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__name",
+    title: name
+  }, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, kindWord + ', '), href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: href
+  }, name) : name), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__meta"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__kind",
+    "aria-hidden": "true"
+  }, kindWord), typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__separator",
+    "aria-hidden": "true"
+  }, "\xB7"), /*#__PURE__*/_react.default.createElement(Members, {
+    n: count,
+    t: t
+  })) : null, source ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__separator",
+    "aria-hidden": "true"
+  }, "\xB7"), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__source",
+    title: source
+  }, source)) : null), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-people-group__description",
+    title: description
+  }, description) : null), showAvatars ? /*#__PURE__*/_react.default.createElement(_AvatarGroup.AvatarGroup, {
+    className: "plx-people-group__members",
+    label: fill(t.membersOf, {
+      name
+    }),
+    people: members,
+    max: max,
+    onMore: onShowMembers
+  }) : null, group && onShowMembers ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "plx-people-group__show",
+    onClick: onShowMembers
+  }, t.showMembers) : null);
+}
+  } },
+  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PermissionSummary = PermissionSummary;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _List = require("../../components/List/List.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Link = require("../../components/Link/Link.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PermissionSummary
+   Summary: Who can reach an item and what they may do with it, in a few lines: the access in words with its icon ("Your
+     team can edit"), where it comes from ("From the Marketing folder · 12 people"), then what that access allows and does
+     not allow as two lists, Can (a check in the success color) and Cannot (a cross in the danger color); compact folds
+     each list into one sentence. Manage access opens the sharing dialog (03 Content & Identity › Permission summary).
+   Usage:
+     <PermissionSummary access="Your team can edit" detail="From the Marketing folder · 12 people"
+       can={['View', 'Comment', 'Edit details']} cannot={['Share', 'Delete']} onManage={openSharing} />
+     <PermissionSummary variant="compact" icon="lock" access="Only you" can={['View', 'Edit']} cannot={['Share']} />
+   Props:
+     access: the access in words, audience first ("Anyone with the link can view", "Only you")
+     icon: the icon before it: "lock" (default: restricted) | "settings-users" (a team or group) | "link" (anyone with the
+       link) | "person" (one person) | any icon of the set; it repeats the words, never replaces them
+     detail: where the access comes from and how many it reaches ("From the Marketing folder · 12 people")
+     can: what the access allows: ["View", "Comment"]
+     cannot: what it does not allow: ["Share", "Delete"]
+     variant: "list" (default: Can and Cannot as headed lists) | "compact" (one sentence each: "Can view and comment",
+       "Cannot share or delete")
+     onManage(): shows Manage access, a button that opens the sharing settings (a dialog)
+     manageHref: instead, Manage access is a link to the access settings page
+     live: changes are announced politely (aria-live), for a summary that updates while people change the access
+     strings: the words, for other languages: { can: "Can", cannot: "Cannot", manage: "Manage access", canSentence:
+       "Can {list}", cannotSentence: "Cannot {list}" }
+     className: more classes on the summary
+   Behavior:
+     Read only: it states the access; changing it is the sharing dialog's (onManage) or the settings page's (manageHref).
+     The icons are decorative: the words say the access and each right; the success and danger colors repeat the check
+       and the cross, so meaning never rests on color.
+     Compact joins each list in the reader's language (formatList: "view, comment, and edit"; Cannot with "or").
+   Notes:
+     Lead with the audience, then the right. List the rights people ask about (share, delete, download), not every
+       permission: Manage access shows the rest. A role's full grid of rights is the permissions editor's.
+*/
+const STRINGS = {
+  can: 'Can',
+  cannot: 'Cannot',
+  manage: 'Manage access',
+  canSentence: 'Can {list}',
+  cannotSentence: 'Cannot {list}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const lower = x => String(x).charAt(0).toLowerCase() + String(x).slice(1);
+function PermissionSummary({
+  access,
+  icon = 'lock',
+  detail,
+  can = [],
+  cannot = [],
+  variant = 'list',
+  onManage,
+  manageHref,
+  live = false,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const compact = variant === 'compact';
+  const yes = children => ({
+    icon: 'check',
+    tone: 'success',
+    children
+  });
+  const no = children => ({
+    icon: 'close',
+    tone: 'danger',
+    children
+  });
+  const manage = manageHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: manageHref,
+    className: "plx-permission-summary__manage"
+  }, t.manage) : onManage ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "plx-permission-summary__manage",
+    onClick: onManage
+  }, t.manage) : null;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-permission-summary', compact && 'plx-permission-summary--compact', className),
+    "aria-live": live ? 'polite' : undefined
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-permission-summary__head"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-permission-summary__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-permission-summary__access"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-permission-summary__level"
+  }, access), detail ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-permission-summary__detail"
+  }, detail) : null), manage), compact ? can.length || cannot.length ? /*#__PURE__*/_react.default.createElement(_List.List, {
+    className: "plx-permission-summary__list",
+    items: [].concat(can.length ? [yes(fill(t.canSentence, {
+      list: (0, _format.formatList)(can.map(lower))
+    }))] : [], cannot.length ? [no(fill(t.cannotSentence, {
+      list: (0, _format.formatList)(cannot.map(lower), {
+        type: 'disjunction'
+      })
+    }))] : [])
+  }) : null : can.length || cannot.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-permission-summary__lists"
+  }, can.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-permission-summary__section"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-permission-summary__heading"
+  }, t.can), /*#__PURE__*/_react.default.createElement(_List.List, {
+    className: "plx-permission-summary__list",
+    items: can.map(yes)
+  })) : null, cannot.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-permission-summary__section"
+  }, /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-permission-summary__heading"
+  }, t.cannot), /*#__PURE__*/_react.default.createElement(_List.List, {
+    className: "plx-permission-summary__list",
+    items: cannot.map(no)
+  })) : null) : null);
+}
+  } },
+  "platform/patterns/QueryBuilder/QueryBuilder.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QueryBuilder = QueryBuilder;
+exports.formatQuery = formatQuery;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _fields = require("../../utils/fields.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
+var _DatePicker = require("../../components/DatePicker/DatePicker.jsx");
+var _Combobox = require("../../components/Combobox/Combobox.jsx");
+var _SegmentedControl = require("../../components/SegmentedControl/SegmentedControl.jsx");
+var _CodeBlock = require("../../components/CodeBlock/CodeBlock.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · QueryBuilder, formatQuery
+   Summary: Builds a query from rules and groups of rules, for advanced search, saved views, automations and audience
+     rules: each rule is a field, an operator in the field type's words and a value in the field type's own control (text,
+     a NumberInput, a DatePicker, a Combobox of options); a group joins its rules with And or Or and can hold groups of its
+     own (nested, up to maxDepth). The text view reads the whole query back as one sentence. It uses the command bar's
+     condition model (utils/fields.js), so matchesFilter tests rows against it like FilterPanel's filter.
+   Usage:
+     const [query, setQuery] = React.useState({ join: 'and', items: [] });
+     <QueryBuilder label="Audience" fields={fields} value={query} onChange={setQuery} matches={rows.filter((r) => matchesFilter(query, r, fields)).length} />
+     formatQuery(query, fields)   // "Type is any of “Image” and (Size > 40 or Modified is within the past week)"
+   Props:
+     fields: the fields rules test: [{ value, label, kind: "text" | "select" | "multi" | "number" | "date", options, get }]
+       (utils/fields.js)
+     value: the query: { join: "and" | "or", items: [rule | { group: true, id, join, items }] }; a rule is { id, field, op,
+       value } (FilterPanel's filter, with groups to any depth)
+     onChange(value): runs on every change
+     label: the builder's accessible name (default "Query")
+     maxDepth: how many levels of groups, the query itself counted: 1 (rules only) | 2 | 3 (default)
+     view, onViewChange(view): "builder" | "text", when the page controls it; otherwise the builder keeps its own
+     views: shows the Builder and Text switch (default true)
+     matches: how many records the query matches, shown beside the switch ("128 matches", the number in the data font)
+     strings: the words, for other languages: { builder: "Builder", text: "Text", viewLabel: "View", where: "Where",
+       and: "And", or: "Or", andWord: "and", orWord: "or", join: "Match", all: "All rules", any: "Any rule",
+       addRule: "Add rule", addGroup: "Add group", removeRule: "Remove rule", removeGroup: "Remove group", field: "Field",
+       operator: "Operator", value: "Value", rule: "Rule {n}", group: "Group {n}", empty: "No rules: every record matches.",
+       everything: "Every record", matches: "{n} matches", match: "{n} match", textTitle: "Query", added: "Rule added",
+       groupAdded: "Group added", removed: "Rule removed", groupRemoved: "Group removed" }
+     className: more classes on the builder
+   Behavior:
+     Each control is a labeled form control (Field, Operator, Value; the rule's number in its group's name). Changing the
+       field gives the rule its type's first operator and an empty value; "is empty" and "is not empty" take no value.
+     Add rule and Add group add at the end of their group and move focus to the new rule's field; removing moves focus to
+       its group's Add rule. Each is announced.
+     A rule without a value does not count yet (it matches everything), as in FilterPanel; the text view leaves it out.
+     The text view is a CodeBlock of the sentence (Copy included); it is read only: people edit in the builder.
+   Notes:
+     For narrowing a collection in its command bar use FilterPanel (groups one level deep). The query builder is for a
+     query that is its own object: a saved search, an automation's trigger, a segment. Nesting deeper than three levels is
+     hard to read; keep maxDepth at 3 or less.
+*/
+
+const STRINGS = {
+  builder: 'Builder',
+  text: 'Text',
+  viewLabel: 'View',
+  where: 'Where',
+  and: 'And',
+  or: 'Or',
+  andWord: 'and',
+  orWord: 'or',
+  join: 'Match',
+  all: 'All rules',
+  any: 'Any rule',
+  addRule: 'Add rule',
+  addGroup: 'Add group',
+  removeRule: 'Remove rule',
+  removeGroup: 'Remove group',
+  field: 'Field',
+  operator: 'Operator',
+  value: 'Value',
+  rule: 'Rule {n}',
+  group: 'Group {n}',
+  empty: 'No rules: every record matches.',
+  everything: 'Every record',
+  matches: '{n} matches',
+  match: '{n} match',
+  textTitle: 'Query',
+  added: 'Rule added',
+  groupAdded: 'Group added',
+  removed: 'Rule removed',
+  groupRemoved: 'Group removed'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
+const NO_VALUE = {
+  empty: true,
+  nempty: true
+};
+const quote = s => '“' + s + '”';
+
+// the query as one sentence: rules in the field type's words, groups in parentheses; unfinished rules left out
+function formatQuery(node, fields = [], strings) {
+  const t = Object.assign({}, STRINGS, strings);
+  const words = (f, op) => ((_fields.OPERATORS[(0, _fields.kindOf)(f)] || []).find(o => o[0] === op) || [op, op])[1];
+  const rule = c => {
+    const f = (0, _fields.fieldOf)(fields, c.field);
+    if (!f) return null;
+    if (NO_VALUE[c.op]) return f.label + ' ' + words(f, c.op);
+    if (blank(c.value)) return null;
+    const k = (0, _fields.kindOf)(f);
+    let v;
+    if (k === 'select' || k === 'multi') {
+      const o = (0, _fields.optionsOf)(f);
+      v = [].concat(c.value).map(x => quote((o.find(p => p.value === x) || {
+        label: x
+      }).label)).join(', ');
+    } else if (k === 'date' && c.op === 'within') v = (_fields.WITHIN.find(w => w.value === c.value) || _fields.WITHIN[0]).label;else if (k === 'text') v = quote(c.value);else v = String(c.value);
+    return f.label + ' ' + words(f, c.op) + ' ' + v;
+  };
+  const group = (g, top) => {
+    const parts = (g.items || []).map(x => x.group ? group(x, false) : rule(x)).filter(Boolean);
+    if (!parts.length) return null;
+    const s = parts.join(' ' + (g.join === 'or' ? t.orWord : t.andWord) + ' ');
+    return top || parts.length < 2 ? s : '(' + s + ')';
+  };
+  return group(node || {
+    items: []
+  }, true) || t.everything;
+}
+function Count({
+  n,
+  t
+}) {
+  const [before, after] = (n === 1 ? t.match : t.matches).split('{n}');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-query-builder__matches",
+    "aria-live": "polite"
+  }, before, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-query-builder__number"
+  }, (0, _format.formatNumber)(n)), after);
+}
+
+// a form control with its hidden label (the rule's controls sit in a row: their names are read, not shown)
+const Labeled = ({
+  id,
+  text,
+  children
+}) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+  as: "label",
+  htmlFor: id
+}, text), children);
+function RuleValue({
+  c,
+  f,
+  set,
+  id,
+  label
+}) {
+  const k = (0, _fields.kindOf)(f);
+  if (NO_VALUE[c.op]) return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-query-builder__value plx-query-builder__value--none"
+  });
+  let control;
+  if (k === 'select' || k === 'multi') {
+    control = /*#__PURE__*/_react.default.createElement(_Combobox.Combobox, {
+      id: id,
+      multiple: true,
+      className: "plx-query-builder__value",
+      options: (0, _fields.optionsOf)(f).map(o => ({
+        value: o.value,
+        label: o.label
+      })),
+      values: [].concat(c.value || []),
+      onChange: v => set({
+        value: v
+      })
+    });
+  } else if (k === 'date' && c.op === 'within') {
+    control = /*#__PURE__*/_react.default.createElement(_Input.Select, {
+      id: id,
+      className: "plx-query-builder__value",
+      value: c.value || _fields.WITHIN[0].value,
+      options: _fields.WITHIN.map(w => ({
+        value: w.value,
+        label: w.label
+      })),
+      onChange: e => set({
+        value: e.target.value
+      })
+    });
+  } else if (k === 'date') {
+    control = /*#__PURE__*/_react.default.createElement(_DatePicker.DatePicker, {
+      id: id,
+      className: "plx-query-builder__value",
+      value: c.value || null,
+      onChange: v => set({
+        value: v || ''
+      })
+    });
+  } else if (k === 'number') {
+    control = /*#__PURE__*/_react.default.createElement(_NumberInput.NumberInput, {
+      id: id,
+      className: "plx-query-builder__value",
+      value: blank(c.value) ? null : Number(c.value),
+      onChange: v => set({
+        value: v === null || v === undefined ? '' : v
+      })
+    });
+  } else {
+    control = /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      id: id,
+      className: "plx-query-builder__value",
+      value: c.value || '',
+      onChange: e => set({
+        value: e.target.value
+      })
+    });
+  }
+  return /*#__PURE__*/_react.default.createElement(Labeled, {
+    id: id,
+    text: label
+  }, control);
+}
+function Rule({
+  c,
+  index,
+  fields,
+  uid,
+  put,
+  remove,
+  t
+}) {
+  const f = (0, _fields.fieldOf)(fields, c.field);
+  const base = uid + '-' + c.id;
+  const name = fill(t.rule, {
+    n: index + 1
+  });
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-query-builder__rule",
+    role: "group",
+    "aria-label": name,
+    "data-plx-rule": c.id
+  }, /*#__PURE__*/_react.default.createElement(Labeled, {
+    id: base + '-f',
+    text: name + ', ' + t.field
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    id: base + '-f',
+    className: "plx-query-builder__field",
+    value: c.field,
+    options: fields.map(x => ({
+      value: x.value,
+      label: x.label
+    })),
+    onChange: e => put((0, _fields.newCondition)((0, _fields.fieldOf)(fields, e.target.value)))
+  })), /*#__PURE__*/_react.default.createElement(Labeled, {
+    id: base + '-o',
+    text: name + ', ' + t.operator
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    id: base + '-o',
+    className: "plx-query-builder__operator",
+    value: c.op,
+    options: (_fields.OPERATORS[(0, _fields.kindOf)(f)] || []).map(([value, label]) => ({
+      value,
+      label
+    })),
+    onChange: e => {
+      const op = e.target.value;
+      put({
+        op,
+        value: op === 'within' ? _fields.WITHIN[0].value : c.op === 'within' || NO_VALUE[op] ? '' : c.value
+      });
+    }
+  })), /*#__PURE__*/_react.default.createElement(RuleValue, {
+    c: c,
+    f: f,
+    set: put,
+    id: base + '-v',
+    label: name + ', ' + t.value
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "trash",
+    iconOnly: true,
+    label: name + ': ' + t.removeRule,
+    className: "plx-query-builder__remove",
+    onClick: remove
+  }));
+}
+function Group({
+  node,
+  setNode,
+  depth,
+  index,
+  maxDepth,
+  fields,
+  uid,
+  focus,
+  onRemove,
+  t
+}) {
+  const items = node.items || [];
+  const setItems = list => setNode(Object.assign({}, node, {
+    items: list
+  }));
+  const put = (i, ch) => setItems(items.map((x, j) => j === i ? Object.assign({}, x, ch) : x));
+  const addRule = () => {
+    const c = (0, _fields.newCondition)(fields[0]);
+    setItems(items.concat(c));
+    focus.current = {
+      rule: c.id
+    };
+    (0, _announce.announce)(t.added);
+  };
+  const addGroup = () => {
+    const c = (0, _fields.newCondition)(fields[0]);
+    setItems(items.concat({
+      id: (0, _fields.nextId)(),
+      group: true,
+      join: 'and',
+      items: [c]
+    }));
+    focus.current = {
+      rule: c.id
+    };
+    (0, _announce.announce)(t.groupAdded);
+  };
+  const removeAt = i => {
+    const g = items[i].group;
+    setItems(items.filter((_, j) => j !== i));
+    focus.current = {
+      add: node.id || 'root'
+    };
+    (0, _announce.announce)(g ? t.groupRemoved : t.removed);
+  };
+  const joinWord = node.join === 'or' ? t.orWord : t.andWord;
+  const name = depth ? fill(t.group, {
+    n: index + 1
+  }) : null;
+  let groups = 0;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-query-builder__group",
+    "data-plx-depth": Math.min(depth, 2),
+    role: depth ? 'group' : undefined,
+    "aria-label": name || undefined
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-query-builder__group-head"
+  }, /*#__PURE__*/_react.default.createElement(_SegmentedControl.SegmentedControl, {
+    size: "sm",
+    label: (name ? name + ', ' : '') + t.join,
+    value: node.join === 'or' ? 'or' : 'and',
+    options: [{
+      value: 'and',
+      label: t.and
+    }, {
+      value: 'or',
+      label: t.or
+    }],
+    onChange: v => setNode(Object.assign({}, node, {
+      join: v
+    }))
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-query-builder__hint"
+  }, node.join === 'or' ? t.any : t.all), onRemove ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "trash",
+    iconOnly: true,
+    label: name + ': ' + t.removeGroup,
+    className: "plx-query-builder__remove",
+    onClick: onRemove
+  }) : null), items.length ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-query-builder__items"
+  }, items.map((x, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: x.id,
+    className: (0, _cx.cx)('plx-query-builder__item', x.group && 'plx-query-builder__item--group')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-query-builder__join",
+    "aria-hidden": "true"
+  }, i === 0 ? t.where : joinWord), x.group ? /*#__PURE__*/_react.default.createElement(Group, {
+    node: x,
+    setNode: n => put(i, n),
+    depth: depth + 1,
+    index: groups++,
+    maxDepth: maxDepth,
+    fields: fields,
+    uid: uid,
+    focus: focus,
+    onRemove: () => removeAt(i),
+    t: t
+  }) : /*#__PURE__*/_react.default.createElement(Rule, {
+    c: x,
+    index: i,
+    fields: fields,
+    uid: uid,
+    put: ch => put(i, ch),
+    remove: () => removeAt(i),
+    t: t
+  })))) : /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-query-builder__empty"
+  }, t.empty), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-query-builder__add",
+    "data-plx-add": node.id || 'root'
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "plus",
+    disabled: !fields.length,
+    onClick: addRule
+  }, t.addRule), depth + 1 < maxDepth ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "plus",
+    disabled: !fields.length,
+    onClick: addGroup
+  }, t.addGroup) : null));
+}
+function QueryBuilder({
+  fields = [],
+  value,
+  onChange,
+  label = 'Query',
+  maxDepth = 3,
+  view: viewProp,
+  onViewChange,
+  views = true,
+  matches,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const node = value || {
+    join: 'and',
+    items: []
+  };
+  const [own, setOwn] = _react.default.useState('builder');
+  const view = viewProp || own;
+  const setView = v => {
+    if (!viewProp) setOwn(v);
+    if (onViewChange) onViewChange(v);
+  };
+  const uid = 'plx-qb-' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const root = _react.default.useRef(null),
+    focus = _react.default.useRef(null);
+  // after an add or a remove: the new rule's field, or the group's Add rule
+  _react.default.useEffect(() => {
+    const want = focus.current,
+      el = root.current;
+    if (!want || !el) return;
+    focus.current = null;
+    const target = want.rule ? el.querySelector('[data-plx-rule="' + want.rule + '"] select') : el.querySelector('[data-plx-add="' + want.add + '"] button');
+    if (target) target.focus();
+  });
+  const depth = Math.max(1, Math.min(3, maxDepth));
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-query-builder', className),
+    role: "group",
+    "aria-label": label
+  }, views || typeof matches === 'number' ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-query-builder__bar"
+  }, views ? /*#__PURE__*/_react.default.createElement(_SegmentedControl.SegmentedControl, {
+    size: "sm",
+    label: t.viewLabel,
+    value: view,
+    options: [{
+      value: 'builder',
+      label: t.builder
+    }, {
+      value: 'text',
+      label: t.text
+    }],
+    onChange: setView
+  }) : null, typeof matches === 'number' ? /*#__PURE__*/_react.default.createElement(Count, {
+    n: matches,
+    t: t
+  }) : null) : null, view === 'text' ? /*#__PURE__*/_react.default.createElement(_CodeBlock.CodeBlock, {
+    language: "text",
+    title: t.textTitle,
+    className: "plx-query-builder__text"
+  }, formatQuery(node, fields, t)) : /*#__PURE__*/_react.default.createElement(Group, {
+    node: node,
+    setNode: onChange,
+    depth: 0,
+    index: 0,
+    maxDepth: depth,
+    fields: fields,
+    uid: uid,
+    focus: focus,
+    t: t
+  }));
+}
+  } },
+  "platform/components/RoleLabel/RoleLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RoleLabel = RoleLabel;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RoleLabel
+   Summary: A person's role on a project, a folder or a workspace (03 Content › Identity › Role): its name in the tag look,
+     with the role's icon before it. A role is a descriptive label, not a status: it is gray (the tag look), or the
+     category color the application gives a custom role; never a status variant.
+   Usage:
+     <RoleLabel role="owner" />
+     <RoleLabel role="editor" />
+     <RoleLabel role="viewer" icon={false} />
+     <RoleLabel role="custom" label="Billing admin" category="teal" />
+     <RoleLabel role="Reviewer" />                      // any other name is a custom role
+   Props:
+     role: "owner" | "editor" | "viewer" (the built-in roles, named by strings) | "custom" (with label) | any other text,
+       shown as a custom role; default "viewer"
+     label: the role's name; it replaces the built-in name, and names a custom role
+     icon: the icon before the name (an icon name from platform/icons/map.json); default the role's own: owner
+       "settings-permissions", editor "pencil", viewer "visibility", a custom role "person"; false: no icon
+     category: a custom role's category color from the application's data (one of the 20 category colors, as Tag takes
+       them); without it the label is gray. The built-in roles stay gray.
+     description: what the role allows ("Can edit and share"); read after the name by screen readers (visually hidden)
+     strings: the built-in names, for other languages: { owner: "Owner", editor: "Editor", viewer: "Viewer" }
+     className: more classes on the label
+   Behavior:
+     Static text: it takes no focus. To change a role use a Select or a menu beside it (the permissions editor).
+     The icon is decorative; the name says the role.
+   Notes:
+     The look is the Tag's (its height, corners, fill, border and type: --plx-comp-tag-*); the icon size and the space
+       after it are the role label's own tokens. data-plx-role carries the role for the application's own rules.
+     Other props pass through to the <span>.
+*/
+const STRINGS = {
+  owner: 'Owner',
+  editor: 'Editor',
+  viewer: 'Viewer'
+};
+const ICONS = {
+  owner: 'settings-permissions',
+  editor: 'pencil',
+  viewer: 'visibility',
+  custom: 'person'
+};
+function RoleLabel({
+  role = 'viewer',
+  label,
+  icon,
+  category,
+  description,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const builtIn = role === 'owner' || role === 'editor' || role === 'viewer';
+  const kind = builtIn ? role : 'custom';
+  const name = label || (builtIn ? t[role] : role === 'custom' ? '' : role);
+  const glyph = icon === false ? null : icon || ICONS[kind];
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-tag', 'plx-role-label', className),
+    "data-plx-role": kind,
+    "data-plx-category": !builtIn && category ? category : undefined
+  }, rest), glyph ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-role-label__icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: glyph
+  })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tag__label"
+  }, name), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-visually-hidden"
+  }, ', ' + description) : null);
+}
+  } },
+  "platform/components/SearchResult/SearchResult.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SearchResult = SearchResult;
+exports.SearchResultGroup = SearchResultGroup;
+exports.highlightMatches = highlightMatches;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _Thumbnail = require("../Thumbnail/Thumbnail.jsx");
+var _SectionHeading = require("../SectionHeading/SectionHeading.jsx");
+var _Count = require("../Count/Count.jsx");
+var _Link = require("../Link/Link.jsx");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchResult, SearchResultGroup, highlightMatches
+   Summary: One result of a search (06 Navigation › Search, filter, and discovery › Search result item) and the group of
+     results of one kind under a heading (Search result groups): what the result is (a page, a file, a person), its name
+     as a link with the words searched for in bold, where it sits (its path), a few words around the match (the snippet)
+     and its details.
+   Usage:
+     <SearchResultGroup heading="Files" count={12} moreHref="#/search/files?q=quote" moreLabel="Show all 12 files">
+       <SearchResult kind="file" title="Cabinet quote.pdf" href="#/files/41" query="quote"
+         path={['Projects', 'Kitchen renovation']} snippet="…the second quote covers the cabinets and…"
+         meta={<Text variant="data">2.4 MB · 10/12/2026</Text>} />
+       <SearchResult kind="person" title="Maya Chen" avatar={{ name: 'Maya Chen' }} meta="Designer" onOpen={() => …} />
+     </SearchResultGroup>
+     <SearchResultGroup label="Results">{results}</SearchResultGroup>   // one list without a heading
+   Props:
+     SearchResult.title: the result's name (required); with href a link, with onOpen a button
+     SearchResult.href: where the result opens (its page): the title is a link (default)
+     SearchResult.onOpen(): the title is a button that runs this (a result opened in a pane, not a page of its own)
+     SearchResult.kind: what the result is: "page" (default; a page, a note, a record: its icon in a thumbnail) | "file"
+       (the file's thumbnail: thumbnail.src, or its type's icon) | "person" (the person's avatar)
+     SearchResult.icon: the thumbnail's icon (default "doc-text" for a page, "document" for a file)
+     SearchResult.thumbnail: { src, alt } a file's picture
+     SearchResult.avatar: { name, src } a person's avatar (default name: the title)
+     SearchResult.leading: any content before the text instead of the thumbnail or the avatar
+     SearchResult.query: the words searched for: each match in the title and the snippet is bold (with highlight)
+     SearchResult.path: where the result sits, from the top: an array of names (["Projects", "Kitchen"]), drawn above the
+       title with chevrons between them (with path)
+     SearchResult.snippet: the words around the match, as text (one or two lines; longer is cut with an ellipsis)
+     SearchResult.meta: the details under the snippet (type, size, date, owner); wrap technical values in
+       <Text variant="data">
+     SearchResult.actions: controls at the end of the row (a menu); they stay their own Tab stops
+     SearchResult.selected: the result whose preview is shown beside the list (aria-current); default false
+     SearchResult.headingLevel: the title's heading level inside a page of results; default none (plain text)
+     SearchResult.className: more classes on the <li>
+     SearchResultGroup.heading: the group's heading (the kind: "Files", "People"); it names the list
+     SearchResultGroup.count: the number of results of this kind (drawn after the heading in the data font)
+     SearchResultGroup.label: the list's accessible name when there is no heading
+     SearchResultGroup.headingLevel: the heading's level; default 3
+     SearchResultGroup.moreHref: a link under the results to all the results of this kind
+     SearchResultGroup.onMore(): a button under the results that shows more of them here (instead of moreHref)
+     SearchResultGroup.moreLabel: the words of that link or button (default strings.more: "Show all")
+     SearchResultGroup.children: the SearchResult rows
+     SearchResultGroup.className: more classes on the group
+     strings: SearchResult: { path: "In" } (said before the path); SearchResultGroup: { more: "Show all" }
+     highlightMatches(text, query): the text with every match of the query's words in <strong class="plx-search-result__match">
+   Behavior:
+     The title's link (or button) covers the whole row: one Tab stop per result, a hover fill on the row, the focus ring
+       around the row; the actions sit above it and stay reachable.
+     Matching ignores case and finds every word of the query (two letters or more), longest first.
+     The path and the snippet are read with the title (the path after the word "In").
+   Notes:
+     Matches are bold, never colored: the search field's suggestions mark them the same way.
+     Group results by kind when a search spans several kinds (pages, files, people); a group shows its first few results
+       and a link to the rest. One kind: one list without headings.
+     Other props pass through to the <li> (SearchResult) and the outer <div> (SearchResultGroup).
+*/
+const RESULT_STRINGS = {
+  path: 'In'
+};
+const GROUP_STRINGS = {
+  more: 'Show all'
+};
+const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// the text with every match of the query's words in bold (case ignored; words of two letters or more, longest first)
+function highlightMatches(text, query) {
+  if (typeof text !== 'string' || !query) return text;
+  const words = String(query).trim().split(/\s+/).filter(w => w.length > 1).sort((a, b) => b.length - a.length);
+  if (!words.length) return text;
+  const parts = text.split(new RegExp('(' + words.map(escape).join('|') + ')', 'gi'));
+  return parts.map((p, i) => i % 2 ? /*#__PURE__*/_react.default.createElement("strong", {
+    key: i,
+    className: "plx-search-result__match"
+  }, p) : p);
+}
+function SearchResult({
+  title,
+  href,
+  onOpen,
+  kind = 'page',
+  icon,
+  thumbnail,
+  avatar,
+  leading,
+  query,
+  path,
+  snippet,
+  meta,
+  actions,
+  selected = false,
+  headingLevel,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, RESULT_STRINGS, strings);
+  const name = highlightMatches(title, query);
+  const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
+    href: href,
+    className: "plx-search-result__opener",
+    "aria-current": selected ? 'true' : undefined
+  }, name) : onOpen ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-search-result__opener",
+    "aria-current": selected ? 'true' : undefined,
+    onClick: onOpen
+  }, name) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__opener"
+  }, name);
+  const lead = leading !== undefined ? leading : kind === 'person' ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: avatar && avatar.name || (typeof title === 'string' ? title : ''),
+    src: avatar && avatar.src,
+    size: "md"
+  }) : /*#__PURE__*/_react.default.createElement(_Thumbnail.Thumbnail, {
+    src: kind === 'file' && thumbnail ? thumbnail.src : undefined,
+    alt: thumbnail && thumbnail.alt,
+    icon: icon || (kind === 'file' ? 'document' : 'doc-text')
+  });
+  const Title = headingLevel ? 'h' + headingLevel : 'span';
+  return /*#__PURE__*/_react.default.createElement("li", _extends({
+    className: (0, _cx.cx)('plx-search-result', (href || onOpen) && 'is-interactive', selected && 'is-selected', className)
+  }, rest), lead ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__leading"
+  }, lead) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__text"
+  }, path && path.length ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__path"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-visually-hidden"
+  }, t.path + ' '), path.map((p, i) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+    key: i
+  }, i ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__separator",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "chevron-right"
+  })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__crumb"
+  }, p)))) : null, /*#__PURE__*/_react.default.createElement(Title, {
+    className: "plx-search-result__title"
+  }, opener), snippet ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__snippet"
+  }, highlightMatches(snippet, query)) : null, meta ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__meta"
+  }, meta) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search-result__actions"
+  }, actions) : null);
+}
+function SearchResultGroup({
+  heading,
+  count,
+  label,
+  headingLevel = 3,
+  moreHref,
+  onMore,
+  moreLabel,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, GROUP_STRINGS, strings);
+  const id = (0, _layer.useUid)('plx-search-result-group');
+  const more = moreLabel || t.more;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-search-result-group', className)
+  }, rest), heading ? /*#__PURE__*/_react.default.createElement(_SectionHeading.SectionHeading, {
+    level: headingLevel,
+    id: id,
+    className: "plx-search-result-group__heading"
+  }, heading, count !== undefined && count !== null ? /*#__PURE__*/_react.default.createElement(_Count.Count, {
+    value: count,
+    className: "plx-search-result-group__count"
+  }) : null) : null, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-search-result-group__list",
+    "aria-labelledby": heading ? id : undefined,
+    "aria-label": heading ? undefined : label
+  }, children), moreHref ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search-result-group__more"
+  }, /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: moreHref,
+    variant: "standalone"
+  }, more)) : onMore ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search-result-group__more"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "sm",
+    onClick: onMore
+  }, more)) : null);
+}
+  } },
+  "platform/components/Timeline/Timeline.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Timeline = Timeline;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Timeline
+   Summary: Events in the order they happened (07 Data Display › Lists and collections › Timeline): each a marker on one
+     line, with its date or time, a title and a few words; down the page (vertical), across it (horizontal), or on both
+     sides of the line (alternating). A marker is a small circle, or the event's icon in a circle (with icons).
+   Usage:
+     <Timeline label="Project history" items={[
+       { id: 1, time: 'Oct 2, 2026', dateTime: '2026-10-02', title: 'Project created', description: 'Maya Chen set up the project.' },
+       { id: 2, time: 'Oct 9, 2026', dateTime: '2026-10-09', title: 'Quotes uploaded', icon: 'upload', badge: <Badge tone="success">Approved</Badge> }]} />
+     <Timeline orientation="horizontal" label="Release plan" items={milestones} />
+     <Timeline align="alternate" label="Our story" items={events} />
+   Props:
+     items: the events, oldest first (or newest first, as the page reads): [{ id, time, dateTime, title, description,
+       icon, badge, content }]
+     items[].time: the date or time as people read it (drawn in the data font)
+     items[].dateTime: the machine-readable date of the <time> element (ISO 8601)
+     items[].title: what happened (required)
+     items[].description: a line or two about it
+     items[].icon: an icon name (platform/icons/map.json): the marker is the icon in a circle; without it a small circle
+     items[].badge: a Badge after the title, for the event's status (a status is always a Badge, never the marker)
+     items[].content: more under the description (a link, a file, an avatar)
+     orientation: "vertical" (default) | "horizontal" (the events in a row that scrolls sideways when it does not fit)
+     align: "start" (default; every event after the line) | "alternate" (vertical only: the events take turns on each side
+       of a line down the middle; one side again at Narrow widths)
+     label: the timeline's accessible name (required when no heading names it)
+     className: more classes on the list
+   Behavior:
+     The timeline is an ordered list (<ol>): each event is announced with its place (1 of 5), its time and title.
+     It is static: put links or buttons inside an event's title or content when it opens something.
+     Horizontal: the row scrolls sideways when it is wider than its container; the row is one Tab stop and the arrow keys
+       scroll it (tabIndex 0, named by label).
+     Alternating falls back to every event after the line below the Narrow width (600px).
+   Notes:
+     The markers and the line are neutral: they show order, not state. Show an event's state with a Badge (badge).
+     More than about a dozen events: show the latest and a "Show earlier" button, or use the activity stream.
+     Other props pass through to the <ol>.
+*/
+function Timeline({
+  items = [],
+  orientation = 'vertical',
+  align = 'start',
+  label,
+  className,
+  ...rest
+}) {
+  const horizontal = orientation === 'horizontal';
+  const alternate = !horizontal && align === 'alternate';
+  return /*#__PURE__*/_react.default.createElement("ol", _extends({
+    "aria-label": label,
+    tabIndex: horizontal ? 0 : undefined,
+    className: (0, _cx.cx)('plx-timeline', horizontal && 'plx-timeline--horizontal', alternate && 'plx-timeline--alternate', className)
+  }, rest), items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: it.id !== undefined ? it.id : i,
+    className: "plx-timeline__item"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-timeline__marker', it.icon && 'plx-timeline__marker--icon'),
+    "aria-hidden": "true"
+  }, it.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: it.icon
+  }) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-timeline__dot"
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-timeline__content"
+  }, it.time ? /*#__PURE__*/_react.default.createElement("time", {
+    className: "plx-timeline__time",
+    dateTime: it.dateTime
+  }, it.time) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-timeline__heading"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-timeline__title"
+  }, it.title), it.badge ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-timeline__badge"
+  }, it.badge) : null), it.description ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-timeline__description"
+  }, it.description) : null, it.content ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-timeline__extra"
+  }, it.content) : null))));
+}
+  } },
+  "platform/patterns/ResourceList/ResourceList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ResourceList = ResourceList;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _useSelection = require("../../hooks/useSelection.js");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Thumbnail = require("../../components/Thumbnail/Thumbnail.jsx");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _SectionHeading = require("../../components/SectionHeading/SectionHeading.jsx");
+var _Count = require("../../components/Count/Count.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ResourceList
+   Summary: A list of the records of one kind (07 Data Display › Lists and collections › Resource list, and its duplicate
+     Object list): each row the record's picture (a thumbnail or an avatar), its name, which opens it, a line about it,
+     its details and a few actions; rows can be selected with a checkbox for actions on several at once, and grouped
+     under headings. For records people scan and open one at a time; records people compare by column belong in the
+     DataTable.
+   Usage:
+     const [sel, setSel] = React.useState([]);
+     <ResourceList label="Projects" noun="project" selectable selected={sel} onSelectionChange={setSel}
+       bar={<CommandBar label="Projects" actions={…} find={…} />}
+       items={[{ id: 'p1', name: 'Kitchen renovation', description: 'Cabinet quotes and layouts',
+                 meta: <><Text variant="data">12</Text> files</>, thumbnail: { icon: 'folder' }, href: '#/projects/p1',
+                 actions: <Button size="xs" variant="ghost" iconOnly icon="more" label="More" />, group: 'Personal' }]} />
+   Props:
+     items: the records, in order: [{ id, name, description, meta, href, onOpen, thumbnail, avatar, media, actions,
+       group, disabled }]
+     items[].name: the record's name (required); with href a link, with onOpen a button; it covers the row
+     items[].description: a line about the record (one line, cut with an ellipsis)
+     items[].meta: its details at the row's end (a date, a count, a Badge for a status); wrap technical values in
+       <Text variant="data">
+     items[].thumbnail: { src, alt, icon } the record's picture (media variant): a Thumbnail
+     items[].avatar: { name, src } a person or a team (avatar variant): an Avatar
+     items[].media: any content before the text, instead of a thumbnail or an avatar
+     items[].actions: controls at the row's end (with actions): ghost icon buttons or a menu; their own Tab stops
+     items[].group: the heading the record sits under (grouped); groups keep the order they first appear in
+     items[].disabled: the row's checkbox cannot be checked (a record people may not change)
+     label: the list's accessible name (required: the records' kind, "Projects")
+     noun: the word for one record, for the count and the checkbox names ("project"); plural: for several (default
+       noun + "s")
+     selectable: a checkbox before each row and a select-all checkbox in the header (selectable); default false
+     selected: the ids of the selected records (controlled); onSelectionChange(ids) runs on every change
+     defaultSelected: the ids selected at first (uncontrolled)
+     showCount: the header shows the number of records when the list is not selectable (default false)
+     bar: the command bar over the list (CommandBar): its actions, search, filters and views; give it the selection
+       (CommandBar selection) so its commands swap to the selection's while rows are selected
+     emptyState: what the list shows when there are no records (an EmptyState)
+     headingLevel: the level of the group headings; default 3
+     strings: the words it shows and announces, for other languages: { item: "item", selectAll: "Select all {n} {nouns}",
+       select: "Select {name}", count: "{n} {nouns}", selected: "{n} of {total} selected" }
+     className: more classes on the list's container
+   Behavior:
+     A row's name covers the row: one Tab stop per record, a hover fill on the row, the focus ring around it; the checkbox
+       and the actions sit above it and stay their own Tab stops.
+     Checking a row selects it (the selected fill and a checked box: never color alone); the header's checkbox selects or
+       clears every record that can be selected, mixed while only some are; the header says how many are selected.
+     Rows follow the density (the data rows' height).
+   Notes:
+     Composed of Platform parts only: Checkbox, Thumbnail, Avatar, SectionHeading, Count, Text, and the CommandBar the
+       caller passes in bar. The selection model is useSelection.
+     A pattern of the Polaris resource list. Use the DataTable when people compare records by column or sort by a column.
+*/
+
+const STRINGS = {
+  item: 'item',
+  selectAll: 'Select all {n} {nouns}',
+  select: 'Select {name}',
+  count: '{n} {nouns}',
+  selected: '{n} of {total} selected'
+};
+const fill = (s, map) => Object.keys(map).reduce((out, k) => out.split('{' + k + '}').join(map[k]), s);
+// a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]
+const phrase = (s, map) => s.split(/(\{n\}|\{total\})/).map((p, i) => p === '{n}' || p === '{total}' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+  key: i,
+  variant: "data"
+}, map[p.slice(1, -1)]) : fill(p, map));
+function Row({
+  item,
+  selectable,
+  checked,
+  onCheck,
+  t
+}) {
+  const name = item.name;
+  const opener = item.href ? /*#__PURE__*/_react.default.createElement("a", {
+    href: item.href,
+    className: "plx-resource-list__opener"
+  }, name) : item.onOpen ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-resource-list__opener",
+    onClick: item.onOpen
+  }, name) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__opener"
+  }, name);
+  const media = item.media !== undefined ? item.media : item.avatar ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: item.avatar.name || (typeof name === 'string' ? name : ''),
+    src: item.avatar.src,
+    size: "md"
+  }) : item.thumbnail ? /*#__PURE__*/_react.default.createElement(_Thumbnail.Thumbnail, {
+    src: item.thumbnail.src,
+    alt: item.thumbnail.alt,
+    icon: item.thumbnail.icon
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement("li", {
+    className: (0, _cx.cx)('plx-resource-list__item', (item.href || item.onOpen) && 'is-interactive', checked && 'is-selected')
+  }, selectable ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__select"
+  }, /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    checked: checked,
+    disabled: item.disabled,
+    onChange: onCheck,
+    "aria-label": fill(t.select, {
+      name: typeof name === 'string' ? name : t.item
+    })
+  })) : null, media ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__media"
+  }, media) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__name"
+  }, opener), item.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__description"
+  }, item.description) : null), item.meta ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__meta"
+  }, item.meta) : null, item.actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__actions"
+  }, item.actions) : null);
+}
+function ResourceList({
+  items = [],
+  label,
+  noun,
+  plural,
+  selectable = false,
+  selected,
+  onSelectionChange,
+  defaultSelected,
+  showCount = false,
+  bar,
+  emptyState,
+  headingLevel = 3,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = (0, _layer.useUid)('plx-resource-list');
+  const ids = items.map(it => it.id);
+  const sel = (0, _useSelection.useSelection)({
+    items: ids,
+    mode: 'multiple',
+    selected,
+    defaultSelected,
+    onChange: onSelectionChange,
+    disabledKeys: items.filter(it => it.disabled).map(it => it.id)
+  });
+  const one = noun || t.item;
+  const nouns = plural || one + 's';
+  const total = items.length;
+  // the groups, in the order they first appear (grouped); one unnamed group otherwise
+  const groups = [];
+  items.forEach(it => {
+    const g = it.group || '';
+    let at = groups.find(x => x.heading === g);
+    if (!at) {
+      at = {
+        heading: g,
+        items: []
+      };
+      groups.push(at);
+    }
+    at.items.push(it);
+  });
+  const grouped = groups.some(g => g.heading);
+  const row = it => /*#__PURE__*/_react.default.createElement(Row, {
+    key: it.id,
+    item: it,
+    selectable: selectable,
+    checked: sel.isSelected(it.id),
+    onCheck: () => sel.toggle(it.id),
+    t: t
+  });
+  const header = selectable || showCount ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resource-list__header"
+  }, selectable ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__select"
+  }, /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    checked: sel.allSelected,
+    indeterminate: sel.someSelected,
+    disabled: !total,
+    onChange: () => sel.toggleAll(),
+    "aria-label": fill(t.selectAll, {
+      n: String(total),
+      nouns: total === 1 ? one : nouns
+    })
+  })) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-resource-list__count",
+    "aria-live": "polite"
+  }, selectable && sel.count ? phrase(t.selected, {
+    n: String(sel.count),
+    total: String(total)
+  }) : phrase(t.count, {
+    n: String(total),
+    nouns: total === 1 ? one : nouns
+  }))) : null;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-resource-list', className)
+  }, bar ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resource-list__bar"
+  }, bar) : null, header, !total && emptyState ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resource-list__empty"
+  }, emptyState) : grouped ? groups.map((g, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: g.heading || i,
+    className: "plx-resource-list__group"
+  }, /*#__PURE__*/_react.default.createElement(_SectionHeading.SectionHeading, {
+    level: headingLevel,
+    id: uid + '-' + i,
+    className: "plx-resource-list__heading"
+  }, g.heading, /*#__PURE__*/_react.default.createElement(_Count.Count, {
+    value: g.items.length,
+    className: "plx-resource-list__group-count"
+  })), /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-resource-list__list",
+    "aria-labelledby": uid + '-' + i
+  }, g.items.map(row)))) : /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-resource-list__list",
+    "aria-label": label
+  }, items.map(row)));
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35307,6 +38060,12 @@ Object.defineProperty(exports, "AvatarUpload", {
   enumerable: true,
   get: function () {
     return _AvatarUpload.AvatarUpload;
+  }
+});
+Object.defineProperty(exports, "Axis", {
+  enumerable: true,
+  get: function () {
+    return _Axis.Axis;
   }
 });
 Object.defineProperty(exports, "BARCODE_QUIET_ZONE", {
@@ -35417,6 +38176,12 @@ Object.defineProperty(exports, "Card", {
     return _Card.Card;
   }
 });
+Object.defineProperty(exports, "Carousel", {
+  enumerable: true,
+  get: function () {
+    return _Carousel.Carousel;
+  }
+});
 Object.defineProperty(exports, "Cascader", {
   enumerable: true,
   get: function () {
@@ -35429,10 +38194,28 @@ Object.defineProperty(exports, "Center", {
     return _Stack.Center;
   }
 });
+Object.defineProperty(exports, "ChartAnnotation", {
+  enumerable: true,
+  get: function () {
+    return _ChartAnnotation.ChartAnnotation;
+  }
+});
 Object.defineProperty(exports, "ChartFrame", {
   enumerable: true,
   get: function () {
     return _ChartFrame.ChartFrame;
+  }
+});
+Object.defineProperty(exports, "ChartLegend", {
+  enumerable: true,
+  get: function () {
+    return _ChartLegend.ChartLegend;
+  }
+});
+Object.defineProperty(exports, "ChartTooltip", {
+  enumerable: true,
+  get: function () {
+    return _ChartTooltip.ChartTooltip;
   }
 });
 Object.defineProperty(exports, "Chat", {
@@ -35621,6 +38404,12 @@ Object.defineProperty(exports, "DEMO_SESSION", {
     return _SessionProvider.DEMO_SESSION;
   }
 });
+Object.defineProperty(exports, "DataLabel", {
+  enumerable: true,
+  get: function () {
+    return _DataLabel.DataLabel;
+  }
+});
 Object.defineProperty(exports, "DataTable", {
   enumerable: true,
   get: function () {
@@ -35735,6 +38524,12 @@ Object.defineProperty(exports, "FORMATS", {
     return _format.FORMATS;
   }
 });
+Object.defineProperty(exports, "FeatureCard", {
+  enumerable: true,
+  get: function () {
+    return _FeatureCard.FeatureCard;
+  }
+});
 Object.defineProperty(exports, "Field", {
   enumerable: true,
   get: function () {
@@ -35805,6 +38600,12 @@ Object.defineProperty(exports, "GRID_TOKEN", {
   enumerable: true,
   get: function () {
     return _grid.GRID_TOKEN;
+  }
+});
+Object.defineProperty(exports, "GridLines", {
+  enumerable: true,
+  get: function () {
+    return _GridLines.GridLines;
   }
 });
 Object.defineProperty(exports, "GroupPanel", {
@@ -36065,6 +38866,18 @@ Object.defineProperty(exports, "Panel", {
     return _Card.Panel;
   }
 });
+Object.defineProperty(exports, "PeopleGroup", {
+  enumerable: true,
+  get: function () {
+    return _PeopleGroup.PeopleGroup;
+  }
+});
+Object.defineProperty(exports, "PermissionSummary", {
+  enumerable: true,
+  get: function () {
+    return _PermissionSummary.PermissionSummary;
+  }
+});
 Object.defineProperty(exports, "Persona", {
   enumerable: true,
   get: function () {
@@ -36137,6 +38950,12 @@ Object.defineProperty(exports, "QRCode", {
     return _QRCode.QRCode;
   }
 });
+Object.defineProperty(exports, "QueryBuilder", {
+  enumerable: true,
+  get: function () {
+    return _QueryBuilder.QueryBuilder;
+  }
+});
 Object.defineProperty(exports, "QuickFilter", {
   enumerable: true,
   get: function () {
@@ -36203,10 +39022,22 @@ Object.defineProperty(exports, "RecordPage", {
     return _RecordPage.RecordPage;
   }
 });
+Object.defineProperty(exports, "ReferenceLine", {
+  enumerable: true,
+  get: function () {
+    return _ReferenceLine.ReferenceLine;
+  }
+});
 Object.defineProperty(exports, "RelativeDateInput", {
   enumerable: true,
   get: function () {
     return _RelativeDateInput.RelativeDateInput;
+  }
+});
+Object.defineProperty(exports, "ResourceList", {
+  enumerable: true,
+  get: function () {
+    return _ResourceList.ResourceList;
   }
 });
 Object.defineProperty(exports, "RetryNotice", {
@@ -36227,6 +39058,12 @@ Object.defineProperty(exports, "RichTextEditor", {
     return _RichTextEditor.RichTextEditor;
   }
 });
+Object.defineProperty(exports, "RoleLabel", {
+  enumerable: true,
+  get: function () {
+    return _RoleLabel.RoleLabel;
+  }
+});
 Object.defineProperty(exports, "RowButton", {
   enumerable: true,
   get: function () {
@@ -36243,6 +39080,18 @@ Object.defineProperty(exports, "SearchField", {
   enumerable: true,
   get: function () {
     return _SearchField.SearchField;
+  }
+});
+Object.defineProperty(exports, "SearchResult", {
+  enumerable: true,
+  get: function () {
+    return _SearchResult.SearchResult;
+  }
+});
+Object.defineProperty(exports, "SearchResultGroup", {
+  enumerable: true,
+  get: function () {
+    return _SearchResult.SearchResultGroup;
   }
 });
 Object.defineProperty(exports, "SearchWorkspace", {
@@ -36503,6 +39352,12 @@ Object.defineProperty(exports, "TimeZoneSelect", {
     return _TimeZoneSelect.TimeZoneSelect;
   }
 });
+Object.defineProperty(exports, "Timeline", {
+  enumerable: true,
+  get: function () {
+    return _Timeline.Timeline;
+  }
+});
 Object.defineProperty(exports, "ToastProvider", {
   enumerable: true,
   get: function () {
@@ -36545,6 +39400,12 @@ Object.defineProperty(exports, "TreeSelect", {
     return _TreeSelect.TreeSelect;
   }
 });
+Object.defineProperty(exports, "UserCard", {
+  enumerable: true,
+  get: function () {
+    return _UserCard.UserCard;
+  }
+});
 Object.defineProperty(exports, "VIRTUAL_STICKY_CLASS", {
   enumerable: true,
   get: function () {
@@ -36567,6 +39428,12 @@ Object.defineProperty(exports, "VirtualGap", {
   enumerable: true,
   get: function () {
     return _useVirtualizer.VirtualGap;
+  }
+});
+Object.defineProperty(exports, "VirtualList", {
+  enumerable: true,
+  get: function () {
+    return _VirtualList.VirtualList;
   }
 });
 Object.defineProperty(exports, "VirtualProbe", {
@@ -36797,6 +39664,12 @@ Object.defineProperty(exports, "formatPhone", {
     return _format.formatPhone;
   }
 });
+Object.defineProperty(exports, "formatQuery", {
+  enumerable: true,
+  get: function () {
+    return _QueryBuilder.formatQuery;
+  }
+});
 Object.defineProperty(exports, "formatRange", {
   enumerable: true,
   get: function () {
@@ -36861,6 +39734,12 @@ Object.defineProperty(exports, "hasUnsaved", {
   enumerable: true,
   get: function () {
     return _UnsavedGuard.hasUnsaved;
+  }
+});
+Object.defineProperty(exports, "highlightMatches", {
+  enumerable: true,
+  get: function () {
+    return _SearchResult.highlightMatches;
   }
 });
 Object.defineProperty(exports, "hotkeyKeys", {
@@ -37037,6 +39916,12 @@ Object.defineProperty(exports, "scaleBand", {
     return _scales.scaleBand;
   }
 });
+Object.defineProperty(exports, "scaleLabel", {
+  enumerable: true,
+  get: function () {
+    return _position.scaleLabel;
+  }
+});
 Object.defineProperty(exports, "scaleLinear", {
   enumerable: true,
   get: function () {
@@ -37047,6 +39932,18 @@ Object.defineProperty(exports, "scaleLog", {
   enumerable: true,
   get: function () {
     return _scales.scaleLog;
+  }
+});
+Object.defineProperty(exports, "scalePosition", {
+  enumerable: true,
+  get: function () {
+    return _position.scalePosition;
+  }
+});
+Object.defineProperty(exports, "scaleTicks", {
+  enumerable: true,
+  get: function () {
+    return _position.scaleTicks;
   }
 });
 Object.defineProperty(exports, "scaleTime", {
@@ -37493,6 +40390,25 @@ var _ViewMenu = require("./patterns/ViewMenu/ViewMenu.jsx");
 var _QuickFilter = require("./patterns/QuickFilter/QuickFilter.jsx");
 var _fields = require("./utils/fields.js");
 var _useCollectionView = require("./hooks/useCollectionView.js");
+var _position = require("./charts/parts/position.js");
+var _Axis = require("./charts/parts/Axis.jsx");
+var _GridLines = require("./charts/parts/GridLines.jsx");
+var _ChartLegend = require("./charts/parts/ChartLegend.jsx");
+var _ChartTooltip = require("./charts/parts/ChartTooltip.jsx");
+var _DataLabel = require("./charts/parts/DataLabel.jsx");
+var _ReferenceLine = require("./charts/parts/ReferenceLine.jsx");
+var _ChartAnnotation = require("./charts/parts/ChartAnnotation.jsx");
+var _FeatureCard = require("./patterns/FeatureCard/FeatureCard.jsx");
+var _UserCard = require("./patterns/UserCard/UserCard.jsx");
+var _VirtualList = require("./components/VirtualList/VirtualList.jsx");
+var _Carousel = require("./components/Carousel/Carousel.jsx");
+var _PeopleGroup = require("./patterns/PeopleGroup/PeopleGroup.jsx");
+var _PermissionSummary = require("./patterns/PermissionSummary/PermissionSummary.jsx");
+var _QueryBuilder = require("./patterns/QueryBuilder/QueryBuilder.jsx");
+var _RoleLabel = require("./components/RoleLabel/RoleLabel.jsx");
+var _SearchResult = require("./components/SearchResult/SearchResult.jsx");
+var _Timeline = require("./components/Timeline/Timeline.jsx");
+var _ResourceList = require("./patterns/ResourceList/ResourceList.jsx");
   } }
   };
   var cache = {};

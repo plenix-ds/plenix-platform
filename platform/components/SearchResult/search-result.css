@@ -1,0 +1,32 @@
+/* Plenix · SearchResult, SearchResultGroup (platform/components/SearchResult). Anatomy and API: SearchResult.jsx.
+   A result is a row: the thumbnail or avatar, then the path, the title (its link covers the row), the snippet and the
+   meta, one under the other, then the actions. A group is a SectionHeading with the count, the list, and a link to all. */
+.plx-search-result-group{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-search-result-group-gap);}
+.plx-search-result-group__count{color:var(--plx-comp-search-result-group-count-text);font-family:var(--plx-comp-search-result-group-count-font-family);margin-inline-start:var(--plx-comp-search-result-group-count-margin-inline-start);text-transform:none;}
+.plx-search-result-group__list{list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-search-result-group__more{display:flex;}
+.plx-search-result{align-items:flex-start;border-bottom-color:var(--plx-comp-search-result-border-bottom-color);border-bottom-style:solid;border-bottom-width:var(--plx-comp-search-result-border-bottom-width);column-gap:var(--plx-comp-search-result-gap);display:flex;padding-block-end:var(--plx-comp-search-result-padding-block);padding-block-start:var(--plx-comp-search-result-padding-block);padding-inline-end:0;padding-inline-start:0;position:relative;}
+.plx-search-result:last-child{border-bottom-style:none;border-bottom-width:0;}
+/* a result that opens keeps a small inset for its hover fill, pulled back by the same token, so its content lines up with
+   the heading (ActivityList's rule) */
+.plx-search-result.is-interactive{margin-inline-end:var(--plx-comp-search-result-interactive-margin-inline);margin-inline-start:var(--plx-comp-search-result-interactive-margin-inline);padding-inline-end:var(--plx-comp-search-result-interactive-padding-inline);padding-inline-start:var(--plx-comp-search-result-interactive-padding-inline);}
+.plx-search-result.is-interactive:hover,
+.plx-search-result.is-interactive.is-hover{background-color:var(--plx-comp-search-result-hover-background);}
+.plx-search-result.is-selected,.plx-search-result.is-selected:hover,.plx-search-result.is-selected.is-hover{background-color:var(--plx-comp-search-result-selected-background);}
+.plx-search-result.is-interactive:has(.plx-search-result__opener:focus-visible),
+.plx-search-result.is-interactive:has(.plx-search-result__opener.is-focus-visible){outline-color:var(--plx-comp-search-result-focus-outline-color);outline-offset:var(--plx-comp-search-result-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-search-result-focus-outline-width);}
+.plx-search-result__leading{display:inline-flex;flex-shrink:0;}
+.plx-search-result__text{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-inline-size:0;row-gap:var(--plx-comp-search-result-text-row-gap);}
+.plx-search-result__path{align-items:center;color:var(--plx-comp-search-result-path-text);column-gap:var(--plx-comp-search-result-path-gap);display:flex;flex-wrap:wrap;font-size:var(--plx-comp-search-result-path-font-size);min-inline-size:0;}
+.plx-search-result__separator{--plx-comp-icon-size:var(--plx-comp-search-result-separator-size);display:inline-flex;}
+.plx-search-result__crumb{overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-search-result__title{color:var(--plx-comp-search-result-title-text);font-size:var(--plx-comp-search-result-title-font-size);font-weight:var(--plx-comp-search-result-title-font-weight);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-search-result__opener{background-color:transparent;border-bottom-style:none;border-bottom-width:0;border-left-style:none;border-left-width:0;border-right-style:none;border-right-width:0;border-top-style:none;border-top-width:0;color:inherit;cursor:pointer;font-family:inherit;font-size:inherit;font-weight:inherit;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;text-align:start;text-decoration-line:none;}
+.plx-search-result.is-interactive .plx-search-result__opener::after{content:"";inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;position:absolute;}
+.plx-search-result__opener:focus-visible,
+.plx-search-result__opener.is-focus-visible{outline-style:none;}
+.plx-search-result__match{font-weight:var(--plx-comp-search-result-match-font-weight);}
+.plx-search-result__snippet{-webkit-box-orient:vertical;-webkit-line-clamp:2;color:var(--plx-comp-search-result-snippet-text);display:-webkit-box;font-size:var(--plx-comp-search-result-snippet-font-size);overflow-x:hidden;overflow-y:hidden;}
+.plx-search-result__meta{color:var(--plx-comp-search-result-meta-text);font-size:var(--plx-comp-search-result-meta-font-size);overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-search-result__meta .plx-text{font-size:inherit;}
+.plx-search-result__actions{align-items:center;column-gap:var(--plx-comp-search-result-actions-gap);display:flex;flex-shrink:0;position:relative;z-index:var(--plx-comp-search-result-actions-z-index);}

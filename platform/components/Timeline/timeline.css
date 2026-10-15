@@ -1,0 +1,43 @@
+/* Plenix · Timeline (platform/components/Timeline). Anatomy and API: Timeline.jsx.
+   Each event is a grid: the marker in its own column (or row, horizontal), the content beside it (under it). The line
+   runs from the bottom (end) of a marker to the next event's marker; the first line of the content is as tall as the
+   marker, so the time or title sits centered on it. */
+.plx-timeline{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-timeline__item{align-content:start;column-gap:var(--plx-comp-timeline-column-gap);display:grid;grid-template-columns:var(--plx-comp-timeline-marker-size) minmax(0, 1fr);padding-block-end:var(--plx-comp-timeline-item-gap);position:relative;}
+.plx-timeline__item:last-child{padding-block-end:0;}
+.plx-timeline__item::before{background-color:var(--plx-comp-timeline-line-color);content:"";inline-size:var(--plx-comp-timeline-line-width);inset-block-end:0;inset-block-start:var(--plx-comp-timeline-marker-size);inset-inline-start:calc((var(--plx-comp-timeline-marker-size) - var(--plx-comp-timeline-line-width)) / 2);position:absolute;}
+.plx-timeline__item:last-child::before{content:none;}
+.plx-timeline__marker{align-items:center;block-size:var(--plx-comp-timeline-marker-size);box-sizing:border-box;display:flex;grid-column-start:1;grid-row-start:1;inline-size:var(--plx-comp-timeline-marker-size);justify-content:center;}
+.plx-timeline__dot{background-color:var(--plx-comp-timeline-dot-background);block-size:var(--plx-comp-timeline-dot-size);border-bottom-color:var(--plx-comp-timeline-dot-border-color);border-bottom-left-radius:var(--plx-comp-timeline-marker-radius);border-bottom-right-radius:var(--plx-comp-timeline-marker-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-timeline-dot-border-width);border-left-color:var(--plx-comp-timeline-dot-border-color);border-left-style:solid;border-left-width:var(--plx-comp-timeline-dot-border-width);border-right-color:var(--plx-comp-timeline-dot-border-color);border-right-style:solid;border-right-width:var(--plx-comp-timeline-dot-border-width);border-top-color:var(--plx-comp-timeline-dot-border-color);border-top-left-radius:var(--plx-comp-timeline-marker-radius);border-top-right-radius:var(--plx-comp-timeline-marker-radius);border-top-style:solid;border-top-width:var(--plx-comp-timeline-dot-border-width);box-sizing:border-box;flex-shrink:0;inline-size:var(--plx-comp-timeline-dot-size);}
+/* with icons: the event's icon in a circle as large as the marker */
+.plx-timeline__marker--icon{--plx-comp-icon-size:var(--plx-comp-timeline-icon-size);background-color:var(--plx-comp-timeline-icon-marker-background);border-bottom-color:var(--plx-comp-timeline-icon-marker-border-color);border-bottom-left-radius:var(--plx-comp-timeline-marker-radius);border-bottom-right-radius:var(--plx-comp-timeline-marker-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-timeline-icon-marker-border-width);border-left-color:var(--plx-comp-timeline-icon-marker-border-color);border-left-style:solid;border-left-width:var(--plx-comp-timeline-icon-marker-border-width);border-right-color:var(--plx-comp-timeline-icon-marker-border-color);border-right-style:solid;border-right-width:var(--plx-comp-timeline-icon-marker-border-width);border-top-color:var(--plx-comp-timeline-icon-marker-border-color);border-top-left-radius:var(--plx-comp-timeline-marker-radius);border-top-right-radius:var(--plx-comp-timeline-marker-radius);border-top-style:solid;border-top-width:var(--plx-comp-timeline-icon-marker-border-width);color:var(--plx-comp-timeline-icon-color);}
+.plx-timeline__content{display:flex;flex-direction:column;grid-column-start:2;grid-row-start:1;min-inline-size:0;row-gap:var(--plx-comp-timeline-content-row-gap);}
+.plx-timeline__content>:first-child{align-items:center;display:flex;min-block-size:var(--plx-comp-timeline-marker-size);}
+.plx-timeline__time{color:var(--plx-comp-timeline-time-text);font-family:var(--plx-comp-timeline-time-font-family);font-size:var(--plx-comp-timeline-time-font-size);white-space:nowrap;}
+.plx-timeline__heading{align-items:center;column-gap:var(--plx-comp-timeline-heading-gap);display:flex;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-timeline-content-row-gap);}
+.plx-timeline__title{color:var(--plx-comp-timeline-title-text);font-size:var(--plx-comp-timeline-title-font-size);font-weight:var(--plx-comp-timeline-title-font-weight);min-inline-size:0;overflow-wrap:anywhere;}
+.plx-timeline__badge{display:inline-flex;}
+.plx-timeline__description{color:var(--plx-comp-timeline-description-text);font-size:var(--plx-comp-timeline-description-font-size);margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;}
+.plx-timeline__extra{min-inline-size:0;}
+/* horizontal: the events in a row, each a marker over its content; the line runs across at the markers' middle; the row
+   scrolls sideways (a Tab stop of its own) */
+.plx-timeline--horizontal{flex-direction:row;overflow-x:auto;overflow-y:hidden;}
+.plx-timeline--horizontal:focus-visible,.plx-timeline--horizontal.is-focus-visible{outline-color:var(--plx-comp-timeline-focus-outline-color);outline-offset:var(--plx-comp-timeline-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-timeline-focus-outline-width);}
+.plx-timeline--horizontal .plx-timeline__item{flex-shrink:0;grid-template-columns:minmax(0, 1fr);inline-size:var(--plx-comp-timeline-horizontal-item-width);padding-block-end:0;padding-inline-end:var(--plx-comp-timeline-column-gap);row-gap:var(--plx-comp-timeline-column-gap);}
+.plx-timeline--horizontal .plx-timeline__item::before{block-size:var(--plx-comp-timeline-line-width);inline-size:auto;inset-block-end:auto;inset-block-start:calc((var(--plx-comp-timeline-marker-size) - var(--plx-comp-timeline-line-width)) / 2);inset-inline-end:0;inset-inline-start:var(--plx-comp-timeline-marker-size);}
+.plx-timeline--horizontal .plx-timeline__content{grid-column-start:1;grid-row-start:2;}
+.plx-timeline--horizontal .plx-timeline__content>:first-child{min-block-size:0;}
+/* alternating: a line down the middle, the events taking turns on each side of it */
+.plx-timeline--alternate .plx-timeline__item{grid-template-columns:minmax(0, 1fr) var(--plx-comp-timeline-marker-size) minmax(0, 1fr);}
+.plx-timeline--alternate .plx-timeline__item::before{inset-inline-start:calc(50% - var(--plx-comp-timeline-line-width) / 2);}
+.plx-timeline--alternate .plx-timeline__marker{grid-column-start:2;}
+.plx-timeline--alternate .plx-timeline__content{grid-column-start:3;}
+.plx-timeline--alternate .plx-timeline__item:nth-child(even) .plx-timeline__content{align-items:flex-end;grid-column-start:1;text-align:end;}
+.plx-timeline--alternate .plx-timeline__item:nth-child(even) .plx-timeline__heading{justify-content:flex-end;}
+@media (width < 600px){
+  .plx-timeline--alternate .plx-timeline__item{grid-template-columns:var(--plx-comp-timeline-marker-size) minmax(0, 1fr);}
+  .plx-timeline--alternate .plx-timeline__item::before{inset-inline-start:calc((var(--plx-comp-timeline-marker-size) - var(--plx-comp-timeline-line-width)) / 2);}
+  .plx-timeline--alternate .plx-timeline__marker{grid-column-start:1;}
+  .plx-timeline--alternate .plx-timeline__content,.plx-timeline--alternate .plx-timeline__item:nth-child(even) .plx-timeline__content{align-items:stretch;grid-column-start:2;text-align:start;}
+  .plx-timeline--alternate .plx-timeline__item:nth-child(even) .plx-timeline__heading{justify-content:flex-start;}
+}

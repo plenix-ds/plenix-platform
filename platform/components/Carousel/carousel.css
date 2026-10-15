@@ -1,0 +1,24 @@
+/* Plenix · Carousel (platform/components/Carousel). A strip of slides that scrolls sideways and snaps to a slide, its
+   scroll bar hidden (the controls and the keys move it); with several per view, a part of the next slide shows at the end.
+   Under it, centered: Pause (autoplay only), Previous, a dot per page (the current one in the default content color, the
+   others in the strong border color, as on iOS), Next. Anatomy and API: Carousel.jsx. */
+.plx-carousel{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-carousel-controls-gap);}
+.plx-carousel__track{column-gap:var(--plx-comp-carousel-gap);display:flex;outline-style:none;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;}
+.plx-carousel__track::-webkit-scrollbar{display:none;}
+.plx-carousel__track:focus-visible,
+.plx-carousel__track.is-focus-visible{outline-color:var(--plx-comp-carousel-track-focus-outline-color);outline-offset:var(--plx-comp-carousel-track-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-carousel-track-focus-outline-width);}
+.plx-carousel__slide{box-sizing:border-box;flex-basis:100%;flex-grow:0;flex-shrink:0;min-inline-size:0;scroll-snap-align:start;}
+/* several per view: the slides share the width less the peek of the next one and a gap after each */
+.plx-carousel[data-plx-per-view="2"] .plx-carousel__slide{flex-basis:calc((100% - var(--plx-comp-carousel-peek) - var(--plx-comp-carousel-gap) * 2) / 2);}
+.plx-carousel[data-plx-per-view="3"] .plx-carousel__slide{flex-basis:calc((100% - var(--plx-comp-carousel-peek) - var(--plx-comp-carousel-gap) * 3) / 3);}
+.plx-carousel[data-plx-per-view="4"] .plx-carousel__slide{flex-basis:calc((100% - var(--plx-comp-carousel-peek) - var(--plx-comp-carousel-gap) * 4) / 4);}
+/* the controls: Pause, Previous, the dots, Next */
+.plx-carousel__controls{align-items:center;column-gap:var(--plx-comp-carousel-controls-column-gap);display:flex;justify-content:center;}
+.plx-carousel__dots{align-items:center;display:flex;}
+.plx-carousel__dot{align-items:center;background-color:transparent;block-size:var(--plx-comp-carousel-dot-target);border-block-end-width:0;border-block-start-width:0;border-end-end-radius:var(--plx-comp-carousel-dot-target-radius);border-end-start-radius:var(--plx-comp-carousel-dot-target-radius);border-inline-end-width:0;border-inline-start-width:0;border-start-end-radius:var(--plx-comp-carousel-dot-target-radius);border-start-start-radius:var(--plx-comp-carousel-dot-target-radius);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-carousel-dot-target);justify-content:center;outline-style:none;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-carousel__dot::before{background-color:var(--plx-comp-carousel-dot-background);block-size:var(--plx-comp-carousel-dot-size);border-end-end-radius:var(--plx-comp-carousel-dot-radius);border-end-start-radius:var(--plx-comp-carousel-dot-radius);border-start-end-radius:var(--plx-comp-carousel-dot-radius);border-start-start-radius:var(--plx-comp-carousel-dot-radius);content:"";display:block;flex-shrink:0;inline-size:var(--plx-comp-carousel-dot-size);}
+.plx-carousel__dot:hover::before,
+.plx-carousel__dot.is-hover::before{background-color:var(--plx-comp-carousel-dot-hover-background);}
+.plx-carousel__dot.is-current::before{background-color:var(--plx-comp-carousel-dot-current-background);}
+.plx-carousel__dot:focus-visible,
+.plx-carousel__dot.is-focus-visible{outline-color:var(--plx-comp-carousel-dot-focus-outline-color);outline-offset:var(--plx-comp-carousel-dot-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-carousel-dot-focus-outline-width);}

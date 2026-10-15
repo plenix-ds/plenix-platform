@@ -514,6 +514,13 @@ object PlenixComponent {
     val cardRadius = 12.dp
     val cardTitleContentGap = 12.dp
     val cardTitleFontSize = 13.dp
+    const val carouselAutoplayInterval = 6000
+    val carouselControlsColumnGap = 8.dp
+    val carouselControlsGap = 8.dp
+    val carouselDotSize = 8.dp
+    val carouselDotTarget = 24.dp
+    val carouselGap = 12.dp
+    val carouselPeek = 40.dp
     val chartLineWidth = 2.dp
     val chartPlotHeightMd = 240.dp
     val chartPlotHeightSm = 160.dp
@@ -596,12 +603,14 @@ object PlenixComponent {
     val radioTileBorderWidth = 1.dp
     const val radioTileDisabledOpacity = 0.5f
     val radioTileRadius = 8.dp
+    val roleLabelIconSize = 12.dp
     val rowButtonFocusOutlineWidth = 2.dp
     val searchClearWidth = 28.dp
     val searchIconInsetInlineStart = 12.dp
     val searchInputBorderWidth = 1.dp
     val searchInputMinHeight = 28.dp
     val searchInputRadius = 6.dp
+    val searchResultGap = 12.dp
     val segmentedItemMinHeight = 32.dp
     val segmentedRadius = 6.dp
     val selectAfterInsetInlineEnd = 12.dp
@@ -626,6 +635,7 @@ object PlenixComponent {
     val switchTrackWidth = 36.dp
     val tableCellPaddingInline = 8.dp
     val tableRadius = 8.dp
+    val timelineItemGap = 12.dp
     const val toastAnimationDuration = 250
     val toastBorderInlineStartWidth = 3.dp
     val toastCloseHeight = 24.dp

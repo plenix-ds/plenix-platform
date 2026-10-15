@@ -1,0 +1,27 @@
+/* Plenix · QueryBuilder (platform/patterns/QueryBuilder). No frame of its own (it sits in a page, a card or a dialog): the
+   Builder and Text switch with the match count, then the query's group. A group is its And or Or switch with the words it
+   means, its rules (a join word in a fixed column, then field, operator, value and remove, wrapping when narrow) and its
+   add buttons; a nested group is drawn with a rail at its start instead of a frame, so groups never nest frames.
+   Anatomy and API: QueryBuilder.jsx. */
+.plx-query-builder{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-query-builder-gap);}
+.plx-query-builder__bar{align-items:center;column-gap:var(--plx-comp-query-builder-bar-gap);display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:var(--plx-comp-query-builder-bar-gap);}
+.plx-query-builder__matches{color:var(--plx-comp-query-builder-matches-text);font-size:var(--plx-comp-query-builder-matches-font-size);}
+.plx-query-builder__number{font-family:var(--plx-comp-query-builder-number-font-family);}
+/* a group: its head, its rules and its add buttons */
+.plx-query-builder__group{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;min-inline-size:0;row-gap:var(--plx-comp-query-builder-group-gap);}
+.plx-query-builder__group[data-plx-depth="1"],
+.plx-query-builder__group[data-plx-depth="2"]{border-inline-start-color:var(--plx-comp-query-builder-rail-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-query-builder-rail-width);padding-inline-start:var(--plx-comp-query-builder-rail-padding);}
+.plx-query-builder__group-head{align-items:center;column-gap:var(--plx-comp-query-builder-head-gap);display:flex;}
+.plx-query-builder__hint{color:var(--plx-comp-query-builder-hint-text);flex-grow:1;font-size:var(--plx-comp-query-builder-hint-font-size);min-inline-size:0;}
+.plx-query-builder__items{display:flex;flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;padding-inline-start:0;row-gap:var(--plx-comp-query-builder-items-gap);}
+.plx-query-builder__item{align-items:flex-start;column-gap:var(--plx-comp-query-builder-item-gap);display:flex;min-inline-size:0;}
+.plx-query-builder__join{align-items:center;color:var(--plx-comp-query-builder-join-text);display:inline-flex;flex-shrink:0;font-size:var(--plx-comp-query-builder-join-font-size);inline-size:var(--plx-comp-query-builder-join-width);min-block-size:var(--plx-comp-query-builder-join-height);}
+/* a rule: field, operator, value, remove; it wraps on a narrow width */
+.plx-query-builder__rule{align-items:center;column-gap:var(--plx-comp-query-builder-rule-gap);display:flex;flex-basis:0%;flex-grow:1;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-query-builder-rule-gap);}
+.plx-query-builder__field{flex-shrink:0;inline-size:var(--plx-comp-query-builder-field-width);}
+.plx-query-builder__operator{flex-shrink:0;inline-size:var(--plx-comp-query-builder-operator-width);}
+.plx-query-builder__value{flex-basis:var(--plx-comp-query-builder-value-min-width);flex-grow:1;min-inline-size:var(--plx-comp-query-builder-value-min-width);}
+.plx-query-builder__value--none{min-inline-size:0;}
+.plx-query-builder__remove{flex-shrink:0;}
+.plx-query-builder__empty{color:var(--plx-comp-query-builder-empty-text);font-size:var(--plx-comp-query-builder-empty-font-size);margin-block-end:0;margin-block-start:0;}
+.plx-query-builder__add{column-gap:var(--plx-comp-query-builder-add-gap);display:flex;flex-wrap:wrap;}

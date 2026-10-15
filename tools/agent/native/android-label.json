@@ -1,0 +1,56 @@
+{
+  "android-content|Label": {
+    "summary": "A Plenix role on Android is a small read-only label in the tag look: the role’s icon and its name (Owner, Editor, Viewer, or a custom role’s own name) on the neutral fill with a hairline border and 4 dp corners, or a custom role’s category color. It is a label, not a chip: it takes no touch and no focus; the control that changes the role is a menu beside it. A role is never drawn in a status color.",
+    "variants": [
+      { "name": "Owner", "material": "None (a read-only label, not an assist chip)", "web": "content|Role", "background": "plx-comp-tag-background", "content": "plx-comp-tag-text", "border": "plx-comp-tag-border-color", "compose": "PlenixRoleLabel(role = Role.Owner)", "views": "A Plenix label view with the owner icon and text", "use": "The person who owns an item and decides who else has access." },
+      { "name": "Editor", "material": "None", "web": "content|Role", "background": "plx-comp-tag-background", "content": "plx-comp-tag-text", "border": "plx-comp-tag-border-color", "compose": "PlenixRoleLabel(role = Role.Editor)", "views": "The label view with the pencil icon", "use": "People who can change the item." },
+      { "name": "Viewer", "material": "None", "web": "content|Role", "background": "plx-comp-tag-background", "content": "plx-comp-tag-text", "border": "plx-comp-tag-border-color", "compose": "PlenixRoleLabel(role = Role.Viewer)", "views": "The label view with the eye icon", "use": "Read-only access." },
+      { "name": "Custom (a category color)", "material": "None", "web": "content|Role", "background": null, "content": null, "border": null, "compose": "PlenixRoleLabel(name = \"Billing admin\", category = Category.Teal)", "views": "The label view tinted with the category’s soft colors", "use": "Roles the organization defined." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Label", "about": "The tag look: the neutral fill, a hairline border in the neutral border color, 4 dp corners." },
+      { "part": "B", "name": "Icon", "about": "The role’s icon before the name, in the label’s text color; decorative." },
+      { "part": "C", "name": "Name", "about": "The role in one short noun, DM Sans medium at the Label role." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Fill", "token": "plx-comp-tag-background", "value": "The neutral fill (plx-sys-fill-neutral)", "material": "None", "compose": "Modifier.background(PlenixColors.fillNeutral.current(), RoundedCornerShape(PlenixRadius.radiusPill4px))", "views": "a GradientDrawable with PlenixColors.fillNeutral and PlenixRadius.radiusPill4px", "follows": "Material 3: Color roles", "followsUrl": "https://m3.material.io/styles/color/roles" },
+      { "part": "A", "attribute": "Border", "token": "plx-comp-tag-border-color", "value": "A hairline in the neutral border color", "material": "None", "compose": "Modifier.border(PlenixBorder.borderWidthThin, PlenixColors.fillNeutralBorder.current(), RoundedCornerShape(PlenixRadius.radiusPill4px))", "views": "drawable.setStroke(PlenixBorder.borderWidthThin, PlenixColors.fillNeutralBorder)", "follows": "Material 3: Shape", "followsUrl": "https://m3.material.io/styles/shape/overview" },
+      { "part": "C", "attribute": "Name", "token": "plx-comp-tag-text", "value": "The neutral fill’s text color, DM Sans medium at the Label role", "material": "Label medium", "compose": "Text(name, color = PlenixColors.fillNeutralContent.current(), fontSize = PlenixPlatform.textLabelSize, fontWeight = FontWeight.Medium)", "views": "nameView.setTextColor(PlenixColors.fillNeutralContent.light.toArgb())", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/overview" },
+      { "part": "B", "attribute": "Icon", "token": "plx-comp-role-label-icon-size", "value": "The extra-small icon size, before the name with the inline extra-small space", "material": "None", "compose": "Icon(role.icon, null, Modifier.size(PlenixIcon.iconSizeXs))", "views": "the icon’s size from PlenixIcon.iconSizeXs", "follows": "Material 3: Icons", "followsUrl": "https://m3.material.io/styles/icons/overview" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-comp-tag-background", "compose": "the label at rest; it is static", "views": "the view at rest" },
+      { "state": "Custom with a category", "token": "plx-comp-tag-text", "compose": "the category’s soft fill, its 300 border and dark text, from PlenixColors", "views": "the category’s colors from the Plenix resources" },
+      { "state": "Dark", "token": "plx-sys-fill-neutral", "compose": "PlenixColors pairs follow isSystemInDarkTheme()", "views": "the dark values from the night resources" }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.*",
+        "import androidx.compose.foundation.layout.*",
+        "import androidx.compose.foundation.shape.RoundedCornerShape",
+        "import androidx.compose.material3.*",
+        "import androidx.compose.runtime.Composable",
+        "import androidx.compose.ui.Modifier",
+        "import androidx.compose.ui.text.font.FontWeight",
+        "import plenix.tokens.*",
+        "",
+        "// a role: a read-only label (no click, no focus), never a status color",
+        "@Composable",
+        "fun PlenixRoleLabel(name: String, icon: ImageVector?) {",
+        "    val shape = RoundedCornerShape(PlenixRadius.radiusPill4px)",
+        "    Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineXs), verticalAlignment = Alignment.CenterVertically,",
+        "        modifier = Modifier.background(PlenixColors.fillNeutral.current(), shape)",
+        "            .border(PlenixBorder.borderWidthThin, PlenixColors.fillNeutralBorder.current(), shape)",
+        "            .padding(horizontal = PlenixSpace.spaceInsetSm)) {",
+        "        icon?.let { Icon(it, null, Modifier.size(PlenixIcon.iconSizeXs), tint = PlenixColors.fillNeutralContent.current()) }",
+        "        Text(name, color = PlenixColors.fillNeutralContent.current(), fontSize = PlenixPlatform.textLabelSize, fontWeight = FontWeight.Medium)",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "<!-- res/layout/plenix_role_label.xml: a horizontal LinearLayout with the icon and the name; not clickable, not focusable -->",
+        "<TextView android:id=\"@+id/name\" android:textColor=\"@color/plenix_fill_neutral_content\" android:clickable=\"false\" android:focusable=\"false\" />"
+      ]
+    }
+  }
+}

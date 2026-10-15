@@ -62,3 +62,12 @@
    do not move (the title clips its overflow, so a layer inside it could not reach past it); positioned, so the meta line
    under it does not paint over its target */
 .plx-media-card--selectable .plx-card__opener{margin-block-end:var(--plx-comp-card-opener-target-margin-block);margin-block-start:var(--plx-comp-card-opener-target-margin-block);padding-block-end:var(--plx-comp-card-opener-target-padding-block);padding-block-start:var(--plx-comp-card-opener-target-padding-block);position:relative;}
+/* an expandable card (library wave 8): the Expand/Collapse button at the end of the header, the panel toggle's look on the
+   card's own tokens (the chevron points down when open, toward the text's end when closed); it sits above the title's
+   target, so a card can both open and expand. Closed, the body is hidden (the hidden attribute). */
+.plx-card__toggle{align-items:center;appearance:none;background-color:transparent;block-size:var(--plx-comp-card-toggle-height);border-bottom-left-radius:var(--plx-comp-card-toggle-radius);border-bottom-right-radius:var(--plx-comp-card-toggle-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-card-toggle-radius);border-top-right-radius:var(--plx-comp-card-toggle-radius);border-top-style:none;color:var(--plx-comp-card-toggle-text);cursor:pointer;display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-card-toggle-width);justify-content:center;margin-inline-start:auto;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;position:relative;z-index:var(--plx-comp-card-toggle-z-index);}
+.plx-card__toggle:hover,.plx-card__toggle.is-hover{background-color:var(--plx-comp-card-toggle-hover-background);color:var(--plx-comp-card-toggle-hover-text);}
+.plx-card__toggle:focus-visible,.plx-card__toggle.is-focus-visible{outline-color:var(--plx-comp-card-toggle-focus-outline-color);outline-offset:var(--plx-comp-card-toggle-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-card-toggle-focus-outline-width);}
+.plx-card__toggle .plx-icon{transition-duration:var(--plx-comp-card-toggle-icon-duration);transition-property:transform;transition-timing-function:var(--plx-comp-card-toggle-icon-easing);}
+.plx-card.is-collapsed .plx-card__toggle .plx-icon{transform:rotate(-90deg);}
+.plx-card.is-collapsed .plx-card__toggle .plx-icon:dir(rtl){transform:rotate(90deg);}
