@@ -1,0 +1,21 @@
+{
+  "$description": "Tabs orientation=\"vertical\" (platform/components/Tabs, library wave 7, lane A): the vertical tab list's tokens. Each tab is a navigation list row (NavList's item tokens): the hover fill, the open tab in the selected state. The other Tabs tokens stay in components.tokens.json.",
+  "plx-comp": {
+    "tabs-vertical-gap": { "$value": "{plx-sys.space-inline-lg}", "$type": "dimension", "$description": "Vertical tabs: the space between the tab list and the panel." },
+    "tabs-vertical-list-width": { "$value": "{plx-ref.size-200px}", "$type": "dimension", "$description": "Vertical tabs: the tab list's width (longer names wrap)." },
+    "tabs-vertical-list-row-gap": { "$value": "{plx-comp.nav-list-items-row-gap}", "$type": "dimension", "$description": "Vertical tabs: the space between two tabs (the navigation list's)." },
+    "tabs-vertical-tab-radius": { "$value": "{plx-comp.nav-list-item-radius}", "$type": "dimension", "$description": "Vertical tab: its corners (a navigation list row's)." },
+    "tabs-vertical-tab-text": { "$value": "{plx-comp.nav-list-item-text}", "$type": "color", "$description": "Vertical tab: its name (a navigation list row's)." },
+    "tabs-vertical-tab-font-size": { "$value": "{plx-comp.nav-list-item-font-size}", "$type": "dimension", "$description": "Vertical tab: its name's size." },
+    "tabs-vertical-tab-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "Vertical tab: its name's weight (the open tab is heavier)." },
+    "tabs-vertical-tab-min-height": { "$value": "{plx-comp.nav-list-item-min-height}", "$type": "dimension", "$description": "Vertical tab: its least height (the standard control height)." },
+    "tabs-vertical-tab-padding-inline": { "$value": "{plx-comp.nav-list-item-padding-inline}", "$type": "dimension", "$description": "Vertical tab: the space at its sides." },
+    "tabs-vertical-tab-hover-background": { "$value": "{plx-comp.nav-list-item-hover-background}", "$type": "color", "$description": "Vertical tab with the pointer over it: the hover fill." },
+    "tabs-vertical-tab-hover-shadow": { "$value": "{plx-comp.nav-list-item-hover-shadow}", "$type": "shadow", "$description": "Vertical tab with the pointer over it: the hover edge." },
+    "tabs-vertical-tab-hover-text": { "$value": "{plx-comp.nav-list-item-text}", "$type": "color", "$description": "Vertical tab with the pointer over it: its name." },
+    "tabs-vertical-tab-selected-background": { "$value": "{plx-comp.nav-list-item-current-background}", "$type": "color", "$description": "Open vertical tab: the selected fill (the navigation pane's current row)." },
+    "tabs-vertical-tab-selected-shadow": { "$value": "{plx-comp.nav-list-item-current-shadow}", "$type": "shadow", "$description": "Open vertical tab: the selected edge." },
+    "tabs-vertical-tab-selected-text": { "$value": "{plx-comp.nav-list-item-current-text}", "$type": "color", "$description": "Open vertical tab: its name in the selected content color." },
+    "tabs-vertical-tab-selected-font-weight": { "$value": "{plx-comp.nav-list-item-current-font-weight}", "$type": "fontWeight", "$description": "Open vertical tab: its name's weight." }
+  }
+}

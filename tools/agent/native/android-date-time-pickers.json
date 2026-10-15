@@ -16,7 +16,7 @@
    {
     "name": "Date range",
     "material": "Date range picker (full screen)",
-    "web": "forms|Date-time picker",
+    "web": "forms|Date range picker",
     "background": "plx-sys-surface-overlay",
     "content": "plx-sys-content-default",
     "border": null,

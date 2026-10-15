@@ -1,0 +1,43 @@
+{
+  "android-specialized|File and photo pickers": {
+    "summary": "A Plenix image upload on Android opens the system photo picker (PickVisualMedia) or the document picker (OpenDocument) from a Plenix outlined button and shows the chosen picture in a frame of a fixed ratio with the media radius and the thin default border, its name in DM Mono, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. The system picker stays as Android draws it; Plenix styles the control that opens it and what shows after.",
+    "variants": [
+      { "name": "Single (default)", "material": "PickVisualMedia, one item", "web": "forms|Image upload", "background": "plx-comp-image-upload-locked-preview-background", "content": "plx-comp-image-upload-name-text", "border": "plx-comp-image-upload-preview-border-color", "compose": "rememberLauncherForActivityResult(PickVisualMedia()) launched from an OutlinedButton; the picture in a framed preview", "views": "registerForActivityResult(PickVisualMedia()) and an ImageView preview", "use": "One picture: a cover or a header image." },
+      { "name": "Multiple", "material": "PickMultipleVisualMedia", "web": "forms|Image upload", "background": null, "content": null, "border": "plx-comp-image-upload-preview-border-color", "compose": "PickMultipleVisualMedia(max) and a LazyVerticalGrid of square previews", "views": "PickMultipleVisualMedia with a RecyclerView grid", "use": "Product photos and galleries." },
+      { "name": "Avatar", "material": "Photo picker for a profile picture", "web": "forms|Avatar upload", "background": null, "content": null, "border": null, "compose": "the Plenix avatar (RoundedCornerShape(PlenixRadius.radiusAvatar8px)) beside Change photo and Remove photo", "views": "ShapeableImageView with the avatar corner", "use": "Profile and team pictures." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Choose control", "about": "A Plenix outlined button that opens the system picker." },
+      { "part": "B", "name": "Preview", "about": "The chosen picture in a frame of the ratio, with the media radius and the thin border." },
+      { "part": "C", "name": "File name", "about": "The name and size in DM Mono, the data role." },
+      { "part": "D", "name": "Actions", "about": "Replace and Remove, or Change photo and Remove photo." }
+    ],
+    "attributes": [
+      { "part": "B", "attribute": "Preview corners", "token": "plx-comp-image-upload-preview-radius", "value": "The media radius (PlenixRadius.radiusMedia4px)", "material": "Shape of the container", "compose": "Modifier.clip(RoundedCornerShape(PlenixRadius.radiusMedia4px))", "views": "ShapeableImageView shapeAppearance with the media corner", "follows": "Material 3: Shape", "followsUrl": "https://m3.material.io/styles/shape/overview" },
+      { "part": "B", "attribute": "Preview border", "token": "plx-comp-image-upload-preview-border-color", "value": "The default border, thin (PlenixColors.borderDefault)", "material": "Outline", "compose": "Modifier.border(PlenixBorder.borderWidthThin, PlenixColors.borderDefault.current(), RoundedCornerShape(PlenixRadius.radiusMedia4px))", "views": "strokeColor and strokeWidth on the ShapeableImageView", "follows": "Material 3: Shape", "followsUrl": "https://m3.material.io/styles/shape/overview" },
+      { "part": "C", "attribute": "File name", "token": "plx-comp-image-upload-name-font-family", "value": "DM Mono at the data role (PlenixFonts.MONO)", "material": "Body small", "compose": "Text(name, fontFamily = FontFamily(Font(R.font.dm_mono)), color = PlenixColors.contentDefault.current())", "views": "TextView with the R.font.dm_mono typeface", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/overview" }
+    ],
+    "states": [
+      { "state": "Empty", "token": "plx-comp-image-upload-zone-icon-text", "compose": "no Uri: the Choose button", "views": "no result" },
+      { "state": "Chosen", "token": "plx-comp-image-upload-preview-border-color", "compose": "the Uri loaded in the preview", "views": "the image set" },
+      { "state": "Refused", "token": "plx-sys-feedback-danger-solid", "compose": "an inline Plenix danger message", "views": "an inline message view" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixImageUpload(onPicked: (Uri) -> Unit) {",
+        "    var uri by remember { mutableStateOf<Uri?>(null) }",
+        "    val pick = rememberLauncherForActivityResult(PickVisualMedia()) { it?.let { u -> uri = u; onPicked(u) } }",
+        "    Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+        "        uri?.let { AsyncImage(model = it, contentDescription = null, modifier = Modifier.clip(RoundedCornerShape(PlenixRadius.radiusMedia4px))) }",
+        "        OutlinedButton(onClick = { pick.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }) { Text(if (uri == null) \"Choose image\" else \"Replace\") }",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "val pick = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(preview::setImageURI) }",
+        "chooseButton.setOnClickListener { pick.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }"
+      ]
+    }
+  }
+}

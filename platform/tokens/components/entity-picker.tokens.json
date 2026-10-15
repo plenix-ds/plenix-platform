@@ -1,0 +1,235 @@
+{
+  "$description": "EntityPicker (platform/components/EntityPicker), library wave 7, lane B: its component tokens. The field in the input roles, the list a menu surface of two-line options; the technical detail in the data font.",
+  "plx-comp": {
+    "entity-picker-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "EntityPicker: maximum width (size-400px)."
+    },
+    "entity-picker-field-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityPicker field: gap (space-inline-xs)."
+    },
+    "entity-picker-field-row-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "EntityPicker field: gap between rows (space-inline-xs)."
+    },
+    "entity-picker-multiple-field-padding-block": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "EntityPicker multiple field: padding top and bottom (space-4px)."
+    },
+    "entity-picker-field-focus-within-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "EntityPicker field focus within: border color (focus-ring-color)."
+    },
+    "entity-picker-field-invalid-border-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "EntityPicker field invalid: border color (feedback-danger-solid)."
+    },
+    "entity-picker-input-flex-basis": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension",
+      "$description": "EntityPicker input flex basis: input flex basis (size-80px)."
+    },
+    "entity-picker-input-min-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension",
+      "$description": "EntityPicker input: minimum height (control-height-inline)."
+    },
+    "entity-picker-input-placeholder-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "EntityPicker input placeholder: text color (content-subtle)."
+    },
+    "entity-picker-search-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityPicker search: text color (content-muted)."
+    },
+    "entity-picker-disabled-field-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "EntityPicker disabled field: background (fill-neutral)."
+    },
+    "entity-picker-disabled-field-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "EntityPicker disabled field: text color (content-disabled)."
+    },
+    "entity-picker-list-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color",
+      "$description": "EntityPicker list: background (surface-overlay)."
+    },
+    "entity-picker-list-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "EntityPicker list: border color (border-default)."
+    },
+    "entity-picker-list-radius": {
+      "$value": "{plx-sys.radius-menu-8px}",
+      "$type": "dimension",
+      "$description": "EntityPicker list: corners (radius-menu-8px)."
+    },
+    "entity-picker-list-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "EntityPicker list: border width (border-width-thin)."
+    },
+    "entity-picker-list-shadow": {
+      "$value": "{plx-sys.elevation-menu}",
+      "$type": "shadow",
+      "$description": "EntityPicker list: shadow (elevation-menu)."
+    },
+    "entity-picker-list-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "EntityPicker list margin block start: list margin block start (space-stack-xs)."
+    },
+    "entity-picker-list-max-height": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "EntityPicker list: maximum height (size-320px)."
+    },
+    "entity-picker-list-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "EntityPicker list: padding top and bottom (space-inset-xs)."
+    },
+    "entity-picker-list-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "EntityPicker list: padding left and right (space-inset-xs)."
+    },
+    "entity-picker-list-z-index": {
+      "$value": "{plx-sys.layer-menu}",
+      "$type": "number",
+      "$description": "EntityPicker list z index: list z index (layer-menu)."
+    },
+    "entity-picker-option-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "EntityPicker option: corners (radius-control)."
+    },
+    "entity-picker-option-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "EntityPicker option: text color (content-default)."
+    },
+    "entity-picker-option-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "EntityPicker option: gap (space-inline-sm)."
+    },
+    "entity-picker-option-min-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "EntityPicker option: minimum height (control-height-prominent)."
+    },
+    "entity-picker-option-padding-block": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "EntityPicker option: padding top and bottom (space-4px)."
+    },
+    "entity-picker-option-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "EntityPicker option: padding left and right (space-inset-sm)."
+    },
+    "entity-picker-option-active-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "EntityPicker option active: background (state-hover)."
+    },
+    "entity-picker-option-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "EntityPicker option selected: text color (selected-content)."
+    },
+    "entity-picker-option-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "EntityPicker option disabled: text color (content-disabled)."
+    },
+    "entity-picker-name-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "EntityPicker name: font weight (font-weight-medium)."
+    },
+    "entity-picker-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityPicker description: text color (content-muted)."
+    },
+    "entity-picker-description-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "EntityPicker description: font size (font-size-12)."
+    },
+    "entity-picker-meta-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityPicker meta: text color (content-muted)."
+    },
+    "entity-picker-meta-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "EntityPicker meta: font (font-data)."
+    },
+    "entity-picker-meta-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "EntityPicker meta: font size (font-size-12)."
+    },
+    "entity-picker-check-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "EntityPicker check: text color (selected-content)."
+    },
+    "entity-picker-browse-border-block-start-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "EntityPicker browse border block start color: browse border block start color (border-subtle)."
+    },
+    "entity-picker-browse-border-block-start-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "EntityPicker browse border block start: width (border-width-thin)."
+    },
+    "entity-picker-browse-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "EntityPicker browse: minimum height (control-height-standard)."
+    },
+    "entity-picker-status-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "EntityPicker status: text color (content-muted)."
+    },
+    "entity-picker-status-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "EntityPicker status: gap (space-inline-sm)."
+    },
+    "entity-picker-status-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "EntityPicker status: padding top and bottom (space-inset-sm)."
+    },
+    "entity-picker-status-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "EntityPicker status: padding left and right (space-inset-sm)."
+    },
+    "entity-picker-error-text": {
+      "$value": "{plx-sys.feedback-danger-content}",
+      "$type": "color",
+      "$description": "EntityPicker error: text color (feedback-danger-content)."
+    }
+  }
+}

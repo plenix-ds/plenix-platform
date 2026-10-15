@@ -1,0 +1,165 @@
+{
+  "$description": "ImageUpload and ImageCrop (platform/patterns/ImageUpload), library wave 7, lane B: the pattern’s own tokens (the placement of its Platform components, the preview frames, the file name and size in the data font).",
+  "plx-comp": {
+    "image-upload-max-width": {
+      "$value": "{plx-ref.size-560px}",
+      "$type": "dimension",
+      "$description": "ImageUpload: maximum width (size-560px)."
+    },
+    "image-upload-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ImageUpload: gap between rows (space-stack-sm)."
+    },
+    "image-upload-zone-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ImageUpload zone: gap between rows (space-stack-xs)."
+    },
+    "image-upload-zone-icon-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ImageUpload zone icon: text color (content-muted)."
+    },
+    "image-upload-zone-text-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "ImageUpload zone text: text color (content-default)."
+    },
+    "image-upload-zone-text-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "ImageUpload zone text: font size (font-size-13)."
+    },
+    "image-upload-limits-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ImageUpload limits: text color (content-muted)."
+    },
+    "image-upload-limits-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ImageUpload limits: font size (font-size-12)."
+    },
+    "image-upload-list-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ImageUpload list: gap between rows (space-stack-sm)."
+    },
+    "image-upload-item-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "ImageUpload item: gap between rows (space-stack-xs)."
+    },
+    "image-upload-preview-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "ImageUpload preview: border color (border-default)."
+    },
+    "image-upload-preview-radius": {
+      "$value": "{plx-sys.radius-media-4px}",
+      "$type": "dimension",
+      "$description": "ImageUpload preview: corners (radius-media-4px)."
+    },
+    "image-upload-preview-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "ImageUpload preview: border width (border-width-thin)."
+    },
+    "image-upload-meta-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ImageUpload meta: gap (space-inline-sm)."
+    },
+    "image-upload-name-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "ImageUpload name: text color (content-default)."
+    },
+    "image-upload-name-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "ImageUpload name: font (font-data)."
+    },
+    "image-upload-name-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ImageUpload name: font size (font-size-12)."
+    },
+    "image-upload-size-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "ImageUpload size: text color (content-muted)."
+    },
+    "image-upload-size-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "ImageUpload size: font (font-data)."
+    },
+    "image-upload-size-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "ImageUpload size: font size (font-size-12)."
+    },
+    "image-upload-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ImageUpload actions: gap (space-inline-sm)."
+    },
+    "image-upload-multiple-list-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "ImageUpload multiple list: gap (space-inline-md)."
+    },
+    "image-upload-multiple-list-grid-template-columns": {
+      "$value": "repeat(auto-fill, minmax({plx-ref.size-120px}, 1fr))",
+      "$type": "dimension",
+      "$description": "ImageUpload multiple list grid template columns: multiple list grid template columns (repeat(auto-fill, minmax(size-120px, 1fr)))."
+    },
+    "image-upload-multiple-item-row-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "ImageUpload multiple item: gap between rows (space-4px)."
+    },
+    "image-upload-locked-preview-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "ImageUpload locked preview: background (fill-neutral)."
+    },
+    "image-crop-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "ImageUpload x: width (size-400px)."
+    },
+    "image-crop-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "ImageUpload w: gap (space-stack-sm)."
+    },
+    "image-crop-frame-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "ImageUpload ame: border color (border-default)."
+    },
+    "image-crop-frame-radius": {
+      "$value": "{plx-sys.radius-media-4px}",
+      "$type": "dimension",
+      "$description": "ImageUpload ame: corners (radius-media-4px)."
+    },
+    "image-crop-frame-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "ImageUpload ame: border width (border-width-thin)."
+    },
+    "image-crop-frame-focus-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "ImageUpload ame focus: border color (focus-ring-color)."
+    },
+    "image-crop-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "ImageUpload tions: gap (space-inline-sm)."
+    }
+  }
+}

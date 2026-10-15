@@ -1,0 +1,31 @@
+/* Plenix · ImageUpload, ImageCrop (platform/patterns/ImageUpload). Places Platform components: the DropZone with its
+   icon, words, the FileInput's button and the limits; the previews (Image) with the name and size in the data font and
+   their actions; with multiple, a grid of square previews. ImageCrop: the frame, the Zoom slider and the actions.
+   Anatomy and API: ImageUpload.jsx. */
+.plx-image-upload{display:flex;flex-direction:column;max-inline-size:var(--plx-comp-image-upload-max-width);row-gap:var(--plx-comp-image-upload-row-gap);}
+.plx-image-upload__zone{display:flex;flex-direction:column;row-gap:var(--plx-comp-image-upload-zone-row-gap);text-align:center;}
+.plx-image-upload__zone-icon{color:var(--plx-comp-image-upload-zone-icon-text);display:inline-flex;}
+.plx-image-upload__zone-text{color:var(--plx-comp-image-upload-zone-text-text);font-size:var(--plx-comp-image-upload-zone-text-font-size);}
+.plx-image-upload__limits{color:var(--plx-comp-image-upload-limits-text);font-size:var(--plx-comp-image-upload-limits-font-size);}
+/* the FileInput is the Choose and Replace button only: the previews say what is chosen */
+.plx-image-upload .plx-file-input__summary{display:none;}
+.plx-image-upload__list{display:flex;flex-direction:column;list-style:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;row-gap:var(--plx-comp-image-upload-list-row-gap);}
+.plx-image-upload__item{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-image-upload-item-row-gap);}
+.plx-image-upload__preview{border-bottom-color:var(--plx-comp-image-upload-preview-border-color);border-bottom-left-radius:var(--plx-comp-image-upload-preview-radius);border-bottom-right-radius:var(--plx-comp-image-upload-preview-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-image-upload-preview-border-width);border-left-color:var(--plx-comp-image-upload-preview-border-color);border-left-style:solid;border-left-width:var(--plx-comp-image-upload-preview-border-width);border-right-color:var(--plx-comp-image-upload-preview-border-color);border-right-style:solid;border-right-width:var(--plx-comp-image-upload-preview-border-width);border-top-color:var(--plx-comp-image-upload-preview-border-color);border-top-left-radius:var(--plx-comp-image-upload-preview-radius);border-top-right-radius:var(--plx-comp-image-upload-preview-radius);border-top-style:solid;border-top-width:var(--plx-comp-image-upload-preview-border-width);overflow-x:hidden;overflow-y:hidden;}
+.plx-image-upload__meta{align-items:baseline;column-gap:var(--plx-comp-image-upload-meta-gap);display:flex;min-inline-size:0;}
+.plx-image-upload__name{color:var(--plx-comp-image-upload-name-text);font-family:var(--plx-comp-image-upload-name-font-family);font-size:var(--plx-comp-image-upload-name-font-size);min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-image-upload__size{color:var(--plx-comp-image-upload-size-text);flex-shrink:0;font-family:var(--plx-comp-image-upload-size-font-family);font-size:var(--plx-comp-image-upload-size-font-size);}
+.plx-image-upload__actions{align-items:center;column-gap:var(--plx-comp-image-upload-actions-gap);display:flex;flex-wrap:wrap;}
+/* multiple: a grid of square previews, each with its remove button at the end of its line */
+.plx-image-upload--multiple .plx-image-upload__list{display:grid;gap:var(--plx-comp-image-upload-multiple-list-gap);grid-template-columns:var(--plx-comp-image-upload-multiple-list-grid-template-columns);}
+.plx-image-upload--multiple .plx-image-upload__item{display:grid;grid-template-columns:minmax(0, 1fr) auto;row-gap:var(--plx-comp-image-upload-multiple-item-row-gap);}
+.plx-image-upload--multiple .plx-image-upload__preview{grid-column:1 / -1;}
+.plx-image-upload--multiple .plx-image-upload__alt{grid-column:1 / -1;}
+/* aspect locked: the previews keep the ratio and fill it */
+.plx-image-upload--locked .plx-image-upload__preview{background-color:var(--plx-comp-image-upload-locked-preview-background);}
+/* ImageCrop */
+.plx-image-crop{display:flex;flex-direction:column;max-inline-size:var(--plx-comp-image-crop-max-width);row-gap:var(--plx-comp-image-crop-row-gap);}
+.plx-image-crop__frame{border-bottom-color:var(--plx-comp-image-crop-frame-border-color);border-bottom-left-radius:var(--plx-comp-image-crop-frame-radius);border-bottom-right-radius:var(--plx-comp-image-crop-frame-radius);border-bottom-style:solid;border-bottom-width:var(--plx-comp-image-crop-frame-border-width);border-left-color:var(--plx-comp-image-crop-frame-border-color);border-left-style:solid;border-left-width:var(--plx-comp-image-crop-frame-border-width);border-right-color:var(--plx-comp-image-crop-frame-border-color);border-right-style:solid;border-right-width:var(--plx-comp-image-crop-frame-border-width);border-top-color:var(--plx-comp-image-crop-frame-border-color);border-top-left-radius:var(--plx-comp-image-crop-frame-radius);border-top-right-radius:var(--plx-comp-image-crop-frame-radius);border-top-style:solid;border-top-width:var(--plx-comp-image-crop-frame-border-width);cursor:move;outline-style:none;overflow-x:hidden;overflow-y:hidden;position:relative;touch-action:none;user-select:none;}
+.plx-image-crop__frame:focus-visible,
+.plx-image-crop__frame.is-focus-visible{border-bottom-color:var(--plx-comp-image-crop-frame-focus-border-color);border-left-color:var(--plx-comp-image-crop-frame-focus-border-color);border-right-color:var(--plx-comp-image-crop-frame-focus-border-color);border-top-color:var(--plx-comp-image-crop-frame-focus-border-color);}
+.plx-image-crop__actions{column-gap:var(--plx-comp-image-crop-actions-gap);display:flex;justify-content:flex-end;}

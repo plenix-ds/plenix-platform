@@ -1,0 +1,14 @@
+{
+  "$description": "Library part w07B (wave 7, lane B): the iOS and Android counterparts of the Miller columns, the cascader, the entity and people pickers, the time picker, the relative date input, load more, the image upload and the avatar upload. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "navigation|Miller columns": { "ios": ["ios-navigation|Column views"], "android": ["android-data-display|Tree", "android-navigation|Back stack"] },
+    "forms|Cascader": { "ios": ["ios-forms|Pickers", "ios-navigation|Column views"], "android": ["android-forms|Exposed dropdown menu"] },
+    "forms|Entity picker": { "ios": ["ios-forms|Combo boxes", "ios-forms|Token fields"], "android": ["android-forms|Exposed dropdown menu", "android-navigation|Search screen"] },
+    "forms|People picker": { "ios": ["ios-forms|Token fields"], "android": ["android-forms|Exposed dropdown menu"] },
+    "forms|Time picker": { "ios": ["ios-forms|Pickers"], "android": ["android-forms|DatePicker and TimePicker"] },
+    "forms|Relative date input": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search and filters"] },
+    "navigation|Load more / infinite scroll": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|Feed", "android-feedback|Pull to refresh"] },
+    "forms|Image upload": { "ios": ["ios-forms|Image wells"], "android": ["android-specialized|File and photo pickers"] },
+    "forms|Avatar upload": { "ios": ["ios-forms|Image wells", "ios-patterns|Managing accounts"], "android": ["android-specialized|File and photo pickers", "android-content|Avatar"] }
+  }
+}

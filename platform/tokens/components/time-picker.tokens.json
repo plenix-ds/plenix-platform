@@ -1,0 +1,205 @@
+{
+  "$description": "TimePicker (platform/components/TimePicker), library wave 7, lane B: its component tokens. The field in the input roles with the time in the data font; the list a menu surface; the segments take the selected fill in focus.",
+  "plx-comp": {
+    "time-picker-width": {
+      "$value": "{plx-ref.size-160px}",
+      "$type": "dimension",
+      "$description": "TimePicker: width (size-160px)."
+    },
+    "time-picker-field-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "TimePicker field: gap (space-inline-xs)."
+    },
+    "time-picker-field-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "TimePicker field: font (font-data)."
+    },
+    "time-picker-field-focus-within-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "TimePicker field focus within: border color (focus-ring-color)."
+    },
+    "time-picker-field-invalid-border-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "TimePicker field invalid: border color (feedback-danger-solid)."
+    },
+    "time-picker-input-min-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension",
+      "$description": "TimePicker input: minimum height (control-height-inline)."
+    },
+    "time-picker-input-placeholder-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "TimePicker input placeholder: text color (content-subtle)."
+    },
+    "time-picker-icon-background": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "TimePicker icon: background (content-muted)."
+    },
+    "time-picker-icon-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "TimePicker icon: height (size-16px)."
+    },
+    "time-picker-icon-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "TimePicker icon: width (size-16px)."
+    },
+    "time-picker-disabled-field-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "TimePicker disabled field: background (fill-neutral)."
+    },
+    "time-picker-disabled-field-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "TimePicker disabled field: text color (content-disabled)."
+    },
+    "time-picker-list-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color",
+      "$description": "TimePicker list: background (surface-overlay)."
+    },
+    "time-picker-list-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "TimePicker list: border color (border-default)."
+    },
+    "time-picker-list-radius": {
+      "$value": "{plx-sys.radius-menu-8px}",
+      "$type": "dimension",
+      "$description": "TimePicker list: corners (radius-menu-8px)."
+    },
+    "time-picker-list-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "TimePicker list: border width (border-width-thin)."
+    },
+    "time-picker-list-shadow": {
+      "$value": "{plx-sys.elevation-menu}",
+      "$type": "shadow",
+      "$description": "TimePicker list: shadow (elevation-menu)."
+    },
+    "time-picker-list-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "TimePicker list margin block start: list margin block start (space-stack-xs)."
+    },
+    "time-picker-list-max-height": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension",
+      "$description": "TimePicker list: maximum height (size-220px)."
+    },
+    "time-picker-list-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "TimePicker list: padding top and bottom (space-inset-xs)."
+    },
+    "time-picker-list-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "TimePicker list: padding left and right (space-inset-xs)."
+    },
+    "time-picker-list-z-index": {
+      "$value": "{plx-sys.layer-menu}",
+      "$type": "number",
+      "$description": "TimePicker list z index: list z index (layer-menu)."
+    },
+    "time-picker-option-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "TimePicker option: corners (radius-control)."
+    },
+    "time-picker-option-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "TimePicker option: text color (content-default)."
+    },
+    "time-picker-option-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "TimePicker option: font (font-data)."
+    },
+    "time-picker-option-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "TimePicker option: font size (font-size-13)."
+    },
+    "time-picker-option-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "TimePicker option: minimum height (control-height-standard)."
+    },
+    "time-picker-option-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "TimePicker option: padding left and right (space-inset-sm)."
+    },
+    "time-picker-option-active-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "TimePicker option active: background (state-hover)."
+    },
+    "time-picker-option-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "TimePicker option selected: text color (selected-content)."
+    },
+    "time-picker-option-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "TimePicker option selected: font weight (font-weight-medium)."
+    },
+    "time-picker-segment-radius": {
+      "$value": "{plx-sys.radius-control-4px}",
+      "$type": "dimension",
+      "$description": "TimePicker segment: corners (radius-control-4px)."
+    },
+    "time-picker-segment-min-width": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "TimePicker segment: minimum width (size-24px)."
+    },
+    "time-picker-segment-padding-inline": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "TimePicker segment: padding left and right (space-4px)."
+    },
+    "time-picker-segment-focus-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "TimePicker segment focus: background (state-selected)."
+    },
+    "time-picker-segment-focus-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "TimePicker segment focus: text color (selected-content)."
+    },
+    "time-picker-segment-empty-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "TimePicker segment empty: text color (content-subtle)."
+    },
+    "time-picker-segment-period-margin-inline-start": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "TimePicker segment  period margin inline start: segment  period margin inline start (space-4px)."
+    },
+    "time-picker-separator-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "TimePicker separator: text color (content-muted)."
+    },
+    "time-picker-segments-icon-margin-inline-start": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "TimePicker segments icon margin inline start: segments icon margin inline start (space-inline-sm)."
+    }
+  }
+}

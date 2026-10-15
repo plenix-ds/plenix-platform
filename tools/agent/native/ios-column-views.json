@@ -1,0 +1,71 @@
+{
+  "ios-navigation|Column views": {
+    "summary": "Plenix Miller columns on iPadOS and the Mac are the system column view (NavigationSplitView with three columns, or NSBrowser on the Mac), kept native in behavior (selection opens the next column, the arrow keys move between levels, VoiceOver reads each column as a list) and drawn with the Plenix list roles: rows at least 44 points tall in DM Sans, the chosen path in the Plenix selected fill and content color, a chevron on each parent, the thin subtle line between columns. On iPhone the same data is one level at a time in a NavigationStack. Apple’s default tints the chosen row in the system accent; Plenix keeps the structure and replaces the colors and type.",
+    "variants": [
+      { "name": "Columns (default)", "apple": "NavigationSplitView, three columns (sidebar, content, detail)", "web": "navigation|Miller columns", "background": "plx-comp-miller-columns-background", "content": "plx-comp-miller-columns-text", "border": "plx-comp-miller-columns-column-border-inline-end-color", "swiftui": "NavigationSplitView { List(selection:) } content: { List(selection:) } detail: { … } with the Plenix row style", "uikit": "UISplitViewController(style: .tripleColumn) with a UICollectionView list in each column", "appkit": "NSBrowser with a Plenix cell (a macOS build of the tokens is needed)", "use": "Browsing a deep folder or category tree on iPad and the Mac." },
+      { "name": "With preview column", "apple": "NavigationSplitView detail column", "web": "navigation|Miller columns", "background": "plx-comp-miller-columns-background", "content": "plx-comp-miller-columns-text", "border": null, "swiftui": "the detail column shows the chosen leaf (its image, name and details)", "uikit": "the secondary column’s view controller shows the chosen leaf", "appkit": "NSBrowser’s preview view controller (a macOS build of the tokens is needed)", "use": "Checking an item before opening it." },
+      { "name": "Resizable", "apple": "Split view column widths", "web": "navigation|Miller columns", "background": null, "content": null, "border": "plx-comp-miller-columns-resizer-background", "swiftui": ".navigationSplitViewColumnWidth(min:ideal:max:) from the Plenix width steps", "uikit": "preferredPrimaryColumnWidth and min and max widths", "appkit": "NSBrowser column resizing type .userColumnResizing", "use": "Long names that are cut at the default width." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Columns", "about": "One list per level, side by side; the newest scrolls into view." },
+      { "part": "B", "name": "Row", "about": "An icon, the name and an optional detail line, at least 44 points tall." },
+      { "part": "C", "name": "Chosen path", "about": "The chosen row of each column in the selected fill and content color." },
+      { "part": "D", "name": "Chevron", "about": "Marks a row that has children." },
+      { "part": "E", "name": "Column line", "about": "The thin subtle line between columns." }
+    ],
+    "attributes": [
+      { "part": "B", "attribute": "Row height", "token": "plx-comp-miller-columns-item-min-height", "value": "At least the touch target (Plenix.Platform.controlTargetMin)", "apple": "The system row height", "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)", "uikit": "the list cell’s minimum height from Plenix.Platform.controlTargetMin", "appkit": "rowHeight from the target size (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Name text", "token": "plx-comp-miller-columns-text", "value": "DM Sans at the body role (Plenix.Font.sans, Plenix.Platform.textBodySize)", "apple": "SF Pro body", "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.contentDefault)", "uikit": "UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize)!)", "appkit": "NSFont named DM Sans at the body size (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "C", "attribute": "Chosen fill", "token": "plx-comp-miller-columns-item-selected-background", "value": "The selected fill and content (Plenix.Colors.stateSelected, Plenix.Colors.selectedContent)", "apple": "The accent color", "swiftui": ".listRowBackground(isChosen ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault)", "uikit": "cell backgroundConfiguration with Plenix.Colors.stateSelected when selected", "appkit": "NSBrowser cell drawn with the selected role (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "D", "attribute": "Chevron color", "token": "plx-comp-miller-columns-chevron-background", "value": "The muted content color (Plenix.Colors.contentMuted)", "apple": "The tertiary label color", "swiftui": "Image(systemName: \"chevron.right\").foregroundStyle(Plenix.Colors.contentMuted)", "uikit": "UICellAccessory.disclosureIndicator(options: .init(tintColor: Plenix.Colors.contentMuted))", "appkit": "the browser’s branch image tinted with the muted role (a macOS build of the tokens is needed)", "follows": "Platform considerations" },
+      { "part": "E", "attribute": "Column line", "token": "plx-comp-miller-columns-column-border-inline-end-color", "value": "The subtle border, thin (Plenix.Colors.borderSubtle, Plenix.Border.borderWidthThin)", "apple": "The system separator", "swiftui": "Divider().overlay(Plenix.Colors.borderSubtle)", "uikit": "a separator view with backgroundColor = Plenix.Colors.borderSubtle", "appkit": "the browser’s column separator in the subtle role (a macOS build of the tokens is needed)", "follows": "Platform considerations" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-comp-miller-columns-background", "swiftui": "the row on the surface", "uikit": "cell not selected", "appkit": "cell not selected" },
+      { "state": "Chosen", "token": "plx-comp-miller-columns-item-selected-background", "swiftui": "the row in the selection binding", "uikit": "isSelected", "appkit": "selectedCell" },
+      { "state": "Focused", "token": "plx-comp-miller-columns-list-focus-item-selected-outline-color", "swiftui": "the focused row with a keyboard (focus system)", "uikit": "isFocused (keyboard focus on iPad)", "appkit": "first responder column" },
+      { "state": "Disabled", "token": "plx-comp-miller-columns-item-disabled-text", "swiftui": ".disabled(true)", "uikit": "isUserInteractionEnabled = false", "appkit": "the cell is not enabled" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// Plenix Miller columns on iPad: three columns, the chosen path in the Plenix selected role.",
+        "struct PlenixColumns: View {",
+        "    let folders: [Folder]",
+        "    @State private var folder: Folder.ID?",
+        "    @State private var item: Item.ID?",
+        "",
+        "    var body: some View {",
+        "        NavigationSplitView {",
+        "            List(folders, selection: $folder) { f in",
+        "                Label(f.name, systemImage: \"folder\")",
+        "                    .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "                    .frame(minHeight: Plenix.Platform.controlTargetMin)",
+        "                    .listRowBackground(folder == f.id ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault)",
+        "            }",
+        "        } content: {",
+        "            List(items(in: folder), selection: $item) { i in Text(i.name) }",
+        "        } detail: {",
+        "            ItemPreview(id: item)",
+        "        }",
+        "        .tint(Plenix.Colors.selectedContent)",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "let split = UISplitViewController(style: .tripleColumn)",
+        "var row = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)",
+        "row.backgroundColor = Plenix.Colors.surfaceDefault",
+        "// each cell: content in DM Sans (UIFontMetrics), selected background Plenix.Colors.stateSelected, accessory .disclosureIndicator",
+        "split.setViewController(FoldersViewController(layout: row), for: .primary)"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "let browser = NSBrowser()",
+        "browser.columnResizingType = .userColumnResizing",
+        "browser.setCellClass(PlenixBrowserCell.self) // draws the selected role and DM Sans"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$description": "AvatarUpload (platform/patterns/AvatarUpload), library wave 7, lane B: the pattern’s own tokens (the placement of the Avatar, its actions and the hint).",
+  "plx-comp": {
+    "avatar-upload-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "AvatarUpload: maximum width (size-400px)."
+    },
+    "avatar-upload-row-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "AvatarUpload: gap between rows (space-stack-sm)."
+    },
+    "avatar-upload-row-column-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "AvatarUpload row column: gap (space-inline-md)."
+    },
+    "avatar-upload-body-row-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "AvatarUpload body: gap between rows (space-4px)."
+    },
+    "avatar-upload-actions-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "AvatarUpload actions: gap (space-inline-sm)."
+    },
+    "avatar-upload-actions-row-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "AvatarUpload actions: gap between rows (space-inline-sm)."
+    },
+    "avatar-upload-hint-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "AvatarUpload hint: text color (content-muted)."
+    },
+    "avatar-upload-hint-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "AvatarUpload hint: font size (font-size-12)."
+    }
+  }
+}

@@ -62,3 +62,15 @@
 .plx-tabs--folder .plx-tabs__tab.is-selected,.plx-tabs--contained .plx-tabs__tab.is-selected{position:relative;}
 .plx-tabs--folder>.plx-tabs__list,.plx-tabs--contained>.plx-tabs__list{margin-block-end:var(--plx-comp-tabs-folder-list-margin-block-end);padding-block-end:var(--plx-comp-tabs-folder-list-padding-block-end);}
 .plx-tabs--folder .plx-tabs__tab.is-selected::after,.plx-tabs--contained .plx-tabs__tab.is-selected::after{background-color:var(--plx-comp-tabs-folder-tab-selected-after-background);block-size:var(--plx-comp-tabs-folder-tab-selected-after-height);content:"";inset-block-end:var(--plx-comp-tabs-folder-tab-selected-after-inset-block-end);inset-inline-end:0;inset-inline-start:0;pointer-events:none;position:absolute;}
+/* vertical (library wave 7): the tab list in a column at the start, the panel beside it taking the rest of the width; each
+   tab is a navigation list row (the hover fill, the open tab in the selected state, as the navigation pane's current row) */
+.plx-tabs--vertical{align-items:flex-start;column-gap:var(--plx-comp-tabs-vertical-gap);flex-direction:row;}
+.plx-tabs--vertical>.plx-tabs__list{align-items:stretch;flex-direction:column;flex-shrink:0;inline-size:var(--plx-comp-tabs-vertical-list-width);}
+.plx-tabs--vertical .plx-tabs__tablist{align-items:stretch;flex-direction:column;overflow-x:visible;row-gap:var(--plx-comp-tabs-vertical-list-row-gap);}
+.plx-tabs--vertical .plx-tabs__tab{border-end-end-radius:var(--plx-comp-tabs-vertical-tab-radius);border-end-start-radius:var(--plx-comp-tabs-vertical-tab-radius);border-start-end-radius:var(--plx-comp-tabs-vertical-tab-radius);border-start-start-radius:var(--plx-comp-tabs-vertical-tab-radius);color:var(--plx-comp-tabs-vertical-tab-text);font-size:var(--plx-comp-tabs-vertical-tab-font-size);font-weight:var(--plx-comp-tabs-vertical-tab-font-weight);justify-content:flex-start;min-block-size:var(--plx-comp-tabs-vertical-tab-min-height);padding-inline-end:var(--plx-comp-tabs-vertical-tab-padding-inline);padding-inline-start:var(--plx-comp-tabs-vertical-tab-padding-inline);text-align:start;white-space:normal;}
+.plx-tabs--vertical .plx-tabs__tab:hover,
+.plx-tabs--vertical .plx-tabs__tab.is-hover{background-color:var(--plx-comp-tabs-vertical-tab-hover-background);box-shadow:var(--plx-comp-tabs-vertical-tab-hover-shadow);color:var(--plx-comp-tabs-vertical-tab-hover-text);}
+.plx-tabs--vertical .plx-tabs__tab.is-selected,
+.plx-tabs--vertical .plx-tabs__tab.is-selected:hover,
+.plx-tabs--vertical .plx-tabs__tab.is-selected.is-hover{background-color:var(--plx-comp-tabs-vertical-tab-selected-background);box-shadow:var(--plx-comp-tabs-vertical-tab-selected-shadow);color:var(--plx-comp-tabs-vertical-tab-selected-text);font-weight:var(--plx-comp-tabs-vertical-tab-selected-font-weight);}
+.plx-tabs--vertical>.plx-tabs__panel{flex-basis:0%;flex-grow:1;min-inline-size:0;}

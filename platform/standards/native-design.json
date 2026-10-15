@@ -2173,6 +2173,246 @@
     ]
    }
   },
+  "android-data-display|Charts": {
+   "summary": "Material 3 has no chart component: a Plenix chart on Android is drawn in Compose (a Canvas) or a custom View inside the Plenix frame: a title and a one-sentence takeaway, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list one tap away. The chart is one node for TalkBack, named by its title and described by its takeaway; the list carries the values.",
+   "variants": [
+    {
+     "name": "Column chart (band scale)",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Chart foundations",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "PlenixChart(title, takeaway) { drawRect(color = datavizCategorical1, …) per category }",
+     "views": "A custom View that draws the columns in onDraw with Paint colors from PlenixColors",
+     "use": "Amounts per category in the categories’ own order: months, products, regions."
+    },
+    {
+     "name": "Line over time (time scale)",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Chart foundations",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-2",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "PlenixChart(title, takeaway) { drawPath(path, color = datavizCategorical2, style = Stroke(width = PlenixBorder.borderWidthMedium.toPx(), cap = StrokeCap.Round)) }",
+     "views": "The custom View drawing a Path with a round-capped stroke Paint",
+     "use": "A series over time; the axis ticks fall on calendar steps."
+    },
+    {
+     "name": "Log value axis",
+     "material": "None (no Material chart component)",
+     "web": "data-display|Chart foundations",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-3",
+     "border": "plx-comp-chart-grid-line-color",
+     "compose": "The same frame with a log scale (log10 of each value mapped to the plot height)",
+     "views": "The same View with a log scale",
+     "use": "Values that span several orders of magnitude, said in the description."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Title",
+     "about": "Names what is measured, in sentence case; it is the chart’s content description."
+    },
+    {
+     "part": "B",
+     "name": "Description",
+     "about": "One or two sentences with the takeaway, in secondary text; TalkBack reads it after the title."
+    },
+    {
+     "part": "C",
+     "name": "Plot area",
+     "about": "The marks between the axes; the height comes from the Plenix sizes, the width fills the screen."
+    },
+    {
+     "part": "D",
+     "name": "Marks",
+     "about": "Bars, lines and points in the data-viz colors, by the series’ order in the data."
+    },
+    {
+     "part": "E",
+     "name": "Grid lines and baseline",
+     "about": "Light lines behind the marks; the baseline at zero in the stronger border color."
+    },
+    {
+     "part": "F",
+     "name": "Tick labels",
+     "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+    },
+    {
+     "part": "G",
+     "name": "Data",
+     "about": "The same values as a list one tap away (Show the data)."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Title",
+     "token": "plx-comp-chart-title-font-size",
+     "value": "DM Sans semibold at the Title medium role",
+     "material": "Title medium",
+     "compose": "Text(title, style = textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight))",
+     "views": "TextView with the Plenix title text appearance (DM Sans)",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "B",
+     "attribute": "Description color",
+     "token": "plx-comp-chart-description-text",
+     "value": "Secondary text (plx-sys-content-subtle)",
+     "material": "On surface variant",
+     "compose": "color = PlenixColors.contentSubtle.current()",
+     "views": "textView.setTextColor(PlenixColors.contentSubtle.light.toArgb())",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "D",
+     "attribute": "Series colors",
+     "token": "plx-sys-dataviz-categorical-1",
+     "value": "The six categorical data-viz colors in the series’ order (blue, green, purple, red, brown, gray), the same in light and dark",
+     "material": "None",
+     "compose": "val series = listOf(PlenixColors.datavizCategorical1.current(), PlenixColors.datavizCategorical2.current(), PlenixColors.datavizCategorical3.current())",
+     "views": "paint.color = PlenixColors.datavizCategorical1.light.toArgb()",
+     "follows": "Material 3: Color contrast",
+     "followsUrl": "https://m3.material.io/foundations/designing/color-contrast"
+    },
+    {
+     "part": "D",
+     "attribute": "Line width",
+     "token": "plx-comp-chart-line-width",
+     "value": "2 dp (plx-sys-border-width-medium), round caps and joins",
+     "material": "None",
+     "compose": "Stroke(width = PlenixBorder.borderWidthMedium.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)",
+     "views": "paint.strokeWidth = px(PlenixBorder.borderWidthMedium); paint.strokeCap = Paint.Cap.ROUND",
+     "follows": "Material 3: Color contrast",
+     "followsUrl": "https://m3.material.io/foundations/designing/color-contrast"
+    },
+    {
+     "part": "E",
+     "attribute": "Grid line color",
+     "token": "plx-comp-chart-grid-line-color",
+     "value": "The subtle border (gray 200 light, gray 700 dark), 1 dp",
+     "material": "Outline variant",
+     "compose": "drawLine(PlenixColors.borderSubtle.current(), start, end, strokeWidth = PlenixBorder.borderWidthThin.toPx())",
+     "views": "gridPaint.color = PlenixColors.borderSubtle.light.toArgb(); gridPaint.strokeWidth = px(PlenixBorder.borderWidthThin)",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "E",
+     "attribute": "Baseline color",
+     "token": "plx-comp-chart-axis-line-color",
+     "value": "The strong border (gray 500), 1 dp, at zero",
+     "material": "Outline",
+     "compose": "drawLine(PlenixColors.borderStrong.current(), baselineStart, baselineEnd, strokeWidth = PlenixBorder.borderWidthThin.toPx())",
+     "views": "axisPaint.color = PlenixColors.borderStrong.light.toArgb()",
+     "follows": "Material 3: Color roles",
+     "followsUrl": "https://m3.material.io/styles/color/roles"
+    },
+    {
+     "part": "F",
+     "attribute": "Tick label font",
+     "token": "plx-comp-chart-tick-label-font-family",
+     "value": "DM Mono (the data role) at the data size, secondary text",
+     "material": "Body small",
+     "compose": "TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize) // Mono: FontFamily(Font(GoogleFont(PlenixFonts.MONO), fontProvider))",
+     "views": "labelPaint.typeface = ResourcesCompat.getFont(context, R.font.dm_mono)",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    },
+    {
+     "part": "G",
+     "attribute": "Accessibility",
+     "token": "None (content)",
+     "value": "One node named by the title with the takeaway as its state description; the list carries every value",
+     "material": "None",
+     "compose": "Modifier.semantics(mergeDescendants = true) { contentDescription = title; stateDescription = takeaway }",
+     "views": "chartView.contentDescription = title; ViewCompat.setStateDescription(chartView, takeaway)",
+     "follows": "Material 3: Accessible design",
+     "followsUrl": "https://m3.material.io/foundations/designing/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-sys-surface-default, plx-sys-dataviz-categorical-1",
+     "compose": "The chart at rest",
+     "views": "The View at rest"
+    },
+    {
+     "state": "Dark",
+     "token": "plx-sys-border-subtle, plx-sys-content-subtle",
+     "compose": "PlenixColors pairs follow isSystemInDarkTheme(); data-viz colors stay the same",
+     "views": "The dark values from the night resources"
+    },
+    {
+     "state": "Empty or failed",
+     "token": "plx-sys-content-subtle",
+     "compose": "A message with a Retry button in place of the plot",
+     "views": "A message view with a retry button in place of the chart"
+    }
+   ],
+   "code": {
+    "compose": [
+     "import androidx.compose.foundation.Canvas",
+     "import androidx.compose.foundation.layout.*",
+     "import androidx.compose.material3.*",
+     "import androidx.compose.runtime.Composable",
+     "import androidx.compose.ui.Modifier",
+     "import androidx.compose.ui.geometry.Offset",
+     "import androidx.compose.ui.semantics.*",
+     "import androidx.compose.ui.text.TextStyle",
+     "import androidx.compose.ui.unit.Dp",
+     "import plenix.tokens.*",
+     "",
+     "// Mono: the DM Mono family (PlenixFonts.MONO), set once next to Sans in the app theme",
+     "// plotHeight: the web token --plx-comp-chart-plot-height-md; the library tokens are not generated for Android yet",
+     "@Composable",
+     "fun PlenixChart(title: String, takeaway: String, plotHeight: Dp, values: List<Float>, labels: List<String>) {",
+     "    val bar = PlenixColors.datavizCategorical1.current()",
+     "    val grid = PlenixColors.borderSubtle.current()",
+     "    val base = PlenixColors.borderStrong.current()",
+     "    Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm),",
+     "        modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = title; stateDescription = takeaway }) {",
+     "        Text(title, style = textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight))",
+     "        Text(takeaway, color = PlenixColors.contentSubtle.current())",
+     "        Canvas(Modifier.fillMaxWidth().height(plotHeight)) {",
+     "            val max = values.maxOrNull() ?: return@Canvas",
+     "            val step = size.width / values.size",
+     "            listOf(max, max / 2).forEach { v -> val y = size.height - v / max * size.height",
+     "                drawLine(grid, Offset(0f, y), Offset(size.width, y), strokeWidth = PlenixBorder.borderWidthThin.toPx()) }",
+     "            values.forEachIndexed { i, v -> val h = v / max * size.height",
+     "                drawRect(bar, topLeft = Offset(i * step + PlenixSpace.spaceStackXs.toPx(), size.height - h), size = androidx.compose.ui.geometry.Size(step - PlenixSpace.spaceStackSm.toPx(), h)) }",
+     "            drawLine(base, Offset(0f, size.height), Offset(size.width, size.height), strokeWidth = PlenixBorder.borderWidthThin.toPx())",
+     "        }",
+     "        Row { labels.forEach { Text(it, Modifier.weight(1f), style = TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize), color = PlenixColors.contentSubtle.current()) } }   // Mono: PlenixFonts.MONO, the data role",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "// A custom View for the plot; the title and takeaway are TextViews above it, the list of values a RecyclerView behind Show the data",
+     "class PlenixChartView(context: Context) : View(context) {",
+     "    var values: List<Float> = emptyList()",
+     "    private val bar = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = PlenixColors.datavizCategorical1.light.toArgb() }",
+     "    private val grid = Paint().apply { color = PlenixColors.borderSubtle.light.toArgb(); strokeWidth = px(PlenixBorder.borderWidthThin) }",
+     "    private val label = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = ResourcesCompat.getFont(context, R.font.dm_mono); color = PlenixColors.contentSubtle.light.toArgb() }",
+     "    override fun onDraw(canvas: Canvas) {",
+     "        val max = values.maxOrNull() ?: return",
+     "        val step = width.toFloat() / values.size",
+     "        canvas.drawLine(0f, height.toFloat(), width.toFloat(), height.toFloat(), grid)",
+     "        values.forEachIndexed { i, v -> val h = v / max * height",
+     "            canvas.drawRect(i * step + px(PlenixSpace.spaceStackXs), height - h, (i + 1) * step - px(PlenixSpace.spaceStackXs), height.toFloat(), bar) }",
+     "    }",
+     "}",
+     "// chartView.contentDescription = title; ViewCompat.setStateDescription(chartView, takeaway)"
+    ]
+   }
+  },
   "android-data-display|List": {
    "summary": "A Plenix list on Android is a LazyColumn of Material 3 ListItem rows, kept native in behavior (ripple, row semantics for TalkBack, font scale) and styled with the Plenix tokens: rows at least 48 dp tall on the default surface, DM Sans text at the body and secondary roles, a 20 dp leading icon in its tone, 1 dp divider lines and the Plenix pressed and selected fills. Material’s default is a 56 dp row in the surface color with Roboto text; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
@@ -3573,7 +3813,7 @@
     {
      "name": "Date range",
      "material": "Date range picker (full screen)",
-     "web": "forms|Date-time picker",
+     "web": "forms|Date range picker",
      "background": "plx-sys-surface-overlay",
      "content": "plx-sys-content-default",
      "border": null,
@@ -8438,6 +8678,138 @@
     ]
    }
   },
+  "android-specialized|File and photo pickers": {
+   "summary": "A Plenix image upload on Android opens the system photo picker (PickVisualMedia) or the document picker (OpenDocument) from a Plenix outlined button and shows the chosen picture in a frame of a fixed ratio with the media radius and the thin default border, its name in DM Mono, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. The system picker stays as Android draws it; Plenix styles the control that opens it and what shows after.",
+   "variants": [
+    {
+     "name": "Single (default)",
+     "material": "PickVisualMedia, one item",
+     "web": "forms|Image upload",
+     "background": "plx-comp-image-upload-locked-preview-background",
+     "content": "plx-comp-image-upload-name-text",
+     "border": "plx-comp-image-upload-preview-border-color",
+     "compose": "rememberLauncherForActivityResult(PickVisualMedia()) launched from an OutlinedButton; the picture in a framed preview",
+     "views": "registerForActivityResult(PickVisualMedia()) and an ImageView preview",
+     "use": "One picture: a cover or a header image."
+    },
+    {
+     "name": "Multiple",
+     "material": "PickMultipleVisualMedia",
+     "web": "forms|Image upload",
+     "background": null,
+     "content": null,
+     "border": "plx-comp-image-upload-preview-border-color",
+     "compose": "PickMultipleVisualMedia(max) and a LazyVerticalGrid of square previews",
+     "views": "PickMultipleVisualMedia with a RecyclerView grid",
+     "use": "Product photos and galleries."
+    },
+    {
+     "name": "Avatar",
+     "material": "Photo picker for a profile picture",
+     "web": "forms|Avatar upload",
+     "background": null,
+     "content": null,
+     "border": null,
+     "compose": "the Plenix avatar (RoundedCornerShape(PlenixRadius.radiusAvatar8px)) beside Change photo and Remove photo",
+     "views": "ShapeableImageView with the avatar corner",
+     "use": "Profile and team pictures."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Choose control",
+     "about": "A Plenix outlined button that opens the system picker."
+    },
+    {
+     "part": "B",
+     "name": "Preview",
+     "about": "The chosen picture in a frame of the ratio, with the media radius and the thin border."
+    },
+    {
+     "part": "C",
+     "name": "File name",
+     "about": "The name and size in DM Mono, the data role."
+    },
+    {
+     "part": "D",
+     "name": "Actions",
+     "about": "Replace and Remove, or Change photo and Remove photo."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Preview corners",
+     "token": "plx-comp-image-upload-preview-radius",
+     "value": "The media radius (PlenixRadius.radiusMedia4px)",
+     "material": "Shape of the container",
+     "compose": "Modifier.clip(RoundedCornerShape(PlenixRadius.radiusMedia4px))",
+     "views": "ShapeableImageView shapeAppearance with the media corner",
+     "follows": "Material 3: Shape",
+     "followsUrl": "https://m3.material.io/styles/shape/overview"
+    },
+    {
+     "part": "B",
+     "attribute": "Preview border",
+     "token": "plx-comp-image-upload-preview-border-color",
+     "value": "The default border, thin (PlenixColors.borderDefault)",
+     "material": "Outline",
+     "compose": "Modifier.border(PlenixBorder.borderWidthThin, PlenixColors.borderDefault.current(), RoundedCornerShape(PlenixRadius.radiusMedia4px))",
+     "views": "strokeColor and strokeWidth on the ShapeableImageView",
+     "follows": "Material 3: Shape",
+     "followsUrl": "https://m3.material.io/styles/shape/overview"
+    },
+    {
+     "part": "C",
+     "attribute": "File name",
+     "token": "plx-comp-image-upload-name-font-family",
+     "value": "DM Mono at the data role (PlenixFonts.MONO)",
+     "material": "Body small",
+     "compose": "Text(name, fontFamily = FontFamily(Font(R.font.dm_mono)), color = PlenixColors.contentDefault.current())",
+     "views": "TextView with the R.font.dm_mono typeface",
+     "follows": "Material 3: Typography",
+     "followsUrl": "https://m3.material.io/styles/typography/overview"
+    }
+   ],
+   "states": [
+    {
+     "state": "Empty",
+     "token": "plx-comp-image-upload-zone-icon-text",
+     "compose": "no Uri: the Choose button",
+     "views": "no result"
+    },
+    {
+     "state": "Chosen",
+     "token": "plx-comp-image-upload-preview-border-color",
+     "compose": "the Uri loaded in the preview",
+     "views": "the image set"
+    },
+    {
+     "state": "Refused",
+     "token": "plx-sys-feedback-danger-solid",
+     "compose": "an inline Plenix danger message",
+     "views": "an inline message view"
+    }
+   ],
+   "code": {
+    "compose": [
+     "@Composable",
+     "fun PlenixImageUpload(onPicked: (Uri) -> Unit) {",
+     "    var uri by remember { mutableStateOf<Uri?>(null) }",
+     "    val pick = rememberLauncherForActivityResult(PickVisualMedia()) { it?.let { u -> uri = u; onPicked(u) } }",
+     "    Column(verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)) {",
+     "        uri?.let { AsyncImage(model = it, contentDescription = null, modifier = Modifier.clip(RoundedCornerShape(PlenixRadius.radiusMedia4px))) }",
+     "        OutlinedButton(onClick = { pick.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }) { Text(if (uri == null) \"Choose image\" else \"Replace\") }",
+     "    }",
+     "}"
+    ],
+    "views": [
+     "val pick = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(preview::setImageURI) }",
+     "chooseButton.setOnClickListener { pick.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }"
+    ]
+   }
+  },
   "ios-actions|Activity views": {
    "summary": "The activity view (the share sheet) is a system surface: iOS draws it in its own look in every app, so Plenix does not restyle it. The Plenix part is what the app controls: the standard Share button in the Plenix button style that opens it, the items it shares, the system activities it excludes, and custom activities with a Plenix symbol and a short verb-phrase title. Apple’s default and the Plenix version therefore look the same inside the sheet.",
    "variants": [
@@ -10487,6 +10859,279 @@
     ]
    }
   },
+  "ios-data-display|Charts": {
+   "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web.",
+   "variants": [
+    {
+     "name": "Column chart (band scale)",
+     "apple": "BarMark with a categorical x value",
+     "web": "data-display|Chart foundations",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-1",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "Chart(rows) { BarMark(x: .value(\"Month\", $0.month), y: .value(\"Uploads\", $0.count)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "Amounts per category in the categories’ own order: months, products, regions."
+    },
+    {
+     "name": "Line over time (time scale)",
+     "apple": "LineMark and PointMark with a Date x value",
+     "web": "data-display|Chart foundations",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-2",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": "Chart(days) { LineMark(x: .value(\"Day\", $0.date, unit: .day), y: .value(\"Downloads\", $0.value)) }",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "A series over time; the axis ticks fall on calendar steps."
+    },
+    {
+     "name": "Log value axis",
+     "apple": "chartYScale(type: .log)",
+     "web": "data-display|Chart foundations",
+     "background": "plx-sys-surface-default",
+     "content": "plx-sys-dataviz-categorical-3",
+     "border": "plx-comp-chart-grid-line-color",
+     "swiftui": ".chartYScale(domain: .automatic, type: .log)",
+     "uikit": "The SwiftUI Chart in a UIHostingController",
+     "appkit": "The SwiftUI Chart in an NSHostingView",
+     "use": "Values that span several orders of magnitude, said in the description."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Title",
+     "about": "Names what is measured, in sentence case; it is the chart’s accessibility label."
+    },
+    {
+     "part": "B",
+     "name": "Description",
+     "about": "One or two sentences with the takeaway, in secondary text; it is the chart’s accessibility value."
+    },
+    {
+     "part": "C",
+     "name": "Plot area",
+     "about": "The marks between the axes; the chart’s height comes from the Plenix sizes, its width from the screen."
+    },
+    {
+     "part": "D",
+     "name": "Marks",
+     "about": "Bars, lines and points in the data-viz colors, by the series’ order in the data."
+    },
+    {
+     "part": "E",
+     "name": "Grid lines and baseline",
+     "about": "Light lines behind the marks; the baseline at zero in the stronger border color."
+    },
+    {
+     "part": "F",
+     "name": "Tick labels",
+     "about": "Values, dates and categories in DM Mono, in the reader’s locale."
+    },
+    {
+     "part": "G",
+     "name": "Data",
+     "about": "The same values as a list one tap away (Show the data), and the Swift Charts audio graph."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Title font",
+     "token": "plx-comp-chart-title-font-size",
+     "value": "DM Sans semibold at the Headline size",
+     "apple": "The surrounding view’s headline",
+     "swiftui": "Text(title).font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline))",
+     "uikit": "UILabel with UIFontMetrics(forTextStyle: .headline) scaling DM Sans",
+     "appkit": "NSTextField with DM Sans at the headline size",
+     "follows": "Descriptive content"
+    },
+    {
+     "part": "B",
+     "attribute": "Description color",
+     "token": "plx-comp-chart-description-text",
+     "value": "Secondary text (plx-sys-content-subtle)",
+     "apple": "Secondary label color",
+     "swiftui": ".foregroundStyle(Plenix.Colors.contentSubtle)",
+     "uikit": "label.textColor = UIColor(Plenix.Colors.contentSubtle)",
+     "appkit": "NSColor(Plenix.Colors.contentSubtle) (a macOS build of the tokens is needed)",
+     "follows": "Descriptive content"
+    },
+    {
+     "part": "C",
+     "attribute": "Plot height",
+     "token": "plx-comp-chart-plot-height-md",
+     "value": "240 pt (sm 160, lg 320); the width fills the screen’s readable width",
+     "apple": "As tall as the container gives it",
+     "swiftui": ".frame(height: plotHeight), plotHeight = the web token --plx-comp-chart-plot-height-md (the library tokens are not in PlenixTokens.swift yet)",
+     "uikit": "chartView.heightAnchor.constraint(equalToConstant: plotHeight)",
+     "appkit": "hosting.heightAnchor.constraint(equalToConstant: plotHeight)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Series colors",
+     "token": "plx-sys-dataviz-categorical-1",
+     "value": "The six categorical data-viz colors in the series’ order (blue, green, purple, red, brown, gray)",
+     "apple": "The system accent color, then automatic",
+     "swiftui": ".chartForegroundStyleScale(range: [Plenix.Colors.datavizCategorical1, Plenix.Colors.datavizCategorical2, Plenix.Colors.datavizCategorical3])",
+     "uikit": "The same scale on the hosted SwiftUI Chart",
+     "appkit": "The same scale on the hosted SwiftUI Chart",
+     "follows": "Color"
+    },
+    {
+     "part": "D",
+     "attribute": "Line width",
+     "token": "plx-comp-chart-line-width",
+     "value": "2 pt (plx-sys-border-width-medium), round caps and joins",
+     "apple": "2 pt",
+     "swiftui": ".lineStyle(StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, lineCap: .round, lineJoin: .round))",
+     "uikit": "The same style on the hosted SwiftUI Chart",
+     "appkit": "The same style on the hosted SwiftUI Chart",
+     "follows": "Marks"
+    },
+    {
+     "part": "E",
+     "attribute": "Grid line color",
+     "token": "plx-comp-chart-grid-line-color",
+     "value": "The subtle border (gray 200 light, gray 700 dark), 1 pt",
+     "apple": "Secondary system fill",
+     "swiftui": "AxisGridLine(stroke: StrokeStyle(lineWidth: Plenix.Border.borderWidthThin)).foregroundStyle(Plenix.Colors.borderSubtle)",
+     "uikit": "The same axis marks on the hosted SwiftUI Chart",
+     "appkit": "The same axis marks on the hosted SwiftUI Chart",
+     "follows": "Axes"
+    },
+    {
+     "part": "E",
+     "attribute": "Baseline color",
+     "token": "plx-comp-chart-axis-line-color",
+     "value": "The strong border (gray 500), 1 pt, at zero",
+     "apple": "Label color at low opacity",
+     "swiftui": "RuleMark(y: .value(\"Zero\", 0)).foregroundStyle(Plenix.Colors.borderStrong)",
+     "uikit": "The same rule on the hosted SwiftUI Chart",
+     "appkit": "The same rule on the hosted SwiftUI Chart",
+     "follows": "Axes"
+    },
+    {
+     "part": "F",
+     "attribute": "Tick label font",
+     "token": "plx-comp-chart-tick-label-font-family",
+     "value": "DM Mono (the data role) at the caption size, secondary text",
+     "apple": "SF Pro caption",
+     "swiftui": "AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))",
+     "uikit": "The same labels on the hosted SwiftUI Chart (Plenix.Font.mono)",
+     "appkit": "The same labels on the hosted SwiftUI Chart (Plenix.Font.mono)",
+     "follows": "Axes"
+    },
+    {
+     "part": "G",
+     "attribute": "Accessibility",
+     "token": "None (content)",
+     "value": "The title as the label, the takeaway as the value, each mark labeled with its category and value; the audio graph on",
+     "apple": "Automatic labels from the plotted values",
+     "swiftui": ".accessibilityLabel(title).accessibilityValue(takeaway) and .accessibilityLabel on each mark",
+     "uikit": "hosting.view.accessibilityLabel = title",
+     "appkit": "hosting.setAccessibilityLabel(title)",
+     "follows": "Enhancing the accessibility of a chart"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-sys-surface-default, plx-sys-dataviz-categorical-1",
+     "swiftui": "The chart at rest",
+     "uikit": "The hosted chart at rest",
+     "appkit": "The hosted chart at rest"
+    },
+    {
+     "state": "Selected (scrubbing)",
+     "token": "plx-comp-chart-axis-line-color",
+     "swiftui": ".chartXSelection(value: $selected) with a RuleMark at the selection",
+     "uikit": "The same selection on the hosted SwiftUI Chart",
+     "appkit": "The same selection on the hosted SwiftUI Chart"
+    },
+    {
+     "state": "Dark",
+     "token": "plx-sys-border-subtle, plx-sys-content-subtle",
+     "swiftui": "The Plenix color pairs follow the color scheme; data-viz colors stay the same",
+     "uikit": "The same, from the trait collection",
+     "appkit": "The same, from the effective appearance"
+    },
+    {
+     "state": "Empty or failed",
+     "token": "plx-sys-content-subtle",
+     "swiftui": "ContentUnavailableView in place of the chart, with a way to try again",
+     "uikit": "UIContentUnavailableConfiguration in place of the chart",
+     "appkit": "A message view in place of the chart"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "import Charts",
+     "",
+     "/// The Plenix chart frame on iOS: title, takeaway, a Swift Charts plot in the Plenix look, the data one tap away.",
+     "struct PlenixChart<Content: ChartContent>: View {",
+     "    let title: String",
+     "    /// the plot height: --plx-comp-chart-plot-height-sm, -md or -lg on the web; the library tokens are not generated for iOS yet",
+     "    let plotHeight: CGFloat",
+     "    let takeaway: String",
+     "    @ViewBuilder let content: () -> Content",
+     "    var body: some View {",
+     "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackSm) {",
+     "            Text(title).font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline))",
+     "            Text(takeaway).foregroundStyle(Plenix.Colors.contentSubtle)",
+     "            Chart { content() }",
+     "                .chartForegroundStyleScale(range: [Plenix.Colors.datavizCategorical1, Plenix.Colors.datavizCategorical2, Plenix.Colors.datavizCategorical3,",
+     "                                                   Plenix.Colors.datavizCategorical4, Plenix.Colors.datavizCategorical5, Plenix.Colors.datavizCategorical6])",
+     "                .chartYAxis {",
+     "                    AxisMarks { _ in",
+     "                        AxisGridLine(stroke: StrokeStyle(lineWidth: Plenix.Border.borderWidthThin)).foregroundStyle(Plenix.Colors.borderSubtle)",
+     "                        AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentSubtle)",
+     "                    }",
+     "                }",
+     "                .chartXAxis { AxisMarks { _ in AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)) } }",
+     "                .frame(height: plotHeight)",
+     "                .accessibilityLabel(title)",
+     "                .accessibilityValue(takeaway)",
+     "        }",
+     "    }",
+     "}",
+     "",
+     "// Usage: a column chart; the marks carry their own VoiceOver labels",
+     "PlenixChart(title: \"Uploads per month\", plotHeight: chartPlotHeightMd, takeaway: \"Uploads rose from 120 in January to 310 in May.\") {",
+     "    ForEach(months) { m in",
+     "        BarMark(x: .value(\"Month\", m.name), y: .value(\"Uploads\", m.count))",
+     "            .accessibilityLabel(m.name).accessibilityValue(\"\\(m.count) uploads\")",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "import UIKit",
+     "import SwiftUI",
+     "",
+     "/// The Plenix chart in UIKit: the SwiftUI chart above, hosted; Swift Charts has no UIKit view of its own.",
+     "let host = UIHostingController(rootView: PlenixChart(title: title, plotHeight: chartPlotHeightMd, takeaway: takeaway) { marks })",
+     "host.view.backgroundColor = UIColor(Plenix.Colors.surfaceDefault)",
+     "host.view.accessibilityLabel = title",
+     "addChild(host)",
+     "stack.addArrangedSubview(host.view)",
+     "host.didMove(toParent: self)"
+    ],
+    "appkit": [
+     "import AppKit",
+     "import SwiftUI",
+     "",
+     "// The Plenix chart on the Mac: the same SwiftUI chart in an NSHostingView. A Mac Catalyst app uses the iOS tokens and",
+     "// the UIKit code above. A native AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today). With it:",
+     "let host = NSHostingView(rootView: PlenixChart(title: title, plotHeight: chartPlotHeightMd, takeaway: takeaway) { marks })",
+     "host.setAccessibilityLabel(title)",
+     "stackView.addArrangedSubview(host)"
+    ]
+   }
+  },
   "ios-data-display|Lists and tables": {
    "summary": "A Plenix list on iOS is the system List (UICollectionView with a list layout), kept native in behavior: swipe actions, editing and reordering, disclosure into a detail view, section headers, Dynamic Type and VoiceOver. Plenix changes the look to match the Web List and DataTable: rows of at least 44 points on the table surface with table lines drawn the full width, DM Sans titles at the body text role and muted subtitles at the secondary role, muted section headers, an 8-point rounded frame for grouped sections, and the Plenix selected colors for the chosen row. A multicolumn table on iPad and the Mac uses the same tokens.",
    "variants": [
@@ -11801,6 +12446,168 @@
     ]
    }
   },
+  "ios-forms|Image wells": {
+   "summary": "A Plenix image upload on iOS opens the system photo picker (PhotosPicker, PHPickerViewController) or the document picker from a Plenix control and shows the chosen picture in a frame of a fixed ratio with the media radius, the neutral fill while it loads, and Replace and Remove beside it; a profile picture is the Plenix avatar (a rounded square, never a circle) with Change photo and Remove photo. Cropping uses the system’s own editing where it exists. Apple’s image well is a Mac control people drop images on; on iOS the picker is the way in, and Plenix keeps it.",
+   "variants": [
+    {
+     "name": "Single (default)",
+     "apple": "PhotosPicker, one item",
+     "web": "forms|Image upload",
+     "background": "plx-comp-image-upload-locked-preview-background",
+     "content": "plx-comp-image-upload-name-text",
+     "border": "plx-comp-image-upload-preview-border-color",
+     "swiftui": "PhotosPicker(selection: $item, matching: .images) with a Plenix secondary button, then the picture in a framed preview",
+     "uikit": "PHPickerViewController with filter .images, selectionLimit 1",
+     "appkit": "NSImageView with isEditable = true (an image well) and NSOpenPanel",
+     "use": "One picture: a cover or a header image."
+    },
+    {
+     "name": "Multiple",
+     "apple": "PhotosPicker, several items",
+     "web": "forms|Image upload",
+     "background": null,
+     "content": null,
+     "border": "plx-comp-image-upload-preview-border-color",
+     "swiftui": "PhotosPicker(selection: $items, maxSelectionCount: max) and a LazyVGrid of square previews",
+     "uikit": "PHPickerViewController with selectionLimit = max",
+     "appkit": "NSOpenPanel with allowsMultipleSelection",
+     "use": "Product photos and galleries."
+    },
+    {
+     "name": "Avatar",
+     "apple": "PhotosPicker with a profile image",
+     "web": "forms|Avatar upload",
+     "background": null,
+     "content": null,
+     "border": null,
+     "swiftui": "the Plenix avatar (RoundedRectangle with Plenix.Radius.radiusAvatar8px) beside Change photo and Remove photo",
+     "uikit": "a UIImageView with layer.cornerRadius = Plenix.Radius.radiusAvatar8px and a PHPicker",
+     "appkit": "NSImageView with the avatar corner (a macOS build of the tokens is needed)",
+     "use": "Profile and team pictures."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Choose control",
+     "about": "A Plenix secondary button that opens the system picker."
+    },
+    {
+     "part": "B",
+     "name": "Preview",
+     "about": "The chosen picture in a frame of the ratio, with the media radius and the thin border."
+    },
+    {
+     "part": "C",
+     "name": "File name",
+     "about": "The name and size in DM Mono, the data role."
+    },
+    {
+     "part": "D",
+     "name": "Actions",
+     "about": "Replace and Remove, or Change photo and Remove photo."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Preview corners",
+     "token": "plx-comp-image-upload-preview-radius",
+     "value": "The media radius (Plenix.Radius.radiusMedia4px)",
+     "apple": "None",
+     "swiftui": ".clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px))",
+     "uikit": "layer.cornerRadius = Plenix.Radius.radiusMedia4px",
+     "appkit": "layer?.cornerRadius from the media radius (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Preview border",
+     "token": "plx-comp-image-upload-preview-border-color",
+     "value": "The default border, thin (Plenix.Colors.borderDefault)",
+     "apple": "The well’s bezel",
+     "swiftui": ".overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px).stroke(Plenix.Colors.borderDefault, lineWidth: Plenix.Border.borderWidthThin))",
+     "uikit": "layer.borderColor = Plenix.Colors.borderDefault.cgColor; layer.borderWidth = Plenix.Border.borderWidthThin",
+     "appkit": "imageFrameStyle .none with a Plenix border layer (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    },
+    {
+     "part": "C",
+     "attribute": "File name",
+     "token": "plx-comp-image-upload-name-font-family",
+     "value": "DM Mono at the data role (Plenix.Font.mono, Plenix.Platform.textDataSize)",
+     "apple": "None",
+     "swiftui": "Text(name).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+     "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)",
+     "appkit": "NSTextField with Plenix.Font.mono at the data size (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    }
+   ],
+   "states": [
+    {
+     "state": "Empty",
+     "token": "plx-comp-image-upload-zone-icon-text",
+     "swiftui": "no item: the Choose button",
+     "uikit": "no result",
+     "appkit": "image == nil"
+    },
+    {
+     "state": "Chosen",
+     "token": "plx-comp-image-upload-preview-border-color",
+     "swiftui": "the loaded Image in its frame",
+     "uikit": "the picked image in the view",
+     "appkit": "image set"
+    },
+    {
+     "state": "Refused",
+     "token": "plx-sys-feedback-danger-solid",
+     "swiftui": "an inline Plenix danger message",
+     "uikit": "an inline message view",
+     "appkit": "an alert sheet"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "import PhotosUI",
+     "",
+     "/// The Plenix image upload on iOS: the system photo picker, the picture in a framed 16:9 preview.",
+     "struct PlenixImageUpload: View {",
+     "    @State private var item: PhotosPickerItem?",
+     "    @State private var image: Image?",
+     "",
+     "    var body: some View {",
+     "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackSm) {",
+     "            if let image {",
+     "                image.resizable().scaledToFill()",
+     "                    .aspectRatio(16 / 9, contentMode: .fit) // the aspect-ratio scale (16:9), not a system value",
+     "                    .clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px))",
+     "                    .accessibilityHidden(true)",
+     "            }",
+     "            PhotosPicker(image == nil ? \"Choose image\" : \"Replace\", selection: $item, matching: .images)",
+     "                .font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .body))",
+     "                .frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "        }",
+     "        .task(id: item) { if let data = try? await item?.loadTransferable(type: Data.self), let ui = UIImage(data: data) { image = Image(uiImage: ui) } }",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "var config = PHPickerConfiguration()",
+     "config.filter = .images",
+     "config.selectionLimit = 1",
+     "let picker = PHPickerViewController(configuration: config)",
+     "preview.layer.cornerRadius = Plenix.Radius.radiusMedia4px",
+     "preview.layer.borderColor = Plenix.Colors.borderDefault.cgColor"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "let well = NSImageView()",
+     "well.isEditable = true // an image well people drop pictures on",
+     "well.imageFrameStyle = .none"
+    ]
+   }
+  },
   "ios-forms|Pickers": {
    "summary": "A Plenix picker on iOS is the system date, time or value picker, kept native in behavior (the calendar grid, the wheels, Dynamic Type, VoiceOver adjustable values) and opened from a Plenix field: a 6-point rounded rectangle at least 44 points tall with the control background and border, the value in DM Sans at the body text role, and the Plenix primary color for the chosen day. Apple’s default shows the value on a gray pill in the system tint; Plenix keeps the system picker and replaces the field and the colors around it.",
    "variants": [
@@ -11831,7 +12638,7 @@
     {
      "name": "Calendar",
      "apple": "Date and time - Pickers, Style=Inline",
-     "web": "forms|Date picker",
+     "web": "forms|Calendar",
      "background": "plx-sys-surface-raised",
      "content": "plx-sys-content-default",
      "border": null,
@@ -13503,6 +14310,366 @@
      "label.textColor = NSColor(Plenix.Colors.contentDefault)",
      "// NSSwitch draws the system accent color; a checkbox suits single rows in a grouped form:",
      "let check = NSButton(checkboxWithTitle: \"Sync over cellular\", target: self, action: #selector(syncChanged(_:)))"
+    ]
+   }
+  },
+  "ios-forms|Token fields": {
+   "summary": "A Plenix people or entity picker on iOS is a search field that suggests records as people type and keeps the chosen ones as tokens: the field in the Plenix control roles (6-point corners, at least 44 points tall, the border turning the focus color), suggestions in a list with the person’s avatar (a rounded square) or the record’s icon tile, the name in DM Sans over a detail line, an ID in DM Mono, and each token a soft Plenix tag with its remove button. iOS has no token field of its own (UISearchTextField has search tokens; the Mac has NSTokenField); Plenix keeps the system field and keyboard and draws the suggestions and tokens with its roles.",
+   "variants": [
+    {
+     "name": "People",
+     "apple": "UISearchTextField with search tokens",
+     "web": "forms|People picker",
+     "background": "plx-comp-entity-picker-list-background",
+     "content": "plx-comp-entity-picker-option-text",
+     "border": "plx-comp-entity-picker-list-border-color",
+     "swiftui": ".searchable(text:tokens:suggestedTokens:) with a Plenix row of avatar, name and email",
+     "uikit": "UISearchTextField.tokens with UISearchToken(icon:text:) per person",
+     "appkit": "NSTokenField with a Plenix suggestion menu (a macOS build of the tokens is needed)",
+     "use": "Assigning, sharing and inviting people."
+    },
+    {
+     "name": "Records (default)",
+     "apple": "UISearchTextField with suggestions",
+     "web": "forms|Entity picker",
+     "background": "plx-comp-entity-picker-list-background",
+     "content": "plx-comp-entity-picker-option-text",
+     "border": "plx-comp-entity-picker-list-border-color",
+     "swiftui": ".searchable with .searchSuggestions { rows of icon tile, name, detail and ID }",
+     "uikit": "a UISearchController whose results list draws the Plenix rows",
+     "appkit": "NSSearchField with a suggestions window (a macOS build of the tokens is needed)",
+     "use": "Linking a record to projects, assets or accounts."
+    },
+    {
+     "name": "Multiple",
+     "apple": "Search tokens",
+     "web": "forms|Entity picker",
+     "background": null,
+     "content": null,
+     "border": null,
+     "swiftui": "tokens: the chosen records, each a soft tag that removes on delete",
+     "uikit": "UISearchTextField.tokens, allowsDeletingTokens",
+     "appkit": "NSTokenField tokenStyle .rounded (a macOS build of the tokens is needed)",
+     "use": "Reviewers, watchers, related records."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Field",
+     "about": "The search field in the control roles, with the chosen tokens before the text."
+    },
+    {
+     "part": "B",
+     "name": "Suggestion",
+     "about": "The avatar or icon tile, the name over the detail line, an ID at the end."
+    },
+    {
+     "part": "C",
+     "name": "Token",
+     "about": "A chosen record as a soft tag with its remove button."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "A",
+     "attribute": "Field corners",
+     "token": "plx-sys-radius-control",
+     "value": "The control radius (Plenix.Radius.radiusControl)",
+     "apple": "The search field’s capsule",
+     "swiftui": ".clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl))",
+     "uikit": "searchTextField.layer.cornerRadius = Plenix.Radius.radiusControl",
+     "appkit": "the field’s bezel with the control radius (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Suggestion detail",
+     "token": "plx-comp-entity-picker-description-text",
+     "value": "The muted content color in DM Sans (Plenix.Colors.contentMuted)",
+     "apple": "Secondary label",
+     "swiftui": "Text(email).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "uikit": "secondaryTextProperties.color = Plenix.Colors.contentMuted",
+     "appkit": "the secondary text in the muted role (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Record ID",
+     "token": "plx-comp-entity-picker-meta-font-family",
+     "value": "DM Mono at the data role (Plenix.Font.mono)",
+     "apple": "None",
+     "swiftui": "Text(id).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+     "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)",
+     "appkit": "the ID drawn with Plenix.Font.mono (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    },
+    {
+     "part": "C",
+     "attribute": "Token fill",
+     "token": "plx-sys-fill-neutral",
+     "value": "The neutral soft fill with its border (Plenix.Colors.fillNeutral, Plenix.Colors.fillNeutralBorder)",
+     "apple": "The tint color",
+     "swiftui": "the token’s background Plenix.Colors.fillNeutral",
+     "uikit": "searchTextField.tokenBackgroundColor = Plenix.Colors.fillNeutral",
+     "appkit": "NSTokenField with the neutral fill (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    }
+   ],
+   "states": [
+    {
+     "state": "Empty",
+     "token": "plx-comp-entity-picker-input-placeholder-text",
+     "swiftui": "the prompt: Search by name or email",
+     "uikit": "placeholder",
+     "appkit": "placeholderString"
+    },
+    {
+     "state": "Searching",
+     "token": "plx-comp-entity-picker-option-active-background",
+     "swiftui": "suggestions shown",
+     "uikit": "the results controller shown",
+     "appkit": "the suggestions window shown"
+    },
+    {
+     "state": "Chosen",
+     "token": "plx-comp-entity-picker-option-selected-text",
+     "swiftui": "a token added",
+     "uikit": "tokens updated",
+     "appkit": "objectValue updated"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// The Plenix people picker on iOS: search by name or email, the chosen people as tokens.",
+     "struct PlenixPeoplePicker: View {",
+     "    let people: [Person]",
+     "    @State private var text = \"\"",
+     "    @State private var chosen: [Person] = []",
+     "",
+     "    var body: some View {",
+     "        List { ForEach(chosen) { p in Text(p.name) } }",
+     "            .searchable(text: $text, tokens: $chosen, prompt: \"Search by name or email\") { p in Text(p.name) }",
+     "            .searchSuggestions {",
+     "                ForEach(people.filter { $0.matches(text) }) { p in",
+     "                    VStack(alignment: .leading) {",
+     "                        Text(p.name).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "                        Text(p.email).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
+     "                    }",
+     "                    .searchCompletion(p)",
+     "                }",
+     "            }",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "let field = UISearchTextField()",
+     "field.tokenBackgroundColor = Plenix.Colors.fillNeutral",
+     "field.allowsDeletingTokens = true",
+     "field.insertToken(UISearchToken(icon: nil, text: \"Maya Chen\"), at: 0)"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "let tokens = NSTokenField()",
+     "tokens.tokenStyle = .rounded"
+    ]
+   }
+  },
+  "ios-navigation|Column views": {
+   "summary": "Plenix Miller columns on iPadOS and the Mac are the system column view (NavigationSplitView with three columns, or NSBrowser on the Mac), kept native in behavior (selection opens the next column, the arrow keys move between levels, VoiceOver reads each column as a list) and drawn with the Plenix list roles: rows at least 44 points tall in DM Sans, the chosen path in the Plenix selected fill and content color, a chevron on each parent, the thin subtle line between columns. On iPhone the same data is one level at a time in a NavigationStack. Apple’s default tints the chosen row in the system accent; Plenix keeps the structure and replaces the colors and type.",
+   "variants": [
+    {
+     "name": "Columns (default)",
+     "apple": "NavigationSplitView, three columns (sidebar, content, detail)",
+     "web": "navigation|Miller columns",
+     "background": "plx-comp-miller-columns-background",
+     "content": "plx-comp-miller-columns-text",
+     "border": "plx-comp-miller-columns-column-border-inline-end-color",
+     "swiftui": "NavigationSplitView { List(selection:) } content: { List(selection:) } detail: { … } with the Plenix row style",
+     "uikit": "UISplitViewController(style: .tripleColumn) with a UICollectionView list in each column",
+     "appkit": "NSBrowser with a Plenix cell (a macOS build of the tokens is needed)",
+     "use": "Browsing a deep folder or category tree on iPad and the Mac."
+    },
+    {
+     "name": "With preview column",
+     "apple": "NavigationSplitView detail column",
+     "web": "navigation|Miller columns",
+     "background": "plx-comp-miller-columns-background",
+     "content": "plx-comp-miller-columns-text",
+     "border": null,
+     "swiftui": "the detail column shows the chosen leaf (its image, name and details)",
+     "uikit": "the secondary column’s view controller shows the chosen leaf",
+     "appkit": "NSBrowser’s preview view controller (a macOS build of the tokens is needed)",
+     "use": "Checking an item before opening it."
+    },
+    {
+     "name": "Resizable",
+     "apple": "Split view column widths",
+     "web": "navigation|Miller columns",
+     "background": null,
+     "content": null,
+     "border": "plx-comp-miller-columns-resizer-background",
+     "swiftui": ".navigationSplitViewColumnWidth(min:ideal:max:) from the Plenix width steps",
+     "uikit": "preferredPrimaryColumnWidth and min and max widths",
+     "appkit": "NSBrowser column resizing type .userColumnResizing",
+     "use": "Long names that are cut at the default width."
+    }
+   ],
+   "anatomy": [
+    {
+     "part": "A",
+     "name": "Columns",
+     "about": "One list per level, side by side; the newest scrolls into view."
+    },
+    {
+     "part": "B",
+     "name": "Row",
+     "about": "An icon, the name and an optional detail line, at least 44 points tall."
+    },
+    {
+     "part": "C",
+     "name": "Chosen path",
+     "about": "The chosen row of each column in the selected fill and content color."
+    },
+    {
+     "part": "D",
+     "name": "Chevron",
+     "about": "Marks a row that has children."
+    },
+    {
+     "part": "E",
+     "name": "Column line",
+     "about": "The thin subtle line between columns."
+    }
+   ],
+   "attributes": [
+    {
+     "part": "B",
+     "attribute": "Row height",
+     "token": "plx-comp-miller-columns-item-min-height",
+     "value": "At least the touch target (Plenix.Platform.controlTargetMin)",
+     "apple": "The system row height",
+     "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "uikit": "the list cell’s minimum height from Plenix.Platform.controlTargetMin",
+     "appkit": "rowHeight from the target size (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "B",
+     "attribute": "Name text",
+     "token": "plx-comp-miller-columns-text",
+     "value": "DM Sans at the body role (Plenix.Font.sans, Plenix.Platform.textBodySize)",
+     "apple": "SF Pro body",
+     "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.contentDefault)",
+     "uikit": "UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize)!)",
+     "appkit": "NSFont named DM Sans at the body size (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "C",
+     "attribute": "Chosen fill",
+     "token": "plx-comp-miller-columns-item-selected-background",
+     "value": "The selected fill and content (Plenix.Colors.stateSelected, Plenix.Colors.selectedContent)",
+     "apple": "The accent color",
+     "swiftui": ".listRowBackground(isChosen ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault)",
+     "uikit": "cell backgroundConfiguration with Plenix.Colors.stateSelected when selected",
+     "appkit": "NSBrowser cell drawn with the selected role (a macOS build of the tokens is needed)",
+     "follows": "Best practices"
+    },
+    {
+     "part": "D",
+     "attribute": "Chevron color",
+     "token": "plx-comp-miller-columns-chevron-background",
+     "value": "The muted content color (Plenix.Colors.contentMuted)",
+     "apple": "The tertiary label color",
+     "swiftui": "Image(systemName: \"chevron.right\").foregroundStyle(Plenix.Colors.contentMuted)",
+     "uikit": "UICellAccessory.disclosureIndicator(options: .init(tintColor: Plenix.Colors.contentMuted))",
+     "appkit": "the browser’s branch image tinted with the muted role (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    },
+    {
+     "part": "E",
+     "attribute": "Column line",
+     "token": "plx-comp-miller-columns-column-border-inline-end-color",
+     "value": "The subtle border, thin (Plenix.Colors.borderSubtle, Plenix.Border.borderWidthThin)",
+     "apple": "The system separator",
+     "swiftui": "Divider().overlay(Plenix.Colors.borderSubtle)",
+     "uikit": "a separator view with backgroundColor = Plenix.Colors.borderSubtle",
+     "appkit": "the browser’s column separator in the subtle role (a macOS build of the tokens is needed)",
+     "follows": "Platform considerations"
+    }
+   ],
+   "states": [
+    {
+     "state": "Default",
+     "token": "plx-comp-miller-columns-background",
+     "swiftui": "the row on the surface",
+     "uikit": "cell not selected",
+     "appkit": "cell not selected"
+    },
+    {
+     "state": "Chosen",
+     "token": "plx-comp-miller-columns-item-selected-background",
+     "swiftui": "the row in the selection binding",
+     "uikit": "isSelected",
+     "appkit": "selectedCell"
+    },
+    {
+     "state": "Focused",
+     "token": "plx-comp-miller-columns-list-focus-item-selected-outline-color",
+     "swiftui": "the focused row with a keyboard (focus system)",
+     "uikit": "isFocused (keyboard focus on iPad)",
+     "appkit": "first responder column"
+    },
+    {
+     "state": "Disabled",
+     "token": "plx-comp-miller-columns-item-disabled-text",
+     "swiftui": ".disabled(true)",
+     "uikit": "isUserInteractionEnabled = false",
+     "appkit": "the cell is not enabled"
+    }
+   ],
+   "code": {
+    "swiftui": [
+     "import SwiftUI",
+     "",
+     "/// Plenix Miller columns on iPad: three columns, the chosen path in the Plenix selected role.",
+     "struct PlenixColumns: View {",
+     "    let folders: [Folder]",
+     "    @State private var folder: Folder.ID?",
+     "    @State private var item: Item.ID?",
+     "",
+     "    var body: some View {",
+     "        NavigationSplitView {",
+     "            List(folders, selection: $folder) { f in",
+     "                Label(f.name, systemImage: \"folder\")",
+     "                    .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+     "                    .frame(minHeight: Plenix.Platform.controlTargetMin)",
+     "                    .listRowBackground(folder == f.id ? Plenix.Colors.stateSelected : Plenix.Colors.surfaceDefault)",
+     "            }",
+     "        } content: {",
+     "            List(items(in: folder), selection: $item) { i in Text(i.name) }",
+     "        } detail: {",
+     "            ItemPreview(id: item)",
+     "        }",
+     "        .tint(Plenix.Colors.selectedContent)",
+     "    }",
+     "}"
+    ],
+    "uikit": [
+     "let split = UISplitViewController(style: .tripleColumn)",
+     "var row = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)",
+     "row.backgroundColor = Plenix.Colors.surfaceDefault",
+     "// each cell: content in DM Sans (UIFontMetrics), selected background Plenix.Colors.stateSelected, accessory .disclosureIndicator",
+     "split.setViewController(FoldersViewController(layout: row), for: .primary)"
+    ],
+    "appkit": [
+     "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+     "let browser = NSBrowser()",
+     "browser.columnResizingType = .userColumnResizing",
+     "browser.setCellClass(PlenixBrowserCell.self) // draws the selected role and DM Sans"
     ]
    }
   },

@@ -1,0 +1,9 @@
+/* Plenix · AvatarUpload (platform/patterns/AvatarUpload). Places Platform components: the Avatar, then its actions (the
+   FileInput's button and Remove photo) over the hint; the crop step under them. Anatomy and API: AvatarUpload.jsx. */
+.plx-avatar-upload{display:flex;flex-direction:column;max-inline-size:var(--plx-comp-avatar-upload-max-width);row-gap:var(--plx-comp-avatar-upload-row-gap);}
+.plx-avatar-upload__row{align-items:center;column-gap:var(--plx-comp-avatar-upload-row-column-gap);display:flex;}
+.plx-avatar-upload__body{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-avatar-upload-body-row-gap);}
+.plx-avatar-upload__actions{align-items:center;column-gap:var(--plx-comp-avatar-upload-actions-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-avatar-upload-actions-row-gap);}
+.plx-avatar-upload__hint{color:var(--plx-comp-avatar-upload-hint-text);font-size:var(--plx-comp-avatar-upload-hint-font-size);}
+/* the FileInput is the Change photo button only: the Avatar shows what is chosen */
+.plx-avatar-upload .plx-file-input__summary{display:none;}

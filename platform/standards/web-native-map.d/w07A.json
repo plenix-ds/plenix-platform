@@ -1,0 +1,16 @@
+{
+  "$description": "Library part w07A (wave 7, lane A): the iOS and Android counterparts of the calendar, the date picker (and its range and date-time modes), the country and locale select, the stepper (and its progress tracker and step progress), the vertical tabs, the mobile app bar and product navigation. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "forms|Calendar": { "ios": ["ios-forms|Pickers"], "android": ["android-forms|DatePicker and TimePicker"] },
+    "forms|Date picker": { "ios": ["ios-forms|Pickers"], "android": ["android-forms|DatePicker and TimePicker"] },
+    "forms|Date range picker": { "ios": ["ios-forms|Pickers"], "android": ["android-forms|DatePicker and TimePicker"] },
+    "forms|Date-time picker": { "ios": ["ios-forms|Pickers"], "android": ["android-forms|DatePicker and TimePicker"] },
+    "forms|Country / locale select": { "ios": ["ios-forms|Pickers", "ios-data-display|Lists and tables"], "android": ["android-forms|Exposed dropdown menu"] },
+    "navigation|Stepper": { "ios": ["ios-feedback|Progress indicators"], "android": ["android-feedback|Progress indicators"] },
+    "feedback|Progress tracker": { "ios": ["ios-feedback|Progress indicators"], "android": ["android-feedback|Progress indicators"] },
+    "feedback|Step progress": { "ios": ["ios-navigation|Page controls", "ios-feedback|Progress indicators"], "android": ["android-feedback|Progress indicators"] },
+    "navigation|Vertical tabs": { "ios": ["ios-navigation|Sidebars", "ios-navigation|Tab views"], "android": ["android-navigation|Expanded navigation rail", "android-navigation|Tabs and segmented buttons"] },
+    "navigation|Mobile app bar": { "ios": ["ios-actions|Toolbars"], "android": ["android-navigation|Top app bar", "android-navigation|Back stack"] },
+    "navigation|Product navigation": { "ios": ["ios-navigation|Tab bars", "ios-navigation|Sidebars"], "android": ["android-navigation|NavigationBar", "android-navigation|NavigationRail"] }
+  }
+}

@@ -28,6 +28,10 @@
      searchScope: at Narrow, what the search covers, shown under the field ("In Notes"); default the application's name
      actions: other utilities, before the account
      account: the account menu (AppHeader.Account), last in the utilities
+     back: { href | onClick, label } puts a Back item (the arrow) first in the header, for a screen inside the
+       application (a mobile app bar on a child screen); label default "Back" (library wave 7)
+     title: the screen's title after Back, in place of the header name and the switcher (a mobile app bar on a child
+       screen: Back, the title, then the actions); it truncates with an ellipsis when it does not fit
      switcher: true or false overrides whether the header name is the application switcher (default: when currentApp is given)
      className: more classes on the header
      AppHeader.Item.icon: the icon
@@ -82,6 +86,8 @@
      With a touch pointer every header item and the header name has a 44 × 44px target (Platforms Standard 3.1): the
        target extends invisibly past the 40px item, and the utilities part 4px so the targets do not overlap.
      The account menu shows the name, email and picture from the session.
+     On a phone the header is the mobile app bar: the header name (or Back and the title) at the start, search and the
+       utilities at the end; the header links leave it (they stay in the switcher).
    Notes:
      Settings is reached from the account menu, never from a separate button.
      Notifications are not in the header: they are a section of the page (NotificationList on the dashboard).
@@ -105,7 +111,7 @@ import { useDensity } from '../../hooks/useDensity.js';
 import { useMedia, below } from '../AppShell/AppShell.jsx';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel = 'Pinned applications',
-  action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, className, ...rest }) {
+  action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {
   const { pinnedApps } = useSession();
   const [searching, setSearching] = React.useState(false);
   const panel = React.useRef(null), toggle = React.useRef(null), view = React.useRef(null);
@@ -182,7 +188,9 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   return (
     <header className={cx('plx-app-header', 'plx-app-header--' + tone, searching && 'is-searching', className)} {...rest}>
       <div className="plx-app-header__start">
-        {showSwitcher ? <AppHeader.Switcher currentApp={currentApp} appsRoot={appsRoot} onOpenApp={onOpenApp} brand={brandEl} />
+        {back ? <AppHeader.Item icon={<Icon name="arrow-left" />} label={back.label || 'Back'} href={back.href} onClick={back.onClick} className="plx-app-header__back" /> : null}
+        {title ? <span className="plx-app-header__brand plx-app-header__title">{title}</span>
+          : showSwitcher ? <AppHeader.Switcher currentApp={currentApp} appsRoot={appsRoot} onOpenApp={onOpenApp} brand={brandEl} />
           : brandHref ? <a href={brandHref} className="plx-app-header__brand">{brandEl}</a> : <span className="plx-app-header__brand">{brandEl}</span>}
         {pinned && (!Array.isArray(pinned) || pinned.length) ? <><span className="plx-app-header__divider" aria-hidden="true" /><nav aria-label={navLabel} className="plx-app-header__nav">{pinned}</nav></> : null}
       </div>

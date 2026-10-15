@@ -1,0 +1,280 @@
+{
+  "$description": "MillerColumns (platform/components/MillerColumns), library wave 7, lane B: its component tokens. The frame and columns in the surface and border roles, the rows in the tree’s roles (hover, the selected path, the focus outline), six column width steps.",
+  "plx-comp": {
+    "miller-columns-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "MillerColumns: background (surface-default)."
+    },
+    "miller-columns-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "MillerColumns: border color (border-default)."
+    },
+    "miller-columns-radius": {
+      "$value": "{plx-sys.radius-surface-8px}",
+      "$type": "dimension",
+      "$description": "MillerColumns: corners (radius-surface-8px)."
+    },
+    "miller-columns-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "MillerColumns: border width (border-width-thin)."
+    },
+    "miller-columns-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color",
+      "$description": "MillerColumns: text color (content-default)."
+    },
+    "miller-columns-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "MillerColumns: font size (font-size-13)."
+    },
+    "miller-columns-height": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "MillerColumns: height (size-320px)."
+    },
+    "miller-columns-column-border-inline-end-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "MillerColumns column border inline end color: column border inline end color (border-subtle)."
+    },
+    "miller-columns-column-border-inline-end-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "MillerColumns column border inline end: width (border-width-thin)."
+    },
+    "miller-columns-column-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column: width (size-240px)."
+    },
+    "miller-columns-column-width-step-1": {
+      "$value": "{plx-ref.size-160px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column width step 1: column width step 1 (size-160px)."
+    },
+    "miller-columns-column-width-step-2": {
+      "$value": "{plx-ref.size-200px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column width step 2: column width step 2 (size-200px)."
+    },
+    "miller-columns-column-width-step-3": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column width step 3: column width step 3 (size-240px)."
+    },
+    "miller-columns-column-width-step-4": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column width step 4: column width step 4 (size-280px)."
+    },
+    "miller-columns-column-width-step-5": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column width step 5: column width step 5 (size-320px)."
+    },
+    "miller-columns-column-width-step-6": {
+      "$value": "{plx-ref.size-360px}",
+      "$type": "dimension",
+      "$description": "MillerColumns column width step 6: column width step 6 (size-360px)."
+    },
+    "miller-columns-list-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "MillerColumns list: padding top and bottom (space-inset-xs)."
+    },
+    "miller-columns-list-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "MillerColumns list: padding left and right (space-inset-xs)."
+    },
+    "miller-columns-list-row-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "MillerColumns list: gap between rows (space-4px)."
+    },
+    "miller-columns-item-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "MillerColumns item: corners (radius-control)."
+    },
+    "miller-columns-item-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "MillerColumns item: gap (space-inline-sm)."
+    },
+    "miller-columns-item-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "MillerColumns item: minimum height (control-height-standard)."
+    },
+    "miller-columns-item-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "MillerColumns item padding inline end: item padding inline end (space-inset-xs)."
+    },
+    "miller-columns-item-padding-inline-start": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "MillerColumns item padding inline start: item padding inline start (space-inset-sm)."
+    },
+    "miller-columns-item-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "MillerColumns item hover: background (state-hover)."
+    },
+    "miller-columns-item-hover-shadow": {
+      "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-hover-border}",
+      "$type": "shadow",
+      "$description": "MillerColumns item hover: shadow (inset 0 0 0 border-width-thin state-hover-border)."
+    },
+    "miller-columns-item-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "MillerColumns item selected: background (state-selected)."
+    },
+    "miller-columns-item-selected-shadow": {
+      "$value": "inset 0 0 0 {plx-sys.border-width-thin} {plx-sys.state-selected-border}",
+      "$type": "shadow",
+      "$description": "MillerColumns item selected: shadow (inset 0 0 0 border-width-thin state-selected-border)."
+    },
+    "miller-columns-item-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "MillerColumns item selected: text color (selected-content)."
+    },
+    "miller-columns-item-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "MillerColumns item selected: font weight (font-weight-medium)."
+    },
+    "miller-columns-list-focus-item-selected-outline-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "MillerColumns list focus item selected outline color: list focus item selected outline color (focus-ring-color)."
+    },
+    "miller-columns-list-focus-item-selected-outline-offset": {
+      "$value": "calc({plx-sys.border-width-medium} * -1)",
+      "$type": "dimension",
+      "$description": "MillerColumns list focus item selected outline offset: list focus item selected outline offset (calc(border-width-medium * -1))."
+    },
+    "miller-columns-list-focus-item-selected-outline-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "MillerColumns list focus item selected outline: width (border-width-medium)."
+    },
+    "miller-columns-item-disabled-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "MillerColumns item disabled: text color (content-disabled)."
+    },
+    "miller-columns-icon-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "MillerColumns icon: text color (content-muted)."
+    },
+    "miller-columns-item-selected-icon-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "MillerColumns item selected icon: text color (selected-content)."
+    },
+    "miller-columns-description-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "MillerColumns description: text color (content-muted)."
+    },
+    "miller-columns-description-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "MillerColumns description: font size (font-size-11)."
+    },
+    "miller-columns-description-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "MillerColumns description: font weight (font-weight-regular)."
+    },
+    "miller-columns-chevron-background": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "MillerColumns chevron: background (content-muted)."
+    },
+    "miller-columns-chevron-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "MillerColumns chevron: height (size-16px)."
+    },
+    "miller-columns-chevron-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "MillerColumns chevron: width (size-16px)."
+    },
+    "miller-columns-empty-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "MillerColumns empty: text color (content-muted)."
+    },
+    "miller-columns-empty-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "MillerColumns empty: padding top and bottom (space-inset-sm)."
+    },
+    "miller-columns-empty-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "MillerColumns empty: padding left and right (space-inset-sm)."
+    },
+    "miller-columns-preview-width": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension",
+      "$description": "MillerColumns preview: width (size-280px)."
+    },
+    "miller-columns-preview-min-width": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension",
+      "$description": "MillerColumns preview: minimum width (size-280px)."
+    },
+    "miller-columns-preview-padding-block": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "MillerColumns preview: padding top and bottom (space-inset-md)."
+    },
+    "miller-columns-preview-padding-inline": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "MillerColumns preview: padding left and right (space-inset-md)."
+    },
+    "miller-columns-preview-focus-shadow": {
+      "$value": "inset 0 0 0 {plx-sys.border-width-medium} {plx-sys.focus-ring-color}",
+      "$type": "shadow",
+      "$description": "MillerColumns preview focus: shadow (inset 0 0 0 border-width-medium focus-ring-color)."
+    },
+    "miller-columns-resizer-background": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "MillerColumns resizer: background (border-subtle)."
+    },
+    "miller-columns-resizer-width": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension",
+      "$description": "MillerColumns resizer: width (size-4px)."
+    },
+    "miller-columns-resizer-hover-background": {
+      "$value": "{plx-sys.border-strong}",
+      "$type": "color",
+      "$description": "MillerColumns resizer hover: background (border-strong)."
+    },
+    "miller-columns-resizer-focus-background": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "MillerColumns resizer focus: background (focus-ring-color)."
+    },
+    "miller-columns-resize-step": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "MillerColumns: how far a drag of a column edge moves before the column takes the next width step."
+    }
+  }
+}

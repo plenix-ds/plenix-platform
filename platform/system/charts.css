@@ -1,0 +1,30 @@
+/* Plenix · Charts (platform/system/charts.css; the code is in platform/charts/): ChartFrame's figure, caption and plot, and the base classes of the marks
+   drawn in it. A mark's color is its data-viz step: data-plx-dataviz="<scale>-<step>" (system/dataviz.css) makes it the
+   mark's --plx-comp-data-color, which these rules hand to the mark's own token; without one a mark takes the first
+   categorical color. Lines and labels never carry a color of their own in the markup. */
+.plx-chart{display:flex;flex-direction:column;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;min-inline-size:0;row-gap:var(--plx-comp-chart-gap);}
+.plx-chart__caption{display:flex;flex-direction:column;row-gap:var(--plx-comp-chart-caption-gap);}
+.plx-chart__title{color:var(--plx-comp-chart-title-text);font-family:var(--plx-comp-chart-title-font-family);font-size:var(--plx-comp-chart-title-font-size);font-weight:var(--plx-comp-chart-title-font-weight);line-height:var(--plx-comp-chart-title-line-height);}
+.plx-chart__description{color:var(--plx-comp-chart-description-text);font-size:var(--plx-comp-chart-description-font-size);line-height:var(--plx-comp-chart-description-line-height);}
+/* the plot: the container's width, a height by size; the SVG is drawn at the measured size */
+.plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-md);min-inline-size:0;position:relative;}
+.plx-chart--sm .plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-sm);}
+.plx-chart--lg .plx-chart__plot{block-size:var(--plx-comp-chart-plot-height-lg);}
+.plx-chart__svg{display:block;overflow:visible;}
+/* marks: filled shapes (bars, areas, slices), lines and points, colored by their data-viz step */
+.plx-chart__mark,.plx-chart__line,.plx-chart__point{--plx-comp-chart-mark-color:var(--plx-comp-chart-mark-default-color);}
+.plx-chart__mark[data-plx-dataviz],.plx-chart__line[data-plx-dataviz],.plx-chart__point[data-plx-dataviz]{--plx-comp-chart-mark-color:var(--plx-comp-data-color);}
+.plx-chart__mark{fill:var(--plx-comp-chart-mark-color);}
+.plx-chart__line{fill:none;stroke:var(--plx-comp-chart-mark-color);stroke-linecap:round;stroke-linejoin:round;stroke-width:var(--plx-comp-chart-line-width);}
+.plx-chart__point{fill:var(--plx-comp-chart-mark-color);stroke:var(--plx-comp-chart-point-outline);stroke-width:var(--plx-comp-chart-point-outline-width);}
+/* the frame's rules: the axis line (the baseline) and grid lines behind the marks */
+.plx-chart__axis-line{fill:none;stroke:var(--plx-comp-chart-axis-line-color);stroke-width:var(--plx-comp-chart-axis-line-width);}
+.plx-chart__grid-line{fill:none;stroke:var(--plx-comp-chart-grid-line-color);stroke-width:var(--plx-comp-chart-grid-line-width);}
+/* tick labels: technical values, the data font */
+.plx-chart__tick-label{fill:var(--plx-comp-chart-tick-label-text);font-family:var(--plx-comp-chart-tick-label-font-family);font-size:var(--plx-comp-chart-tick-label-font-size);}
+/* tick labels placed by the axis they belong to: the value axis's at its tick, ending before the plot; the category
+   axis's centered under it */
+.plx-chart__tick-label--y{dominant-baseline:central;text-anchor:end;}
+.plx-chart__tick-label--x{dominant-baseline:hanging;text-anchor:middle;}
+/* the data table under the chart */
+.plx-chart__data{min-inline-size:0;}

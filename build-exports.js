@@ -36,12 +36,12 @@ module.exports = function buildExports(root, { check = false } = {}) {
     const lines = fs.readFileSync(path.join(DIR, f), 'utf8').replace(/\r\n/g, '\n').split('\n').map((l) => l.trim()).filter((l) => l && !/^(\/\/|\/\*.*\*\/$)/.test(l));
     for (const l of lines) {
       if (f.endsWith('.js')) {
-        const m = l.match(/^export \{([^}]+)\} from '\.\.\/((?:components|patterns|providers|hooks|utils|templates|system)\/[^']+)';$/);
+        const m = l.match(/^export \{([^}]+)\} from '\.\.\/((?:components|patterns|providers|hooks|utils|templates|system|charts)\/[^']+)';$/);
         if (!m) { bad.push('exports/' + f + ': "' + l + '" is not export { Name } from \'../<folder>/<file>\';'); continue; }
         if (!fs.existsSync(path.join(P, m[2]))) bad.push('exports/' + f + ': ' + m[2] + ' does not exist');
         js.push({ f, line: 'export {' + m[1] + '} from \'./' + m[2] + '\';', names: m[1].split(',').map((x) => x.trim().split(/\s+as\s+/).pop()).filter(Boolean) });
       } else {
-        const m = l.match(/^@import url\("\.\.\/((?:components|patterns|templates|system)\/[^"]+\.css)"\);$/);
+        const m = l.match(/^@import url\("\.\.\/((?:components|patterns|templates|system|charts)\/[^"]+\.css)"\);$/);
         if (!m) { bad.push('exports/' + f + ': "' + l + '" is not @import url("../<folder>/<file>.css");'); continue; }
         if (!fs.existsSync(path.join(P, m[1]))) bad.push('exports/' + f + ': ' + m[1] + ' does not exist');
         css.push({ f, line: '@import url("' + m[1] + '");', file: m[1] });

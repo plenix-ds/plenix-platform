@@ -8777,6 +8777,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        items={[{ value: 'info', label: 'Info', count: 3, content: <…/> }, …]} />
    Props:
      variant: "contained" (default) | "folder" | "segmented"
+     orientation: "horizontal" (default) | "vertical" (the tabs in a column at the start, the panel beside them: many
+       sections or long names, as a settings page; the vertical look replaces the variant's)
      items: the tabs, in order: [{ value, label, icon, count, content, disabled }]
      items[].icon: an icon name or element before the label
      items[].count: a count after the label
@@ -8793,9 +8795,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Behavior:
      In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
      The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
-     Arrow keys move and select (wrapping); Home and End go to the first and last.
+     Arrow keys move and select (wrapping); Home and End go to the first and last. Vertical tabs say so
+       (aria-orientation); Up and Down move there, Left and Right too.
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
+     Vertical tabs never move into More: the column grows with them and the panel takes the rest of the width.
      Tabs that do not fit on one row move into a "More" menu after the last shown tab: a menu button outside the tab list,
        its own Tab stop. The tab list never scrolls sideways (Platforms Standard 3.5, reflow). The selected tab is always
        shown: when it is one of the moved tabs, it takes the last shown place. Arrow keys, Home and End still reach every
@@ -8807,6 +8811,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      content below with no frame of its own; for tabs inside a pane or a card that is already framed.
      "segmented" is a compact switch with SegmentedControl's look A (owner, 2026-10-14): joined segments at the button
        control height, the selected one in the selected-state blue tint.
+     orientation="vertical" (library wave 7) draws each tab as a navigation list row: the hover fill, and the open tab in
+       the selected state (the navigation pane's current row), never a focus ring.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */
@@ -8853,6 +8859,7 @@ function useTabsFit(rootRef, listRef, count, key) {
 }
 function Tabs({
   variant = 'contained',
+  orientation = 'horizontal',
   items,
   value,
   defaultValue,
@@ -8871,7 +8878,9 @@ function Tabs({
   const refs = _react.default.useRef({});
   const root = _react.default.useRef(null),
     list = _react.default.useRef(null);
-  const fit = useTabsFit(root, list, items.length, items.map(t => t.label).join('|') + '|' + String(current));
+  const vertical = orientation === 'vertical';
+  const measured = useTabsFit(root, list, items.length, items.map(t => t.label).join('|') + '|' + String(current));
+  const fit = vertical ? items.length : measured;
   // the shown tabs: the first `fit`; the selected tab takes the last place when it is not among them
   const at = items.findIndex(t => t.value === current);
   const shown = i => at < fit ? i < fit : i < fit - 1 || i === at;
@@ -8903,13 +8912,14 @@ function Tabs({
   const hasPanels = items.some(t => t.content !== undefined);
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: root,
-    className: (0, _cx.cx)('plx-tabs', 'plx-tabs--' + variant, className)
+    className: (0, _cx.cx)('plx-tabs', vertical ? 'plx-tabs--vertical' : 'plx-tabs--' + variant, className)
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-tabs__list"
   }, /*#__PURE__*/_react.default.createElement("div", {
     ref: list,
     role: "tablist",
     "aria-label": label,
+    "aria-orientation": vertical ? 'vertical' : undefined,
     className: "plx-tabs__tablist",
     onKeyDown: onKeyDown
   }, items.map((t, i) => {
@@ -14308,6 +14318,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      searchScope: at Narrow, what the search covers, shown under the field ("In Notes"); default the application's name
      actions: other utilities, before the account
      account: the account menu (AppHeader.Account), last in the utilities
+     back: { href | onClick, label } puts a Back item (the arrow) first in the header, for a screen inside the
+       application (a mobile app bar on a child screen); label default "Back" (library wave 7)
+     title: the screen's title after Back, in place of the header name and the switcher (a mobile app bar on a child
+       screen: Back, the title, then the actions); it truncates with an ellipsis when it does not fit
      switcher: true or false overrides whether the header name is the application switcher (default: when currentApp is given)
      className: more classes on the header
      AppHeader.Item.icon: the icon
@@ -14362,6 +14376,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      With a touch pointer every header item and the header name has a 44 × 44px target (Platforms Standard 3.1): the
        target extends invisibly past the 40px item, and the utilities part 4px so the targets do not overlap.
      The account menu shows the name, email and picture from the session.
+     On a phone the header is the mobile app bar: the header name (or Back and the title) at the start, search and the
+       utilities at the end; the header links leave it (they stay in the switcher).
    Notes:
      Settings is reached from the account menu, never from a separate button.
      Notifications are not in the header: they are a section of the page (NotificationList on the dashboard).
@@ -14385,6 +14401,8 @@ function AppHeader({
   actions,
   account,
   switcher,
+  back,
+  title,
   className,
   ...rest
 }) {
@@ -14524,7 +14542,17 @@ function AppHeader({
     className: (0, _cx.cx)('plx-app-header', 'plx-app-header--' + tone, searching && 'is-searching', className)
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-app-header__start"
-  }, showSwitcher ? /*#__PURE__*/_react.default.createElement(AppHeader.Switcher, {
+  }, back ? /*#__PURE__*/_react.default.createElement(AppHeader.Item, {
+    icon: /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "arrow-left"
+    }),
+    label: back.label || 'Back',
+    href: back.href,
+    onClick: back.onClick,
+    className: "plx-app-header__back"
+  }) : null, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-app-header__brand plx-app-header__title"
+  }, title) : showSwitcher ? /*#__PURE__*/_react.default.createElement(AppHeader.Switcher, {
     currentApp: currentApp,
     appsRoot: appsRoot,
     onOpenApp: onOpenApp,
@@ -27645,6 +27673,5283 @@ RichTextEditor.preload = () => {
   (0, _tiptap.loadTiptap)().catch(() => {});
 };
   } },
+  "platform/components/Calendar/Calendar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Calendar = void 0;
+exports.addDays = addDays;
+exports.addMonths = addMonths;
+exports.firstDayOf = firstDayOf;
+exports.isoDate = isoDate;
+exports.parseIsoDate = parseIsoDate;
+exports.todayIso = todayIso;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _direction = require("../../utils/direction.js");
+var _format = require("../../utils/format.js");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Calendar
+   Summary: A month grid of days to choose a date or a range from, with the weeks in the reader's locale (its first day of
+     the week, its month and weekday names), today marked, the chosen date or range shown, days that cannot be chosen
+     turned off, and optionally a second month beside the first and the week numbers.
+   Usage:
+     <Calendar label="Due date" value={due} onChange={setDue} />                          // "2026-10-15"
+     <Calendar mode="range" months={2} value={range} onChange={setRange} />              // { start, end }
+     <Calendar value={day} onChange={setDay} min="2026-10-01" max="2026-12-31" weekNumbers />
+     <Calendar value={day} onChange={setDay} isDateDisabled={(iso) => weekend(iso)} />
+   Props:
+     mode: "single" (default; one date) | "range" (a start and an end: the first choice is the start, the second the end)
+     value: the chosen date as "YYYY-MM-DD" (single), or { start, end } of such dates (range); controlled with onChange
+     defaultValue: the first value of an uncontrolled calendar
+     onChange(value): runs with the new date ("YYYY-MM-DD"), or with { start, end } in range mode (end null after the
+       first choice)
+     month: the month shown first, "YYYY-MM" (controlled, with onMonthChange); default: the chosen date's, else today's
+     defaultMonth: the first month shown of an uncontrolled calendar
+     onMonthChange(month): runs with "YYYY-MM" when the shown month changes (the arrows, Page Up, Page Down, a key that
+       leaves the month)
+     months: 1 (default) | 2: two months side by side (a range over a month's end); they stack on a narrow window
+     weekNumbers: the ISO week number before each week, in the data font (default false)
+     min, max: the first and last date that can be chosen ("YYYY-MM-DD"); the days outside them are off, and the arrows
+       stop at their months
+     isDateDisabled(date): true for a date that cannot be chosen ("YYYY-MM-DD"); the day is off but keys still reach it
+     today: today's date, "YYYY-MM-DD" (default: the device's today)
+     firstDayOfWeek: 0 (Sunday) to 6 (Saturday); default: the locale's (Intl.Locale weekInfo), else Sunday for en-US and
+       Monday elsewhere
+     locale: the locale of the names and numbers (default: formatLocale(), the page's language)
+     label: the accessible name of the calendar (a group); default strings.label
+     focusRef: a ref given the day that holds the Tab stop, so a popover can move focus to it (DatePicker)
+     strings: the words it shows and announces, for other languages: { label: "Calendar", previous: "Previous month",
+       next: "Next month", week: "Week", weekShort: "Wk", today: "Today" }
+     className: more classes on the calendar
+   Behavior:
+     The days are a grid (role="grid"): one Tab stop, on the chosen day, else today, else the first day of the month.
+       Arrow Left and Right move a day (mirrored right to left), Up and Down a week, Home and End to the week's first and
+       last day, Page Up and Page Down a month, Shift with Page Up or Page Down a year; Enter or Space chooses. A key that
+       leaves the shown month shows the new month.
+     A day that cannot be chosen is announced as unavailable (aria-disabled) and stays reachable by the keys, so people
+       hear why nothing happens; a press on it does nothing.
+     Range: the first choice sets the start, the second the end (a day before the start becomes the start); while the end
+       is open, the days between the start and the pointer or the focused day are shown as the range.
+     One month shows the days of the weeks around it (muted); a press on one moves to its month. Two months show only
+       their own days.
+     The month's name is read when the month changes (a polite live region).
+     Each day is named in full for screen readers ("Thursday, October 15, 2026"); today carries aria-current="date"; a
+       chosen day is aria-selected.
+   Notes:
+     Dates are calendar dates ("YYYY-MM-DD"), not moments: no time zone moves them. A date with a time is DatePicker's
+       date-time mode.
+     Today is DateBadge's today (the number on the action color); a chosen day the selected state; a range the selected
+       fill between its two ends.
+     Other props pass through to the outer <div>.
+*/
+const STRINGS = {
+  label: 'Calendar',
+  previous: 'Previous month',
+  next: 'Next month',
+  week: 'Week',
+  weekShort: 'Wk',
+  today: 'Today'
+};
+
+/* ---- calendar dates: "YYYY-MM-DD" strings; arithmetic on local dates at noon, so no daylight-saving change moves a day */
+const pad = (n, w) => String(n).padStart(w || 2, '0');
+function parseIsoDate(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ''));
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2] - 1, +m[3], 12);
+  return d.getMonth() === +m[2] - 1 ? d : null;
+}
+function isoDate(d) {
+  return d ? d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) : '';
+}
+function addDays(iso, n) {
+  const d = parseIsoDate(iso);
+  if (!d) return iso;
+  d.setDate(d.getDate() + n);
+  return isoDate(d);
+}
+function addMonths(iso, n) {
+  const d = parseIsoDate(iso);
+  if (!d) return iso;
+  const day = d.getDate();
+  d.setDate(1);
+  d.setMonth(d.getMonth() + n);
+  const last = new Date(d.getFullYear(), d.getMonth() + 1, 0, 12).getDate();
+  d.setDate(Math.min(day, last));
+  return isoDate(d);
+}
+function todayIso() {
+  return isoDate(new Date());
+}
+const monthOf = iso => String(iso).slice(0, 7);
+const monthStart = ym => ym + '-01';
+const shiftMonth = (ym, n) => monthOf(addMonths(monthStart(ym), n));
+// the locale's first day of the week (0 Sunday … 6 Saturday)
+function firstDayOf(locale) {
+  try {
+    const l = new Intl.Locale(locale);
+    const info = typeof l.getWeekInfo === 'function' ? l.getWeekInfo() : l.weekInfo;
+    if (info && info.firstDay) return info.firstDay % 7;
+  } catch (e) {/* an unknown locale */}
+  return /-US$|^en$/i.test(locale) ? 0 : 1;
+}
+// the ISO 8601 week of the week holding this date (the week of its Thursday)
+function isoWeek(d) {
+  const t = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+  t.setDate(t.getDate() + 3 - (t.getDay() + 6) % 7);
+  const jan4 = new Date(t.getFullYear(), 0, 4, 12);
+  return 1 + Math.round(((t - jan4) / 86400000 - 3 + (jan4.getDay() + 6) % 7) / 7);
+}
+// the weeks of a month: rows of seven days, from the week holding its first day to the week holding its last
+function weeksOf(ym, first) {
+  const start = parseIsoDate(monthStart(ym));
+  start.setDate(start.getDate() - (start.getDay() - first + 7) % 7);
+  const lastDay = parseIsoDate(addDays(monthStart(shiftMonth(ym, 1)), -1));
+  const rows = [];
+  const d = new Date(start);
+  do {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      week.push(isoDate(d));
+      d.setDate(d.getDate() + 1);
+    }
+    rows.push(week);
+  } while (d <= lastDay);
+  return rows;
+}
+const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(function Calendar({
+  mode = 'single',
+  value,
+  defaultValue,
+  onChange,
+  month,
+  defaultMonth,
+  onMonthChange,
+  months = 1,
+  weekNumbers = false,
+  min,
+  max,
+  isDateDisabled,
+  today: todayProp,
+  firstDayOfWeek,
+  locale: localeProp,
+  label,
+  focusRef,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const locale = localeProp || (0, _format.formatLocale)();
+  const today = todayProp || todayIso();
+  const range = mode === 'range';
+  const [ownValue, setOwnValue] = _react.default.useState(defaultValue !== undefined ? defaultValue : range ? {
+    start: null,
+    end: null
+  } : null);
+  const current = value !== undefined ? value : ownValue;
+  const sel = range ? current || {
+    start: null,
+    end: null
+  } : null;
+  const anchorDate = range ? sel.start || null : current || null;
+  const first = firstDayOfWeek !== undefined ? firstDayOfWeek : firstDayOf(locale);
+  const count = months === 2 ? 2 : 1;
+  const [ownMonth, setOwnMonth] = _react.default.useState(defaultMonth || monthOf(anchorDate || today));
+  const shown = month || ownMonth;
+  const setShown = ym => {
+    if (month === undefined) setOwnMonth(ym);
+    if (onMonthChange) onMonthChange(ym);
+  };
+  const [focused, setFocused] = _react.default.useState(null); // the day with the Tab stop once people move in the grid
+  const [hover, setHover] = _react.default.useState(null); // the pointer's or the focused day, for the open range
+  const moveFocus = _react.default.useRef(false);
+  const root = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => root.current);
+  const off = iso => min && iso < min || max && iso > max || (isDateDisabled ? !!isDateDisabled(iso) : false);
+  const visible = iso => {
+    const ym = monthOf(iso);
+    return ym >= shown && ym <= shiftMonth(shown, count - 1);
+  };
+  // the Tab stop: the focused day when it is shown, else the chosen day, else today, else the first day of the month
+  const stop = [focused, anchorDate, today].filter(d => d && visible(d))[0] || monthStart(shown);
+  const choose = iso => {
+    if (off(iso)) return;
+    let next;
+    if (!range) next = iso;else if (!sel.start || sel.end) next = {
+      start: iso,
+      end: null
+    };else if (iso < sel.start) next = {
+      start: iso,
+      end: null
+    };else next = {
+      start: sel.start,
+      end: iso
+    };
+    if (value === undefined) setOwnValue(next);
+    if (onChange) onChange(next);
+    if (!visible(iso)) setShown(monthOf(iso));
+    setFocused(iso);
+  };
+  const goTo = iso => {
+    if (min && iso < min) iso = min;
+    if (max && iso > max) iso = max;
+    if (!visible(iso)) setShown(iso < monthStart(shown) ? monthOf(iso) : shiftMonth(monthOf(iso), -(count - 1)));
+    setFocused(iso);
+    if (range && sel.start && !sel.end) setHover(iso);
+    moveFocus.current = true;
+  };
+  _react.default.useLayoutEffect(() => {
+    if (!moveFocus.current || !root.current) return;
+    moveFocus.current = false;
+    const el = root.current.querySelector('[data-plx-date="' + stop + '"]');
+    if (el) el.focus();
+  });
+  const onKeyDown = e => {
+    const from = e.target && e.target.getAttribute ? e.target.getAttribute('data-plx-date') : null;
+    if (!from) return;
+    const pos = (parseIsoDate(from).getDay() - first + 7) % 7;
+    let next = null;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') next = addDays(from, (0, _direction.arrowStep)(e, e.currentTarget));else if (e.key === 'ArrowUp') next = addDays(from, -7);else if (e.key === 'ArrowDown') next = addDays(from, 7);else if (e.key === 'Home') next = addDays(from, -pos);else if (e.key === 'End') next = addDays(from, 6 - pos);else if (e.key === 'PageUp') next = addMonths(from, e.shiftKey ? -12 : -1);else if (e.key === 'PageDown') next = addMonths(from, e.shiftKey ? 12 : 1);else return;
+    e.preventDefault();
+    goTo(next);
+  };
+  const fullName = new Intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const dayNumber = new Intl.DateTimeFormat(locale, {
+    day: 'numeric'
+  });
+  const monthName = new Intl.DateTimeFormat(locale, {
+    month: 'long',
+    year: 'numeric'
+  });
+  const weekdayShort = new Intl.DateTimeFormat(locale, {
+    weekday: 'short'
+  });
+  const weekdayLong = new Intl.DateTimeFormat(locale, {
+    weekday: 'long'
+  });
+  const weekNumber = new Intl.NumberFormat(locale);
+  const weekdays = Array.from({
+    length: 7
+  }, (_, i) => {
+    const d = new Date(2026, 1, 1 + (first + i) % 7, 12);
+    return {
+      short: weekdayShort.format(d),
+      long: weekdayLong.format(d)
+    };
+  }); // Feb 1, 2026 was a Sunday
+
+  // the range drawn: the chosen one, or from the start to the pointer while the end is open
+  const lo = range ? sel.start : null;
+  const hi = range ? sel.end || (sel.start && hover && hover > sel.start ? hover : null) : null;
+  const inRange = iso => !!(lo && hi && iso > lo && iso < hi);
+  const prevOff = min && shiftMonth(shown, -1) < monthOf(min);
+  const nextOff = max && shiftMonth(shown, count) > monthOf(max);
+  const uid = _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const outside = count === 1;
+  const setRef = iso => el => {
+    if (iso === stop && focusRef) focusRef.current = el;
+  };
+  const monthGrid = (ym, i) => {
+    const titleId = 'plx-cal' + uid + '-' + i;
+    const rows = weeksOf(ym, first);
+    return /*#__PURE__*/_react.default.createElement("div", {
+      key: ym,
+      className: "plx-calendar__month"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-calendar__header"
+    }, i === 0 ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "sm",
+      iconOnly: true,
+      icon: "chevron-left",
+      label: t.previous,
+      className: "plx-calendar__nav plx-calendar__nav--previous",
+      disabled: !!prevOff,
+      onClick: () => setShown(shiftMonth(shown, -1))
+    }) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-calendar__nav-space",
+      "aria-hidden": "true"
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      id: titleId,
+      className: "plx-calendar__title",
+      "aria-live": "polite"
+    }, monthName.format(parseIsoDate(monthStart(ym)))), i === count - 1 ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      size: "sm",
+      iconOnly: true,
+      icon: "chevron-right",
+      label: t.next,
+      className: "plx-calendar__nav plx-calendar__nav--next",
+      disabled: !!nextOff,
+      onClick: () => setShown(shiftMonth(shown, 1))
+    }) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-calendar__nav-space",
+      "aria-hidden": "true"
+    })), /*#__PURE__*/_react.default.createElement("div", {
+      role: "grid",
+      "aria-labelledby": titleId,
+      className: "plx-calendar__grid",
+      onKeyDown: onKeyDown,
+      onMouseLeave: () => setHover(null)
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      role: "row",
+      className: "plx-calendar__row plx-calendar__row--weekdays"
+    }, weekNumbers ? /*#__PURE__*/_react.default.createElement("span", {
+      role: "columnheader",
+      className: "plx-calendar__weekday plx-calendar__weekday--week",
+      "aria-label": t.week
+    }, t.weekShort) : null, weekdays.map(w => /*#__PURE__*/_react.default.createElement("span", {
+      key: w.long,
+      role: "columnheader",
+      className: "plx-calendar__weekday",
+      "aria-label": w.long
+    }, w.short))), rows.map(row => /*#__PURE__*/_react.default.createElement("div", {
+      key: row[0],
+      role: "row",
+      className: "plx-calendar__row"
+    }, weekNumbers ? /*#__PURE__*/_react.default.createElement("span", {
+      role: "rowheader",
+      className: "plx-calendar__week-number",
+      "aria-label": t.week + ' ' + weekNumber.format(isoWeek(parseIsoDate(row[3])))
+    }, weekNumber.format(isoWeek(parseIsoDate(row[3])))) : null, row.map(iso => {
+      const own = monthOf(iso) === ym;
+      if (!own && !outside) return /*#__PURE__*/_react.default.createElement("span", {
+        key: iso,
+        role: "gridcell",
+        className: "plx-calendar__cell plx-calendar__cell--empty"
+      });
+      const isStart = range && iso === lo,
+        isEnd = range && !!hi && iso === hi;
+      const chosen = range ? isStart || isEnd : iso === current;
+      const between = range && own && inRange(iso);
+      const disabled = off(iso);
+      return /*#__PURE__*/_react.default.createElement("span", {
+        key: iso,
+        role: "gridcell",
+        "aria-selected": chosen || between || undefined,
+        className: (0, _cx.cx)('plx-calendar__cell', own && between && 'is-in-range', own && isStart && hi && 'is-range-start', own && isEnd && 'is-range-end')
+      }, /*#__PURE__*/_react.default.createElement("button", {
+        ref: setRef(iso),
+        type: "button",
+        "data-plx-date": iso,
+        tabIndex: iso === stop ? 0 : -1,
+        className: (0, _cx.cx)('plx-calendar__day', !own && 'is-outside', iso === today && 'is-today', chosen && 'is-selected', disabled && 'is-disabled'),
+        "aria-label": fullName.format(parseIsoDate(iso)) + (iso === today ? ', ' + t.today : ''),
+        "aria-current": iso === today ? 'date' : undefined,
+        "aria-disabled": disabled || undefined,
+        onClick: () => {
+          if (!own) setShown(monthOf(iso));
+          choose(iso);
+        },
+        onMouseEnter: () => {
+          if (range && sel.start && !sel.end) setHover(iso);
+        },
+        onFocus: () => {
+          setFocused(iso);
+          if (range && sel.start && !sel.end) setHover(iso);
+        }
+      }, dayNumber.format(parseIsoDate(iso))));
+    })))));
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: root,
+    role: "group",
+    "aria-label": label || t.label,
+    className: (0, _cx.cx)('plx-calendar', count === 2 && 'plx-calendar--two-months', weekNumbers && 'plx-calendar--week-numbers', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-calendar__months"
+  }, Array.from({
+    length: count
+  }, (_, i) => monthGrid(shiftMonth(shown, i), i))));
+});
+  } },
+  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DatePicker = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Button = require("../Button/Button.jsx");
+var _Input = require("../Input/Input.jsx");
+var _InputGroup = require("../InputGroup/InputGroup.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _Calendar = require("../Calendar/Calendar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DatePicker
+   Summary: A field for a date that people type in their locale's numeric form or choose from a Calendar in a popover:
+     one date, a range of two (a start and an end, with two months side by side), or a date with a time (the time field
+     beside it, with the time zone). Optional presets (Today, Last 7 days) choose common values in one press. The value is
+     in the data font (DM Mono).
+   Usage:
+     <Field label="Due date" description="MM/DD/YYYY"><DatePicker value={due} onChange={setDue} /></Field>
+     <Field label="Period"><DatePicker mode="range" value={period} onChange={setPeriod} presets /></Field>
+     <Field label="Starts"><DatePicker mode="date-time" value={starts} onChange={setStarts} min={todayIso()} /></Field>
+   Props:
+     mode: "single" (default; one date) | "range" (a start and an end) | "date-time" (a date and a time: one moment)
+     value: "YYYY-MM-DD" (single), { start, end } of such dates (range), or "YYYY-MM-DDTHH:MM" (date-time); null when
+       empty. Controlled with onChange
+     defaultValue: the first value of an uncontrolled field
+     onChange(value): runs with the new value when a date is chosen, a preset is pressed, or typed text is read (when the
+       field is left or Enter is pressed); null when the field is emptied
+     presets: true (the built-in presets of the mode: Today, Tomorrow, In a week; or Last 7 days, Last 30 days, This month,
+       Last month) or a list [{ label, value }] (value in the mode's form); shown beside the calendar (default none)
+     months: the months the calendar shows: 1 or 2 (default 2 for a range, else 1)
+     min, max: the first and last date that can be chosen ("YYYY-MM-DD"); typed dates outside them are not taken
+     isDateDisabled(date): true for a date that cannot be chosen (Calendar's)
+     weekNumbers: the calendar shows the week numbers (default false)
+     defaultTime: the time a date-time value takes when only its date is chosen ("HH:MM", default "09:00")
+     timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none)
+     invalid: the danger border and aria-invalid (a Field with an error sets it)
+     disabled: turns the field and its button off
+     required: handed to the date field (a Field sets it)
+     id: handed to the date field, with aria-describedby (a Field sets both)
+     locale: the locale of the typed form, the names and the first day of the week (default: the page's language)
+     strings: the words it shows and announces, for other languages: { open: "Choose date", dialog: "Choose date",
+       time: "Time", presets: "Presets", today: "Today", tomorrow: "Tomorrow", nextWeek: "In a week", last7: "Last 7 days",
+       last30: "Last 30 days", thisMonth: "This month", lastMonth: "Last month", calendar: {…Calendar's strings} }
+     className: more classes on the date picker
+     ref: forwarded to the date <input>
+   Behavior:
+     The field takes the locale's numeric date (10/15/2026 in en-US, 15.10.2026 in de-DE) and also YYYY-MM-DD; its
+       placeholder shows the form (MM/DD/YYYY). A range is two dates with a dash between them. Typed text is read when the
+       field is left or Enter is pressed: a date it cannot read, or one that cannot be chosen, leaves the text and marks
+       the field invalid until it is corrected; the Field's error says what to fix.
+     The calendar button (or Alt+Arrow Down in the field) opens the calendar in a popover under the field, with focus on
+       the chosen day (else today); choosing a day (a range: its end) or a preset closes it and returns focus to the field.
+       Escape, a press outside, and Tab out of it close it too.
+     Range: the first day chosen is the start, the second the end; until the end is chosen, the days between are shown
+       as the range as the pointer or the keys move.
+     Date-time: the time field (the browser's own, typed or stepped) sits beside the date with the time zone after it;
+       choosing a date keeps the time, or takes defaultTime.
+   Notes:
+     The date field is as wide as its form (wider for a range) and the time field as wide as a time with its zone
+       (--plx-comp-date-picker-*-width).
+     The value is a calendar date (no time zone moves it); a date-time value is a local wall-clock time, and the time zone
+       shown says which.
+     A date people know by heart (a birth date) is typed: give it no calendar (use Input).
+     Built on InputGroup, Popover (manual) and Calendar.
+*/
+const STRINGS = {
+  open: 'Choose date',
+  dialog: 'Choose date',
+  time: 'Time',
+  presets: 'Presets',
+  today: 'Today',
+  tomorrow: 'Tomorrow',
+  nextWeek: 'In a week',
+  last7: 'Last 7 days',
+  last30: 'Last 30 days',
+  thisMonth: 'This month',
+  lastMonth: 'Last month'
+};
+const DASH = ' – ';
+
+// the locale's numeric date: its parts in order ("month", "day", "year") and the form people read ("MM/DD/YYYY")
+function numericForm(locale) {
+  const f = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const parts = f.formatToParts(new Date(2026, 9, 15, 12));
+  return {
+    format: iso => {
+      const d = (0, _Calendar.parseIsoDate)(iso);
+      return d ? f.format(d) : '';
+    },
+    order: parts.filter(p => p.type === 'day' || p.type === 'month' || p.type === 'year').map(p => p.type),
+    hint: parts.map(p => p.type === 'day' ? 'DD' : p.type === 'month' ? 'MM' : p.type === 'year' ? 'YYYY' : p.value).join('')
+  };
+}
+// typed text to "YYYY-MM-DD" (or null): the locale's numeric order, or year first (2026-10-15)
+function readDate(text, order) {
+  const n = String(text || '').match(/\d+/g);
+  if (!n || n.length !== 3) return null;
+  let y, m, d;
+  if (n[0].length === 4) {
+    y = +n[0];
+    m = +n[1];
+    d = +n[2];
+  } else {
+    const at = {};
+    order.forEach((k, i) => {
+      at[k] = +n[i];
+    });
+    y = at.year;
+    m = at.month;
+    d = at.day;
+  }
+  if (y < 100) y += 2000;
+  const iso = String(y).padStart(4, '0') + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+  return (0, _Calendar.parseIsoDate)(iso) ? iso : null;
+}
+const zoneOf = (locale, style) => {
+  try {
+    const p = new Intl.DateTimeFormat(locale, {
+      timeZoneName: style
+    }).formatToParts(new Date()).find(x => x.type === 'timeZoneName');
+    return p ? p.value : '';
+  } catch (e) {
+    return '';
+  }
+};
+const monthBounds = (iso, n) => {
+  const first = (0, _Calendar.addMonths)(iso.slice(0, 7) + '-01', n);
+  return {
+    start: first,
+    end: (0, _Calendar.addDays)((0, _Calendar.addMonths)(first, 1), -1)
+  };
+};
+const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(function DatePicker({
+  mode = 'single',
+  value,
+  defaultValue,
+  onChange,
+  presets,
+  months,
+  min,
+  max,
+  isDateDisabled,
+  weekNumbers = false,
+  defaultTime = '09:00',
+  timeZoneName = 'short',
+  invalid,
+  disabled,
+  required,
+  id,
+  'aria-describedby': describedBy,
+  locale: localeProp,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const locale = localeProp || (0, _format.formatLocale)();
+  const form = numericForm(locale);
+  const range = mode === 'range',
+    dateTime = mode === 'date-time';
+  const [own, setOwn] = _react.default.useState(defaultValue !== undefined ? defaultValue : null);
+  const current = value !== undefined ? value : own;
+  const commit = v => {
+    if (value === undefined) setOwn(v);
+    if (onChange) onChange(v);
+  };
+  // the parts of the value: the date (or range) and the time
+  const datePart = dateTime ? current ? String(current).slice(0, 10) : null : current;
+  const timePart = dateTime && current ? String(current).slice(11, 16) : '';
+  const show = v => range ? v && v.start ? form.format(v.start) + (v.end ? DASH + form.format(v.end) : '') : '' : form.format(v);
+  const [text, setText] = _react.default.useState(show(datePart));
+  const [bad, setBad] = _react.default.useState(false);
+  const typing = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (!typing.current) {
+      setText(show(datePart));
+      setBad(false);
+    }
+  }, [range ? JSON.stringify(datePart) : datePart, locale]);
+  const [open, setOpen] = _react.default.useState(false);
+  const [draft, setDraft] = _react.default.useState(null); // a range while its end is still open
+  const root = _react.default.useRef(null),
+    input = _react.default.useRef(null),
+    day = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const allowed = iso => !(min && iso < min || max && iso > max || isDateDisabled && isDateDisabled(iso));
+  const withTime = iso => iso ? iso + 'T' + (timePart || defaultTime) : null;
+  const setDate = d => commit(dateTime ? withTime(d) : d);
+
+  // typed text, read when the field is left or Enter is pressed
+  const read = () => {
+    typing.current = false;
+    const s = text.trim();
+    if (!s) {
+      setBad(false);
+      if (datePart) setDate(null);
+      return;
+    }
+    if (range) {
+      const two = s.split(/\s*(?:–|—|\s-\s|\bto\b)\s*/);
+      const a = readDate(two[0], form.order),
+        b = two[1] ? readDate(two[1], form.order) : null;
+      if (!a || two[1] && !b || !allowed(a) || b && !allowed(b)) {
+        setBad(true);
+        return;
+      }
+      const next = b && b < a ? {
+        start: b,
+        end: a
+      } : {
+        start: a,
+        end: b
+      };
+      setBad(false);
+      setText(show(next));
+      commit(next);
+      return;
+    }
+    const iso = readDate(s, form.order);
+    if (!iso || !allowed(iso)) {
+      setBad(true);
+      return;
+    }
+    setBad(false);
+    setText(form.format(iso));
+    setDate(iso);
+  };
+  const close = refocus => {
+    setOpen(false);
+    setDraft(null);
+    if (refocus && input.current) input.current.focus();
+  };
+  const toggle = () => {
+    if (open) close(true);else {
+      setDraft(range ? datePart || {
+        start: null,
+        end: null
+      } : null);
+      setOpen(true);
+    }
+  };
+  // a press outside, or focus leaving the field and its calendar, closes the calendar
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const outside = e => {
+      if (root.current && !root.current.contains(e.target)) close(false);
+    };
+    document.addEventListener('mousedown', outside);
+    return () => document.removeEventListener('mousedown', outside);
+  }, [open]);
+  const onBlur = e => {
+    if (open && e.relatedTarget && root.current && !root.current.contains(e.relatedTarget)) close(false);
+  };
+  const choose = v => {
+    if (range) {
+      setDraft(v);
+      if (v.start && v.end) {
+        commit(v);
+        setText(show(v));
+        setBad(false);
+        close(true);
+      }
+      return;
+    }
+    setDate(v);
+    setText(form.format(v));
+    setBad(false);
+    close(true);
+  };
+  const today = (0, _Calendar.todayIso)();
+  const builtIn = range ? [{
+    label: t.last7,
+    value: {
+      start: (0, _Calendar.addDays)(today, -6),
+      end: today
+    }
+  }, {
+    label: t.last30,
+    value: {
+      start: (0, _Calendar.addDays)(today, -29),
+      end: today
+    }
+  }, {
+    label: t.thisMonth,
+    value: monthBounds(today, 0)
+  }, {
+    label: t.lastMonth,
+    value: monthBounds(today, -1)
+  }] : [{
+    label: t.today,
+    value: today
+  }, {
+    label: t.tomorrow,
+    value: (0, _Calendar.addDays)(today, 1)
+  }, {
+    label: t.nextWeek,
+    value: (0, _Calendar.addDays)(today, 7)
+  }];
+  const presetList = presets === true ? builtIn : Array.isArray(presets) ? presets : null;
+  const pick = p => {
+    const v = dateTime && typeof p.value === 'string' ? p.value.slice(0, 10) : p.value;
+    if (range) {
+      commit(v);
+      setText(show(v));
+    } else {
+      setDate(v);
+      setText(form.format(v));
+    }
+    setBad(false);
+    close(true);
+  };
+  const zone = dateTime && timeZoneName ? zoneOf(locale, timeZoneName) : '';
+  const shown = range ? draft || datePart || {
+    start: null,
+    end: null
+  } : datePart;
+  const firstMonth = (range ? shown && shown.start : shown) || undefined;
+  const field = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-date-picker__field"
+  }, /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
+    className: "plx-date-picker__date",
+    data: true,
+    invalid: invalid || bad,
+    disabled: disabled,
+    end: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      iconOnly: true,
+      icon: "calendar",
+      label: t.open,
+      expanded: open,
+      "aria-haspopup": "dialog",
+      disabled: disabled,
+      onClick: toggle
+    })
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    ref: input,
+    id: id,
+    data: true,
+    value: text,
+    placeholder: range ? form.hint + DASH + form.hint : form.hint,
+    required: required,
+    "aria-describedby": describedBy,
+    autoComplete: "off",
+    onChange: e => {
+      typing.current = true;
+      setText(e.target.value);
+      if (bad) setBad(false);
+    },
+    onBlur: read,
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        read();
+      } else if (e.key === 'ArrowDown' && e.altKey) {
+        e.preventDefault();
+        if (!open) toggle();
+      }
+    }
+  })), dateTime ? /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
+    data: true,
+    suffix: zone || undefined,
+    disabled: disabled,
+    invalid: invalid,
+    className: "plx-date-picker__time"
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    type: "time",
+    data: true,
+    "aria-label": t.time,
+    value: timePart,
+    disabled: disabled,
+    onChange: e => {
+      const v = e.target.value;
+      if (datePart) commit(datePart + 'T' + (v || defaultTime));
+    }
+  })) : null);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: root,
+    className: (0, _cx.cx)('plx-date-picker', 'plx-date-picker--' + (range ? 'range' : dateTime ? 'date-time' : 'single'), className),
+    onBlur: onBlur
+  }, rest), /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: field,
+    triggerOn: "manual",
+    open: open,
+    onOpenChange: v => {
+      if (!v) close(true);
+    },
+    label: t.dialog,
+    size: "auto",
+    placement: "bottom-start",
+    focusOnOpen: true,
+    initialFocus: day,
+    sheetOnNarrow: false
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-date-picker__panel', presetList && 'plx-date-picker__panel--presets')
+  }, presetList ? /*#__PURE__*/_react.default.createElement("div", {
+    role: "group",
+    "aria-label": t.presets,
+    className: "plx-date-picker__presets"
+  }, presetList.map(p => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: p.label,
+    variant: "ghost",
+    size: "sm",
+    className: "plx-date-picker__preset",
+    onClick: () => pick(p)
+  }, p.label))) : null, /*#__PURE__*/_react.default.createElement(_Calendar.Calendar, {
+    mode: range ? 'range' : 'single',
+    value: shown,
+    onChange: choose,
+    months: months || (range ? 2 : 1),
+    defaultMonth: firstMonth ? firstMonth.slice(0, 7) : undefined,
+    min: min,
+    max: max,
+    isDateDisabled: isDateDisabled,
+    weekNumbers: weekNumbers,
+    locale: locale,
+    focusRef: day,
+    label: t.dialog,
+    strings: t.calendar
+  }))));
+});
+
+// the locale's numeric date form ("MM/DD/YYYY"), for a Field's description
+DatePicker.formatHint = locale => numericForm(locale || (0, _format.formatLocale)()).hint;
+  } },
+  "platform/components/CountrySelect/CountrySelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.REGION_CODES = exports.LOCALE_CODES = exports.LANGUAGE_CODES = exports.CountrySelect = void 0;
+exports.countryOptions = countryOptions;
+exports.flagOf = flagOf;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _Combobox = require("../Combobox/Combobox.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CountrySelect
+   Summary: A searchable select of countries and regions, locales, or languages, named in the reader's language by the
+     browser (Intl.DisplayNames), sorted by name, and matched on the name, the name in English and the code. Built on
+     Combobox.
+   Usage:
+     <Field label="Country"><CountrySelect value={country} onChange={setCountry} /></Field>                  // "DE"
+     <Field label="Language"><CountrySelect type="language" value={lang} onChange={setLang} /></Field>        // "de"
+     <Field label="Format"><CountrySelect type="locale" value={loc} onChange={setLoc} /></Field>              // "de-DE"
+     <CountrySelect value={country} onChange={setCountry} only={['US', 'CA', 'MX']} flags aria-label="Ship to" />
+   Props:
+     type: "country" (default; ISO 3166 region codes: "DE") | "locale" (BCP 47 locale tags: "de-DE") | "language"
+       (ISO 639 language codes: "de")
+     value: the chosen code; onChange(code) runs with the new one (a Combobox single choice)
+     only: the codes offered, in place of the full list
+     priority: codes listed first, under strings.suggested (the reader's own country, the most used languages)
+     ownNames: a language or a locale is named in itself ("Deutsch", "Deutsch (Deutschland)"), as people look for their
+       own language (default true for "language" and "locale", false for "country")
+     flags: the country's flag emoji before its name (country and locale; default false). A flag is never the only name
+       of a language
+     codes: the code after the name ("Germany (DE)") for technical settings (default false)
+     locale: the language of the names (default: the page's language)
+     placeholder: the hint in the empty field (default: the strings entry of the type)
+     strings: the words it shows, for other languages: { country: "Choose a country or region", language: "Choose a
+       language", locale: "Choose a language and region", suggested: "Suggested", all: "All" }
+     invalid: the invalid state (a Field with an error sets it)
+     disabled: the select cannot be used
+     id: the id of the input (a Field sets it)
+     label: the accessible name when there is no Field
+     className: more classes on the select
+     ref: forwarded to the <input>
+   Behavior:
+     Typing narrows the list as in Combobox (↓ ↑ move, Enter chooses, Escape closes); the name in the reader's language,
+       the name in English and the code all match ("deu", "Germany", "DE" find Deutschland in a German page).
+     The list is sorted by the shown name in the reader's language (Intl.Collator).
+     With priority, those codes come first under "Suggested" and the rest under "All".
+     The flag is drawn from the code's regional indicator letters; where the system has no flag glyphs (Windows) the two
+       letters show instead, so the name always carries the meaning.
+   Notes:
+     The names come from the browser, so they follow the reader's language with no table to keep; the codes are the
+       stable value to store.
+     Other props pass through to Combobox's <input>.
+*/
+const STRINGS = {
+  country: 'Choose a country or region',
+  language: 'Choose a language',
+  locale: 'Choose a language and region',
+  suggested: 'Suggested',
+  all: 'All'
+};
+
+// ISO 3166-1 alpha-2: every assigned country and region code
+const REGION_CODES = exports.REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG ' + 'CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR ' + 'GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY ' + 'MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS ' + 'PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA ' + 'UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW').split(' ');
+// ISO 639-1 languages with wide use in software
+const LANGUAGE_CODES = exports.LANGUAGE_CODES = ('af am ar az be bg bn bs ca cs cy da de el en es et eu fa fi fil fr ga gl gu he hi hr hu hy id is it ja ka kk km kn ko ' + 'ky lo lt lv mk ml mn mr ms mt my nb ne nl pa pl ps pt ro ru si sk sl sq sr sv sw ta te th tr uk ur uz vi zh zu').split(' ');
+// common locales: a language with the region whose conventions it sets (dates, numbers, money)
+const LOCALE_CODES = exports.LOCALE_CODES = ('ar-EG ar-SA bg-BG cs-CZ da-DK de-AT de-CH de-DE el-GR en-AU en-CA en-GB en-IE en-IN en-NZ en-US en-ZA es-AR es-ES es-MX ' + 'es-US et-EE fi-FI fr-BE fr-CA fr-CH fr-FR he-IL hi-IN hr-HR hu-HU id-ID it-IT ja-JP ko-KR lt-LT lv-LV ms-MY nb-NO nl-BE nl-NL pl-PL pt-BR ' + 'pt-PT ro-RO ru-RU sk-SK sl-SI sr-RS sv-SE th-TH tr-TR uk-UA vi-VN zh-CN zh-HK zh-TW').split(' ');
+
+// a region code to its flag emoji: the two regional indicator letters
+function flagOf(code) {
+  const r = String(code || '').split('-').pop().toUpperCase();
+  return /^[A-Z]{2}$/.test(r) ? String.fromCodePoint(...Array.from(r).map(c => 0x1f1e6 + c.charCodeAt(0) - 65)) : '';
+}
+const names = (locale, type) => {
+  try {
+    return new Intl.DisplayNames(locale, {
+      type,
+      fallback: 'code'
+    });
+  } catch (e) {
+    return null;
+  }
+};
+const nameOf = (dn, code) => {
+  try {
+    return dn && dn.of(code) || code;
+  } catch (e) {
+    return code;
+  }
+};
+
+// the options of a type: { value, label, match } sorted by label in the reader's language
+function countryOptions({
+  type = 'country',
+  locale,
+  only,
+  ownNames,
+  flags = false,
+  codes = false
+} = {}) {
+  const loc = locale || (0, _format.formatLocale)();
+  const kind = type === 'country' ? 'region' : 'language';
+  const list = only || (type === 'language' ? LANGUAGE_CODES : type === 'locale' ? LOCALE_CODES : REGION_CODES);
+  const own = ownNames !== undefined ? ownNames : type !== 'country';
+  const dn = names(loc, kind),
+    en = names('en', kind);
+  const collator = new Intl.Collator(loc);
+  return list.map(code => {
+    const name = own ? nameOf(names(code, kind), code) : nameOf(dn, code);
+    const local = nameOf(dn, code);
+    const shown = name + (own && local !== name ? ' · ' + local : '') + (codes ? ' (' + code + ')' : '');
+    const flag = flags && type !== 'language' ? flagOf(code) + ' ' : '';
+    return {
+      value: code,
+      label: flag + shown,
+      sort: name,
+      match: [name, local, nameOf(en, code), code].join(' ').toLowerCase()
+    };
+  }).sort((a, b) => collator.compare(a.sort, b.sort));
+}
+const CountrySelect = exports.CountrySelect = /*#__PURE__*/_react.default.forwardRef(function CountrySelect({
+  type = 'country',
+  value,
+  onChange,
+  only,
+  priority,
+  ownNames,
+  flags = false,
+  codes = false,
+  locale,
+  placeholder,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const loc = locale || (0, _format.formatLocale)();
+  const options = _react.default.useMemo(() => {
+    const all = countryOptions({
+      type,
+      locale: loc,
+      only,
+      ownNames,
+      flags,
+      codes
+    });
+    if (!priority || !priority.length) return all;
+    const first = priority.map(c => all.find(o => o.value === c)).filter(Boolean).map(o => Object.assign({}, o, {
+      group: t.suggested
+    }));
+    return first.concat(all.filter(o => priority.indexOf(o.value) < 0).map(o => Object.assign({}, o, {
+      group: t.all
+    })));
+  }, [type, loc, (only || []).join(), (priority || []).join(), ownNames, flags, codes, t.suggested, t.all]);
+  // the list is filtered here, not by Combobox, so the English name and the code match too (Combobox shows a loader's
+  // options as they are); the full list still names the chosen value
+  const find = _react.default.useCallback(text => {
+    const q = String(text || '').trim().toLowerCase();
+    return q ? options.filter(o => o.match.indexOf(q) >= 0) : options;
+  }, [options]);
+  return /*#__PURE__*/_react.default.createElement(_Combobox.Combobox, _extends({
+    ref: ref,
+    className: (0, _cx.cx)('plx-country-select', className),
+    options: options,
+    loadOptions: find,
+    loadDelay: 0,
+    value: value,
+    onChange: onChange,
+    placeholder: placeholder || t[type] || t.country
+  }, rest));
+});
+  } },
+  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ProgressSteps = ProgressSteps;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
+   Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
+     name and optional line, joined by connectors, with the done, current, upcoming and failed steps each told by an icon
+     or number and in words. Horizontal or vertical; clickable to go back to a step; or compact ("Step 2 of 5" over a
+     bar of segments) where names add nothing. The navigation Stepper, the Progress tracker and Step progress.
+   Usage:
+     <ProgressSteps label="Import" current={1} steps={[{ label: 'Upload' }, { label: 'Map columns' }, { label: 'Review' }]} />
+     <ProgressSteps orientation="vertical" current={2} steps={[{ label: 'Details', description: 'Name and owner' }, …]} />
+     <ProgressSteps current={2} onStepClick={setStep} steps={steps} />                                  // clickable
+     <ProgressSteps current={1} steps={[{ label: 'Upload' }, { label: 'Map columns', status: 'error' }, …]} />
+     <ProgressSteps variant="compact" current={1} steps={steps} />                                      // Step 2 of 5
+   Props:
+     steps: the steps, in order: [{ label, description, status, disabled }]
+     steps[].label: the step's short name (a noun: Details, Review)
+     steps[].description: a second line under the name (optional; not in the compact form)
+     steps[].status: "complete" | "current" | "upcoming" | "error" (needs attention); default from current: the steps
+       before it are complete, it is current, the steps after it upcoming
+     steps[].disabled: the step cannot be chosen even when it is complete (clickable steps)
+     current: the index of the current step (0-based)
+     orientation: "horizontal" (default; one row, the connectors between) | "vertical" (one step under another, the
+       connector down the marker column, room for descriptions)
+     variant: "default" | "compact" ("Step 2 of 5: Review" over a bar of one segment per step)
+     onStepClick(index): makes the done and current steps buttons that go to that step (clickable); upcoming steps stay
+       text (people cannot skip ahead)
+     label: the accessible name of the list ("Import steps")
+     strings: the words it shows and announces, for other languages: { step: "Step {n} of {total}", complete:
+       "Complete", current: "Current step", upcoming: "Not started", error: "Needs attention" }
+     className: more classes on the steps
+   Behavior:
+     The steps are an ordered list; the current step is aria-current="step". Every step's state is said in words after its
+       name (visually hidden: "Complete", "Needs attention"), never by color alone: a complete step shows a check, a
+       failed one an alert, the others their number.
+     Clickable: the done and current steps are buttons in the Tab order (Enter or Space goes to the step); upcoming and
+       disabled steps are not focusable.
+     Horizontal steps that do not fit their row wrap onto more lines; a vertical list is the choice on a narrow window.
+     Compact: the text says the step and its name; the bar's segments are decoration (hidden from screen readers).
+   Notes:
+     Steps that can be done in any order are tabs or sections, not steps. Three to seven steps; two need no stepper.
+     Statuses of records are a Badge; these markers belong to the steps only.
+     Other props pass through to the outer element.
+*/
+const STRINGS = {
+  step: 'Step {n} of {total}',
+  complete: 'Complete',
+  current: 'Current step',
+  upcoming: 'Not started',
+  error: 'Needs attention'
+};
+const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
+function ProgressSteps({
+  steps = [],
+  current = 0,
+  orientation = 'horizontal',
+  variant = 'default',
+  onStepClick,
+  label,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
+  if (variant === 'compact') {
+    const at = Math.max(0, Math.min(current, steps.length - 1));
+    const step = steps[at] || {};
+    return /*#__PURE__*/_react.default.createElement("div", _extends({
+      role: "group",
+      "aria-label": label,
+      className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--compact', className)
+    }, rest), /*#__PURE__*/_react.default.createElement("p", {
+      className: "plx-progress-steps__count"
+    }, fill(t.step, at + 1, steps.length), step.label ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__count-label"
+    }, ': ' + step.label) : null), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-progress-steps__segments",
+      "aria-hidden": "true"
+    }, steps.map((s, i) => /*#__PURE__*/_react.default.createElement("span", {
+      key: i,
+      className: (0, _cx.cx)('plx-progress-steps__segment', 'is-' + statusOf(s, i))
+    }))));
+  }
+  return /*#__PURE__*/_react.default.createElement("ol", _extends({
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-progress-steps', 'plx-progress-steps--' + (orientation === 'vertical' ? 'vertical' : 'horizontal'), onStepClick && 'plx-progress-steps--clickable', className)
+  }, rest), steps.map((s, i) => {
+    const status = statusOf(s, i);
+    const canGo = onStepClick && !s.disabled && (status === 'complete' || status === 'current' || status === 'error');
+    const marker = /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__marker",
+      "aria-hidden": "true"
+    }, status === 'complete' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "check"
+    }) : status === 'error' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "alert"
+    }) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__number"
+    }, i + 1));
+    const words = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__label"
+    }, s.label), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t[status]));
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: i,
+      className: (0, _cx.cx)('plx-progress-steps__step', 'is-' + status),
+      "aria-current": status === 'current' ? 'step' : undefined
+    }, canGo ? /*#__PURE__*/_react.default.createElement("button", {
+      type: "button",
+      className: "plx-progress-steps__head plx-progress-steps__button",
+      onClick: () => onStepClick(i)
+    }, marker, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__text"
+    }, words)) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__head"
+    }, marker, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__text"
+    }, words)), s.description ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__description"
+    }, s.description) : null, i < steps.length - 1 ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-progress-steps__connector",
+      "aria-hidden": "true"
+    }) : null);
+  }));
+}
+  } },
+  "platform/components/MillerColumns/MillerColumns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MillerColumns = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · MillerColumns
+   Summary: A hierarchy browsed in side-by-side columns: choosing an item in one column lists its children in the next, so
+     the whole path stays in view (the column view of a file browser). An optional preview column shows the chosen item.
+   Usage:
+     <MillerColumns label="Assets" items={tree} path={path} onPathChange={setPath} onOpen={(item) => open(item)} />
+     <MillerColumns label="Assets" items={tree} defaultPath={['brand']} renderPreview={(item) => <AssetSummary item={item} />} />
+     <MillerColumns label="Regions" items={regions} resizable />
+   Props:
+     items: the top level: [{ id, label, icon, description, children, disabled }]; an item with children (an array, empty
+       when it has none yet) is a parent and shows a chevron; an item without children is a leaf
+     path: the chosen item of each column, by id from the left ([] for none), for a controlled view
+     defaultPath: the path it starts with, uncontrolled
+     onPathChange(path, item): runs when the path changes, with the item chosen last (undefined when a column is left)
+     onOpen(item, path): runs when a leaf is opened: Enter or a double click
+     renderPreview(item): what the preview column shows for the chosen leaf (the last item of the path when it has no
+       children); without it there is no preview column
+     checked: ids of the leaves that are checked: each leaf then shows a checkbox mark (a multiple choice, as Cascader's)
+     expandOnHover: pointing at a parent opens it, as a click does (Cascader's hover trigger); default false
+     openOnClick: a single click on a leaf opens it too (onOpen), as in a picker; default false (a double click)
+     resizable: each column has an edge people drag, or move with the arrow keys, in steps of 40px from 160px to 360px;
+       default false
+     columnWidths: the width step of each column (1 to 6: 160px to 360px; default 3, 240px), for a controlled width
+     onColumnWidthsChange(widths): runs when a column is resized
+     label: the name of the whole view and of its first column (required)
+     strings: the words it shows and announces, for other languages: { empty: "No items", resize: "Resize the {label}
+       column", preview: "Preview of {label}" }
+     className: more classes on the view
+   Behavior:
+     Each column is a listbox named by its parent, one Tab stop each: Arrow Up and Down choose an item in the column (its
+       children open in the next column at once), Home and End the first and last, Arrow Right moves into the children
+       (choosing the first), Arrow Left back to the parent's column, Enter opens a leaf (onOpen) or moves into a parent;
+       typing a letter moves to the next item that starts with it. The active item is the column's aria-activedescendant.
+     Choosing a parent clears the columns to its right; the newest column scrolls into view.
+     A column with no children says so (strings.empty). Long columns scroll on their own (each list is focusable).
+     In a right-to-left page the columns run from the right and Arrow Left and Right swap.
+   Notes:
+     For narrow windows, show one level at a time instead (drilldown navigation); for a value in a form, Cascader.
+     Widths are steps, never numbers: data-plx-width sets one of the six column width tokens.
+     The checkbox marks (checked) are drawn with the Checkbox control but are inert and hidden: the row is the target and
+       its aria-checked says whether it is checked.
+*/
+const STRINGS = {
+  empty: 'No items',
+  resize: 'Resize the {label} column',
+  preview: 'Preview of {label}'
+};
+const MIN_STEP = 1,
+  MAX_STEP = 6,
+  DEFAULT_STEP = 3;
+const fill = (s, label) => s.replace('{label}', label);
+const hasKids = it => !!(it && Array.isArray(it.children));
+const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwardRef(function MillerColumns({
+  items = [],
+  path,
+  defaultPath = [],
+  onPathChange,
+  onOpen,
+  renderPreview,
+  checked,
+  expandOnHover = false,
+  openOnClick = false,
+  resizable = false,
+  columnWidths,
+  onColumnWidthsChange,
+  label,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-mc' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [ownPath, setOwnPath] = _react.default.useState(defaultPath);
+  const ids = path !== undefined ? path : ownPath;
+  const [ownWidths, setOwnWidths] = _react.default.useState([]);
+  const widths = columnWidths || ownWidths;
+  const lists = _react.default.useRef([]),
+    columns = _react.default.useRef([]);
+  const focusAt = _react.default.useRef(null);
+
+  // the columns: the top level, then the children of each chosen parent
+  const cols = [{
+    items,
+    parent: null
+  }];
+  const chosen = [];
+  for (let i = 0; i < ids.length; i++) {
+    const it = cols[i].items.find(x => x.id === ids[i]);
+    if (!it) break;
+    chosen.push(it);
+    if (hasKids(it)) cols.push({
+      items: it.children,
+      parent: it
+    });else break;
+  }
+  const last = chosen[chosen.length - 1];
+  const preview = renderPreview && last && !hasKids(last) ? last : null;
+  const setPath = (next, item) => {
+    if (path === undefined) setOwnPath(next);
+    if (onPathChange) onPathChange(next, item);
+  };
+  const choose = (level, item) => {
+    if (!item || item.disabled) return;
+    setPath(chosen.slice(0, level).map(x => x.id).concat([item.id]), item);
+  };
+  const focusList = level => {
+    focusAt.current = level;
+  };
+  _react.default.useEffect(() => {
+    if (focusAt.current === null) return;
+    const el = lists.current[focusAt.current];
+    focusAt.current = null;
+    if (el) el.focus();
+  });
+  // the newest column, and each column's active item, scroll into view
+  const depth = cols.length + (preview ? 1 : 0);
+  _react.default.useEffect(() => {
+    const col = columns.current[depth - 1];
+    if (col && col.scrollIntoView) col.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest'
+    });
+  }, [depth]);
+  _react.default.useEffect(() => {
+    chosen.forEach((it, level) => {
+      const o = document.getElementById(optId(level, it.id));
+      if (o && o.scrollIntoView) o.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest'
+      });
+    });
+  }, [ids.join('/')]);
+  const optId = (level, id) => auto + '-' + level + '-' + String(id).replace(/[^a-zA-Z0-9_-]/g, '_');
+  const rtl = () => typeof document !== 'undefined' && lists.current[0] && getComputedStyle(lists.current[0]).direction === 'rtl';
+  const enabled = list => list.filter(x => !x.disabled);
+  const onKey = level => e => {
+    const list = cols[level].items,
+      here = chosen[level],
+      usable = enabled(list);
+    const at = here ? usable.indexOf(here) : -1;
+    let key = e.key;
+    if (rtl() && (key === 'ArrowLeft' || key === 'ArrowRight')) key = key === 'ArrowLeft' ? 'ArrowRight' : 'ArrowLeft';
+    if (key === 'ArrowDown') {
+      e.preventDefault();
+      choose(level, usable[Math.min(usable.length - 1, at + 1)]);
+    } else if (key === 'ArrowUp') {
+      e.preventDefault();
+      choose(level, usable[Math.max(0, at - 1)]);
+    } else if (key === 'Home') {
+      e.preventDefault();
+      choose(level, usable[0]);
+    } else if (key === 'End') {
+      e.preventDefault();
+      choose(level, usable[usable.length - 1]);
+    } else if (key === 'ArrowRight' || key === 'Enter' && hasKids(here)) {
+      if (!here) {
+        e.preventDefault();
+        choose(level, usable[0]);
+        return;
+      }
+      if (hasKids(here)) {
+        e.preventDefault();
+        const first = enabled(here.children)[0];
+        if (first) {
+          setPath(chosen.slice(0, level + 1).map(x => x.id).concat([first.id]), first);
+        }
+        focusList(level + 1);
+      }
+    } else if (key === 'ArrowLeft') {
+      if (level > 0) {
+        e.preventDefault();
+        setPath(chosen.slice(0, level).map(x => x.id), undefined);
+        focusList(level - 1);
+      }
+    } else if (key === 'Enter') {
+      if (here && onOpen) {
+        e.preventDefault();
+        onOpen(here, chosen.slice(0, level + 1).map(x => x.id));
+      }
+    } else if (key.length === 1 && /\S/.test(key) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const k = key.toLowerCase();
+      const order = usable.slice(at + 1).concat(usable.slice(0, at + 1));
+      const hit = order.find(x => String(x.label).toLowerCase().indexOf(k) === 0);
+      if (hit) {
+        e.preventDefault();
+        choose(level, hit);
+      }
+    }
+  };
+  const widthOf = level => Math.min(MAX_STEP, Math.max(MIN_STEP, widths[level] || DEFAULT_STEP));
+  const setWidth = (level, step) => {
+    const next = cols.map((c, i) => widthOf(i));
+    next[level] = Math.min(MAX_STEP, Math.max(MIN_STEP, step));
+    if (!columnWidths) setOwnWidths(next);
+    if (onColumnWidthsChange) onColumnWidthsChange(next);
+  };
+  const onResizeKey = level => e => {
+    const grow = rtl() ? 'ArrowLeft' : 'ArrowRight',
+      shrink = rtl() ? 'ArrowRight' : 'ArrowLeft';
+    if (e.key === grow) {
+      e.preventDefault();
+      setWidth(level, widthOf(level) + 1);
+    } else if (e.key === shrink) {
+      e.preventDefault();
+      setWidth(level, widthOf(level) - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setWidth(level, MIN_STEP);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      setWidth(level, MAX_STEP);
+    }
+  };
+  const onResizeDown = level => e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const start = e.clientX,
+      from = widthOf(level),
+      step = (0, _AppShell.tokenPx)('--plx-comp-miller-columns-resize-step') || 1,
+      dir = rtl() ? -1 : 1;
+    const move = ev => setWidth(level, from + Math.round((ev.clientX - start) * dir / step));
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-miller-columns', resizable && 'plx-miller-columns--resizable', checked && 'plx-miller-columns--checks', className)
+  }, rest), cols.map((col, level) => {
+    const here = chosen[level];
+    const name = col.parent ? col.parent.label : label;
+    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+      key: level + '-' + (col.parent ? col.parent.id : 'root')
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      ref: el => {
+        columns.current[level] = el;
+      },
+      className: "plx-miller-columns__column",
+      "data-plx-width": widthOf(level)
+    }, /*#__PURE__*/_react.default.createElement("ul", {
+      ref: el => {
+        lists.current[level] = el;
+      },
+      className: "plx-miller-columns__list",
+      role: "listbox",
+      tabIndex: 0,
+      "aria-label": name,
+      "aria-activedescendant": here ? optId(level, here.id) : undefined,
+      onKeyDown: onKey(level),
+      onFocus: () => {
+        if (!here && col.items.length) choose(level, enabled(col.items)[0]);
+      }
+    }, col.items.length ? col.items.map(it => {
+      const on = here && here.id === it.id,
+        parent = hasKids(it),
+        isChecked = checked && !parent && checked.indexOf(it.id) >= 0;
+      return /*#__PURE__*/_react.default.createElement("li", {
+        key: it.id,
+        id: optId(level, it.id),
+        role: "option",
+        "aria-selected": !!on,
+        "aria-disabled": it.disabled || undefined,
+        "aria-checked": checked && !parent ? !!isChecked : undefined,
+        className: (0, _cx.cx)('plx-miller-columns__item', on && 'is-selected', on && level === chosen.length - 1 && 'is-current', it.disabled && 'is-disabled'),
+        onMouseDown: e => e.preventDefault(),
+        onClick: () => {
+          choose(level, it);
+          const el = lists.current[level];
+          if (el) el.focus();
+          if (openOnClick && !parent && !it.disabled && onOpen) onOpen(it, chosen.slice(0, level).map(x => x.id).concat([it.id]));
+        },
+        onDoubleClick: () => {
+          if (!parent && !it.disabled && onOpen) onOpen(it, chosen.slice(0, level).map(x => x.id).concat([it.id]));
+        },
+        onMouseEnter: expandOnHover && parent && !it.disabled ? () => choose(level, it) : undefined
+      }, checked && !parent ? /*#__PURE__*/_react.default.createElement("input", {
+        type: "checkbox",
+        className: "plx-check__input plx-miller-columns__mark",
+        tabIndex: -1,
+        "aria-hidden": "true",
+        inert: "",
+        checked: !!isChecked,
+        readOnly: true
+      }) : null, it.icon ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-miller-columns__icon",
+        "aria-hidden": "true"
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: it.icon,
+        filled: !!on
+      })) : null, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-miller-columns__text"
+      }, /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-miller-columns__label"
+      }, it.label), it.description ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-miller-columns__description"
+      }, it.description) : null), parent ? /*#__PURE__*/_react.default.createElement("span", {
+        className: "plx-miller-columns__chevron",
+        "aria-hidden": "true"
+      }) : null);
+    }) : /*#__PURE__*/_react.default.createElement("li", {
+      className: "plx-miller-columns__empty",
+      role: "presentation"
+    }, t.empty))), resizable ? /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-miller-columns__resizer",
+      role: "separator",
+      "aria-orientation": "vertical",
+      tabIndex: 0,
+      "aria-label": fill(t.resize, name),
+      "aria-valuemin": MIN_STEP,
+      "aria-valuemax": MAX_STEP,
+      "aria-valuenow": widthOf(level),
+      onKeyDown: onResizeKey(level),
+      onPointerDown: onResizeDown(level)
+    }) : null);
+  }), preview ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: el => {
+      columns.current[cols.length] = el;
+    },
+    className: "plx-miller-columns__preview",
+    role: "region",
+    tabIndex: 0,
+    "aria-label": fill(t.preview, preview.label)
+  }, renderPreview(preview)) : null);
+});
+  } },
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Cascader = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Tag = require("../Tag/Tag.jsx");
+var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
+var _announce = require("../../utils/announce.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Cascader
+   Summary: A form field whose value is a leaf of a hierarchy, chosen level by level in columns that open under the field
+     (region, then country, then city); the field shows the whole path ("Europe / France / Paris").
+   Usage:
+     <Field label="Office"><Cascader options={regions} value={office} onChange={setOffice} /></Field>
+     <Cascader options={categories} expandTrigger="hover" value={v} onChange={setV} label="Category" />
+     <Cascader options={regions} searchable value={v} onChange={setV} label="Office" />
+     <Cascader options={regions} multiple values={offices} onChange={setOffices} label="Offices" />
+   Props:
+     options: the hierarchy: [{ id, label, children, disabled }] (MillerColumns' items); only leaves can be chosen
+     value: the chosen leaf's id, for a single choice; onChange(id, path) runs with it and its path of ids
+     values: the chosen leaves' ids, with multiple; onChange(ids) runs with the new array
+     multiple: several leaves, each a checkbox in the columns; the field shows them as tags (default false)
+     expandTrigger: "click" (default: a parent opens when chosen) | "hover" (pointing at a parent opens it)
+     searchable: a search field at the top of the list finds leaves at every level by name and lists their paths
+       (default false)
+     placeholder: the hint in the empty field (default strings.placeholder)
+     label: the accessible name when there is no Field
+     invalid: the invalid state (the field's border in the danger color); a Field with an error sets it
+     disabled: the field cannot be used
+     id: the id of the field's button (a Field sets it, so its label names it)
+     strings: the words it shows and announces, for other languages: { placeholder: "Choose", separator: " / ",
+       search: "Search", noMatches: "No matches", empty: "No items", remove: "Remove {label}", results: (n) => …,
+       columns: "Options" }
+     className: more classes on the cascader
+   Behavior:
+     The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
+       first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
+       children, Left back, Enter on a leaf chooses it (a click too). A single choice closes the list and returns focus to
+       the field; with multiple, Enter or a click checks or unchecks the leaf and the list stays open.
+     Escape, or a click outside, closes the list and returns focus to the field.
+     With searchable the search field is first in the list: typing lists every leaf whose name matches, with its path,
+       as one listbox (Arrow Down and Up move, Enter chooses); the number of matches is announced; clearing it brings the
+       columns back.
+     The path in the field and in each match uses strings.separator; a path too long for the field ends in an ellipsis; the
+       whole path is read as the field’s description.
+   Notes:
+     For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
+     The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
+*/
+const STRINGS = {
+  placeholder: 'Choose',
+  separator: ' / ',
+  search: 'Search',
+  noMatches: 'No matches',
+  empty: 'No items',
+  remove: 'Remove {label}',
+  results: n => n + (n === 1 ? ' match' : ' matches'),
+  columns: 'Options'
+};
+
+// every leaf of the hierarchy with its path of items
+// the columns of the list take the narrowest width step (160px), so three levels fit under a form field
+const NARROW = [1, 1, 1, 1, 1, 1];
+const leavesOf = (items, trail = []) => items.reduce((all, it) => Array.isArray(it.children) ? all.concat(leavesOf(it.children, trail.concat([it]))) : all.concat([{
+  item: it,
+  trail: trail.concat([it])
+}]), []);
+const pathTo = (items, id) => {
+  const hit = leavesOf(items).find(l => l.item.id === id);
+  return hit ? hit.trail : null;
+};
+const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(function Cascader({
+  options = [],
+  value,
+  values,
+  onChange,
+  multiple = false,
+  expandTrigger = 'click',
+  searchable = false,
+  placeholder,
+  label,
+  invalid,
+  disabled,
+  id,
+  strings,
+  className,
+  'aria-describedby': describedBy,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-cs' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  const [text, setText] = _react.default.useState('');
+  const [active, setActive] = _react.default.useState(0);
+  const [browse, setBrowse] = _react.default.useState([]);
+  const wrap = _react.default.useRef(null),
+    button = _react.default.useRef(null),
+    search = _react.default.useRef(null),
+    cols = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => button.current);
+  const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
+  const pathLabel = trail => trail.map(x => x.label).join(t.separator);
+  const current = !multiple && chosen.length ? pathTo(options, chosen[0]) : null;
+  const openList = () => {
+    if (disabled) return;
+    setBrowse(current ? current.map(x => x.id) : []);
+    setText('');
+    setOpen(true);
+  };
+  const close = refocus => {
+    setOpen(false);
+    setText('');
+    if (refocus && button.current) button.current.focus();
+  };
+  // focus moves into the list when it opens: the search field, or the first column
+  _react.default.useEffect(() => {
+    if (!open) return;
+    const target = searchable ? search.current : cols.current && cols.current.querySelector('.plx-miller-columns__list');
+    if (target) target.focus();
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) close(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  const q = text.trim().toLowerCase();
+  const matches = q ? leavesOf(options).filter(l => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q) >= 0) : [];
+  _react.default.useEffect(() => {
+    setActive(0);
+    if (q) (0, _announce.announce)(t.results(matches.length));
+  }, [q]);
+  const pick = (item, trail) => {
+    if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter(x => x !== item.id) : chosen.concat([item.id]));else {
+      onChange(item.id, trail.map(x => x.id));
+      close(true);
+    }
+  };
+  const onListKey = e => {
+    if (open && e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      close(true);
+    }
+  };
+  const onSearchKey = e => {
+    if (!q) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const l = cols.current && cols.current.querySelector('.plx-miller-columns__list');
+        if (l) l.focus();
+      }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActive(a => Math.min(matches.length - 1, a + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive(a => Math.max(0, a - 1));
+    } else if (e.key === 'Enter') {
+      if (matches[active]) {
+        e.preventDefault();
+        pick(matches[active].item, matches[active].trail);
+      }
+    }
+  };
+  const optId = i => auto + '-m' + i;
+  const shown = multiple ? null : current ? pathLabel(current) : null;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-cascader', multiple && 'plx-cascader--multiple', open && 'is-open', disabled && 'is-disabled', className),
+    onKeyDown: onListKey
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-cascader__field plx-input",
+    "aria-invalid": invalid || undefined
+  }, multiple ? chosen.map(v => {
+    const trail = pathTo(options, v);
+    const name = trail ? trail[trail.length - 1].label : String(v);
+    return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+      key: v,
+      onRemove: disabled ? undefined : () => onChange(chosen.filter(x => x !== v)),
+      removeLabel: t.remove.replace('{label}', name)
+    }, name);
+  }) : null, /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: button,
+    type: "button",
+    id: id,
+    className: "plx-cascader__trigger",
+    "aria-haspopup": "dialog",
+    "aria-expanded": open,
+    "aria-controls": open ? auto + '-pop' : undefined,
+    "aria-label": label || undefined,
+    "aria-describedby": [auto + '-value', describedBy].filter(Boolean).join(' '),
+    disabled: disabled,
+    onClick: () => open ? close(false) : openList(),
+    onKeyDown: e => {
+      if (e.key === 'ArrowDown' && !open) {
+        e.preventDefault();
+        openList();
+      }
+    }
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    id: auto + '-value',
+    className: (0, _cx.cx)('plx-cascader__value', !shown && 'plx-cascader__placeholder')
+  }, shown || (multiple && chosen.length ? '' : placeholder || t.placeholder)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-cascader__chevron",
+    "aria-hidden": "true"
+  }))), open ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-cascader__popup",
+    id: auto + '-pop',
+    role: "dialog",
+    "aria-label": label || t.columns
+  }, searchable ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-cascader__search"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    ref: search,
+    type: "search",
+    className: "plx-input plx-cascader__search-input",
+    role: "combobox",
+    "aria-expanded": !!q,
+    "aria-controls": auto + '-matches',
+    "aria-autocomplete": "list",
+    "aria-activedescendant": q && matches[active] ? optId(active) : undefined,
+    "aria-label": t.search,
+    placeholder: t.search,
+    value: text,
+    onChange: e => setText(e.target.value),
+    onKeyDown: onSearchKey,
+    autoComplete: "off"
+  })) : null, q ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-cascader__matches",
+    id: auto + '-matches',
+    role: "listbox",
+    "aria-label": t.search,
+    "aria-multiselectable": multiple || undefined
+  }, matches.length ? matches.map((m, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: m.item.id,
+    id: optId(i),
+    role: "option",
+    "aria-selected": chosen.indexOf(m.item.id) >= 0,
+    className: (0, _cx.cx)('plx-cascader__match', i === active && 'is-active', chosen.indexOf(m.item.id) >= 0 && 'is-selected'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => pick(m.item, m.trail),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-cascader__match-label"
+  }, m.item.label), m.trail.length > 1 ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-cascader__match-path"
+  }, pathLabel(m.trail.slice(0, -1))) : null)) : /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-cascader__empty",
+    role: "presentation"
+  }, t.noMatches)) : /*#__PURE__*/_react.default.createElement("div", {
+    ref: cols
+  }, /*#__PURE__*/_react.default.createElement(_MillerColumns.MillerColumns, {
+    className: "plx-cascader__columns",
+    label: label || t.columns,
+    items: options,
+    path: browse,
+    expandOnHover: expandTrigger === 'hover',
+    checked: multiple ? chosen : undefined,
+    strings: {
+      empty: t.empty
+    },
+    openOnClick: true,
+    columnWidths: NARROW,
+    onPathChange: p => setBrowse(p),
+    onOpen: item => pick(item, pathTo(options, item.id) || [item])
+  }))) : null);
+});
+  } },
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EntityPicker = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Tag = require("../Tag/Tag.jsx");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _IconTile = require("../IconTile/IconTile.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _announce = require("../../utils/announce.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
+   Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
+     picture or icon, its name and the detail that tells similar ones apart; kind="people" is the people picker.
+   Usage:
+     <Field label="Owner"><EntityPicker kind="people" options={people} value={owner} onChange={setOwner} /></Field>
+     <EntityPicker kind="people" multiple values={reviewers} onChange={setReviewers} loadOptions={(q) => api.people(q)} label="Reviewers" />
+     <EntityPicker kind="teams" options={teams} value={team} onChange={setTeam} label="Team" />
+     <EntityPicker entityName="projects" options={projects} value={p} onChange={setP} onBrowse={openProjectDialog} label="Project" />
+   Props:
+     kind: "records" (default: an icon tile, the name, a detail and an ID) | "people" (the avatar with presence, the name
+       and an email or role) | "teams" (a team icon tile, the name and the member count)
+     options: the records: [{ value, label, description, meta, icon, src, color, presence, disabled }]: description is the
+       second line (an email, a role, a path), meta a technical value at the end (an ID, a count) in the data font, icon
+       the tile's icon (records), src, color and presence the person's (people)
+     value: the chosen value, single; onChange(value, option) runs with it
+     values: the chosen values, with multiple; onChange(values) runs with the new array
+     multiple: several records, shown as tags before the text (default false)
+     loadOptions(text): loads the records for the typed text (a directory too large to list): returns them or a Promise of
+       them; loadDelay (default 300 ms) and minChars (default 1) as Combobox's
+     entityName: the kind in the plural, lowercase, for the hint and the empty message ("projects"); default "people",
+       "teams" or "records" by kind
+     placeholder: the hint in the empty field (default "Search by name or email" for people, "Search {entityName}" otherwise)
+     onBrowse(): shows "Browse all {entityName}" at the end of the list, for a dialog that searches with filters
+     label: the accessible name when there is no Field
+     invalid, disabled: the field's states; a Field sets invalid with its error
+     id: the id of the input (a Field sets it)
+     strings: the words it shows and announces: { placeholderPeople: "Search by name or email", placeholder: "Search
+       {entityName}", empty: "No {entityName} found", browse: "Browse all {entityName}", loading: "Loading…", error: "The
+       results could not be loaded", results: (n) => …, remove: "Remove {label}" }
+     className: more classes on the picker
+     ref: forwarded to the <input>
+   Behavior:
+     The WAI-ARIA combobox with a listbox popup: the list opens on typing (and on focus when there are options to show),
+       Arrow Down and Up move, Enter chooses, Escape closes, a click outside closes.
+     Name, description and meta are all searched (a person by name or email, a record by name or ID).
+     A single choice shows the chosen record's picture or icon before its name in the field and closes the list; with
+       multiple, choosing adds or removes a tag and the list stays open; Backspace in the empty field removes the last
+       tag; each tag has a remove button named "Remove <name>".
+     The number of results is announced politely after each search; while loadOptions runs the list is busy and shows
+       a spinner; a failed load says so in the list.
+   Notes:
+     The picture in each suggestion is decorative: the name and the detail are the option's text.
+     For a few known choices use Select; for anything that is not a record, Combobox.
+*/
+const STRINGS = {
+  placeholderPeople: 'Search by name or email',
+  placeholder: 'Search {entityName}',
+  empty: 'No {entityName} found',
+  browse: 'Browse all {entityName}',
+  loading: 'Loading…',
+  error: 'The results could not be loaded',
+  results: n => n + (n === 1 ? ' result' : ' results'),
+  remove: 'Remove {label}'
+};
+const NAMES = {
+  people: 'people',
+  teams: 'teams',
+  records: 'records'
+};
+const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => map[k] !== undefined ? map[k] : m);
+const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardRef(function EntityPicker({
+  kind = 'records',
+  options = [],
+  value,
+  values,
+  onChange,
+  multiple = false,
+  loadOptions,
+  loadDelay = 300,
+  minChars = 1,
+  entityName,
+  placeholder,
+  onBrowse,
+  label,
+  invalid,
+  disabled,
+  id,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const noun = entityName || NAMES[kind] || NAMES.records;
+  const auto = 'plx-ep' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const listId = auto + '-list';
+  const [open, setOpen] = _react.default.useState(false);
+  const [text, setText] = _react.default.useState('');
+  const [active, setActive] = _react.default.useState(0);
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const [loaded, setLoaded] = _react.default.useState([]);
+  const [busy, setBusy] = _react.default.useState(false);
+  const [failed, setFailed] = _react.default.useState(false);
+  const loader = _react.default.useRef(loadOptions),
+    request = _react.default.useRef(0),
+    seen = _react.default.useRef(new Map());
+  loader.current = loadOptions;
+  const async = !!loadOptions;
+  const query = text.trim();
+  _react.default.useEffect(() => {
+    if (!async || !open) return undefined;
+    if (query.length < minChars) {
+      request.current++;
+      setLoaded([]);
+      setBusy(false);
+      setFailed(false);
+      return undefined;
+    }
+    const n = ++request.current;
+    setBusy(true);
+    setFailed(false);
+    const timer = setTimeout(() => {
+      Promise.resolve().then(() => loader.current(query)).then(list => {
+        if (n !== request.current) return;
+        const got = Array.isArray(list) ? list : [];
+        got.forEach(o => seen.current.set(o.value, o));
+        setLoaded(got);
+        setBusy(false);
+        (0, _announce.announce)(t.results(got.length));
+      }, () => {
+        if (n !== request.current) return;
+        setLoaded([]);
+        setBusy(false);
+        setFailed(true);
+      });
+    }, loadDelay);
+    return () => clearTimeout(timer);
+  }, [async, open, query, minChars, loadDelay]);
+  const optionOf = v => options.find(x => x.value === v) || loaded.find(x => x.value === v) || seen.current.get(v);
+  const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
+  const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
+  const q = query.toLowerCase();
+  const hit = o => [o.label, o.description, o.meta].some(x => x !== undefined && x !== null && String(x).toLowerCase().indexOf(q) >= 0);
+  const results = busy || failed ? [] : async ? loaded : options.filter(o => !q || hit(o));
+  const items = results.map(o => ({
+    kind: 'option',
+    o
+  })).concat(onBrowse && !busy ? [{
+    kind: 'browse'
+  }] : []);
+  // the number of results, once typing pauses (the async loader announces its own)
+  _react.default.useEffect(() => {
+    if (async || !open || !q) return undefined;
+    const timer = setTimeout(() => (0, _announce.announce)(t.results(results.length)), 500);
+    return () => clearTimeout(timer);
+  }, [q, open]);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  _react.default.useEffect(() => {
+    setActive(0);
+  }, [q, open]);
+  const choose = item => {
+    if (!item) return;
+    if (item.kind === 'browse') {
+      setOpen(false);
+      onBrowse();
+      return;
+    }
+    const o = item.o;
+    if (o.disabled) return;
+    if (multiple) {
+      onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat([o.value]));
+      setText('');
+    } else {
+      onChange(o.value, o);
+      setText('');
+      setOpen(false);
+    }
+  };
+  const onKey = e => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) setOpen(true);else setActive(a => Math.min(items.length - 1, a + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive(a => Math.max(0, a - 1));
+    } else if (e.key === 'Enter') {
+      if (open && items[active]) {
+        e.preventDefault();
+        choose(items[active]);
+      }
+    } else if (e.key === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    } else if (e.key === 'Backspace' && multiple && !text && chosen.length) {
+      onChange(chosen.slice(0, -1));
+    }
+  };
+  const visual = (o, size) => {
+    if (kind === 'people') return /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+      name: o.label,
+      src: o.src,
+      color: o.color,
+      presence: o.presence,
+      size: size === 'field' ? 'xs' : 'sm'
+    });
+    const name = o.icon || (kind === 'teams' ? 'settings-users' : 'document');
+    return size === 'field' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: name
+    }) : /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
+      icon: name,
+      size: "sm"
+    });
+  };
+  const optId = i => auto + '-o' + i;
+  const hint = placeholder || (kind === 'people' && !entityName ? t.placeholderPeople : fill(t.placeholder, {
+    entityName: noun
+  }));
+  const showList = open && (items.length || busy || failed || q);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-picker__field plx-input",
+    "aria-invalid": invalid || undefined
+  }, multiple ? chosen.map(v => {
+    const o = optionOf(v);
+    const name = o ? o.label : String(v);
+    return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+      key: v,
+      onRemove: disabled ? undefined : () => onChange(chosen.filter(x => x !== v)),
+      removeLabel: fill(t.remove, {
+        label: name
+      })
+    }, name);
+  }) : null, current && !open ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__chosen",
+    "aria-hidden": "true"
+  }, visual(current, 'field')) : null, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: input,
+    id: id,
+    className: "plx-entity-picker__input",
+    role: "combobox",
+    "aria-expanded": !!showList,
+    "aria-controls": listId,
+    "aria-autocomplete": "list",
+    "aria-activedescendant": showList && items[active] ? optId(active) : undefined,
+    "aria-label": label,
+    disabled: disabled,
+    autoComplete: "off",
+    value: open || multiple ? text : current ? current.label : '',
+    placeholder: multiple && chosen.length ? '' : current && !open ? current.label : hint,
+    onChange: e => {
+      setText(e.target.value);
+      setOpen(true);
+    },
+    onFocus: () => {
+      if (!async) setOpen(true);
+    },
+    onKeyDown: onKey
+  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__search",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "search"
+  }))), showList ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-entity-picker__list",
+    id: listId,
+    role: "listbox",
+    "aria-label": label || noun,
+    "aria-multiselectable": multiple || undefined,
+    "aria-busy": busy || undefined
+  }, busy ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-entity-picker__status",
+    role: "presentation"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.loading
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, t.loading)) : failed ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-entity-picker__status plx-entity-picker__error",
+    role: "presentation"
+  }, t.error) : null, !busy && !failed && !results.length ? /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-entity-picker__status",
+    role: "presentation"
+  }, fill(t.empty, {
+    entityName: noun
+  })) : null, items.map((it, i) => it.kind === 'browse' ? /*#__PURE__*/_react.default.createElement("li", {
+    key: "browse",
+    id: optId(i),
+    role: "option",
+    "aria-selected": false,
+    className: (0, _cx.cx)('plx-entity-picker__option', 'plx-entity-picker__browse', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__browse-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "open"
+  })), fill(t.browse, {
+    entityName: noun
+  })) : /*#__PURE__*/_react.default.createElement("li", {
+    key: it.o.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": chosen.indexOf(it.o.value) >= 0,
+    "aria-disabled": it.o.disabled || undefined,
+    className: (0, _cx.cx)('plx-entity-picker__option', i === active && 'is-active', chosen.indexOf(it.o.value) >= 0 && 'is-selected', it.o.disabled && 'is-disabled'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__visual",
+    "aria-hidden": "true"
+  }, visual(it.o)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__name"
+  }, it.o.label), it.o.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__description"
+  }, it.o.description) : null), it.o.meta !== undefined && it.o.meta !== null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__meta"
+  }, it.o.meta) : null, chosen.indexOf(it.o.value) >= 0 ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-picker__check",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "check"
+  })) : null))) : null);
+});
+  } },
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.parseTime = exports.TimePicker = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
+   Summary: A time of day, typed or chosen: a field with a list of times at a set step (the default), or segments for the
+     hour, the minute and, on a 12-hour clock, AM or PM. It follows the reader's clock (12 or 24 hours); the time is in the
+     data font.
+   Usage:
+     <Field label="Start time"><TimePicker value={start} onChange={setStart} /></Field>
+     <TimePicker step={30} min="08:00" max="18:00" value={t} onChange={setT} label="Meeting" />
+     <TimePicker variant="segments" hourCycle="24" value={t} onChange={setT} label="Alarm" />
+   Props:
+     value: the time as "HH:MM" on a 24-hour clock ("14:30"), or "" for none; the same whatever clock is shown
+     defaultValue: the time it starts with, uncontrolled
+     onChange(value): runs with the new "HH:MM" (or "" when cleared)
+     variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
+       (spin buttons for the hour, the minute and the period)
+     hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
+       a value that divides 60 (5, 10, 15, 30)
+     min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
+     label: the accessible name when there is no Field (the group's name with segments)
+     invalid: the invalid state (the border in the danger color); a Field with an error sets it
+     disabled: the field cannot be used
+     id: the id of the input, or of the first segment (a Field sets it)
+     name: submits the "HH:MM" value with a form (a hidden input)
+     strings: the words it shows and announces, for other languages: { hour: "Hour", minute: "Minute", period: "AM or
+       PM", am: "AM", pm: "PM", times: "Times", empty: "--" }
+     className: more classes on the picker
+   Behavior:
+     List: the field is a combobox; typing a time in almost any form ("2", "2pm", "2:30 pm", "14:30", "1430") and leaving
+       the field or pressing Enter sets it, written back in the reader's format; text that is not a time puts the last
+       time back. Arrow Down opens the list on the time nearest the value; Arrow Up and Down move, Enter chooses, Escape
+       closes, Page Up and Down move an hour.
+     Segments: one spin button per part (Tab moves between them, and so do Arrow Left and Right): Arrow Up and Down step
+       it (the minute by step), Home and End go to its first and last value, digits type it (two digits move on to the next
+       segment), A and P set the period, Backspace clears it. The value changes once every segment is filled.
+     Times outside min and max are not offered and are brought back inside when typed.
+   Notes:
+     For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
+     Show the time zone in the description when people in several zones use the data.
+*/
+const STRINGS = {
+  hour: 'Hour',
+  minute: 'Minute',
+  period: 'AM or PM',
+  am: 'AM',
+  pm: 'PM',
+  times: 'Times',
+  empty: '--'
+};
+const pad = n => String(n).padStart(2, '0');
+const toMin = v => {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(v || '');
+  return m ? +m[1] * 60 + +m[2] : null;
+};
+const fromMin = n => pad(Math.floor(n / 60) % 24) + ':' + pad(n % 60);
+const localeCycle = () => {
+  try {
+    const o = new Intl.DateTimeFormat((0, _format.formatLocale)(), {
+      hour: 'numeric'
+    }).resolvedOptions();
+    return o.hourCycle === 'h11' || o.hourCycle === 'h12' || o.hour12 ? '12' : '24';
+  } catch (e) {
+    return '12';
+  }
+};
+// "2", "2pm", "2:30 pm", "14:30", "1430", "230p" → minutes after midnight, or null
+const parseTime = (text, cycle) => {
+  const s = String(text || '').trim().toLowerCase().replace(/\./g, '');
+  if (!s) return null;
+  const m = /^(\d{1,2})(?::?(\d{2}))?\s*(a|am|p|pm)?$/.exec(s);
+  if (!m) return null;
+  let h = +m[1];
+  const min = m[2] ? +m[2] : 0;
+  const p = m[3] ? m[3][0] : null;
+  if (min > 59) return null;
+  if (p) {
+    if (h < 1 || h > 12) return null;
+    h = h % 12 + (p === 'p' ? 12 : 0);
+  } else if (h > 23) return null;else if (cycle === '12' && h >= 1 && h <= 6 && !m[2]) h += 12; // "2" on a 12-hour clock means the afternoon
+  return h * 60 + min;
+};
+exports.parseTime = parseTime;
+const show = (mins, cycle, t) => {
+  if (mins === null) return '';
+  const h = Math.floor(mins / 60),
+    m = mins % 60;
+  return cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
+};
+const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(function TimePicker({
+  value,
+  defaultValue = '',
+  onChange,
+  variant = 'list',
+  hourCycle,
+  step,
+  min,
+  max,
+  label,
+  invalid,
+  disabled,
+  id,
+  name,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const cycle = hourCycle ? String(hourCycle) : localeCycle();
+  const [own, setOwn] = _react.default.useState(defaultValue);
+  const current = value !== undefined ? value : own;
+  const lo = toMin(min) !== null ? toMin(min) : 0,
+    hi = toMin(max) !== null ? toMin(max) : 24 * 60 - 1;
+  const clamp = n => Math.min(hi, Math.max(lo, n));
+  const commit = mins => {
+    const v = mins === null ? '' : fromMin(clamp(mins));
+    if (value === undefined) setOwn(v);
+    if (onChange && v !== current) onChange(v);
+  };
+  const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, disabled && 'is-disabled', className);
+  const hidden = name ? /*#__PURE__*/_react.default.createElement("input", {
+    type: "hidden",
+    name: name,
+    value: current || ''
+  }) : null;
+  if (variant === 'segments') return /*#__PURE__*/_react.default.createElement(Segments, {
+    ref: ref,
+    t,
+    cycle,
+    step: step || 1,
+    current,
+    commit,
+    lo,
+    hi,
+    label,
+    invalid,
+    disabled,
+    id,
+    cls,
+    hidden,
+    rest
+  });
+  return /*#__PURE__*/_react.default.createElement(ListPicker, {
+    ref: ref,
+    t,
+    cycle,
+    step: step || 15,
+    current,
+    commit,
+    lo,
+    hi,
+    label,
+    invalid,
+    disabled,
+    id,
+    cls,
+    hidden,
+    rest
+  });
+});
+const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
+  t,
+  cycle,
+  step,
+  current,
+  commit,
+  lo,
+  hi,
+  label,
+  invalid,
+  disabled,
+  id,
+  cls,
+  hidden,
+  rest
+}, ref) {
+  const auto = 'plx-tp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  const [text, setText] = _react.default.useState(null); // the text while typing; null shows the value
+  const [active, setActive] = _react.default.useState(0);
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const times = [];
+  for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
+  const mins = toMin(current);
+  const nearest = n => {
+    if (n === null || !times.length) return 0;
+    let best = 0;
+    times.forEach((x, i) => {
+      if (Math.abs(x - n) < Math.abs(times[best] - n)) best = i;
+    });
+    return best;
+  };
+  const openAt = n => {
+    setActive(nearest(n));
+    setOpen(true);
+  };
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (!open || !list.current) return;
+    const o = list.current.querySelector('[data-plx-index="' + active + '"]');
+    if (o && o.scrollIntoView) o.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [open, active]);
+  const settle = () => {
+    if (text === null) return;
+    const n = text.trim() ? parseTime(text, cycle) : null;
+    if (n !== null || !text.trim()) commit(n);
+    setText(null);
+  };
+  const choose = i => {
+    commit(times[i]);
+    setText(null);
+    setOpen(false);
+  };
+  const onKey = e => {
+    const perHour = Math.max(1, Math.round(60 / step));
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) openAt(text !== null ? parseTime(text, cycle) : mins);else setActive(a => Math.min(times.length - 1, a + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) openAt(mins);else setActive(a => Math.max(0, a - 1));
+    } else if (e.key === 'PageDown' && open) {
+      e.preventDefault();
+      setActive(a => Math.min(times.length - 1, a + perHour));
+    } else if (e.key === 'PageUp' && open) {
+      e.preventDefault();
+      setActive(a => Math.max(0, a - perHour));
+    } else if (e.key === 'Enter') {
+      if (open && text === null && times[active] !== undefined) {
+        e.preventDefault();
+        choose(active);
+      } else {
+        settle();
+        setOpen(false);
+      }
+    } else if (e.key === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        setOpen(false);
+      } else if (text !== null) {
+        e.preventDefault();
+        setText(null);
+      }
+    }
+  };
+  const optId = i => auto + '-o' + i;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: cls
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-time-picker__field plx-input",
+    "aria-invalid": invalid || undefined
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: input,
+    id: id,
+    className: "plx-time-picker__input",
+    role: "combobox",
+    "aria-expanded": open,
+    "aria-controls": auto + '-list',
+    "aria-autocomplete": "none",
+    "aria-activedescendant": open && times[active] !== undefined ? optId(active) : undefined,
+    "aria-label": label,
+    disabled: disabled,
+    autoComplete: "off",
+    inputMode: "text",
+    value: text !== null ? text : show(mins, cycle, t),
+    placeholder: cycle === '12' ? '9:00 ' + t.am : '09:00',
+    onChange: e => {
+      setText(e.target.value);
+      const n = parseTime(e.target.value, cycle);
+      if (n !== null) setActive(nearest(n));
+    },
+    onBlur: () => {
+      settle();
+    },
+    onClick: () => {
+      if (!open && !disabled) openAt(mins);
+    },
+    onKeyDown: onKey
+  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-time-picker__icon",
+    "aria-hidden": "true"
+  })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    className: "plx-time-picker__list",
+    id: auto + '-list',
+    role: "listbox",
+    "aria-label": label ? label + ', ' + t.times : t.times
+  }, times.map((n, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: n,
+    id: optId(i),
+    "data-plx-index": i,
+    role: "option",
+    "aria-selected": n === mins,
+    className: (0, _cx.cx)('plx-time-picker__option', i === active && 'is-active', n === mins && 'is-selected'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(i),
+    onMouseEnter: () => setActive(i)
+  }, show(n, cycle, t)))) : null, hidden);
+});
+const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
+  t,
+  cycle,
+  step,
+  current,
+  commit,
+  lo,
+  hi,
+  label,
+  invalid,
+  disabled,
+  id,
+  cls,
+  hidden,
+  rest
+}, ref) {
+  const mins = toMin(current);
+  // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
+  const fromValue = () => mins === null ? {
+    h: null,
+    m: null,
+    p: null
+  } : {
+    h: cycle === '12' ? Math.floor(mins / 60) % 12 || 12 : Math.floor(mins / 60),
+    m: mins % 60,
+    p: Math.floor(mins / 60) < 12 ? 'am' : 'pm'
+  };
+  const [parts, setParts] = _react.default.useState(fromValue);
+  const typed = _react.default.useRef('');
+  _react.default.useEffect(() => {
+    setParts(fromValue());
+  }, [current, cycle]);
+  const refs = [_react.default.useRef(null), _react.default.useRef(null), _react.default.useRef(null)];
+  _react.default.useImperativeHandle(ref, () => refs[0].current);
+  const segs = cycle === '12' ? ['h', 'm', 'p'] : ['h', 'm'];
+  const update = next => {
+    setParts(next);
+    const full = next.h !== null && next.m !== null && (cycle !== '12' || next.p !== null);
+    if (full) {
+      const h24 = cycle === '12' ? next.h % 12 + (next.p === 'pm' ? 12 : 0) : next.h;
+      commit(h24 * 60 + next.m);
+    } else if (next.h === null && next.m === null && (cycle !== '12' || next.p === null)) commit(null);
+  };
+  const range = {
+    h: cycle === '12' ? [1, 12] : [0, 23],
+    m: [0, 59]
+  };
+  const move = i => {
+    const el = refs[Math.max(0, Math.min(segs.length - 1, i))].current;
+    if (el) el.focus();
+  };
+  const onKey = (k, i) => e => {
+    if (disabled) return;
+    const n = Object.assign({}, parts);
+    const wrapAround = (v, d, a, b, s) => {
+      const span = b - a + 1;
+      return (((v === null ? d > 0 ? a - s : b + 1 : v) - a + d * s) % span + span) % span + a;
+    };
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      move(i - 1);
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      move(i + 1);
+      return;
+    }
+    if (k === 'p') {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        n.p = n.p === 'am' ? 'pm' : 'am';
+        update(n);
+      } else if (/^[ap]$/i.test(e.key)) {
+        e.preventDefault();
+        n.p = e.key.toLowerCase() === 'a' ? 'am' : 'pm';
+        update(n);
+      } else if (e.key === 'Backspace' || e.key === 'Delete') {
+        e.preventDefault();
+        n.p = null;
+        update(n);
+      }
+      return;
+    }
+    const [a, b] = range[k],
+      s = k === 'm' ? step : 1;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      typed.current = '';
+      n[k] = wrapAround(n[k], e.key === 'ArrowUp' ? 1 : -1, a, b, s);
+      if (k === 'm') n.m = Math.floor(n.m / s) * s;
+      update(n);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      n[k] = a;
+      update(n);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      n[k] = k === 'm' ? Math.floor(b / s) * s : b;
+      update(n);
+    } else if (e.key === 'Backspace' || e.key === 'Delete') {
+      e.preventDefault();
+      typed.current = '';
+      n[k] = null;
+      update(n);
+    } else if (/^\d$/.test(e.key)) {
+      e.preventDefault();
+      const tryText = typed.current + e.key;
+      let v = +tryText;
+      if (v > b) {
+        v = +e.key;
+        typed.current = e.key;
+      } else typed.current = tryText;
+      n[k] = v;
+      update(n);
+      if (typed.current.length >= 2 || v * 10 > b) {
+        typed.current = '';
+        move(i + 1);
+      }
+    }
+  };
+  const lbl = {
+    h: t.hour,
+    m: t.minute,
+    p: t.period
+  };
+  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: cls
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: "plx-time-picker__field plx-time-picker__segments plx-input",
+    "aria-invalid": invalid || undefined
+  }, rest), segs.map((k, i) => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+    key: k
+  }, k === 'm' ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-time-picker__separator",
+    "aria-hidden": "true"
+  }, ":") : null, /*#__PURE__*/_react.default.createElement("span", {
+    ref: refs[i],
+    id: i === 0 ? id : undefined,
+    role: "spinbutton",
+    tabIndex: disabled ? -1 : 0,
+    "aria-label": lbl[k],
+    "aria-disabled": disabled || undefined,
+    "aria-invalid": invalid || undefined,
+    "aria-valuemin": k === 'p' ? undefined : range[k][0],
+    "aria-valuemax": k === 'p' ? undefined : range[k][1],
+    "aria-valuenow": k === 'p' || parts[k] === null ? undefined : parts[k],
+    "aria-valuetext": parts[k] === null ? undefined : text(k),
+    className: (0, _cx.cx)('plx-time-picker__segment', k === 'p' && 'plx-time-picker__segment--period', parts[k] === null && 'is-empty'),
+    onKeyDown: onKey(k, i),
+    onBlur: () => {
+      typed.current = '';
+    }
+  }, text(k)))), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-time-picker__icon",
+    "aria-hidden": "true"
+  })), hidden);
+});
+  } },
+  "platform/components/RelativeDateInput/RelativeDateInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RelativeDateInput = exports.RELATIVE_PRESETS = void 0;
+exports.resolveRelativeDate = resolveRelativeDate;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Input = require("../Input/Input.jsx");
+var _NumberInput = require("../NumberInput/NumberInput.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RelativeDateInput, resolveRelativeDate
+   Summary: A date range relative to today, for filters, saved searches and rules that must stay right as time passes:
+     a preset (Last 7 days, Next 30 days) or a custom amount and unit, with the dates it means today written under it.
+   Usage:
+     <Field label="Modified"><RelativeDateInput value={when} onChange={setWhen} /></Field>
+     <RelativeDateInput direction="future" value={due} onChange={setDue} label="Due" />
+     <RelativeDateInput value={{ direction: 'past', amount: 3, unit: 'month' }} onChange={setWhen} label="Created" />
+     const { from, to } = resolveRelativeDate(when);   // the dates it means today
+   Props:
+     value: the choice: a preset id ("today", "last-7-days" …) or { direction: "past" | "future", amount, unit: "day" |
+       "week" | "month" | "year" } for a custom range; "" for none
+     defaultValue: the choice it starts with, uncontrolled
+     onChange(value, range): runs with the new value and the dates it means today ({ from, to }, Date objects)
+     direction: "past" (default: Today, Yesterday, Last 7 days …) | "future" (Today, Tomorrow, Next 7 days …) | "both"
+       (both lists): which presets are offered, and the custom range's direction
+     presets: the preset ids to offer, in order (default by direction; see RELATIVE_PRESETS)
+     now: the date counted from (default: today), for tests and examples
+     label: the accessible name when there is no Field
+     invalid, disabled: the field's states (a Field sets invalid with its error)
+     id: the id of the preset select (a Field sets it)
+     strings: the words it shows, for other languages: { custom: "Custom", none: "Any time", amount: "Amount", unit:
+       "Unit", past: "Last", future: "Next", units: { day: ["day", "days"], … }, presets: { "last-7-days": "Last 7 days", … },
+       range: "{range}" }
+     className: more classes on the input
+   Behavior:
+     The preset is a Select; choosing Custom shows, in the same row, the direction (with direction "both"), a number
+       input for the amount (NumberInput, 1 to 999, in the data font) and a Select of the unit. Every part has its own name.
+     The dates the choice means today are written under it in the data font ("Mar 1 – Mar 7, 2026") and read as the
+       control's description, so people can check them; they are worked out again each day (the value stays relative).
+     Ranges count whole days: the past ones end today, the future ones start today; "last 7 days" is today and the six
+       days before.
+   Notes:
+     Store the value (the preset id or the custom object), never the resolved dates: they change every day.
+     For one fixed date, use a date picker.
+*/
+// presets: [id, direction, amount, unit, offset] (offset: whole units before or after today, for yesterday and tomorrow)
+const RELATIVE_PRESETS = exports.RELATIVE_PRESETS = {
+  today: ['both', 0, 'day'],
+  yesterday: ['past', 1, 'day', 1],
+  'last-7-days': ['past', 7, 'day'],
+  'last-30-days': ['past', 30, 'day'],
+  'last-90-days': ['past', 90, 'day'],
+  'last-12-months': ['past', 12, 'month'],
+  tomorrow: ['future', 1, 'day', 1],
+  'next-7-days': ['future', 7, 'day'],
+  'next-30-days': ['future', 30, 'day'],
+  'next-90-days': ['future', 90, 'day'],
+  'next-12-months': ['future', 12, 'month']
+};
+const DEFAULT_PRESETS = {
+  past: ['today', 'yesterday', 'last-7-days', 'last-30-days', 'last-90-days', 'last-12-months'],
+  future: ['today', 'tomorrow', 'next-7-days', 'next-30-days', 'next-90-days', 'next-12-months']
+};
+DEFAULT_PRESETS.both = DEFAULT_PRESETS.past.concat(DEFAULT_PRESETS.future.slice(1));
+const STRINGS = {
+  custom: 'Custom',
+  none: 'Any time',
+  amount: 'Amount',
+  unit: 'Unit',
+  direction: 'Direction',
+  past: 'Last',
+  future: 'Next',
+  units: {
+    day: ['day', 'days'],
+    week: ['week', 'weeks'],
+    month: ['month', 'months'],
+    year: ['year', 'years']
+  },
+  presets: {
+    today: 'Today',
+    yesterday: 'Yesterday',
+    'last-7-days': 'Last 7 days',
+    'last-30-days': 'Last 30 days',
+    'last-90-days': 'Last 90 days',
+    'last-12-months': 'Last 12 months',
+    tomorrow: 'Tomorrow',
+    'next-7-days': 'Next 7 days',
+    'next-30-days': 'Next 30 days',
+    'next-90-days': 'Next 90 days',
+    'next-12-months': 'Next 12 months'
+  }
+};
+const UNITS = ['day', 'week', 'month', 'year'];
+const CUSTOM = 'custom';
+const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const add = (d, unit, n) => {
+  const x = new Date(d.getTime());
+  if (unit === 'day') x.setDate(x.getDate() + n);else if (unit === 'week') x.setDate(x.getDate() + 7 * n);else if (unit === 'month') x.setMonth(x.getMonth() + n);else if (unit === 'year') x.setFullYear(x.getFullYear() + n);
+  return x;
+};
+// the dates a relative value means, counted from now: { from, to } (whole days, Date objects at the start of each day)
+function resolveRelativeDate(value, now) {
+  const today = startOfDay(now ? new Date(now) : new Date());
+  if (!value) return null;
+  let dir,
+    amount,
+    unit,
+    offset = 0;
+  if (typeof value === 'string') {
+    const p = RELATIVE_PRESETS[value];
+    if (!p) return null;
+    [dir, amount, unit, offset] = [p[0], p[1], p[2], p[3] || 0];
+  } else {
+    dir = value.direction;
+    amount = Math.max(1, Math.round(+value.amount || 1));
+    unit = UNITS.indexOf(value.unit) >= 0 ? value.unit : 'day';
+  }
+  if (offset) {
+    const d = add(today, unit, dir === 'past' ? -offset : offset);
+    return {
+      from: d,
+      to: d
+    };
+  }
+  if (!amount) return {
+    from: today,
+    to: today
+  };
+  if (dir === 'future') return {
+    from: today,
+    to: add(add(today, unit, amount), 'day', -1)
+  };
+  return {
+    from: add(add(today, unit, -amount), 'day', 1),
+    to: today
+  };
+}
+const RelativeDateInput = exports.RelativeDateInput = /*#__PURE__*/_react.default.forwardRef(function RelativeDateInput({
+  value,
+  defaultValue = '',
+  onChange,
+  direction = 'past',
+  presets,
+  now,
+  label,
+  invalid,
+  disabled,
+  id,
+  strings,
+  className,
+  'aria-describedby': describedBy,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings, {
+    units: Object.assign({}, STRINGS.units, strings && strings.units),
+    presets: Object.assign({}, STRINGS.presets, strings && strings.presets)
+  });
+  const auto = 'plx-rd' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [own, setOwn] = _react.default.useState(defaultValue);
+  const current = value !== undefined ? value : own;
+  const custom = current && typeof current === 'object';
+  const list = presets || DEFAULT_PRESETS[direction] || DEFAULT_PRESETS.past;
+  const set = v => {
+    if (value === undefined) setOwn(v);
+    if (onChange) onChange(v, resolveRelativeDate(v, now));
+  };
+  const range = resolveRelativeDate(current, now);
+  const rangeText = range ? range.from.getTime() === range.to.getTime() ? (0, _format.formatDate)(range.from, {
+    dateStyle: 'medium'
+  }) : (0, _format.formatRange)(range.from, range.to) : '';
+  const customDir = direction === 'future' ? 'future' : 'past';
+  const onPreset = e => {
+    const v = e.target.value;
+    if (v === CUSTOM) set({
+      direction: custom ? current.direction : customDir,
+      amount: custom ? current.amount : 7,
+      unit: custom ? current.unit : 'day'
+    });else set(v);
+  };
+  const part = (k, v) => set(Object.assign({}, current, {
+    [k]: v
+  }));
+  const amount = custom ? current.amount : 7;
+  const options = [{
+    value: '',
+    label: t.none
+  }].concat(list.map(p => ({
+    value: p,
+    label: t.presets[p] || p
+  })), [{
+    value: CUSTOM,
+    label: t.custom
+  }]);
+  const descr = [range ? auto + '-range' : null, describedBy].filter(Boolean).join(' ') || undefined;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-relative-date-input', custom && 'plx-relative-date-input--custom', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-relative-date-input__row",
+    role: "group",
+    "aria-label": label
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, _extends({
+    ref: ref,
+    id: id,
+    className: "plx-relative-date-input__preset",
+    value: custom ? CUSTOM : current || '',
+    onChange: onPreset,
+    options: options,
+    "aria-label": label,
+    invalid: invalid,
+    disabled: disabled,
+    "aria-describedby": descr
+  }, rest)), custom ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, direction === 'both' ? /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    className: "plx-relative-date-input__direction",
+    value: current.direction,
+    "aria-label": t.direction,
+    disabled: disabled,
+    options: [{
+      value: 'past',
+      label: t.past
+    }, {
+      value: 'future',
+      label: t.future
+    }],
+    onChange: e => part('direction', e.target.value)
+  }) : null, /*#__PURE__*/_react.default.createElement(_NumberInput.NumberInput, {
+    className: "plx-relative-date-input__amount",
+    min: 1,
+    max: 999,
+    step: 1,
+    decimals: 0,
+    width: "xs",
+    value: amount,
+    "aria-label": t.amount,
+    disabled: disabled,
+    invalid: invalid,
+    "aria-describedby": descr,
+    onChange: n => {
+      if (n !== null && n >= 1) part('amount', Math.min(999, Math.round(n)));
+    }
+  }), /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    className: "plx-relative-date-input__unit",
+    value: current.unit,
+    "aria-label": t.unit,
+    disabled: disabled,
+    options: UNITS.map(u => ({
+      value: u,
+      label: t.units[u][+amount === 1 ? 0 : 1]
+    })),
+    onChange: e => part('unit', e.target.value)
+  })) : null), range ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-relative-date-input__range",
+    id: auto + '-range'
+  }, rangeText) : null);
+});
+  } },
+  "platform/components/LoadMore/LoadMore.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LoadMore = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _useIntersection = require("../../hooks/useIntersection.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LoadMore
+   Summary: The end of a long list that brings the next items: a Load more button (the default), or the next items loaded
+     as people scroll near the end (infinite), with the count so far, a spinner while they load, and an end message
+     when nothing is left.
+   Usage:
+     <List>{items.map(…)}</List>
+     <LoadMore onLoadMore={next} loading={busy} hasMore={items.length < total} shown={items.length} total={total} />
+     <LoadMore mode="infinite" root={scrollRef} onLoadMore={next} loading={busy} hasMore={more} shown={items.length} />
+     <LoadMore pageSize={20} onLoadMore={next} hasMore={more} shown={items.length} onFocusNew={(i) => rows[i].focus()} />
+   Props:
+     onLoadMore(): loads the next items; the page sets loading while they come and adds them to its list
+     hasMore: there are more items to load (default true); false shows the end message
+     loading: the next items are on their way (default false)
+     shown: how many items the list shows now (the count, and the announcement of how many came)
+     total: how many there are in all, when known: "40 of 120" beside the button, in the data font
+     mode: "button" (default: a Load more button) | "infinite" (the next items load when the end of the list nears the
+       view; the button stays as the keyboard way)
+     root: with infinite, a ref to the scroll area the list scrolls in (default: the window)
+     pageSize: how many items one load brings: the button says "Show 20 more" (default: "Load more")
+     onFocusNew(index): after a load started from the button, runs with the index of the first new item, so the page can
+       move focus to it
+     strings: the words it shows and announces, for other languages: { more: "Load more", moreCount: "Show {n} more",
+       loading: "Loading…", end: "You’ve reached the end", count: "{shown} of {total}", added: (n) => n + " more items
+       loaded" }
+     className: more classes on the bar
+   Behavior:
+     The button is a secondary Button: while loading it keeps its width, shows a spinner and stays focusable (aria-busy).
+     Infinite: an invisible marker after the list is watched (useIntersection, a little before it shows); when it comes
+       into view and nothing is loading, onLoadMore runs, and again while it stays in view after a load.
+     When shown grows after a load, how many items came is announced politely; after a load started from the button,
+       onFocusNew gets the first new item's index (focus otherwise stays on the button).
+     With hasMore false the button gives way to the end message (muted text, not a status badge).
+   Notes:
+     Prefer the button for results people compare and come back to; keep infinite for streams people browse, with no
+       footer under them that people need to reach. For "page 3", use Pagination. DataTable has its own load more.
+*/
+const STRINGS = {
+  more: 'Load more',
+  moreCount: 'Show {n} more',
+  loading: 'Loading…',
+  end: 'You’ve reached the end',
+  count: '{shown} of {total}',
+  added: n => n + (n === 1 ? ' more item loaded' : ' more items loaded')
+};
+const LoadMore = exports.LoadMore = /*#__PURE__*/_react.default.forwardRef(function LoadMore({
+  onLoadMore,
+  hasMore = true,
+  loading = false,
+  shown,
+  total,
+  mode = 'button',
+  root,
+  pageSize,
+  onFocusNew,
+  strings,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const sentinel = _react.default.useRef(null);
+  const before = _react.default.useRef(shown),
+    fromButton = _react.default.useRef(false);
+  const infinite = mode === 'infinite';
+  const {
+    visible
+  } = (0, _useIntersection.useIntersection)(sentinel, {
+    root,
+    rootMargin: '--plx-ref-size-200px',
+    disabled: !infinite || !hasMore
+  });
+  _react.default.useEffect(() => {
+    if (infinite && visible && hasMore && !loading && onLoadMore) onLoadMore();
+  }, [infinite, visible, hasMore, loading, shown]);
+  _react.default.useEffect(() => {
+    const was = before.current;
+    before.current = shown;
+    if (typeof shown !== 'number' || typeof was !== 'number' || shown <= was) return;
+    (0, _announce.announce)(t.added(shown - was));
+    if (fromButton.current && onFocusNew) onFocusNew(was);
+    fromButton.current = false;
+  }, [shown]);
+  const press = () => {
+    if (loading || !onLoadMore) return;
+    fromButton.current = true;
+    onLoadMore();
+  };
+  const count = typeof shown === 'number' && typeof total === 'number' ? t.count.replace('{shown}', (0, _format.formatNumber)(shown)).replace('{total}', (0, _format.formatNumber)(total)) : null;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    className: (0, _cx.cx)('plx-load-more', infinite && 'plx-load-more--infinite', !hasMore && 'is-end', className)
+  }, rest), infinite && hasMore ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: sentinel,
+    className: "plx-load-more__sentinel",
+    "aria-hidden": "true"
+  }) : null, !hasMore ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-load-more__end"
+  }, t.end) : infinite && loading ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-load-more__loading"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.loading
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, t.loading)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    className: "plx-load-more__button",
+    loading: loading,
+    onClick: press,
+    strings: {
+      working: t.loading
+    }
+  }, pageSize ? t.moreCount.replace('{n}', (0, _format.formatNumber)(pageSize)) : t.more), count ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-load-more__count"
+  }, count) : null);
+});
+  } },
+  "platform/patterns/ImageUpload/ImageUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImageCrop = ImageCrop;
+exports.ImageUpload = ImageUpload;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _DropZone = require("../../components/DropZone/DropZone.jsx");
+var _FileInput = require("../../components/FileInput/FileInput.jsx");
+var _Image = require("../../components/Image/Image.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _Slider = require("../../components/Slider/Slider.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ImageUpload, ImageCrop
+   Summary: Adds images with a preview of each before they are saved: a drop zone with a Choose button, the chosen images as
+     previews with Replace, Remove and an optional description (alt text); in a fixed shape (aspect locked), or cropped to it
+     first (ImageCrop: zoom and move the picture in the frame). Built only from Platform components.
+   Usage:
+     <Field label="Cover image" description="PNG or JPG, at least 1600 × 900 pixels">
+       <ImageUpload value={cover} onChange={setCover} ratio="16-9" crop altText />
+     </Field>
+     <ImageUpload multiple max={8} value={photos} onChange={setPhotos} label="Product photos" />
+     <ImageCrop src={url} ratio="1-1" onApply={({ url, blob }) => …} onCancel={…} />
+   Props:
+     value: the images: [{ id, url, name, size, alt, file, blob }] (url shows the preview; blob is the cropped picture when
+       cropped); onChange(images) runs with the new list
+     multiple: several images, shown as a grid of previews (default false: one image, which Replace swaps)
+     max: the most images with multiple; the drop zone hides when it is reached
+     ratio: "auto" (default: each picture's own shape) | "1-1" | "4-3" | "3-2" | "16-9" | "3-4" | "9-16": the previews keep
+       this shape (aspect locked: the edges of other shapes are cut off in the preview)
+     crop: a crop step after each image is chosen, to the ratio ("1-1" when ratio is "auto"); the cropped picture replaces it
+     accept: the image types the picker offers (default "image/png,image/jpeg,image/webp,image/gif")
+     maxSize: the largest file in bytes; a larger one is refused with strings.tooLarge
+     altText: each image gets a Description field (its alt text), for images others will see (default false)
+     description: the limits, shown in the drop zone ("PNG or JPG, up to 5 MB")
+     label: the accessible name of the area (the Field's label otherwise)
+     disabled: nothing can be added or removed
+     strings: the words it shows and announces, for other languages: { drop: "Drop an image here, or", dropMany: "Drop
+       images here, or", choose: "Choose image", chooseMany: "Choose images", replace: "Replace", remove: "Remove {name}",
+       alt: "Description", altHint: "Describe this image for people who cannot see it", tooLarge: "{name} is larger than
+       {max}", notImage: "{name} is not an image", added: (n) => …, removed: "{name} removed", crop: {…ImageCrop's} }
+     className: more classes on the area
+     ImageCrop.src: the picture to crop; ImageCrop.ratio: the frame's shape (as ratio, default "1-1")
+     ImageCrop.onApply({ url, blob, width, height }): runs with the cropped picture; ImageCrop.onCancel(): leaves it
+     ImageCrop.output: the cropped picture's width in pixels (default 1200)
+     ImageCrop.strings: { title: "Crop image", zoom: "Zoom", frame: "Crop area. Drag the picture, or move it with the arrow
+       keys", apply: "Apply", cancel: "Cancel" }
+   Behavior:
+     Drop images on the zone, or press Choose (the browser's file input, the keyboard way): each image shows at once as a
+       preview with its name and size (the data font); a file that is not an image or too large is refused, the reason
+       under the zone (a danger Notice, read out as an alert).
+     Replace (single) chooses again; each preview's Remove takes that image out and focus moves to the next preview's
+       Remove, or to Choose. How many images were added or removed is announced politely.
+     ImageCrop: the frame shows the cropped result in the ratio; drag the picture or use the arrow keys to move it (Shift for
+       bigger steps), the Zoom slider (100 to 300%) to enlarge it; Apply keeps it, Cancel keeps the uncropped picture.
+       The picture is cropped in the browser (a canvas off the page), so what people see is what is saved.
+   Notes:
+     The page uploads value[].file (or .blob after a crop) when the form is saved; show progress with a ProgressBar.
+     For profile pictures use AvatarUpload; for other files, FileInput or a drop zone.
+*/
+const CROP = {
+  title: 'Crop image',
+  zoom: 'Zoom',
+  frame: 'Crop area. Drag the picture, or move it with the arrow keys',
+  apply: 'Apply',
+  cancel: 'Cancel'
+};
+const STRINGS = {
+  drop: 'Drop an image here, or',
+  dropMany: 'Drop images here, or',
+  choose: 'Choose image',
+  chooseMany: 'Choose images',
+  replace: 'Replace',
+  remove: 'Remove {name}',
+  alt: 'Description',
+  altHint: 'Describe this image for people who cannot see it',
+  tooLarge: '{name} is larger than {max}',
+  notImage: '{name} is not an image',
+  added: n => n === 1 ? '1 image added' : n + ' images added',
+  removed: '{name} removed',
+  crop: CROP
+};
+const RATIOS = {
+  '1-1': 1,
+  '4-3': 4 / 3,
+  '3-2': 3 / 2,
+  '16-9': 16 / 9,
+  '21-9': 21 / 9,
+  '3-4': 3 / 4,
+  '9-16': 9 / 16
+};
+const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => map[k] !== undefined ? map[k] : m);
+let seq = 0;
+
+/* ImageCrop: the picture drawn in the frame's ratio on a canvas off the page; the frame shows the result as an Image */
+function ImageCrop({
+  src,
+  ratio = '1-1',
+  output = 1200,
+  onApply,
+  onCancel,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, CROP, strings);
+  const r = RATIOS[ratio] || 1;
+  const [zoom, setZoom] = _react.default.useState(100);
+  const [pos, setPos] = _react.default.useState({
+    x: 0,
+    y: 0
+  }); // the picture's offset, -1 to 1 of the room it has to move
+  const [url, setUrl] = _react.default.useState('');
+  const img = _react.default.useRef(null),
+    canvas = _react.default.useRef(null),
+    drag = _react.default.useRef(null);
+  const outW = output,
+    outH = Math.round(output / r);
+  _react.default.useEffect(() => {
+    const im = new window.Image();
+    im.onload = () => {
+      img.current = im;
+      draw();
+    };
+    im.src = src;
+    return () => {
+      im.onload = null;
+    };
+  }, [src]);
+  const draw = () => {
+    const im = img.current;
+    if (!im || typeof document === 'undefined') return;
+    const c = canvas.current || (canvas.current = document.createElement('canvas'));
+    c.width = outW;
+    c.height = outH;
+    const nw = im.naturalWidth || outW,
+      nh = im.naturalHeight || outH;
+    const s = Math.max(outW / nw, outH / nh) * (zoom / 100),
+      w = nw * s,
+      hgt = nh * s;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, outW, outH);
+    ctx.drawImage(im, (outW - w) / 2 + pos.x * (w - outW) / 2, (outH - hgt) / 2 + pos.y * (hgt - outH) / 2, w, hgt);
+    try {
+      setUrl(c.toDataURL('image/png'));
+    } catch (e) {
+      setUrl(src);
+    }
+  };
+  _react.default.useEffect(() => {
+    const id = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(id);
+  }, [zoom, pos.x, pos.y]);
+  const clamp = v => Math.max(-1, Math.min(1, v));
+  const nudge = (dx, dy) => setPos(p => ({
+    x: clamp(p.x + dx),
+    y: clamp(p.y + dy)
+  }));
+  const onKey = e => {
+    const s = e.shiftKey ? 0.25 : 0.05;
+    const map = {
+      ArrowLeft: [s, 0],
+      ArrowRight: [-s, 0],
+      ArrowUp: [0, s],
+      ArrowDown: [0, -s]
+    };
+    if (map[e.key]) {
+      e.preventDefault();
+      nudge(map[e.key][0], map[e.key][1]);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setPos({
+        x: 0,
+        y: 0
+      });
+    }
+  };
+  const onDown = e => {
+    if (e.button !== 0) return;
+    const box = e.currentTarget.getBoundingClientRect();
+    drag.current = {
+      x: e.clientX,
+      y: e.clientY,
+      from: pos,
+      w: box.width,
+      h: box.height
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onMove = e => {
+    const d = drag.current;
+    if (!d) return;
+    setPos({
+      x: clamp(d.from.x - 2 * (e.clientX - d.x) / d.w),
+      y: clamp(d.from.y - 2 * (e.clientY - d.y) / d.h)
+    });
+  };
+  const apply = () => {
+    const c = canvas.current;
+    if (!c || !onApply) return;
+    const done = blob => onApply({
+      url: blob && typeof URL !== 'undefined' ? URL.createObjectURL(blob) : url,
+      blob: blob || null,
+      width: outW,
+      height: outH
+    });
+    if (c.toBlob) c.toBlob(done, 'image/png');else done(null);
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-image-crop', className),
+    role: "group",
+    "aria-label": t.title
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-image-crop__frame",
+    tabIndex: 0,
+    role: "img",
+    "aria-label": t.frame,
+    onKeyDown: onKey,
+    onPointerDown: onDown,
+    onPointerMove: onMove,
+    onPointerUp: () => {
+      drag.current = null;
+    },
+    onPointerCancel: () => {
+      drag.current = null;
+    }
+  }, url ? /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: url,
+    alt: "",
+    ratio: ratio,
+    placeholder: "none",
+    loading: "eager"
+  }) : /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: src,
+    alt: "",
+    ratio: ratio,
+    loading: "eager"
+  })), /*#__PURE__*/_react.default.createElement(_Slider.Slider, {
+    className: "plx-image-crop__zoom",
+    label: t.zoom,
+    min: 100,
+    max: 300,
+    step: 10,
+    unit: "%",
+    value: zoom,
+    onChange: setZoom
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-image-crop__actions"
+  }, onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    onClick: onCancel
+  }, t.cancel) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "primary",
+    icon: "ed-crop",
+    onClick: apply
+  }, t.apply)));
+}
+function ImageUpload({
+  value = [],
+  onChange,
+  multiple = false,
+  max,
+  ratio = 'auto',
+  crop = false,
+  accept = 'image/png,image/jpeg,image/webp,image/gif',
+  maxSize,
+  altText = false,
+  description,
+  label,
+  disabled = false,
+  strings,
+  className,
+  id,
+  'aria-describedby': describedBy
+}) {
+  const t = Object.assign({}, STRINGS, strings, {
+    crop: Object.assign({}, CROP, strings && strings.crop)
+  });
+  const images = value || [];
+  const [over, setOver] = _react.default.useState(false);
+  const [errors, setErrors] = _react.default.useState([]);
+  const [cropping, setCropping] = _react.default.useState(null); // the image waiting for its crop
+  const zone = _react.default.useRef(null),
+    removes = _react.default.useRef({});
+  const shape = crop && ratio === 'auto' ? '1-1' : ratio;
+  const full = multiple ? max && images.length >= max : false;
+  const add = files => {
+    const bad = [],
+      ok = [];
+    files.forEach(f => {
+      if (!/^image\//.test(f.type)) bad.push(fill(t.notImage, {
+        name: f.name
+      }));else if (maxSize && f.size > maxSize) bad.push(fill(t.tooLarge, {
+        name: f.name,
+        max: (0, _format.formatBytes)(maxSize)
+      }));else ok.push(f);
+    });
+    setErrors(bad);
+    const room = multiple ? max ? Math.max(0, max - images.length) : ok.length : 1;
+    const take = ok.slice(0, room).map(f => ({
+      id: 'img-' + ++seq,
+      url: URL.createObjectURL(f),
+      name: f.name,
+      size: f.size,
+      alt: '',
+      file: f
+    }));
+    if (!take.length) return;
+    if (crop) {
+      setCropping({
+        queue: take
+      });
+      return;
+    }
+    commit(take);
+  };
+  const commit = take => {
+    onChange(multiple ? images.concat(take) : take.slice(0, 1));
+    (0, _announce.announce)(t.added(take.length));
+  };
+  const onCropped = res => {
+    const [first, ...rest] = cropping.queue;
+    const done = Object.assign({}, first, {
+      url: res.url,
+      blob: res.blob
+    });
+    if (rest.length) {
+      setCropping({
+        queue: rest,
+        done: (cropping.done || []).concat([done])
+      });
+      return;
+    }
+    const all = (cropping.done || []).concat([done]);
+    setCropping(null);
+    commit(all);
+  };
+  const onCropCancel = () => {
+    const [first, ...rest] = cropping.queue;
+    const all = (cropping.done || []).concat([first]);
+    if (rest.length) {
+      setCropping({
+        queue: rest,
+        done: all
+      });
+      return;
+    }
+    setCropping(null);
+    commit(all);
+  };
+  const remove = i => {
+    const gone = images[i];
+    const next = images.filter((_, j) => j !== i);
+    onChange(next);
+    (0, _announce.announce)(fill(t.removed, {
+      name: gone.name
+    }));
+    // focus: the next preview's Remove, or the Choose button
+    setTimeout(() => {
+      const after = next[Math.min(i, next.length - 1)];
+      const el = after && removes.current[after.id];
+      if (el) el.focus();else if (zone.current) {
+        const inp = zone.current.querySelector('input[type="file"]');
+        if (inp) inp.focus();
+      }
+    }, 0);
+  };
+  const setAlt = (i, alt) => onChange(images.map((im, j) => j === i ? Object.assign({}, im, {
+    alt
+  }) : im));
+  const dropProps = disabled ? {} : {
+    onDragOver: e => {
+      e.preventDefault();
+      setOver(true);
+    },
+    onDragLeave: () => setOver(false),
+    onDrop: e => {
+      e.preventDefault();
+      setOver(false);
+      add(Array.from(e.dataTransfer && e.dataTransfer.files || []));
+    }
+  };
+  const picker = word => /*#__PURE__*/_react.default.createElement(_FileInput.FileInput, {
+    accept: accept,
+    multiple: multiple,
+    disabled: disabled,
+    id: id,
+    "aria-describedby": describedBy,
+    label: label ? label + ', ' + word : word,
+    strings: {
+      choose: word,
+      chooseMany: word
+    },
+    onChange: files => add(files)
+  });
+  const showZone = !cropping && !full && (multiple || !images.length);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-image-upload', multiple && 'plx-image-upload--multiple', shape !== 'auto' && 'plx-image-upload--locked', className),
+    role: "group",
+    "aria-label": label,
+    ref: zone
+  }, cropping ? /*#__PURE__*/_react.default.createElement(ImageCrop, {
+    key: cropping.queue[0].id,
+    src: cropping.queue[0].url,
+    ratio: shape,
+    onApply: onCropped,
+    onCancel: onCropCancel,
+    strings: t.crop
+  }) : null, images.length && !cropping ? /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-image-upload__list"
+  }, images.map((im, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: im.id || im.url,
+    className: "plx-image-upload__item"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-image-upload__preview"
+  }, /*#__PURE__*/_react.default.createElement(_Image.Image, {
+    src: im.url,
+    alt: im.alt || '',
+    ratio: shape === 'auto' ? multiple ? '1-1' : '4-3' : shape,
+    fit: shape === 'auto' && !multiple ? 'contain' : 'cover',
+    loading: "eager"
+  })), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-image-upload__meta"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image-upload__name"
+  }, im.name), im.size ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image-upload__size"
+  }, (0, _format.formatBytes)(im.size)) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-image-upload__actions"
+  }, !multiple && !disabled ? picker(t.replace) : null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: el => {
+      removes.current[im.id] = el;
+    },
+    variant: "ghost",
+    size: "xs",
+    icon: "trash",
+    disabled: disabled,
+    label: fill(t.remove, {
+      name: im.name
+    }),
+    iconOnly: multiple,
+    onClick: () => remove(i)
+  }, multiple ? undefined : fill(t.remove, {
+    name: ''
+  }).trim())), altText ? /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    className: "plx-image-upload__alt",
+    label: t.alt,
+    description: t.altHint
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+    value: im.alt || '',
+    disabled: disabled,
+    onChange: e => setAlt(i, e.target.value)
+  })) : null))) : null, showZone ? /*#__PURE__*/_react.default.createElement(_DropZone.DropZone, _extends({
+    className: "plx-image-upload__zone",
+    active: over
+  }, dropProps), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image-upload__zone-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "upload",
+    size: "lg"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image-upload__zone-text"
+  }, multiple ? t.dropMany : t.drop), picker(multiple ? t.chooseMany : t.choose), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-image-upload__limits"
+  }, description) : null) : null, errors.length ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger",
+    className: "plx-image-upload__error"
+  }, errors.join(' ')) : null);
+}
+  } },
+  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AvatarUpload = AvatarUpload;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../../components/Avatar/Avatar.jsx");
+var _FileInput = require("../../components/FileInput/FileInput.jsx");
+var _Button = require("../../components/Button/Button.jsx");
+var _Notice = require("../../components/Notice/Notice.jsx");
+var _ImageUpload = require("../ImageUpload/ImageUpload.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · AvatarUpload
+   Summary: Sets a person's (or a team's) picture: the current Avatar (the picture, or the initials without one) beside
+     Change photo and Remove photo, with a square crop step before the new picture is kept. Built only from Platform
+     components (Avatar, FileInput, Button, ImageCrop).
+   Usage:
+     <Field label="Profile photo" description="At least 200 × 200 pixels">
+       <AvatarUpload name="Maya Chen" src={photo} onChange={(pic) => setPhoto(pic ? pic.url : null)} />
+     </Field>
+     <AvatarUpload name="Brand team" src={logo} onChange={…} crop={false} removable={false} />
+   Props:
+     name: whose picture it is: the initials without a picture, and the names of the actions
+     src: the current picture's address (none: the initials)
+     onChange(picture): runs with { url, blob, file } when a new picture is kept (blob is the cropped square), or null
+       when it is removed
+     crop: a square crop step after a picture is chosen (default true)
+     removable: Remove photo while there is a picture (default true)
+     size: the avatar's size: "xl" (48px) | "2xl" (64px, default)
+     accept: the image types (default "image/png,image/jpeg,image/webp")
+     maxSize: the largest file in bytes; a larger one is refused with strings.tooLarge
+     description: the hint beside the actions ("At least 200 × 200 pixels")
+     disabled: nothing can be changed
+     strings: the words it shows, for other languages: { change: "Change photo", add: "Add photo", remove: "Remove photo",
+       tooLarge: "The picture is larger than {max}", notImage: "Choose an image file", picture: "{name}’s photo", crop: {…} }
+     className: more classes on the control
+   Behavior:
+     Change photo (Add photo without one) is the browser's file input drawn as a secondary Button: the keyboard way and the
+       picker. The chosen picture opens in ImageCrop (a square frame: drag or arrow keys to move it, Zoom to enlarge it);
+       Apply keeps the crop, Cancel keeps the picture uncropped. The Avatar shows the new picture at once.
+     Remove photo goes back to the initials and moves focus to Change photo.
+     The Avatar is an image named "<name>’s photo"; a refused file says why in a danger Notice (an alert).
+   Notes:
+     The Avatar's shape is Plenix's rounded square in every size (never a circle).
+     Where the picture comes from an identity provider and cannot change here, show the Avatar alone and say where to
+       change it.
+*/
+
+const STRINGS = {
+  change: 'Change photo',
+  add: 'Add photo',
+  remove: 'Remove photo',
+  tooLarge: 'The picture is larger than {max}',
+  notImage: 'Choose an image file',
+  picture: '{name}’s photo',
+  crop: undefined
+};
+function AvatarUpload({
+  name,
+  src,
+  onChange,
+  crop = true,
+  removable = true,
+  size = '2xl',
+  accept = 'image/png,image/jpeg,image/webp',
+  maxSize,
+  description,
+  disabled = false,
+  strings,
+  className,
+  id,
+  'aria-describedby': describedBy
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [pending, setPending] = _react.default.useState(null); // { url, file } waiting for its crop
+  const [error, setError] = _react.default.useState('');
+  const wrap = _react.default.useRef(null);
+  const auto = 'plx-au' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const focusChange = () => setTimeout(() => {
+    const inp = wrap.current && wrap.current.querySelector('input[type="file"]');
+    if (inp) inp.focus();
+  }, 0);
+  const chosen = files => {
+    const f = files[0];
+    if (!f) return;
+    if (!/^image\//.test(f.type)) {
+      setError(t.notImage);
+      return;
+    }
+    if (maxSize && f.size > maxSize) {
+      setError(t.tooLarge.replace('{max}', (0, _format.formatBytes)(maxSize)));
+      return;
+    }
+    setError('');
+    const url = URL.createObjectURL(f);
+    if (crop) setPending({
+      url,
+      file: f
+    });else if (onChange) onChange({
+      url,
+      blob: null,
+      file: f
+    });
+  };
+  const word = src ? t.change : t.add;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-avatar-upload', pending && 'is-cropping', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-avatar-upload__row"
+  }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: name,
+    src: pending ? undefined : src,
+    size: size,
+    label: t.picture.replace('{name}', name || '')
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-avatar-upload__body"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-avatar-upload__actions"
+  }, /*#__PURE__*/_react.default.createElement(_FileInput.FileInput, {
+    accept: accept,
+    disabled: disabled || !!pending,
+    id: id,
+    "aria-describedby": [describedBy, description ? auto + '-hint' : null].filter(Boolean).join(' ') || undefined,
+    label: word,
+    strings: {
+      choose: word
+    },
+    onChange: chosen
+  }), removable && src && !pending ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    icon: "trash",
+    disabled: disabled,
+    onClick: () => {
+      if (onChange) onChange(null);
+      focusChange();
+    }
+  }, t.remove) : null), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-avatar-upload__hint",
+    id: auto + '-hint'
+  }, description) : null)), pending ? /*#__PURE__*/_react.default.createElement(_ImageUpload.ImageCrop, {
+    src: pending.url,
+    ratio: "1-1",
+    output: 512,
+    strings: t.crop,
+    onApply: res => {
+      setPending(null);
+      if (onChange) onChange({
+        url: res.url,
+        blob: res.blob,
+        file: pending.file
+      });
+      focusChange();
+    },
+    onCancel: () => {
+      const p = pending;
+      setPending(null);
+      if (onChange) onChange({
+        url: p.url,
+        blob: null,
+        file: p.file
+      });
+      focusChange();
+    }
+  }) : null, error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
+    tone: "danger"
+  }, error) : null);
+}
+  } },
+  "platform/charts/scales.js": { deps: {"../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.niceTicks = niceTicks;
+exports.scaleBand = scaleBand;
+exports.scaleLinear = scaleLinear;
+exports.scaleLog = scaleLog;
+exports.scaleTime = scaleTime;
+exports.seriesColor = seriesColor;
+var _format = require("../utils/format.js");
+var _dataviz = require("../utils/dataviz.js");
+/* Plenix · Chart scales (platform/charts/scales.js)
+   Summary: The math every Plenix chart shares (07 Data Display › Charts › Chart foundations): scales that turn a value
+     into a position (linear, log, band, time), "nice" tick values on round numbers and calendar steps, tick labels in
+     the reader's locale (utils/format.js), and the series color of the data-viz scales (utils/dataviz.js). No
+     dependency: ChartFrame draws the SVG, the chart parts (wave 8) and the charts (wave 9) build on these.
+   Usage:
+     import { scaleLinear, scaleBand, scaleTime, scaleLog, niceTicks, seriesColor } from 'plenix-platform';
+     const y = scaleLinear({ domain: [0, max], range: [inner.height, 0], nice: true });
+     y(42)            // the position of 42
+     y.ticks()        // [0, 20, 40, 60, 80, 100]: about five round values inside the domain
+     y.format(20)     // "20", in the reader's locale with the ticks' precision
+     const x = scaleBand({ domain: ['Jan', 'Feb', 'Mar'], range: [0, inner.width] });
+     x('Feb'), x.bandwidth()
+     <rect className="plx-chart__mark" data-plx-dataviz={seriesColor(i)} … />
+   Props:
+     niceTicks(min, max, count?): { start, stop, step, ticks } on steps of 1, 2 or 5 × 10ⁿ, about count (default 5) of them,
+       start and stop widened to whole steps
+     scaleLinear({ domain, range, nice, clamp, count }): a continuous scale; nice widens the domain to whole tick steps
+       (count ticks, default 5); clamp keeps positions inside the range
+     scaleLog({ domain, range, base, clamp }): a logarithmic scale (domain above 0; base default 10); ticks are the powers
+       of the base, with 2 and 5 between them over two decades or less
+     scaleBand({ domain, range, paddingInner, paddingOuter, align }): one band per category, in the domain's order;
+       paddingInner (default 0.2) and paddingOuter (default 0.1) are fractions of a step; align (default 0.5) places the
+       bands when there is room left
+     scaleTime({ domain, range, nice, clamp, count }): a continuous scale over dates (Date or anything Date accepts);
+       ticks fall on calendar steps (seconds to years) in local time
+     Every continuous scale: scale(value) → position; scale.invert(position) → value; scale.ticks(count?);
+       scale.format(value, count?) → the tick label; scale.domain(), scale.range(); scale.type
+     A band scale: scale(key) → start of its band (undefined for an unknown key); scale.bandwidth(); scale.step();
+       scale.ticks() → the keys; scale.format(key) → String(key)
+     seriesColor(index): the categorical data-viz step of a series ("categorical-1" …), for data-plx-dataviz
+   Behavior:
+     Scales are plain functions: no state, no DOM. A domain of one value (min = max) is widened by half a step on each
+       side, so a flat series still sits in the middle.
+     Tick labels use the reader's locale and the same number of decimals for every tick of an axis (Numbers and units).
+   Notes:
+     A series keeps its color by its order in the data, never by rank (Data visualization colors). Positions are SVG user
+       units (pixels inside ChartFrame's plot).
+*/
+
+const E10 = Math.sqrt(50),
+  E5 = Math.sqrt(10),
+  E2 = Math.sqrt(2);
+// a step of 1, 2 or 5 × 10ⁿ for about count ticks over the span
+function tickStep(span, count) {
+  const raw = Math.abs(span) / Math.max(1, count);
+  if (!raw || !isFinite(raw)) return 1;
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const err = raw / pow;
+  return (err >= E10 ? 10 : err >= E5 ? 5 : err >= E2 ? 2 : 1) * pow;
+}
+const decimalsOf = step => Math.max(0, -Math.floor(Math.log10(Math.abs(step)) + 1e-9));
+const round = (v, d) => Number(v.toFixed(Math.min(20, d)));
+function niceTicks(min, max, count = 5) {
+  let lo = Number(min),
+    hi = Number(max);
+  if (lo > hi) {
+    const t = lo;
+    lo = hi;
+    hi = t;
+  }
+  if (lo === hi) {
+    const half = tickStep(Math.abs(lo) || 1, count) / 2;
+    lo -= half;
+    hi += half;
+  }
+  const step = tickStep(hi - lo, count),
+    d = decimalsOf(step);
+  const start = round(Math.floor(lo / step) * step, d),
+    stop = round(Math.ceil(hi / step) * step, d);
+  const ticks = [];
+  for (let v = start, i = 0; v <= stop + step / 2 && i < 1000; i++, v = start + i * step) ticks.push(round(v, d));
+  return {
+    start,
+    stop,
+    step,
+    ticks
+  };
+}
+const pair = (a, fallback) => Array.isArray(a) && a.length === 2 ? a.slice() : fallback.slice();
+const interpolate = (r0, r1, t) => r0 + (r1 - r0) * t;
+function scaleLinear({
+  domain = [0, 1],
+  range = [0, 1],
+  nice = false,
+  clamp = false,
+  count = 5
+} = {}) {
+  let d = pair(domain, [0, 1]).map(Number);
+  const r = pair(range, [0, 1]).map(Number);
+  if (d[0] === d[1]) {
+    const n = niceTicks(d[0], d[1], count);
+    d = [n.start, n.stop];
+  }
+  if (nice) {
+    const n = niceTicks(Math.min(d[0], d[1]), Math.max(d[0], d[1]), count);
+    d = d[0] <= d[1] ? [n.start, n.stop] : [n.stop, n.start];
+  }
+  const scale = v => {
+    let t = (Number(v) - d[0]) / (d[1] - d[0]);
+    if (clamp) t = Math.min(1, Math.max(0, t));
+    return interpolate(r[0], r[1], t);
+  };
+  scale.invert = p => d[0] + (Number(p) - r[0]) / (r[1] - r[0]) * (d[1] - d[0]);
+  scale.ticks = (n = count) => niceTicks(Math.min(d[0], d[1]), Math.max(d[0], d[1]), n).ticks.filter(v => v >= Math.min(d[0], d[1]) - 1e-9 && v <= Math.max(d[0], d[1]) + 1e-9);
+  scale.format = (v, n = count, o = {}) => (0, _format.formatNumber)(v, {
+    decimals: decimalsOf(tickStep(d[1] - d[0], n)),
+    locale: o.locale
+  });
+  scale.domain = () => d.slice();
+  scale.range = () => r.slice();
+  scale.type = 'linear';
+  return scale;
+}
+function scaleLog({
+  domain = [1, 10],
+  range = [0, 1],
+  base = 10,
+  clamp = false
+} = {}) {
+  const d = pair(domain, [1, 10]).map(v => Math.max(Number(v), Number.MIN_VALUE));
+  const r = pair(range, [0, 1]).map(Number);
+  const log = v => Math.log(v) / Math.log(base);
+  const l0 = log(d[0]),
+    l1 = log(d[1]);
+  const scale = v => {
+    let t = (log(Math.max(Number(v), Number.MIN_VALUE)) - l0) / (l1 - l0 || 1);
+    if (clamp) t = Math.min(1, Math.max(0, t));
+    return interpolate(r[0], r[1], t);
+  };
+  scale.invert = p => Math.pow(base, l0 + (Number(p) - r[0]) / (r[1] - r[0]) * (l1 - l0));
+  scale.ticks = () => {
+    const lo = Math.min(d[0], d[1]),
+      hi = Math.max(d[0], d[1]);
+    const e0 = Math.floor(log(lo)),
+      e1 = Math.ceil(log(hi));
+    const between = e1 - e0 <= 2 && base === 10 ? [1, 2, 5] : [1];
+    const out = [];
+    for (let e = e0; e <= e1; e++) between.forEach(m => {
+      const v = m * Math.pow(base, e);
+      if (v >= lo * (1 - 1e-9) && v <= hi * (1 + 1e-9)) out.push(Number(v.toPrecision(12)));
+    });
+    return out;
+  };
+  scale.format = (v, n, o = {}) => (0, _format.formatNumber)(v, {
+    decimals: v < 1 ? decimalsOf(v) : 0,
+    locale: o.locale
+  });
+  scale.domain = () => d.slice();
+  scale.range = () => r.slice();
+  scale.type = 'log';
+  return scale;
+}
+function scaleBand({
+  domain = [],
+  range = [0, 1],
+  paddingInner = 0.2,
+  paddingOuter = 0.1,
+  align = 0.5
+} = {}) {
+  const keys = Array.from(domain);
+  const r = pair(range, [0, 1]).map(Number);
+  const n = keys.length;
+  const reverse = r[1] < r[0];
+  const r0 = reverse ? r[1] : r[0],
+    r1 = reverse ? r[0] : r[1];
+  const step = (r1 - r0) / Math.max(1, n - paddingInner + paddingOuter * 2);
+  const start = r0 + (r1 - r0 - step * (n - paddingInner)) * align;
+  const band = step * (1 - paddingInner);
+  const scale = key => {
+    const i = keys.indexOf(key);
+    if (i < 0) return undefined;
+    return start + step * (reverse ? n - 1 - i : i);
+  };
+  scale.bandwidth = () => band;
+  scale.step = () => step;
+  scale.ticks = () => keys.slice();
+  scale.format = key => String(key);
+  scale.domain = () => keys.slice();
+  scale.range = () => r.slice();
+  scale.type = 'band';
+  return scale;
+}
+
+// calendar steps, shortest first: [unit, amount, approximate milliseconds]
+const S = 1000,
+  MIN = 60 * S,
+  H = 60 * MIN,
+  DAY = 24 * H;
+const TIME_STEPS = [['second', 1, S], ['second', 5, 5 * S], ['second', 15, 15 * S], ['second', 30, 30 * S], ['minute', 1, MIN], ['minute', 5, 5 * MIN], ['minute', 15, 15 * MIN], ['minute', 30, 30 * MIN], ['hour', 1, H], ['hour', 3, 3 * H], ['hour', 6, 6 * H], ['hour', 12, 12 * H], ['day', 1, DAY], ['day', 2, 2 * DAY], ['week', 1, 7 * DAY], ['month', 1, 30 * DAY], ['month', 3, 91 * DAY], ['year', 1, 365 * DAY]];
+const toTime = v => v instanceof Date ? v.getTime() : new Date(v).getTime();
+// the start of the step that holds t (local time)
+function floorTo(t, unit, amount) {
+  const x = new Date(t);
+  if (unit === 'second') {
+    x.setMilliseconds(0);
+    x.setSeconds(Math.floor(x.getSeconds() / amount) * amount);
+  } else if (unit === 'minute') {
+    x.setSeconds(0, 0);
+    x.setMinutes(Math.floor(x.getMinutes() / amount) * amount);
+  } else if (unit === 'hour') {
+    x.setMinutes(0, 0, 0);
+    x.setHours(Math.floor(x.getHours() / amount) * amount);
+  } else if (unit === 'day') {
+    x.setHours(0, 0, 0, 0);
+  } else if (unit === 'week') {
+    x.setHours(0, 0, 0, 0);
+    x.setDate(x.getDate() - x.getDay());
+  } else if (unit === 'month') {
+    x.setHours(0, 0, 0, 0);
+    x.setDate(1);
+    x.setMonth(Math.floor(x.getMonth() / amount) * amount);
+  } else {
+    x.setHours(0, 0, 0, 0);
+    x.setMonth(0, 1);
+    x.setFullYear(Math.floor(x.getFullYear() / amount) * amount);
+  }
+  return x;
+}
+function addTo(x, unit, amount) {
+  const y = new Date(x.getTime());
+  if (unit === 'second') y.setSeconds(y.getSeconds() + amount);else if (unit === 'minute') y.setMinutes(y.getMinutes() + amount);else if (unit === 'hour') y.setHours(y.getHours() + amount);else if (unit === 'day') y.setDate(y.getDate() + amount);else if (unit === 'week') y.setDate(y.getDate() + 7 * amount);else if (unit === 'month') y.setMonth(y.getMonth() + amount);else y.setFullYear(y.getFullYear() + amount);
+  return y;
+}
+function timeStep(span, count) {
+  const target = Math.abs(span) / Math.max(1, count);
+  if (target <= 365 * DAY) {
+    // the calendar step nearest the wanted one (by ratio)
+    const gap = s => Math.abs(Math.log(s[2] / Math.max(1, target)));
+    return TIME_STEPS.reduce((best, s) => gap(s) < gap(best) ? s : best, TIME_STEPS[0]);
+  }
+  const years = tickStep(target / (365 * DAY), 1);
+  return ['year', Math.max(1, years), years * 365 * DAY];
+}
+const TIME_LABELS = {
+  second: {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit'
+  },
+  minute: {
+    hour: 'numeric',
+    minute: '2-digit'
+  },
+  hour: {
+    hour: 'numeric',
+    minute: '2-digit'
+  },
+  day: {
+    month: 'short',
+    day: 'numeric'
+  },
+  week: {
+    month: 'short',
+    day: 'numeric'
+  },
+  month: {
+    month: 'short',
+    year: 'numeric'
+  },
+  year: {
+    year: 'numeric'
+  }
+};
+function scaleTime({
+  domain = [0, DAY],
+  range = [0, 1],
+  nice = false,
+  clamp = false,
+  count = 5
+} = {}) {
+  let d = pair(domain, [0, DAY]).map(toTime);
+  const r = pair(range, [0, 1]).map(Number);
+  if (d[0] === d[1]) d = [d[0] - DAY / 2, d[1] + DAY / 2];
+  if (nice) {
+    const [unit, amount] = timeStep(d[1] - d[0], count);
+    const lo = Math.min(d[0], d[1]),
+      hi = Math.max(d[0], d[1]);
+    const start = floorTo(lo, unit, amount).getTime();
+    let stop = floorTo(hi, unit, amount);
+    if (stop.getTime() < hi) stop = addTo(stop, unit, amount);
+    d = d[0] <= d[1] ? [start, stop.getTime()] : [stop.getTime(), start];
+  }
+  const scale = v => {
+    let t = (toTime(v) - d[0]) / (d[1] - d[0]);
+    if (clamp) t = Math.min(1, Math.max(0, t));
+    return interpolate(r[0], r[1], t);
+  };
+  scale.invert = p => new Date(d[0] + (Number(p) - r[0]) / (r[1] - r[0]) * (d[1] - d[0]));
+  scale.step = (n = count) => timeStep(d[1] - d[0], n);
+  scale.ticks = (n = count) => {
+    const [unit, amount] = timeStep(d[1] - d[0], n);
+    const lo = Math.min(d[0], d[1]),
+      hi = Math.max(d[0], d[1]);
+    const out = [];
+    let x = floorTo(lo, unit, amount);
+    if (x.getTime() < lo) x = addTo(x, unit, amount);
+    for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
+    return out;
+  };
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.domain = () => d.map(t => new Date(t));
+  scale.range = () => r.slice();
+  scale.type = 'time';
+  return scale;
+}
+function seriesColor(index) {
+  return (0, _dataviz.datavizCategory)(index);
+}
+  } },
+  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ChartFrame = ChartFrame;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _direction = require("../utils/direction.js");
+var _Details = require("../components/Details/Details.jsx");
+var _Table = require("../components/Table/Table.jsx");
+var _grid = require("../utils/grid.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ChartFrame
+   Summary: The frame every Plenix chart is drawn in (07 Data Display › Charts › Chart foundations): a figure with the
+     chart's title and description, a responsive SVG plot that measures itself (a ResizeObserver) and hands its size and
+     inner area (the plot less its margins) to the chart, and the data as a table for people who cannot see the chart.
+   Usage:
+     <ChartFrame title="Uploads per month" description="Uploads rose every month from January to June."
+       table={{ columns: [{ title: 'Month', field: 'month', kind: 'name' }, { title: 'Uploads', field: 'n', kind: 'data' }], data: rows }}>
+       {({ inner }) => { const x = scaleBand({ domain: months, range: [0, inner.width] }); … return <g>…</g>; }}
+     </ChartFrame>
+   Props:
+     title: the chart's name (required): the caption's title and the SVG's accessible name
+     description: one or two sentences that say what the chart shows (its takeaway); the SVG's description
+     hideCaption: keeps the title and description for assistive technology only (default false), when a heading beside
+       the chart already shows them
+     size: the plot's height: "sm" (160px) | "md" (240px, default) | "lg" (320px); the width is the container's
+     margin: the room around the plot for axes and labels, in pixels: { top, end, bottom, start } (each optional; the
+       defaults are the --plx-comp-chart-margin-* tokens); values snap to the 4px grid; start and end follow the writing
+       direction
+     table: the data as a table under the chart: { columns, data } as the Table takes them (technical values kind
+       "data"); shown behind a Details line ("Show the data") so it is always one click away
+     children: a function ({ width, height, inner: { width, height }, margin }) returning the chart's SVG content, drawn
+       inside a group already moved by the margins; or SVG nodes
+     strings: the words it shows, for other languages: { showData: "Show the data", table: "{title}: data" }
+     className: more classes on the figure
+   Behavior:
+     The plot fills its container's width and follows it when it resizes; the chart is drawn once the size is known.
+     The SVG is one image to assistive technology (role img, named by the title and described by the description);
+       its marks are hidden from it, so the table carries the values.
+     Marks take their colors from the data-viz scales: data-plx-dataviz="<scale>-<step>" on a mark (seriesColor(i))
+       and the frame's mark classes (plx-chart__mark, plx-chart__line, plx-chart__point) fill or stroke it with that
+       step; axis lines, grid lines and tick labels have their classes too (plx-chart__axis-line, plx-chart__grid-line,
+       plx-chart__tick-label: the data font).
+   Notes:
+     No color, size or font is written in a chart: only SVG geometry (x, y, width, height, d, transform) and classes.
+     Chart parts (legend, tooltip, axis, grid line; wave 8) and the charts themselves (wave 9) build on this frame.
+*/
+
+const STRINGS = {
+  showData: 'Show the data',
+  table: '{title}: data'
+};
+const MARGIN_TOKENS = {
+  top: '--plx-comp-chart-margin-block-start',
+  end: '--plx-comp-chart-margin-inline-end',
+  bottom: '--plx-comp-chart-margin-block-end',
+  start: '--plx-comp-chart-margin-inline-start'
+};
+function ChartFrame({
+  title,
+  description,
+  hideCaption = false,
+  size = 'md',
+  margin,
+  table,
+  strings,
+  className,
+  children
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const uid = 'plx-chart' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const frame = _react.default.useRef(null),
+    plot = _react.default.useRef(null);
+  const [box, setBox] = _react.default.useState({
+    width: 0,
+    height: 0,
+    rtl: false,
+    tokens: null
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = plot.current;
+    if (!el) return undefined;
+    const measure = () => {
+      const cs = getComputedStyle(frame.current);
+      const tokens = {};
+      Object.keys(MARGIN_TOKENS).forEach(k => {
+        tokens[k] = parseFloat(cs.getPropertyValue(MARGIN_TOKENS[k])) || 0;
+      });
+      const r = el.getBoundingClientRect();
+      const next = {
+        width: Math.floor(r.width),
+        height: Math.floor(r.height),
+        rtl: (0, _direction.isRtl)(el),
+        tokens
+      };
+      setBox(b => b.width === next.width && b.height === next.height && b.rtl === next.rtl && JSON.stringify(b.tokens) === JSON.stringify(tokens) ? b : next);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const m = {};
+  Object.keys(MARGIN_TOKENS).forEach(k => {
+    m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0);
+  });
+  const left = box.rtl ? m.end : m.start;
+  const inner = {
+    width: Math.max(0, box.width - m.start - m.end),
+    height: Math.max(0, box.height - m.top - m.bottom)
+  };
+  const dims = {
+    width: box.width,
+    height: box.height,
+    inner,
+    margin: m
+  };
+  const titleId = uid + '-title',
+    descId = uid + '-desc';
+  const caption = /*#__PURE__*/_react.default.createElement("figcaption", {
+    className: (0, _cx.cx)('plx-chart__caption', hideCaption && 'plx-visually-hidden')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: titleId,
+    className: "plx-chart__title"
+  }, title), description ? /*#__PURE__*/_react.default.createElement("span", {
+    id: descId,
+    className: "plx-chart__description"
+  }, description) : null);
+  return /*#__PURE__*/_react.default.createElement("figure", {
+    ref: frame,
+    className: (0, _cx.cx)('plx-chart', 'plx-chart--' + size, className)
+  }, caption, /*#__PURE__*/_react.default.createElement("div", {
+    ref: plot,
+    className: "plx-chart__plot"
+  }, box.width > 0 && box.height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
+    className: "plx-chart__svg",
+    width: box.width,
+    height: box.height,
+    viewBox: '0 0 ' + box.width + ' ' + box.height,
+    role: "img",
+    "aria-labelledby": titleId,
+    "aria-describedby": description ? descId : undefined,
+    focusable: "false"
+  }, /*#__PURE__*/_react.default.createElement("g", {
+    transform: 'translate(' + left + ',' + m.top + ')',
+    "aria-hidden": "true"
+  }, typeof children === 'function' ? children(dims) : children)) : null), table && table.data ? /*#__PURE__*/_react.default.createElement(_Details.Details, {
+    summary: t.showData,
+    variant: "inline",
+    className: "plx-chart__data"
+  }, /*#__PURE__*/_react.default.createElement(_Table.Table, {
+    label: t.table.replace('{title}', title || ''),
+    columns: table.columns,
+    data: table.data,
+    index: table.index
+  })) : null);
+}
+  } },
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TimeZoneSelect = void 0;
+exports.timeZoneOptions = timeZoneOptions;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _format = require("../../utils/format.js");
+var _announce = require("../../utils/announce.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimeZoneSelect
+   Summary: A field for choosing a time zone (05 Forms › Date, time, and color › Time-zone selector): a combobox over
+     every IANA time zone the browser knows (Intl.supportedValuesOf), each with its city, its region and its offset from
+     UTC, filtered as people type a city, a region, a zone name ("Pacific") or an offset ("+5:30").
+   Usage:
+     <Field label="Time zone"><TimeZoneSelect value={zone} onChange={setZone} /></Field>
+     <TimeZoneSelect label="Time zone" grouped={false} value={zone} onChange={setZone} />          // one list by offset
+     <TimeZoneSelect label="Time zone" zones={['Europe/Berlin', 'America/New_York', 'Asia/Tokyo']} … />
+     timeZoneOptions({ date })   // the options themselves: [{ value, label, region, offset, minutes, name }]
+   Props:
+     value: the chosen zone, an IANA name ("America/Los_Angeles")
+     onChange(zone): runs with the chosen zone's IANA name
+     grouped: list the zones under their region (Africa, Americas, Asia…), by city (default true); false lists them in
+       one list ordered by offset, west to east
+     showOffset: each zone's offset from UTC ("UTC−08:00") at the end of its option and of the field (default true)
+     zones: the IANA names to offer (default: every zone the browser supports, and UTC)
+     date: the moment the offsets are for (default now): offsets change with daylight saving time
+     placeholder: the hint in the empty field (default "Choose a time zone")
+     label: the accessible name when there is no Field
+     invalid: shows the invalid state
+     disabled: the field cannot be used
+     locale: the language of the zone names (default the page's language)
+     strings: the words it shows and announces, for other languages: { placeholder, empty: "No matches", utc: "Coordinated
+       Universal Time", other: "Other", results: (n) => n + " time zones", regions: { America: "Americas", … } }
+     id: the id of the input (a Field sets it)
+     className: more classes on the field
+     ref: forwarded to the <input>; other props pass through to it
+   Behavior:
+     The Combobox's behavior and look (its classes and tokens): the list opens on focus and on typing; ↓ and ↑ move,
+     Enter chooses, Escape closes, a click outside closes. The active option stays in view.
+     Typing filters by city, region, IANA name, the zone's long name in the reader's language and the offset; the number
+       of matches is announced politely.
+     Closed, the field shows the chosen city with its offset after it.
+     A value the browser lists under another IANA name (Asia/Kolkata, listed as Asia/Calcutta) takes that zone’s place.
+   Notes:
+     Offsets are technical values: the data font (DM Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
+     the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
+*/
+const STRINGS = {
+  placeholder: 'Choose a time zone',
+  empty: 'No matches',
+  utc: 'Coordinated Universal Time',
+  other: 'Other',
+  results: n => n + (n === 1 ? ' time zone' : ' time zones'),
+  regions: {
+    Africa: 'Africa',
+    America: 'Americas',
+    Antarctica: 'Antarctica',
+    Arctic: 'Arctic',
+    Asia: 'Asia',
+    Atlantic: 'Atlantic',
+    Australia: 'Australia',
+    Europe: 'Europe',
+    Indian: 'Indian Ocean',
+    Pacific: 'Pacific'
+  }
+};
+// a few zones for browsers without Intl.supportedValuesOf
+const FALLBACK = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Africa/Cairo', 'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland'];
+const MINUS = '−';
+
+// the zone's offset from UTC at the date: minutes and "UTC−08:00"
+function offsetOf(zone, date) {
+  try {
+    const part = new Intl.DateTimeFormat('en-US', {
+      timeZone: zone,
+      timeZoneName: 'longOffset'
+    }).formatToParts(date).find(p => p.type === 'timeZoneName');
+    const m = /GMT([+-])(\d{2}):(\d{2})/.exec(part ? part.value : '');
+    if (!m) return {
+      minutes: 0,
+      text: 'UTC±00:00'
+    };
+    const minutes = (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]));
+    return {
+      minutes,
+      text: 'UTC' + (m[1] === '-' ? MINUS : '+') + m[2] + ':' + m[3]
+    };
+  } catch (e) {
+    return {
+      minutes: 0,
+      text: 'UTC±00:00'
+    };
+  }
+}
+function longName(zone, date, locale) {
+  try {
+    const p = new Intl.DateTimeFormat(locale, {
+      timeZone: zone,
+      timeZoneName: 'long'
+    }).formatToParts(date).find(x => x.type === 'timeZoneName');
+    return p ? p.value : '';
+  } catch (e) {
+    return '';
+  }
+}
+function timeZoneOptions({
+  zones,
+  date = new Date(),
+  locale,
+  strings
+} = {}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const regions = Object.assign({}, STRINGS.regions, t.regions);
+  const lang = locale || (0, _format.formatLocale)();
+  const all = zones || (typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : FALLBACK);
+  const list = all.indexOf('UTC') >= 0 || zones ? all : ['UTC'].concat(all);
+  return list.map(zone => {
+    const parts = zone.split('/');
+    const utc = zone === 'UTC' || parts[0] === 'Etc';
+    const region = utc ? t.other : regions[parts[0]] || (parts.length > 1 ? parts[0] : t.other);
+    const label = zone === 'UTC' ? t.utc : parts.length > 1 ? parts.slice(1).reverse().join(', ').replace(/_/g, ' ') : zone.replace(/_/g, ' ');
+    const off = offsetOf(zone, date);
+    return {
+      value: zone,
+      label,
+      region,
+      offset: off.text,
+      minutes: off.minutes,
+      name: longName(zone, date, lang)
+    };
+  });
+}
+
+// the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
+const fold = s => String(s).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const offsetKeys = o => {
+  const sign = o.minutes < 0 ? '-' : '+',
+    a = Math.abs(o.minutes),
+    h = Math.floor(a / 60),
+    m = a % 60;
+  return [fold(o.offset), sign + h, sign + String(h).padStart(2, '0'), sign + h + ':' + String(m).padStart(2, '0'), 'utc' + sign + h, 'gmt' + sign + h].join(' ');
+};
+const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forwardRef(function TimeZoneSelect({
+  value,
+  onChange,
+  grouped = true,
+  showOffset = true,
+  zones,
+  date,
+  placeholder,
+  label,
+  invalid,
+  disabled,
+  locale,
+  strings,
+  id,
+  className,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-tz' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const listId = auto + '-list';
+  const [open, setOpen] = _react.default.useState(false);
+  const [text, setText] = _react.default.useState('');
+  const [active, setActive] = _react.default.useState(0);
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const day = date ? new Date(date).toDateString() : new Date().toDateString();
+  const zoneKey = zones ? zones.join('|') : '';
+  // the options for the day (offsets change with daylight saving time), sorted: by region then city, or by offset
+  const options = _react.default.useMemo(() => {
+    const at = date ? new Date(date) : new Date();
+    const out = timeZoneOptions({
+      zones,
+      date: at,
+      locale,
+      strings
+    });
+    // a value the browser lists under another name (Asia/Kolkata, listed as Asia/Calcutta) takes that zone's place
+    if (value && !out.some(o => o.value === value)) {
+      let canonical = null;
+      try {
+        canonical = new Intl.DateTimeFormat('en-US', {
+          timeZone: value
+        }).resolvedOptions().timeZone;
+      } catch (e) {
+        canonical = null;
+      }
+      if (canonical) {
+        const own = timeZoneOptions({
+          zones: [value],
+          date: at,
+          locale,
+          strings
+        })[0];
+        const i = out.findIndex(o => o.value === canonical);
+        if (i >= 0) out[i] = own;else out.push(own);
+      }
+    }
+    out.forEach(o => {
+      o.search = [fold(o.label), fold(o.region), fold(o.value), fold(o.name), offsetKeys(o)].join(' ');
+    });
+    const byName = (a, b) => a.label.localeCompare(b.label, locale || (0, _format.formatLocale)());
+    return grouped ? out.sort((a, b) => (a.region === t.other) - (b.region === t.other) || a.region.localeCompare(b.region) || byName(a, b)) : out.sort((a, b) => a.minutes - b.minutes || byName(a, b));
+  }, [day, zoneKey, locale, grouped, value]); // eslint-disable-line react-hooks/exhaustive-deps
+  const current = options.find(o => o.value === value) || null;
+  const q = fold(text.trim());
+  const shown = q ? options.filter(o => q.split(/\s+/).every(w => o.search.indexOf(w) >= 0)) : options;
+  _react.default.useEffect(() => {
+    if (open && q) (0, _announce.announce)(t.results(shown.length));
+  }, [q, open]); // eslint-disable-line react-hooks/exhaustive-deps
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) {
+        setOpen(false);
+        setText('');
+      }
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  // opening starts on the chosen zone; typing starts on the first match
+  _react.default.useEffect(() => {
+    if (open) setActive(q ? 0 : Math.max(0, shown.findIndex(o => o.value === value)));
+  }, [q, open]); // eslint-disable-line react-hooks/exhaustive-deps
+  const optId = i => auto + '-o' + i;
+  _react.default.useEffect(() => {
+    if (!open || !list.current) return;
+    const el = list.current.querySelector('#' + optId(active));
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [active, open]); // eslint-disable-line react-hooks/exhaustive-deps
+  const choose = o => {
+    if (!o) return;
+    if (onChange) onChange(o.value);
+    setText('');
+    setOpen(false);
+  };
+  const onKey = e => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) setOpen(true);else setActive(a => Math.min(shown.length - 1, a + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActive(a => Math.max(0, a - 1));
+    } else if (e.key === 'Home' && open && !text) {
+      e.preventDefault();
+      setActive(0);
+    } else if (e.key === 'End' && open && !text) {
+      e.preventDefault();
+      setActive(shown.length - 1);
+    } else if (e.key === 'Enter') {
+      if (open && shown[active]) {
+        e.preventDefault();
+        choose(shown[active]);
+      }
+    } else if (e.key === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        setOpen(false);
+        setText('');
+      }
+    }
+  };
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-combobox', 'plx-time-zone-select', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-combobox__field plx-input",
+    "aria-invalid": invalid || undefined
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: input,
+    id: id,
+    className: "plx-combobox__input",
+    role: "combobox",
+    "aria-expanded": open,
+    "aria-controls": listId,
+    "aria-autocomplete": "list",
+    "aria-activedescendant": open && shown[active] ? optId(active) : undefined,
+    "aria-label": label,
+    disabled: disabled,
+    autoComplete: "off",
+    "aria-description": current && showOffset ? current.offset : undefined,
+    value: open ? text : current ? current.label : '',
+    placeholder: current && open ? current.label : placeholder || t.placeholder,
+    onChange: e => {
+      setText(e.target.value);
+      setOpen(true);
+    },
+    onFocus: () => setOpen(true),
+    onKeyDown: onKey
+  }, rest)), showOffset && current && !open ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-time-zone-select__field-offset",
+    "aria-hidden": "true"
+  }, current.offset) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-combobox__chevron",
+    "aria-hidden": "true"
+  })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    className: "plx-combobox__list plx-time-zone-select__list",
+    id: listId,
+    role: "listbox",
+    "aria-label": label
+  }, shown.length ? shown.map((o, i) => [grouped && (i === 0 || shown[i - 1].region !== o.region) ? /*#__PURE__*/_react.default.createElement("li", {
+    key: 'g-' + o.region,
+    className: "plx-combobox__group",
+    role: "presentation"
+  }, o.region) : null, /*#__PURE__*/_react.default.createElement("li", {
+    key: o.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": o.value === value,
+    className: (0, _cx.cx)('plx-combobox__option', 'plx-time-zone-select__option', i === active && 'is-active', o.value === value && 'is-selected'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(o),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-time-zone-select__city"
+  }, o.label), showOffset ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-time-zone-select__offset"
+  }, o.offset) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
+    className: "plx-combobox__empty",
+    role: "presentation"
+  }, t.empty)) : null);
+});
+  } },
+  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TreeSelect = TreeSelect;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _direction = require("../../utils/direction.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _SearchField = require("../SearchField/SearchField.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TreeSelect
+   Summary: A field whose choices are a hierarchy (05 Forms › Select and lookup › Tree select): it shows the chosen item
+     (or items) and opens a Popover with the hierarchy as a tree, optionally with a search field; one item, or several
+     with checkboxes where a parent checks or clears everything under it.
+   Usage:
+     <Field label="Folder"><TreeSelect nodes={folders} value={folder} onChange={setFolder} /></Field>
+     <TreeSelect label="Categories" multiple nodes={categories} values={chosen} onChange={setChosen} search />
+   Props:
+     nodes: the hierarchy, as Tree takes it: [{ id, label, icon, children: [...] }]
+     value: the chosen item's id (one choice)
+     values: the checked items' ids, with multiple (the leaves: items without children)
+     onChange(id | ids): runs with the chosen item's id, or with multiple the new list of checked ids
+     multiple: several choices with checkboxes (default false)
+     search: a search field over the tree (default false): it keeps the items whose label matches and the items above
+       them, opened
+     placeholder: the text while nothing is chosen (default "Choose")
+     label: the accessible name when there is no Field (also the popover's name)
+     defaultExpanded: the ids of the items open when the tree first shows (default: the items above the chosen ones)
+     invalid: shows the invalid state (a Field sets it)
+     disabled: the field cannot be used
+     required: a choice is required (a Field sets it)
+     strings: the words it shows and announces, for other languages: { placeholder: "Choose", search: "Search",
+       choose: "Choose an item", more: "{list} and {n} more", empty: "No matches" }
+     id: the trigger's id (a Field sets it)
+     className: more classes on the field
+     Other props pass through to the trigger <button> (aria-describedby).
+   Behavior:
+     The trigger is a select-only combobox (a button with role combobox): Enter, Space or a click opens the popover;
+       Escape, a click outside and Tab out close it, and focus returns to the trigger. At the Narrow window class the
+       popover is a bottom Sheet (Popover's sheetOnNarrow).
+     The tree is the Tree's keyboard and look: one Tab stop; ↑ ↓ move, → opens or goes to the first child, ← closes or
+       goes to the parent, Home and End. One choice: Enter, Space or a click chooses the item and closes. Several: Enter,
+       Space or a click checks or clears it and the popover stays open; a parent's checkbox is checked when every item
+       under it is, mixed when some are, and checks or clears them all.
+     Search keeps the matching items and their parents, opened; ↓ from the search field moves into the tree.
+   Notes:
+     The checkbox is the Checkbox control drawn in the row, not focusable and hidden from assistive technology: the
+       item's aria-checked says its state. For a flat list use a select or Combobox; for picking among thousands of
+       items in folders use a file or entity picker.
+*/
+const STRINGS = {
+  placeholder: 'Choose',
+  search: 'Search',
+  choose: 'Choose an item',
+  more: '{list} and {n} more',
+  empty: 'No matches'
+};
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+const OPEN_ICONS = {
+  folder: 'folder-open'
+};
+const iconOf = (n, isOpen) => isOpen ? n.openIcon || typeof n.icon === 'string' && OPEN_ICONS[n.icon] || n.icon : n.icon;
+const kidsOf = n => n.children && n.children.length ? n.children : null;
+// every node by id, with its parent and the leaves under it
+function index(nodes) {
+  const byId = new Map();
+  const walk = (list, parent) => list.forEach(n => {
+    byId.set(n.id, {
+      node: n,
+      parent
+    });
+    if (kidsOf(n)) walk(n.children, n.id);
+  });
+  walk(nodes, null);
+  const leaves = n => kidsOf(n) ? n.children.reduce((all, c) => all.concat(leaves(c)), []) : [n.id];
+  return {
+    byId,
+    leaves
+  };
+}
+const ancestors = (byId, id) => {
+  const out = [];
+  let at = byId.get(id);
+  while (at && at.parent !== null) {
+    out.push(at.parent);
+    at = byId.get(at.parent);
+  }
+  return out;
+};
+// the nodes that match the text, with the nodes above them (only their matching branches)
+function filterNodes(nodes, q) {
+  return nodes.reduce((out, n) => {
+    const own = String(n.label).toLowerCase().indexOf(q) >= 0;
+    const kids = kidsOf(n) ? filterNodes(n.children, q) : [];
+    if (own || kids.length) out.push(Object.assign({}, n, {
+      children: own && !kids.length ? n.children : kids
+    }));
+    return out;
+  }, []);
+}
+function flatten(nodes, open, parent, out) {
+  nodes.forEach(n => {
+    out.push({
+      node: n,
+      parent
+    });
+    if (kidsOf(n) && open.has(n.id)) flatten(n.children, open, n.id, out);
+  });
+  return out;
+}
+function TreeSelect({
+  nodes = [],
+  value,
+  values,
+  onChange,
+  multiple = false,
+  search = false,
+  placeholder,
+  label,
+  defaultExpanded,
+  invalid,
+  disabled,
+  required,
+  strings,
+  id,
+  className,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const base = 'plx-ts' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const {
+    byId,
+    leaves
+  } = _react.default.useMemo(() => index(nodes), [nodes]);
+  const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
+  const [open, setOpen] = _react.default.useState(false);
+  const [text, setText] = _react.default.useState('');
+  const [expanded, setExpanded] = _react.default.useState(() => {
+    if (defaultExpanded) return defaultExpanded;
+    const out = new Set();
+    chosen.forEach(c => ancestors(byId, c).forEach(a => out.add(a)));
+    return Array.from(out);
+  });
+  const [focusId, setFocusId] = _react.default.useState(null);
+  const refs = _react.default.useRef({}),
+    searchRef = _react.default.useRef(null),
+    firstRef = _react.default.useRef(null);
+  const q = text.trim().toLowerCase();
+  const shownNodes = q ? filterNodes(nodes, q) : nodes;
+  // while searching every branch that holds a match is open
+  const openSet = q ? new Set(Array.from(byId.keys())) : new Set(expanded);
+  const flat = flatten(shownNodes, openSet, null, []);
+  const active = flat.some(v => v.node.id === focusId) ? focusId : (flat.find(v => chosen.indexOf(v.node.id) >= 0) || flat[0] || {
+    node: {}
+  }).node.id;
+  // the popover focuses the active item when it opens (read after the tree is drawn)
+  const activeRef = _react.default.useRef(active);
+  activeRef.current = active;
+  if (!firstRef.current) firstRef.current = {
+    get current() {
+      return refs.current[activeRef.current] || null;
+    }
+  };
+
+  // the state of a row: one choice, or its checkbox (a parent's from its leaves)
+  const stateOf = n => {
+    if (!multiple) return chosen.indexOf(n.id) >= 0 ? 'true' : 'false';
+    const ls = leaves(n),
+      on = ls.filter(l => chosen.indexOf(l) >= 0).length;
+    return on === 0 ? 'false' : on === ls.length ? 'true' : 'mixed';
+  };
+  const toggleOpen = nid => {
+    if (q) return;
+    const next = new Set(expanded);
+    if (next.has(nid)) next.delete(nid);else next.add(nid);
+    setExpanded(Array.from(next));
+  };
+  const moveTo = nid => {
+    setFocusId(nid);
+    if (refs.current[nid]) refs.current[nid].focus();
+  };
+  const choose = n => {
+    if (!onChange) return;
+    if (!multiple) {
+      onChange(n.id);
+      setOpen(false);
+      setText('');
+      return;
+    }
+    const ls = leaves(n),
+      all = ls.every(l => chosen.indexOf(l) >= 0);
+    onChange(all ? chosen.filter(c => ls.indexOf(c) < 0) : chosen.concat(ls.filter(l => chosen.indexOf(l) < 0)));
+  };
+  const onKeyDown = e => {
+    const at = flat.findIndex(v => v.node.id === active),
+      cur = flat[at];
+    if (!cur) return;
+    const kids = kidsOf(cur.node),
+      isOpen = kids && openSet.has(cur.node.id);
+    const rtl = (0, _direction.isRtl)(e.currentTarget);
+    if (e.key === 'ArrowDown') {
+      if (flat[at + 1]) moveTo(flat[at + 1].node.id);
+    } else if (e.key === 'ArrowUp') {
+      if (flat[at - 1]) moveTo(flat[at - 1].node.id);else if (searchRef.current) searchRef.current.focus();
+    } else if (e.key === 'Home') moveTo(flat[0].node.id);else if (e.key === 'End') moveTo(flat[flat.length - 1].node.id);else if (e.key === (rtl ? 'ArrowLeft' : 'ArrowRight')) {
+      if (kids && !isOpen) toggleOpen(cur.node.id);else if (kids) moveTo(cur.node.children[0].id);
+    } else if (e.key === (rtl ? 'ArrowRight' : 'ArrowLeft')) {
+      if (kids && isOpen && !q) toggleOpen(cur.node.id);else if (cur.parent !== null) moveTo(cur.parent);
+    } else if (e.key === 'Enter' || e.key === ' ') choose(cur.node);else return;
+    e.preventDefault();
+  };
+  const renderNodes = (list, level) => list.map(n => {
+    const kids = kidsOf(n),
+      isOpen = kids && openSet.has(n.id),
+      state = stateOf(n);
+    return /*#__PURE__*/_react.default.createElement("li", {
+      key: n.id,
+      ref: el => {
+        refs.current[n.id] = el;
+      },
+      id: base + '-' + n.id,
+      role: "treeitem",
+      "aria-level": level,
+      "aria-expanded": kids ? !!isOpen : undefined,
+      "aria-selected": multiple ? undefined : state === 'true',
+      "aria-checked": multiple ? state : undefined,
+      tabIndex: n.id === active ? 0 : -1,
+      className: (0, _cx.cx)('plx-tree__item', !multiple && state === 'true' && 'is-selected'),
+      onFocus: e => {
+        if (e.target === e.currentTarget) setFocusId(n.id);
+      },
+      onClick: e => {
+        if (e.target.closest('[role="treeitem"]') !== e.currentTarget) return;
+        moveTo(n.id);
+        choose(n);
+      }
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-tree__row"
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf'),
+      "aria-hidden": "true",
+      onClick: kids ? e => {
+        e.stopPropagation();
+        toggleOpen(n.id);
+        moveTo(n.id);
+      } : undefined
+    }), multiple ? /*#__PURE__*/_react.default.createElement("input", {
+      type: "checkbox",
+      className: "plx-check__input plx-tree-select__mark",
+      tabIndex: -1,
+      "aria-hidden": "true",
+      inert: "",
+      readOnly: true,
+      checked: state === 'true',
+      ref: el => {
+        if (el) el.indeterminate = state === 'mixed';
+      }
+    }) : null, n.icon ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tree__icon"
+    }, asIcon(iconOf(n, isOpen || state === 'true'))) : null, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-tree__label"
+    }, n.label)), isOpen ? /*#__PURE__*/_react.default.createElement("ul", {
+      role: "group",
+      className: "plx-tree__group"
+    }, renderNodes(n.children, level + 1)) : null);
+  });
+
+  // what the field shows: the chosen labels, the first two and how many more
+  const names = chosen.map(c => byId.get(c) ? byId.get(c).node.label : c);
+  const summary = names.length > 2 ? t.more.replace('{list}', names.slice(0, 2).join(', ')).replace('{n}', names.length - 2) : names.join(', ');
+  const name = label || t.choose;
+  const trigger = /*#__PURE__*/_react.default.createElement("button", _extends({
+    type: "button",
+    id: id,
+    role: "combobox",
+    "aria-label": label,
+    "aria-invalid": invalid || undefined,
+    "aria-required": required || undefined,
+    disabled: disabled,
+    className: (0, _cx.cx)('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'
+  }, names.length ? summary : placeholder || t.placeholder), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree-select__chevron",
+    "aria-hidden": "true"
+  }));
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-tree-select', multiple && 'plx-tree-select--multiple', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: trigger,
+    open: open,
+    onOpenChange: o => {
+      setOpen(o);
+      if (!o) setText('');
+    },
+    label: name,
+    size: "md",
+    initialFocus: search ? searchRef : firstRef.current,
+    className: "plx-tree-select__popover"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-tree-select__panel"
+  }, search ? /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    ref: searchRef,
+    value: text,
+    label: t.search + ': ' + name,
+    placeholder: t.search,
+    onChange: e => setText(e.target.value),
+    onClear: () => setText(''),
+    onKeyDown: e => {
+      if (e.key === 'ArrowDown' && flat.length) {
+        e.preventDefault();
+        moveTo(flat[0].node.id);
+      }
+    }
+  }) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-tree-select__scroll"
+  }, flat.length ? /*#__PURE__*/_react.default.createElement("ul", {
+    role: "tree",
+    "aria-label": name,
+    "aria-multiselectable": multiple || undefined,
+    className: "plx-tree plx-tree-select__tree",
+    onKeyDown: onKeyDown
+  }, renderNodes(shownNodes, 1)) : /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-tree-select__empty",
+    role: "status"
+  }, t.empty)))));
+}
+  } },
+  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TransferList = TransferList;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _Button = require("../Button/Button.jsx");
+var _SearchField = require("../SearchField/SearchField.jsx");
+var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TransferList
+   Summary: Two lists side by side for choosing a subset of many items (10 Patterns › Selection and organization ›
+     Transfer list; also Dual listbox): the items not chosen on one side, the chosen ones on the other, and buttons
+     between them that move the checked items across. The chosen list can keep an order of its own.
+   Usage:
+     <TransferList label="Columns" options={columns} value={shown} onChange={setShown} />
+     <TransferList label="Columns" options={columns} value={shown} onChange={setShown} search ordered
+       titles={{ source: 'Hidden columns', target: 'Shown columns' }} />
+     <TransferList label="People" options={people} value={team} onChange={setTeam} search virtualized />   // thousands of items
+   Props:
+     label: names the whole control (a group) and the move buttons' group (required)
+     options: every item: [{ value, label, meta, disabled }]; meta is a short technical value after the label (an id, a
+       count), in the data font
+     value: the chosen values; with ordered, in their order
+     onChange(values): runs with the new chosen values (the moved ones added at the end of the chosen list)
+     titles: the two lists' titles: { source: "Available", target: "Chosen" }
+     search: a search field over each list (default false); it filters what the list shows and what its checkbox checks
+     ordered: the chosen list keeps its order and has Move up and Move down for its checked items (default false)
+     virtualized: only the items in view are drawn (useVirtualizer), for lists of thousands (default false; on by
+       itself over 500 items)
+     size: the lists' height: "sm" | "md" (default) | "lg"
+     disabled: nothing can be checked or moved
+     strings: the words it shows and announces, for other languages: { source, target, add: "Add", addAll: "Add all",
+       remove: "Remove", removeAll: "Remove all", up: "Move up", down: "Move down", search: "Search {title}", selectAll:
+       "Check every item in {title}", count: "{checked} of {total} checked", moved: "{n} moved to {title}", empty:
+       "No items", noMatch: "No matches", moves: "Move items" }
+     className: more classes on the control
+   Behavior:
+     Each list is a listbox with several choices and one Tab stop: ↑ ↓ move, Home and End, Space checks or clears the
+       active item, Ctrl+A (Command+A) checks all or clears them, Enter moves the checked items to the other list. A click
+       checks or clears an item; a double click moves it at once.
+     The header's checkbox checks every item the list shows (mixed when some are); the count beside it says how many are
+       checked of how many shown.
+     Add and Remove move the checked items; Add all and Remove all move every item of the list. A move is announced
+       ("3 moved to Chosen"), and the moved items stay checked in their new list, so a wrong move is one click back.
+     Ordered: Move up and Move down move the checked chosen items one place; the order is the value's order.
+     At narrow widths the lists stack, with the move buttons in a row between them (a container query).
+   Notes:
+     Use it when people choose a subset from more items than fit a checkbox group (about fifteen or more) and should see
+       both what is chosen and what is not. Fewer items: a checkbox group; one value: a select or Combobox.
+     The checkboxes are the Checkbox control drawn in the row, not focusable and hidden from assistive technology: each
+       option's aria-selected says it is checked.
+*/
+const STRINGS = {
+  source: 'Available',
+  target: 'Chosen',
+  add: 'Add',
+  addAll: 'Add all',
+  remove: 'Remove',
+  removeAll: 'Remove all',
+  up: 'Move up',
+  down: 'Move down',
+  search: 'Search {title}',
+  selectAll: 'Check every item in {title}',
+  count: '{checked} of {total} checked',
+  moved: '{n} moved to {title}',
+  empty: 'No items',
+  noMatch: 'No matches',
+  moves: 'Move items'
+};
+const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (all, k) => o[k] !== undefined ? o[k] : all);
+const AUTO_VIRTUAL = 500;
+
+// one list: header (check all, title, count, the order buttons), search field, the listbox
+function Side({
+  id,
+  title,
+  items,
+  checked,
+  setChecked,
+  onMove,
+  search,
+  virtual,
+  disabled,
+  t,
+  tools,
+  emptyText
+}) {
+  const [text, setText] = _react.default.useState('');
+  const [active, setActive] = _react.default.useState(0);
+  const q = text.trim().toLowerCase();
+  const shown = q ? items.filter(o => String(o.label).toLowerCase().indexOf(q) >= 0 || String(o.meta || '').toLowerCase().indexOf(q) >= 0) : items;
+  const usable = shown.filter(o => !o.disabled);
+  const nChecked = shown.filter(o => checked.has(o.value)).length;
+  const all = usable.length > 0 && usable.every(o => checked.has(o.value));
+  const some = nChecked > 0 && !all;
+  const v = (0, _useVirtualizer.useVirtualizer)({
+    count: virtual ? shown.length : 0
+  });
+  const listRef = _react.default.useRef(null);
+  const at = Math.min(active, Math.max(0, shown.length - 1));
+  _react.default.useEffect(() => {
+    setActive(0);
+  }, [q]);
+  const toggle = o => {
+    if (!o || o.disabled || disabled) return;
+    const next = new Set(checked);
+    if (next.has(o.value)) next.delete(o.value);else next.add(o.value);
+    setChecked(next);
+  };
+  const toggleAll = () => {
+    const next = new Set(checked);
+    usable.forEach(o => {
+      if (all) next.delete(o.value);else next.add(o.value);
+    });
+    setChecked(next);
+  };
+  const go = i => {
+    const n = Math.max(0, Math.min(shown.length - 1, i));
+    setActive(n);
+    if (virtual) v.scrollToIndex(n);else {
+      const el = listRef.current && listRef.current.querySelector('[data-plx-index="' + n + '"]');
+      if (el && el.scrollIntoView) el.scrollIntoView({
+        block: 'nearest'
+      });
+    }
+  };
+  const onKeyDown = e => {
+    if (e.key === 'ArrowDown') go(at + 1);else if (e.key === 'ArrowUp') go(at - 1);else if (e.key === 'Home') go(0);else if (e.key === 'End') go(shown.length - 1);else if (e.key === ' ') toggle(shown[at]);else if (e.key === 'Enter') onMove(shown);else if ((e.key === 'a' || e.key === 'A') && (e.ctrlKey || e.metaKey)) toggleAll();else return;
+    e.preventDefault();
+  };
+  const optId = i => id + '-o' + i;
+  const option = (o, i, extra) => /*#__PURE__*/_react.default.createElement("div", _extends({
+    key: o.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": checked.has(o.value),
+    "aria-disabled": o.disabled || disabled || undefined,
+    "data-plx-index": i,
+    className: (0, _cx.cx)('plx-transfer-list__option', i === at && 'is-active', checked.has(o.value) && 'is-selected', o.disabled && 'is-disabled'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => {
+      setActive(i);
+      toggle(o);
+      if (listRef.current) listRef.current.focus();
+    },
+    onDoubleClick: () => {
+      if (!o.disabled && !disabled) onMove([o], true);
+    }
+  }, extra), /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    className: "plx-check__input plx-transfer-list__mark",
+    tabIndex: -1,
+    "aria-hidden": "true",
+    inert: "",
+    readOnly: true,
+    checked: checked.has(o.value),
+    disabled: o.disabled || disabled
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-transfer-list__label"
+  }, o.label), o.meta !== undefined && o.meta !== null ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-transfer-list__meta"
+  }, o.meta) : null);
+  const setRefs = el => {
+    listRef.current = el;
+    if (virtual) v.viewportRef.current = el;
+  };
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: "plx-transfer-list__panel",
+    "aria-labelledby": id + '-title'
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-transfer-list__header"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    className: "plx-check__input plx-transfer-list__all",
+    checked: all,
+    disabled: disabled || !usable.length,
+    ref: el => {
+      if (el) el.indeterminate = some;
+    },
+    onChange: toggleAll,
+    "aria-label": fill(t.selectAll, {
+      title
+    })
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    id: id + '-title',
+    className: "plx-transfer-list__title"
+  }, title), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-transfer-list__count",
+    "aria-label": fill(t.count, {
+      checked: nChecked,
+      total: shown.length
+    })
+  }, nChecked + '/' + shown.length), tools ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-transfer-list__tools"
+  }, tools) : null), search ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-transfer-list__search"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    value: text,
+    label: fill(t.search, {
+      title
+    }),
+    placeholder: fill(t.search, {
+      title
+    }),
+    width: "fill",
+    onChange: e => setText(e.target.value),
+    onClear: () => setText('')
+  })) : null, /*#__PURE__*/_react.default.createElement("div", {
+    ref: setRefs,
+    role: "listbox",
+    "aria-multiselectable": "true",
+    "aria-labelledby": id + '-title',
+    tabIndex: 0,
+    "aria-disabled": disabled || undefined,
+    "aria-activedescendant": shown.length ? optId(at) : undefined,
+    onKeyDown: onKeyDown,
+    className: (0, _cx.cx)('plx-transfer-list__list', virtual && 'plx-transfer-list__list--virtual')
+  }, virtual && shown.length ? /*#__PURE__*/_react.default.createElement(_useVirtualizer.VirtualProbe, null) : null, !shown.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-transfer-list__empty",
+    role: "presentation"
+  }, q ? t.noMatch : emptyText) : virtual ? v.segments.map(s => s.gap ? /*#__PURE__*/_react.default.createElement(_useVirtualizer.VirtualGap, {
+    key: s.key,
+    count: s.count
+  }) : option(shown[s.index], s.index, v.itemProps(s.index))) : shown.map((o, i) => option(o, i))));
+}
+function TransferList({
+  label,
+  options = [],
+  value = [],
+  onChange,
+  titles,
+  search = false,
+  ordered = false,
+  virtualized,
+  size = 'md',
+  disabled = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const id = 'plx-tl' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const title = Object.assign({
+    source: t.source,
+    target: t.target
+  }, titles);
+  const byValue = _react.default.useMemo(() => new Map(options.map(o => [o.value, o])), [options]);
+  const chosenSet = new Set(value);
+  const source = options.filter(o => !chosenSet.has(o.value));
+  const target = ordered ? value.map(v => byValue.get(v)).filter(Boolean) : options.filter(o => chosenSet.has(o.value));
+  const [left, setLeft] = _react.default.useState(() => new Set());
+  const [right, setRight] = _react.default.useState(() => new Set());
+  const virtual = virtualized !== undefined ? virtualized : options.length > AUTO_VIRTUAL;
+  const emit = next => {
+    if (onChange) onChange(next);
+  };
+  // moving keeps the moved items checked in their new list
+  const add = (list, title2) => {
+    const moving = list.filter(o => !o.disabled && !chosenSet.has(o.value)).map(o => o.value);
+    if (!moving.length || disabled) return;
+    emit(value.concat(moving));
+    setLeft(s => {
+      const n = new Set(s);
+      moving.forEach(m => n.delete(m));
+      return n;
+    });
+    setRight(s => new Set(Array.from(s).concat(moving)));
+    (0, _announce.announce)(fill(t.moved, {
+      n: moving.length,
+      title: title2
+    }));
+  };
+  const remove = (list, title2) => {
+    const moving = list.filter(o => !o.disabled && chosenSet.has(o.value)).map(o => o.value);
+    if (!moving.length || disabled) return;
+    emit(value.filter(v => moving.indexOf(v) < 0));
+    setRight(s => {
+      const n = new Set(s);
+      moving.forEach(m => n.delete(m));
+      return n;
+    });
+    setLeft(s => new Set(Array.from(s).concat(moving)));
+    (0, _announce.announce)(fill(t.moved, {
+      n: moving.length,
+      title: title2
+    }));
+  };
+  const leftChecked = source.filter(o => left.has(o.value)),
+    rightChecked = target.filter(o => right.has(o.value));
+  // ordered: the checked chosen items one place up or down, keeping their order among themselves
+  const shift = dir => {
+    const list = value.slice();
+    const idx = list.map((v, i) => right.has(v) ? i : -1).filter(i => i >= 0);
+    if (!idx.length) return;
+    (dir < 0 ? idx : idx.slice().reverse()).forEach(i => {
+      const j = i + dir;
+      if (j < 0 || j >= list.length || right.has(list[j])) return;
+      const tmp = list[j];
+      list[j] = list[i];
+      list[i] = tmp;
+    });
+    emit(list);
+  };
+  const firstChecked = value.findIndex(v => right.has(v)),
+    lastChecked = value.length - 1 - value.slice().reverse().findIndex(v => right.has(v));
+  const orderTools = ordered ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    iconOnly: true,
+    icon: "chevron-up",
+    label: t.up,
+    disabled: disabled || firstChecked <= 0,
+    onClick: () => shift(-1)
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    iconOnly: true,
+    icon: "chevron-down",
+    label: t.down,
+    disabled: disabled || firstChecked < 0 || lastChecked >= value.length - 1,
+    onClick: () => shift(1)
+  })) : null;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-transfer-list', 'plx-transfer-list--' + size, disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-transfer-list__body"
+  }, /*#__PURE__*/_react.default.createElement(Side, {
+    id: id + '-s',
+    title: title.source,
+    items: source,
+    checked: left,
+    setChecked: setLeft,
+    search: search,
+    virtual: virtual,
+    disabled: disabled,
+    t: t,
+    emptyText: t.empty,
+    onMove: (list, all) => add(all ? list : list.filter(o => left.has(o.value)), title.target)
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-transfer-list__moves",
+    role: "group",
+    "aria-label": t.moves
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    iconEnd: "chevron-right",
+    disabled: disabled || !leftChecked.length,
+    onClick: () => add(leftChecked, title.target)
+  }, t.add), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    disabled: disabled || !source.some(o => !o.disabled),
+    onClick: () => add(source, title.target)
+  }, t.addAll), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    icon: "chevron-left",
+    disabled: disabled || !rightChecked.length,
+    onClick: () => remove(rightChecked, title.source)
+  }, t.remove), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    disabled: disabled || !target.some(o => !o.disabled),
+    onClick: () => remove(target, title.source)
+  }, t.removeAll)), /*#__PURE__*/_react.default.createElement(Side, {
+    id: id + '-t',
+    title: title.target,
+    items: target,
+    checked: right,
+    setChecked: setRight,
+    search: search,
+    virtual: virtual,
+    disabled: disabled,
+    t: t,
+    tools: orderTools,
+    emptyText: t.empty,
+    onMove: (list, all) => remove(all ? list : list.filter(o => right.has(o.value)), title.source)
+  })));
+}
+  } },
+  "platform/patterns/BottomSheetNav/BottomSheetNav.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","../../components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BottomSheetNav = BottomSheetNav;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Sheet = require("../../components/Sheet/Sheet.jsx");
+var _NavList = require("../../components/NavList/NavList.jsx");
+var _RowButton = require("../../components/RowButton/RowButton.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · BottomSheetNav
+   Summary: Navigation in a bottom sheet (06 Navigation › Mobile navigation › Bottom-sheet navigation): the places of an
+     application or a section, opened from a bar or a button on a phone, in a Sheet that rises from the bottom; as a
+     list (NavList: groups, icons, counts) or as a grid of icon tiles. Choosing a place closes the sheet.
+   Usage:
+     <BottomSheetNav open={open} onClose={close} title="Go to" value={section} onSelect={go}
+       items={[{ id: 'notes', label: 'All notes', icon: 'doc-text', count: 24 }, …]} />
+     <BottomSheetNav layout="grid" open={open} onClose={close} title="Applications" value={app} onSelect={go} items={apps} />
+   Props:
+     open: whether the sheet shows; onClose(): runs from Close, Escape, the scrim and after a choice
+     title: the sheet's title; it names the sheet and the navigation (default "Navigation")
+     items: the places: [{ id, label, icon, count, href }] (count and href in the list layout); or groups (list layout):
+       [{ heading, items }] as NavList takes them
+     value: the id of the current place (aria-current="page")
+     onSelect(id): runs when a place is chosen, before the sheet closes
+     layout: "list" (default; NavList rows) | "grid" (icon tiles, three or four to a row; for a few top-level places
+       known by their icons)
+     detent: the sheet's starting height: "medium" (default) | "large"
+     footer: a row pinned under the places (an account or settings button)
+     strings: the words it shows, for other languages: { title: "Navigation", close: "Close" }
+     className: more classes on the sheet
+   Behavior:
+     The Sheet's behavior: focus moves into the sheet and returns to the opener when it closes; Escape and the scrim
+       close it; the grabber moves between the medium and large heights; the page does not scroll behind it.
+     A place in the list is a link (href: the page it opens replaces this one) or a button (onSelect: the sheet closes, so
+       the person sees the place they chose); a tile in the grid is a button (onSelect).
+     The grid's tiles are at least the touch target in both directions; the current tile has the selected fill and its
+       icon filled.
+   Notes:
+     For phones and narrow windows: on wider windows the same places belong in the navigation pane (NavPane), which at
+       Narrow already shows a bottom navigation bar whose Browse opens the pane. Use this sheet for a second set of places
+       (a section's views, the other applications) or for a page without a pane. More than about twelve places: the
+       list, with groups.
+*/
+
+const STRINGS = {
+  title: 'Navigation',
+  close: 'Close'
+};
+function BottomSheetNav({
+  open,
+  onClose,
+  title,
+  items,
+  groups,
+  value,
+  onSelect,
+  layout = 'list',
+  detent = 'medium',
+  footer,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const name = title || t.title;
+  const choose = id => {
+    if (onSelect) onSelect(id);
+    if (onClose) onClose();
+  };
+  const body = layout === 'grid' ? /*#__PURE__*/_react.default.createElement("nav", {
+    "aria-label": name,
+    className: "plx-bottom-sheet-nav__grid"
+  }, (items || []).map(it => /*#__PURE__*/_react.default.createElement(_RowButton.RowButton, {
+    key: it.id,
+    className: "plx-bottom-sheet-nav__tile",
+    current: it.id === value ? 'page' : undefined,
+    selected: it.id === value,
+    onClick: () => choose(it.id)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-bottom-sheet-nav__tile-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: it.icon,
+    filled: it.id === value
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-bottom-sheet-nav__tile-label"
+  }, it.label)))) : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-bottom-sheet-nav__list"
+  }, /*#__PURE__*/_react.default.createElement(_NavList.NavList, {
+    label: name,
+    items: groups ? undefined : items,
+    groups: groups,
+    value: value,
+    onSelect: choose
+  }));
+  return /*#__PURE__*/_react.default.createElement(_Sheet.Sheet, {
+    open: open,
+    onClose: onClose,
+    title: name,
+    form: "bottom",
+    detent: detent,
+    footer: footer,
+    closeLabel: t.close,
+    className: (0, _cx.cx)('plx-bottom-sheet-nav', 'plx-bottom-sheet-nav--' + layout, className)
+  }, body);
+}
+  } },
   "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -29764,7 +35069,7 @@ function useCollectionView(fields, options = {}) {
   };
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataTable/DataTable.jsx":"platform/components/DataTable/DataTable.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29804,6 +35109,12 @@ Object.defineProperty(exports, "AvatarGroup", {
   enumerable: true,
   get: function () {
     return _AvatarGroup.AvatarGroup;
+  }
+});
+Object.defineProperty(exports, "AvatarUpload", {
+  enumerable: true,
+  get: function () {
+    return _AvatarUpload.AvatarUpload;
   }
 });
 Object.defineProperty(exports, "BARCODE_QUIET_ZONE", {
@@ -29846,6 +35157,12 @@ Object.defineProperty(exports, "Blockquote", {
   enumerable: true,
   get: function () {
     return _Blockquote.Blockquote;
+  }
+});
+Object.defineProperty(exports, "BottomSheetNav", {
+  enumerable: true,
+  get: function () {
+    return _BottomSheetNav.BottomSheetNav;
   }
 });
 Object.defineProperty(exports, "BrandMark", {
@@ -29896,16 +35213,34 @@ Object.defineProperty(exports, "CONTRAST_PAIRS", {
     return _contrast.CONTRAST_PAIRS;
   }
 });
+Object.defineProperty(exports, "Calendar", {
+  enumerable: true,
+  get: function () {
+    return _Calendar.Calendar;
+  }
+});
 Object.defineProperty(exports, "Card", {
   enumerable: true,
   get: function () {
     return _Card.Card;
   }
 });
+Object.defineProperty(exports, "Cascader", {
+  enumerable: true,
+  get: function () {
+    return _Cascader.Cascader;
+  }
+});
 Object.defineProperty(exports, "Center", {
   enumerable: true,
   get: function () {
     return _Stack.Center;
+  }
+});
+Object.defineProperty(exports, "ChartFrame", {
+  enumerable: true,
+  get: function () {
+    return _ChartFrame.ChartFrame;
   }
 });
 Object.defineProperty(exports, "Chat", {
@@ -30052,6 +35387,12 @@ Object.defineProperty(exports, "Count", {
     return _Count.Count;
   }
 });
+Object.defineProperty(exports, "CountrySelect", {
+  enumerable: true,
+  get: function () {
+    return _CountrySelect.CountrySelect;
+  }
+});
 Object.defineProperty(exports, "DATAVIZ_ALERT", {
   enumerable: true,
   get: function () {
@@ -30104,6 +35445,12 @@ Object.defineProperty(exports, "DateBadge", {
   enumerable: true,
   get: function () {
     return _DateBadge.DateBadge;
+  }
+});
+Object.defineProperty(exports, "DatePicker", {
+  enumerable: true,
+  get: function () {
+    return _DatePicker.DatePicker;
   }
 });
 Object.defineProperty(exports, "Details", {
@@ -30164,6 +35511,12 @@ Object.defineProperty(exports, "EntityHeader", {
   enumerable: true,
   get: function () {
     return _EntityHeader.EntityHeader;
+  }
+});
+Object.defineProperty(exports, "EntityPicker", {
+  enumerable: true,
+  get: function () {
+    return _EntityPicker.EntityPicker;
   }
 });
 Object.defineProperty(exports, "ErrorSummary", {
@@ -30310,6 +35663,18 @@ Object.defineProperty(exports, "Image", {
     return _Image.Image;
   }
 });
+Object.defineProperty(exports, "ImageCrop", {
+  enumerable: true,
+  get: function () {
+    return _ImageUpload.ImageCrop;
+  }
+});
+Object.defineProperty(exports, "ImageUpload", {
+  enumerable: true,
+  get: function () {
+    return _ImageUpload.ImageUpload;
+  }
+});
 Object.defineProperty(exports, "Inline", {
   enumerable: true,
   get: function () {
@@ -30356,6 +35721,12 @@ Object.defineProperty(exports, "LiveRegion", {
   enumerable: true,
   get: function () {
     return _announce.LiveRegion;
+  }
+});
+Object.defineProperty(exports, "LoadMore", {
+  enumerable: true,
+  get: function () {
+    return _LoadMore.LoadMore;
   }
 });
 Object.defineProperty(exports, "LoadingOverlay", {
@@ -30428,6 +35799,12 @@ Object.defineProperty(exports, "Metric", {
   enumerable: true,
   get: function () {
     return _Metric.Metric;
+  }
+});
+Object.defineProperty(exports, "MillerColumns", {
+  enumerable: true,
+  get: function () {
+    return _MillerColumns.MillerColumns;
   }
 });
 Object.defineProperty(exports, "NavList", {
@@ -30544,6 +35921,12 @@ Object.defineProperty(exports, "ProgressCircle", {
     return _ProgressCircle.ProgressCircle;
   }
 });
+Object.defineProperty(exports, "ProgressSteps", {
+  enumerable: true,
+  get: function () {
+    return _ProgressSteps.ProgressSteps;
+  }
+});
 Object.defineProperty(exports, "PromptDialog", {
   enumerable: true,
   get: function () {
@@ -30566,6 +35949,12 @@ Object.defineProperty(exports, "QuickFilter", {
   enumerable: true,
   get: function () {
     return _QuickFilter.QuickFilter;
+  }
+});
+Object.defineProperty(exports, "RELATIVE_PRESETS", {
+  enumerable: true,
+  get: function () {
+    return _RelativeDateInput.RELATIVE_PRESETS;
   }
 });
 Object.defineProperty(exports, "RTL_LANGUAGES", {
@@ -30620,6 +36009,12 @@ Object.defineProperty(exports, "RecordPage", {
   enumerable: true,
   get: function () {
     return _RecordPage.RecordPage;
+  }
+});
+Object.defineProperty(exports, "RelativeDateInput", {
+  enumerable: true,
+  get: function () {
+    return _RelativeDateInput.RelativeDateInput;
   }
 });
 Object.defineProperty(exports, "RetryNotice", {
@@ -30904,6 +36299,18 @@ Object.defineProperty(exports, "TimeGrid", {
     return _TimeGrid.TimeGrid;
   }
 });
+Object.defineProperty(exports, "TimePicker", {
+  enumerable: true,
+  get: function () {
+    return _TimePicker.TimePicker;
+  }
+});
+Object.defineProperty(exports, "TimeZoneSelect", {
+  enumerable: true,
+  get: function () {
+    return _TimeZoneSelect.TimeZoneSelect;
+  }
+});
 Object.defineProperty(exports, "ToastProvider", {
   enumerable: true,
   get: function () {
@@ -30928,10 +36335,22 @@ Object.defineProperty(exports, "Tooltip", {
     return _Tooltip.Tooltip;
   }
 });
+Object.defineProperty(exports, "TransferList", {
+  enumerable: true,
+  get: function () {
+    return _TransferList.TransferList;
+  }
+});
 Object.defineProperty(exports, "Tree", {
   enumerable: true,
   get: function () {
     return _Tree.Tree;
+  }
+});
+Object.defineProperty(exports, "TreeSelect", {
+  enumerable: true,
+  get: function () {
+    return _TreeSelect.TreeSelect;
   }
 });
 Object.defineProperty(exports, "VIRTUAL_STICKY_CLASS", {
@@ -31342,6 +36761,12 @@ Object.defineProperty(exports, "navigate", {
     return _ScreenLocation.navigate;
   }
 });
+Object.defineProperty(exports, "niceTicks", {
+  enumerable: true,
+  get: function () {
+    return _scales.niceTicks;
+  }
+});
 Object.defineProperty(exports, "onGrid", {
   enumerable: true,
   get: function () {
@@ -31370,6 +36795,12 @@ Object.defineProperty(exports, "parseScreen", {
   enumerable: true,
   get: function () {
     return _ScreenLocation.parseScreen;
+  }
+});
+Object.defineProperty(exports, "parseTime", {
+  enumerable: true,
+  get: function () {
+    return _TimePicker.parseTime;
   }
 });
 Object.defineProperty(exports, "physicalSide", {
@@ -31402,6 +36833,36 @@ Object.defineProperty(exports, "relativeLuminance", {
     return _contrast.relativeLuminance;
   }
 });
+Object.defineProperty(exports, "resolveRelativeDate", {
+  enumerable: true,
+  get: function () {
+    return _RelativeDateInput.resolveRelativeDate;
+  }
+});
+Object.defineProperty(exports, "scaleBand", {
+  enumerable: true,
+  get: function () {
+    return _scales.scaleBand;
+  }
+});
+Object.defineProperty(exports, "scaleLinear", {
+  enumerable: true,
+  get: function () {
+    return _scales.scaleLinear;
+  }
+});
+Object.defineProperty(exports, "scaleLog", {
+  enumerable: true,
+  get: function () {
+    return _scales.scaleLog;
+  }
+});
+Object.defineProperty(exports, "scaleTime", {
+  enumerable: true,
+  get: function () {
+    return _scales.scaleTime;
+  }
+});
 Object.defineProperty(exports, "screenHref", {
   enumerable: true,
   get: function () {
@@ -31412,6 +36873,12 @@ Object.defineProperty(exports, "scrollLockCount", {
   enumerable: true,
   get: function () {
     return _scrollLock.scrollLockCount;
+  }
+});
+Object.defineProperty(exports, "seriesColor", {
+  enumerable: true,
+  get: function () {
+    return _scales.seriesColor;
   }
 });
 Object.defineProperty(exports, "setSingleKeyHotkeys", {
@@ -31442,6 +36909,12 @@ Object.defineProperty(exports, "tabsPanelId", {
   enumerable: true,
   get: function () {
     return _Tabs.tabsPanelId;
+  }
+});
+Object.defineProperty(exports, "timeZoneOptions", {
+  enumerable: true,
+  get: function () {
+    return _TimeZoneSelect.timeZoneOptions;
   }
 });
 Object.defineProperty(exports, "tokenPx", {
@@ -31801,6 +37274,24 @@ var _OtpInput = require("./components/OtpInput/OtpInput.jsx");
 var _useSearchHistory = require("./hooks/useSearchHistory.js");
 var _InlineEdit = require("./components/InlineEdit/InlineEdit.jsx");
 var _RichTextEditor = require("./components/RichTextEditor/RichTextEditor.jsx");
+var _Calendar = require("./components/Calendar/Calendar.jsx");
+var _DatePicker = require("./components/DatePicker/DatePicker.jsx");
+var _CountrySelect = require("./components/CountrySelect/CountrySelect.jsx");
+var _ProgressSteps = require("./components/ProgressSteps/ProgressSteps.jsx");
+var _MillerColumns = require("./components/MillerColumns/MillerColumns.jsx");
+var _Cascader = require("./components/Cascader/Cascader.jsx");
+var _EntityPicker = require("./components/EntityPicker/EntityPicker.jsx");
+var _TimePicker = require("./components/TimePicker/TimePicker.jsx");
+var _RelativeDateInput = require("./components/RelativeDateInput/RelativeDateInput.jsx");
+var _LoadMore = require("./components/LoadMore/LoadMore.jsx");
+var _ImageUpload = require("./patterns/ImageUpload/ImageUpload.jsx");
+var _AvatarUpload = require("./patterns/AvatarUpload/AvatarUpload.jsx");
+var _scales = require("./charts/scales.js");
+var _ChartFrame = require("./charts/ChartFrame.jsx");
+var _TimeZoneSelect = require("./components/TimeZoneSelect/TimeZoneSelect.jsx");
+var _TreeSelect = require("./components/TreeSelect/TreeSelect.jsx");
+var _TransferList = require("./components/TransferList/TransferList.jsx");
+var _BottomSheetNav = require("./patterns/BottomSheetNav/BottomSheetNav.jsx");
 var _CommandBar = require("./patterns/CommandBar/CommandBar.jsx");
 var _FilterPanel = require("./patterns/FilterPanel/FilterPanel.jsx");
 var _SortPanel = require("./patterns/SortPanel/SortPanel.jsx");

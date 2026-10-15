@@ -1,0 +1,12 @@
+/* Plenix · DatePicker (platform/components/DatePicker). Anatomy and API: DatePicker.jsx. The field is an InputGroup in the
+   data font with the calendar button joined at its end (input-group.css); a date-time picker puts the time field beside
+   it. The popover holds the presets (a column of ghost buttons, divided from the calendar) and the Calendar. */
+.plx-date-picker{display:flex;max-inline-size:100%;min-inline-size:0;}
+.plx-date-picker .plx-popover-anchor{display:flex;max-inline-size:100%;min-inline-size:0;}
+.plx-date-picker__field{column-gap:var(--plx-comp-date-picker-field-gap);display:flex;flex-wrap:wrap;max-inline-size:100%;min-inline-size:0;row-gap:var(--plx-comp-date-picker-field-gap);}
+.plx-input-group.plx-date-picker__date{flex-shrink:1;inline-size:var(--plx-comp-date-picker-width);}
+.plx-date-picker--range .plx-input-group.plx-date-picker__date{inline-size:var(--plx-comp-date-picker-range-width);}
+.plx-input-group.plx-date-picker__time{flex-shrink:1;inline-size:var(--plx-comp-date-picker-time-width);}
+.plx-date-picker__panel{column-gap:var(--plx-comp-date-picker-panel-gap);display:flex;flex-wrap:wrap;padding-block-end:var(--plx-comp-date-picker-panel-padding);padding-block-start:var(--plx-comp-date-picker-panel-padding);padding-inline-end:var(--plx-comp-date-picker-panel-padding);padding-inline-start:var(--plx-comp-date-picker-panel-padding);row-gap:var(--plx-comp-date-picker-panel-gap);}
+.plx-date-picker__presets{border-inline-end-color:var(--plx-comp-date-picker-presets-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-date-picker-presets-border-width);display:flex;flex-direction:column;padding-inline-end:var(--plx-comp-date-picker-presets-padding-inline-end);row-gap:var(--plx-comp-date-picker-presets-gap);}
+.plx-date-picker__preset{justify-content:flex-start;}

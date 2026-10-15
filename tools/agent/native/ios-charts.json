@@ -1,0 +1,100 @@
+{
+  "ios-data-display|Charts": {
+    "summary": "The Plenix chart on iOS is a Swift Charts chart in the Plenix frame: a title and a one-sentence takeaway above it, marks in the data-viz colors by the series’ order, light grid lines, tick labels in DM Mono, and the same data as a list or table one tap away. Swift Charts keeps its own layout, scrolling, selection and accessibility (the audio graph and the per-mark VoiceOver labels); Plenix sets the look and the content rules that ChartFrame sets on the web.",
+    "variants": [
+      { "name": "Column chart (band scale)", "apple": "BarMark with a categorical x value", "web": "data-display|Chart foundations", "background": "plx-sys-surface-default", "content": "plx-sys-dataviz-categorical-1", "border": "plx-comp-chart-grid-line-color", "swiftui": "Chart(rows) { BarMark(x: .value(\"Month\", $0.month), y: .value(\"Uploads\", $0.count)) }", "uikit": "The SwiftUI Chart in a UIHostingController", "appkit": "The SwiftUI Chart in an NSHostingView", "use": "Amounts per category in the categories’ own order: months, products, regions." },
+      { "name": "Line over time (time scale)", "apple": "LineMark and PointMark with a Date x value", "web": "data-display|Chart foundations", "background": "plx-sys-surface-default", "content": "plx-sys-dataviz-categorical-2", "border": "plx-comp-chart-grid-line-color", "swiftui": "Chart(days) { LineMark(x: .value(\"Day\", $0.date, unit: .day), y: .value(\"Downloads\", $0.value)) }", "uikit": "The SwiftUI Chart in a UIHostingController", "appkit": "The SwiftUI Chart in an NSHostingView", "use": "A series over time; the axis ticks fall on calendar steps." },
+      { "name": "Log value axis", "apple": "chartYScale(type: .log)", "web": "data-display|Chart foundations", "background": "plx-sys-surface-default", "content": "plx-sys-dataviz-categorical-3", "border": "plx-comp-chart-grid-line-color", "swiftui": ".chartYScale(domain: .automatic, type: .log)", "uikit": "The SwiftUI Chart in a UIHostingController", "appkit": "The SwiftUI Chart in an NSHostingView", "use": "Values that span several orders of magnitude, said in the description." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Title", "about": "Names what is measured, in sentence case; it is the chart’s accessibility label." },
+      { "part": "B", "name": "Description", "about": "One or two sentences with the takeaway, in secondary text; it is the chart’s accessibility value." },
+      { "part": "C", "name": "Plot area", "about": "The marks between the axes; the chart’s height comes from the Plenix sizes, its width from the screen." },
+      { "part": "D", "name": "Marks", "about": "Bars, lines and points in the data-viz colors, by the series’ order in the data." },
+      { "part": "E", "name": "Grid lines and baseline", "about": "Light lines behind the marks; the baseline at zero in the stronger border color." },
+      { "part": "F", "name": "Tick labels", "about": "Values, dates and categories in DM Mono, in the reader’s locale." },
+      { "part": "G", "name": "Data", "about": "The same values as a list one tap away (Show the data), and the Swift Charts audio graph." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Title font", "token": "plx-comp-chart-title-font-size", "value": "DM Sans semibold at the Headline size", "apple": "The surrounding view’s headline", "swiftui": "Text(title).font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline))", "uikit": "UILabel with UIFontMetrics(forTextStyle: .headline) scaling DM Sans", "appkit": "NSTextField with DM Sans at the headline size", "follows": "Descriptive content" },
+      { "part": "B", "attribute": "Description color", "token": "plx-comp-chart-description-text", "value": "Secondary text (plx-sys-content-subtle)", "apple": "Secondary label color", "swiftui": ".foregroundStyle(Plenix.Colors.contentSubtle)", "uikit": "label.textColor = UIColor(Plenix.Colors.contentSubtle)", "appkit": "NSColor(Plenix.Colors.contentSubtle) (a macOS build of the tokens is needed)", "follows": "Descriptive content" },
+      { "part": "C", "attribute": "Plot height", "token": "plx-comp-chart-plot-height-md", "value": "240 pt (sm 160, lg 320); the width fills the screen’s readable width", "apple": "As tall as the container gives it", "swiftui": ".frame(height: plotHeight), plotHeight = the web token --plx-comp-chart-plot-height-md (the library tokens are not in PlenixTokens.swift yet)", "uikit": "chartView.heightAnchor.constraint(equalToConstant: plotHeight)", "appkit": "hosting.heightAnchor.constraint(equalToConstant: plotHeight)", "follows": "Best practices" },
+      { "part": "D", "attribute": "Series colors", "token": "plx-sys-dataviz-categorical-1", "value": "The six categorical data-viz colors in the series’ order (blue, green, purple, red, brown, gray)", "apple": "The system accent color, then automatic", "swiftui": ".chartForegroundStyleScale(range: [Plenix.Colors.datavizCategorical1, Plenix.Colors.datavizCategorical2, Plenix.Colors.datavizCategorical3])", "uikit": "The same scale on the hosted SwiftUI Chart", "appkit": "The same scale on the hosted SwiftUI Chart", "follows": "Color" },
+      { "part": "D", "attribute": "Line width", "token": "plx-comp-chart-line-width", "value": "2 pt (plx-sys-border-width-medium), round caps and joins", "apple": "2 pt", "swiftui": ".lineStyle(StrokeStyle(lineWidth: Plenix.Border.borderWidthMedium, lineCap: .round, lineJoin: .round))", "uikit": "The same style on the hosted SwiftUI Chart", "appkit": "The same style on the hosted SwiftUI Chart", "follows": "Marks" },
+      { "part": "E", "attribute": "Grid line color", "token": "plx-comp-chart-grid-line-color", "value": "The subtle border (gray 200 light, gray 700 dark), 1 pt", "apple": "Secondary system fill", "swiftui": "AxisGridLine(stroke: StrokeStyle(lineWidth: Plenix.Border.borderWidthThin)).foregroundStyle(Plenix.Colors.borderSubtle)", "uikit": "The same axis marks on the hosted SwiftUI Chart", "appkit": "The same axis marks on the hosted SwiftUI Chart", "follows": "Axes" },
+      { "part": "E", "attribute": "Baseline color", "token": "plx-comp-chart-axis-line-color", "value": "The strong border (gray 500), 1 pt, at zero", "apple": "Label color at low opacity", "swiftui": "RuleMark(y: .value(\"Zero\", 0)).foregroundStyle(Plenix.Colors.borderStrong)", "uikit": "The same rule on the hosted SwiftUI Chart", "appkit": "The same rule on the hosted SwiftUI Chart", "follows": "Axes" },
+      { "part": "F", "attribute": "Tick label font", "token": "plx-comp-chart-tick-label-font-family", "value": "DM Mono (the data role) at the caption size, secondary text", "apple": "SF Pro caption", "swiftui": "AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption))", "uikit": "The same labels on the hosted SwiftUI Chart (Plenix.Font.mono)", "appkit": "The same labels on the hosted SwiftUI Chart (Plenix.Font.mono)", "follows": "Axes" },
+      { "part": "G", "attribute": "Accessibility", "token": "None (content)", "value": "The title as the label, the takeaway as the value, each mark labeled with its category and value; the audio graph on", "apple": "Automatic labels from the plotted values", "swiftui": ".accessibilityLabel(title).accessibilityValue(takeaway) and .accessibilityLabel on each mark", "uikit": "hosting.view.accessibilityLabel = title", "appkit": "hosting.setAccessibilityLabel(title)", "follows": "Enhancing the accessibility of a chart" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-sys-surface-default, plx-sys-dataviz-categorical-1", "swiftui": "The chart at rest", "uikit": "The hosted chart at rest", "appkit": "The hosted chart at rest" },
+      { "state": "Selected (scrubbing)", "token": "plx-comp-chart-axis-line-color", "swiftui": ".chartXSelection(value: $selected) with a RuleMark at the selection", "uikit": "The same selection on the hosted SwiftUI Chart", "appkit": "The same selection on the hosted SwiftUI Chart" },
+      { "state": "Dark", "token": "plx-sys-border-subtle, plx-sys-content-subtle", "swiftui": "The Plenix color pairs follow the color scheme; data-viz colors stay the same", "uikit": "The same, from the trait collection", "appkit": "The same, from the effective appearance" },
+      { "state": "Empty or failed", "token": "plx-sys-content-subtle", "swiftui": "ContentUnavailableView in place of the chart, with a way to try again", "uikit": "UIContentUnavailableConfiguration in place of the chart", "appkit": "A message view in place of the chart" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "import Charts",
+        "",
+        "/// The Plenix chart frame on iOS: title, takeaway, a Swift Charts plot in the Plenix look, the data one tap away.",
+        "struct PlenixChart<Content: ChartContent>: View {",
+        "    let title: String",
+        "    /// the plot height: --plx-comp-chart-plot-height-sm, -md or -lg on the web; the library tokens are not generated for iOS yet",
+        "    let plotHeight: CGFloat",
+        "    let takeaway: String",
+        "    @ViewBuilder let content: () -> Content",
+        "    var body: some View {",
+        "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackSm) {",
+        "            Text(title).font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline))",
+        "            Text(takeaway).foregroundStyle(Plenix.Colors.contentSubtle)",
+        "            Chart { content() }",
+        "                .chartForegroundStyleScale(range: [Plenix.Colors.datavizCategorical1, Plenix.Colors.datavizCategorical2, Plenix.Colors.datavizCategorical3,",
+        "                                                   Plenix.Colors.datavizCategorical4, Plenix.Colors.datavizCategorical5, Plenix.Colors.datavizCategorical6])",
+        "                .chartYAxis {",
+        "                    AxisMarks { _ in",
+        "                        AxisGridLine(stroke: StrokeStyle(lineWidth: Plenix.Border.borderWidthThin)).foregroundStyle(Plenix.Colors.borderSubtle)",
+        "                        AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)).foregroundStyle(Plenix.Colors.contentSubtle)",
+        "                    }",
+        "                }",
+        "                .chartXAxis { AxisMarks { _ in AxisValueLabel().font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .caption)) } }",
+        "                .frame(height: plotHeight)",
+        "                .accessibilityLabel(title)",
+        "                .accessibilityValue(takeaway)",
+        "        }",
+        "    }",
+        "}",
+        "",
+        "// Usage: a column chart; the marks carry their own VoiceOver labels",
+        "PlenixChart(title: \"Uploads per month\", plotHeight: chartPlotHeightMd, takeaway: \"Uploads rose from 120 in January to 310 in May.\") {",
+        "    ForEach(months) { m in",
+        "        BarMark(x: .value(\"Month\", m.name), y: .value(\"Uploads\", m.count))",
+        "            .accessibilityLabel(m.name).accessibilityValue(\"\\(m.count) uploads\")",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "import UIKit",
+        "import SwiftUI",
+        "",
+        "/// The Plenix chart in UIKit: the SwiftUI chart above, hosted; Swift Charts has no UIKit view of its own.",
+        "let host = UIHostingController(rootView: PlenixChart(title: title, plotHeight: chartPlotHeightMd, takeaway: takeaway) { marks })",
+        "host.view.backgroundColor = UIColor(Plenix.Colors.surfaceDefault)",
+        "host.view.accessibilityLabel = title",
+        "addChild(host)",
+        "stack.addArrangedSubview(host.view)",
+        "host.didMove(toParent: self)"
+      ],
+      "appkit": [
+        "import AppKit",
+        "import SwiftUI",
+        "",
+        "// The Plenix chart on the Mac: the same SwiftUI chart in an NSHostingView. A Mac Catalyst app uses the iOS tokens and",
+        "// the UIKit code above. A native AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today). With it:",
+        "let host = NSHostingView(rootView: PlenixChart(title: title, plotHeight: chartPlotHeightMd, takeaway: takeaway) { marks })",
+        "host.setAccessibilityLabel(title)",
+        "stackView.addArrangedSubview(host)"
+      ]
+    }
+  }
+}

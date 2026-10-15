@@ -507,6 +507,10 @@ public enum Plenix {
         public static let cardRadius: CGFloat = 12
         public static let cardTitleContentGap: CGFloat = 12
         public static let cardTitleFontSize: CGFloat = 13
+        public static let chartLineWidth: CGFloat = 2
+        public static let chartPlotHeightMd: CGFloat = 240
+        public static let chartPlotHeightSm: CGFloat = 160
+        public static let chartTitleFontSize: CGFloat = 13
         public static let checkDescriptionFontSize: CGFloat = 11
         public static let checkGap: CGFloat = 8
         public static let checkInputDisabledOpacity: Double = 0.5
@@ -541,6 +545,7 @@ public enum Plenix {
         public static let dialogTitleFontSize: CGFloat = 15
         public static let drawerAnimationDuration: Double = 0.2
         public static let drawerPadding: CGFloat = 16
+        public static let imageUploadPreviewRadius: CGFloat = 4
         public static let inputBorderWidth: CGFloat = 1
         public static let inputMinHeight: CGFloat = 32
         public static let inputPaddingInline: CGFloat = 12
@@ -558,6 +563,7 @@ public enum Plenix {
         public static let menuPaddingBlock: CGFloat = 4
         public static let menuPaddingInline: CGFloat = 4
         public static let menuRadius: CGFloat = 4
+        public static let millerColumnsItemMinHeight: CGFloat = 32
         public static let modalLayerBeforeOpacity: Double = 0.5
         public static let navBarHeight: CGFloat = 56
         public static let navBarIconSize: CGFloat = 20

@@ -116,3 +116,6 @@
 .plx-search-view__cancel{flex-shrink:0;}
 .plx-search-view__scope{flex-shrink:0;padding-block-start:var(--plx-comp-app-header-search-view-scope-padding-block-start);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);}
 .plx-search-view__content{display:flex;flex-basis:0%;flex-direction:column;flex-grow:1;flex-shrink:1;min-block-size:0;overflow-x:hidden;overflow-y:auto;padding-block-end:var(--plx-comp-app-header-search-view-content-padding-block);padding-block-start:var(--plx-comp-app-header-search-view-content-padding-block);padding-inline-end:var(--plx-comp-app-header-search-view-padding-inline);padding-inline-start:var(--plx-comp-app-header-search-view-padding-inline);row-gap:var(--plx-comp-app-header-search-view-content-gap);}
+/* the mobile app bar on a child screen (library wave 7): Back, then the screen's title in the header name's type, cut short
+   with an ellipsis when it does not fit */
+.plx-app-header__title{display:block;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}

@@ -1,0 +1,230 @@
+{
+  "$description": "Cascader (platform/components/Cascader), library wave 7, lane B: its component tokens. The field in the input roles, the list a menu surface (8px corners, the menu elevation), the search matches in the option roles.",
+  "plx-comp": {
+    "cascader-max-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "Cascader: maximum width (size-400px)."
+    },
+    "cascader-field-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Cascader field: gap (space-inline-xs)."
+    },
+    "cascader-field-row-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Cascader field: gap between rows (space-inline-xs)."
+    },
+    "cascader-multiple-field-padding-block": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "Cascader multiple field: padding top and bottom (space-4px)."
+    },
+    "cascader-field-focus-within-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color",
+      "$description": "Cascader field focus within: border color (focus-ring-color)."
+    },
+    "cascader-field-invalid-border-color": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color",
+      "$description": "Cascader field invalid: border color (feedback-danger-solid)."
+    },
+    "cascader-trigger-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Cascader trigger: gap (space-inline-sm)."
+    },
+    "cascader-trigger-flex-basis": {
+      "$value": "{plx-ref.size-80px}",
+      "$type": "dimension",
+      "$description": "Cascader trigger flex basis: trigger flex basis (size-80px)."
+    },
+    "cascader-trigger-min-height": {
+      "$value": "{plx-sys.control-height-inline}",
+      "$type": "dimension",
+      "$description": "Cascader trigger: minimum height (control-height-inline)."
+    },
+    "cascader-trigger-padding-inline-end": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Cascader trigger padding inline end: trigger padding inline end (space-inset-xs)."
+    },
+    "cascader-placeholder-text": {
+      "$value": "{plx-sys.content-subtle}",
+      "$type": "color",
+      "$description": "Cascader placeholder: text color (content-subtle)."
+    },
+    "cascader-chevron-background": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Cascader chevron: background (content-muted)."
+    },
+    "cascader-chevron-height": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "Cascader chevron: height (size-16px)."
+    },
+    "cascader-chevron-width": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension",
+      "$description": "Cascader chevron: width (size-16px)."
+    },
+    "cascader-disabled-field-background": {
+      "$value": "{plx-sys.fill-neutral}",
+      "$type": "color",
+      "$description": "Cascader disabled field: background (fill-neutral)."
+    },
+    "cascader-disabled-field-text": {
+      "$value": "{plx-sys.content-disabled}",
+      "$type": "color",
+      "$description": "Cascader disabled field: text color (content-disabled)."
+    },
+    "cascader-popup-background": {
+      "$value": "{plx-sys.surface-overlay}",
+      "$type": "color",
+      "$description": "Cascader popup: background (surface-overlay)."
+    },
+    "cascader-popup-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "Cascader popup: border color (border-default)."
+    },
+    "cascader-popup-radius": {
+      "$value": "{plx-sys.radius-menu-8px}",
+      "$type": "dimension",
+      "$description": "Cascader popup: corners (radius-menu-8px)."
+    },
+    "cascader-popup-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Cascader popup: border width (border-width-thin)."
+    },
+    "cascader-popup-shadow": {
+      "$value": "{plx-sys.elevation-menu}",
+      "$type": "shadow",
+      "$description": "Cascader popup: shadow (elevation-menu)."
+    },
+    "cascader-popup-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Cascader popup margin block start: popup margin block start (space-stack-xs)."
+    },
+    "cascader-popup-z-index": {
+      "$value": "{plx-sys.layer-menu}",
+      "$type": "number",
+      "$description": "Cascader popup z index: popup z index (layer-menu)."
+    },
+    "cascader-columns-height": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "Cascader columns: height (size-240px)."
+    },
+    "cascader-search-border-block-end-color": {
+      "$value": "{plx-sys.border-subtle}",
+      "$type": "color",
+      "$description": "Cascader search border block end color: search border block end color (border-subtle)."
+    },
+    "cascader-search-border-block-end-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Cascader search border block end: width (border-width-thin)."
+    },
+    "cascader-search-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Cascader search: padding top and bottom (space-inset-xs)."
+    },
+    "cascader-search-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Cascader search: padding left and right (space-inset-xs)."
+    },
+    "cascader-matches-max-height": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "Cascader matches: maximum height (size-240px)."
+    },
+    "cascader-matches-min-width": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "Cascader matches: minimum width (size-320px)."
+    },
+    "cascader-matches-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Cascader matches: padding top and bottom (space-inset-xs)."
+    },
+    "cascader-matches-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension",
+      "$description": "Cascader matches: padding left and right (space-inset-xs)."
+    },
+    "cascader-match-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "Cascader match: corners (radius-control)."
+    },
+    "cascader-match-min-height": {
+      "$value": "{plx-sys.control-height-standard}",
+      "$type": "dimension",
+      "$description": "Cascader match: minimum height (control-height-standard)."
+    },
+    "cascader-match-padding-block": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "Cascader match: padding top and bottom (space-4px)."
+    },
+    "cascader-match-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Cascader match: padding left and right (space-inset-sm)."
+    },
+    "cascader-match-active-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color",
+      "$description": "Cascader match active: background (state-hover)."
+    },
+    "cascader-match-selected-text": {
+      "$value": "{plx-sys.selected-content}",
+      "$type": "color",
+      "$description": "Cascader match selected: text color (selected-content)."
+    },
+    "cascader-match-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "Cascader match selected: font weight (font-weight-medium)."
+    },
+    "cascader-match-path-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Cascader match path: text color (content-muted)."
+    },
+    "cascader-match-path-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension",
+      "$description": "Cascader match path: font size (font-size-11)."
+    },
+    "cascader-match-path-font-weight": {
+      "$value": "{plx-sys.font-weight-regular}",
+      "$type": "fontWeight",
+      "$description": "Cascader match path: font weight (font-weight-regular)."
+    },
+    "cascader-empty-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "Cascader empty: text color (content-muted)."
+    },
+    "cascader-empty-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Cascader empty: padding top and bottom (space-inset-sm)."
+    },
+    "cascader-empty-padding-inline": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "Cascader empty: padding left and right (space-inset-sm)."
+    }
+  }
+}

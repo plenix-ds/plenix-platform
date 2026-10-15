@@ -1,0 +1,16 @@
+/* Plenix · TreeSelect (platform/components/TreeSelect). The trigger is a text field's look (.plx-input) with the chosen
+   item and a chevron; the panel is a Popover holding an optional SearchField and the tree, drawn with the Tree's classes
+   and tokens (rows, indents, the + and − boxes, icons). This adds the trigger's layout, the panel's scroll area and the
+   checkbox mark of the multiple form. */
+.plx-tree-select{display:block;max-inline-size:var(--plx-comp-tree-select-max-width);min-inline-size:0;}
+.plx-tree-select .plx-popover-anchor{display:block;}
+.plx-tree-select__trigger{align-items:center;cursor:pointer;display:flex;inline-size:100%;padding-inline-end:var(--plx-comp-tree-select-trigger-padding-inline-end);position:relative;text-align:start;}
+.plx-tree-select__trigger:disabled{cursor:not-allowed;}
+.plx-tree-select__value,.plx-tree-select__placeholder{flex-basis:0%;flex-grow:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.plx-tree-select__placeholder{color:var(--plx-comp-tree-select-placeholder-text);}
+.plx-tree-select__chevron{-webkit-mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:var(--plx-comp-tree-select-chevron-color);block-size:var(--plx-comp-tree-select-chevron-size);inline-size:var(--plx-comp-tree-select-chevron-size);inset-block-start:50%;inset-inline-end:var(--plx-comp-tree-select-chevron-inset-inline-end);mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;pointer-events:none;position:absolute;transform:translateY(-50%);}
+/* the panel: the search field, then the tree in its own scroll area */
+.plx-tree-select__panel{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-tree-select-panel-gap);}
+.plx-tree-select__scroll{max-block-size:var(--plx-comp-tree-select-scroll-max-height);min-inline-size:0;overflow-x:hidden;overflow-y:auto;}
+.plx-tree-select__mark{margin-block-start:0;pointer-events:none;}
+.plx-tree-select__empty{color:var(--plx-comp-tree-select-empty-text);font-size:var(--plx-comp-tree-select-empty-font-size);margin-block-end:0;margin-block-start:0;padding-block-end:var(--plx-comp-tree-select-empty-padding-block);padding-block-start:var(--plx-comp-tree-select-empty-padding-block);}

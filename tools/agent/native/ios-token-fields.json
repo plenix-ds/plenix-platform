@@ -1,0 +1,63 @@
+{
+  "ios-forms|Token fields": {
+    "summary": "A Plenix people or entity picker on iOS is a search field that suggests records as people type and keeps the chosen ones as tokens: the field in the Plenix control roles (6-point corners, at least 44 points tall, the border turning the focus color), suggestions in a list with the person’s avatar (a rounded square) or the record’s icon tile, the name in DM Sans over a detail line, an ID in DM Mono, and each token a soft Plenix tag with its remove button. iOS has no token field of its own (UISearchTextField has search tokens; the Mac has NSTokenField); Plenix keeps the system field and keyboard and draws the suggestions and tokens with its roles.",
+    "variants": [
+      { "name": "People", "apple": "UISearchTextField with search tokens", "web": "forms|People picker", "background": "plx-comp-entity-picker-list-background", "content": "plx-comp-entity-picker-option-text", "border": "plx-comp-entity-picker-list-border-color", "swiftui": ".searchable(text:tokens:suggestedTokens:) with a Plenix row of avatar, name and email", "uikit": "UISearchTextField.tokens with UISearchToken(icon:text:) per person", "appkit": "NSTokenField with a Plenix suggestion menu (a macOS build of the tokens is needed)", "use": "Assigning, sharing and inviting people." },
+      { "name": "Records (default)", "apple": "UISearchTextField with suggestions", "web": "forms|Entity picker", "background": "plx-comp-entity-picker-list-background", "content": "plx-comp-entity-picker-option-text", "border": "plx-comp-entity-picker-list-border-color", "swiftui": ".searchable with .searchSuggestions { rows of icon tile, name, detail and ID }", "uikit": "a UISearchController whose results list draws the Plenix rows", "appkit": "NSSearchField with a suggestions window (a macOS build of the tokens is needed)", "use": "Linking a record to projects, assets or accounts." },
+      { "name": "Multiple", "apple": "Search tokens", "web": "forms|Entity picker", "background": null, "content": null, "border": null, "swiftui": "tokens: the chosen records, each a soft tag that removes on delete", "uikit": "UISearchTextField.tokens, allowsDeletingTokens", "appkit": "NSTokenField tokenStyle .rounded (a macOS build of the tokens is needed)", "use": "Reviewers, watchers, related records." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Field", "about": "The search field in the control roles, with the chosen tokens before the text." },
+      { "part": "B", "name": "Suggestion", "about": "The avatar or icon tile, the name over the detail line, an ID at the end." },
+      { "part": "C", "name": "Token", "about": "A chosen record as a soft tag with its remove button." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Field corners", "token": "plx-sys-radius-control", "value": "The control radius (Plenix.Radius.radiusControl)", "apple": "The search field’s capsule", "swiftui": ".clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl))", "uikit": "searchTextField.layer.cornerRadius = Plenix.Radius.radiusControl", "appkit": "the field’s bezel with the control radius (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Suggestion detail", "token": "plx-comp-entity-picker-description-text", "value": "The muted content color in DM Sans (Plenix.Colors.contentMuted)", "apple": "Secondary label", "swiftui": "Text(email).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)", "uikit": "secondaryTextProperties.color = Plenix.Colors.contentMuted", "appkit": "the secondary text in the muted role (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Record ID", "token": "plx-comp-entity-picker-meta-font-family", "value": "DM Mono at the data role (Plenix.Font.mono)", "apple": "None", "swiftui": "Text(id).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))", "uikit": "label.font = Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)", "appkit": "the ID drawn with Plenix.Font.mono (a macOS build of the tokens is needed)", "follows": "Platform considerations" },
+      { "part": "C", "attribute": "Token fill", "token": "plx-sys-fill-neutral", "value": "The neutral soft fill with its border (Plenix.Colors.fillNeutral, Plenix.Colors.fillNeutralBorder)", "apple": "The tint color", "swiftui": "the token’s background Plenix.Colors.fillNeutral", "uikit": "searchTextField.tokenBackgroundColor = Plenix.Colors.fillNeutral", "appkit": "NSTokenField with the neutral fill (a macOS build of the tokens is needed)", "follows": "Platform considerations" }
+    ],
+    "states": [
+      { "state": "Empty", "token": "plx-comp-entity-picker-input-placeholder-text", "swiftui": "the prompt: Search by name or email", "uikit": "placeholder", "appkit": "placeholderString" },
+      { "state": "Searching", "token": "plx-comp-entity-picker-option-active-background", "swiftui": "suggestions shown", "uikit": "the results controller shown", "appkit": "the suggestions window shown" },
+      { "state": "Chosen", "token": "plx-comp-entity-picker-option-selected-text", "swiftui": "a token added", "uikit": "tokens updated", "appkit": "objectValue updated" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// The Plenix people picker on iOS: search by name or email, the chosen people as tokens.",
+        "struct PlenixPeoplePicker: View {",
+        "    let people: [Person]",
+        "    @State private var text = \"\"",
+        "    @State private var chosen: [Person] = []",
+        "",
+        "    var body: some View {",
+        "        List { ForEach(chosen) { p in Text(p.name) } }",
+        "            .searchable(text: $text, tokens: $chosen, prompt: \"Search by name or email\") { p in Text(p.name) }",
+        "            .searchSuggestions {",
+        "                ForEach(people.filter { $0.matches(text) }) { p in",
+        "                    VStack(alignment: .leading) {",
+        "                        Text(p.name).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "                        Text(p.email).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
+        "                    }",
+        "                    .searchCompletion(p)",
+        "                }",
+        "            }",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "let field = UISearchTextField()",
+        "field.tokenBackgroundColor = Plenix.Colors.fillNeutral",
+        "field.allowsDeletingTokens = true",
+        "field.insertToken(UISearchToken(icon: nil, text: \"Maya Chen\"), at: 0)"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "let tokens = NSTokenField()",
+        "tokens.tokenStyle = .rounded"
+      ]
+    }
+  }
+}

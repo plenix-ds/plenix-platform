@@ -5,6 +5,8 @@
        items={[{ value: 'info', label: 'Info', count: 3, content: <…/> }, …]} />
    Props:
      variant: "contained" (default) | "folder" | "segmented"
+     orientation: "horizontal" (default) | "vertical" (the tabs in a column at the start, the panel beside them: many
+       sections or long names, as a settings page; the vertical look replaces the variant's)
      items: the tabs, in order: [{ value, label, icon, count, content, disabled }]
      items[].icon: an icon name or element before the label
      items[].count: a count after the label
@@ -21,9 +23,11 @@
    Behavior:
      In a side panel (the inspector) the tabs use the Folder variant: the panel is already the frame (batch 272).
      The open contained or folder tab draws its own joint with the panel, so no line shows under it at any display scale.
-     Arrow keys move and select (wrapping); Home and End go to the first and last.
+     Arrow keys move and select (wrapping); Home and End go to the first and last. Vertical tabs say so
+       (aria-orientation); Up and Down move there, Left and Right too.
      Only the selected tab is in the Tab order.
      The open folder tab has no line beneath it.
+     Vertical tabs never move into More: the column grows with them and the panel takes the rest of the width.
      Tabs that do not fit on one row move into a "More" menu after the last shown tab: a menu button outside the tab list,
        its own Tab stop. The tab list never scrolls sideways (Platforms Standard 3.5, reflow). The selected tab is always
        shown: when it is one of the moved tabs, it takes the last shown place. Arrow keys, Home and End still reach every
@@ -35,6 +39,8 @@
      content below with no frame of its own; for tabs inside a pane or a card that is already framed.
      "segmented" is a compact switch with SegmentedControl's look A (owner, 2026-10-14): joined segments at the button
        control height, the selected one in the selected-state blue tint.
+     orientation="vertical" (library wave 7) draws each tab as a navigation list row: the hover fill, and the open tab in
+       the selected state (the navigation pane's current row), never a focus ring.
      Without content on the items, the application renders the panel; give that panel id={tabsPanelId(idBase, value)}
        and pass idBase so the tabs point at it.
 */
@@ -79,7 +85,7 @@ function useTabsFit(rootRef, listRef, count, key) {
   return Math.max(1, Math.min(fit, count));
 }
 
-export function Tabs({ variant = 'contained', items, value, defaultValue, onChange, label, idBase, className, panelClassName, strings }) {
+export function Tabs({ variant = 'contained', orientation = 'horizontal', items, value, defaultValue, onChange, label, idBase, className, panelClassName, strings }) {
   const words = Object.assign({}, STRINGS, strings);
   const uid = useUid('plx-tabs');
   const base = idBase || uid;
@@ -87,7 +93,9 @@ export function Tabs({ variant = 'contained', items, value, defaultValue, onChan
   const current = value !== undefined ? value : own;
   const refs = React.useRef({});
   const root = React.useRef(null), list = React.useRef(null);
-  const fit = useTabsFit(root, list, items.length, items.map((t) => t.label).join('|') + '|' + String(current));
+  const vertical = orientation === 'vertical';
+  const measured = useTabsFit(root, list, items.length, items.map((t) => t.label).join('|') + '|' + String(current));
+  const fit = vertical ? items.length : measured;
   // the shown tabs: the first `fit`; the selected tab takes the last place when it is not among them
   const at = items.findIndex((t) => t.value === current);
   const shown = (i) => (at < fit ? i < fit : (i < fit - 1 || i === at));
@@ -117,9 +125,9 @@ export function Tabs({ variant = 'contained', items, value, defaultValue, onChan
   };
   const hasPanels = items.some((t) => t.content !== undefined);
   return (
-    <div ref={root} className={cx('plx-tabs', 'plx-tabs--' + variant, className)}>
+    <div ref={root} className={cx('plx-tabs', vertical ? 'plx-tabs--vertical' : 'plx-tabs--' + variant, className)}>
       <div className="plx-tabs__list">
-        <div ref={list} role="tablist" aria-label={label} className="plx-tabs__tablist" onKeyDown={onKeyDown}>
+        <div ref={list} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : undefined} className="plx-tabs__tablist" onKeyDown={onKeyDown}>
           {items.map((t, i) => {
             const on = t.value === current;
             return (

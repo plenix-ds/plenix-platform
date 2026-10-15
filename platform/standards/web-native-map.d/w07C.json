@@ -1,0 +1,13 @@
+{
+  "$description": "Library part w07C (wave 7, lane C): the iOS and Android counterparts of Tree select, Time-zone selector, Transfer list, Dual listbox, Bottom-sheet navigation, Mobile navigation drawer, Mobile menu and Navigation drawer. Bottom navigation, Mobile tab bar, Adaptive navigation and Chart foundations are named by their iOS guidance pages (Tab bars, Charts) in native-guidance.json. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "forms|Tree select": { "ios": ["ios-data-display|Outline views"], "android": ["android-data-display|Tree"] },
+    "forms|Time-zone selector": { "ios": ["ios-forms|Pickers"], "android": ["android-forms|Exposed dropdown menu"] },
+    "patterns|Transfer list": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-actions|Multiple selection", "android-data-display|List"] },
+    "patterns|Dual listbox": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|List"] },
+    "navigation|Bottom-sheet navigation": { "ios": ["ios-overlays|Sheets"], "android": ["android-overlays|ModalBottomSheet"] },
+    "navigation|Mobile navigation drawer": { "ios": ["ios-navigation|Sidebars"], "android": ["android-navigation|Expanded navigation rail"] },
+    "navigation|Mobile menu": { "ios": ["ios-navigation|Tab bars"], "android": ["android-navigation|NavigationBar"] },
+    "overlays|Navigation drawer": { "ios": ["ios-navigation|Sidebars"], "android": ["android-navigation|Expanded navigation rail"] }
+  }
+}

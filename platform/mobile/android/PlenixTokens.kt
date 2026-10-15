@@ -514,6 +514,10 @@ object PlenixComponent {
     val cardRadius = 12.dp
     val cardTitleContentGap = 12.dp
     val cardTitleFontSize = 13.dp
+    val chartLineWidth = 2.dp
+    val chartPlotHeightMd = 240.dp
+    val chartPlotHeightSm = 160.dp
+    val chartTitleFontSize = 13.dp
     val checkDescriptionFontSize = 11.dp
     val checkGap = 8.dp
     const val checkInputDisabledOpacity = 0.5f
@@ -548,6 +552,7 @@ object PlenixComponent {
     val dialogTitleFontSize = 15.dp
     const val drawerAnimationDuration = 200
     val drawerPadding = 16.dp
+    val imageUploadPreviewRadius = 4.dp
     val inputBorderWidth = 1.dp
     val inputMinHeight = 32.dp
     val inputPaddingInline = 12.dp
@@ -565,6 +570,7 @@ object PlenixComponent {
     val menuPaddingBlock = 4.dp
     val menuPaddingInline = 4.dp
     val menuRadius = 4.dp
+    val millerColumnsItemMinHeight = 32.dp
     const val modalLayerBeforeOpacity = 0.5f
     val navBarHeight = 56.dp
     val navBarIconSize = 20.dp

@@ -29,7 +29,7 @@
    {
     "name": "Calendar",
     "apple": "Date and time - Pickers, Style=Inline",
-    "web": "forms|Date picker",
+    "web": "forms|Calendar",
     "background": "plx-sys-surface-raised",
     "content": "plx-sys-content-default",
     "border": null,

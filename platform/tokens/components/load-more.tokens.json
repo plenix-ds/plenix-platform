@@ -1,0 +1,75 @@
+{
+  "$description": "LoadMore (platform/components/LoadMore), library wave 7, lane B: its component tokens. The row at the end of a list: the gaps, the count in the data font and the muted loading and end text.",
+  "plx-comp": {
+    "load-more-gap": {
+      "$value": "{plx-sys.space-inline-md}",
+      "$type": "dimension",
+      "$description": "LoadMore: gap (space-inline-md)."
+    },
+    "load-more-min-height": {
+      "$value": "{plx-sys.control-height-prominent}",
+      "$type": "dimension",
+      "$description": "LoadMore: minimum height (control-height-prominent)."
+    },
+    "load-more-padding-block": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "LoadMore: padding top and bottom (space-inset-sm)."
+    },
+    "load-more-row-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "LoadMore: gap between rows (space-inline-sm)."
+    },
+    "load-more-sentinel-height": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension",
+      "$description": "LoadMore sentinel: height (size-4px)."
+    },
+    "load-more-loading-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "LoadMore loading: text color (content-muted)."
+    },
+    "load-more-loading-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "LoadMore loading: gap (space-inline-sm)."
+    },
+    "load-more-loading-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "LoadMore loading: font size (font-size-13)."
+    },
+    "load-more-infinite-button-min-width": {
+      "$value": "{plx-ref.size-120px}",
+      "$type": "dimension",
+      "$description": "LoadMore infinite button: minimum width (size-120px)."
+    },
+    "load-more-count-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "LoadMore count: text color (content-muted)."
+    },
+    "load-more-count-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "LoadMore count: font (font-data)."
+    },
+    "load-more-count-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension",
+      "$description": "LoadMore count: font size (font-size-12)."
+    },
+    "load-more-end-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "LoadMore end: text color (content-muted)."
+    },
+    "load-more-end-font-size": {
+      "$value": "{plx-ref.font-size-13}",
+      "$type": "dimension",
+      "$description": "LoadMore end: font size (font-size-13)."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "$description": "CountrySelect (platform/components/CountrySelect, library wave 7, lane A): its component tokens. The field and the list are Combobox's.",
+  "plx-comp": {
+    "country-select-max-width": { "$value": "{plx-sys.field-width-lg}", "$type": "dimension", "$description": "CountrySelect: its greatest width (the large field width), so the longest names fit and the field never spans a wide form." }
+  }
+}
