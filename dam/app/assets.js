@@ -1567,7 +1567,7 @@ function Users({
       kind: 'center',
       filter: 'list',
       render: r => r.role ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
-        tone: "info"
+        tone: "active"
       }, r.role) : '—'
     }, {
       title: 'Created',
@@ -4779,21 +4779,27 @@ const DOWNLOAD_ESTIMATE = '~24.5 MB';
 // DATA: choice lists (from the back end later).
 const CART_FORMATS = ['Original / Source File', 'Web Optimized (1200px max)', 'Social Media (1080 × 1080)', 'Custom Size...'];
 const CART_FILE_TYPES = ['Keep original format', 'PNG', 'JPG (80% quality)', 'WebP', 'SVG (vector only)', 'PDF'];
+// the six status variants (owner, 2026-10-14, docs/pills-and-colors.md): an archived workflow state is neutral
 const STATUSES = [{
   value: 'Approved',
-  tone: 'success'
+  tone: 'success',
+  icon: 'circle-check'
 }, {
   value: 'Pending review',
-  tone: 'warning'
+  tone: 'waiting',
+  icon: 'schedule'
 }, {
   value: 'In progress',
-  tone: 'info'
+  tone: 'active',
+  icon: 'progress'
 }, {
   value: 'Draft',
-  tone: 'neutral'
+  tone: 'neutral',
+  icon: 'pencil'
 }, {
   value: 'Archived',
-  tone: 'danger'
+  tone: 'neutral',
+  icon: 'archive'
 }];
 const PERMISSIONS = ['Can view', 'Can edit', 'Admin'];
 const EXPIRATIONS = ['Never', '24 hours', '7 days', '30 days', '90 days'];
@@ -5301,11 +5307,10 @@ function StatusInner({
   const [note, setNote] = _react.default.useState('');
   const options = STATUSES.map(s => ({
     value: s.value,
-    label: /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-inline plx-inline--gap-sm plx-layout--align-center"
-    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.StatusDot, {
-      tone: s.tone
-    }), s.value)
+    label: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
+      tone: s.tone,
+      icon: s.icon
+    }, s.value)
   }));
   return /*#__PURE__*/_react.default.createElement(_plenixPlatform.Dialog, {
     open: open,
@@ -5986,22 +5991,111 @@ const DIALOGS = {
   ..._MetadataFilterDialog.DIALOGS,
   ..._BulkDialogs.DIALOGS
 };
+// the View menu's card sizes (s, m, l) as ContentGrid sizes; the Search workspace's own size names (S, M, L) too
 const GRID_SIZE = {
+  s: 'xs',
+  m: 'sm',
+  l: 'md',
   S: 'xs',
   M: 'sm',
   L: 'md'
 };
-function useNarrow() {
-  const q = '(max-width: 56.25rem)';
-  const [narrow, setNarrow] = _react.default.useState(() => window.matchMedia(q).matches);
-  _react.default.useEffect(() => {
-    const m = window.matchMedia(q);
-    const on = () => setNarrow(m.matches);
-    m.addEventListener('change', on);
-    return () => m.removeEventListener('change', on);
-  }, []);
-  return narrow;
-}
+
+/* the command bar's fields (utils/fields.js) of each collection the home page lists: what Filter, Sort, Group and the
+   quick filters work on. Dates are written "Aug 28, 2026" in the data; the fields read them as ISO dates. */
+const isoDate = s => {
+  const d = new Date(s + ' 00:00 UTC');
+  return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+};
+const uniq = values => Array.from(new Set(values)).sort();
+const CATEGORY_FIELDS = [{
+  value: 'name',
+  label: 'Category name',
+  kind: 'text'
+}, {
+  value: 'count',
+  label: 'Assets',
+  kind: 'number'
+}, {
+  value: 'modified',
+  label: 'Modified',
+  kind: 'date',
+  get: r => isoDate(r.modified)
+}, {
+  value: 'status',
+  label: 'Status',
+  kind: 'select',
+  options: uniq(D.CATEGORY_CARDS.map(c => c.status))
+}];
+const COLLECTION_FIELDS = [{
+  value: 'name',
+  label: 'Collection name',
+  kind: 'text'
+}, {
+  value: 'count',
+  label: 'Assets',
+  kind: 'number'
+}, {
+  value: 'updated',
+  label: 'Updated',
+  kind: 'date',
+  get: r => isoDate(r.updated)
+}, {
+  value: 'owner',
+  label: 'Owner',
+  kind: 'select',
+  options: uniq(D.COLLECTION_CARDS.map(c => c.owner))
+}];
+const ASSET_FIELDS = [{
+  value: 'name',
+  label: 'Name',
+  kind: 'text'
+}, {
+  value: 'cat',
+  label: 'Category',
+  kind: 'select',
+  options: uniq(D.ASSETS.map(a => a.cat))
+}, {
+  value: 'badge',
+  label: 'Type',
+  kind: 'select',
+  options: uniq(D.ASSETS.map(a => a.badge))
+}, {
+  value: 'tags',
+  label: 'Tags',
+  kind: 'multi',
+  options: uniq([].concat.apply([], D.ASSETS.map(a => a.tags)))
+}, {
+  value: 'size',
+  label: 'Size',
+  kind: 'text'
+}, {
+  value: 'date',
+  label: 'Date added',
+  kind: 'date',
+  get: r => isoDate(r.date)
+}, {
+  value: 'owner',
+  label: 'Owner',
+  kind: 'select',
+  options: uniq(D.ASSETS.map(a => a.owner))
+}, {
+  value: 'status',
+  label: 'Status',
+  kind: 'select',
+  options: uniq(D.ASSETS.map(a => a.status))
+}];
+// the columns each table shows (the Columns menu lists only these)
+const COLUMNS = {
+  categories: ['name', 'count', 'modified', 'status'],
+  collections: ['name', 'count', 'updated', 'owner'],
+  assets: ['name', 'cat', 'badge', 'size', 'date', 'status']
+};
+const GALLERY = {
+  layout: 'gallery',
+  size: 'l',
+  height: 'short'
+};
 
 /* the grids' sorters (Tabulator sorter functions): numbers written with commas, file sizes, dates */
 const parseSize = s => {
@@ -6131,7 +6225,6 @@ function HomePage() {
   const act = (msg, tone = 'info') => () => toast.show(msg, {
     tone
   });
-  const narrow = useNarrow();
   const params = _react.default.useMemo(() => new URLSearchParams(location.search), []);
   const [view, setView] = _react.default.useState(params.get('q') !== null ? 'find' : 'categories');
   const [find, setFind] = _react.default.useState({
@@ -6142,9 +6235,38 @@ function HomePage() {
   const [query, setQuery] = _react.default.useState(params.get('q') || '');
   const [heading, setHeading] = _react.default.useState('');
   const [active, setActive] = _react.default.useState('All categories');
+  // the Search workspace's own view (cards or a table)
   const [mode, setMode] = _react.default.useState('grid');
-  const [size, setSize] = _react.default.useState('L');
-  const [sortLabel, setSortLabel] = _react.default.useState('Sort');
+  // the command bar of each list (owner, 2026-10-14): search, Filter, the quick filters, Sort, Group, Columns and View
+  const catView = (0, _plenixPlatform.useCollectionView)(CATEGORY_FIELDS, {
+    text: r => r.name,
+    columns: {
+      order: COLUMNS.categories,
+      hidden: []
+    },
+    view: GALLERY
+  });
+  const colView = (0, _plenixPlatform.useCollectionView)(COLLECTION_FIELDS, {
+    text: r => r.name + ' ' + r.owner,
+    columns: {
+      order: COLUMNS.collections,
+      hidden: []
+    },
+    view: GALLERY
+  });
+  const assetView = (0, _plenixPlatform.useCollectionView)(ASSET_FIELDS, {
+    text: r => [r.name, r.file, r.cat].concat(r.tags).join(' '),
+    quick: {
+      cat: 'list',
+      badge: 'list',
+      tags: 'list'
+    },
+    columns: {
+      order: COLUMNS.assets,
+      hidden: []
+    },
+    view: GALLERY
+  });
   const [selCats, setSelCats] = _react.default.useState([]);
   const [selAssets, setSelAssets] = _react.default.useState([]);
   const [asset, setAsset] = _react.default.useState(null);
@@ -6158,7 +6280,6 @@ function HomePage() {
     id: 'uploadModal',
     props: {}
   } : null);
-  const [filters, setFilters] = _react.default.useState({});
   const [dragging, setDragging] = _react.default.useState(0);
   const openDialog = (id, props = {}) => setDialog({
     id,
@@ -6255,143 +6376,10 @@ function HomePage() {
     });
   };
   const toggle = (list, setList, id) => setList(list.indexOf(id) >= 0 ? list.filter(x => x !== id) : list.concat(id));
-  const setFilter = k => v => setFilters({
-    ...filters,
-    [k]: v
-  });
-  const hasFilter = k => {
-    const v = filters[k];
-    return Array.isArray(v) ? v.length > 0 : !!(v && (v.types || v.fields) && (v.fields && Object.keys(v.fields).length || v.types && v.types.indexOf('all') < 0));
-  };
   const assetsSel = D.ASSETS.filter(a => selAssets.indexOf(a.id) >= 0);
   const current = asset === null ? null : D.ASSETS[asset];
 
-  /* ── the toolbar above the results: filters, sort, view, size, reset, save ── */
-  const toolbar = /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataToolbar, {
-    label: "View and filter options",
-    start: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, narrow ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      icon: "filter",
-      caret: true,
-      onClick: () => openDialog('mergedFilterModal', {
-        tab: 'categories',
-        value: {
-          categories: filters.categories,
-          type: filters.type,
-          tags: filters.tags
-        },
-        onApply: v => setFilters({
-          ...filters,
-          ...v
-        })
-      })
-    }, "Filters") : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      icon: "grid-2x2",
-      caret: true,
-      selected: hasFilter('categories'),
-      onClick: () => openDialog('categoriesFilterModal', {
-        value: filters.categories,
-        onApply: setFilter('categories')
-      })
-    }, "Categories"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      icon: "image-b",
-      caret: true,
-      selected: hasFilter('type'),
-      onClick: () => openDialog('typeFilterModal', {
-        value: filters.type,
-        onApply: setFilter('type')
-      })
-    }, "Type"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      icon: "tags",
-      caret: true,
-      selected: hasFilter('tags'),
-      onClick: () => openDialog('tagsFilterModal', {
-        value: filters.tags,
-        onApply: setFilter('tags')
-      })
-    }, "Tags")), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      icon: "settings-customize",
-      selected: hasFilter('metadata'),
-      onClick: () => openDialog('metadataModal', {
-        value: filters.metadata,
-        onApply: setFilter('metadata')
-      })
-    }, "Advanced"), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Menu, {
-      label: "Sort",
-      trigger: /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-        size: "sm",
-        icon: "sort",
-        caret: true,
-        "aria-label": sortLabel === 'Sort' ? 'Sort' : 'Sort: ' + sortLabel
-      }, sortLabel)
-    }, D.SORT_OPTIONS.map(o => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
-      key: o,
-      checked: sortLabel === o,
-      onSelect: () => setSortLabel(o)
-    }, o)), /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_plenixPlatform.MenuItem, {
-      onSelect: () => openDialog('advancedSortModal', {
-        onApply: v => setSortLabel(v.field)
-      })
-    }, "Advanced Sort\u2026"))),
-    end: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SegmentedControl, {
-      label: "View",
-      value: mode,
-      onChange: setMode,
-      options: [{
-        value: 'grid',
-        label: 'Grid',
-        icon: 'grid-3x2'
-      }, {
-        value: 'table',
-        label: 'Table',
-        icon: 'view-table'
-      }]
-    }), mode === 'grid' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.SegmentedControl, {
-      label: "Card size",
-      value: size,
-      onChange: setSize,
-      options: [{
-        value: 'S',
-        label: 'S',
-        icon: 'cards-small',
-        ariaLabel: 'Small cards'
-      }, {
-        value: 'M',
-        label: 'M',
-        icon: 'cards-medium',
-        ariaLabel: 'Medium cards'
-      }, {
-        value: 'L',
-        label: 'L',
-        icon: 'cards-large',
-        ariaLabel: 'Large cards'
-      }]
-    }) : null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      iconOnly: true,
-      icon: "close",
-      label: "Reset filters",
-      onClick: () => {
-        setFilters({});
-        setSortLabel('Sort');
-        toast.show('Reset filters', {
-          tone: 'info'
-        });
-      }
-    }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-      size: "sm",
-      iconOnly: true,
-      icon: "save",
-      label: "Save current search",
-      onClick: () => openDialog('saveSearchModal')
-    }))
-  });
-
-  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the toolbar, always shown; each command disabled with a
+  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the command bar, always shown; each command disabled with a
      tooltip saying why until it applies; Delete last ── */
   const catBulk = /*#__PURE__*/_react.default.createElement(_plenixPlatform.BulkActions, {
     count: selCats.length,
@@ -6587,12 +6575,20 @@ function HomePage() {
   }];
 
   /* ── content ── */
+  // the browse views' command bar state: the categories, the collections, or a category's assets
+  const cv = view === 'categories' ? catView : view === 'collections' ? colView : assetView;
+  const fieldsOf = view === 'categories' ? CATEGORY_FIELDS : view === 'collections' ? COLLECTION_FIELDS : ASSET_FIELDS;
+  const gallery = view === 'find' ? mode === 'grid' : cv.view.layout === 'gallery';
+  const gridSize = GRID_SIZE[view === 'find' ? 'L' : cv.view.size];
+  // the cards show what the bar finds, in its order (the table applies the same through its props)
+  const shown = rows => rows.filter(cv.test).sort((0, _plenixPlatform.compareLevels)(fieldsOf, cv.tableProps.sort));
+  const tableProps = view === 'find' ? {} : cv.tableProps;
   let content;
   if (view === 'categories') {
-    content = mode === 'grid' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ContentGrid, {
-      size: GRID_SIZE[size],
+    content = gallery ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ContentGrid, {
+      size: gridSize,
       label: "Categories"
-    }, D.CATEGORY_CARDS.map(c => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MediaCard, {
+    }, shown(D.CATEGORY_CARDS).map(c => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MediaCard, {
       key: c.id,
       src: c.thumb,
       title: c.name,
@@ -6618,7 +6614,7 @@ function HomePage() {
         danger: label === 'Delete',
         onSelect: act(msg, 'info')
       }, label)))
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
       label: "Categories",
       data: D.CATEGORY_CARDS,
       selectable: true,
@@ -6626,13 +6622,13 @@ function HomePage() {
       onSelectionChange: setSelCats,
       on: {
         rowClick: (e, row) => openCategory(row.getData().name)
-      },
+      }
+    }, tableProps, {
       columns: [{
         title: 'Category name',
         field: 'name',
         kind: 'name',
         frozen: true,
-        filter: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
           src: r.thumb,
           name: r.name
@@ -6651,34 +6647,33 @@ function HomePage() {
         title: 'Status',
         field: 'status',
         kind: 'center',
-        filter: 'list',
         render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
           tone: "success"
         }, r.status)
       }]
-    });
+    }));
   } else if (view === 'collections') {
-    content = mode === 'grid' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ContentGrid, {
-      size: GRID_SIZE[size],
+    content = gallery ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ContentGrid, {
+      size: gridSize,
       label: "Collections"
-    }, D.COLLECTION_CARDS.map(c => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MediaCard, {
+    }, shown(D.COLLECTION_CARDS).map(c => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MediaCard, {
       key: c.id,
       icon: "briefcase",
       title: c.name,
       meta: c.count + ' assets',
       onOpen: () => openCategory(c.name)
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
       label: "Collections",
       data: D.COLLECTION_CARDS,
       on: {
         rowClick: (e, row) => openCategory(row.getData().name)
-      },
+      }
+    }, tableProps, {
       columns: [{
         title: 'Collection name',
         field: 'name',
         kind: 'name',
         frozen: true,
-        filter: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
           icon: "briefcase",
           name: r.name
@@ -6695,16 +6690,15 @@ function HomePage() {
         sorter: byDate
       }, {
         title: 'Owner',
-        field: 'owner',
-        filter: 'list'
+        field: 'owner'
       }]
-    });
+    }));
   } else {
     const list = view === 'find' ? found : D.ASSETS;
-    content = mode === 'grid' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ContentGrid, {
-      size: GRID_SIZE[size],
+    content = gallery ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.ContentGrid, {
+      size: gridSize,
       label: "Search results"
-    }, list.map(a => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MediaCard, {
+    }, (view === 'find' ? list : shown(list)).map(a => /*#__PURE__*/_react.default.createElement(_plenixPlatform.MediaCard, {
       key: a.id,
       src: a.thumb,
       title: a.name,
@@ -6720,7 +6714,7 @@ function HomePage() {
       selectLabel: 'Select ' + a.name,
       onOpen: () => openAsset(a.id),
       "aria-current": asset === a.id ? 'true' : undefined
-    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, {
+    }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataTable, _extends({
       label: "Search results",
       data: list,
       selectable: true,
@@ -6728,13 +6722,13 @@ function HomePage() {
       onSelectionChange: setSelAssets,
       on: {
         rowClick: (e, row) => openAsset(row.getData().id)
-      },
+      }
+    }, tableProps, {
       columns: [{
         title: 'Name',
         field: 'name',
         kind: 'name',
         frozen: true,
-        filter: true,
         render: r => /*#__PURE__*/_react.default.createElement(ThumbName, {
           src: r.thumb,
           name: r.name
@@ -6743,7 +6737,6 @@ function HomePage() {
         title: 'Category',
         field: 'cat',
         kind: 'center',
-        filter: 'list',
         render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
           gap: "xs"
         }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {
@@ -6751,10 +6744,9 @@ function HomePage() {
           size: "xs"
         }), r.cat)
       }, {
-        title: 'Format',
+        title: 'Type',
         field: 'badge',
-        kind: 'data',
-        filter: 'list'
+        kind: 'data'
       }, {
         title: 'Size',
         field: 'size',
@@ -6771,13 +6763,63 @@ function HomePage() {
         title: 'Status',
         field: 'status',
         kind: 'center',
-        filter: 'list',
         render: r => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Badge, {
           tone: r.status === 'Complete' ? 'success' : 'neutral'
         }, r.status)
       }]
-    });
+    }));
   }
+
+  /* ── the command bar over the list (owner, 2026-10-14; 1A: the actions at the start, find and view at the end) and the
+     selection bar (2B) under it, both fixed at the top while the list scrolls ── */
+  const noun = view === 'categories' ? ['category', 'categories'] : view === 'collections' ? ['collection', 'collections'] : ['asset', 'assets'];
+  const totals = {
+    categories: D.CATEGORY_CARDS,
+    collections: D.COLLECTION_CARDS,
+    search: D.ASSETS
+  };
+  const n = view === 'find' ? 0 : cv.count(totals[view] || []);
+  const barActions = view === 'categories' ? [{
+    id: 'new',
+    label: 'New category',
+    icon: 'add',
+    onSelect: () => openDialog('newCatModal')
+  }] : view === 'collections' ? [{
+    id: 'new',
+    label: 'New collection',
+    icon: 'add',
+    onSelect: () => openDialog('newCollectionModal')
+  }] : [{
+    id: 'upload',
+    label: 'Upload',
+    icon: 'upload',
+    onSelect: () => openDialog('uploadModal')
+  }];
+  const quick = (key, label, icon, word) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.QuickFilter, _extends({
+    label: label,
+    icon: icon,
+    noun: word,
+    options: (ASSET_FIELDS.find(f => f.value === key) || {}).options
+  }, cv.quickProps(key)));
+  const bar = view === 'find' ? null : /*#__PURE__*/_react.default.createElement(_plenixPlatform.CommandBar, {
+    label: view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : 'Assets',
+    actions: barActions,
+    count: n + ' ' + (n === 1 ? noun[0] : noun[1]),
+    find: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.CommandBarSearch, _extends({}, cv.searchProps, {
+      placeholder: 'Search ' + noun[1]
+    })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.FilterPanel, cv.filterProps), view === 'search' ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, quick('cat', 'Category', 'grid-2x2', 'category'), quick('badge', 'Type', 'image-b', 'type'), quick('tags', 'Tags', 'tags', 'tag')) : null),
+    view: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SortPanel, cv.sortProps), /*#__PURE__*/_react.default.createElement(_plenixPlatform.GroupPanel, cv.groupProps), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ColumnsMenu, _extends({}, cv.columnsProps, {
+      fields: fieldsOf.filter(f => COLUMNS[view === 'search' ? 'assets' : view].indexOf(f.value) >= 0)
+    })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ViewMenu, cv.viewProps)),
+    end: view === 'search' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Tooltip, {
+      content: "Save this search"
+    }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.CommandBarButton, {
+      icon: "save",
+      label: "Save search",
+      onClick: saveSearch
+    })) : null,
+    selection: view === 'categories' ? catBulk : view === 'search' ? assetBulk : null
+  });
   const pagination = view === 'categories' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Pagination, {
     page: 1,
     pageCount: 3,
@@ -6803,7 +6845,6 @@ function HomePage() {
     onPerPageChange: () => {}
   });
   const title = view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : heading || 'Search results';
-  const countText = view === 'categories' ? D.CATEGORY_COUNT_LABEL : view === 'collections' ? D.COLLECTION_CARDS.length + ' collections' : heading === 'Search results' ? D.SEARCH_COUNT + ' assets found for "' + (query || D.SEARCH_QUERY) + '"' : '';
 
   /* ── panes ── */
   const sidebar = /*#__PURE__*/_react.default.createElement(_Sidebar.Sidebar, {
@@ -6908,29 +6949,11 @@ function HomePage() {
     },
     onSave: saveSearch,
     bulk: assetBulk
-  }, content) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    gap: "md",
-    wrap: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Inline, {
-    gap: "md",
-    wrap: true,
-    grow: true
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
+  }, content) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
     as: "h2",
     id: "home-title",
     variant: "title"
-  }, title), countText ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {
-    variant: "secondary"
-  }, countText) : null), view === 'categories' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    size: "sm",
-    variant: "primary",
-    icon: "add",
-    onClick: () => openDialog('newCatModal')
-  }, "New category") : null, view === 'collections' ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
-    size: "sm",
-    variant: "primary",
-    onClick: () => openDialog('newCollectionModal')
-  }, "+ New Collection") : null), toolbar, view === 'categories' ? catBulk : null, view === 'search' ? assetBulk : null, content, pagination), dragging ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.DropZone, {
+  }, title), bar, content, pagination), dragging ? /*#__PURE__*/_react.default.createElement(_plenixPlatform.DropZone, {
     overlay: true,
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Icon, {

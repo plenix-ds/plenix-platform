@@ -5,7 +5,122 @@
  */
 (function () {
   var defs = {
-  "platform/components/Badge/Badge.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/cx.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.cx = cx;
+/* Plenix · cx (platform/utils/cx.js): joins class names, skipping empty ones. Internal; not part of the public API. */
+function cx(...parts) {
+  return parts.filter(Boolean).join(' ');
+}
+  } },
+  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Icon = Icon;
+exports.StatusIcon = StatusIcon;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
+   Summary: One icon of the Plenix set, drawn as a mask in the current text color. StatusIcon is a tone's icon in the
+     tone's color (info, success, warning, danger, neutral), alone or with a short label.
+   Usage:
+     <Icon name="folder" />
+     <Icon name="star" size="sm" filled label="Favorite" />
+     <StatusIcon tone="warning" />
+     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
+   Props:
+     name: the Plenix icon name (platform/icons/map.json)
+     size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
+       grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
+     filled: the filled version (default false)
+     label: the accessible name, when the icon alone carries meaning
+     className: more classes on the icon
+     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
+       the info icon, in the neutral color)
+     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
+     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
+     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
+     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
+       danger: "Error", neutral: "Note" }
+     StatusIcon.className: more classes on the status icon
+   Behavior:
+     The filled version is also drawn automatically inside a current or selected element: aria-current, aria-pressed,
+       aria-selected, .is-selected, .is-current.
+     A pinned item shows the filled pin, not a filled row.
+     Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
+     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
+       visible label the label carries the state and the icon is hidden from assistive technology.
+   Notes:
+     The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
+     The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
+       system adds none to make up for it.
+     Other props pass through to the <span>.
+     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
+       keeps the text color and size of where it sits.
+*/
+function Icon({
+  name,
+  size,
+  filled = false,
+  label,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className),
+    role: label ? 'img' : undefined,
+    "aria-label": label,
+    "aria-hidden": label ? undefined : true
+  }, rest));
+}
+
+// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
+const STATUS_ICONS = {
+  info: 'circle-info',
+  success: 'circle-check',
+  warning: 'warning',
+  danger: 'alert',
+  neutral: 'circle-info'
+};
+const STATUS_WORDS = {
+  info: 'Information',
+  success: 'Success',
+  warning: 'Warning',
+  danger: 'Error',
+  neutral: 'Note'
+};
+function StatusIcon({
+  tone = 'info',
+  size = 'md',
+  label,
+  children,
+  strings,
+  className,
+  ...rest
+}) {
+  const t = STATUS_ICONS[tone] ? tone : 'info';
+  const words = Object.assign({}, STATUS_WORDS, strings);
+  const shown = children !== undefined && children !== null && children !== false;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
+  }, rest), /*#__PURE__*/_react.default.createElement(Icon, {
+    name: STATUS_ICONS[t],
+    className: "plx-status-icon__glyph",
+    label: shown ? undefined : label || words[t]
+  }), shown ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-icon__label"
+  }, children) : null);
+}
+  } },
+  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13,6 +128,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Badge = Badge;
 var _react = _interopRequireDefault(require("react"));
+var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
    Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
@@ -22,6 +138,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Badge tone="waiting">Paused</Badge>
      <Badge tone="action-required">Changes requested</Badge>
      <Badge tone="negative" size="sm">3</Badge>
+     <Badge tone="success" icon="check">Saved</Badge>
    Props:
      tone: the status variant:
        "neutral" (default; gray: no particular state, e.g. Draft, Archived)
@@ -33,6 +150,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
      variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
      size: "md" (default; a 20px label) | "sm" (16px, for counts)
+     icon: an icon name (platform/icons/map.json) drawn before the text, in the text color: a status shows its icon inside
+       the badge (owner, 2026-10-14: check for done, pencil for unsaved, alert for problems); the icon is decorative, the
+       text says the state
      children: the badge text
      className: more classes on the badge
    Behavior:
@@ -55,6 +175,7 @@ function Badge({
   tone = 'neutral',
   variant,
   size = 'md',
+  icon,
   className,
   children,
   ...rest
@@ -65,7 +186,10 @@ function Badge({
   const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: classes
-  }, rest), children);
+  }, rest), icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon,
+    className: "plx-badge__icon"
+  }) : null, children);
 }
   } },
   "platform/components/VisuallyHidden/VisuallyHidden.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -94,18 +218,6 @@ function VisuallyHidden({
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
     className: "plx-visually-hidden"
   }, rest), children);
-}
-  } },
-  "platform/utils/cx.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.cx = cx;
-/* Plenix · cx (platform/utils/cx.js): joins class names, skipping empty ones. Internal; not part of the public API. */
-function cx(...parts) {
-  return parts.filter(Boolean).join(' ');
 }
   } },
   "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -412,109 +524,6 @@ function EventChip({
   }, time) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-event-chip__title"
   }, title));
-}
-  } },
-  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Icon = Icon;
-exports.StatusIcon = StatusIcon;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
-   Summary: One icon of the Plenix set, drawn as a mask in the current text color. StatusIcon is a tone's icon in the
-     tone's color (info, success, warning, danger, neutral), alone or with a short label.
-   Usage:
-     <Icon name="folder" />
-     <Icon name="star" size="sm" filled label="Favorite" />
-     <StatusIcon tone="warning" />
-     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
-   Props:
-     name: the Plenix icon name (platform/icons/map.json)
-     size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
-       grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
-     filled: the filled version (default false)
-     label: the accessible name, when the icon alone carries meaning
-     className: more classes on the icon
-     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
-       the info icon, in the neutral color)
-     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
-     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
-     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
-     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
-       danger: "Error", neutral: "Note" }
-     StatusIcon.className: more classes on the status icon
-   Behavior:
-     The filled version is also drawn automatically inside a current or selected element: aria-current, aria-pressed,
-       aria-selected, .is-selected, .is-current.
-     A pinned item shows the filled pin, not a filled row.
-     Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
-     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
-       visible label the label carries the state and the icon is hidden from assistive technology.
-   Notes:
-     The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
-     The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
-       system adds none to make up for it.
-     Other props pass through to the <span>.
-     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
-       keeps the text color and size of where it sits.
-*/
-function Icon({
-  name,
-  size,
-  filled = false,
-  label,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + name, size ? 'plx-icon--size-' + size : null, filled && 'plx-icon--filled', className),
-    role: label ? 'img' : undefined,
-    "aria-label": label,
-    "aria-hidden": label ? undefined : true
-  }, rest));
-}
-
-// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
-const STATUS_ICONS = {
-  info: 'circle-info',
-  success: 'circle-check',
-  warning: 'warning',
-  danger: 'alert',
-  neutral: 'circle-info'
-};
-const STATUS_WORDS = {
-  info: 'Information',
-  success: 'Success',
-  warning: 'Warning',
-  danger: 'Error',
-  neutral: 'Note'
-};
-function StatusIcon({
-  tone = 'info',
-  size = 'md',
-  label,
-  children,
-  strings,
-  className,
-  ...rest
-}) {
-  const t = STATUS_ICONS[tone] ? tone : 'info';
-  const words = Object.assign({}, STATUS_WORDS, strings);
-  const shown = children !== undefined && children !== null && children !== false;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
-  }, rest), /*#__PURE__*/_react.default.createElement(Icon, {
-    name: STATUS_ICONS[t],
-    className: "plx-status-icon__glyph",
-    label: shown ? undefined : label || words[t]
-  }), shown ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-status-icon__label"
-  }, children) : null);
 }
   } },
   "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -15848,7 +15857,7 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
-  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15863,7 +15872,6 @@ var _Badge = require("../../components/Badge/Badge.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
-var _StatusDot = require("../../components/StatusDot/StatusDot.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · EntityHeader
    Summary: The header of a page that shows one entity (a contact, a project, an email, a note, a task list): its picture,
@@ -15886,7 +15894,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
      moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
      (with neither actions nor moreActions there is no action area, not even ⋯: a documentation page, an overview)
-     live: the live state, the first fact, with a status dot: { tone, label }
+     live: the live state, the first fact, as a small status badge with its icon (owner, 2026-10-14: never a dot):
+       { tone (a Badge variant), icon, label }
      facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …;
        a technical value in a fact (a date, a time, a file name) is Text variant "data", at the facts' size
      description: a sentence instead of facts (never both)
@@ -15936,12 +15945,13 @@ function Facts({
   description
 }) {
   const items = [];
-  if (live) items.push(/*#__PURE__*/_react.default.createElement("span", {
+  if (live) items.push(/*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     key: "live",
+    size: "sm",
+    tone: live.tone,
+    icon: live.icon,
     className: "plx-entity-header__live"
-  }, /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
-    tone: live.tone
-  }), live.label));
+  }, live.label));
   if (description) items.push(/*#__PURE__*/_react.default.createElement("span", {
     key: "d"
   }, description));else (facts || []).filter(Boolean).forEach((f, i) => items.push(/*#__PURE__*/_react.default.createElement("span", {
@@ -27739,7 +27749,7 @@ const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.
   const n = Number(count) || 0;
   const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     size: "sm",
-    tone: "info"
+    tone: "active"
   }, n) : null;
   const name = n ? label + ', ' + n : label;
   // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"

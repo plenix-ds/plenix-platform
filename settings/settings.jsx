@@ -21,9 +21,9 @@ const facts=(label,rows)=>{const list=rows.filter(Boolean);return <Table label={
     {title:"Value",field:"value",kind:"wrap",headerSort:false,render:d=>{const r=list[d.id];return r?(r[2]?<Text variant="data">{r[1]}</Text>:r[1]):null;}}]}/>;};
 
 /* A feature's status as a Badge: [tone, label] */
-const FEATURE_STATUS={done:["success","Done"],planned:["info","Planned"],wip:["warning","In progress"]};
+const FEATURE_STATUS={done:["success","Done"],planned:["active","Planned"],wip:["active","In progress"]};
 /* A capability feature's status as a Badge: [tone, label] */
-const CAP_STATUS={built:["success","Built"],planned:["info","Planned"],todo:["danger","Not started"]};
+const CAP_STATUS={built:["success","Built"],planned:["active","Planned"],todo:["neutral","Not started"]};
 const capBadge=s=>{const m=CAP_STATUS[s]||CAP_STATUS.todo;return <Badge tone={m[0]}>{m[1]}</Badge>;};
 
 /* One feature as a settings row: its name and what it does, its status at the end */
@@ -156,7 +156,7 @@ function CapDoc({cap,backLabel,onBack,crumb}){
         <Button variant="ghost" size="sm" icon="arrow-left" onClick={onBack}>{backLabel}</Button>
         {crumb?<><Text variant="caption">Capabilities →</Text><Text variant="label">{cap.label}</Text></>:null}
       </Inline>}
-      actions={<Inline gap="sm"><Badge>{cap.layer}</Badge>{cap.stub?<Badge tone="danger">Not started</Badge>:null}</Inline>}>
+      actions={<Inline gap="sm"><Badge>{cap.layer}</Badge>{cap.stub?<Badge tone="neutral">Not started</Badge>:null}</Inline>}>
       {sections.map(s=><Section key={s.title} title={s.title} collapsible={!!s.long}>{s.content}</Section>)}
     </Screen>
   );

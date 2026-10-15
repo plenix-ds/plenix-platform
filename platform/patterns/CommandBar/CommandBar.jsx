@@ -72,7 +72,7 @@ export const CommandBarButton = React.forwardRef(function CommandBarButton({ ico
   const ctx = useCommandBar();
   const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
   const n = Number(count) || 0;
-  const badge = n ? <Badge size="sm" tone="info">{n}</Badge> : null;
+  const badge = n ? <Badge size="sm" tone="active">{n}</Badge> : null;
   const name = n ? label + ', ' + n : label;
   // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
   return (

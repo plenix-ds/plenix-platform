@@ -399,6 +399,8 @@
   --plx-comp-badge-sm-font-size: var(--plx-ref-font-size-09);
   --plx-comp-badge-sm-min-height: var(--plx-sys-label-height-16px);
   --plx-comp-badge-sm-padding-inline: var(--plx-sys-space-inset-xs);
+  --plx-comp-badge-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-badge-icon-size: var(--plx-sys-icon-size-xs);
   --plx-comp-badge-neutral-background: var(--plx-sys-status-pill-neutral-background);
   --plx-comp-badge-neutral-border: var(--plx-sys-status-pill-neutral-border);
   --plx-comp-badge-neutral-text: var(--plx-sys-status-pill-neutral-text);
@@ -1987,7 +1989,6 @@
   --plx-comp-entity-header-facts-padding-block-start: var(--plx-sys-space-stack-sm);
   --plx-comp-entity-header-sep-text: var(--plx-sys-content-muted);
   --plx-comp-entity-header-sep-margin-inline: var(--plx-sys-space-inline-xs);
-  --plx-comp-entity-header-live-status-dot-margin-inline-end: var(--plx-sys-space-inline-xs);
   --plx-comp-filter-bar-gap: var(--plx-sys-space-cluster-sm);
   --plx-comp-filter-bar-filters-height: var(--plx-sys-control-height-toolbar);
   --plx-comp-filter-bar-filters-gap: var(--plx-sys-space-cluster-sm);

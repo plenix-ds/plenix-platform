@@ -2294,7 +2294,7 @@ function ClassificationWidget({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "eyebrow"
   }, "Classification"), totalSet > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-    tone: "info",
+    tone: "active",
     size: "sm"
   }, totalSet, " set") : null), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
     label: "Project Type",

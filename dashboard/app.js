@@ -2259,7 +2259,7 @@ function EmailsWidget({
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-      tone: "danger",
+      tone: "negative",
       size: "sm"
     }, "2"), allLink('View all emails', onViewAll), handle)
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ActivityList, {
@@ -2435,7 +2435,7 @@ function TasksWidget({
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-      tone: "warning",
+      tone: "waiting",
       size: "sm"
     }, pending.length), allLink('View all to-dos', onViewAll), handle)
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -2502,7 +2502,7 @@ function NotificationsWidget({
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "xs"
     }, unread ? /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-      tone: "danger",
+      tone: "negative",
       size: "sm"
     }, String(unread)) : null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
       variant: "ghost",

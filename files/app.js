@@ -2294,7 +2294,7 @@ function ClassificationWidget({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "eyebrow"
   }, "Classification"), totalSet > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-    tone: "info",
+    tone: "active",
     size: "sm"
   }, totalSet, " set") : null), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
     label: "Project Type",
@@ -2448,11 +2448,11 @@ exports.FilesScreen = FilesScreen;
 var _plenixPlatform = require("plenix-platform");
 var _classification = require("../suite/classification.jsx");
 var _shared = require("../suite/shared.jsx");
-/* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
-   the files in a DataTable (batch 226), the open one in a SidePanel.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · files (files/files.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in batch 199:
+   the files in a DataTable (batch 226) under the command bar (owner, 2026-10-14: search, Filter, Type, Sort, Columns, View),
+   the open one in a SidePanel.
    Screens (Platforms Standard 4.3): the list (#/) and an open file (#/file/<n>), a history entry each: Back closes the
    file; closing the panel goes to the list. */
-
 const {
   useState
 } = React;
@@ -2461,6 +2461,32 @@ const ROWS = _shared.ALL_FILES.map((f, i) => ({
   ...f,
   id: i
 }));
+const uniq = values => Array.from(new Set(values)).sort();
+// the command bar's fields (utils/fields.js)
+const FIELDS = [{
+  value: 'name',
+  label: 'Name',
+  kind: 'text'
+}, {
+  value: 't',
+  label: 'Type',
+  kind: 'select',
+  options: uniq(_shared.ALL_FILES.map(f => f.t))
+}, {
+  value: 'folder',
+  label: 'Folder',
+  kind: 'select',
+  options: uniq(_shared.ALL_FILES.map(f => f.folder))
+}, {
+  value: 's',
+  label: 'Size',
+  kind: 'text'
+}, {
+  value: 'd',
+  label: 'Modified',
+  kind: 'text'
+}];
+const COLUMNS = ['name', 't', 's', 'd'];
 
 /* ─── Files ─────────────────────────────────────────────────────── */
 function FilesScreen({
@@ -2471,6 +2497,17 @@ function FilesScreen({
   const setSel = i => i === null ? screen.parent('/') : screen.open(['file', i]);
   const file = sel !== null ? _shared.ALL_FILES[sel] : null;
   const [meta, setMeta] = useState({});
+  const v = (0, _plenixPlatform.useCollectionView)(FIELDS, {
+    text: r => r.name + ' ' + r.folder,
+    quick: {
+      t: 'list'
+    },
+    columns: {
+      order: COLUMNS,
+      hidden: []
+    }
+  });
+  const n = v.count(ROWS);
   return /*#__PURE__*/React.createElement("div", {
     className: "plx-page-panes"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
@@ -2486,20 +2523,35 @@ function FilesScreen({
       icon: 'share',
       label: 'Share'
     }]
-  }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
-    justify: "end"
-  }, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
-    variant: "primary",
-    icon: /*#__PURE__*/React.createElement(_plenixPlatform.Icon, {
-      name: "plus"
-    })
-  }, "Upload")), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, {
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
+    label: "Files",
+    actions: [{
+      id: 'upload',
+      label: 'Upload',
+      icon: 'upload'
+    }],
+    count: n + (n === 1 ? ' file' : ' files'),
+    find: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBarSearch, _extends({}, v.searchProps, {
+      placeholder: "Search files"
+    })), /*#__PURE__*/React.createElement(_plenixPlatform.FilterPanel, v.filterProps), /*#__PURE__*/React.createElement(_plenixPlatform.QuickFilter, _extends({
+      label: "Type",
+      icon: "image-b",
+      noun: "type",
+      options: FIELDS[1].options
+    }, v.quickProps('t')))),
+    view: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.SortPanel, v.sortProps), /*#__PURE__*/React.createElement(_plenixPlatform.ColumnsMenu, _extends({}, v.columnsProps, {
+      fields: FIELDS.filter(f => COLUMNS.indexOf(f.value) >= 0)
+    })), /*#__PURE__*/React.createElement(_plenixPlatform.ViewMenu, _extends({}, v.viewProps, {
+      gallery: false
+    })))
+  }), /*#__PURE__*/React.createElement(_plenixPlatform.DataTable, _extends({
     label: "Files",
     data: ROWS,
     selected: sel === null ? [] : [sel],
     options: {
       selectableRows: 1
-    },
+    }
+  }, v.tableProps, {
     on: {
       rowClick: (e, row) => {
         const i = row.getData().id;
@@ -2510,13 +2562,11 @@ function FilesScreen({
       title: 'Name',
       field: 'name',
       kind: ['name', 'data'],
-      filter: true,
       width: '--plx-ref-size-320px'
     }, {
       title: 'Type',
       field: 't',
-      kind: 'data',
-      filter: 'list'
+      kind: 'data'
     }, {
       title: 'Size',
       field: 's',
@@ -2528,7 +2578,7 @@ function FilesScreen({
       field: 'd',
       kind: 'data'
     }]
-  }))), file ? /*#__PURE__*/React.createElement(_plenixPlatform.SidePanel, {
+  })))), file ? /*#__PURE__*/React.createElement(_plenixPlatform.SidePanel, {
     title: file.name,
     icon: "doc-text",
     onOpenChange: o => {

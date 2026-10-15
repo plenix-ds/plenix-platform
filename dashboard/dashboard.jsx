@@ -14,7 +14,7 @@ export function EmailsWidget({ handle,  onViewAll, prefs }) {
   const max = parseInt(prefs?.emailMax || '5', 10);
   const open = EMAILS.find((e) => e.id === exp);
   return (
-    <Panel icon="message" title="Emails" flush actions={<Inline gap="xs"><Badge tone="danger" size="sm">2</Badge>{allLink('View all emails', onViewAll)}{handle}</Inline>}>
+    <Panel icon="message" title="Emails" flush actions={<Inline gap="xs"><Badge tone="negative" size="sm">2</Badge>{allLink('View all emails', onViewAll)}{handle}</Inline>}>
       <ActivityList label="Emails">{EMAILS.slice(0, max).map((em) => (
         <ActivityList.Item key={em.id} unread={!!em.unread} selected={exp === em.id} onOpen={() => setExp(exp === em.id ? null : em.id)}
           leading={showAv ? <Avatar name={em.from} size="xs" /> : null} title={em.from} meta={em.subj} time={em.time} />
@@ -94,7 +94,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
   const max = parseInt(prefs?.taskMax || '7', 10);
   const pending = ALL_TASKS.filter((t) => !done[t.id]).slice(0, max);
   return (
-    <Panel icon="circle-check" title="To do" actions={<Inline gap="xs"><Badge tone="warning" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
+    <Panel icon="circle-check" title="To do" actions={<Inline gap="xs"><Badge tone="waiting" size="sm">{pending.length}</Badge>{allLink('View all to-dos', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{pending.map((t) => (
         <Inline key={t.id} gap="sm" justify="between" align="baseline">
           <Inline gap="xs">{showPri ? <PriDot pri={t.pri} /> : null}<Checkbox label={t.title} checked={!!done[t.id]} onChange={() => setDone((d) => ({ ...d, [t.id]: !d[t.id] }))} /></Inline>
@@ -123,7 +123,7 @@ export function NotificationsWidget({ handle }) {
   const { notifications, setNotifications } = useSession();
   const unread = notifications.filter((n) => n.unread).length;
   return (
-    <Panel icon="hdr-bell" title="Notifications" flush actions={<Inline gap="xs">{unread ? <Badge tone="danger" size="sm">{String(unread)}</Badge> : null}
+    <Panel icon="hdr-bell" title="Notifications" flush actions={<Inline gap="xs">{unread ? <Badge tone="negative" size="sm">{String(unread)}</Badge> : null}
       <Button variant="ghost" size="xs" disabled={!unread} onClick={() => setNotifications(notifications.map((n) => ({ ...n, unread: false })))}>Mark all read</Button>{handle}</Inline>}>
       <NotificationList limit={5} footer={false} />
     </Panel>

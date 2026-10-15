@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { DataToolbar, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, SegmentedControl, Button, Menu, MenuItem, MenuDivider, Badge, Icon, MediaViewer, Tree, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { CommandBar, CommandBarButton, CommandBarSearch, FilterPanel, QuickFilter, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, BulkActions, ContentGrid, MediaCard, DataTable, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, Tooltip, useToast, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -24,14 +24,30 @@ import { DIALOGS as METADATA_DIALOGS } from '../../dialogs/MetadataFilterDialog.
 import { DIALOGS as BULK_DIALOGS, bulkDialogFor, bulkComingSoon } from '../../dialogs/BulkDialogs.jsx';
 
 const DIALOGS = { ...BROWSE_DIALOGS, ...UPLOAD_DIALOGS, ...METADATA_DIALOGS, ...BULK_DIALOGS };
-const GRID_SIZE = { S: 'xs', M: 'sm', L: 'md' };
+// the View menu's card sizes (s, m, l) as ContentGrid sizes; the Search workspace's own size names (S, M, L) too
+const GRID_SIZE = { s: 'xs', m: 'sm', l: 'md', S: 'xs', M: 'sm', L: 'md' };
 
-function useNarrow() {
-  const q = '(max-width: 56.25rem)';
-  const [narrow, setNarrow] = React.useState(() => window.matchMedia(q).matches);
-  React.useEffect(() => { const m = window.matchMedia(q); const on = () => setNarrow(m.matches); m.addEventListener('change', on); return () => m.removeEventListener('change', on); }, []);
-  return narrow;
-}
+/* the command bar's fields (utils/fields.js) of each collection the home page lists: what Filter, Sort, Group and the
+   quick filters work on. Dates are written "Aug 28, 2026" in the data; the fields read them as ISO dates. */
+const isoDate = (s) => { const d = new Date(s + ' 00:00 UTC'); return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10); };
+const uniq = (values) => Array.from(new Set(values)).sort();
+const CATEGORY_FIELDS = [
+  { value: 'name', label: 'Category name', kind: 'text' }, { value: 'count', label: 'Assets', kind: 'number' },
+  { value: 'modified', label: 'Modified', kind: 'date', get: (r) => isoDate(r.modified) }, { value: 'status', label: 'Status', kind: 'select', options: uniq(D.CATEGORY_CARDS.map((c) => c.status)) },
+];
+const COLLECTION_FIELDS = [
+  { value: 'name', label: 'Collection name', kind: 'text' }, { value: 'count', label: 'Assets', kind: 'number' },
+  { value: 'updated', label: 'Updated', kind: 'date', get: (r) => isoDate(r.updated) }, { value: 'owner', label: 'Owner', kind: 'select', options: uniq(D.COLLECTION_CARDS.map((c) => c.owner)) },
+];
+const ASSET_FIELDS = [
+  { value: 'name', label: 'Name', kind: 'text' }, { value: 'cat', label: 'Category', kind: 'select', options: uniq(D.ASSETS.map((a) => a.cat)) },
+  { value: 'badge', label: 'Type', kind: 'select', options: uniq(D.ASSETS.map((a) => a.badge)) }, { value: 'tags', label: 'Tags', kind: 'multi', options: uniq([].concat.apply([], D.ASSETS.map((a) => a.tags))) },
+  { value: 'size', label: 'Size', kind: 'text' }, { value: 'date', label: 'Date added', kind: 'date', get: (r) => isoDate(r.date) },
+  { value: 'owner', label: 'Owner', kind: 'select', options: uniq(D.ASSETS.map((a) => a.owner)) }, { value: 'status', label: 'Status', kind: 'select', options: uniq(D.ASSETS.map((a) => a.status)) },
+];
+// the columns each table shows (the Columns menu lists only these)
+const COLUMNS = { categories: ['name', 'count', 'modified', 'status'], collections: ['name', 'count', 'updated', 'owner'], assets: ['name', 'cat', 'badge', 'size', 'date', 'status'] };
+const GALLERY = { layout: 'gallery', size: 'l', height: 'short' };
 
 /* the grids' sorters (Tabulator sorter functions): numbers written with commas, file sizes, dates */
 const parseSize = (s) => { const m = /([\d.]+)\s*(KB|MB|GB|TB|B)/i.exec(s || ''); if (!m) return 0; const v = parseFloat(m[1]); return v * ({ TB: 1e12, GB: 1e9, MB: 1e6, KB: 1e3, B: 1 })[m[2].toUpperCase()]; };
@@ -78,7 +94,6 @@ export function HomePage() {
   const loc = useScreenLocation({ app: 'assets' });
   const toast = useToast();
   const act = (msg, tone = 'info') => () => toast.show(msg, { tone });
-  const narrow = useNarrow();
   const params = React.useMemo(() => new URLSearchParams(location.search), []);
   const [view, setView] = React.useState(params.get('q') !== null ? 'find' : 'categories');
   const [find, setFind] = React.useState({ ...FIND_EMPTY, query: params.get('q') || '' });
@@ -86,9 +101,12 @@ export function HomePage() {
   const [query, setQuery] = React.useState(params.get('q') || '');
   const [heading, setHeading] = React.useState('');
   const [active, setActive] = React.useState('All categories');
+  // the Search workspace's own view (cards or a table)
   const [mode, setMode] = React.useState('grid');
-  const [size, setSize] = React.useState('L');
-  const [sortLabel, setSortLabel] = React.useState('Sort');
+  // the command bar of each list (owner, 2026-10-14): search, Filter, the quick filters, Sort, Group, Columns and View
+  const catView = useCollectionView(CATEGORY_FIELDS, { text: (r) => r.name, columns: { order: COLUMNS.categories, hidden: [] }, view: GALLERY });
+  const colView = useCollectionView(COLLECTION_FIELDS, { text: (r) => r.name + ' ' + r.owner, columns: { order: COLUMNS.collections, hidden: [] }, view: GALLERY });
+  const assetView = useCollectionView(ASSET_FIELDS, { text: (r) => [r.name, r.file, r.cat].concat(r.tags).join(' '), quick: { cat: 'list', badge: 'list', tags: 'list' }, columns: { order: COLUMNS.assets, hidden: [] }, view: GALLERY });
   const [selCats, setSelCats] = React.useState([]);
   const [selAssets, setSelAssets] = React.useState([]);
   const [asset, setAsset] = React.useState(null);
@@ -97,7 +115,6 @@ export function HomePage() {
   // the Details panel starts closed where it would cover the content (below 1024px) and opens when an asset is chosen
   const [right, setRight] = React.useState(() => ({ collapsed: window.matchMedia(below('--plx-sys-shell-inspector-overlay-below')).matches }));
   const [dialog, setDialog] = React.useState(params.get('upload') ? { id: 'uploadModal', props: {} } : null);
-  const [filters, setFilters] = React.useState({});
   const [dragging, setDragging] = React.useState(0);
 
   const openDialog = (id, props = {}) => setDialog({ id, props });
@@ -142,37 +159,12 @@ export function HomePage() {
     openDialog(d.id, { count, kind: d.kind, itemName: names[0], onCreateCollection: () => openDialog('newCollectionModal') });
   };
   const toggle = (list, setList, id) => setList(list.indexOf(id) >= 0 ? list.filter((x) => x !== id) : list.concat(id));
-  const setFilter = (k) => (v) => setFilters({ ...filters, [k]: v });
-  const hasFilter = (k) => { const v = filters[k]; return Array.isArray(v) ? v.length > 0 : !!(v && (v.types || v.fields) && ((v.fields && Object.keys(v.fields).length) || (v.types && v.types.indexOf('all') < 0))); };
 
   const assetsSel = D.ASSETS.filter((a) => selAssets.indexOf(a.id) >= 0);
   const current = asset === null ? null : D.ASSETS[asset];
 
-  /* ── the toolbar above the results: filters, sort, view, size, reset, save ── */
-  const toolbar = (
-    <DataToolbar label="View and filter options"
-      start={<>
-        {narrow ? <Button size="sm" icon="filter" caret onClick={() => openDialog('mergedFilterModal', { tab: 'categories', value: { categories: filters.categories, type: filters.type, tags: filters.tags }, onApply: (v) => setFilters({ ...filters, ...v }) })}>Filters</Button> : <>
-          <Button size="sm" icon="grid-2x2" caret selected={hasFilter('categories')} onClick={() => openDialog('categoriesFilterModal', { value: filters.categories, onApply: setFilter('categories') })}>Categories</Button>
-          <Button size="sm" icon="image-b" caret selected={hasFilter('type')} onClick={() => openDialog('typeFilterModal', { value: filters.type, onApply: setFilter('type') })}>Type</Button>
-          <Button size="sm" icon="tags" caret selected={hasFilter('tags')} onClick={() => openDialog('tagsFilterModal', { value: filters.tags, onApply: setFilter('tags') })}>Tags</Button>
-        </>}
-        <Button size="sm" icon="settings-customize" selected={hasFilter('metadata')} onClick={() => openDialog('metadataModal', { value: filters.metadata, onApply: setFilter('metadata') })}>Advanced</Button>
-        <Menu label="Sort" trigger={<Button size="sm" icon="sort" caret aria-label={sortLabel === 'Sort' ? 'Sort' : 'Sort: ' + sortLabel}>{sortLabel}</Button>}>
-          {D.SORT_OPTIONS.map((o) => <MenuItem key={o} checked={sortLabel === o} onSelect={() => setSortLabel(o)}>{o}</MenuItem>)}
-          <MenuDivider />
-          <MenuItem onSelect={() => openDialog('advancedSortModal', { onApply: (v) => setSortLabel(v.field) })}>Advanced Sort…</MenuItem>
-        </Menu>
-      </>}
-      end={<>
-        <SegmentedControl label="View" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'grid-3x2' }, { value: 'table', label: 'Table', icon: 'view-table' }]} />
-        {mode === 'grid' ? <SegmentedControl label="Card size" value={size} onChange={setSize} options={[{ value: 'S', label: 'S', icon: 'cards-small', ariaLabel: 'Small cards' }, { value: 'M', label: 'M', icon: 'cards-medium', ariaLabel: 'Medium cards' }, { value: 'L', label: 'L', icon: 'cards-large', ariaLabel: 'Large cards' }]} /> : null}
-        <Button size="sm" iconOnly icon="close" label="Reset filters" onClick={() => { setFilters({}); setSortLabel('Sort'); toast.show('Reset filters', { tone: 'info' }); }} />
-        <Button size="sm" iconOnly icon="save" label="Save current search" onClick={() => openDialog('saveSearchModal')} />
-      </>} />
-  );
 
-  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the toolbar, always shown; each command disabled with a
+  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the command bar, always shown; each command disabled with a
      tooltip saying why until it applies; Delete last ── */
   const catBulk = (
     <BulkActions count={selCats.length} total={D.CATEGORY_CARDS.length} noun="category" plural="categories" onSelectAll={() => setSelCats(D.CATEGORY_CARDS.map((c) => c.id))} onClear={() => setSelCats([])}
@@ -226,11 +218,19 @@ export function HomePage() {
   ];
 
   /* ── content ── */
+  // the browse views' command bar state: the categories, the collections, or a category's assets
+  const cv = view === 'categories' ? catView : view === 'collections' ? colView : assetView;
+  const fieldsOf = view === 'categories' ? CATEGORY_FIELDS : view === 'collections' ? COLLECTION_FIELDS : ASSET_FIELDS;
+  const gallery = view === 'find' ? mode === 'grid' : cv.view.layout === 'gallery';
+  const gridSize = GRID_SIZE[view === 'find' ? 'L' : cv.view.size];
+  // the cards show what the bar finds, in its order (the table applies the same through its props)
+  const shown = (rows) => rows.filter(cv.test).sort(compareLevels(fieldsOf, cv.tableProps.sort));
+  const tableProps = view === 'find' ? {} : cv.tableProps;
   let content;
   if (view === 'categories') {
-    content = mode === 'grid' ? (
-      <ContentGrid size={GRID_SIZE[size]} label="Categories">
-        {D.CATEGORY_CARDS.map((c) => (
+    content = gallery ? (
+      <ContentGrid size={gridSize} label="Categories">
+        {shown(D.CATEGORY_CARDS).map((c) => (
           <MediaCard key={c.id} src={c.thumb} title={c.name} meta={c.count + ' assets'} selected={selCats.indexOf(c.id) >= 0} selecting={selCats.length > 0}
             onSelectChange={() => toggle(selCats, setSelCats, c.id)} selectLabel={'Select ' + c.name} onOpen={() => openCategory(c.name)}
             actions={<Menu label={'Options for ' + c.name} placement="bottom-end" trigger={<Button size="xs" variant="ghost" iconOnly icon="menu-lines" label={'Options for ' + c.name} />}>
@@ -239,48 +239,73 @@ export function HomePage() {
         ))}
       </ContentGrid>
     ) : (
-      <DataTable label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
-        { title: 'Category name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
+      <DataTable label="Categories" data={D.CATEGORY_CARDS} selectable selected={selCats} onSelectionChange={setSelCats} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} {...tableProps} columns={[
+        { title: 'Category name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
         { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Modified', field: 'modified', kind: 'data', sorter: byDate },
-        { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
+        { title: 'Status', field: 'status', kind: 'center', render: (r) => <Badge tone="success">{r.status}</Badge> }]} />
     );
   } else if (view === 'collections') {
-    content = mode === 'grid' ? (
-      <ContentGrid size={GRID_SIZE[size]} label="Collections">
-        {D.COLLECTION_CARDS.map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={c.count + ' assets'} onOpen={() => openCategory(c.name)} />)}
+    content = gallery ? (
+      <ContentGrid size={gridSize} label="Collections">
+        {shown(D.COLLECTION_CARDS).map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={c.count + ' assets'} onOpen={() => openCategory(c.name)} />)}
       </ContentGrid>
     ) : (
-      <DataTable label="Collections" data={D.COLLECTION_CARDS} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} columns={[
-        { title: 'Collection name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
-        { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Updated', field: 'updated', kind: 'data', sorter: byDate }, { title: 'Owner', field: 'owner', filter: 'list' }]} />
+      <DataTable label="Collections" data={D.COLLECTION_CARDS} on={{ rowClick: (e, row) => openCategory(row.getData().name) }} {...tableProps} columns={[
+        { title: 'Collection name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName icon="briefcase" name={r.name} /> },
+        { title: 'Assets', field: 'count', kind: 'data', sorter: byNumber }, { title: 'Updated', field: 'updated', kind: 'data', sorter: byDate }, { title: 'Owner', field: 'owner' }]} />
     );
   } else {
     const list = view === 'find' ? found : D.ASSETS;
-    content = mode === 'grid' ? (
-      <ContentGrid size={GRID_SIZE[size]} label="Search results">
-        {list.map((a) => (
+    content = gallery ? (
+      <ContentGrid size={gridSize} label="Search results">
+        {(view === 'find' ? list : shown(list)).map((a) => (
           <MediaCard key={a.id} src={a.thumb} title={a.name} meta={a.cat} badge={<Icon name={a.typeIcon} size="md" label={a.badge} />}
             selected={selAssets.indexOf(a.id) >= 0} selecting={selAssets.length > 0} onSelectChange={() => toggle(selAssets, setSelAssets, a.id)} selectLabel={'Select ' + a.name}
             onOpen={() => openAsset(a.id)} aria-current={asset === a.id ? 'true' : undefined} />
         ))}
       </ContentGrid>
     ) : (
-      <DataTable label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => openAsset(row.getData().id) }} columns={[
-        { title: 'Name', field: 'name', kind: 'name', frozen: true, filter: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
-        { title: 'Category', field: 'cat', kind: 'center', filter: 'list', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
-        { title: 'Format', field: 'badge', kind: 'data', filter: 'list' }, { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: bySize },
+      <DataTable label="Search results" data={list} selectable selected={selAssets} onSelectionChange={setSelAssets} on={{ rowClick: (e, row) => openAsset(row.getData().id) }} {...tableProps} columns={[
+        { title: 'Name', field: 'name', kind: 'name', frozen: true, render: (r) => <ThumbName src={r.thumb} name={r.name} /> },
+        { title: 'Category', field: 'cat', kind: 'center', render: (r) => <Inline gap="xs"><Icon name="folder" size="xs" />{r.cat}</Inline> },
+        { title: 'Type', field: 'badge', kind: 'data' }, { title: 'Size', field: 'size', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: bySize },
         { title: 'Date added', field: 'date', kind: 'data', sorter: byDate },
-        { title: 'Status', field: 'status', kind: 'center', filter: 'list', render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
+        { title: 'Status', field: 'status', kind: 'center', render: (r) => <Badge tone={r.status === 'Complete' ? 'success' : 'neutral'}>{r.status}</Badge> }]} />
     );
   }
+
+  /* ── the command bar over the list (owner, 2026-10-14; 1A: the actions at the start, find and view at the end) and the
+     selection bar (2B) under it, both fixed at the top while the list scrolls ── */
+  const noun = view === 'categories' ? ['category', 'categories'] : view === 'collections' ? ['collection', 'collections'] : ['asset', 'assets'];
+  const totals = { categories: D.CATEGORY_CARDS, collections: D.COLLECTION_CARDS, search: D.ASSETS };
+  const n = view === 'find' ? 0 : cv.count(totals[view] || []);
+  const barActions = view === 'categories' ? [{ id: 'new', label: 'New category', icon: 'add', onSelect: () => openDialog('newCatModal') }]
+    : view === 'collections' ? [{ id: 'new', label: 'New collection', icon: 'add', onSelect: () => openDialog('newCollectionModal') }]
+      : [{ id: 'upload', label: 'Upload', icon: 'upload', onSelect: () => openDialog('uploadModal') }];
+  const quick = (key, label, icon, word) => <QuickFilter label={label} icon={icon} noun={word} options={(ASSET_FIELDS.find((f) => f.value === key) || {}).options} {...cv.quickProps(key)} />;
+  const bar = view === 'find' ? null : (
+    <CommandBar label={view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : 'Assets'} actions={barActions}
+      count={n + ' ' + (n === 1 ? noun[0] : noun[1])}
+      find={<>
+        <CommandBarSearch {...cv.searchProps} placeholder={'Search ' + noun[1]} />
+        <FilterPanel {...cv.filterProps} />
+        {view === 'search' ? <>{quick('cat', 'Category', 'grid-2x2', 'category')}{quick('badge', 'Type', 'image-b', 'type')}{quick('tags', 'Tags', 'tags', 'tag')}</> : null}
+      </>}
+      view={<>
+        <SortPanel {...cv.sortProps} />
+        <GroupPanel {...cv.groupProps} />
+        <ColumnsMenu {...cv.columnsProps} fields={fieldsOf.filter((f) => COLUMNS[view === 'search' ? 'assets' : view].indexOf(f.value) >= 0)} />
+        <ViewMenu {...cv.viewProps} />
+      </>}
+      end={view === 'search' ? <Tooltip content="Save this search"><CommandBarButton icon="save" label="Save search" onClick={saveSearch} /></Tooltip> : null}
+      selection={view === 'categories' ? catBulk : view === 'search' ? assetBulk : null} />
+  );
   const pagination = view === 'categories' ? <Pagination page={1} pageCount={3} total={D.CATEGORY_TOTAL} perPage={16} perPageOptions={[16, 32, 64]} onPageChange={(n) => toast.show('Page ' + n, { tone: 'info' })} onPerPageChange={() => {}} />
     : view === 'collections' ? <Text as="p" variant="secondary">Showing 1–4 of 4 collections</Text>
       : view === 'find' ? null
       : <Pagination page={1} pageCount={27} total={D.ASSET_TOTAL} perPage={8} perPageOptions={[8, 16, 32, 64]} onPageChange={(n) => toast.show('Page ' + n, { tone: 'info' })} onPerPageChange={() => {}} />;
 
   const title = view === 'categories' ? 'Categories' : view === 'collections' ? 'Collections' : (heading || 'Search results');
-  const countText = view === 'categories' ? D.CATEGORY_COUNT_LABEL : view === 'collections' ? D.COLLECTION_CARDS.length + ' collections'
-    : heading === 'Search results' ? D.SEARCH_COUNT + ' assets found for "' + (query || D.SEARCH_QUERY) + '"' : '';
 
   /* ── panes ── */
   const sidebar = <Sidebar mode={view === 'search' ? 'search' : 'browse'} active={active} saved={saved} onRemoveSaved={(n) => setSaved(saved.filter((x) => x.name !== n))} onOpen={onSidebar} onAdd={(id) => (id === 'saveSearchModal' ? saveSearch() : openDialog(id))}
@@ -315,17 +340,8 @@ export function HomePage() {
               {content}
             </SearchWorkspace>
           ) : <>
-          <Inline gap="md" wrap>
-            <Inline gap="md" wrap grow>
-              <Text as="h2" id="home-title" variant="title">{title}</Text>
-              {countText ? <Text variant="secondary">{countText}</Text> : null}
-            </Inline>
-            {view === 'categories' ? <Button size="sm" variant="primary" icon="add" onClick={() => openDialog('newCatModal')}>New category</Button> : null}
-            {view === 'collections' ? <Button size="sm" variant="primary" onClick={() => openDialog('newCollectionModal')}>+ New Collection</Button> : null}
-          </Inline>
-          {toolbar}
-          {view === 'categories' ? catBulk : null}
-          {view === 'search' ? assetBulk : null}
+          <Text as="h2" id="home-title" variant="title">{title}</Text>
+          {bar}
           {content}
           {pagination}
           </>}

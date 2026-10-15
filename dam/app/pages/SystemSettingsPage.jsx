@@ -216,7 +216,7 @@ function Users({ act }) {
         </Bar>
         <DataTable label="Users" empty="No users match" data={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
           { title: 'Username', field: 'user', kind: 'name', frozen: true, filter: true }, { title: 'Name', field: 'name', filter: true }, { title: 'Email', field: 'email', filter: true },
-          { title: 'Role', field: 'role', kind: 'center', filter: 'list', render: (r) => (r.role ? <Badge tone="info">{r.role}</Badge> : '—') },
+          { title: 'Role', field: 'role', kind: 'center', filter: 'list', render: (r) => (r.role ? <Badge tone="active">{r.role}</Badge> : '—') },
           { title: 'Created', field: 'created', kind: 'data' }, { title: 'Last login', field: 'login', kind: 'data' }]} />
       </Section>
     </Screen>

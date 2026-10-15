@@ -19,7 +19,8 @@
        disabled }]; label is the tooltip and the accessible name; one primary (filled). Never capability actions (New …)
      moreActions: items only in the ⋯ menu, after the actions that did not fit: [{ icon, label, onSelect, danger }]
      (with neither actions nor moreActions there is no action area, not even ⋯: a documentation page, an overview)
-     live: the live state, the first fact, with a status dot: { tone, label }
+     live: the live state, the first fact, as a small status badge with its icon (owner, 2026-10-14: never a dot):
+       { tone (a Badge variant), icon, label }
      facts: key facts, one line joined by ·, at most four (live state included); what does not fit is cut with …;
        a technical value in a fact (a date, a time, a file name) is Text variant "data", at the facts' size
      description: a sentence instead of facts (never both)
@@ -46,7 +47,6 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
-import { StatusDot } from '../../components/StatusDot/StatusDot.jsx';
 
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 
@@ -59,7 +59,7 @@ function Media({ media }) {
 
 function Facts({ live, facts, description }) {
   const items = [];
-  if (live) items.push(<span key="live" className="plx-entity-header__live"><StatusDot tone={live.tone} />{live.label}</span>);
+  if (live) items.push(<Badge key="live" size="sm" tone={live.tone} icon={live.icon} className="plx-entity-header__live">{live.label}</Badge>);
   if (description) items.push(<span key="d">{description}</span>);
   else (facts || []).filter(Boolean).forEach((f, i) => items.push(<span key={'f' + i}>{f}</span>));
   if (!items.length) return null;

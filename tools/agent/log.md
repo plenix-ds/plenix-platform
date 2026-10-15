@@ -1,10 +1,12 @@
-## Batch 371 (2026-10-15): soft counters, segmented tabs look A
-- First release from VM 101. Count pill tokens point to --plx-sys-status-pill-* (warning -> waiting, info -> active,
-  danger -> negative, as Badge's aliases); segmented Tabs on the segmented-* tokens; the first and last shown tab round
-  the outer corners even when tabs are moved into More. Spec text for segmented tabs updated.
-- Tabs lab: the segmented style edits the tab border color, outer radius and the segmented-tab-* text tokens.
-- Preview server: .claude/launch.json now runs tests/lib.js serve() on 8767 (no Python on the VM).
-- Not done: native-design.json still describes the solid count pill and the raised segment (native step, item 4).
-- Tests (changed mode): SYSTEM_OK 570, VISUAL, DENSITY 18/18, LAYOUT 16/16, THEME 12/12, PAGES 152/152, KEYBOARD
-  23/23, A11Y 0 on 62, DATA_TABLES 38/38, TYPOGRAPHY, LABS 8/8 (tabs lab remapped), REFLOW, TARGETS, CONTRAST 158.
-  Released as {V}.
+## Batch 372 (2026-10-15): command bar adoption, six badge names, badge icons
+- DAM HomePage: DataToolbar -> CommandBar with useCollectionView per list (fields for categories, collections, assets;
+  quick filters Category/Type/Tags on a category's assets; Save search at the end); cards follow the bar's filter and
+  sort. Files: CommandBar (Upload; search, Filter, Type; Sort, Columns, View without gallery). Projects' list lives in
+  the navigation pane (no bar). The Search workspace keeps its own toolbar.
+- Badge tones renamed in DAM, dashboard, settings, classification, CommandBar; status meanings applied.
+- Badge icon prop (badge-gap, badge-icon-size tokens); EntityHeader live -> Badge; record-page lab and the live-state
+  variant page updated; data-table test opens the list through View > List.
+- Found, not fixed: the side panel's collapsed-rail tooltip can stick out past the shell's end and scroll it sideways.
+- Tests (changed mode): SYSTEM_OK, SPEC_OK, VISUAL, DENSITY, LAYOUT, THEME, PAGES 124/124, KEYBOARD 23/23, A11Y 0 on 62,
+  DATA_TABLES 38/38, TYPOGRAPHY, LABS (badge, counter, tabs, record-page, command-bar), REFLOW, TARGETS, CONTRAST,
+  NAVIGATION. Released as {V}.

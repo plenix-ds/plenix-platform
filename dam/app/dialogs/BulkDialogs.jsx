@@ -17,7 +17,7 @@
 import React from 'react';
 import {
   Dialog, ConfirmDialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, SegmentedControl, Button, Icon, Tag, TagList,
-  Chip, Rating, Tree, Avatar, StatusDot, EmptyState, useToast, useSession, Stack, Text, Notice, Fieldset
+  Chip, Rating, Tree, Avatar, Badge, EmptyState, useToast, useSession, Stack, Text, Notice, Fieldset
 } from 'plenix-platform';
 
 // DATA: collections, categories, tags, people, cart and size figures come from the back end; sample values until then.
@@ -42,9 +42,10 @@ const DOWNLOAD_ESTIMATE = '~24.5 MB';
 // DATA: choice lists (from the back end later).
 const CART_FORMATS = ['Original / Source File', 'Web Optimized (1200px max)', 'Social Media (1080 × 1080)', 'Custom Size...'];
 const CART_FILE_TYPES = ['Keep original format', 'PNG', 'JPG (80% quality)', 'WebP', 'SVG (vector only)', 'PDF'];
+// the six status variants (owner, 2026-10-14, docs/pills-and-colors.md): an archived workflow state is neutral
 const STATUSES = [
-  { value: 'Approved', tone: 'success' }, { value: 'Pending review', tone: 'warning' }, { value: 'In progress', tone: 'info' },
-  { value: 'Draft', tone: 'neutral' }, { value: 'Archived', tone: 'danger' },
+  { value: 'Approved', tone: 'success', icon: 'circle-check' }, { value: 'Pending review', tone: 'waiting', icon: 'schedule' }, { value: 'In progress', tone: 'active', icon: 'progress' },
+  { value: 'Draft', tone: 'neutral', icon: 'pencil' }, { value: 'Archived', tone: 'neutral', icon: 'archive' },
 ];
 const PERMISSIONS = ['Can view', 'Can edit', 'Admin'];
 const EXPIRATIONS = ['Never', '24 hours', '7 days', '30 days', '90 days'];
@@ -290,7 +291,7 @@ export function BaStatusDialog({ open, onClose, count = 1, kind = 'asset', onApp
 function StatusInner({ open, onClose, count, kind, onApply }) {
   const [status, setStatus] = React.useState('Pending review');
   const [note, setNote] = React.useState('');
-  const options = STATUSES.map((s) => ({ value: s.value, label: <span className="plx-inline plx-inline--gap-sm plx-layout--align-center"><StatusDot tone={s.tone} />{s.value}</span> }));
+  const options = STATUSES.map((s) => ({ value: s.value, label: <Badge tone={s.tone} icon={s.icon}>{s.value}</Badge> }));
   return (
     <Dialog open={open} onClose={onClose} size="sm" icon="circle-check" title="Change status" description={'Set edit status for ' + things(count, kind, 'selected ')}
       footer={<Footer onClose={onClose} label="Apply status" onApply={onApply} values={{ status, note }} />}>

@@ -23,8 +23,9 @@ const STATES = [
   ['files/index.html', ['enter:pdf'], 1],
   ['projects/index.html', ['Kitchen Renovation', 'Files'], 1],
   ['dam/index.html', ['Fields'], 1],
-  ['dam/index.html', ['Table'], 1],
-  ['dam/index.html', ['Branding(326)', 'Table'], 1],
+  // the list layout comes from the command bar's View menu (owner, 2026-10-14)
+  ['dam/index.html', ['View', 'List'], 1],
+  ['dam/index.html', ['Branding(326)', 'View', 'List'], 1],
   ['dam/settings-system.html#properties', ['open:Enabled for'], 1],
   ['dam/settings-system.html#properties', ['Actions'], 1],
   ['dam/settings-system.html#fields', [], 1],
@@ -108,7 +109,7 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
           all.filter((b) => b.getAttribute('aria-expanded') === 'false').forEach((b) => b.click()); return all.length > 0; }
         // "main:Text": a control inside the page's main area only (the same name can also be in the navigation)
         const inMain = text.indexOf('main:') === 0, name = inMain ? text.slice(5) : text;
-        const el = Array.from((inMain ? document.querySelector('main') : document).querySelectorAll('button, [role="tab"], [role="radio"], a, label')).find((e) => (e.textContent.trim() === name || e.getAttribute('aria-label') === name) && e.offsetParent);
+        const el = Array.from((inMain ? document.querySelector('main') : document).querySelectorAll('button, [role="tab"], [role="radio"], [role="menuitemradio"], [role="menuitem"], a, label')).find((e) => (e.textContent.trim() === name || e.getAttribute('aria-label') === name) && e.offsetParent);
         if (el) el.click(); return !!el;
       }, text);
       if (!ok) { missing = text; break; }

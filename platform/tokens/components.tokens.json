@@ -1627,6 +1627,16 @@
       "$value": "{plx-sys.space-inset-xs}",
       "$type": "dimension"
     },
+    "badge-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Badge: the space between its status icon and its text."
+    },
+    "badge-icon-size": {
+      "$value": "{plx-sys.icon-size-xs}",
+      "$type": "dimension",
+      "$description": "Badge: its status icon (12px), inside the 16px and 20px badges."
+    },
     "badge-neutral-background": {
       "$value": "{plx-sys.status-pill-neutral-background}",
       "$type": "color",
@@ -8120,10 +8130,6 @@
       "$type": "color"
     },
     "entity-header-sep-margin-inline": {
-      "$value": "{plx-sys.space-inline-xs}",
-      "$type": "dimension"
-    },
-    "entity-header-live-status-dot-margin-inline-end": {
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
     },

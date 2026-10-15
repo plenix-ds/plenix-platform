@@ -2294,7 +2294,7 @@ function ClassificationWidget({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "eyebrow"
   }, "Classification"), totalSet > 0 ? /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-    tone: "info",
+    tone: "active",
     size: "sm"
   }, totalSet, " set") : null), /*#__PURE__*/React.createElement(_plenixPlatform.Field, {
     label: "Project Type",
@@ -2500,14 +2500,14 @@ const facts = (label, rows) => {
 /* A feature's status as a Badge: [tone, label] */
 const FEATURE_STATUS = {
   done: ["success", "Done"],
-  planned: ["info", "Planned"],
-  wip: ["warning", "In progress"]
+  planned: ["active", "Planned"],
+  wip: ["active", "In progress"]
 };
 /* A capability feature's status as a Badge: [tone, label] */
 const CAP_STATUS = {
   built: ["success", "Built"],
-  planned: ["info", "Planned"],
-  todo: ["danger", "Not started"]
+  planned: ["active", "Planned"],
+  todo: ["neutral", "Not started"]
 };
 const capBadge = s => {
   const m = CAP_STATUS[s] || CAP_STATUS.todo;
@@ -2883,7 +2883,7 @@ function CapDoc({
     actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "sm"
     }, /*#__PURE__*/React.createElement(_plenixPlatform.Badge, null, cap.layer), cap.stub ? /*#__PURE__*/React.createElement(_plenixPlatform.Badge, {
-      tone: "danger"
+      tone: "neutral"
     }, "Not started") : null)
   }, sections.map(s => /*#__PURE__*/React.createElement(Section, {
     key: s.title,

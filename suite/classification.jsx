@@ -35,7 +35,7 @@ export function ClassificationWidget({ value, onChange }) {
     <Stack gap="sm">
       <Inline justify="between">
         <Text variant="eyebrow">Classification</Text>
-        {totalSet > 0 ? <Badge tone="info" size="sm">{totalSet} set</Badge> : null}
+        {totalSet > 0 ? <Badge tone="active" size="sm">{totalSet} set</Badge> : null}
       </Inline>
       <Field label="Project Type" layout="inline">
         <Select value={v.projectType || ''} onChange={(e) => set('projectType', e.target.value)}>
