@@ -27,6 +27,12 @@
        searches cannot be removed here
      strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
        clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
+     width: "auto" (default: as wide as its container gives it) | "bar" (the command bar's search: one fixed width, 240px,
+       never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
+     collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
+       there is text) that opens the field across the bar, over its other controls; default false
+     open, onOpenChange(open): (collapsed) whether the field is open across the bar, kept by the caller (CommandBar keeps
+       it, so the bar holds its width step while the field is open)
      className: more classes on the field
      ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
@@ -45,6 +51,8 @@
        cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
        the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
        listbox.
+     Collapsed: the button opens the field across the nearest positioned box (the command bar's row), focused, with × to
+       clear once there is text; Escape closes it and the focus returns to the button; leaving it empty closes it too.
    Notes:
      It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
      ranks and limits the suggestions (about eight) and the recent searches (about five).
@@ -57,6 +65,7 @@ import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
 
 const STRINGS = { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches', clear: 'Clear search',
   results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' };
@@ -70,8 +79,9 @@ function marked(label, text) {
   return [s.slice(0, at), <strong key="m" className="plx-search__match">{s.slice(at, at + q.length)}</strong>, s.slice(at + q.length)];
 }
 
-export const SearchField = React.forwardRef(function SearchField({ value, onChange, onClear, placeholder = 'Search', label = 'Search', shortcut, loading = false,
-  onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, ...rest }, ref) {
+// the field itself (width "auto", "bar" or "fill")
+const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onClear, placeholder = 'Search', label = 'Search', shortcut, loading = false,
+  onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, width = 'auto', ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
   const auto = 'plx-sf' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -141,7 +151,7 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
     'aria-haspopup': grid ? 'grid' : undefined,
     'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
-    <div ref={wrap} className={cx('plx-search', onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
+    <div ref={wrap} className={cx('plx-search', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label="Searching" /> : <Icon name="search" />}</span>
       <input ref={input} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
         onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
@@ -192,4 +202,35 @@ export const SearchField = React.forwardRef(function SearchField({ value, onChan
       ) : null}
     </div>
   );
+});
+
+// the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
+function CollapsedSearch({ value, label = 'Search', onKeyDown, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
+  const [own, setOwn] = React.useState(false);
+  const open = openProp === undefined ? own : openProp;
+  const setOpen = (v) => { setOwn(v); if (onOpenChange) onOpenChange(v); };
+  const field = React.useRef(null), button = React.useRef(null);
+  React.useImperativeHandle(ref, () => (open ? field.current : button.current));
+  React.useEffect(() => { if (open && field.current) field.current.focus(); }, [open]);
+  const close = (refocus) => { setOpen(false); if (refocus) setTimeout(() => { if (button.current) button.current.focus(); }, 0); };
+  return (
+    <>
+      <Tooltip content={label}>
+        <Button ref={button} size="sm" variant="ghost" icon="search" iconOnly label={label} selected={!!value} aria-expanded={open}
+          className={cx('plx-search__toggle', className)} onClick={() => setOpen(true)} />
+      </Tooltip>
+      {open ? (
+        <div className="plx-search__over">
+          <SearchInput ref={field} value={value} label={label} width="fill" {...rest}
+            onKeyDown={(e) => { if (onKeyDown) onKeyDown(e); if (e.key === 'Escape' && !e.defaultPrevented && e.currentTarget.getAttribute('aria-expanded') !== 'true') { e.preventDefault(); close(true); } }}
+            onBlur={(e) => { if (onBlur) onBlur(e); if (!e.currentTarget.value) close(false); }} />
+        </div>
+      ) : null}
+    </>
+  );
+}
+const Collapsed = React.forwardRef(CollapsedSearch);
+
+export const SearchField = React.forwardRef(function SearchField({ collapsed = false, ...props }, ref) {
+  return collapsed ? <Collapsed ref={ref} {...props} /> : <SearchInput ref={ref} {...props} />;
 });

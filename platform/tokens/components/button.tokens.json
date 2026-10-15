@@ -1,0 +1,6 @@
+{
+  "$description": "Button (platform/components/Button): its tokens added after the shared set. The caret (owner, 2026-10-14): the thin outline chevron (expand_more) at the button's icon size, in the muted content color on the unfilled buttons.",
+  "plx-comp": {
+    "button-caret-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Button caret: the thin chevron's color on the unfilled buttons (secondary, tertiary, ghost, danger-secondary); filled and disabled buttons draw it in the label's color." }
+  }
+}

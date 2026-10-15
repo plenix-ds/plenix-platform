@@ -29,6 +29,11 @@
     "search-option-icon-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "Search option: its icon (search, or the clock of a recent search)." },
     "search-option-description-text": { "$value": "{plx-sys.content-subtle}", "$type": "color", "$description": "Search option: its description under the label." },
     "search-option-description-font-size": { "$value": "{plx-ref.font-size-11}", "$type": "dimension", "$description": "Search option: its description's size." },
-    "search-match-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Search option: the part of a suggestion that matches the text, in bold." }
+    "search-match-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "Search option: the part of a suggestion that matches the text, in bold." },
+    "search-bar-width": { "$value": "{plx-ref.size-240px}", "$type": "dimension", "$description": "SearchField width=\"bar\": the command bar search, one fixed width in every bar (owner, 2026-10-14: 240px, never squeezed)." },
+    "search-over-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "SearchField collapsed, opened: the band across the bar that holds the field, the bar's own white surface." },
+    "search-over-radius": { "$value": "{plx-sys.radius-control-8px}", "$type": "dimension", "$description": "SearchField collapsed, opened: the band's corners (the command bar's)." },
+    "search-over-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "SearchField collapsed, opened: the space beside the field in the band (the command bar's padding)." },
+    "search-over-z-index": { "$value": "{plx-sys.layer-raised}", "$type": "number", "$description": "SearchField collapsed, opened: the band lies over the bar's other controls." }
   }
 }

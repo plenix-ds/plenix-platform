@@ -108,6 +108,7 @@
     "gear": "settings",
     "grid-2x2": "grid_view",
     "grid-3x2": "view_module",
+    "group-by": "view_agenda",
     "hdr-bell": "notifications",
     "hdr-search": "search",
     "hdr-upload": "upload",

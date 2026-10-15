@@ -45,7 +45,8 @@
        options.selectableRows (Tabulator) selects rows by click (1: one row, as the open row of a list)
      selected: the index values of the selected rows, for a selection kept by the page (bulk actions); with
      onSelectionChange(keys): runs when the person changes the selection (not when selected changes it)
-     headerMenu: the column menu: right-click on a header, or Shift + F10 on a focused one; default true. In sections like
+     headerMenu: the column menu: the header's chevron button (shown while the header is hovered: the thin outline chevron,
+       muted; owner, 2026-10-14), right-click on a header, or Shift + F10 on a focused one; default true. In sections like
        Airtable's (owner, 2026-10-14): (1) columnMenu's items, (2) sort in the type's words (A → Z, 1 → 9, Oldest → newest,
        Unchecked → checked) and Clear sort, (3) Filter by this field, Clear filter, Group by this field, Ungroup,
        (4) Narrower, Wider, Fit to content, Move left, Move right, (5) Hide field, Show all fields
@@ -58,8 +59,16 @@
        view menu (kept in the view with storageKey)
      wrapHeaders: column names wrap onto two lines and the header row is two lines tall (a fixed token); default false;
        also in the view menu
-     viewMenu: the view menu, an icon button at the end of the header row (Row height, with a check on the current step,
-       and Wrap headers); default true where headerMenu is on
+     viewMenu: the table's own view button at the end of the header row (Row height, Wrap headers); default false (owner,
+       2026-10-14: the row height lives only in the page's View menu, the command bar's ViewMenu, which sets rowHeight)
+     The page's view (owner, 2026-10-14: the command bar's panels drive the table through these; each applies when it
+     changes, and leaving one undefined leaves that part to the person's own header actions):
+     filter(row): which rows show (the FilterPanel's and quick filters' test, utils/fields.js matchesFilter); added to
+       the header filters, applied again when the function changes
+     sort: [{ field, dir: "asc" | "desc" }], the first the main sort (the SortPanel's levels, the GroupPanel's first)
+     groupBy: a field, a list of fields (nested groups, the GroupPanel's levels) or false
+     columnOrder: the fields in their order (the ColumnsMenu's); pinned columns keep their place
+     hiddenColumns: the fields not shown (the ColumnsMenu's)
      onAddToGroup(value, path): a grouped table's add row: a + one Short row tall at the end of each group; off without it
      strings: the words the grid writes (menus, the view menu, group rows, the filter popup, the footer), to replace
      empty: shown when no row matches; default "Nothing to show"
@@ -342,7 +351,7 @@ export function TableEngine(props) {
   const isStatic = !!props.isStatic, B = 'plx-data-table';
   const { label, data, columns, index = 'id', selectable = false, selected, headerMenu = true, rowMenu, empty, height, options, className,
     error: failure, onRetry, keyColumns, narrow = isStatic ? 'table' : 'list', storageKey, mode = 'fill', pageSize, pageSizes = PAGE_SIZES, fetchRows, search,
-    rowHeight = 'short', wrapHeaders = false, viewMenu = !isStatic && headerMenu, columnMenu, onAddToGroup, strings } = props;
+    rowHeight = 'short', wrapHeaders = false, viewMenu = false, columnMenu, onAddToGroup, strings } = props;
   const S = React.useMemo(() => Object.assign({}, STRINGS, strings), [strings]);
   // the mode: the static Table draws every row; a DataTable fills the room by default
   const M = isStatic ? 'all' : MODES.indexOf(mode) >= 0 ? mode : 'fill';
@@ -522,6 +531,38 @@ export function TableEngine(props) {
     t.rowManager.rows.forEach((r) => (r.cells || []).forEach((cell) => { if (cell.element) cell.element.classList.toggle(B + '__cell--grouped', on(cell.column)); }));
   };
   const groupBy = (t, field) => { t.setGroupBy(field); tintGrouped(t); saveView(); };
+  // the page's view (filter, sort, groupBy, columnOrder, hiddenColumns: the command bar's panels), applied to the grid;
+  // a part left undefined is not touched
+  const applyView = (t) => {
+    const p = latest.current;
+    if (!t || isStatic) return;
+    const col = (f) => t.getColumns().find((c) => c.getField() === f);
+    if (typeof p.filter === 'function') {
+      if (!t.plxViewFilter) { t.plxViewFilter = (d) => { const fn = latest.current.filter; return typeof fn === 'function' ? !!fn(d) : true; }; t.addFilter(t.plxViewFilter); }
+      else t.refreshFilter();
+    } else if (t.plxViewFilter) { t.removeFilter(t.plxViewFilter); t.plxViewFilter = null; }
+    if (Array.isArray(p.sort)) {
+      const want = p.sort.filter((x) => x && col(x.field)).map((x) => ({ column: x.field, dir: x.dir === 'desc' ? 'desc' : 'asc' }));
+      // (Tabulator's sort list ends with the main sort: the page's first level goes last)
+      const now = t.getSorters().map((x) => ({ column: x.field, dir: x.dir })).reverse();
+      if (JSON.stringify(want) !== JSON.stringify(now)) { if (want.length) t.setSort(want.slice().reverse()); else t.clearSort(); }
+    }
+    if (p.groupBy !== undefined) {
+      const list = [].concat(p.groupBy || []).filter((x) => typeof x === 'string' && col(x));
+      const g = list.length ? (list.length === 1 ? list[0] : list) : false;
+      if (JSON.stringify(g) !== JSON.stringify(t.options.groupBy || false)) groupBy(t, g);
+    }
+    if (Array.isArray(p.columnOrder)) {
+      const order = p.columnOrder.filter((f) => col(f) && !col(f).getDefinition().frozen);
+      order.forEach((f, i) => { if (!i) return; const c = col(f), prev = col(order[i - 1]); if (c.getPrevColumn() !== prev) c.move(prev, true); });
+      // the first of the order goes before the others (Make first column)
+      if (order.length > 1) { const first = col(order[0]), next = col(order[1]); if (first.getNextColumn() !== next) first.move(next, false); }
+    }
+    if (Array.isArray(p.hiddenColumns)) {
+      t.getColumns().forEach((c) => { const f = c.getField(); if (!f) return; const hide = p.hiddenColumns.indexOf(f) >= 0; if (hide && c.isVisible()) c.hide(); else if (!hide && !c.isVisible()) c.show(); });
+    }
+    saveView();
+  };
   // the columns a group row's cells follow: the first cell spans the mark columns at the start and the first value column
   const cellsInto = (box, t, fill) => {
     box.textContent = '';
@@ -787,6 +828,11 @@ export function TableEngine(props) {
       if (render) d.formatter = (cell) => { const id = String(cell.getRow().getIndex()) + SEP + c.field; owners.current.set(id, cell); return container(id); };
       if (filter && !isStatic) { d.headerPopup = filterPopup(c); d.headerPopupIcon = iconEl('filter').outerHTML; }
       if (headerMenu && !isStatic && d.headerContextMenu === undefined) d.headerContextMenu = headerItems(c, labelAt >= i || !!c.frozen);
+      // the header's chevron button (owner, 2026-10-14): shown while the header is hovered, it opens the same column menu
+      if (headerMenu && !isStatic && d.headerMenu === undefined && kind !== 'actions') {
+        d.headerMenu = d.headerContextMenu;
+        d.headerMenuIcon = () => { const m = el('span', B + '__menu-chevron'); m.setAttribute('aria-hidden', 'true'); m.appendChild(iconEl('chevron-down')); return m; };
+      }
       // a click on a row handle opens its move menu (a way to move rows without dragging; WCAG 2.5.7)
       if (c.rowHandle && !isStatic && (latest.current.options || {}).movableRows && d.clickMenu === undefined) d.clickMenu = (e, cell) => rowMoveItems(cell.getRow());
       return d;
@@ -958,7 +1004,7 @@ export function TableEngine(props) {
         syncSelection(table);
         if (!isStatic) {
           wireColumns(table); wireRows(table, host); wireGroups(table, host);
-          restoreView(table); table.on('dataSorted', () => saveView());
+          restoreView(table); applyView(table); table.on('dataSorted', () => saveView());
           tintGrouped(table);
         }
         if (latest.current.onReady) latest.current.onReady(table);
@@ -1303,6 +1349,10 @@ export function TableEngine(props) {
     titleTips(); syncSticky(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowStep, wrapHead]);
+
+  // the page's view changed (the command bar's panels): applied to the grid already built
+  const viewKey = JSON.stringify([props.sort, props.groupBy, props.columnOrder, props.hiddenColumns]);
+  React.useEffect(() => { const t = tableRef.current; if (t && builtRef.current) applyView(t); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [viewKey, props.filter]);
 
   // new data in place: sort, filters, scroll and column widths stay. Rows equal to the ones shown (a page that builds its
   // rows again on every render) change nothing.
