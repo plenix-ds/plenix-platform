@@ -1,20 +1,8 @@
 {
  "dam/index.html": {
-  "coarse": 6
- },
- "dam/settings-myaccount.html#/preferences": {
-  "coarse": 3
- },
- "dam/settings-system.html": {
-  "coarse": 2
- },
- "design-system #/actions/button": {
-  "coarse": 1
+  "coarse": 4
  },
  "design-system #/navigation/application-header": {
-  "coarse": 5
- },
- "design-system #/patterns/bulk-selection": {
   "coarse": 5
  }
 }

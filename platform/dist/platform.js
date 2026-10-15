@@ -33,7 +33,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      tone's color (info, success, warning, danger, neutral), alone or with a short label.
    Usage:
      <Icon name="folder" />
-     <Icon name="star" size="sm" filled label="Favorite" />
+     <Icon name="bookmark" size="sm" filled label="Bookmarked" />
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
@@ -2154,7 +2154,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Summary: A small picture of a file or an item beside its name (a table's name cell, a list row).
      It shows the picture, or an icon when there is none, in a 28px rounded square on the sunken surface.
    Usage:
-     <Thumbnail src={asset.thumbUrl} icon="image" />
+     <Thumbnail src={asset.thumbUrl} icon="image-a-2" />
    Props:
      src: the picture's URL
      alt: the picture's text alternative; default "" (empty when the name is next to it)
@@ -4424,7 +4424,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CollapsibleSection
    Summary: A titled section that expands and collapses.
    Usage:
-     <CollapsibleSection title="Collections" icon="collection" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
+     <CollapsibleSection title="Collections" icon="briefcase" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
    Props:
      title: the section title
      icon: an <Icon> (or an icon name) before the title
@@ -10665,11 +10665,14 @@ var _strict = require("./strict.js");
      Tabulator itself is used as is.
      Early load (batch 237): a page whose first screen has a table calls DataTable.preload() (or Table.preload()) as
      its script starts, so Tabulator arrives while React draws the page instead of after the grid mounts. Every other
-     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache.
+     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache;
+     only from the page's own site (an app that bundles the npm package, or loads the Platform from another site, fetches
+     the engine when its first grid asks for it).
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
-     build's plenix.js -> ./vendor/); in the npm package bundled into an app (no Plenix script on the page) it is the
-     release's CDN copy, https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
+     build's plenix.js -> ./vendor/; the npm package's dist/plenix.global.js -> dist/vendor/); in the npm package
+     bundled into an app (no Plenix script on the page) it is the release's CDN copy,
+     https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
      window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
      A failed load rejects and is forgotten; the DataTable shows its error state (the reason and Retry) in place of the
@@ -10681,15 +10684,17 @@ const SCRIPT = typeof document !== 'undefined' && document.currentScript ? docum
 // the same, found among the page's scripts when the bundle ran its modules later
 function platformScript() {
   if (SCRIPT) return SCRIPT;
-  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix)(\.min)?\.js(\?|$)/.test(src));
+  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
   return s || '';
 }
 
-// the vendor folder (also used by the RichTextEditor engine loader, RichTextEditor/tiptap.js)
+// the vendor folder (also used by the RichTextEditor engine loader, RichTextEditor/tiptap.js): the repository's
+// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
+// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
 function vendorBase() {
   if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
   const src = platformScript();
-  if (src) return new URL(/\/dist\/[^/?]+(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
+  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
   // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
   if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
   return 'platform/vendor/';
@@ -10744,6 +10749,13 @@ function prefetchTabulator() {
   if (typeof document === 'undefined' || window.Tabulator || loading.has(window)) return;
   if (document.querySelector('link[data-plx-vendor-prefetch="tabulator"]')) return;
   const base = vendorBase() + 'tabulator/';
+  // only from the page's own site: an app that bundles the npm package (vendor folder: the release's CDN) or loads the
+  // Platform from another site never downloads the engine before a grid asks for it
+  try {
+    if (new URL(base, location.href).origin !== location.origin) return;
+  } catch (e) {
+    return;
+  }
   ['tabulator.min.js', 'tabulator.min.css'].forEach(f => {
     const link = document.createElement('link');
     link.rel = 'prefetch';
@@ -11361,7 +11373,17 @@ function rowCheckbox(cell) {
     } else row.toggleSelect();
   });
   table.modules.selectRow.registerRowSelectCheckbox(row, box); // Tabulator keeps it checked as the row is selected
-  return box;
+  return checkTarget(box);
+}
+// a selection checkbox's target (Platforms Standard 3.1): a label around the 16px box whose invisible layer fills its
+// cell, so the whole lead cell (44 × 44px with touch, --plx-comp-data-table-lead-column-width) toggles the row; the
+// label's own click stops at the cell, so a tap beside the box is not also a row click ("only this row")
+function checkTarget(box) {
+  const label = document.createElement('label');
+  label.className = 'plx-data-table__check';
+  label.addEventListener('click', e => e.stopPropagation());
+  label.appendChild(box);
+  return label;
 }
 function TableEngine(props) {
   // one look from one set of tokens (owner, 2026-10-09): the static Table draws with the DataTable's classes and tokens
@@ -12483,6 +12505,14 @@ function TableEngine(props) {
         // the selection kept by the page, once the rows are in (Tabulator builds before it loads them; nothing happens
         // when it already matches)
         if (table) syncSelection(table);
+        // the header checkbox (Tabulator's select all / none) gets the same full-cell target as the rows'
+        host.querySelectorAll('.tabulator-header .tabulator-row-header input[type="checkbox"]').forEach(b => {
+          if (!b.closest('.plx-data-table__check')) {
+            const at = b.parentNode,
+              next = b.nextSibling;
+            at.insertBefore(checkTarget(b), next);
+          }
+        });
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => {
           if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', S.selectRow + ' ' + (n + 1));
         });

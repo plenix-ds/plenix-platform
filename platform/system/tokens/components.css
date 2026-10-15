@@ -1207,6 +1207,7 @@
   --plx-comp-combobox-field-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-combobox-input-flex-basis: var(--plx-ref-size-60px);
   --plx-comp-combobox-input-min-height: var(--plx-sys-label-height-20px);
+  --plx-comp-combobox-input-margin-block: 0;
   --plx-comp-combobox-input-placeholder-text: var(--plx-sys-field-placeholder);
   --plx-comp-combobox-chevron-background: var(--plx-sys-content-muted);
   --plx-comp-combobox-chevron-height: var(--plx-ref-size-12px);
@@ -2403,6 +2404,12 @@
   --plx-comp-tag-input-add-before-inset-block-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-tag-input-add-before-inset-inline-end: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-comp-tag-input-add-before-inset-inline-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-combobox-input-margin-block: calc(var(--plx-comp-input-border-width) * -1);
+  --plx-comp-field-info-before-inset-block-end: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-field-info-before-inset-block-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-field-info-before-inset-inline-end: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-field-info-before-inset-inline-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-comp-data-table-lead-column-width: var(--plx-sys-control-target-min);
   --plx-comp-tag-list-gap: calc(var(--plx-sys-control-target-min) - var(--plx-comp-tag-remove-width));
   --plx-comp-tag-list-row-gap: var(--plx-ref-space-24px);
   --plx-comp-tag-list-padding-block: calc((var(--plx-sys-control-target-min) - var(--plx-sys-label-height-20px)) / 2);

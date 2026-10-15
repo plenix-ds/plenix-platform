@@ -99,6 +99,32 @@
       "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
       "$type": "dimension"
     },
+    "combobox-input-margin-block": {
+      "$value": "calc({plx-comp.input-border-width} * -1)",
+      "$type": "dimension",
+      "$description": "With touch the combobox's input (stretched to the field) reaches over the field's border, so its target is the field's full 44px height (Platforms Standard 3.1)"
+    },
+    "field-info-before-inset-block-end": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "field-info-before-inset-block-start": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "field-info-before-inset-inline-end": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "field-info-before-inset-inline-start": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "data-table-lead-column-width": {
+      "$value": "{plx-sys.control-target-min}",
+      "$type": "dimension",
+      "$description": "With touch the lead column (the selection checkbox, a mark, a row handle) is the minimum target wide; the checkbox's label fills the cell (Platforms Standard 3.1)"
+    },
     "tag-list-gap": {
       "$value": "calc({plx-sys.control-target-min} - {plx-comp.tag-remove-width})",
       "$type": "dimension",

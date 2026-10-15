@@ -1,7 +1,7 @@
 /* Plenix · CollapsibleSection
    Summary: A titled section that expands and collapses.
    Usage:
-     <CollapsibleSection title="Collections" icon="collection" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
+     <CollapsibleSection title="Collections" icon="briefcase" defaultExpanded actions={<Button…/>}>…</CollapsibleSection>
    Props:
      title: the section title
      icon: an <Icon> (or an icon name) before the title

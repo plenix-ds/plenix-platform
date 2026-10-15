@@ -343,7 +343,17 @@ function rowCheckbox(cell) {
     if (e.shiftKey || e.ctrlKey || e.metaKey) { e.preventDefault(); table.modules.selectRow.handleComplexRowClick(row._row, e); } else row.toggleSelect();
   });
   table.modules.selectRow.registerRowSelectCheckbox(row, box);   // Tabulator keeps it checked as the row is selected
-  return box;
+  return checkTarget(box);
+}
+// a selection checkbox's target (Platforms Standard 3.1): a label around the 16px box whose invisible layer fills its
+// cell, so the whole lead cell (44 × 44px with touch, --plx-comp-data-table-lead-column-width) toggles the row; the
+// label's own click stops at the cell, so a tap beside the box is not also a row click ("only this row")
+function checkTarget(box) {
+  const label = document.createElement('label');
+  label.className = 'plx-data-table__check';
+  label.addEventListener('click', (e) => e.stopPropagation());
+  label.appendChild(box);
+  return label;
 }
 
 export function TableEngine(props) {
@@ -987,6 +997,8 @@ export function TableEngine(props) {
         // the selection kept by the page, once the rows are in (Tabulator builds before it loads them; nothing happens
         // when it already matches)
         if (table) syncSelection(table);
+        // the header checkbox (Tabulator's select all / none) gets the same full-cell target as the rows'
+        host.querySelectorAll('.tabulator-header .tabulator-row-header input[type="checkbox"]').forEach((b) => { if (!b.closest('.plx-data-table__check')) { const at = b.parentNode, next = b.nextSibling; at.insertBefore(checkTarget(b), next); } });
         host.querySelectorAll('.tabulator-row .tabulator-row-header input[type="checkbox"]').forEach((b, n) => { if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', S.selectRow + ' ' + (n + 1)); });
         // a row handle is a Tab stop: Enter or Space opens its move menu, Alt + the arrow keys move the row
         if (table && !isStatic) nameGrips(table);

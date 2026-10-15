@@ -4958,6 +4958,11 @@
       "$value": "{plx-sys.label-height-20px}",
       "$type": "dimension"
     },
+    "combobox-input-margin-block": {
+      "$value": "0",
+      "$type": "dimension",
+      "$description": "The input's block margins: none; with touch it reaches over the field's border (components.interaction-touch), so the whole 44px field is its target (Platforms Standard 3.1)"
+    },
     "combobox-input-placeholder-text": {
       "$value": "{plx-sys.field-placeholder}",
       "$type": "color"

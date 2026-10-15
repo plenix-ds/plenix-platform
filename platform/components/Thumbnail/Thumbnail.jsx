@@ -2,7 +2,7 @@
    Summary: A small picture of a file or an item beside its name (a table's name cell, a list row).
      It shows the picture, or an icon when there is none, in a 28px rounded square on the sunken surface.
    Usage:
-     <Thumbnail src={asset.thumbUrl} icon="image" />
+     <Thumbnail src={asset.thumbUrl} icon="image-a-2" />
    Props:
      src: the picture's URL
      alt: the picture's text alternative; default "" (empty when the name is next to it)

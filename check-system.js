@@ -40,6 +40,8 @@
 //   fonts       no call to Google Fonts: DM Sans and DM Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
+//   icon-names  (check-system.rules/icon-names.js) every icon named in source (<Icon name=…>, icon=…, icon: …, plx-icon--…)
+//               is in the Plenix set (platform/icons/map.json); an unknown name draws nothing
 const fs = require('fs');
 const path = require('path');
 

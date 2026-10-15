@@ -89,6 +89,14 @@
 .plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-content{justify-content:center;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header .tabulator-col-title{align-items:center;display:flex;justify-content:center;}
 .plx-data-table .tabulator input[type="checkbox"]{accent-color:var(--plx-comp-data-table-checkbox-accent-color);block-size:var(--plx-comp-data-table-mark-size);cursor:pointer;inline-size:var(--plx-comp-data-table-mark-size);margin:0;vertical-align:middle;}
+/* a selection checkbox's target (Platforms Standard 3.1): its label (DataTable.jsx checkTarget) wraps the box exactly, and an
+   invisible layer fills the lead cell (44 × 44px with touch: --plx-comp-data-table-lead-column-width), so the cell is the target; the box stays above the layer */
+.plx-data-table .tabulator .plx-data-table__check{cursor:pointer;display:flex;}
+.plx-data-table .tabulator .plx-data-table__check input[type="checkbox"]{position:relative;}
+/* in the header the layer fills the whole column head: its inner boxes give up their positioning (no sort arrow or resize
+   handle in the lead column) */
+.plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header:has(.plx-data-table__check) :is(.tabulator-col-content,.tabulator-col-title-holder){position:static;}
+.plx-data-table .tabulator .plx-data-table__check::before{content:"";inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;position:absolute;}
 
 /* pinned columns keep no heavy edge */
 .plx-data-table .tabulator .tabulator-header .tabulator-col.tabulator-frozen.tabulator-frozen-left,

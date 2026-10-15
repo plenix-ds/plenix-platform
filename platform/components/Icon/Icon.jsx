@@ -3,7 +3,7 @@
      tone's color (info, success, warning, danger, neutral), alone or with a short label.
    Usage:
      <Icon name="folder" />
-     <Icon name="star" size="sm" filled label="Favorite" />
+     <Icon name="bookmark" size="sm" filled label="Bookmarked" />
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:

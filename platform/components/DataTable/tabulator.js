@@ -14,11 +14,14 @@
      Tabulator itself is used as is.
      Early load (batch 237): a page whose first screen has a table calls DataTable.preload() (or Table.preload()) as
      its script starts, so Tabulator arrives while React draws the page instead of after the grid mounts. Every other
-     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache.
+     page prefetches the files once the browser is idle after load, so the first table anywhere opens from the cache;
+     only from the page's own site (an app that bundles the npm package, or loads the Platform from another site, fetches
+     the engine when its first grid asks for it).
      The core stylesheet goes first in the head, so platform.css (the Plenix look, data-table.css) wins over it.
      The vendor folder is found from the Platform script's address (platform/dist/platform.js -> platform/vendor/; a CDN
-     build's plenix.js -> ./vendor/); in the npm package bundled into an app (no Plenix script on the page) it is the
-     release's CDN copy, https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
+     build's plenix.js -> ./vendor/; the npm package's dist/plenix.global.js -> dist/vendor/); in the npm package
+     bundled into an app (no Plenix script on the page) it is the release's CDN copy,
+     https://design-system.lighthouseway.org/cdn/<version>/vendor/ (batch 251);
      window.PlenixVendorBase (a folder URL ending in /) overrides it.
    Notes:
      A failed load rejects and is forgotten; the DataTable shows its error state (the reason and Retry) in place of the
@@ -32,15 +35,17 @@ const SCRIPT = typeof document !== 'undefined' && document.currentScript ? docum
 // the same, found among the page's scripts when the bundle ran its modules later
 function platformScript() {
   if (SCRIPT) return SCRIPT;
-  const s = Array.from(document.scripts).map((x) => x.src).find((src) => /\/(dist\/platform|plenix)(\.min)?\.js(\?|$)/.test(src));
+  const s = Array.from(document.scripts).map((x) => x.src).find((src) => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
   return s || '';
 }
 
-// the vendor folder (also used by the RichTextEditor engine loader, RichTextEditor/tiptap.js)
+// the vendor folder (also used by the RichTextEditor engine loader, RichTextEditor/tiptap.js): the repository's
+// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
+// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
 export function vendorBase() {
   if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
   const src = platformScript();
-  if (src) return new URL(/\/dist\/[^/?]+(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
+  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
   // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
   if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
   return 'platform/vendor/';
@@ -80,6 +85,9 @@ export function prefetchTabulator() {
   if (typeof document === 'undefined' || window.Tabulator || loading.has(window)) return;
   if (document.querySelector('link[data-plx-vendor-prefetch="tabulator"]')) return;
   const base = vendorBase() + 'tabulator/';
+  // only from the page's own site: an app that bundles the npm package (vendor folder: the release's CDN) or loads the
+  // Platform from another site never downloads the engine before a grid asks for it
+  try { if (new URL(base, location.href).origin !== location.origin) return; } catch (e) { return; }
   ['tabulator.min.js', 'tabulator.min.css'].forEach((f) => {
     const link = document.createElement('link');
     link.rel = 'prefetch'; link.href = base + f; link.setAttribute('data-plx-vendor-prefetch', 'tabulator');

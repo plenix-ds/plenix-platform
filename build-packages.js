@@ -145,7 +145,8 @@ copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js
 require('./build-types.js')(path.join(R, 'index.d.ts'), VERSION);
 const exportsList = [];
 for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/export \{([^}]+)\} from '([^']+)'/g)) {
-  for (const n of m[1].split(',').map((x) => x.trim()).filter(Boolean)) exportsList.push({ name: n, file: 'platform/' + m[2].replace(/^\.\//, '') });
+  // a renamed export ("PLACEMENTS as FLOATING_PLACEMENTS") is listed by its public name
+  for (const n of m[1].split(',').map((x) => x.trim()).filter(Boolean)) exportsList.push({ name: n.replace(/^\w+\s+as\s+/, ''), file: 'platform/' + m[2].replace(/^\.\//, '') });
 }
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
   main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
