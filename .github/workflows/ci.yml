@@ -55,6 +55,13 @@ jobs:
 
       - run: npm ci
 
+      - name: Generated files (a task branch never commits them; AGENTS.md)
+        if: github.event_name == 'pull_request'
+        run: node tools/agent/generated.js --check ${{ github.event.pull_request.base.sha }}
+
+      - name: Lane design-system files (lanes/<task>/design-system into the submodule)
+        run: node tools/agent/lane-overlay.js
+
       - name: Build
         run: |
           node build-app.js
@@ -131,6 +138,9 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Lane design-system files
+        run: node tools/agent/lane-overlay.js
 
       - name: Build
         run: |

@@ -1,7 +1,8 @@
-## Batch 378 (2026-10-15): palette consolidation
-- Applied the owner's consolidation plan (Perplexity, reconciled: lime -> green-150, yellow -> yellow-175; no green-400;
-  yellow-400 unchanged) with tools/agent/color-migration.js: 27 added, 83 aliased (deprecated), 162 theme references
-  moved; every old hex and every kept value verified against the plan before writing.
-- Families by token name (the owner rejected the "dark warm = brown" grouping). Category role descriptions name their
-  canonical token. Tag page reads the roles' declarations from the theme rules.
-- Tests (changed mode): all 21 groups OK (PAGES 130/130, CONTRAST 158, LABS 8/8, DATA_TABLES 38/38, A11Y 0 on 41). Released as {V}.
+## Batch 379 (2026-10-15): Claude + Codex pilot
+- Owner agreed: quick gates per change, browser tests once per batch and at the end; then the pilot: GitHub issues per
+  task, labels agent:codex / agent:claude, AGENTS.md, generated files never in a branch (generated.js check in CI,
+  rebuilt at merge by take-pr.js), design-system files via lanes/<task>/design-system (lane-overlay.js, CI step).
+- Codex takes wave 10 lane C (issue opened after this release; GroupBy skipped: w07K answers Grouping). Lanes A and B
+  (Claude) merge next.
+- Checks: SYSTEM_OK; generated.js --check proven on the last release commit; the overlay copied and cleaned a test file.
+  Released as {V}.

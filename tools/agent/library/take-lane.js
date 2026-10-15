@@ -7,12 +7,7 @@ const ROOT = path.resolve(__dirname, '../../..');
 const WT = path.resolve(process.argv[2] || '');
 const DRY = process.argv.includes('--dry');
 if (!fs.existsSync(path.join(WT, '.git'))) { console.error('not a worktree: ' + WT); process.exit(1); }
-const GENERATED = [
-  /^platform\/dist\//, /^platform\/index\.js$/, /^platform\/platform\.css$/, /^platform\/system\/tokens\//, /^platform\/tokens\/tokens\.index\.json$/,
-  /\/app\.js$/, /^dam\/app\/assets\.js$/, /^platform\/components\/Icon\/icon\.css$/, /^platform\/mobile\//, /^packages\//,
-  /^platform\/design-system$/, /^node_modules$/,
-  /^spec-parts\.js$/, /^ds-sample-parts\.css$/, /^native-guidance\.js$/, /^usage\.js$/,
-];
+const { GENERATED } = require('../generated.js');   // the one list (also the pull request check)
 const status = (dir) => execSync('git status --porcelain -uall', { cwd: dir, encoding: 'utf8' }).split('\n').filter(Boolean)
   .map((l) => ({ code: l.slice(0, 2), file: l.slice(3).replace(/^"|"$/g, '') }));
 // the lane's base commit (main repo) and this checkout's changes since then, to catch two writers on one file
