@@ -6391,7 +6391,8 @@ function HomePage() {
     }))
   });
 
-  /* ── bulk actions ── */
+  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the toolbar, always shown; each command disabled with a
+     tooltip saying why until it applies; Delete last ── */
   const catBulk = /*#__PURE__*/_react.default.createElement(_plenixPlatform.BulkActions, {
     count: selCats.length,
     total: D.CATEGORY_CARDS.length,
@@ -6413,12 +6414,6 @@ function HomePage() {
         label: 'Download as',
         onSelect: () => bulk('Download Category as')
       }]
-    }, {
-      id: 'del',
-      label: 'Delete',
-      icon: 'trash-detail',
-      danger: true,
-      onSelect: () => bulk('Delete category')
     }, {
       id: 'move',
       label: 'Move',
@@ -6446,6 +6441,12 @@ function HomePage() {
       label: 'Share',
       icon: 'share',
       onSelect: () => bulk('Share category')
+    }, {
+      id: 'del',
+      label: 'Delete',
+      icon: 'trash-detail',
+      danger: true,
+      onSelect: () => bulk('Delete category')
     }]
   });
   const item = (label, action, extra) => ({

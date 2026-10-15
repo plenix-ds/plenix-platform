@@ -3,7 +3,10 @@
 // SegmentedControl arrows follow reading order (right to left reverses them); the Tree opens toward the reading end; a
 // collapsible settings section opens and closes with Enter and Space; the recent searches of a SearchField are a grid
 // popup (WAI-ARIA combobox with grid popup): Arrow Down moves between rows, Arrow Right into the remove cell, Enter there
-// removes the search, Delete removes the active one, Enter on a term searches it (the focus stays in the field).
+// removes the search, Delete removes the active one, Enter on a term searches it (the focus stays in the field). The command
+// bar (owner, 2026-10-14) is one Tab stop per bar; Enter on Filter opens its panel with the focus inside and Escape returns it;
+// a panel row moves with Alt + Arrow Down and the move is announced; the selection bar is one Tab stop and skips its
+// disabled commands.
 //   node tests/keyboard.test.js            (TEST_PORT: another port)
 //   TEST_SCOPE=full: every component; by default (tests/changed.js) those whose component or design-system page changed
 const fs = require('fs');
@@ -13,7 +16,8 @@ const changed = require('./changed.js');
 const PORT = +process.env.TEST_PORT || 8797, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/';
 if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'))) { console.log('KEYBOARD_SKIPPED (no design system)'); process.exit(0); }
 // each component checked: its page's record id and its Platform unit
-const PARTS = { toolbar: ['toolbar', 'components/Toolbar'], rating: ['rating', 'components/Rating'], tabs: ['tabs', 'components/Tabs'], settings: ['settings-page', 'patterns/SettingsLayout'], recent: ['recent-searches', 'components/SearchField'] };
+const PARTS = { toolbar: ['toolbar', 'components/Toolbar'], rating: ['rating', 'components/Rating'], tabs: ['tabs', 'components/Tabs'], settings: ['settings-page', 'patterns/SettingsLayout'], recent: ['recent-searches', 'components/SearchField'],
+  cmdbar: ['command-bar', 'patterns/CommandBar'], panels: ['filter-panel', 'patterns/FilterPanel'], bulk: ['bulk-action-bar', 'patterns/BulkActions'] };
 const want = (k) => changed.wants({ ids: [PARTS[k][0]], units: [PARTS[k][1]] });
 const WANTED = Object.keys(PARTS).filter(want);
 if (!WANTED.length) changed.none('KEYBOARD_OK 0/0');
@@ -119,6 +123,48 @@ changed.report(WANTED.join(', '));
       check('Recent searches: Enter on a term searches it (its text in the field)', term && /^term:/.test(term) && s7.value === term.slice(5), JSON.stringify([term, s7]));
     }
   } else check('Recent searches: a field with removable recent searches is shown', false, 'none found');
+  }
+
+  // the command bar: one Tab stop per bar; the arrows move; Enter on Filter opens its panel (focus inside), Escape returns
+  if (want('cmdbar')) {
+  at('command bar'); await open('#/patterns/command-bar');
+  const row = 'main .plx-command-bar__row';
+  const tb = await page.evaluate((sel) => { const t = document.querySelector(sel); if (!t) return null; const items = [...t.querySelectorAll('button,input')].filter((e) => e.offsetParent && !e.disabled); return { n: items.length, tabbable: items.filter((e) => e.tabIndex === 0).length }; }, row);
+  check('Command bar: the bar is one Tab stop', tb && tb.n > 3 && tb.tabbable === 1, JSON.stringify(tb));
+  const filt = await page.evaluate((sel) => { const b = [...document.querySelector(sel).querySelectorAll('button')].find((x) => /^Filter/.test(x.getAttribute('aria-label') || x.textContent.trim())); if (!b) return false; b.focus(); return true; }, row);
+  if (filt) {
+    const a0 = await active(); await page.keyboard.press('ArrowRight'); const a1 = await active();
+    check('Command bar: Arrow Right moves to the next control', a0 !== a1, a0 + ' -> ' + a1);
+    await page.keyboard.press('ArrowLeft'); await page.keyboard.press('Enter'); await sleep(400);
+    const inside = await page.evaluate(() => { const a = document.activeElement; return !!(a && a.closest('.plx-popover')); });
+    check('Command bar: Enter on Filter opens its panel with the focus inside it', inside, await active());
+    await page.keyboard.press('Escape'); await sleep(300);
+    const back = await active();
+    check('Command bar: Escape closes the panel and the focus returns to Filter', /^Filter/.test(back), back);
+  } else check('Command bar: a Filter button is shown', false, 'none found');
+  }
+
+  // a panel row moves with Alt + Arrow Down; the move is announced
+  if (want('panels')) {
+  at('filter panel'); await open('#/navigation/filter-panel');
+  const r = await page.evaluate(() => { const rows = [...document.querySelectorAll('main .plx-find-panel__rows--framed > [data-plx-row]')]; if (rows.length < 2) return null; rows[0].focus(); return rows.map((x) => x.getAttribute('aria-label')); });
+  if (r) {
+    await page.keyboard.down('Alt'); await page.keyboard.press('ArrowDown'); await page.keyboard.up('Alt'); await sleep(300);
+    const after = await page.evaluate(() => { const box = document.activeElement.parentElement; return { focus: document.activeElement.getAttribute('aria-label'), first: box.querySelector(':scope > [data-plx-row]').getAttribute('aria-label'), status: (box.querySelector(':scope > [role="status"]') || {}).textContent }; });
+    check('Filter panel: Alt + Arrow Down moves the focused row down, keeps the focus on it and announces it', after.first.split(',')[0] === r[1].split(',')[0] && /moved to position 2/.test(after.status || '') && after.focus.split(',')[0] === r[0].split(',')[0], JSON.stringify([r.slice(0, 2), after]));
+  } else check('Filter panel: an open panel with two rows is shown', false, 'none found');
+  }
+
+  // the selection bar: one Tab stop; disabled commands are skipped by the arrows
+  if (want('bulk')) {
+  at('selection bar'); await open('#/actions/bulk-action-bar');
+  const sb = await page.evaluate(() => { const t = document.querySelector('main .plx-bulk-actions--empty .plx-bulk-actions__row') || document.querySelector('main .plx-bulk-actions__row'); if (!t) return null; t.setAttribute('data-kb-bulk', ''); const all = [...t.querySelectorAll('button')].filter((e) => e.offsetParent); return { n: all.length, enabled: all.filter((e) => !e.disabled).map((e) => e.getAttribute('aria-label') || e.textContent.trim()), tabbable: all.filter((e) => e.tabIndex === 0 && !e.disabled).length }; });
+  check('Selection bar: one Tab stop, the disabled commands are shown', sb && sb.n > sb.enabled.length && sb.tabbable === 1, JSON.stringify(sb));
+  if (sb && sb.enabled.length > 1) {
+    await page.evaluate(() => { const b = [...document.querySelectorAll('[data-kb-bulk] button')].find((e) => e.tabIndex === 0 && !e.disabled); if (b) b.focus(); });
+    const s0 = await active(); await page.keyboard.press('ArrowRight'); const s1 = await active();
+    check('Selection bar: Arrow Right moves to the next enabled control', s0 !== s1 && sb.enabled.indexOf(s1) >= 0, s0 + ' -> ' + s1);
+  }
   }
 
   await browser.close(); server.close();

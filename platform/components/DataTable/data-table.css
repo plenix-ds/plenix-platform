@@ -46,6 +46,15 @@
 .plx-data-table .tabulator .tabulator-header .tabulator-col.is-filtered .tabulator-header-popup-button{color:var(--plx-comp-data-table-filtered-text);opacity:1;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button:hover{color:var(--plx-comp-data-table-hover-text);opacity:1;}
 .plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button .plx-icon{block-size:var(--plx-comp-data-table-header-icon-size);inline-size:var(--plx-comp-data-table-header-icon-size);}
+/* the column menu's chevron button (owner, 2026-10-14): the thin outline chevron, muted, in the button place at the header's
+   end while the header is hovered; it opens the column menu. A filter button moves one button toward the start */
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button:has(.plx-data-table__menu-chevron){color:var(--plx-comp-data-table-menu-chevron-text);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col.is-filtered .tabulator-header-popup-button:has(.plx-data-table__menu-chevron){color:var(--plx-comp-data-table-menu-chevron-text);opacity:0;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:hover .tabulator-header-popup-button:has(.plx-data-table__menu-chevron){opacity:1;}
+.plx-data-table .tabulator .tabulator-header .tabulator-col .tabulator-header-popup-button:has(.plx-data-table__menu-chevron):hover{color:var(--plx-comp-data-table-hover-text);}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:has(.plx-data-table__menu-chevron) .tabulator-header-popup-button:not(:has(.plx-data-table__menu-chevron)){right:calc(var(--plx-comp-data-table-popup-button-inset) + var(--plx-comp-data-table-header-icon-size) + 2 * var(--plx-comp-data-table-cell-padding-inline));}
+.plx-data-table .tabulator .tabulator-header .tabulator-col:hover:has(.plx-data-table__menu-chevron):has(.tabulator-header-popup-button:not(:has(.plx-data-table__menu-chevron))) .tabulator-col-title{padding-right:calc(var(--plx-comp-data-table-title-reserve) + var(--plx-comp-data-table-header-icon-size) + 2 * var(--plx-comp-data-table-cell-padding-inline));}
+.plx-data-table__menu-chevron{display:inline-flex;}
 
 /* the resize handle: a hairline on hover */
 .plx-data-table .tabulator .tabulator-col-resize-handle:hover{background-image:var(--plx-comp-data-table-hover-background-image);background-position:center;background-repeat:no-repeat;background-size:var(--plx-comp-data-table-resize-mark-width) 60%;}

@@ -301,10 +301,10 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
     res.push([name + ' (' + r.sizes.map((s) => s.label + ': ' + s.rows + ' rows').join(', ') + ')' + (r.modes.length ? ' [' + r.modes.join(', ') + ']' : ''), !bad.length, bad.join(' · ')]);
   }
   // the keyboard (owner, 2026-10-14): a group row opens and closes with Enter and the arrow keys (aria-expanded follows,
-  // the change is announced), the view menu opens from its button and sets the row height, the column menu opens with
+  // the change is announced), the table has no view button and its header chevron opens the column menu, the column menu opens with
   // Shift + F10 on a focused header, its items take the arrow keys, Escape gives the focus back to the header
   if (HAS_DS && (!ONLY || ONLY.test('grouped-table')) && changed.wants({ units: GRIDS })) {
-    const name = 'keyboard: group rows, the view menu, the column menu';
+    const name = 'keyboard: group rows, the header chevron, the column menu';
     at(name);
     const bad = [];
     await page.goto('about:blank');
@@ -328,14 +328,14 @@ changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
       await page.keyboard.press('ArrowDown'); await wait();
       const s4 = await state();
       if (s4.role !== 'row' || s4.label === s1.label) bad.push('Arrow Down moves to the next group row (' + JSON.stringify(s4) + ')');
-      // the view menu
-      await page.evaluate(() => document.querySelector('main .plx-data-table .plx-data-table__cell--view button').focus());
-      await page.keyboard.press('Enter'); await wait();
-      const v0 = await state();
-      if (v0.role !== 'menuitemradio') bad.push('the view menu opens on its first row height (' + JSON.stringify(v0) + ')');
-      await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter'); await wait();
-      const step = await page.evaluate(() => document.querySelector('main .plx-data-table[data-plx-row-height]').getAttribute('data-plx-row-height'));
-      if (step !== 'medium') bad.push('the view menu sets the row height (now ' + step + ')');
+      // no view button of its own (owner, 2026-10-14: the row height lives in the command bar's View menu); the header's
+      // chevron button opens the column menu
+      if (await page.evaluate(() => !!document.querySelector('main .plx-data-table .plx-data-table__cell--view'))) bad.push('the table has no view button of its own');
+      const chev = await page.evaluate(() => { const c = document.querySelector('main .plx-data-table .tabulator-col[tabulator-field="qty"] .plx-data-table__menu-chevron'); if (!c) return false; c.parentElement.click(); return true; });
+      await wait();
+      if (!chev) bad.push('a column header has its menu chevron');
+      else if (!(await page.evaluate(() => !!document.querySelector('.tabulator-menu')))) bad.push('the header chevron opens the column menu');
+      await page.keyboard.press('Escape'); await wait();
       // the column menu
       await page.evaluate(() => document.querySelector('main .plx-data-table .tabulator-col[tabulator-field="qty"]').focus());
       await page.keyboard.down('Shift'); await page.keyboard.press('F10'); await page.keyboard.up('Shift'); await wait();

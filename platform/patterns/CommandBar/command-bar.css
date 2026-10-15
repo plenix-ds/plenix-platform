@@ -1,0 +1,16 @@
+/* Plenix · CommandBar (platform/patterns/CommandBar). The bar over a collection (owner, 2026-10-14): its bars stacked, each a
+   white framed bar (3A) holding one Toolbar on one line; fixed at the top of the scrolling content with the selection bar
+   under it. Each step of the button rule is drawn by the controls themselves (icons only, More): nothing is measured here. */
+.plx-command-bar{background-color:var(--plx-comp-command-bar-sticky-background);display:flex;flex-direction:column;inset-block-start:0;min-inline-size:0;padding-block-end:var(--plx-comp-command-bar-padding-block-end);position:sticky;row-gap:var(--plx-comp-command-bar-gap);z-index:var(--plx-comp-command-bar-sticky-z-index);}
+/* sticky={false}: in the flow (a bar inside a panel or a dialog that does not scroll) */
+.plx-command-bar[data-plx-position="static"]{position:static;}
+/* the bar: white and framed; the opened search lies across it (SearchField collapsed) */
+.plx-command-bar__bar{align-items:center;background-color:var(--plx-comp-command-bar-background);border-block-end-color:var(--plx-comp-command-bar-border-color);border-block-end-style:solid;border-block-end-width:var(--plx-comp-command-bar-border-width);border-block-start-color:var(--plx-comp-command-bar-border-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-command-bar-border-width);border-end-end-radius:var(--plx-comp-command-bar-radius);border-end-start-radius:var(--plx-comp-command-bar-radius);border-inline-end-color:var(--plx-comp-command-bar-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-command-bar-border-width);border-inline-start-color:var(--plx-comp-command-bar-border-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-command-bar-border-width);border-start-end-radius:var(--plx-comp-command-bar-radius);border-start-start-radius:var(--plx-comp-command-bar-radius);box-sizing:border-box;display:flex;min-inline-size:0;padding-block-end:var(--plx-comp-command-bar-padding-block);padding-block-start:var(--plx-comp-command-bar-padding-block);padding-inline-end:var(--plx-comp-command-bar-padding-inline);padding-inline-start:var(--plx-comp-command-bar-padding-inline);position:relative;}
+/* one line: the bar never wraps; it steps down (icons only, the search as its icon, More) until it fits */
+.plx-command-bar__row{column-gap:var(--plx-comp-command-bar-side-gap);flex-basis:0%;flex-grow:1;flex-shrink:1;flex-wrap:nowrap;min-inline-size:0;}
+.plx-command-bar__row>.plx-toolbar__group{column-gap:var(--plx-comp-command-bar-group-gap);flex-shrink:0;flex-wrap:nowrap;}
+.plx-command-bar__count{color:var(--plx-comp-command-bar-count-text);white-space:nowrap;}
+/* a danger command: a ghost button in the danger color */
+.plx-button.plx-command-bar__danger{--plx-comp-button-ghost-hover-text:var(--plx-comp-command-bar-danger-hover-text);--plx-comp-button-ghost-text:var(--plx-comp-command-bar-danger-text);}
+/* the divider before the danger commands (and, in the selection bar, before Select all and Clear) */
+.plx-bar-actions__divider{block-size:var(--plx-comp-command-bar-divider-height);border-inline-start-color:var(--plx-comp-command-bar-divider-color);border-inline-start-style:solid;border-inline-start-width:var(--plx-comp-command-bar-divider-width);flex-shrink:0;inline-size:0;}

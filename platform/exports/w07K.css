@@ -1,0 +1,3 @@
+/* Library part w07K (the command bar): CommandBar and the find-and-view panels. */
+@import url("../patterns/CommandBar/command-bar.css");
+@import url("../patterns/CommandBar/find-panel.css");

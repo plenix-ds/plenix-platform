@@ -1,0 +1,69 @@
+/* Plenix · SortPanel
+   Summary: The command bar's Sort (owner, 2026-10-14: "just like Airtable"): a "Sort" button that opens a panel of sort
+     levels, each a field and a direction in the field type's words (A → Z, 1 → 9, Oldest → newest); "Add another sort";
+     while the collection is grouped the panel reads "Sort within groups by".
+   Usage:
+     const [sort, setSort] = React.useState([]);
+     <SortPanel fields={fields} value={sort} onChange={setSort} grouped={groups.length > 0} />
+     <DataTable … sort={sort} />      (or useCollectionView)
+   Props:
+     fields: the collection's fields (utils/fields.js)
+     value: the levels: [{ field, dir: "asc" | "desc" }], the first the main sort
+     onChange(value): runs on every change
+     grouped: the collection is grouped: the title reads "Sort within groups by"; default false
+     inline: draws the panel alone (open, in a frame); default false
+     strings: { label: "Sort", title: "Sort by", within: "Sort within groups by", info, empty, add: "Add a sort",
+       addAnother: "Add another sort", remove: "Remove the sort by {name}", removeTip: "Remove sort", field: "Field",
+       direction: "Direction", moved, row, reorder, moveUp, moveDown }
+   Behavior:
+     The bar button reads "Sort" (never reworded); with levels it takes the tint and a count badge.
+     Each row: the field (its type icon), the direction, remove (×) and the handle. A field is used once: the pickers
+       offer the fields not yet used. Rows move by drag, the handle's menu or Alt + Arrow Up / Down, announced.
+     The panel opens with the focus on its first row (else the Add button).
+   Notes:
+     The panel holds the levels; the page applies them (DataTable sort, or compareLevels on its rows). */
+import React from 'react';
+import { Button } from '../../components/Button/Button.jsx';
+import { Text } from '../../components/Text/Text.jsx';
+import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { PanelTrigger, PanelHead, Pick, useReorder, REORDER_STRINGS, fill } from '../CommandBar/panel-parts.jsx';
+import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf } from '../../utils/fields.js';
+
+const STRINGS = Object.assign({
+  label: 'Sort', title: 'Sort by', within: 'Sort within groups by', info: 'The rows are ordered by the first field, then by the next where the first is the same.',
+  empty: 'No sort: the rows keep their own order.', add: 'Add a sort', addAnother: 'Add another sort', remove: 'Remove the sort by {name}', removeTip: 'Remove sort',
+  field: 'Field', direction: 'Direction',
+}, REORDER_STRINGS);
+export const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
+
+export function SortPanel({ fields = [], value = [], onChange, grouped = false, inline = false, strings }) {
+  const t = Object.assign({}, STRINGS, strings);
+  const levels = value;
+  const ro = useReorder(levels, onChange, (l) => fieldOf(fields, l.field).label, t);
+  const put = (i, ch) => onChange(levels.map((l, j) => (j === i ? Object.assign({}, l, ch) : l)));
+  const free = fields.filter((f) => !levels.some((l) => l.field === f.value));
+  const body = (
+    <div className="plx-find-panel plx-find-panel--sort">
+      <PanelHead title={grouped ? t.within : t.title} info={t.info} />
+      <div className="plx-find-panel__rows" ref={ro.box}>
+        {levels.length ? null : <Text variant="secondary">{t.empty}</Text>}
+        {levels.map((l, i) => {
+          const f = fieldOf(fields, l.field), words = DIRECTIONS[kindOf(f)];
+          return (
+            <div key={l.field} {...ro.rowProps(i, f.label)}>
+              <Pick label={t.field} value={l.field} options={fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption)} onChange={(v) => put(i, { field: v })} />
+              <Pick label={t.direction} size="dir" value={l.dir} options={[{ value: 'asc', label: words[0] }, { value: 'desc', label: words[1] }]} onChange={(v) => put(i, { dir: v })} />
+              <Tooltip content={t.removeTip}><Button variant="ghost" icon="close" iconOnly label={fill(t.remove, { name: f.label })} onClick={() => onChange(levels.filter((_, j) => j !== i))} /></Tooltip>
+              {ro.handle(i, f.label)}
+            </div>
+          );
+        })}
+        {ro.status}
+      </div>
+      <div className="plx-find-panel__add">
+        <Button size="sm" variant="ghost" icon="plus" disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc' }))}>{levels.length ? t.addAnother : t.add}</Button>
+      </div>
+    </div>
+  );
+  return <PanelTrigger icon="sort" label={t.label} count={levels.length} inline={inline}>{body}</PanelTrigger>;
+}

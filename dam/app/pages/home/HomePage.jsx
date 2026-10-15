@@ -172,17 +172,18 @@ export function HomePage() {
       </>} />
   );
 
-  /* ── bulk actions ── */
+  /* ── bulk actions: the selection bar (2B, owner 2026-10-14) under the toolbar, always shown; each command disabled with a
+     tooltip saying why until it applies; Delete last ── */
   const catBulk = (
     <BulkActions count={selCats.length} total={D.CATEGORY_CARDS.length} noun="category" plural="categories" onSelectAll={() => setSelCats(D.CATEGORY_CARDS.map((c) => c.id))} onClear={() => setSelCats([])}
       label="Category actions" actions={[
         { id: 'dl', label: 'Download', icon: 'download-tray', items: [{ id: 'd', label: 'Download', onSelect: () => bulk('Download category') }, { id: 'da', label: 'Download as', onSelect: () => bulk('Download Category as') }] },
-        { id: 'del', label: 'Delete', icon: 'trash-detail', danger: true, onSelect: () => bulk('Delete category') },
         { id: 'move', label: 'Move', icon: 'move', onSelect: () => bulk('Move category') },
         { id: 'rename', label: 'Rename', icon: 'rename', single: true, onSelect: () => bulk('Rename category') },
         { id: 'meta', label: 'Edit metadata', icon: 'fields', single: true, onSelect: () => bulk('Edit category') },
         { id: 'status', label: 'Change status', icon: 'circle-check', onSelect: () => bulk('Change category status') },
         { id: 'share', label: 'Share', icon: 'share', onSelect: () => bulk('Share category') },
+        { id: 'del', label: 'Delete', icon: 'trash-detail', danger: true, onSelect: () => bulk('Delete category') },
       ]} />
   );
   const item = (label, action, extra) => ({ id: action, label, onSelect: () => bulk(action), ...extra });

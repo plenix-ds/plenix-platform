@@ -40,3 +40,8 @@
    active remove cell shows the button's focus ring while the focus stays in the field */
 .plx-search__cell{align-items:center;align-self:stretch;column-gap:var(--plx-comp-search-option-gap);display:flex;flex-grow:1;min-inline-size:0;}
 .plx-search__remove-cell{align-items:center;display:inline-flex;flex-shrink:0;}
+/* the command bar's search (owner, 2026-10-14): one fixed width in every bar, never squeezed; the find field of a panel
+   fills it. Narrow, the search icon opens the field across the bar (the nearest positioned box), over its controls */
+.plx-search--bar{flex-grow:0;flex-shrink:0;inline-size:var(--plx-comp-search-bar-width);}
+.plx-search--fill{inline-size:100%;}
+.plx-search__over{align-items:center;background-color:var(--plx-comp-search-over-background);border-radius:var(--plx-comp-search-over-radius);box-sizing:border-box;display:flex;inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;padding-inline-end:var(--plx-comp-search-over-padding-inline);padding-inline-start:var(--plx-comp-search-over-padding-inline);position:absolute;z-index:var(--plx-comp-search-over-z-index);}

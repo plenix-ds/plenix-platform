@@ -538,16 +538,6 @@
       "$value": "{plx-sys.radius-control}",
       "$type": "dimension"
     },
-    "button-caret-width": {
-      "$value": "{plx-ref.size-12px}",
-      "$type": "dimension",
-      "$description": "The caret is the arrow_drop_down glyph in its whole square (the icon set includes its own padding), 12px like the Select and Combobox chevrons (owner, 2026-10-10: the caret was a dot in a 10x6 box)."
-    },
-    "button-caret-height": {
-      "$value": "{plx-ref.size-12px}",
-      "$type": "dimension",
-      "$description": "The caret is the arrow_drop_down glyph in its whole square (the icon set includes its own padding), 12px like the Select and Combobox chevrons (owner, 2026-10-10: the caret was a dot in a 10x6 box)."
-    },
     "button-font-family": {
       "$value": "{plx-sys.font-label}",
       "$type": "fontFamily"
@@ -7791,86 +7781,76 @@
       "$type": "dimension"
     },
     "selection-summary-count-font-weight": {
-      "$value": "{plx-sys.font-weight-semibold}",
-      "$type": "fontWeight"
+      "$value": "{plx-sys.font-weight-medium}",
+      "$type": "fontWeight",
+      "$description": "\"N selected\": the label weight; the number is in the data font."
     },
     "bulk-actions-background": {
-      "$value": "{plx-sys.state-selected}",
-      "$type": "color"
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "The selection bar is white like the command bar (owner, 2026-10-14: 3A, never tinted by a selection)."
     },
     "bulk-actions-border-color": {
-      "$value": "{plx-sys.selected-border}",
-      "$type": "color"
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "The selection bar's frame, the command bar's."
     },
     "bulk-actions-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
-      "$type": "dimension"
+      "$value": "{plx-sys.radius-control-8px}",
+      "$type": "dimension",
+      "$description": "The selection bar's corners, the command bar's."
     },
     "bulk-actions-border-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
     "bulk-actions-gap": {
-      "$value": "{plx-sys.space-cluster-md}",
-      "$type": "dimension"
+      "$value": "{plx-sys.space-cluster-sm}",
+      "$type": "dimension",
+      "$description": "The space between the commands side and the count at the end."
     },
     "bulk-actions-padding-block": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "The space above and below the controls, the command bar's."
     },
     "bulk-actions-padding-inline": {
-      "$value": "{plx-sys.space-inset-md}",
-      "$type": "dimension"
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension",
+      "$description": "The space before and after the controls, the command bar's."
     },
     "bulk-actions-divider-height": {
       "$value": "{plx-ref.size-20px}",
       "$type": "dimension"
     },
     "bulk-actions-divider-border-inline-start-color": {
-      "$value": "{plx-sys.selected-border}",
-      "$type": "color"
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "The divider before Select all and Clear."
     },
     "bulk-actions-divider-border-inline-start-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "bulk-actions-list-height": {
-      "$value": "{plx-sys.control-height-toolbar}",
-      "$type": "dimension"
-    },
-    "bulk-actions-row-gap": {
-      "$value": "{plx-sys.space-stack-xs}",
-      "$type": "dimension",
-      "$description": "Between the summary and the actions when a narrow bar wraps them onto two rows."
-    },
-    "bulk-actions-list-min-width": {
-      "$value": "{plx-ref.size-72px}",
-      "$type": "dimension",
-      "$description": "The least room the actions keep in a narrow bar: the More control (its label and chevron) always fits, and the selection summary wraps instead (reflow at 320px, Platforms Standard 3.5)."
-    },
     "bulk-actions-list-gap": {
-      "$value": "{plx-sys.space-cluster-sm}",
-      "$type": "dimension"
-    },
-    "bulk-actions-list-overflow-clip-margin": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "bulk-actions-list-row-gap": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
+      "$value": "{plx-sys.space-cluster-xs}",
+      "$type": "dimension",
+      "$description": "The space between the commands, Select all and Clear (ghost buttons sit close, as in the command bar)."
     },
     "bulk-actions-empty-background": {
-      "$value": "{plx-sys.surface-sunken}",
-      "$type": "color"
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color",
+      "$description": "Nothing selected: the same white bar (owner, 2026-10-14: the bar never changes look with the selection)."
     },
     "bulk-actions-empty-border-color": {
-      "$value": "{plx-sys.fill-neutral-border}",
-      "$type": "color"
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "Nothing selected: the same frame."
     },
     "bulk-actions-empty-divider-border-inline-start-color": {
-      "$value": "{plx-sys.fill-neutral-border}",
-      "$type": "color"
+      "$value": "{plx-sys.border-default}",
+      "$type": "color",
+      "$description": "Nothing selected: the same divider."
     },
     "bulk-actions-empty-selection-summary-count-text": {
       "$value": "{plx-sys.content-muted}",

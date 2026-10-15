@@ -1,0 +1,8 @@
+{
+  "$description": "Library part w07K (the command bar): the iOS and Android counterparts of the Filter panel, Grouping and Reordering (the Command bar, Sort control and Quick filters keep their pages' mappings in web-native-map.json). Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "navigation|Filter panel": { "ios": ["ios-navigation|Searching"], "android": ["android-navigation|Search and filters"] },
+    "patterns|Grouping": { "ios": ["ios-data-display|Lists and tables"], "android": ["android-data-display|List"] },
+    "patterns|Reordering": { "ios": ["ios-patterns|Drag and drop"], "android": ["android-data-display|List"] }
+  }
+}

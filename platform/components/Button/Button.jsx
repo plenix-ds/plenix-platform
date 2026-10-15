@@ -16,7 +16,8 @@
      iconEnd: an <Icon> (or an icon name) after the label
      iconOnly: a square button with only its icon; give it a label (default false)
      label: the accessible name (aria-label); an icon-only button falls back to string children
-     caret: the button opens a menu: a chevron after the label (default false)
+     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
+       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
      expanded: sets aria-expanded, for a button that opens a menu
      pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
      selected: shows the selected state without a toggle role (default false)

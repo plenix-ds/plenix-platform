@@ -133,8 +133,6 @@
   /* shape */
   --plx-comp-button-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-button-radius: var(--plx-sys-radius-control);
-  --plx-comp-button-caret-width: var(--plx-ref-size-12px);
-  --plx-comp-button-caret-height: var(--plx-ref-size-12px);
   --plx-comp-button-font-family: var(--plx-sys-font-label);
   --plx-comp-button-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-button-caret-duration: var(--plx-sys-motion-duration-fast);
@@ -1912,26 +1910,21 @@
   --plx-comp-selection-summary-row-gap: var(--plx-sys-space-stack-xs);
   --plx-comp-selection-summary-count-text: var(--plx-sys-content-default);
   --plx-comp-selection-summary-count-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-selection-summary-count-font-weight: var(--plx-sys-font-weight-semibold);
-  --plx-comp-bulk-actions-background: var(--plx-sys-state-selected);
-  --plx-comp-bulk-actions-border-color: var(--plx-sys-selected-border);
-  --plx-comp-bulk-actions-radius: var(--plx-sys-radius-surface-8px);
+  --plx-comp-selection-summary-count-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-bulk-actions-background: var(--plx-sys-surface-default);
+  --plx-comp-bulk-actions-border-color: var(--plx-sys-border-default);
+  --plx-comp-bulk-actions-radius: var(--plx-sys-radius-control-8px);
   --plx-comp-bulk-actions-border-width: var(--plx-sys-border-width-thin);
-  --plx-comp-bulk-actions-gap: var(--plx-sys-space-cluster-md);
-  --plx-comp-bulk-actions-padding-block: var(--plx-sys-space-inset-xs);
-  --plx-comp-bulk-actions-padding-inline: var(--plx-sys-space-inset-md);
+  --plx-comp-bulk-actions-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-bulk-actions-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-bulk-actions-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-bulk-actions-divider-height: var(--plx-ref-size-20px);
-  --plx-comp-bulk-actions-divider-border-inline-start-color: var(--plx-sys-selected-border);
+  --plx-comp-bulk-actions-divider-border-inline-start-color: var(--plx-sys-border-default);
   --plx-comp-bulk-actions-divider-border-inline-start-width: var(--plx-sys-border-width-thin);
-  --plx-comp-bulk-actions-list-height: var(--plx-sys-control-height-toolbar);
-  --plx-comp-bulk-actions-row-gap: var(--plx-sys-space-stack-xs);
-  --plx-comp-bulk-actions-list-min-width: var(--plx-ref-size-72px);
-  --plx-comp-bulk-actions-list-gap: var(--plx-sys-space-cluster-sm);
-  --plx-comp-bulk-actions-list-overflow-clip-margin: var(--plx-ref-space-4px);
-  --plx-comp-bulk-actions-list-row-gap: var(--plx-ref-space-8px);
-  --plx-comp-bulk-actions-empty-background: var(--plx-sys-surface-sunken);
-  --plx-comp-bulk-actions-empty-border-color: var(--plx-sys-fill-neutral-border);
-  --plx-comp-bulk-actions-empty-divider-border-inline-start-color: var(--plx-sys-fill-neutral-border);
+  --plx-comp-bulk-actions-list-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-bulk-actions-empty-background: var(--plx-sys-surface-default);
+  --plx-comp-bulk-actions-empty-border-color: var(--plx-sys-border-default);
+  --plx-comp-bulk-actions-empty-divider-border-inline-start-color: var(--plx-sys-border-default);
   --plx-comp-bulk-actions-empty-selection-summary-count-text: var(--plx-sys-content-muted);
   --plx-comp-bulk-actions-empty-selection-summary-count-font-weight: var(--plx-sys-font-weight-regular);
   --plx-comp-content-grid-gap: var(--plx-sys-card-grid-gap);
@@ -2554,6 +2547,9 @@
   --plx-comp-brand-xl-clear-space: var(--plx-sys-space-inset-sm);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-button-caret-color: var(--plx-sys-content-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-code-background: var(--plx-sys-fill-neutral);
   --plx-comp-code-text: var(--plx-sys-content-default);
   --plx-comp-code-font-family: var(--plx-sys-font-code);
@@ -2612,6 +2608,26 @@
   --plx-comp-combobox-loading-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-combobox-loading-padding-inline: var(--plx-sys-space-inset-md);
   --plx-comp-combobox-error-text: var(--plx-sys-feedback-danger-content);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-command-bar-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-command-bar-sticky-background: var(--plx-sys-surface-canvas);
+  --plx-comp-command-bar-sticky-z-index: var(--plx-sys-layer-sticky);
+  --plx-comp-command-bar-padding-block-end: var(--plx-sys-space-stack-sm);
+  --plx-comp-command-bar-background: var(--plx-sys-surface-default);
+  --plx-comp-command-bar-border-color: var(--plx-sys-border-default);
+  --plx-comp-command-bar-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-command-bar-radius: var(--plx-sys-radius-control-8px);
+  --plx-comp-command-bar-padding-block: var(--plx-sys-space-inset-sm);
+  --plx-comp-command-bar-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-command-bar-group-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-command-bar-side-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-command-bar-count-text: var(--plx-sys-content-muted);
+  --plx-comp-command-bar-danger-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-command-bar-danger-hover-text: var(--plx-sys-feedback-danger-content);
+  --plx-comp-command-bar-divider-height: var(--plx-ref-size-20px);
+  --plx-comp-command-bar-divider-color: var(--plx-sys-border-default);
+  --plx-comp-command-bar-divider-width: var(--plx-sys-border-width-thin);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-command-menu-gap: var(--plx-sys-space-stack-sm);
@@ -2704,6 +2720,7 @@
   --plx-comp-data-table-header-wrap-height: calc(var(--plx-sys-data-table-row-height) + var(--plx-ref-size-16px));
   --plx-comp-data-table-header-title-line-height: var(--plx-ref-size-16px);
   --plx-comp-data-table-header-type-icon-text: var(--plx-sys-data-table-text-muted);
+  --plx-comp-data-table-menu-chevron-text: var(--plx-sys-content-muted);
 }
 :root,[data-plx-density="standard"]{
   --plx-comp-data-table-text-line-height: var(--plx-ref-size-20px);
@@ -2828,6 +2845,53 @@
   --plx-comp-file-input-item-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-file-input-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-file-input-icon-color: var(--plx-sys-content-muted);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-find-panel-min-width: var(--plx-ref-size-400px);
+  --plx-comp-find-panel-gap: var(--plx-sys-space-stack-md);
+  --plx-comp-find-panel-head-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-find-panel-title-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-find-panel-actions-gap: var(--plx-sys-space-cluster-xs);
+  --plx-comp-find-panel-rows-gap: var(--plx-sys-space-stack-sm);
+  --plx-comp-find-panel-row-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-find-panel-row-radius: var(--plx-sys-radius-control-4px);
+  --plx-comp-find-panel-row-dragging-opacity: var(--plx-sys-state-dragged-opacity);
+  --plx-comp-find-panel-frame-border-color: var(--plx-sys-border-default);
+  --plx-comp-find-panel-frame-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-find-panel-frame-radius: var(--plx-sys-radius-control-8px);
+  --plx-comp-find-panel-frame-padding: var(--plx-sys-space-inset-sm);
+  --plx-comp-find-panel-nested-background: var(--plx-sys-surface-sunken);
+  --plx-comp-find-panel-join-width: var(--plx-ref-size-80px);
+  --plx-comp-find-panel-add-gap: var(--plx-sys-space-cluster-sm);
+  --plx-comp-find-panel-handle-text: var(--plx-sys-content-muted);
+  --plx-comp-find-panel-placeholder-text: var(--plx-sys-content-muted);
+  --plx-comp-find-panel-pick-field-width: var(--plx-ref-size-160px);
+  --plx-comp-find-panel-pick-dir-width: var(--plx-ref-size-160px);
+  --plx-comp-find-panel-pick-op-width: var(--plx-ref-size-140px);
+  --plx-comp-find-panel-pick-value-width: var(--plx-ref-size-220px);
+  --plx-comp-find-panel-pick-join-width: var(--plx-ref-size-80px);
+  --plx-comp-find-panel-pills-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-find-panel-pill-radius: var(--plx-sys-radius-compact-4px);
+  --plx-comp-find-panel-pill-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-find-panel-pill-font-size: var(--plx-ref-font-size-11);
+  --plx-comp-find-panel-pill-font-weight: var(--plx-sys-font-weight-medium);
+  --plx-comp-find-panel-pill-padding-inline: var(--plx-sys-space-inset-xs);
+  --plx-comp-find-panel-checklist-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-find-panel-range-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-find-panel-frame-background: var(--plx-sys-surface-default);
+  --plx-comp-find-panel-frame-outer-radius: var(--plx-sys-radius-menu-8px);
+  --plx-comp-find-panel-frame-outer-padding: var(--plx-sys-space-inset-md);
+  --plx-comp-columns-list-gap: var(--plx-sys-space-stack-xs);
+  --plx-comp-columns-list-row-gap: var(--plx-sys-space-inline-sm);
+  --plx-comp-columns-list-row-padding: var(--plx-sys-space-inset-xs);
+  --plx-comp-columns-list-row-radius: var(--plx-sys-radius-control-4px);
+  --plx-comp-columns-list-row-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-columns-list-name-min-width: var(--plx-ref-size-120px);
+  --plx-comp-columns-list-first-text: var(--plx-sys-content-muted);
+  --plx-comp-columns-list-first-gap: var(--plx-sys-space-inline-xs);
+  --plx-comp-find-panel-focus-color: var(--plx-sys-focus-ring-color);
+  --plx-comp-find-panel-focus-width: var(--plx-sys-border-width-medium);
+  --plx-comp-find-panel-focus-offset: var(--plx-sys-focus-ring-offset);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-floating-action-button-border-width: var(--plx-sys-border-width-thin);
@@ -3386,6 +3450,11 @@
   --plx-comp-search-option-description-text: var(--plx-sys-content-subtle);
   --plx-comp-search-option-description-font-size: var(--plx-ref-font-size-11);
   --plx-comp-search-match-font-weight: var(--plx-sys-font-weight-semibold);
+  --plx-comp-search-bar-width: var(--plx-ref-size-240px);
+  --plx-comp-search-over-background: var(--plx-sys-surface-default);
+  --plx-comp-search-over-radius: var(--plx-sys-radius-control-8px);
+  --plx-comp-search-over-padding-inline: var(--plx-sys-space-inset-sm);
+  --plx-comp-search-over-z-index: var(--plx-sys-layer-raised);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-slider-track-height: var(--plx-ref-size-4px);

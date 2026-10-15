@@ -145,6 +145,11 @@
       "$value": "{plx-sys.data-table-text-muted}",
       "$type": "color",
       "$description": "DataTable column header: the type icon's color."
+    },
+    "data-table-menu-chevron-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "DataTable column header: the column menu's chevron button (the thin outline chevron, muted; owner, 2026-10-14), shown while the header is hovered."
     }
   }
 }

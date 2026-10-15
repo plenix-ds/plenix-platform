@@ -176,4 +176,13 @@ export { useSearchHistory } from './hooks/useSearchHistory.js';
 export { InlineEdit } from './components/InlineEdit/InlineEdit.jsx';
 export { RichTextEditor } from './components/RichTextEditor/RichTextEditor.jsx';
 export { cleanRichText } from './components/RichTextEditor/RichTextEditor.jsx';
+export { CommandBar, CommandBarButton, CommandBarSearch, useCommandBar } from './patterns/CommandBar/CommandBar.jsx';
+export { FilterPanel } from './patterns/FilterPanel/FilterPanel.jsx';
+export { SortPanel } from './patterns/SortPanel/SortPanel.jsx';
+export { GroupPanel } from './patterns/GroupPanel/GroupPanel.jsx';
+export { ColumnsMenu, ManageColumnsDialog } from './patterns/ColumnsMenu/ColumnsMenu.jsx';
+export { ViewMenu } from './patterns/ViewMenu/ViewMenu.jsx';
+export { QuickFilter } from './patterns/QuickFilter/QuickFilter.jsx';
+export { matchesFilter, matchesDate, compareLevels, conditionsOf } from './utils/fields.js';
+export { useCollectionView } from './hooks/useCollectionView.js';
 /* END library parts */
