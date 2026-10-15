@@ -1,0 +1,343 @@
+{
+ "android-feedback|Progress indicators": {
+  "summary": "Plenix progress on Android uses the Material 3 LinearProgressIndicator and CircularProgressIndicator, kept native in behavior (progress semantics for TalkBack, Material’s motion) and styled with the Plenix tokens: an 8 dp pill track in the neutral fill with the fill in the tone’s solid color, no gap and no stop dot, a DM Sans label, and a small primary-colored spinner for short waits. Material’s default is a 4 dp track with a gap and a stop indicator, and a 40 dp circle; Plenix keeps Material’s structure and replaces the look.",
+  "variants": [
+   {
+    "name": "Progress bar",
+    "material": "Linear progress indicator, determinate",
+    "web": "feedback|Progress bar",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-fill",
+    "border": null,
+    "compose": "PlenixProgressBar(value, label = \"Uploading\")",
+    "views": "LinearProgressIndicator, setProgressCompat(value, true)",
+    "use": "Work whose length is known: an upload, an import, steps done of a total."
+   },
+   {
+    "name": "Small progress bar",
+    "material": "Linear progress indicator, 4 dp",
+    "web": "feedback|Progress bar",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-fill",
+    "border": null,
+    "compose": "PlenixProgressBar(value, small = true)",
+    "views": "trackThickness = px(PlenixComponent.progressBarSmTrackHeight)",
+    "use": "Inside a row, a card or a table cell."
+   },
+   {
+    "name": "Indeterminate bar",
+    "material": "Linear progress indicator, indeterminate",
+    "web": "feedback|Indeterminate loading",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-fill",
+    "border": null,
+    "compose": "PlenixProgressBar(value = null)",
+    "views": "isIndeterminate = true",
+    "use": "Work of unknown length that belongs to a region, such as a list loading at its top."
+   },
+   {
+    "name": "Spinner",
+    "material": "Circular progress indicator, indeterminate",
+    "web": "feedback|Spinner",
+    "background": null,
+    "content": "plx-comp-spinner-border-left-color",
+    "border": null,
+    "compose": "PlenixSpinner(size = SpinnerSize.Md)",
+    "views": "CircularProgressIndicator, isIndeterminate = true, indicatorSize and trackThickness",
+    "use": "A short wait inside a control or beside a label, such as Saving."
+   },
+   {
+    "name": "Circular progress",
+    "material": "Circular progress indicator, determinate",
+    "web": "feedback|Circular progress",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-fill",
+    "border": null,
+    "compose": "CircularProgressIndicator(progress = { value }, …) with the Plenix colors",
+    "views": "CircularProgressIndicator, setProgressCompat(value, true)",
+    "use": "A known amount in a small square place."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Track",
+    "about": "The full length, a pill in the neutral fill."
+   },
+   {
+    "part": "B",
+    "name": "Indicator",
+    "about": "The done part, in the tone’s solid color; moves along the track when indeterminate."
+   },
+   {
+    "part": "C",
+    "name": "Label",
+    "about": "An optional name above the bar, such as Uploading 3 files; also the bar’s TalkBack name."
+   },
+   {
+    "part": "D",
+    "name": "Value",
+    "about": "An optional percentage or count at the end of the label row, muted."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Track height",
+    "token": "plx-comp-progress-bar-track-height, plx-comp-progress-bar-sm-track-height",
+    "value": "8 dp; 4 dp small",
+    "material": "4 dp",
+    "compose": "Modifier.height(if (small) PlenixComponent.progressBarSmTrackHeight else PlenixComponent.progressBarTrackHeight)",
+    "views": "trackThickness = px(PlenixComponent.progressBarTrackHeight)",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Track color",
+    "token": "plx-comp-progress-bar-track-background",
+    "value": "fillNeutral",
+    "material": "secondaryContainer",
+    "compose": "trackColor = PlenixColors.fillNeutral.current()",
+    "views": "trackColor = argb(PlenixColors.fillNeutral.light, PlenixColors.fillNeutral.dark)",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Shape",
+    "token": "plx-comp-progress-bar-track-radius, plx-comp-progress-bar-fill-radius",
+    "value": "A pill: fully rounded ends",
+    "material": "Rounded ends",
+    "compose": "strokeCap = StrokeCap.Round",
+    "views": "trackCornerRadius = trackThickness / 2",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Gap and stop indicator",
+    "token": "None: a Plenix bar is one continuous track",
+    "value": "No gap, no stop dot",
+    "material": "4 dp gap and a 4 dp stop indicator",
+    "compose": "gapSize = 0.dp, drawStopIndicator = {}",
+    "views": "indicatorTrackGapSize = 0; trackStopIndicatorSize = 0",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Indicator color",
+    "token": "plx-comp-progress-bar-info-fill, plx-comp-progress-bar-success-fill, plx-comp-progress-bar-warning-fill, plx-comp-progress-bar-danger-fill, plx-comp-progress-bar-neutral-fill",
+    "value": "Per tone: info (default), success, warning, danger or neutral solid; or a data color",
+    "material": "primary",
+    "compose": "color = PlenixColors.feedbackInfoSolid.current() (or the tone’s Solid)",
+    "views": "setIndicatorColor(argb(PlenixColors.feedbackInfoSolid.light, PlenixColors.feedbackInfoSolid.dark))",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Value motion",
+    "token": "plx-comp-progress-bar-fill-duration, plx-comp-progress-bar-fill-easing",
+    "value": "0.2 s to a new value",
+    "material": "ProgressIndicatorDefaults.ProgressAnimationSpec",
+    "compose": "animateFloatAsState(value, tween(durationMillis = PlenixComponent.progressBarFillDuration))",
+    "views": "setProgressCompat(value, true)",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Label",
+    "token": "plx-comp-progress-bar-label-text, plx-comp-progress-bar-label-font-size",
+    "value": "DM Sans semibold 14 sp on 20 sp, Label large (PlenixPlatform.textLabelSize), contentDefault; 4 dp above the bar",
+    "material": "None (the app adds a Text)",
+    "compose": "Text(label, style = textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, PlenixPlatform.textLabelWeight)); Arrangement.spacedBy(PlenixSpace.spaceStackXs)",
+    "views": "label.textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, R.font.dm_sans_semibold)",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/guidelines"
+   },
+   {
+    "part": "D",
+    "attribute": "Value",
+    "token": "plx-comp-progress-bar-value-text, plx-comp-progress-bar-value-font-family",
+    "value": "The data font (PlenixFonts.MONO), 12 sp, Body small (PlenixPlatform.textDataSize), contentMuted; 8 dp from the label",
+    "material": "None",
+    "compose": "Text(percent, style = TextStyle(fontFamily = FontFamily(Font(R.font.dm_mono_regular)), fontSize = PlenixPlatform.textDataSize, lineHeight = PlenixPlatform.textDataLineHeight), color = PlenixColors.contentMuted.current())",
+    "views": "value.textRole(PlenixPlatform.textDataSize, PlenixPlatform.textDataLineHeight, R.font.dm_mono_regular)",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/guidelines"
+   },
+   {
+    "part": "A",
+    "attribute": "Spinner size and stroke",
+    "token": "plx-comp-spinner-sm-width, plx-comp-spinner-md-width, plx-comp-spinner-lg-width, plx-comp-spinner-md-border-width, plx-comp-spinner-lg-border-width, plx-comp-spinner-sm-border-width",
+    "value": "12, 16 (default) or 24 dp; a 2 dp stroke, 3 dp at 24 dp",
+    "material": "40 dp, 4 dp stroke",
+    "compose": "CircularProgressIndicator(Modifier.size(PlenixComponent.spinnerMdWidth), strokeWidth = PlenixComponent.spinnerMdBorderWidth)",
+    "views": "indicatorSize = px(PlenixComponent.spinnerMdWidth); trackThickness = px(PlenixComponent.spinnerMdBorderWidth)",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Spinner color",
+    "token": "plx-comp-spinner-border-left-color",
+    "value": "actionPrimaryBackground on a clear track",
+    "material": "primary on secondaryContainer",
+    "compose": "color = PlenixColors.actionPrimaryBackground.current(), trackColor = Color.Transparent",
+    "views": "setIndicatorColor(argb(PlenixColors.actionPrimaryBackground.light, PlenixColors.actionPrimaryBackground.dark)); trackColor = Color.TRANSPARENT",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Accessible name",
+    "token": "The label, or the Spinner label (default Loading)",
+    "value": "TalkBack reads the name and the percentage",
+    "material": "Progress semantics from the indicator",
+    "compose": "Modifier.semantics(mergeDescendants = true) { contentDescription = label }; determinate indicators set progressBarRangeInfo",
+    "views": "contentDescription = label; the indicator reports its progress",
+    "follows": "Material 3: Progress indicators",
+    "followsUrl": "https://m3.material.io/components/progress-indicators/accessibility"
+   }
+  ],
+  "states": [
+   {
+    "state": "Determinate",
+    "token": "plx-comp-progress-bar-fill",
+    "compose": "LinearProgressIndicator(progress = { value })",
+    "views": "isIndeterminate = false; setProgressCompat(percent, true)"
+   },
+   {
+    "state": "Indeterminate",
+    "token": "plx-comp-progress-bar-indeterminate-fill-animation-duration",
+    "compose": "LinearProgressIndicator() without progress; Material’s motion",
+    "views": "isIndeterminate = true"
+   },
+   {
+    "state": "Tone: success, warning, danger",
+    "token": "plx-comp-progress-bar-success-fill, plx-comp-progress-bar-warning-fill, plx-comp-progress-bar-danger-fill",
+    "compose": "color = PlenixColors.feedbackSuccessSolid / feedbackWarningSolid / feedbackDangerSolid",
+    "views": "setIndicatorColor(…)"
+   },
+   {
+    "state": "Complete",
+    "token": "plx-comp-progress-bar-fill",
+    "compose": "progress = { 1f }, then remove the bar or show the result",
+    "views": "setProgressCompat(100, true); hide() fades it out"
+   },
+   {
+    "state": "Spinning (spinner)",
+    "token": "plx-comp-spinner-animation-duration",
+    "compose": "CircularProgressIndicator(); Material’s rotation",
+    "views": "CircularProgressIndicator isIndeterminate = true"
+   }
+  ],
+  "code": {
+   "compose": [
+    "import androidx.compose.material3.*",
+    "import androidx.compose.ui.graphics.StrokeCap",
+    "import plenix.tokens.*",
+    "",
+    "// Sans: the DM Sans family (PlenixFonts.SANS), set once in the app theme, e.g.",
+    "// val Sans = FontFamily(Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Normal), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.SemiBold), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Bold))",
+    "fun textRole(size: TextUnit, lineHeight: TextUnit, weight: Int) =",
+    "    TextStyle(fontFamily = Sans, fontSize = size, lineHeight = lineHeight, fontWeight = FontWeight(weight))",
+    "",
+    "enum class Tone { Info, Success, Warning, Danger, Neutral }",
+    "",
+    "@Composable",
+    "fun toneFill(tone: Tone): Color = when (tone) {",
+    "    Tone.Info -> PlenixColors.feedbackInfoSolid.current()",
+    "    Tone.Success -> PlenixColors.feedbackSuccessSolid.current()",
+    "    Tone.Warning -> PlenixColors.feedbackWarningSolid.current()",
+    "    Tone.Danger -> PlenixColors.feedbackDangerSolid.current()",
+    "    Tone.Neutral -> PlenixColors.feedbackNeutralSolid.current()",
+    "}",
+    "",
+    "/** The Plenix progress bar on Android: the Material 3 LinearProgressIndicator, styled with the Plenix tokens. */",
+    "@Composable",
+    "fun PlenixProgressBar(value: Float?, label: String? = null, showValue: Boolean = false, tone: Tone = Tone.Info, small: Boolean = false) {",
+    "    Column(Modifier.semantics(mergeDescendants = true) { label?.let { contentDescription = it } },",
+    "        verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+    "        if (label != null || showValue) Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceInlineSm)) {",
+    "            label?.let { Text(it, Modifier.weight(1f), style = textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, PlenixPlatform.textLabelWeight), color = PlenixColors.contentDefault.current()) }",
+    "            if (showValue && value != null) Text(\"${(value * 100).roundToInt()} %\", color = PlenixColors.contentMuted.current(),",
+    "                style = TextStyle(fontFamily = Mono, fontSize = PlenixPlatform.textDataSize, lineHeight = PlenixPlatform.textDataLineHeight))   // Mono: PlenixFonts.MONO",
+    "        }",
+    "        val bar = Modifier.fillMaxWidth().height(if (small) PlenixComponent.progressBarSmTrackHeight else PlenixComponent.progressBarTrackHeight)",
+    "        if (value != null) {",
+    "            val shown by animateFloatAsState(value, tween(durationMillis = PlenixComponent.progressBarFillDuration), label = \"progress\")",
+    "            LinearProgressIndicator(progress = { shown }, modifier = bar, color = toneFill(tone), trackColor = PlenixColors.fillNeutral.current(),",
+    "                strokeCap = StrokeCap.Round, gapSize = 0.dp, drawStopIndicator = {})",
+    "        } else {",
+    "            LinearProgressIndicator(modifier = bar, color = toneFill(tone), trackColor = PlenixColors.fillNeutral.current(),",
+    "                strokeCap = StrokeCap.Round, gapSize = 0.dp)",
+    "        }",
+    "    }",
+    "}",
+    "",
+    "enum class SpinnerSize(val diameter: Dp, val stroke: Dp) {\n    Sm(PlenixComponent.spinnerSmWidth, PlenixComponent.spinnerSmBorderWidth),\n    Md(PlenixComponent.spinnerMdWidth, PlenixComponent.spinnerMdBorderWidth),\n    Lg(PlenixComponent.spinnerLgWidth, PlenixComponent.spinnerLgBorderWidth)\n}",
+    "",
+    "/** The Plenix spinner: an indeterminate CircularProgressIndicator. */",
+    "@Composable",
+    "fun PlenixSpinner(size: SpinnerSize = SpinnerSize.Md, label: String = \"Loading\") {",
+    "    CircularProgressIndicator(Modifier.size(size.diameter).semantics { contentDescription = label },",
+    "        color = PlenixColors.actionPrimaryBackground.current(), strokeWidth = size.stroke, trackColor = Color.Transparent, strokeCap = StrokeCap.Round)",
+    "}",
+    "",
+    "// In a view",
+    "PlenixProgressBar(value = 7f / 12f, label = \"Tasks done\", showValue = true, tone = Tone.Success)",
+    "PlenixSpinner(label = \"Saving\")"
+   ],
+   "views": [
+    "import android.graphics.Color as AndroidColor",
+    "import com.google.android.material.progressindicator.CircularProgressIndicator",
+    "import com.google.android.material.progressindicator.LinearProgressIndicator",
+    "import plenix.tokens.*",
+    "",
+    "// Views read the same values from the generated plenix.tokens package through three helpers:",
+    "fun Context.argb(light: Color, dark: Color): Int {",
+    "    val night = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES",
+    "    return (if (night) dark else light).toArgb()",
+    "}",
+    "fun Context.px(dp: Dp): Int = (dp.value * resources.displayMetrics.density).roundToInt()",
+    "fun TextView.textRole(size: TextUnit, lineHeight: TextUnit, @FontRes font: Int) {",
+    "    typeface = ResourcesCompat.getFont(context, font)   // R.font.dm_sans_*: DM Sans (PlenixFonts.SANS) bundled with the app",
+    "    setTextSize(TypedValue.COMPLEX_UNIT_SP, size.value)",
+    "    TextViewCompat.setLineHeight(this, TypedValue.COMPLEX_UNIT_SP, lineHeight.value)",
+    "}",
+    "",
+    "/** Styles a LinearProgressIndicator with the Plenix tokens. */",
+    "fun LinearProgressIndicator.plenixBar(small: Boolean = false) {",
+    "    val c = context",
+    "    trackThickness = c.px(if (small) PlenixComponent.progressBarSmTrackHeight else PlenixComponent.progressBarTrackHeight)",
+    "    trackCornerRadius = trackThickness / 2",
+    "    indicatorTrackGapSize = 0",
+    "    trackStopIndicatorSize = 0",
+    "    trackColor = c.argb(PlenixColors.fillNeutral.light, PlenixColors.fillNeutral.dark)",
+    "    setIndicatorColor(c.argb(PlenixColors.feedbackInfoSolid.light, PlenixColors.feedbackInfoSolid.dark))",
+    "}",
+    "",
+    "/** Styles a CircularProgressIndicator as the Plenix spinner (the medium size and stroke). */",
+    "fun CircularProgressIndicator.plenixSpinner(label: String = \"Loading\") {",
+    "    val c = context",
+    "    isIndeterminate = true",
+    "    indicatorSize = c.px(PlenixComponent.spinnerMdWidth)",
+    "    trackThickness = c.px(PlenixComponent.spinnerMdBorderWidth)",
+    "    trackColor = AndroidColor.TRANSPARENT",
+    "    setIndicatorColor(c.argb(PlenixColors.actionPrimaryBackground.light, PlenixColors.actionPrimaryBackground.dark))",
+    "    contentDescription = label",
+    "}",
+    "",
+    "upload.plenixBar()",
+    "upload.contentDescription = \"Uploading 3 files\"",
+    "upload.setProgressCompat(percent, true)",
+    "label.textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, R.font.dm_sans_semibold)",
+    "saving.plenixSpinner(\"Saving\")"
+   ]
+  }
+ }
+}

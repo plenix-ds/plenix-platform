@@ -1,0 +1,4 @@
+{
+  "color-swatch-target-inset": { "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))", "$type": "dimension", "$description": "The invisible target layer around a swatch button: it grows the target to the minimum target (Platforms Standard 3.1) without changing the swatch" },
+  "color-picker-slot-min-width": { "$value": "0", "$type": "dimension", "$description": "The least width of a swatch's slot in the picker: none with a fine pointer; the minimum target with touch, so the swatch targets do not overlap" }
+}

@@ -1,0 +1,101 @@
+{
+  "ios-feedback|Feedback": {
+    "summary": "Plenix feedback on iOS is built from system views with the Plenix look: a section message is a rounded box in its tone’s soft fill with the tone’s symbol, a semibold title, the text, up to two bordered buttons and a dismiss button; an error state is the system ContentUnavailableView with the Plenix tone on its symbol, its title and description in DM Sans, and one action; a retry shows the wait and the attempt under the message with Retry. VoiceOver reads the title and the text; a danger message is posted as an announcement when it appears, and a retry’s countdown is never read every second.",
+    "variants": [
+      { "name": "Section message", "apple": "A custom view (no system component)", "web": "feedback|Section message", "background": "plx-comp-notice-info-background", "content": "plx-comp-notice-info-text", "border": "plx-comp-notice-info-border", "swiftui": "PlenixSectionMessage(tone: .info, title: \"Trial ends soon\", text: \"…\") { Button(\"Upgrade\") { … } }", "uikit": "A UIStackView in a view with the soft fill and a hairline border", "appkit": "An NSStackView in an NSBox (a macOS build of the tokens is needed)", "use": "A message about one section that people can act on or put away." },
+      { "name": "Danger section message", "apple": "A custom view (no system component)", "web": "feedback|Section message", "background": "plx-comp-notice-danger-background", "content": "plx-comp-notice-danger-text", "border": "plx-comp-notice-danger-border", "swiftui": "PlenixSectionMessage(tone: .danger, title: \"The sync stopped\", text: \"…\")", "uikit": "The same view with the danger colors; UIAccessibility.post(notification: .announcement, argument: title)", "appkit": "The same view with the danger colors (a macOS build of the tokens is needed)", "use": "A failure in one section, kept until it is solved." },
+      { "name": "Error state", "apple": "ContentUnavailableView", "web": "feedback|Error state", "background": null, "content": "plx-comp-empty-state-error-icon-text", "border": null, "swiftui": "ContentUnavailableView { Label(\"The assets could not load\", systemImage: \"exclamationmark.triangle\") } description: { Text(\"…\") } actions: { Button(\"Retry\") { … } }", "uikit": "UIContentUnavailableConfiguration.empty() with image, text, secondaryText and a button", "appkit": "A centered NSStackView (a macOS build of the tokens is needed)", "use": "A region or a screen whose content could not load." },
+      { "name": "Offline state", "apple": "ContentUnavailableView", "web": "feedback|Error state", "background": null, "content": "plx-sys-feedback-warning-solid", "border": null, "swiftui": "ContentUnavailableView(\"You’re offline\", systemImage: \"wifi.slash\", description: Text(\"…\"))", "uikit": "UIContentUnavailableConfiguration with the wifi.slash symbol", "appkit": "The centered stack with the symbol (a macOS build of the tokens is needed)", "use": "No connection; the screen updates when it returns." },
+      { "name": "Completion state", "apple": "ContentUnavailableView", "web": "feedback|Error state", "background": null, "content": "plx-sys-feedback-success-solid", "border": null, "swiftui": "ContentUnavailableView(\"All done\", systemImage: \"checkmark.circle\", description: Text(\"…\"))", "uikit": "UIContentUnavailableConfiguration with the checkmark.circle symbol", "appkit": "The centered stack with the symbol (a macOS build of the tokens is needed)", "use": "A cleared list or a finished setup." },
+      { "name": "Retry", "apple": "A custom view (no system component)", "web": "feedback|Retry pattern", "background": "plx-comp-notice-danger-background", "content": "plx-comp-notice-danger-text", "border": "plx-comp-notice-danger-border", "swiftui": "PlenixSectionMessage(tone: .danger, …) with the wait and Attempt n of n under the text and Retry now", "uikit": "The section message view with a status label and a Retry button", "appkit": "The section message view (a macOS build of the tokens is needed)", "use": "A load that failed and is tried again, by itself or on request." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Container", "about": "The section message’s rounded box in the tone’s soft fill, with a hairline in the tone’s border color." },
+      { "part": "B", "name": "Symbol", "about": "The tone’s SF Symbol, in the tone’s content color (section message) or solid color (error state)." },
+      { "part": "C", "name": "Title", "about": "A few words in DM Sans, semibold, that name the message or the state." },
+      { "part": "D", "name": "Text", "about": "One or two sentences in DM Sans at the secondary role." },
+      { "part": "E", "name": "Actions", "about": "One or two bordered buttons (Retry, Upgrade); the error state has one." },
+      { "part": "F", "name": "Dismiss", "about": "An xmark button at the end, with a 44 pt target, when the message may be put away." },
+      { "part": "G", "name": "Retry status", "about": "The wait (Retrying in 4 sec) and the attempt (Attempt 2 of 3) in the data font under the text." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Background and border", "token": "plx-comp-notice-info-background, plx-comp-notice-info-border", "value": "The tone’s soft fill and soft border (Plenix.Colors.feedbackInfoSoft, feedbackInfoSoftBorder)", "apple": "None", "swiftui": ".background(Plenix.Colors.feedbackInfoSoft, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusSurface4px)).overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusSurface4px).strokeBorder(Plenix.Colors.feedbackInfoSoftBorder))", "uikit": "backgroundColor = Plenix.Colors.feedbackInfoSoft; layer.borderColor = Plenix.Colors.feedbackInfoSoftBorder.cgColor", "appkit": "NSBox fillColor and borderColor from the tone (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "A", "attribute": "Corner radius", "token": "plx-comp-notice-radius", "value": "4 pt (Plenix.Radius.radiusSurface4px)", "apple": "None", "swiftui": "RoundedRectangle(cornerRadius: Plenix.Radius.radiusSurface4px)", "uikit": "layer.cornerRadius = Plenix.Radius.radiusSurface4px", "appkit": "NSBox cornerRadius (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "A", "attribute": "Padding and gaps", "token": "plx-comp-notice-padding-block, plx-comp-notice-padding-inline, plx-comp-notice-gap", "value": "8 pt around the content and between the symbol and the text (Plenix.Space.spaceInsetSm, spaceClusterSm)", "apple": "None", "swiftui": "HStack(alignment: .firstTextBaseline, spacing: Plenix.Space.spaceClusterSm) { … }.padding(Plenix.Space.spaceInsetSm)", "uikit": "stack.spacing = Plenix.Space.spaceClusterSm; directionalLayoutMargins from Plenix.Space.spaceInsetSm", "appkit": "NSStackView spacing (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Section message symbol", "token": "plx-comp-notice-info-text", "value": "The tone’s content color (Plenix.Colors.feedbackInfoContent)", "apple": "None", "swiftui": "Image(systemName: \"info.circle\").foregroundStyle(Plenix.Colors.feedbackInfoContent)", "uikit": "UIImageView(image: UIImage(systemName: \"info.circle\")) with tintColor = Plenix.Colors.feedbackInfoContent", "appkit": "NSImageView with contentTintColor (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Error state symbol", "token": "plx-comp-empty-state-error-icon-text, plx-sys-feedback-warning-solid, plx-sys-feedback-success-solid", "value": "The tone’s solid color on the surface (Plenix.Colors.feedbackDangerSolid, feedbackWarningSolid, feedbackSuccessSolid); neutral kinds in the muted content color", "apple": "Secondary label color", "swiftui": "ContentUnavailableView { Label(title, systemImage: symbol).foregroundStyle(Plenix.Colors.feedbackDangerSolid) }", "uikit": "configuration.imageProperties.tintColor = Plenix.Colors.feedbackDangerSolid", "appkit": "contentTintColor on the symbol (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "C", "attribute": "Title", "token": "plx-comp-notice-info-text, plx-comp-empty-state-title-text", "value": "DM Sans semibold at the label role (Plenix.Platform.textLabelSize); the tone’s content color in a message, the default content color in a state", "apple": "Headline", "swiftui": "Text(title).font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .headline)).fontWeight(.semibold)", "uikit": "label.font = UIFontMetrics(forTextStyle: .headline).scaledFont(for: Plenix.Font.sans(Plenix.Platform.textLabelSize))", "appkit": "NSTextField with the DM Sans semibold font (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "D", "attribute": "Text", "token": "plx-comp-notice-info-text, plx-comp-empty-state-text", "value": "DM Sans at the secondary role (Plenix.Platform.textSecondarySize)", "apple": "Body", "swiftui": "Text(text).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .subheadline))", "uikit": "label.font = UIFontMetrics(forTextStyle: .subheadline).scaledFont(for: Plenix.Font.sans(Plenix.Platform.textSecondarySize)); numberOfLines = 0", "appkit": "NSTextField wrapping label (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "E", "attribute": "Actions", "token": "plx-comp-notice-padding-inline", "value": "Bordered buttons with a 44 pt target, 8 pt apart (Plenix.Space.spaceClusterSm)", "apple": "Borderless buttons", "swiftui": "HStack(spacing: Plenix.Space.spaceClusterSm) { Button(\"Try again\", action: retry).buttonStyle(.bordered) }", "uikit": "UIButton(configuration: .bordered()) in a horizontal stack with spacing Plenix.Space.spaceClusterSm", "appkit": "NSButton with bezelStyle .rounded (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "G", "attribute": "Retry status", "token": "plx-sys-font-data", "value": "The wait and the attempt numbers in the data font (DM Mono) at the secondary role", "apple": "None", "swiftui": "Text(\"Retrying in \") + Text(wait).font(Plenix.Font.mono(Plenix.Platform.textSecondarySize, relativeTo: .subheadline))", "uikit": "an attributed string: the numbers in Plenix.Font.mono(Plenix.Platform.textSecondarySize)", "appkit": "an attributed string with the numbers in Plenix.Font.mono (a macOS build of the tokens is needed)", "follows": "Best practices" }
+    ],
+    "states": [
+      { "state": "Shown", "token": "plx-comp-notice-info-background", "swiftui": "the view is in the hierarchy", "uikit": "isHidden = false", "appkit": "isHidden = false" },
+      { "state": "Danger appears", "token": "plx-comp-notice-danger-background", "swiftui": "AccessibilityNotification.Announcement(title).post()", "uikit": "UIAccessibility.post(notification: .announcement, argument: title)", "appkit": "NSAccessibility.post(element:notification:) with .announcementRequested" },
+      { "state": "Retrying", "token": "plx-comp-notice-danger-text", "swiftui": "Button shows ProgressView() in place of its symbol", "uikit": "button.configuration?.showsActivityIndicator = true", "appkit": "an NSProgressIndicator beside the button" },
+      { "state": "Dismissed", "token": "plx-comp-notice-info-background", "swiftui": "the owner removes the view (withAnimation)", "uikit": "removeFromSuperview()", "appkit": "removeFromSuperview()" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// The Plenix section message on iOS: the tone’s soft fill, its symbol, a title, the text, actions and a dismiss button.",
+        "struct PlenixSectionMessage<Actions: View>: View {",
+        "    var title: String",
+        "    var text: String",
+        "    var onDismiss: (() -> Void)? = nil",
+        "    @ViewBuilder var actions: Actions",
+        "",
+        "    var body: some View {",
+        "        HStack(alignment: .firstTextBaseline, spacing: Plenix.Space.spaceClusterSm) {",
+        "            Image(systemName: \"exclamationmark.circle\")",
+        "            VStack(alignment: .leading, spacing: Plenix.Space.spaceStackXs) {",
+        "                Text(title).font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .headline)).fontWeight(.semibold)",
+        "                Text(text).font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .subheadline))",
+        "                HStack(spacing: Plenix.Space.spaceClusterSm) { actions }.buttonStyle(.bordered)",
+        "            }",
+        "            Spacer(minLength: 0)",
+        "            if let onDismiss { Button(action: onDismiss) { Image(systemName: \"xmark\") }.accessibilityLabel(\"Dismiss\") }",
+        "        }",
+        "        .foregroundStyle(Plenix.Colors.feedbackDangerSoftContent)",
+        "        .padding(Plenix.Space.spaceInsetSm)",
+        "        .background(Plenix.Colors.feedbackDangerSoft, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusSurface4px))",
+        "        .overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusSurface4px).strokeBorder(Plenix.Colors.feedbackDangerSoftBorder))",
+        "        .accessibilityElement(children: .contain)",
+        "    }",
+        "}",
+        "",
+        "/// The Plenix error state: ContentUnavailableView with the tone on its symbol and one action.",
+        "struct PlenixErrorState: View {",
+        "    var retry: () -> Void",
+        "    var body: some View {",
+        "        ContentUnavailableView {",
+        "            Label(\"The assets could not load\", systemImage: \"exclamationmark.triangle\").foregroundStyle(Plenix.Colors.feedbackDangerSolid)",
+        "        } description: {",
+        "            Text(\"The server did not answer.\").font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .subheadline))",
+        "        } actions: {",
+        "            Button(\"Retry\", action: retry).buttonStyle(.bordered)",
+        "        }",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "var configuration = UIContentUnavailableConfiguration.empty()",
+        "configuration.image = UIImage(systemName: \"exclamationmark.triangle\")",
+        "configuration.imageProperties.tintColor = Plenix.Colors.feedbackDangerSolid",
+        "configuration.text = \"The assets could not load\"",
+        "configuration.secondaryText = \"The server did not answer.\"",
+        "configuration.button = .bordered()",
+        "configuration.button.title = \"Retry\"",
+        "configuration.buttonProperties.primaryAction = UIAction { _ in reload() }",
+        "contentUnavailableConfiguration = configuration"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "let stack = NSStackView(views: [symbolView, titleField, textField, retryButton])",
+        "stack.orientation = .vertical",
+        "stack.alignment = .centerX"
+      ]
+    }
+  }
+}

@@ -1,0 +1,266 @@
+{
+ "ios-actions|Pop-up buttons": {
+  "summary": "A Plenix pop-up button on iOS is the system menu button that shows one choice from a flat list, kept native in behavior (the system menu, the checkmark on the current choice, VoiceOver) and styled as the Plenix select: a 6-point rounded rectangle at least 44 points tall with the control background and border, the current choice in DM Sans at the body text role and an up-down chevron in the muted content color. Apple’s default is borderless text in the system tint; Plenix keeps the system menu and replaces the button’s look.",
+  "variants": [
+   {
+    "name": "Field",
+    "apple": "Popup Button, Is Enabled=True",
+    "web": "forms|Select",
+    "background": "plx-sys-control-background",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-control-border",
+    "swiftui": "PlenixPopUpButton: a Menu holding a Picker, with a Plenix field label",
+    "uikit": "UIButton with menu, showsMenuAsPrimaryAction and changesSelectionAsPrimaryAction",
+    "appkit": "NSPopUpButton(frame:pullsDown: false)",
+    "use": "A choice in a form, a sheet or a popover, where the options need not show all the time."
+   },
+   {
+    "name": "Plain",
+    "apple": "Popup Button, Is Enabled=True (as Apple ships it)",
+    "web": "forms|Native select",
+    "background": null,
+    "content": "plx-sys-content-link",
+    "border": null,
+    "swiftui": "Picker with .pickerStyle(.menu) and .tint(Plenix.Colors.contentLink)",
+    "uikit": "UIButton.Configuration.plain() with the menu and indicator .popup",
+    "appkit": "NSPopUpButton with isBordered = false",
+    "use": "The trailing value of a list row or a toolbar, where a frame would crowd the row."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Container",
+    "about": "The rounded rectangle that opens the menu; at least 44 points tall."
+   },
+   {
+    "part": "B",
+    "name": "Current choice",
+    "about": "The chosen option in DM Sans at the body text role; scales with Dynamic Type."
+   },
+   {
+    "part": "C",
+    "name": "Indicator",
+    "about": "The up-down chevron that marks a pop-up button, in the muted content color."
+   },
+   {
+    "part": "D",
+    "name": "Menu",
+    "about": "The system menu of options, with a checkmark on the current one."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Minimum height",
+    "token": "plx-comp-input-min-height (plx-sys-control-height-standard)",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "44 pt target",
+    "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "uikit": "heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin)",
+    "appkit": "controlSize = .large",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-comp-input-radius",
+    "value": "6 pt (Plenix.Radius.radiusControl)",
+    "apple": "None (borderless)",
+    "swiftui": ".background(_, in: .rect(cornerRadius: Plenix.Radius.radiusControl))",
+    "uikit": "configuration.background.cornerRadius",
+    "appkit": "Drawn by the bezel",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Background and border",
+    "token": "plx-comp-input-background, plx-comp-input-border-color, plx-comp-input-border-width",
+    "value": "Control background, control border, 1 pt",
+    "apple": "None",
+    "swiftui": ".background(Plenix.Colors.controlBackground, in:) and .overlay { strokeBorder(Plenix.Colors.controlBorder, lineWidth: Plenix.Component.inputBorderWidth) }",
+    "uikit": "configuration.background.backgroundColor, strokeColor, strokeWidth",
+    "appkit": "bezelStyle = .push",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Padding",
+    "token": "plx-comp-input-padding-inline, plx-comp-select-after-inset-inline-end",
+    "value": "12 pt on both sides (Plenix.Space.spaceInsetMd)",
+    "apple": "0 pt",
+    "swiftui": ".padding(.horizontal, Plenix.Space.spaceInsetMd)",
+    "uikit": "configuration.contentInsets",
+    "appkit": "Set by the cell",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Current choice text",
+    "token": "plx-comp-input-font-family, plx-comp-input-text (iOS body role)",
+    "value": "DM Sans regular, 17 pt on 22 pt, relative to Body (Plenix.Platform.textBodySize)",
+    "apple": "SF Pro Regular 17 pt in the tint",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.contentDefault)",
+    "uikit": "titleTextAttributesTransformer with UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))",
+    "appkit": "font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Indicator",
+    "token": "plx-comp-select-after-background, plx-comp-select-after-width",
+    "value": "chevron.up.chevron.down, muted content color, 12 pt",
+    "apple": "The same symbol in the tint",
+    "swiftui": "Image(systemName: \"chevron.up.chevron.down\").foregroundStyle(Plenix.Colors.contentMuted)",
+    "uikit": "configuration.indicator = .popup; indicatorColorTransformer",
+    "appkit": "Drawn by NSPopUpButtonCell (arrowPosition)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Choice and indicator gap",
+    "token": "plx-sys-space-inline-sm",
+    "value": "8 pt (Plenix.Space.spaceInlineSm)",
+    "apple": "4 pt",
+    "swiftui": "HStack(spacing: Plenix.Space.spaceInlineSm)",
+    "uikit": "configuration.imagePadding",
+    "appkit": "Set by the cell",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Menu",
+    "token": "plx-comp-menu-background, plx-comp-menu-radius (the web menu)",
+    "value": "The system menu",
+    "apple": "The system menu",
+    "swiftui": "Menu { Picker(_:selection:) } (the system draws it)",
+    "uikit": "UIMenu with UIAction state .on for the current choice",
+    "appkit": "NSMenu with the selected item’s state = .on",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-comp-input-background, plx-comp-input-border-color, plx-comp-input-text",
+    "swiftui": "The Menu label",
+    "uikit": "UIButton.Configuration",
+    "appkit": "NSPopUpButton"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-state-pressed",
+    "swiftui": "The system highlights the label while the menu opens",
+    "uikit": "configurationUpdateHandler reading button.isHighlighted",
+    "appkit": "isHighlighted"
+   },
+   {
+    "state": "Open",
+    "token": "plx-comp-input-focus-border-color (only the border changes)",
+    "swiftui": "The system presents the menu",
+    "uikit": "contextMenuInteraction(_:willDisplayMenuFor:animator:)",
+    "appkit": "NSPopUpButton.willPopUpNotification"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-input-disabled-background, plx-comp-input-disabled-text",
+    "swiftui": ".disabled(true)",
+    "uikit": "isEnabled = false",
+    "appkit": "isEnabled = false"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix pop-up button on iOS: the system menu of choices, opened from a Plenix select field.",
+    "struct PlenixPopUpButton<Value: Hashable & Identifiable>: View {",
+    "    let title: String",
+    "    @Binding var selection: Value",
+    "    let options: [Value]",
+    "    let name: (Value) -> String",
+    "    @Environment(\\.isEnabled) private var isEnabled",
+    "",
+    "    var body: some View {",
+    "        let shape = RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)",
+    "        Menu {",
+    "            Picker(title, selection: $selection) {",
+    "                ForEach(options) { Text(name($0)).tag($0) }",
+    "            }",
+    "        } label: {",
+    "            HStack(spacing: Plenix.Space.spaceInlineSm) {",
+    "                Text(name(selection))",
+    "                    .foregroundStyle(isEnabled ? Plenix.Colors.contentDefault : Plenix.Colors.contentDisabled)",
+    "                Spacer(minLength: 0)",
+    "                Image(systemName: \"chevron.up.chevron.down\")",
+    "                    .foregroundStyle(Plenix.Colors.contentMuted)",
+    "                    .accessibilityHidden(true)",
+    "            }",
+    "            .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "            .padding(.horizontal, Plenix.Space.spaceInsetMd)",
+    "            .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "            .background(isEnabled ? Plenix.Colors.controlBackground : Plenix.Colors.fillNeutral, in: shape)",
+    "            .overlay { shape.strokeBorder(Plenix.Colors.controlBorder, lineWidth: Plenix.Component.inputBorderWidth) }",
+    "        }",
+    "        .accessibilityLabel(title)",
+    "        .accessibilityValue(name(selection))",
+    "    }",
+    "}",
+    "",
+    "// The plain variant in a list row",
+    "Picker(\"Sort by\", selection: $sort) { ForEach(Sort.allCases) { Text($0.title).tag($0) } }",
+    "    .pickerStyle(.menu)",
+    "    .tint(Plenix.Colors.contentLink)"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix pop-up button in UIKit: a UIButton whose menu changes the selection.",
+    "func plenixPopUpButton(title: String, options: [String], selected: String, onChange: @escaping (String) -> Void) -> UIButton {",
+    "    var c = UIButton.Configuration.plain()",
+    "    c.background.backgroundColor = UIColor(Plenix.Colors.controlBackground)",
+    "    c.background.strokeColor = UIColor(Plenix.Colors.controlBorder)",
+    "    c.background.strokeWidth = Plenix.Component.inputBorderWidth",
+    "    c.background.cornerRadius = Plenix.Radius.radiusControl",
+    "    c.baseForegroundColor = UIColor(Plenix.Colors.contentDefault)",
+    "    c.indicator = .popup",
+    "    c.indicatorColorTransformer = UIConfigurationColorTransformer { _ in UIColor(Plenix.Colors.contentMuted) }",
+    "    c.imagePadding = Plenix.Space.spaceInlineSm",
+    "    c.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Plenix.Space.spaceInsetMd, bottom: 0, trailing: Plenix.Space.spaceInsetMd)",
+    "    c.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { a in",
+    "        var a = a",
+    "        a.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))",
+    "        return a",
+    "    }",
+    "    let button = UIButton(configuration: c)",
+    "    button.menu = UIMenu(title: title, options: .singleSelection, children: options.map { option in",
+    "        UIAction(title: option, state: option == selected ? .on : .off) { _ in onChange(option) }",
+    "    })",
+    "    button.showsMenuAsPrimaryAction = true",
+    "    button.changesSelectionAsPrimaryAction = true",
+    "    button.accessibilityLabel = title",
+    "    button.heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin).isActive = true",
+    "    button.configurationUpdateHandler = { b in",
+    "        b.configuration?.background.backgroundColor = UIColor(b.isHighlighted ? Plenix.Colors.statePressed : Plenix.Colors.controlBackground)",
+    "    }",
+    "    return button",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app needs a macOS build of",
+    "// PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let sort = NSPopUpButton(frame: .zero, pullsDown: false)",
+    "sort.addItems(withTitles: [\"Name\", \"Date added\", \"Size\"])",
+    "sort.selectItem(withTitle: \"Name\")",
+    "sort.controlSize = .large",
+    "sort.font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "sort.contentTintColor = NSColor(Plenix.Colors.contentDefault)",
+    "sort.setAccessibilityLabel(\"Sort by\")"
+   ]
+  }
+ }
+}

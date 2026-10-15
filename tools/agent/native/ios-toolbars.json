@@ -1,0 +1,259 @@
+{
+ "ios-actions|Toolbars": {
+  "summary": "A Plenix toolbar on iOS is the system toolbar and navigation bar (.toolbar, UINavigationBar, UIToolbar), kept native in its glass background, standard corner radii, Back and Close buttons, overflow, scroll edge behavior and VoiceOver order. Plenix sets its content and type: a short title in DM Sans at the heading role (a large title at the title role on top-level views), borderless SF Symbols in the Plenix content color instead of the system tint, at most one primary action in the Plenix primary color at the trailing end, and no more than three groups. Apple’s default draws SF Pro titles and tinted items; Plenix keeps the bar and changes the type and the item colors.",
+  "variants": [
+   {
+    "name": "Top bar",
+    "apple": "Toolbar - Top - iPhone, Style=Default",
+    "web": "actions|Toolbar",
+    "background": null,
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": ".toolbar { ToolbarItem(placement: .topBarTrailing) { } } with .navigationTitle and .navigationBarTitleDisplayMode(.inline)",
+    "uikit": "UINavigationBar via navigationItem (title, leftBarButtonItems, rightBarButtonItems)",
+    "appkit": "NSToolbar on the window",
+    "use": "The bar of a pushed or detail view: Back, a short title and its actions."
+   },
+   {
+    "name": "Large title",
+    "apple": "Toolbar - Top - iPhone, Style=Large Title",
+    "web": "actions|Toolbar",
+    "background": null,
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": ".navigationTitle(_:) with .navigationBarTitleDisplayMode(.large)",
+    "uikit": "navigationBar.prefersLargeTitles = true",
+    "appkit": "Not on the Mac; the window title",
+    "use": "A top-level view, such as Library; the title shrinks into the bar on scroll."
+   },
+   {
+    "name": "Bottom toolbar",
+    "apple": "Toolbar - Bottom - iPhone, Type=Buttons",
+    "web": "actions|Action bar",
+    "background": null,
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "ToolbarItemGroup(placement: .bottomBar) { }",
+    "uikit": "UIToolbar via setToolbarItems(_:animated:) and isToolbarHidden = false",
+    "appkit": "Buttons in a bottom bar of the window (contentBorderThickness)",
+    "use": "Actions on the current view’s content, such as Share, Favorite and Delete."
+   },
+   {
+    "name": "Bottom with search",
+    "apple": "Toolbar - Bottom - iPhone, Type=Search",
+    "web": "actions|Toolbar",
+    "background": null,
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": ".searchable(text:) with .searchToolbarBehavior(.minimize) and DefaultToolbarItem(kind: .search, placement: .bottomBar)",
+    "uikit": "navigationItem.searchController with searchBarPlacementAllowsToolbarIntegration = true",
+    "appkit": "NSSearchToolbarItem",
+    "use": "A view people search often; the search field sits in the bottom bar within reach."
+   }
+  ],
+  "anatomy": [
+   { "part": "A", "name": "Bar", "about": "The system glass bar at the top or the bottom of the view." },
+   { "part": "B", "name": "Leading item", "about": "Back or Close, with the standard symbol." },
+   { "part": "C", "name": "Title", "about": "A short name of the view’s content; a large title on top-level views." },
+   { "part": "D", "name": "Item group", "about": "Related borderless symbol buttons grouped on one glass background." },
+   { "part": "E", "name": "Primary action", "about": "At most one, in the prominent style at the trailing end." }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Bar background",
+    "token": "None (the system glass)",
+    "value": "The system background; no custom color",
+    "apple": "Liquid Glass with a scroll edge effect",
+    "swiftui": "Default; never .toolbarBackground with a custom color",
+    "uikit": "Default UINavigationBarAppearance",
+    "appkit": "Default NSToolbar",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Bar height",
+    "token": "plx-sys-control-height-toolbar",
+    "value": "44 pt items (Plenix.Platform.controlTargetMin); the bar height is the system’s",
+    "apple": "44 pt items",
+    "swiftui": "Set by the system",
+    "uikit": "Set by the system",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Inline padding",
+    "token": "plx-comp-toolbar-padding-inline",
+    "value": "16 pt (Plenix.Space.spaceInlineLg)",
+    "apple": "16 pt",
+    "swiftui": "Set by the system",
+    "uikit": "directionalLayoutMargins (set by the system)",
+    "appkit": "Set by the system",
+    "follows": "Item groupings"
+   },
+   {
+    "part": "B",
+    "attribute": "Back and Close",
+    "token": "plx-sys-content-default",
+    "value": "The standard chevron and xmark symbols in Plenix.Colors.contentDefault",
+    "apple": "The same symbols in the tint",
+    "swiftui": "The system back button; ToolbarItem(placement: .cancellationAction) { Button(role: .close) { } }",
+    "uikit": "The system back item; UIBarButtonItem(systemItem: .close)",
+    "appkit": "The window’s close button",
+    "follows": "Navigation"
+   },
+   {
+    "part": "C",
+    "attribute": "Title type",
+    "token": "plx-text--heading (iOS heading role)",
+    "value": "DM Sans semibold, 17 pt on 22 pt, relative to Headline (Plenix.Font.sans, Plenix.Platform.textHeadingSize)",
+    "apple": "SF Pro Semibold 17 pt",
+    "swiftui": "ToolbarItem(placement: .principal) { Text(title).font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline).weight(.semibold)) }",
+    "uikit": "UINavigationBarAppearance.titleTextAttributes = [.font: UIFontMetrics(forTextStyle: .headline).scaledFont(for: UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textHeadingSize)!)]",
+    "appkit": "window.title (the system font)",
+    "follows": "Titles"
+   },
+   {
+    "part": "C",
+    "attribute": "Large title type",
+    "token": "plx-text--title (iOS title role)",
+    "value": "DM Sans bold, 34 pt on 41 pt, relative to Large Title (Plenix.Platform.textTitleSize)",
+    "apple": "SF Pro Bold 34 pt",
+    "swiftui": "UINavigationBar.appearance().largeTitleTextAttributes (SwiftUI has no direct modifier)",
+    "uikit": "UINavigationBarAppearance.largeTitleTextAttributes = [.font: UIFontMetrics(forTextStyle: .largeTitle).scaledFont(for: UIFont(name: \"DMSans-Bold\", size: Plenix.Platform.textTitleSize)!)]",
+    "appkit": "Not on the Mac",
+    "follows": "iOS"
+   },
+   {
+    "part": "C",
+    "attribute": "Title color",
+    "token": "plx-sys-content-default",
+    "value": "Plenix.Colors.contentDefault",
+    "apple": "Label color",
+    "swiftui": ".foregroundStyle(Plenix.Colors.contentDefault) on the principal item",
+    "uikit": "titleTextAttributes[.foregroundColor] = UIColor(Plenix.Colors.contentDefault)",
+    "appkit": "Drawn by the system",
+    "follows": "Titles"
+   },
+   {
+    "part": "D",
+    "attribute": "Item color",
+    "token": "plx-sys-content-default",
+    "value": "Borderless symbols in Plenix.Colors.contentDefault, not the tint",
+    "apple": "The system tint",
+    "swiftui": ".tint(Plenix.Colors.contentDefault) on the toolbar content",
+    "uikit": "navigationBar.tintColor = UIColor(Plenix.Colors.contentDefault)",
+    "appkit": "NSToolbarItem with an SF Symbol image (template)",
+    "follows": "Actions"
+   },
+   {
+    "part": "D",
+    "attribute": "Item groups",
+    "token": "plx-comp-toolbar-group-gap",
+    "value": "At most three groups; the system spaces them",
+    "apple": "Glass groups",
+    "swiftui": "ToolbarItemGroup and ToolbarSpacer(.fixed)",
+    "uikit": "UIBarButtonItemGroup; UIBarButtonItem.fixedSpace()",
+    "appkit": "NSToolbarItemGroup; .space",
+    "follows": "Item groupings"
+   },
+   {
+    "part": "D",
+    "attribute": "Symbol size",
+    "token": "plx-sys-control-icon-standard",
+    "value": "20 pt on touch",
+    "apple": "17 pt symbol, medium scale",
+    "swiftui": ".imageScale(.medium)",
+    "uikit": "UIImage.SymbolConfiguration(pointSize: Plenix.Icon.controlIconToolbar)",
+    "appkit": "Set by the toolbar",
+    "follows": "Actions"
+   },
+   {
+    "part": "E",
+    "attribute": "Primary action",
+    "token": "plx-sys-action-primary-background, plx-sys-action-primary-content",
+    "value": "One at most, Plenix.Colors.actionPrimaryBackground with actionPrimaryContent",
+    "apple": "Prominent glass in the tint",
+    "swiftui": "ToolbarItem(placement: .confirmationAction) { Button(\"Done\", action: done).buttonStyle(.borderedProminent).tint(Plenix.Colors.actionPrimaryBackground) }",
+    "uikit": "UIBarButtonItem(systemItem: .done) with style = .prominent and tintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "appkit": "NSToolbarItem with isBordered and the window’s default button",
+    "follows": "Actions"
+   }
+  ],
+  "states": [
+   { "state": "Default", "token": "plx-sys-content-default on the system bar", "swiftui": ".toolbar { }", "uikit": "UINavigationBar, UIToolbar", "appkit": "NSToolbar" },
+   { "state": "Scrolled under", "token": "The system scroll edge effect", "swiftui": "Set by the system", "uikit": "scrollEdgeAppearance / standardAppearance", "appkit": "Set by the system" },
+   { "state": "Item pressed", "token": "Drawn by the system", "swiftui": "Drawn by the system", "uikit": "Drawn by the system", "appkit": "Drawn by the system" },
+   { "state": "Item disabled", "token": "plx-sys-content-disabled", "swiftui": ".disabled(true)", "uikit": "isEnabled = false", "appkit": "isEnabled = false" },
+   { "state": "Overflow", "token": "The system More menu", "swiftui": "Set by the system; a Menu with ellipsis for actions that do not fit", "uikit": "Set by the system (iPadOS)", "appkit": "Set by the system" },
+   { "state": "Hidden", "token": "None", "swiftui": ".toolbarVisibility(.hidden, for: .navigationBar)", "uikit": "setNavigationBarHidden(_:animated:)", "appkit": "toolbar.isVisible = false" }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix toolbar on iOS: the system toolbar with Plenix type and item colors.",
+    "AssetDetail(asset: asset)",
+    "    .navigationBarTitleDisplayMode(.inline)",
+    "    .toolbar {",
+    "        ToolbarItem(placement: .principal) {",
+    "            Text(asset.name)",
+    "                .font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline).weight(.semibold))",
+    "                .foregroundStyle(Plenix.Colors.contentDefault)",
+    "        }",
+    "        ToolbarItemGroup(placement: .topBarTrailing) {",
+    "            Button(\"Share\", systemImage: \"square.and.arrow.up\", action: share)",
+    "            Menu(\"More\", systemImage: \"ellipsis\") { moreActions }",
+    "        }",
+    "        ToolbarItemGroup(placement: .bottomBar) {",
+    "            Button(\"Favorite\", systemImage: \"heart\", action: favorite)",
+    "            ToolbarSpacer(.flexible, placement: .bottomBar)",
+    "            Button(\"Delete\", systemImage: \"trash\", role: .destructive, action: delete)",
+    "        }",
+    "    }",
+    "    .tint(Plenix.Colors.contentDefault)"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix toolbar on iOS in UIKit: the system bars with Plenix type and item colors.",
+    "let appearance = UINavigationBarAppearance()",
+    "appearance.configureWithDefaultBackground()",
+    "let heading = UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textHeadingSize) ?? .preferredFont(forTextStyle: .headline)",
+    "let title = UIFont(name: \"DMSans-Bold\", size: Plenix.Platform.textTitleSize) ?? .preferredFont(forTextStyle: .largeTitle)",
+    "appearance.titleTextAttributes = [.font: UIFontMetrics(forTextStyle: .headline).scaledFont(for: heading),",
+    "                                  .foregroundColor: UIColor(Plenix.Colors.contentDefault)]",
+    "appearance.largeTitleTextAttributes = [.font: UIFontMetrics(forTextStyle: .largeTitle).scaledFont(for: title),",
+    "                                       .foregroundColor: UIColor(Plenix.Colors.contentDefault)]",
+    "navigationController.navigationBar.standardAppearance = appearance",
+    "navigationController.navigationBar.tintColor = UIColor(Plenix.Colors.contentDefault)",
+    "",
+    "navigationItem.rightBarButtonItems = [",
+    "    UIBarButtonItem(image: UIImage(systemName: \"ellipsis\"), menu: moreMenu),",
+    "    UIBarButtonItem(systemItem: .action, primaryAction: UIAction { _ in share() })",
+    "]",
+    "setToolbarItems([",
+    "    UIBarButtonItem(image: UIImage(systemName: \"heart\"), primaryAction: UIAction { _ in favorite() }),",
+    "    .flexibleSpace(),",
+    "    UIBarButtonItem(systemItem: .trash, primaryAction: UIAction { _ in delete() })",
+    "], animated: false)",
+    "navigationController.isToolbarHidden = false"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix toolbar on the Mac: the window’s NSToolbar, every command also in the menu bar. A Mac Catalyst app uses",
+    "// the UIKit code above. A native AppKit app needs a macOS build of PlenixTokens.swift (not generated yet).",
+    "let toolbar = NSToolbar(identifier: \"asset\")",
+    "toolbar.delegate = self",
+    "toolbar.displayMode = .iconOnly",
+    "toolbar.allowsUserCustomization = true",
+    "window.toolbar = toolbar",
+    "window.toolbarStyle = .unified"
+   ]
+  }
+ }
+}

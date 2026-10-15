@@ -1,0 +1,142 @@
+{
+ "ios-overlays|Popovers": {
+  "summary": "A Plenix popover on iOS is the system popover, kept native in behavior (the arrow pointing at its source, an outside tap to close, one at a time, a sheet at compact widths, VoiceOver and keyboard) and styled with the Plenix tokens: the overlay surface with the menu border and shadow, DM Sans text and Plenix controls inside, and a popover sized to its content. SwiftUI sets only the background; the 8-point surface radius and border need a UIKit UIPopoverBackgroundView. Apple’s default is a Liquid Glass panel with a 38-point radius.",
+  "variants": [
+   {
+    "name": "Arrow top",
+    "apple": "Edge=Top (Center)",
+    "web": "overlays|Popover",
+    "background": "plx-sys-surface-overlay",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-border-default",
+    "swiftui": ".popover(isPresented:attachmentAnchor:arrowEdge: .top)",
+    "uikit": "permittedArrowDirections = .up",
+    "appkit": "NSPopover.show(relativeTo:of:preferredEdge: .minY)",
+    "use": "The default for a control near the top of the screen; the popover opens below it."
+   },
+   {
+    "name": "Arrow bottom",
+    "apple": "Edge=Bottom (Center)",
+    "web": "overlays|Popover",
+    "background": "plx-sys-surface-overlay",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-border-default",
+    "swiftui": ".popover(isPresented:arrowEdge: .bottom)",
+    "uikit": "permittedArrowDirections = .down",
+    "appkit": "preferredEdge: .maxY",
+    "use": "A control near the bottom, such as a toolbar item; the popover opens above it."
+   },
+   {
+    "name": "Arrow leading",
+    "apple": "Edge=Leading (Middle)",
+    "web": "overlays|Popover",
+    "background": "plx-sys-surface-overlay",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-border-default",
+    "swiftui": ".popover(isPresented:arrowEdge: .leading)",
+    "uikit": "permittedArrowDirections = .left (mirrored in right-to-left)",
+    "appkit": "preferredEdge: .maxX",
+    "use": "A control on the leading side, such as a sidebar row; the popover opens toward the content."
+   },
+   {
+    "name": "Arrow trailing",
+    "apple": "Edge=Trailing (Middle)",
+    "web": "overlays|Popover",
+    "background": "plx-sys-surface-overlay",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-border-default",
+    "swiftui": ".popover(isPresented:arrowEdge: .trailing)",
+    "uikit": "permittedArrowDirections = .right (mirrored in right-to-left)",
+    "appkit": "preferredEdge: .minX",
+    "use": "A control on the trailing side, such as an inspector button."
+   }
+  ],
+  "anatomy": [
+   { "part": "A", "name": "Container", "about": "The surface that holds a small amount of content, sized to fit it." },
+   { "part": "B", "name": "Arrow", "about": "Points at the control that opened the popover, in the surface color." },
+   { "part": "C", "name": "Content", "about": "A few related controls or facts in Plenix text roles; no warnings." }
+  ],
+  "attributes": [
+   { "part": "A", "attribute": "Background", "token": "plx-sys-surface-overlay", "value": "Plenix.Colors.surfaceOverlay", "apple": "Liquid Glass material", "swiftui": ".presentationBackground(Plenix.Colors.surfaceOverlay)", "uikit": "popoverPresentationController?.backgroundColor = UIColor(Plenix.Colors.surfaceOverlay)", "appkit": "NSPopover.appearance; a custom content view background", "follows": "Best practices" },
+   { "part": "A", "attribute": "Corner radius", "token": "plx-sys-radius-surface-8px", "value": "8 pt (Plenix.Radius.radiusSurface8px)", "apple": "38 pt", "swiftui": "Set by the system (use the UIKit background view for the Plenix radius)", "uikit": "popoverBackgroundViewClass = PlenixPopoverBackground.self (draws the radius and border)", "appkit": "Set by NSPopover", "follows": "Best practices" },
+   { "part": "A", "attribute": "Border and shadow", "token": "plx-comp-menu-border-color, plx-sys-elevation-menu", "value": "1 pt Plenix.Colors.borderDefault with the menu shadow", "apple": "The glass edge and a soft shadow", "swiftui": "Set by the system", "uikit": "In PlenixPopoverBackground: layer.borderColor = UIColor(Plenix.Colors.borderDefault).cgColor", "appkit": "Set by NSPopover", "follows": "Best practices" },
+   { "part": "A", "attribute": "Padding", "token": "plx-sys-space-inset-lg", "value": "16 pt (Plenix.Space.spaceInsetLg)", "apple": "16 pt", "swiftui": ".padding(Plenix.Space.spaceInsetLg)", "uikit": "directionalLayoutMargins with Plenix.Space.spaceInsetLg", "appkit": "contentView insets", "follows": "Best practices" },
+   { "part": "A", "attribute": "Size", "token": "plx-comp-menu-min-width, plx-comp-menu-max-width", "value": "Fits the content, 220 to 320 pt wide", "apple": "Fits the content", "swiftui": ".frame(minWidth: Plenix.Component.menuMinWidth, maxWidth: Plenix.Component.menuMaxWidth).fixedSize(horizontal: false, vertical: true)", "uikit": "preferredContentSize = view.systemLayoutSizeFitting(...)", "appkit": "contentSize", "follows": "Best practices" },
+   { "part": "B", "attribute": "Arrow", "token": "plx-sys-surface-overlay", "value": "The surface color, pointing at the source", "apple": "Material, 13 pt deep", "swiftui": ".popover(isPresented:attachmentAnchor: .rect(.bounds), arrowEdge:)", "uikit": "sourceItem = sender; the background view draws the arrow", "appkit": "positioningRect and preferredEdge", "follows": "Best practices" },
+   { "part": "C", "attribute": "Text", "token": "plx-ios text body and secondary roles", "value": "DM Sans 17 on 22 pt and 13 on 18 pt; Plenix.Colors.contentDefault and contentMuted", "apple": "SF Pro", "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))", "uikit": "UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))", "appkit": "NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)", "follows": "Best practices" },
+   { "part": "C", "attribute": "Compact width", "token": "None (behavior)", "value": "A sheet on iPhone; a popover on iPad and in regular widths", "apple": "The same", "swiftui": ".presentationCompactAdaptation(.sheet)", "uikit": "adaptivePresentationStyle(for:) returns .pageSheet", "appkit": "Always a popover", "follows": "iOS, iPadOS" }
+  ],
+  "states": [
+   { "state": "Presented", "token": "plx-sys-surface-overlay", "swiftui": ".popover(isPresented:)", "uikit": "modalPresentationStyle = .popover; present(_:animated:)", "appkit": "show(relativeTo:of:preferredEdge:)" },
+   { "state": "Transient (closes on an outside tap)", "token": "None (behavior)", "swiftui": "The default", "uikit": "The default; passthroughViews for controls that stay usable", "appkit": "behavior = .transient" },
+   { "state": "Content resizes", "token": "plx-sys-motion-duration-base", "swiftui": "withAnimation changes the content; the popover follows", "uikit": "preferredContentSize changes animate", "appkit": "animates = true" },
+   { "state": "Compact width", "token": "Shown as a sheet (the Sheets page)", "swiftui": ".presentationCompactAdaptation(.sheet)", "uikit": "UIAdaptivePresentationControllerDelegate", "appkit": "None" }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix popover on iOS: the system popover with the Plenix background and content.",
+    "Button(\"Filter\", systemImage: \"line.3.horizontal.decrease\") { filtering = true }",
+    "    .buttonStyle(PlenixButtonStyle(variant: .ghost))",
+    "    .popover(isPresented: $filtering, arrowEdge: .top) {",
+    "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackMd) {",
+    "            Text(\"Show\")",
+    "                .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote).weight(.semibold))",
+    "                .foregroundStyle(Plenix.Colors.contentMuted)",
+    "            Toggle(\"Archived\", isOn: $showArchived)",
+    "                .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "                .tint(Plenix.Colors.actionPrimaryBackground)",
+    "        }",
+    "        .padding(Plenix.Space.spaceInsetLg)",
+    "        .foregroundStyle(Plenix.Colors.contentDefault)",
+    "        .presentationBackground(Plenix.Colors.surfaceOverlay)",
+    "        .presentationCompactAdaptation(.sheet)",
+    "    }"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix popover background: the Plenix radius, border and surface around the system popover.",
+    "final class PlenixPopoverBackground: UIPopoverBackgroundView {",
+    "    override class func arrowBase() -> CGFloat { 2 * Plenix.Space.spaceInsetLg }",
+    "    override class func arrowHeight() -> CGFloat { Plenix.Space.spaceInsetSm }",
+    "    override class func contentViewInsets() -> UIEdgeInsets { .zero }",
+    "    override var arrowOffset: CGFloat { get { offset } set { offset = newValue; setNeedsLayout() } }",
+    "    override var arrowDirection: UIPopoverArrowDirection { get { direction } set { direction = newValue; setNeedsLayout() } }",
+    "    private var offset: CGFloat = 0, direction: UIPopoverArrowDirection = .up",
+    "    private let box = UIView()",
+    "    override init(frame: CGRect) {",
+    "        super.init(frame: frame)",
+    "        box.backgroundColor = UIColor(Plenix.Colors.surfaceOverlay)",
+    "        box.layer.cornerRadius = Plenix.Radius.radiusSurface8px",
+    "        box.layer.borderWidth = Plenix.Border.borderWidthThin",
+    "        box.layer.borderColor = UIColor(Plenix.Colors.borderDefault).cgColor",
+    "        addSubview(box)   // layoutSubviews places box and draws the arrow toward the source",
+    "    }",
+    "    required init?(coder: NSCoder) { fatalError() }",
+    "}",
+    "",
+    "let filters = FilterViewController()",
+    "filters.modalPresentationStyle = .popover",
+    "filters.popoverPresentationController?.sourceItem = sender",
+    "filters.popoverPresentationController?.permittedArrowDirections = .up",
+    "filters.popoverPresentationController?.popoverBackgroundViewClass = PlenixPopoverBackground.self",
+    "present(filters, animated: true)"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix popover on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let popover = NSPopover()",
+    "popover.behavior = .transient",
+    "popover.animates = true",
+    "popover.contentViewController = FilterViewController()   // its view uses NSColor(Plenix.Colors.surfaceOverlay)",
+    "popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)"
+   ]
+  }
+ }
+}

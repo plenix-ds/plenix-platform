@@ -1,0 +1,142 @@
+{
+ "ios-overlays|Sheets": {
+  "summary": "A Plenix sheet on iOS is the system sheet, kept native in behavior (detents, the grabber, swipe down to dismiss, the interactive-dismiss guard for unsaved changes, VoiceOver and keyboard) and styled with the Plenix tokens through the presentation modifiers: the overlay surface, an 8-point dialog radius on the top corners, a Plenix top bar with Cancel leading and Done trailing as Plenix buttons, DM Sans text and the Plenix scrim. Apple’s default is a Liquid Glass sheet with a large rounded top and SF Pro bar buttons.",
+  "variants": [
+   {
+    "name": "Medium",
+    "apple": "Sheet - iPhone, Detent=Medium",
+    "web": "overlays|Bottom sheet",
+    "background": "plx-comp-dialog-background",
+    "content": "plx-comp-dialog-text",
+    "border": null,
+    "swiftui": ".sheet with .presentationDetents([.medium, .large]) and .presentationDragIndicator(.visible)",
+    "uikit": "sheetPresentationController.detents = [.medium(), .large()]; prefersGrabberVisible = true",
+    "appkit": "beginSheet(_:completionHandler:) (the Mac sheet has no detents)",
+    "use": "A short task whose first half is useful on its own, such as filters, while the screen stays in view."
+   },
+   {
+    "name": "Large",
+    "apple": "Sheet - iPhone, Detent=Large",
+    "web": "overlays|Full-height sheet",
+    "background": "plx-comp-dialog-background",
+    "content": "plx-comp-dialog-text",
+    "border": null,
+    "swiftui": ".sheet with .presentationDetents([.large])",
+    "uikit": "sheetPresentationController.detents = [.large()]",
+    "appkit": "beginSheet(_:completionHandler:)",
+    "use": "A focused task such as composing or editing a record, closed with Cancel or Done."
+   },
+   {
+    "name": "Stacked",
+    "apple": "Sheet - iPhone, Detent=Large (Stacked)",
+    "web": "overlays|Responsive sheet",
+    "background": "plx-comp-dialog-background",
+    "content": "plx-comp-dialog-text",
+    "border": null,
+    "swiftui": "A NavigationStack inside the sheet; push steps rather than a second sheet",
+    "uikit": "A UINavigationController as the presented controller",
+    "appkit": "A sheet on a sheet only for a short confirmation",
+    "use": "The look when a sheet is open over another full-height presentation; keep to one sheet at a time."
+   }
+  ],
+  "anatomy": [
+   { "part": "A", "name": "Container", "about": "The sheet surface with rounded top corners, resting on a detent." },
+   { "part": "B", "name": "Grabber", "about": "The handle that shows the sheet resizes; shown whenever there is more than one detent." },
+   { "part": "C", "name": "Top bar", "about": "Cancel on the leading edge, the title in the middle, Done on the trailing edge." },
+   { "part": "D", "name": "Content", "about": "The task, in Plenix controls and text roles." },
+   { "part": "E", "name": "Dimming", "about": "The scrim over the screen behind; a tap on it dismisses unless there are unsaved changes." }
+  ],
+  "attributes": [
+   { "part": "A", "attribute": "Background", "token": "plx-comp-dialog-background", "value": "The overlay surface (Plenix.Colors.surfaceOverlay)", "apple": "Liquid Glass material", "swiftui": ".presentationBackground(Plenix.Colors.surfaceOverlay)", "uikit": "view.backgroundColor = UIColor(Plenix.Colors.surfaceOverlay)", "appkit": "window.backgroundColor of the sheet window", "follows": "Best practices" },
+   { "part": "A", "attribute": "Corner radius", "token": "plx-comp-dialog-radius", "value": "8 pt (Plenix.Radius.radiusDialog8px)", "apple": "38 pt", "swiftui": ".presentationCornerRadius(Plenix.Radius.radiusDialog8px)", "uikit": "sheetPresentationController.preferredCornerRadius = Plenix.Radius.radiusDialog8px", "appkit": "Set by the system sheet", "follows": "Best practices" },
+   { "part": "A", "attribute": "Detents", "token": "None (behavior)", "value": "Medium and large; large only for focused tasks", "apple": "The same", "swiftui": ".presentationDetents([.medium, .large])", "uikit": "detents = [.medium(), .large()]", "appkit": "A fixed size that fits the content", "follows": "iOS, iPadOS" },
+   { "part": "A", "attribute": "Content padding", "token": "plx-comp-drawer-padding", "value": "16 pt (Plenix.Space.spaceInsetLg)", "apple": "16 pt", "swiftui": ".padding(.horizontal, Plenix.Space.spaceInsetLg)", "uikit": "directionalLayoutMargins with Plenix.Space.spaceInsetLg", "appkit": "contentView edge insets", "follows": "Best practices" },
+   { "part": "B", "attribute": "Grabber", "token": "plx-sys-border-strong", "value": "36 by 5 pt, Plenix.Colors.borderStrong", "apple": "36 by 5 pt, a gray fill", "swiftui": ".presentationDragIndicator(.visible) (the system draws it)", "uikit": "prefersGrabberVisible = true", "appkit": "None", "follows": "iOS, iPadOS" },
+   { "part": "C", "attribute": "Bar buttons", "token": "The Plenix button variants: Secondary for Cancel, Primary for Done", "value": "44 pt (Plenix.Platform.controlTargetMin), 6 pt radius", "apple": "Glass circles with a symbol, or the tint", "swiftui": "ToolbarItem(placement: .cancellationAction) { Button(\"Cancel\").buttonStyle(PlenixButtonStyle()) } and .confirmationAction with variant .primary", "uikit": "navigationItem.leftBarButtonItem / rightBarButtonItem with a custom view (UIButton.Configuration.plenix)", "appkit": "NSButton in the sheet’s bottom row, Done with keyEquivalent \"\\r\"", "follows": "iOS, iPadOS" },
+   { "part": "C", "attribute": "Title type", "token": "plx-ios text heading role", "value": "DM Sans semibold 17 pt on 22 pt (Plenix.Platform.textHeadingSize)", "apple": "SF Pro Semibold 17 pt", "swiftui": "ToolbarItem(placement: .principal) { Text(title).font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline).weight(.semibold)) }", "uikit": "UINavigationBarAppearance.titleTextAttributes with DMSans-SemiBold at Plenix.Platform.textHeadingSize", "appkit": "A label in the sheet", "follows": "Anatomy" },
+   { "part": "C", "attribute": "Bar height", "token": "plx-sys-shell-header-height", "value": "44 pt (Plenix.Platform.shellHeaderHeight)", "apple": "54 pt", "swiftui": "The navigation bar inside the sheet", "uikit": "UINavigationBar", "appkit": "None", "follows": "Anatomy" },
+   { "part": "D", "attribute": "Text", "token": "plx-ios text body role", "value": "DM Sans 17 pt on 22 pt, Plenix.Colors.contentDefault", "apple": "SF Pro 17 pt", "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.contentDefault)", "uikit": "UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))", "appkit": "NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)", "follows": "Best practices" },
+   { "part": "E", "attribute": "Dimming", "token": "plx-comp-modal-layer-before-background (plx-sys-scrim), plx-sys-opacity-mid", "value": "The system dimming at medium; Plenix.Colors.scrim for custom layers", "apple": "Black at 20 percent", "swiftui": ".presentationBackgroundInteraction(.enabled(upThrough: .medium)) to keep the screen usable", "uikit": "largestUndimmedDetentIdentifier = .medium", "appkit": "None", "follows": "Best practices" },
+   { "part": "E", "attribute": "Unsaved changes", "token": "None (behavior)", "value": "Swipe down is blocked and an action sheet confirms", "apple": "The same", "swiftui": ".interactiveDismissDisabled(hasChanges) and a .confirmationDialog", "uikit": "isModalInPresentation = hasChanges; presentationControllerDidAttemptToDismiss", "appkit": "The sheet stays until Cancel or Done", "follows": "iOS, iPadOS" }
+  ],
+  "states": [
+   { "state": "Medium detent", "token": "plx-comp-dialog-background", "swiftui": ".presentationDetents([.medium, .large], selection: $detent)", "uikit": "selectedDetentIdentifier = .medium", "appkit": "None" },
+   { "state": "Large detent", "token": "plx-comp-dialog-background", "swiftui": "detent = .large", "uikit": "animateChanges { selectedDetentIdentifier = .large }", "appkit": "None" },
+   { "state": "Unsaved changes", "token": "The Done button enabled; swipe down guarded", "swiftui": ".interactiveDismissDisabled(hasChanges)", "uikit": "isModalInPresentation = true", "appkit": "None" },
+   { "state": "Done disabled", "token": "plx-comp-button-disabled-background, -border, -text", "swiftui": ".disabled(!isValid)", "uikit": "rightBarButtonItem?.isEnabled = false", "appkit": "isEnabled = false" },
+   { "state": "iPad", "token": "The form or page sheet style", "swiftui": ".presentationSizing(.form)", "uikit": "modalPresentationStyle = .formSheet", "appkit": "A window-modal sheet" }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix sheet on iOS: the system sheet, styled with the Plenix tokens through the presentation modifiers.",
+    "struct EditRecordSheet: View {",
+    "    @Environment(\\.dismiss) private var dismiss",
+    "    @State private var hasChanges = false",
+    "    var body: some View {",
+    "        NavigationStack {",
+    "            Form { /* Plenix fields */ }",
+    "                .scrollContentBackground(.hidden)",
+    "                .padding(.horizontal, Plenix.Space.spaceInsetLg)",
+    "                .toolbar {",
+    "                    ToolbarItem(placement: .cancellationAction) {",
+    "                        Button(\"Cancel\", role: .cancel) { dismiss() }.buttonStyle(PlenixButtonStyle())",
+    "                    }",
+    "                    ToolbarItem(placement: .principal) {",
+    "                        Text(\"Edit record\").font(Plenix.Font.sans(Plenix.Platform.textHeadingSize, relativeTo: .headline).weight(.semibold))",
+    "                    }",
+    "                    ToolbarItem(placement: .confirmationAction) {",
+    "                        Button(\"Done\", action: save).buttonStyle(PlenixButtonStyle(variant: .primary))",
+    "                    }",
+    "                }",
+    "        }",
+    "        .interactiveDismissDisabled(hasChanges)",
+    "    }",
+    "}",
+    "",
+    "// In a view",
+    ".sheet(isPresented: $editing) {",
+    "    EditRecordSheet()",
+    "        .presentationDetents([.medium, .large])",
+    "        .presentationDragIndicator(.visible)",
+    "        .presentationBackground(Plenix.Colors.surfaceOverlay)",
+    "        .presentationCornerRadius(Plenix.Radius.radiusDialog8px)",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix sheet in UIKit: the system sheet presentation with Plenix styling.",
+    "let edit = UINavigationController(rootViewController: EditRecordViewController())",
+    "edit.view.backgroundColor = UIColor(Plenix.Colors.surfaceOverlay)",
+    "if let sheet = edit.sheetPresentationController {",
+    "    sheet.detents = [.medium(), .large()]",
+    "    sheet.prefersGrabberVisible = true",
+    "    sheet.preferredCornerRadius = Plenix.Radius.radiusDialog8px",
+    "    sheet.largestUndimmedDetentIdentifier = nil",
+    "}",
+    "edit.isModalInPresentation = hasChanges   // guard swipe down; confirm in presentationControllerDidAttemptToDismiss",
+    "",
+    "let cancel = UIButton(configuration: .plenix(background: Plenix.Colors.controlBackground, content: Plenix.Colors.contentDefault, border: Plenix.Colors.controlBorder),",
+    "                      primaryAction: UIAction(title: \"Cancel\") { _ in edit.dismiss(animated: true) })",
+    "let done = UIButton(configuration: .plenix(background: Plenix.Colors.actionPrimaryBackground, content: Plenix.Colors.actionPrimaryContent),",
+    "                    primaryAction: UIAction(title: \"Done\") { _ in save() })",
+    "edit.topViewController?.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cancel)",
+    "edit.topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: done)",
+    "present(edit, animated: true)"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix sheet on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let sheet = NSWindow(contentViewController: EditRecordViewController())",
+    "sheet.backgroundColor = NSColor(Plenix.Colors.surfaceOverlay)",
+    "window.beginSheet(sheet) { response in if response == .OK { save() } }"
+   ]
+  }
+ }
+}

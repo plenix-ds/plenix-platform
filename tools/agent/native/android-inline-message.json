@@ -1,0 +1,69 @@
+{
+  "android-feedback|Inline message": {
+    "summary": "A Plenix inline message on Android is a Material 3 Surface built as the Plenix notice: the tone’s soft fill with a 1 dp edge in the tone’s border color, 4 dp corners, the tone’s icon and DM Sans text in the tone’s content color. As a section message it adds a semibold title, one or two outlined buttons and a close icon button at a 48 dp target. A danger message is a live region (TalkBack reads it when it appears); a retry shows the wait and the attempt under the text in the data font. Material 3 has no inline message component; Plenix composes one from its parts.",
+    "variants": [
+      { "name": "Info", "material": "Surface (no Material component)", "web": "feedback|Inline message", "background": "plx-comp-notice-info-background", "content": "plx-comp-notice-info-text", "border": "plx-comp-notice-info-border", "compose": "PlenixNotice(Tone.Info, \"This folder is shared.\")", "views": "PlenixNoticeView with app:tone=\"info\"", "use": "Something to know about the screen or the section." },
+      { "name": "Warning", "material": "Surface (no Material component)", "web": "feedback|Inline message", "background": "plx-comp-notice-warning-background", "content": "plx-comp-notice-warning-text", "border": "plx-comp-notice-warning-border", "compose": "PlenixNotice(Tone.Warning, \"Storage almost full\")", "views": "PlenixNoticeView with app:tone=\"warning\"", "use": "Consequences to know before acting." },
+      { "name": "With title and actions", "material": "Surface with OutlinedButton", "web": "feedback|Section message", "background": "plx-comp-notice-danger-background", "content": "plx-comp-notice-danger-text", "border": "plx-comp-notice-danger-border", "compose": "PlenixNotice(Tone.Danger, \"The server did not answer.\", title = \"The sync stopped\") { OutlinedButton(onClick = retry) { Text(\"Try again\") } }", "views": "PlenixNoticeView with a title and a MaterialButton in the outlined style", "use": "A section message people act on." },
+      { "name": "Dismissible", "material": "Surface with IconButton", "web": "feedback|Section message", "background": "plx-comp-notice-success-background", "content": "plx-comp-notice-success-text", "border": "plx-comp-notice-success-border", "compose": "PlenixNotice(Tone.Success, \"All assets are in the library.\", title = \"Import finished\", onDismiss = { shown = false })", "views": "PlenixNoticeView with a close ImageButton", "use": "Information people may put away." },
+      { "name": "Retry", "material": "Surface with OutlinedButton", "web": "feedback|Retry pattern", "background": "plx-comp-notice-danger-background", "content": "plx-comp-notice-danger-text", "border": "plx-comp-notice-danger-border", "compose": "PlenixRetryNotice(state = retryState, title = \"The comments could not load\")", "views": "PlenixNoticeView with a status TextView and Retry", "use": "A load that failed and is tried again." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Container", "about": "The tone’s soft fill with a 1 dp edge in the tone’s border color and 4 dp corners." },
+      { "part": "B", "name": "Icon", "about": "The tone’s icon at the start, in the tone’s content color." },
+      { "part": "C", "name": "Title", "about": "A few semibold words that name the message (section message)." },
+      { "part": "D", "name": "Text", "about": "One or two sentences in DM Sans at the secondary role." },
+      { "part": "E", "name": "Actions", "about": "One or two outlined buttons under the text." },
+      { "part": "F", "name": "Close", "about": "An icon button at the end with a 48 dp target, when the message may be put away." },
+      { "part": "G", "name": "Retry status", "about": "The wait and the attempt, their numbers in the data font." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Background and edge", "token": "plx-comp-notice-info-background, plx-comp-notice-info-border, plx-comp-notice-border-width", "value": "The tone’s soft fill and soft border (feedbackInfoSoft, feedbackInfoSoftBorder)", "material": "None", "compose": "Surface(color = PlenixColors.feedbackInfoSoft.current(), border = BorderStroke(Dp.Hairline, PlenixColors.feedbackInfoSoftBorder.current()), shape = RoundedCornerShape(PlenixRadius.radiusSurface4px))", "views": "MaterialShapeDrawable with fillColor feedbackInfoSoft and a stroke in feedbackInfoSoftBorder", "follows": "Material 3: Cards", "followsUrl": "https://m3.material.io/components/cards/specs" },
+      { "part": "A", "attribute": "Padding and gaps", "token": "plx-comp-notice-padding-block, plx-comp-notice-padding-inline, plx-comp-notice-gap", "value": "8 dp around the content and between the icon and the text (PlenixSpace.spaceInsetSm, spaceClusterSm)", "material": "None", "compose": "Row(Modifier.padding(PlenixSpace.spaceInsetSm), horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceClusterSm))", "views": "LinearLayout with padding and a divider space from PlenixSpace.spaceInsetSm and spaceClusterSm", "follows": "Material 3: Layout", "followsUrl": "https://m3.material.io/foundations/layout/understanding-layout/spacing" },
+      { "part": "B", "attribute": "Icon", "token": "plx-comp-notice-info-text", "value": "The tone’s content color, the icon size (PlenixSpace for the gap, iconSizeMd)", "material": "None", "compose": "Icon(Icons.Outlined.Info, contentDescription = null, tint = PlenixColors.feedbackInfoContent.current(), modifier = Modifier.size(PlenixIcon.iconSizeMd))", "views": "ImageView with imageTintList from feedbackInfoContent", "follows": "Material 3: Icons", "followsUrl": "https://m3.material.io/styles/icons/overview" },
+      { "part": "C", "attribute": "Title", "token": "plx-comp-notice-info-text", "value": "DM Sans semibold at the label role (PlenixPlatform.textLabelSize)", "material": "None", "compose": "Text(title, fontFamily = PlenixFonts.SANS, fontWeight = FontWeight.SemiBold, fontSize = PlenixPlatform.textLabelSize)", "views": "TextView with the DM Sans semibold font and textSize from textLabelSize", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/applying-type" },
+      { "part": "D", "attribute": "Text", "token": "plx-comp-notice-info-text, plx-comp-notice-font-size", "value": "DM Sans at the secondary role (PlenixPlatform.textSecondarySize)", "material": "None", "compose": "Text(text, fontFamily = PlenixFonts.SANS, fontSize = PlenixPlatform.textSecondarySize)", "views": "TextView with textSize from textSecondarySize", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/applying-type" },
+      { "part": "E", "attribute": "Actions", "token": "plx-comp-notice-gap", "value": "Outlined buttons 8 dp apart, 48 dp targets (PlenixSpace.spaceClusterSm, PlenixPlatform.controlHeightStandard)", "material": "Text buttons", "compose": "Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceClusterSm)) { OutlinedButton(onClick = retry) { Text(\"Try again\") } }", "views": "MaterialButton with style Widget.Material3.Button.OutlinedButton", "follows": "Material 3: Buttons", "followsUrl": "https://m3.material.io/components/buttons/guidelines" },
+      { "part": "G", "attribute": "Retry status", "token": "plx-sys-font-data", "value": "The wait and the attempt numbers in the data font (DM Mono)", "material": "None", "compose": "Text(buildAnnotatedString { append(\"Retrying in \"); withStyle(SpanStyle(fontFamily = PlenixFonts.MONO)) { append(wait) } })", "views": "SpannableString with a TypefaceSpan for PlenixFonts.MONO on the numbers", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/applying-type" }
+    ],
+    "states": [
+      { "state": "Shown", "token": "plx-comp-notice-info-background", "compose": "the composable is in the tree", "views": "visibility = View.VISIBLE" },
+      { "state": "Danger appears", "token": "plx-comp-notice-danger-background", "compose": "Modifier.semantics { liveRegion = LiveRegionMode.Assertive }", "views": "accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE" },
+      { "state": "Retrying", "token": "plx-comp-notice-danger-text", "compose": "CircularProgressIndicator in the button while the attempt runs", "views": "a CircularProgressIndicator icon on the MaterialButton" },
+      { "state": "Dismissed", "token": "plx-comp-notice-info-background", "compose": "AnimatedVisibility(visible = shown) removes it", "views": "visibility = View.GONE" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixNotice(tone: Tone, text: String, title: String? = null, onDismiss: (() -> Unit)? = null, actions: @Composable RowScope.() -> Unit = {}) {",
+        "    val content = tone.content()",
+        "    Surface(",
+        "        color = tone.soft(),",
+        "        border = BorderStroke(Dp.Hairline, tone.softBorder()),",
+        "        shape = RoundedCornerShape(PlenixRadius.radiusSurface4px),",
+        "        modifier = Modifier.semantics { if (tone == Tone.Danger) liveRegion = LiveRegionMode.Assertive }",
+        "    ) {",
+        "        Row(Modifier.padding(PlenixSpace.spaceInsetSm), horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceClusterSm)) {",
+        "            Icon(tone.icon, contentDescription = null, tint = content)",
+        "            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackXs)) {",
+        "                title?.let { Text(it, color = content, fontFamily = PlenixFonts.SANS, fontWeight = FontWeight.SemiBold, fontSize = PlenixPlatform.textLabelSize) }",
+        "                Text(text, color = content, fontFamily = PlenixFonts.SANS, fontSize = PlenixPlatform.textSecondarySize)",
+        "                Row(horizontalArrangement = Arrangement.spacedBy(PlenixSpace.spaceClusterSm), content = actions)",
+        "            }",
+        "            onDismiss?.let { IconButton(onClick = it) { Icon(Icons.Outlined.Close, contentDescription = \"Dismiss\", tint = content) } }",
+        "        }",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "<!-- res/layout/plenix_notice.xml: the soft fill and edge come from PlenixNoticeView (MaterialShapeDrawable) -->",
+        "<com.plenix.PlenixNoticeView",
+        "    android:layout_width=\"match_parent\"",
+        "    android:layout_height=\"wrap_content\"",
+        "    app:tone=\"danger\"",
+        "    app:title=\"@string/sync_stopped\"",
+        "    app:text=\"@string/server_no_answer\" />"
+      ]
+    }
+  }
+}

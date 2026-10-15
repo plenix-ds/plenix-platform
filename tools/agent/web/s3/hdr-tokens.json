@@ -1,0 +1,19 @@
+{
+  "app-header-utilities-gap": { "$value": "0", "$type": "dimension", "$description": "The space between the utilities: none with a fine pointer; 4px with touch, so their 44px targets do not overlap" },
+  "app-header-item-target-inset": { "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))", "$type": "dimension", "$description": "The invisible target layer around a header item and the header name: it grows the target to the minimum target (Platforms Standard 3.1); 0 when the item already meets it" },
+  "app-header-search-view-background": { "$value": "{plx-sys.surface-default}", "$type": "color" },
+  "app-header-search-view-text": { "$value": "{plx-sys.content-default}", "$type": "color" },
+  "app-header-search-view-z-index": { "$value": "{plx-sys.layer-modal}", "$type": "number" },
+  "app-header-search-view-safe-area-top": { "$value": "{plx-sys.safe-area-top}", "$type": "dimension" },
+  "app-header-search-view-safe-area-bottom": { "$value": "{plx-sys.safe-area-bottom}", "$type": "dimension" },
+  "app-header-search-view-safe-area-start": { "$value": "{plx-sys.safe-area-start}", "$type": "dimension" },
+  "app-header-search-view-safe-area-end": { "$value": "{plx-sys.safe-area-end}", "$type": "dimension" },
+  "app-header-search-view-bar-min-height": { "$value": "{plx-comp.app-header-height}", "$type": "dimension", "$description": "The search view's top row: the header's height" },
+  "app-header-search-view-bar-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension" },
+  "app-header-search-view-bar-border-color": { "$value": "{plx-sys.border-divider}", "$type": "color" },
+  "app-header-search-view-bar-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension" },
+  "app-header-search-view-padding-inline": { "$value": "{plx-comp.app-header-padding-inline}", "$type": "dimension" },
+  "app-header-search-view-scope-padding-block-start": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension" },
+  "app-header-search-view-content-padding-block": { "$value": "{plx-sys.space-inset-md}", "$type": "dimension" },
+  "app-header-search-view-content-gap": { "$value": "{plx-sys.space-stack-md}", "$type": "dimension" }
+}

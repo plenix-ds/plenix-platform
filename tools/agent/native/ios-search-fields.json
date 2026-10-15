@@ -1,0 +1,276 @@
+{
+ "ios-navigation|Search fields": {
+  "summary": "A Plenix search field on iOS is the system search text field, kept native in behavior (the search keyboard, dictation, the clear button, scope bars and tokens, VoiceOver’s search field trait) and styled as the Plenix search input: a 6-point rounded rectangle at least 44 points tall on the neutral fill with the control border, a magnifying glass in the muted content color, and DM Sans at the body text role. Apple’s default is a gray capsule with an SF Pro prompt; Plenix keeps the system field and its placements and replaces the look.",
+  "variants": [
+   {
+    "name": "Field",
+    "apple": "Sidebar Search Field",
+    "web": "forms|Search input",
+    "background": "plx-comp-search-input-background",
+    "content": "plx-comp-search-input-text",
+    "border": "plx-comp-search-input-border-color",
+    "swiftui": "PlenixSearchField (inline above content), or .searchable with the UISearchTextField appearance below",
+    "uikit": "UISearchController.searchBar.searchTextField with the Plenix colors, font and corner radius",
+    "appkit": "NSSearchField",
+    "use": "Search in a list, a sidebar or a toolbar on the default surfaces."
+   },
+   {
+    "name": "On accent",
+    "apple": "Sidebar Search Field (no accent kit variant)",
+    "web": "navigation|Search bar",
+    "background": "plx-comp-search-on-accent-input-background",
+    "content": "plx-comp-search-on-accent-input-text",
+    "border": "plx-comp-search-on-accent-input-border-color",
+    "swiftui": "PlenixSearchField(onAccent: true)",
+    "uikit": "The same search text field with the accent field colors",
+    "appkit": "NSSearchField with the accent field colors on a custom bar",
+    "use": "Search in a Plenix accent header, the blue bar of the app."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Field",
+    "about": "The rounded rectangle that takes the text; at least 44 points tall."
+   },
+   {
+    "part": "B",
+    "name": "Search symbol",
+    "about": "The magnifying glass at the leading end, in the muted content color."
+   },
+   {
+    "part": "C",
+    "name": "Text or placeholder",
+    "about": "The query in DM Sans at the body text role, or a placeholder that names what can be searched."
+   },
+   {
+    "part": "D",
+    "name": "Clear button",
+    "about": "The trailing button that empties the field; it shows only while there is text."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Minimum height",
+    "token": "plx-comp-search-input-min-height (plx-sys-control-height-standard on touch)",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "36 pt field, 44 pt target",
+    "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "uikit": "searchTextField.heightAnchor ≥ Plenix.Platform.controlTargetMin (a custom bar), or the system height in a navigation bar",
+    "appkit": "controlSize = .large",
+    "follows": "iOS"
+   },
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-comp-search-input-radius",
+    "value": "6 pt (Plenix.Radius.radiusControl)",
+    "apple": "Capsule",
+    "swiftui": ".background(_, in: .rect(cornerRadius: Plenix.Radius.radiusControl))",
+    "uikit": "searchTextField.layer.cornerRadius = Plenix.Radius.radiusControl; borderStyle = .none",
+    "appkit": "Drawn by the cell (bezelStyle .roundedBezel)",
+    "follows": "iOS"
+   },
+   {
+    "part": "A",
+    "attribute": "Background and border",
+    "token": "plx-comp-search-input-background, plx-comp-search-input-border-color, plx-comp-search-input-border-width",
+    "value": "Neutral fill, control border, 1 pt",
+    "apple": "A tertiary gray fill, no border",
+    "swiftui": ".background(Plenix.Colors.fillNeutral, in:) and .overlay { strokeBorder(Plenix.Colors.controlBorder, lineWidth: Plenix.Component.searchInputBorderWidth) }",
+    "uikit": "searchTextField.backgroundColor, layer.borderColor, layer.borderWidth",
+    "appkit": "backgroundColor, drawsBackground",
+    "follows": "iOS"
+   },
+   {
+    "part": "B",
+    "attribute": "Search symbol",
+    "token": "plx-comp-search-icon-text, plx-comp-search-icon-inset-inline-start",
+    "value": "magnifyingglass, muted content color, 12 pt from the edge (Plenix.Space.spaceInsetMd)",
+    "apple": "The same symbol in the secondary label color",
+    "swiftui": "Image(systemName: \"magnifyingglass\").foregroundStyle(Plenix.Colors.contentMuted)",
+    "uikit": "searchTextField.leftView?.tintColor = UIColor(Plenix.Colors.contentMuted)",
+    "appkit": "Drawn by NSSearchFieldCell (searchButtonCell)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Text",
+    "token": "plx-comp-search-input-font-family, plx-comp-search-input-text (iOS body role)",
+    "value": "DM Sans regular, 17 pt on 22 pt, relative to Body (Plenix.Platform.textBodySize)",
+    "apple": "SF Pro Regular 17 pt",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "uikit": "searchTextField.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize)); adjustsFontForContentSizeCategory",
+    "appkit": "font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Placeholder",
+    "token": "plx-comp-search-input-placeholder-text",
+    "value": "Field placeholder color; names the content, such as “Search assets”",
+    "apple": "Secondary label color, “Search”",
+    "swiftui": "TextField(_, text:, prompt: Text(\"Search assets\").foregroundStyle(Plenix.Colors.fieldPlaceholder))",
+    "uikit": "searchTextField.attributedPlaceholder with .foregroundColor UIColor(Plenix.Colors.fieldPlaceholder)",
+    "appkit": "placeholderAttributedString",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Clear button",
+    "token": "plx-comp-search-clear-text, plx-comp-search-clear-width",
+    "value": "xmark.circle.fill, muted content color, in a 28 pt area at the trailing end",
+    "apple": "The same symbol",
+    "swiftui": "Button { text = \"\" } label: { Image(systemName: \"xmark.circle.fill\") }.foregroundStyle(Plenix.Colors.contentMuted)",
+    "uikit": "searchTextField.clearButtonMode = .whileEditing",
+    "appkit": "Drawn by NSSearchFieldCell (cancelButtonCell)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Tokens and scopes",
+    "token": "plx-comp-chip-selected-background (the web filter chip)",
+    "value": "System search tokens in the field; a scope bar below it",
+    "apple": "The same",
+    "swiftui": ".searchable(text:tokens:token:) and .searchScopes(_:scopes:)",
+    "uikit": "searchTextField.tokens (UISearchToken); searchBar.scopeButtonTitles",
+    "appkit": "NSSearchToolbarItem; a segmented control for scopes",
+    "follows": "Scope bars and tokens"
+   }
+  ],
+  "states": [
+   {
+    "state": "Empty",
+    "token": "plx-comp-search-input-placeholder-text",
+    "swiftui": "text is empty; the prompt shows",
+    "uikit": "searchTextField.text == nil",
+    "appkit": "stringValue is empty"
+   },
+   {
+    "state": "Focused (editing)",
+    "token": "plx-comp-search-input-focus-border-color (only the border changes)",
+    "swiftui": "@FocusState colors the stroke",
+    "uikit": "textFieldDidBeginEditing sets layer.borderColor",
+    "appkit": "The field editor; focusRingType = .default"
+   },
+   {
+    "state": "With text",
+    "token": "plx-comp-search-input-text, plx-comp-search-clear-text",
+    "swiftui": "The clear button shows",
+    "uikit": "clearButtonMode = .whileEditing",
+    "appkit": "The cancel button shows"
+   },
+   {
+    "state": "Searching",
+    "token": "The loading spinner of SearchField on the web",
+    "swiftui": "A ProgressView in place of the symbol",
+    "uikit": "searchTextField.leftView = UIActivityIndicatorView",
+    "appkit": "An NSProgressIndicator beside the field"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-input-disabled-background, plx-comp-input-disabled-text",
+    "swiftui": ".disabled(true)",
+    "uikit": "searchTextField.isEnabled = false",
+    "appkit": "isEnabled = false"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix search field on iOS, inline above content: a system TextField with the Plenix search look.",
+    "struct PlenixSearchField: View {",
+    "    @Binding var text: String",
+    "    var prompt: String = \"Search\"",
+    "    var onAccent = false",
+    "    @FocusState private var isFocused: Bool",
+    "",
+    "    var body: some View {",
+    "        let shape = RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)",
+    "        HStack(spacing: Plenix.Space.spaceInlineSm) {",
+    "            Image(systemName: \"magnifyingglass\")",
+    "                .foregroundStyle(onAccent ? Plenix.Colors.accentFieldPlaceholder : Plenix.Colors.contentMuted)",
+    "                .accessibilityHidden(true)",
+    "            TextField(prompt, text: $text, prompt: Text(prompt).foregroundStyle(onAccent ? Plenix.Colors.accentFieldPlaceholder : Plenix.Colors.fieldPlaceholder))",
+    "                .focused($isFocused)",
+    "                .submitLabel(.search)",
+    "                .autocorrectionDisabled()",
+    "                .foregroundStyle(onAccent ? Plenix.Colors.accentContent : Plenix.Colors.contentDefault)",
+    "            if !text.isEmpty {",
+    "                Button { text = \"\" } label: { Image(systemName: \"xmark.circle.fill\") }",
+    "                    .foregroundStyle(Plenix.Colors.contentMuted)",
+    "                    .accessibilityLabel(\"Clear search\")",
+    "            }",
+    "        }",
+    "        .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "        .padding(.horizontal, Plenix.Space.spaceInsetMd)",
+    "        .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "        .background(onAccent ? Plenix.Colors.accentFieldBackground : Plenix.Colors.fillNeutral, in: shape)",
+    "        .overlay { shape.strokeBorder(isFocused ? Plenix.Colors.focusRingColor : (onAccent ? Plenix.Colors.accentFieldBorder : Plenix.Colors.controlBorder), lineWidth: Plenix.Component.searchInputBorderWidth) }",
+    "        .accessibilityElement(children: .contain)",
+    "        .accessibilityAddTraits(.isSearchField)",
+    "    }",
+    "}",
+    "",
+    "// System placements (search tab, toolbar, navigation bar) keep .searchable; the UIKit appearance below gives them the Plenix look.",
+    "List(results) { AssetRow(asset: $0) }",
+    "    .searchable(text: $query, prompt: \"Search assets\")",
+    "    .searchScopes($scope) { ForEach(Scope.allCases) { Text($0.title).tag($0) } }"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix search field in UIKit: the system search controller with the Plenix search look.",
+    "func applyPlenixSearchStyle(to bar: UISearchBar, placeholder: String) {",
+    "    let field = bar.searchTextField",
+    "    field.borderStyle = .none",
+    "    field.backgroundColor = UIColor(Plenix.Colors.fillNeutral)",
+    "    field.layer.cornerRadius = Plenix.Radius.radiusControl",
+    "    field.layer.borderWidth = Plenix.Component.searchInputBorderWidth",
+    "    field.layer.borderColor = UIColor(Plenix.Colors.controlBorder).cgColor",
+    "    field.clipsToBounds = true",
+    "    field.textColor = UIColor(Plenix.Colors.contentDefault)",
+    "    field.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))",
+    "    field.adjustsFontForContentSizeCategory = true",
+    "    field.leftView?.tintColor = UIColor(Plenix.Colors.contentMuted)",
+    "    field.clearButtonMode = .whileEditing",
+    "    field.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [.foregroundColor: UIColor(Plenix.Colors.fieldPlaceholder)])",
+    "    bar.tintColor = UIColor(Plenix.Colors.actionPrimaryBackground)   // the cursor and the Cancel button",
+    "    bar.searchBarStyle = .minimal",
+    "}",
+    "",
+    "let search = UISearchController(searchResultsController: results)",
+    "search.searchResultsUpdater = results            // update the results as the person types",
+    "search.searchBar.scopeButtonTitles = [\"All\", \"Images\", \"Video\"]",
+    "applyPlenixSearchStyle(to: search.searchBar, placeholder: \"Search assets\")",
+    "navigationItem.searchController = search",
+    "navigationItem.preferredSearchBarPlacement = .integratedButton",
+    "",
+    "// Focused: only the border changes",
+    "NotificationCenter.default.addObserver(forName: UITextField.textDidBeginEditingNotification, object: search.searchBar.searchTextField, queue: .main) { _ in",
+    "    search.searchBar.searchTextField.layer.borderColor = UIColor(Plenix.Colors.focusRingColor).cgColor",
+    "}",
+    "NotificationCenter.default.addObserver(forName: UITextField.textDidEndEditingNotification, object: search.searchBar.searchTextField, queue: .main) { _ in",
+    "    search.searchBar.searchTextField.layer.borderColor = UIColor(Plenix.Colors.controlBorder).cgColor",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app needs a macOS build of",
+    "// PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let search = NSSearchField()",
+    "search.placeholderString = \"Search assets\"",
+    "search.font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "search.textColor = NSColor(Plenix.Colors.contentDefault)",
+    "search.sendsSearchStringImmediately = true       // results update as the person types",
+    "let item = NSSearchToolbarItem(itemIdentifier: .init(\"search\"))   // the trailing end of the toolbar",
+    "item.searchField = search"
+   ]
+  }
+ }
+}

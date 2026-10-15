@@ -1,0 +1,269 @@
+{
+ "ios-forms|Sliders": {
+  "summary": "A Plenix slider on iOS is the system Slider, kept native in behavior (the drag gesture, VoiceOver’s adjustable value with swipe up and down, the minimum at the leading end) and given the Plenix look: the filled track in the Plenix primary action color, the unfilled track in the Plenix default border color, and a DM Sans label with the current value above it. The thumb stays Apple’s white knob, the control keeps a 44-point touch height, and Apple’s default is the system blue fill under an SF Pro label.",
+  "variants": [
+   {
+    "name": "Slider",
+    "apple": "Sliders, Show Symbols off",
+    "web": "forms|Slider",
+    "background": "plx-comp-slider-input-accent-color",
+    "content": "plx-comp-slider-label-text",
+    "border": null,
+    "swiftui": "Slider(value:in:step:) with .tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "UISlider with minimumTrackTintColor and maximumTrackTintColor",
+    "appkit": "NSSlider with trackFillColor",
+    "use": "A value in a fixed range where an approximate setting is enough, such as brightness."
+   },
+   {
+    "name": "Slider with end symbols",
+    "apple": "Sliders, Show Symbols on",
+    "web": "forms|Slider",
+    "background": "plx-comp-slider-input-accent-color",
+    "content": "plx-sys-content-muted",
+    "border": null,
+    "swiftui": "Slider(value:in:label:minimumValueLabel:maximumValueLabel:)",
+    "uikit": "UISlider minimumValueImage and maximumValueImage",
+    "appkit": "Two NSImageView beside the NSSlider",
+    "use": "A range whose ends need a picture, such as a small and a large text size."
+   },
+   {
+    "name": "Stepped slider",
+    "apple": "Sliders, Show Ticks on",
+    "web": "forms|Slider",
+    "background": "plx-comp-slider-input-accent-color",
+    "content": "plx-comp-slider-label-text",
+    "border": null,
+    "swiftui": "Slider(value:in:step:)",
+    "uikit": "UISlider with the value rounded to the step in .valueChanged",
+    "appkit": "NSSlider numberOfTickMarks and allowsTickMarkValuesOnly",
+    "use": "A small set of even steps, paired with a number field when exact values matter."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Filled track",
+    "about": "The part of the track from the minimum to the thumb, in the Plenix primary action color."
+   },
+   {
+    "part": "B",
+    "name": "Unfilled track",
+    "about": "The rest of the track up to the maximum, in the Plenix default border color."
+   },
+   {
+    "part": "C",
+    "name": "Thumb",
+    "about": "The system white knob that people drag; the control is at least 44 points tall."
+   },
+   {
+    "part": "D",
+    "name": "Label and value",
+    "about": "The name of the setting and its current value with the unit, above the track in DM Sans."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Filled track color",
+    "token": "plx-comp-slider-input-accent-color",
+    "value": "plx-sys-action-primary-background (Plenix.Colors.actionPrimaryBackground)",
+    "apple": "System blue",
+    "swiftui": ".tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "minimumTrackTintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "appkit": "trackFillColor = NSColor(Plenix.Colors.actionPrimaryBackground)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Unfilled track color",
+    "token": "plx-sys-border-default (the Switch off track on the web)",
+    "value": "Plenix.Colors.borderDefault",
+    "apple": "The system fill",
+    "swiftui": "The system fill (SwiftUI sets only the tint)",
+    "uikit": "maximumTrackTintColor = UIColor(Plenix.Colors.borderDefault)",
+    "appkit": "The system track",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Track height",
+    "token": "None (set by the system)",
+    "value": "6 pt",
+    "apple": "6 pt",
+    "swiftui": "Set by the system",
+    "uikit": "Set by the system; trackRect(forBounds:) in a subclass",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Thumb",
+    "token": "None (set by the system)",
+    "value": "The system white knob with its shadow",
+    "apple": "The same",
+    "swiftui": "Set by the system",
+    "uikit": "thumbTintColor stays nil",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Touch height",
+    "token": "plx-comp-slider-input-height (plx-sys-control-height-inline on touch)",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "44 pt",
+    "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "uikit": "heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin)",
+    "appkit": "controlSize = .regular",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Label typeface and size",
+    "token": "plx-comp-slider-label-text, plx-text--label (iOS label role)",
+    "value": "DM Sans semibold 15 pt on 20 pt, relative to Subheadline (Plenix.Platform.textLabelSize)",
+    "apple": "SF Pro 17 pt (the row title)",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold))",
+    "uikit": "UIFontMetrics(forTextStyle: .subheadline).scaledFont(for: UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textLabelSize))",
+    "appkit": "font = NSFont(name: \"DMSans-SemiBold\", size: NSFont.systemFontSize)",
+    "follows": "macOS"
+   },
+   {
+    "part": "D",
+    "attribute": "Value text",
+    "token": "plx-comp-slider-value-text, plx-text--secondary (iOS secondary role)",
+    "value": "plx-sys-content-muted, DM Mono, 13 pt on 18 pt, the data role (Plenix.Platform.textDataSize)",
+    "apple": "None",
+    "swiftui": "Text(value, format:).font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)",
+    "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
+    "appkit": "An NSTextField with a NumberFormatter and NSFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Label to track gap",
+    "token": "plx-comp-slider-row-gap",
+    "value": "4 pt (Plenix.Space.spaceStackXs)",
+    "apple": "None",
+    "swiftui": "VStack(alignment: .leading, spacing: Plenix.Space.spaceStackXs)",
+    "uikit": "UIStackView spacing = Plenix.Space.spaceStackXs",
+    "appkit": "NSStackView spacing",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "End symbols",
+    "token": "plx-sys-content-muted",
+    "value": "Plenix.Colors.contentMuted",
+    "apple": "The secondary label color",
+    "swiftui": "minimumValueLabel: Image(systemName:).foregroundStyle(Plenix.Colors.contentMuted)",
+    "uikit": "minimumValueImage with withTintColor(UIColor(Plenix.Colors.contentMuted))",
+    "appkit": "NSImageView contentTintColor",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-comp-slider-input-accent-color and the border-default track",
+    "swiftui": "Slider(value:in:)",
+    "uikit": "UISlider",
+    "appkit": "NSSlider"
+   },
+   {
+    "state": "Dragging",
+    "token": "The system enlarges the thumb",
+    "swiftui": "onEditingChanged(true)",
+    "uikit": "isTracking; .valueChanged with isContinuous = true",
+    "appkit": "isContinuous = true"
+   },
+   {
+    "state": "Change finished",
+    "token": "onCommit on the web",
+    "swiftui": "onEditingChanged(false)",
+    "uikit": ".touchUpInside and .touchUpOutside, or isContinuous = false",
+    "appkit": "sendAction on mouse up (isContinuous = false)"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-slider-input-disabled-opacity (the system dims it)",
+    "swiftui": ".disabled(true)",
+    "uikit": "isEnabled = false",
+    "appkit": "isEnabled = false"
+   },
+   {
+    "state": "Focused (keyboard, iPad and Mac)",
+    "token": "The system focus effect",
+    "swiftui": ".focusable(); arrow keys change the value",
+    "uikit": "The focus system",
+    "appkit": "focusRingType = .default"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix slider on iOS: the system Slider with the Plenix accent, label and value (PlenixTokens.swift).",
+    "struct PlenixSlider: View {",
+    "    let title: String",
+    "    @Binding var value: Double",
+    "    var range: ClosedRange<Double> = 0...100",
+    "    var step: Double = 1",
+    "    var unit = \"%\"",
+    "    var onCommit: (Double) -> Void = { _ in }",
+    "",
+    "    var body: some View {",
+    "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackXs) {",
+    "            HStack(spacing: Plenix.Space.spaceInlineSm) {",
+    "                Text(title)",
+    "                    .font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold))",
+    "                    .foregroundStyle(Plenix.Colors.contentDefault)",
+    "                Spacer()",
+    "                Text(\"\\(Int(value))\\(unit)\")",
+    "                    .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+    "                    .foregroundStyle(Plenix.Colors.contentMuted)",
+    "            }",
+    "            Slider(value: $value, in: range, step: step) { Text(title) } onEditingChanged: { editing in",
+    "                if !editing { onCommit(value) }",
+    "            }",
+    "            .tint(Plenix.Colors.actionPrimaryBackground)",
+    "            .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "            .accessibilityValue(\"\\(Int(value))\\(unit)\")",
+    "        }",
+    "    }",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix slider in UIKit: a UISlider with the Plenix track colors.",
+    "let slider = UISlider()",
+    "slider.minimumValue = 0",
+    "slider.maximumValue = 100",
+    "slider.minimumTrackTintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "slider.maximumTrackTintColor = UIColor(Plenix.Colors.borderDefault)",
+    "slider.heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin).isActive = true",
+    "slider.addAction(UIAction { _ in valueLabel.text = \"\\(Int(slider.value))%\" }, for: .valueChanged)",
+    "slider.addAction(UIAction { _ in commit(slider.value) }, for: [.touchUpInside, .touchUpOutside])",
+    "",
+    "let stack = UIStackView(arrangedSubviews: [header, slider])",
+    "stack.axis = .vertical",
+    "stack.spacing = Plenix.Space.spaceStackXs"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix slider on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above.",
+    "// A native AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let slider = NSSlider(value: 50, minValue: 0, maxValue: 100, target: self, action: #selector(valueChanged(_:)))",
+    "slider.trackFillColor = NSColor(Plenix.Colors.actionPrimaryBackground)",
+    "slider.isContinuous = true",
+    "slider.numberOfTickMarks = 11   // sparse ticks for precision",
+    "let label = NSTextField(labelWithString: \"Brightness\")",
+    "label.font = NSFont(name: \"DMSans-SemiBold\", size: NSFont.systemFontSize)"
+   ]
+  }
+ }
+}

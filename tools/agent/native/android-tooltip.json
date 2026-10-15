@@ -1,0 +1,298 @@
+{
+ "android-overlays|Tooltip": {
+  "summary": "A Plenix tooltip on Android is the Material 3 PlainTooltip in a TooltipBox, kept native in behavior (shown on long-press, on mouse hover and on keyboard focus, placed above the control, read by TalkBack) and styled with the Plenix tooltip tokens: a 4 dp rounded bubble in the tooltip color with a small caret, and DM Sans text at the caption role. Rich tooltips use the overlay surface and the menu radius. Material’s default is an inverse-surface bubble without a caret and Roboto text; Plenix keeps Material’s structure and replaces the look.",
+  "variants": [
+   {
+    "name": "Plain",
+    "material": "Plain tooltip",
+    "web": "overlays|Tooltip",
+    "background": "plx-comp-tooltip-bubble-background",
+    "content": "plx-comp-tooltip-bubble-text",
+    "border": null,
+    "compose": "PlenixTooltip(\"Upload files\") { IconButton(…) }",
+    "views": "anchor.plainTooltip(\"Upload files\")",
+    "use": "A short label for a control, most of all an icon-only one."
+   },
+   {
+    "name": "Rich",
+    "material": "Rich tooltip",
+    "web": "overlays|Rich tooltip",
+    "background": "plx-sys-surface-overlay",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-border-default",
+    "compose": "TooltipBox with RichTooltip(title, action) and the Plenix colors; rememberTooltipState(isPersistent = true)",
+    "views": "No Material Views rich tooltip: a PopupWindow with the Plenix surface",
+    "use": "A sentence or two of help with an optional action, opened from an info button."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Bubble",
+    "about": "The rounded container, above the control."
+   },
+   {
+    "part": "B",
+    "name": "Caret",
+    "about": "A small triangle that points at the control."
+   },
+   {
+    "part": "C",
+    "name": "Text",
+    "about": "A few words in DM Sans at the caption role; never essential or interactive content."
+   },
+   {
+    "part": "D",
+    "name": "Title",
+    "about": "Rich only: a short heading above the text."
+   },
+   {
+    "part": "E",
+    "name": "Action",
+    "about": "Rich only: one text action, such as Learn more."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-comp-tooltip-bubble-background",
+    "value": "tooltipBackground (black; light gray in dark)",
+    "material": "inverseSurface",
+    "compose": "containerColor = PlenixColors.tooltipBackground.current()",
+    "views": "fillColor = ColorStateList.valueOf(argb(PlenixColors.tooltipBackground.light, PlenixColors.tooltipBackground.dark))",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-comp-tooltip-bubble-radius",
+    "value": "4 dp (PlenixRadius.radiusCompact4px); rich: 8 dp (PlenixRadius.radiusMenu8px)",
+    "material": "4 dp plain, 12 dp rich",
+    "compose": "shape = RoundedCornerShape(PlenixRadius.radiusCompact4px)",
+    "views": "ShapeAppearanceModel.builder().setAllCornerSizes(px(PlenixRadius.radiusCompact4px).toFloat())",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Padding",
+    "token": "plx-comp-tooltip-bubble-padding-block, plx-comp-tooltip-bubble-padding-inline",
+    "value": "4 dp block, 8 dp inline (PlenixSpace.spaceInsetXs, spaceInsetSm)",
+    "material": "4 dp block, 8 dp inline",
+    "compose": "Material’s padding, which matches",
+    "views": "setPadding(px(PlenixSpace.spaceInsetSm), px(PlenixSpace.spaceInsetXs), px(PlenixSpace.spaceInsetSm), px(PlenixSpace.spaceInsetXs))",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Distance and placement",
+    "token": "plx-comp-tooltip-bubble-top-inset-block-end",
+    "value": "8 dp from the control (PlenixSpace.spaceStackSm), above it; below when there is no room",
+    "material": "Above, 4 dp away",
+    "compose": "TooltipDefaults.rememberPlainTooltipPositionProvider(spacingBetweenTooltipAndAnchor = PlenixSpace.spaceStackSm)",
+    "views": "popup.showAsDropDown(anchor, 0, -(anchor.height + bubble.measuredHeight + px(PlenixSpace.spaceStackSm)))",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Caret",
+    "token": "plx-comp-tooltip-bubble-before-border-width",
+    "value": "8 dp wide, 4 dp tall, in the bubble color",
+    "material": "None by default",
+    "compose": "PlainTooltip(caretSize = DpSize(PlenixComponent.tooltipBubbleBeforeBorderWidth * 2, PlenixComponent.tooltipBubbleBeforeBorderWidth))",
+    "views": "Not drawn in Views: the bubble alone",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Text type",
+    "token": "plx-comp-tooltip-bubble-font-family, plx-comp-tooltip-bubble-font-size, plx-comp-tooltip-bubble-line-height",
+    "value": "DM Sans 12 sp on 16 sp, Body small (PlenixPlatform.textCaptionSize)",
+    "material": "Roboto 12 sp, Body small",
+    "compose": "textRole(PlenixPlatform.textCaptionSize, PlenixPlatform.textCaptionLineHeight, PlenixPlatform.textCaptionWeight)",
+    "views": "bubble.textRole(PlenixPlatform.textCaptionSize, PlenixPlatform.textCaptionLineHeight, R.font.dm_sans_regular)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/type-scale-tokens"
+   },
+   {
+    "part": "C",
+    "attribute": "Text color",
+    "token": "plx-comp-tooltip-bubble-text",
+    "value": "tooltipContent",
+    "material": "inverseOnSurface",
+    "compose": "contentColor = PlenixColors.tooltipContent.current()",
+    "views": "bubble.setTextColor(argb(PlenixColors.tooltipContent.light, PlenixColors.tooltipContent.dark))",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "D",
+    "attribute": "Rich title",
+    "token": "plx-sys-content-default",
+    "value": "DM Sans semibold 14 sp, Label large (PlenixPlatform.textLabelSize)",
+    "material": "Title small, onSurfaceVariant",
+    "compose": "RichTooltip(title = { Text(t, style = textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, PlenixPlatform.textLabelWeight)) })",
+    "views": "title.textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, R.font.dm_sans_semibold)",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "E",
+    "attribute": "Rich action",
+    "token": "plx-sys-content-link",
+    "value": "A text button in contentLink, Label large",
+    "material": "A text button in primary",
+    "compose": "RichTooltip(action = { TextButton(onClick, colors = ButtonDefaults.textButtonColors(contentColor = PlenixColors.contentLink.current())) { … } })",
+    "views": "A MaterialButton (TextButton style) with setTextColor(argb(PlenixColors.contentLink.light, PlenixColors.contentLink.dark))",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Trigger",
+    "token": "None",
+    "value": "Long-press on touch, hover with a mouse, focus with a keyboard; the label is also the control’s TalkBack description",
+    "material": "The same",
+    "compose": "TooltipBox handles it; IconButton keeps its own contentDescription",
+    "views": "setOnLongClickListener and setOnHoverListener; contentDescription stays the label",
+    "follows": "Material 3: Tooltips",
+    "followsUrl": "https://m3.material.io/components/tooltips/accessibility"
+   }
+  ],
+  "states": [
+   {
+    "state": "Hidden",
+    "token": "None",
+    "compose": "tooltipState.isVisible == false",
+    "views": "No popup"
+   },
+   {
+    "state": "Shown",
+    "token": "plx-comp-tooltip-bubble-duration",
+    "compose": "Long-press, hover or focus shows it; Material’s fade",
+    "views": "popup.showAsDropDown(…)"
+   },
+   {
+    "state": "Timed out",
+    "token": "plx-comp-tooltip-touch-dismiss-delay",
+    "compose": "A plain tooltip hides after Material’s 1.5 s",
+    "views": "anchor.postDelayed({ popup.dismiss() }, PlenixComponent.tooltipTouchDismissDelay.toLong())"
+   },
+   {
+    "state": "Persistent (rich)",
+    "token": "None",
+    "compose": "rememberTooltipState(isPersistent = true): stays until a tap outside",
+    "views": "isOutsideTouchable = true; dismissed by a tap outside"
+   }
+  ],
+  "code": {
+   "compose": [
+    "import androidx.compose.material3.*",
+    "import plenix.tokens.*",
+    "",
+    "// Sans: the DM Sans family (PlenixFonts.SANS), set once in the app theme, e.g.",
+    "// val Sans = FontFamily(Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Normal), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.SemiBold), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Bold))",
+    "fun textRole(size: TextUnit, lineHeight: TextUnit, weight: Int) =",
+    "    TextStyle(fontFamily = Sans, fontSize = size, lineHeight = lineHeight, fontWeight = FontWeight(weight))",
+    "",
+    "/** The Plenix tooltip on Android: the Material 3 PlainTooltip, styled with the Plenix tooltip tokens. */",
+    "@OptIn(ExperimentalMaterial3Api::class)",
+    "@Composable",
+    "fun PlenixTooltip(text: String, anchor: @Composable () -> Unit) {",
+    "    TooltipBox(",
+    "        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(spacingBetweenTooltipAndAnchor = PlenixSpace.spaceStackSm),",
+    "        tooltip = {",
+    "            PlainTooltip(",
+    "                caretSize = DpSize(PlenixComponent.tooltipBubbleBeforeBorderWidth * 2, PlenixComponent.tooltipBubbleBeforeBorderWidth),",
+    "                shape = RoundedCornerShape(PlenixRadius.radiusCompact4px),",
+    "                containerColor = PlenixColors.tooltipBackground.current(),",
+    "                contentColor = PlenixColors.tooltipContent.current(),",
+    "            ) { Text(text, style = textRole(PlenixPlatform.textCaptionSize, PlenixPlatform.textCaptionLineHeight, PlenixPlatform.textCaptionWeight)) }",
+    "        },",
+    "        state = rememberTooltipState(),",
+    "        content = anchor,",
+    "    )",
+    "}",
+    "",
+    "/** A rich tooltip: the overlay surface, the menu radius, a title and one action. */",
+    "@OptIn(ExperimentalMaterial3Api::class)",
+    "@Composable",
+    "fun PlenixRichTooltip(title: String, text: String, action: String, onAction: () -> Unit, anchor: @Composable () -> Unit) {",
+    "    TooltipBox(",
+    "        positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(spacingBetweenTooltipAndAnchor = PlenixSpace.spaceStackSm),",
+    "        tooltip = {",
+    "            RichTooltip(",
+    "                title = { Text(title, style = textRole(PlenixPlatform.textLabelSize, PlenixPlatform.textLabelLineHeight, PlenixPlatform.textLabelWeight)) },",
+    "                action = { TextButton(onClick = onAction, colors = ButtonDefaults.textButtonColors(contentColor = PlenixColors.contentLink.current())) { Text(action) } },",
+    "                shape = RoundedCornerShape(PlenixRadius.radiusMenu8px),",
+    "                colors = TooltipDefaults.richTooltipColors(",
+    "                    containerColor = PlenixColors.surfaceOverlay.current(),",
+    "                    contentColor = PlenixColors.contentMuted.current(),",
+    "                    titleContentColor = PlenixColors.contentDefault.current(),",
+    "                    actionContentColor = PlenixColors.contentLink.current(),",
+    "                ),",
+    "            ) { Text(text, style = textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, PlenixPlatform.textSecondaryWeight)) }",
+    "        },",
+    "        state = rememberTooltipState(isPersistent = true),",
+    "        content = anchor,",
+    "    )",
+    "}",
+    "",
+    "// In a toolbar",
+    "PlenixTooltip(\"Upload files\") {",
+    "    IconButton(onClick = upload) { Icon(Icons.Sharp.Upload, contentDescription = \"Upload files\") }",
+    "}"
+   ],
+   "views": [
+    "import android.content.res.ColorStateList",
+    "import android.widget.PopupWindow",
+    "import com.google.android.material.shape.*",
+    "import plenix.tokens.*",
+    "",
+    "// Views read the same values from the generated plenix.tokens package through three helpers:",
+    "fun Context.argb(light: Color, dark: Color): Int {",
+    "    val night = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES",
+    "    return (if (night) dark else light).toArgb()",
+    "}",
+    "fun Context.px(dp: Dp): Int = (dp.value * resources.displayMetrics.density).roundToInt()",
+    "fun TextView.textRole(size: TextUnit, lineHeight: TextUnit, @FontRes font: Int) {",
+    "    typeface = ResourcesCompat.getFont(context, font)   // R.font.dm_sans_*: DM Sans (PlenixFonts.SANS) bundled with the app",
+    "    setTextSize(TypedValue.COMPLEX_UNIT_SP, size.value)",
+    "    TextViewCompat.setLineHeight(this, TypedValue.COMPLEX_UNIT_SP, lineHeight.value)",
+    "}",
+    "",
+    "/** A Plenix plain tooltip for a View: long-press or hover shows the bubble above it; the label stays its contentDescription. */",
+    "fun View.plainTooltip(text: String) {",
+    "    if (contentDescription == null) contentDescription = text",
+    "    setOnLongClickListener { showTooltip(this, text); true }",
+    "    setOnHoverListener { v, e -> if (e.action == MotionEvent.ACTION_HOVER_ENTER) showTooltip(v, text); false }",
+    "}",
+    "",
+    "fun showTooltip(anchor: View, text: String) {",
+    "    val c = anchor.context",
+    "    val bubble = TextView(c).apply {",
+    "        this.text = text",
+    "        textRole(PlenixPlatform.textCaptionSize, PlenixPlatform.textCaptionLineHeight, R.font.dm_sans_regular)",
+    "        setTextColor(c.argb(PlenixColors.tooltipContent.light, PlenixColors.tooltipContent.dark))",
+    "        setPadding(c.px(PlenixSpace.spaceInsetSm), c.px(PlenixSpace.spaceInsetXs), c.px(PlenixSpace.spaceInsetSm), c.px(PlenixSpace.spaceInsetXs))",
+    "        background = MaterialShapeDrawable(ShapeAppearanceModel.builder().setAllCornerSizes(c.px(PlenixRadius.radiusCompact4px).toFloat()).build()).apply {",
+    "            fillColor = ColorStateList.valueOf(c.argb(PlenixColors.tooltipBackground.light, PlenixColors.tooltipBackground.dark))",
+    "        }",
+    "        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO   // TalkBack reads the anchor’s label",
+    "    }",
+    "    bubble.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)",
+    "    val popup = PopupWindow(bubble, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false).apply { isOutsideTouchable = true }",
+    "    popup.showAsDropDown(anchor, (anchor.width - bubble.measuredWidth) / 2, -(anchor.height + bubble.measuredHeight + c.px(PlenixSpace.spaceStackSm)))",
+    "    anchor.postDelayed({ popup.dismiss() }, PlenixComponent.tooltipTouchDismissDelay.toLong())",
+    "}",
+    "",
+    "uploadButton.plainTooltip(\"Upload files\")"
+   ]
+  }
+ }
+}

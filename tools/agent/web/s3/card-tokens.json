@@ -1,0 +1,3 @@
+{
+  "card-opener-target-inset": { "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))", "$type": "dimension", "$description": "The invisible target layer around a selectable media card's title: it grows the target to the minimum target (Platforms Standard 3.1)" }
+}

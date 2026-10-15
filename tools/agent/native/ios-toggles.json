@@ -1,0 +1,258 @@
+{
+ "ios-forms|Toggles": {
+  "summary": "A Plenix switch on iOS is the system Toggle in the switch style, kept native in behavior (the drag and tap gesture, haptics, VoiceOver’s on and off value, Dynamic Type in its row) and given the Plenix look: the on track in the Plenix primary action color, the label in DM Sans at the body text role, and a 44-point row. The track keeps Apple’s 51 by 31 point shape and white knob, and the off track stays the system fill, because iOS lets an app change only the on color. Apple’s default uses the system green; Plenix uses its own accent.",
+  "variants": [
+   {
+    "name": "Switch",
+    "apple": "Toggle - Switch",
+    "web": "forms|Switch",
+    "background": "plx-comp-switch-input-checked-track-background",
+    "content": "plx-comp-switch-label-text",
+    "border": null,
+    "swiftui": "Toggle(_:isOn:) with .toggleStyle(.switch) and .tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "UISwitch with onTintColor",
+    "appkit": "NSSwitch (the accent color follows the system setting)",
+    "use": "An on or off setting in a list row that takes effect at once."
+   },
+   {
+    "name": "Toggle button",
+    "apple": "Button that changes its selection",
+    "web": "forms|Toggle button",
+    "background": "plx-sys-state-selected",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-control-border",
+    "swiftui": "Toggle(_:isOn:) with .toggleStyle(.button)",
+    "uikit": "UIButton with changesSelectionAsPrimaryAction = true",
+    "appkit": "NSButton with setButtonType(.pushOnPushOff)",
+    "use": "An on or off choice outside a list row, such as a format option in a toolbar."
+   },
+   {
+    "name": "Checkbox (Mac)",
+    "apple": "Checkbox",
+    "web": "forms|Checkbox",
+    "background": "plx-sys-action-primary-background",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-control-border",
+    "swiftui": "Toggle(_:isOn:) with .toggleStyle(.checkbox) (macOS only)",
+    "uikit": "Not on iPhone and iPad; use a switch in a row",
+    "appkit": "NSButton(checkboxWithTitle:target:action:)",
+    "use": "A single setting or a hierarchy of settings in a Mac window."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Track",
+    "about": "The capsule that shows the state: the Plenix primary action color when on, the system fill when off."
+   },
+   {
+    "part": "B",
+    "name": "Knob",
+    "about": "The white thumb that slides to the trailing end when on; people tap or drag it."
+   },
+   {
+    "part": "C",
+    "name": "Row label",
+    "about": "The text that names the setting, in DM Sans at the body text role; the whole row is the 44-point target."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Track size",
+    "token": "plx-comp-switch-track-width, plx-comp-switch-track-height",
+    "value": "51 by 31 pt (Plenix.Platform.switchTrackWidth, switchTrackHeight)",
+    "apple": "51 by 31 pt",
+    "swiftui": "Set by the system switch",
+    "uikit": "Set by UISwitch (intrinsicContentSize)",
+    "appkit": "Set by NSSwitch (controlSize)",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "A",
+    "attribute": "On track color",
+    "token": "plx-comp-switch-input-checked-track-background",
+    "value": "plx-sys-action-primary-background (Plenix.Colors.actionPrimaryBackground)",
+    "apple": "System green",
+    "swiftui": ".tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "onTintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "appkit": "The system accent color (NSSwitch takes no tint)",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "A",
+    "attribute": "Off track color",
+    "token": "plx-comp-switch-track-background (web only)",
+    "value": "The system fill on iOS",
+    "apple": "The system fill",
+    "swiftui": "Not set; the system draws it",
+    "uikit": "Not set; the system draws it",
+    "appkit": "Not set; the system draws it",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "A",
+    "attribute": "State without color",
+    "token": "None",
+    "value": "The knob position, and the system on and off labels when the person turns them on",
+    "apple": "The same",
+    "swiftui": "Set by the system (Settings, Accessibility, On/Off Labels)",
+    "uikit": "Set by the system",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Knob",
+    "token": "plx-comp-switch-track-after-background (web only)",
+    "value": "The system white knob with its shadow",
+    "apple": "White, with a shadow",
+    "swiftui": "Not set; the system draws it",
+    "uikit": "thumbTintColor stays nil",
+    "appkit": "Not set",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "C",
+    "attribute": "Row height",
+    "token": "plx-comp-switch-min-height",
+    "value": "44 pt (Plenix.Platform.switchMinHeight)",
+    "apple": "44 pt list row",
+    "swiftui": ".frame(minHeight: Plenix.Platform.switchMinHeight)",
+    "uikit": "heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.switchMinHeight) on the row",
+    "appkit": "controlSize = .regular in a form row",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Label typeface and size",
+    "token": "plx-text--body (iOS body role), plx-comp-switch-label-text",
+    "value": "DM Sans 17 pt on 22 pt, relative to Body (Plenix.Platform.textBodySize, textBodyLineHeight)",
+    "apple": "SF Pro 17 pt",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "uikit": "UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))",
+    "appkit": "font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize) (the Mac body size)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Label color",
+    "token": "plx-comp-switch-label-text",
+    "value": "plx-sys-content-default (Plenix.Colors.contentDefault)",
+    "apple": "The label color",
+    "swiftui": ".foregroundStyle(Plenix.Colors.contentDefault)",
+    "uikit": "textColor = UIColor(Plenix.Colors.contentDefault)",
+    "appkit": "contentTintColor on the label",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Label to switch gap",
+    "token": "plx-comp-switch-gap",
+    "value": "The row spreads them: label leading, switch trailing",
+    "apple": "The same",
+    "swiftui": "Toggle in a List or Form row",
+    "uikit": "accessoryView = the switch in a UITableViewCell, or a UIListContentConfiguration row",
+    "appkit": "An NSGridView row",
+    "follows": "iOS, iPadOS"
+   }
+  ],
+  "states": [
+   {
+    "state": "Off",
+    "token": "The system track fill",
+    "swiftui": "isOn == false",
+    "uikit": "isOn = false",
+    "appkit": "state = .off"
+   },
+   {
+    "state": "On",
+    "token": "plx-comp-switch-input-checked-track-background",
+    "swiftui": "isOn == true",
+    "uikit": "isOn = true; setOn(_:animated:)",
+    "appkit": "state = .on"
+   },
+   {
+    "state": "Pressed",
+    "token": "The system stretches the knob",
+    "swiftui": "Set by the system",
+    "uikit": "Set by the system",
+    "appkit": "Set by the system"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-switch-input-disabled-track-opacity (the system dims it)",
+    "swiftui": ".disabled(true)",
+    "uikit": "isEnabled = false",
+    "appkit": "isEnabled = false"
+   },
+   {
+    "state": "Focused (keyboard, iPad and Mac)",
+    "token": "The system focus effect",
+    "swiftui": ".focusable(); the system draws the focus effect",
+    "uikit": "The focus system (canBecomeFocused)",
+    "appkit": "focusRingType = .default"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix switch on iOS: the system Toggle in a list row, with the Plenix accent and label (PlenixTokens.swift).",
+    "struct PlenixSwitchRow: View {",
+    "    let title: String",
+    "    @Binding var isOn: Bool",
+    "",
+    "    var body: some View {",
+    "        Toggle(isOn: $isOn) {",
+    "            Text(title)",
+    "                .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "                .foregroundStyle(Plenix.Colors.contentDefault)",
+    "        }",
+    "        .toggleStyle(.switch)",
+    "        .tint(Plenix.Colors.actionPrimaryBackground)",
+    "        .frame(minHeight: Plenix.Platform.switchMinHeight)",
+    "    }",
+    "}",
+    "",
+    "// In a view",
+    "Form { PlenixSwitchRow(title: \"Sync over cellular\", isOn: $syncOverCellular) }"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix switch in UIKit: a UISwitch as the accessory of a list row.",
+    "let toggle = UISwitch()",
+    "toggle.onTintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "toggle.addAction(UIAction { action in",
+    "    settings.syncOverCellular = (action.sender as? UISwitch)?.isOn ?? false",
+    "}, for: .valueChanged)",
+    "",
+    "var content = cell.defaultContentConfiguration()",
+    "content.text = \"Sync over cellular\"",
+    "content.textProperties.font = UIFontMetrics(forTextStyle: .body)",
+    "    .scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize) ?? .preferredFont(forTextStyle: .body))",
+    "content.textProperties.color = UIColor(Plenix.Colors.contentDefault)",
+    "cell.contentConfiguration = content",
+    "cell.accessoryView = toggle"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix switch on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above.",
+    "// A native AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let toggle = NSSwitch()",
+    "toggle.state = .on",
+    "toggle.target = self",
+    "toggle.action = #selector(syncChanged(_:))",
+    "let label = NSTextField(labelWithString: \"Sync over cellular\")",
+    "label.font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "label.textColor = NSColor(Plenix.Colors.contentDefault)",
+    "// NSSwitch draws the system accent color; a checkbox suits single rows in a grouped form:",
+    "let check = NSButton(checkboxWithTitle: \"Sync over cellular\", target: self, action: #selector(syncChanged(_:)))"
+   ]
+  }
+ }
+}

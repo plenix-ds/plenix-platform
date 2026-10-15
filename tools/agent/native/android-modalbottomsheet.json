@@ -1,0 +1,322 @@
+{
+ "android-overlays|ModalBottomSheet": {
+  "summary": "A Plenix bottom sheet on Android is the Material 3 ModalBottomSheet (BottomSheetDialog in Views), kept native in behavior (drag to resize and dismiss, back to close, the scrim, TalkBack pane semantics) and styled with the Plenix dialog tokens: the overlay surface with 8 dp top corners, the drag handle and the title on the filled header band, the content with the drawer padding, an optional filled footer band, and a 50 % black scrim. Material’s default is a tonal sheet with 28 dp corners; Plenix keeps Material’s structure and replaces the look.",
+  "variants": [
+   {
+    "name": "Standard",
+    "material": "Modal bottom sheet, partially expanded first",
+    "web": "overlays|Bottom sheet",
+    "background": "plx-comp-dialog-background",
+    "content": "plx-comp-dialog-text",
+    "border": null,
+    "compose": "PlenixBottomSheet(title, onDismiss) { … }",
+    "views": "BottomSheetDialog with the Plenix background",
+    "use": "A short task or a set of choices that keeps the screen behind in view."
+   },
+   {
+    "name": "Full height",
+    "material": "Modal bottom sheet, skipPartiallyExpanded",
+    "web": "overlays|Full-height sheet",
+    "background": "plx-comp-dialog-background",
+    "content": "plx-comp-dialog-text",
+    "border": null,
+    "compose": "PlenixBottomSheet(title, onDismiss, fullHeight = true) { … }",
+    "views": "behavior.skipCollapsed = true; behavior.state = STATE_EXPANDED",
+    "use": "A longer form or list that needs the whole height."
+   },
+   {
+    "name": "Actions",
+    "material": "Modal bottom sheet with a list",
+    "web": "overlays|Bottom sheet",
+    "background": "plx-comp-dialog-background",
+    "content": "plx-comp-dialog-text",
+    "border": null,
+    "compose": "PlenixBottomSheet(title) { PlenixListRow(…, onClick = …) per action }",
+    "views": "A RecyclerView of Plenix list rows in the sheet",
+    "use": "Choosing one of a few actions the person asked for, such as Share or Move."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Sheet",
+    "about": "The surface that rises from the bottom edge, with rounded top corners."
+   },
+   {
+    "part": "B",
+    "name": "Drag handle",
+    "about": "The grabber on the header band; drag to resize or close; TalkBack offers expand, collapse and dismiss."
+   },
+   {
+    "part": "C",
+    "name": "Header band",
+    "about": "The title in DM Sans bold and a close button, on the filled band with a line below."
+   },
+   {
+    "part": "D",
+    "name": "Content",
+    "about": "The body, with the drawer padding."
+   },
+   {
+    "part": "E",
+    "name": "Footer band",
+    "about": "Optional actions on a filled band with a line above, clear of the navigation bar."
+   },
+   {
+    "part": "F",
+    "name": "Scrim",
+    "about": "Black at 50 % over the screen; a tap on it closes the sheet."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Top corners",
+    "token": "plx-comp-dialog-radius",
+    "value": "8 dp on the top corners (PlenixRadius.radiusDialog8px)",
+    "material": "28 dp",
+    "compose": "shape = RoundedCornerShape(topStart = PlenixRadius.radiusDialog8px, topEnd = PlenixRadius.radiusDialog8px)",
+    "views": "MaterialShapeDrawable(ShapeAppearanceModel.builder().setTopLeftCorner(CornerFamily.ROUNDED, r).setTopRightCorner(CornerFamily.ROUNDED, r).build())",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-comp-dialog-background",
+    "value": "surfaceOverlay, no tonal tint",
+    "material": "surfaceContainerLow",
+    "compose": "containerColor = PlenixColors.surfaceOverlay.current(), tonalElevation = 0.dp",
+    "views": "fillColor = ColorStateList.valueOf(argb(PlenixColors.surfaceOverlay.light, PlenixColors.surfaceOverlay.dark))",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Width",
+    "token": "None: Material’s sheet width",
+    "value": "Full width on a phone; at most 640 dp, centered, on wider windows",
+    "material": "640 dp maximum",
+    "compose": "sheetMaxWidth = BottomSheetDefaults.SheetMaxWidth",
+    "views": "behavior.maxWidth (the Material default)",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Drag handle",
+    "token": "plx-sys-border-strong",
+    "value": "Material’s 32 by 4 dp handle in borderStrong, on the header band",
+    "material": "32 by 4 dp in onSurfaceVariant",
+    "compose": "dragHandle = { Box(Modifier.fillMaxWidth().background(chrome), Alignment.Center) { BottomSheetDefaults.DragHandle(color = PlenixColors.borderStrong.current()) } }",
+    "views": "BottomSheetDragHandleView with imageTintList = ColorStateList.valueOf(argb(PlenixColors.borderStrong.light, PlenixColors.borderStrong.dark))",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Header band",
+    "token": "plx-comp-dialog-header-background, plx-comp-dialog-header-border-bottom-color, plx-comp-dialog-header-min-height",
+    "value": "surfaceDialogChrome, at least 48 dp (PlenixPlatform.controlTargetMin), a 1 dp line in borderDialogChrome",
+    "material": "None",
+    "compose": "DialogHeader(title) { close button }",
+    "views": "A header row in the sheet layout with the chrome background",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Title type",
+    "token": "plx-comp-dialog-title-font-size, plx-comp-dialog-title-font-weight, plx-comp-dialog-header-text",
+    "value": "DM Sans bold (700), 16 sp on 24 sp, Title medium (PlenixPlatform.textHeadingSize), contentDialogChrome",
+    "material": "Set by the content",
+    "compose": "textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, FontWeight.Bold.weight)",
+    "views": "title.textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, R.font.dm_sans_bold)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/type-scale-tokens"
+   },
+   {
+    "part": "C",
+    "attribute": "Close button",
+    "token": "plx-comp-dialog-close-text, plx-sys-control-target-min",
+    "value": "A close icon in contentDialogChrome, a 48 dp target",
+    "material": "None; drag or the scrim closes",
+    "compose": "IconButton(onClick = close) { Icon(Icons.Sharp.Close, \"Close\", tint = PlenixColors.contentDialogChrome.current()) }",
+    "views": "An ImageButton, PlenixPlatform.controlTargetMin, contentDescription \"Close\"",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/accessibility"
+   },
+   {
+    "part": "D",
+    "attribute": "Content padding",
+    "token": "plx-comp-drawer-padding",
+    "value": "16 dp (PlenixSpace.spaceContainerInsetMd); 12 dp in Compact",
+    "material": "Set by the content",
+    "compose": "Column(Modifier.padding(PlenixSpace.spaceContainerInsetMd))",
+    "views": "setPadding(px(PlenixSpace.spaceContainerInsetMd), …)",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "E",
+    "attribute": "Footer band",
+    "token": "plx-comp-dialog-footer-background, plx-comp-dialog-footer-border-top-color, plx-comp-dialog-action-gap",
+    "value": "surfaceDialogChrome with a 1 dp line above; actions at the end, 8 dp apart (PlenixPlatform.dialogActionGap); padded clear of the navigation bar",
+    "material": "None",
+    "compose": "DialogFooter { … } with Modifier.navigationBarsPadding()",
+    "views": "A footer row with the chrome background; ViewCompat.setOnApplyWindowInsetsListener for the navigation bar",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   },
+   {
+    "part": "F",
+    "attribute": "Scrim",
+    "token": "plx-comp-modal-layer-before-background, plx-comp-modal-layer-before-opacity",
+    "value": "scrim (black) at 50 %",
+    "material": "scrim at 32 %",
+    "compose": "scrimColor = PlenixColors.scrim.current().copy(alpha = PlenixComponent.modalLayerBeforeOpacity)",
+    "views": "sheet.window?.setDimAmount(PlenixComponent.modalLayerBeforeOpacity)",
+    "follows": "Material 3: Bottom sheets",
+    "followsUrl": "https://m3.material.io/components/bottom-sheets/specs"
+   }
+  ],
+  "states": [
+   {
+    "state": "Partially expanded",
+    "token": "None",
+    "compose": "SheetValue.PartiallyExpanded (rememberModalBottomSheetState())",
+    "views": "BottomSheetBehavior.STATE_COLLAPSED"
+   },
+   {
+    "state": "Expanded",
+    "token": "None",
+    "compose": "SheetValue.Expanded; skipPartiallyExpanded = true opens here",
+    "views": "STATE_EXPANDED; skipCollapsed = true"
+   },
+   {
+    "state": "Dragging",
+    "token": "plx-comp-drawer-animation-duration",
+    "compose": "Material’s drag and settle motion",
+    "views": "STATE_DRAGGING, STATE_SETTLING"
+   },
+   {
+    "state": "Dismissed",
+    "token": "None",
+    "compose": "Drag down, back or a scrim tap: onDismissRequest; the close button calls sheetState.hide()",
+    "views": "STATE_HIDDEN; setOnDismissListener"
+   },
+   {
+    "state": "Kept open (unsaved work)",
+    "token": "None",
+    "compose": "rememberModalBottomSheetState(confirmValueChange = { it != SheetValue.Hidden || saved }) and ask first",
+    "views": "behavior.isHideable = false; setCancelable(false) until saved"
+   }
+  ],
+  "code": {
+   "compose": [
+    "import androidx.compose.material3.*",
+    "import plenix.tokens.*",
+    "",
+    "// Sans: the DM Sans family (PlenixFonts.SANS), set once in the app theme, e.g.",
+    "// val Sans = FontFamily(Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Normal), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.SemiBold), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Bold))",
+    "fun textRole(size: TextUnit, lineHeight: TextUnit, weight: Int) =",
+    "    TextStyle(fontFamily = Sans, fontSize = size, lineHeight = lineHeight, fontWeight = FontWeight(weight))",
+    "",
+    "// DialogHeader and DialogFooter: the Plenix dialog bands (Android AlertDialog page)",
+    "",
+    "/** The Plenix bottom sheet on Android: the Material 3 ModalBottomSheet, styled with the Plenix dialog tokens. */",
+    "@OptIn(ExperimentalMaterial3Api::class)",
+    "@Composable",
+    "fun PlenixBottomSheet(",
+    "    title: String,",
+    "    onDismiss: () -> Unit,",
+    "    fullHeight: Boolean = false,",
+    "    footer: (@Composable RowScope.() -> Unit)? = null,",
+    "    content: @Composable ColumnScope.() -> Unit,",
+    ") {",
+    "    val state = rememberModalBottomSheetState(skipPartiallyExpanded = fullHeight)",
+    "    val scope = rememberCoroutineScope()",
+    "    val chrome = PlenixColors.surfaceDialogChrome.current()",
+    "    ModalBottomSheet(",
+    "        onDismissRequest = onDismiss,",
+    "        sheetState = state,",
+    "        shape = RoundedCornerShape(topStart = PlenixRadius.radiusDialog8px, topEnd = PlenixRadius.radiusDialog8px),",
+    "        containerColor = PlenixColors.surfaceOverlay.current(),",
+    "        contentColor = PlenixColors.contentDefault.current(),",
+    "        tonalElevation = 0.dp,",
+    "        scrimColor = PlenixColors.scrim.current().copy(alpha = PlenixComponent.modalLayerBeforeOpacity),   // plx-comp-modal-layer-before-opacity",
+    "        dragHandle = {",
+    "            Box(Modifier.fillMaxWidth().background(chrome), contentAlignment = Alignment.Center) {",
+    "                BottomSheetDefaults.DragHandle(color = PlenixColors.borderStrong.current())",
+    "            }",
+    "        },",
+    "    ) {",
+    "        DialogHeader(title) {",
+    "            IconButton(onClick = { scope.launch { state.hide() }.invokeOnCompletion { onDismiss() } }) {",
+    "                Icon(Icons.Sharp.Close, contentDescription = \"Close\", tint = PlenixColors.contentDialogChrome.current())",
+    "            }",
+    "        }",
+    "        Column(Modifier.padding(PlenixSpace.spaceContainerInsetMd), content = content)",
+    "        footer?.let { Box(Modifier.navigationBarsPadding()) { Column { DialogFooter(it) } } }",
+    "    }",
+    "}",
+    "",
+    "// In a screen",
+    "if (showMove) PlenixBottomSheet(title = \"Move 3 assets\", onDismiss = { showMove = false }) {",
+    "    folders.forEach { f -> PlenixListRow(f.name, onClick = { move(f); showMove = false }) }",
+    "}"
+   ],
+   "views": [
+    "import android.content.res.ColorStateList",
+    "import com.google.android.material.bottomsheet.*",
+    "import com.google.android.material.shape.*",
+    "import plenix.tokens.*",
+    "",
+    "// Views read the same values from the generated plenix.tokens package through three helpers:",
+    "fun Context.argb(light: Color, dark: Color): Int {",
+    "    val night = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES",
+    "    return (if (night) dark else light).toArgb()",
+    "}",
+    "fun Context.px(dp: Dp): Int = (dp.value * resources.displayMetrics.density).roundToInt()",
+    "fun TextView.textRole(size: TextUnit, lineHeight: TextUnit, @FontRes font: Int) {",
+    "    typeface = ResourcesCompat.getFont(context, font)   // R.font.dm_sans_*: DM Sans (PlenixFonts.SANS) bundled with the app",
+    "    setTextSize(TypedValue.COMPLEX_UNIT_SP, size.value)",
+    "    TextViewCompat.setLineHeight(this, TypedValue.COMPLEX_UNIT_SP, lineHeight.value)",
+    "}",
+    "",
+    "// res/layout/sheet_move.xml: a header row (BottomSheetDragHandleView @id/drag_handle, @id/title, @id/close),",
+    "// the content, and an optional footer row; the header and footer rows take the chrome color below.",
+    "",
+    "/** A BottomSheetDialog styled with the Plenix dialog tokens. */",
+    "fun plenixBottomSheet(c: Context, @LayoutRes layout: Int, fullHeight: Boolean = false): BottomSheetDialog {",
+    "    val sheet = BottomSheetDialog(c)",
+    "    sheet.setContentView(layout)",
+    "    val chrome = c.argb(PlenixColors.surfaceDialogChrome.light, PlenixColors.surfaceDialogChrome.dark)",
+    "    sheet.findViewById<View>(R.id.header)?.setBackgroundColor(chrome)",
+    "    sheet.findViewById<View>(R.id.footer)?.setBackgroundColor(chrome)",
+    "    sheet.findViewById<BottomSheetDragHandleView>(R.id.drag_handle)?.imageTintList =",
+    "        ColorStateList.valueOf(c.argb(PlenixColors.borderStrong.light, PlenixColors.borderStrong.dark))",
+    "    sheet.findViewById<TextView>(R.id.title)?.apply {",
+    "        textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, R.font.dm_sans_bold)",
+    "        setTextColor(c.argb(PlenixColors.contentDialogChrome.light, PlenixColors.contentDialogChrome.dark))",
+    "        ViewCompat.setAccessibilityHeading(this, true)",
+    "    }",
+    "    sheet.findViewById<View>(R.id.close)?.setOnClickListener { sheet.dismiss() }",
+    "    if (fullHeight) { sheet.behavior.skipCollapsed = true; sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED }",
+    "    sheet.setOnShowListener {",
+    "        sheet.window?.setDimAmount(PlenixComponent.modalLayerBeforeOpacity)   // plx-comp-modal-layer-before-opacity",
+    "        val r = c.px(PlenixRadius.radiusDialog8px).toFloat()",
+    "        sheet.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)?.background =",
+    "            MaterialShapeDrawable(ShapeAppearanceModel.builder()",
+    "                .setTopLeftCorner(CornerFamily.ROUNDED, r).setTopRightCorner(CornerFamily.ROUNDED, r).build()).apply {",
+    "                fillColor = ColorStateList.valueOf(c.argb(PlenixColors.surfaceOverlay.light, PlenixColors.surfaceOverlay.dark))",
+    "            }",
+    "    }",
+    "    return sheet",
+    "}",
+    "",
+    "plenixBottomSheet(this, R.layout.sheet_move).show()"
+   ]
+  }
+ }
+}

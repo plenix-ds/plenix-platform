@@ -1,0 +1,98 @@
+{
+  "ios-content|Text views": {
+    "summary": "On iOS the Plenix rich-text editor is the system text view, kept native in behavior (selection handles, the edit menu with its Format items, Dynamic Type, dictation, VoiceOver reading and editing the text): an attributed-text view whose allowed formats are the Plenix ones (bold, italic, links, lists), framed like a Plenix field: the control surface, the control border that takes the focus color while editing, and the 6-point control corners. The text is DM Sans at the body size. The formatting bar sits above the keyboard (an input accessory view) with the Plenix toolbar buttons, each showing whether the text at the caret has its format. Read-only is the same view, not editable, on the sunken surface.",
+    "variants": [
+      { "name": "Basic editor", "apple": "TextEditor bound to an AttributedString, with a keyboard toolbar", "web": "forms|Rich-text editor", "background": "plx-sys-control-background", "content": "plx-sys-content-default", "border": "plx-sys-control-border", "swiftui": "TextEditor(text: $attributed) with .toolbar { ToolbarItemGroup(placement: .keyboard) { … } }", "uikit": "UITextView with allowsEditingTextAttributes and an inputAccessoryView toolbar", "appkit": "NSTextView with isRichText and the Format menu", "use": "Descriptions, notes and comments with bold, italic, links and lists." },
+      { "name": "Read-only", "apple": "Text with an AttributedString, or a non-editable text view", "web": "forms|Rich-text editor", "background": "plx-sys-surface-sunken", "content": "plx-sys-content-default", "border": "plx-sys-control-border", "swiftui": "Text(attributed).textSelection(.enabled) in the field frame", "uikit": "UITextView with isEditable false and isSelectable true", "appkit": "NSTextView with isEditable false", "use": "Showing what someone wrote where it is edited at other times; it can be selected and copied." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Frame", "about": "The field frame: the control surface, the control border (the focus color while editing) and the control corners." },
+      { "part": "B", "name": "Text", "about": "The attributed text in DM Sans at the body size, with the Plenix formats only: bold, italic, links in the link color, lists." },
+      { "part": "C", "name": "Formatting bar", "about": "The Plenix toolbar buttons above the keyboard; a format that is on at the caret shows the selected state." },
+      { "part": "D", "name": "Placeholder", "about": "The hint in the empty view, in the subtle content color." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Surface and border", "token": "plx-sys-control-background, plx-sys-control-border", "value": "Plenix.Colors.controlBackground, Plenix.Colors.controlBorder, 1 pt", "apple": "No frame: the text view fills its area", "swiftui": ".background(Plenix.Colors.controlBackground, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)).overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl).stroke(Plenix.Colors.controlBorder, lineWidth: Plenix.Border.borderWidthThin))", "uikit": "layer.backgroundColor, layer.borderColor and layer.borderWidth from Plenix.Colors.controlBackground, Plenix.Colors.controlBorder and Plenix.Border.borderWidthThin", "appkit": "The enclosing NSScrollView’s layer with the same tokens (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "A", "attribute": "Border while editing", "token": "plx-sys-focus-ring-color", "value": "Plenix.Colors.focusRingColor on the border, never a ring outside it", "apple": "None", "swiftui": ".stroke(focused ? Plenix.Colors.focusRingColor : Plenix.Colors.controlBorder, lineWidth: Plenix.Border.borderWidthThin) with @FocusState", "uikit": "layer.borderColor = Plenix.Colors.focusRingColor.cgColor in textViewDidBeginEditing", "appkit": "The border color in becomeFirstResponder (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "A", "attribute": "Corner radius", "token": "plx-sys-radius-control", "value": "6 pt (Plenix.Radius.radiusControl)", "apple": "None", "swiftui": "RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)", "uikit": "layer.cornerRadius = Plenix.Radius.radiusControl", "appkit": "layer.cornerRadius (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "A", "attribute": "Text inset", "token": "plx-sys-space-inset-md, plx-sys-space-inset-sm", "value": "Plenix.Space.spaceInsetMd at the sides, Plenix.Space.spaceInsetSm above and below", "apple": "The system text container inset", "swiftui": ".padding(.horizontal, Plenix.Space.spaceInsetMd).padding(.vertical, Plenix.Space.spaceInsetSm)", "uikit": "textContainerInset = UIEdgeInsets(top: Plenix.Space.spaceInsetSm, left: Plenix.Space.spaceInsetMd, bottom: Plenix.Space.spaceInsetSm, right: Plenix.Space.spaceInsetMd)", "appkit": "textContainerInset from the same tokens (a macOS build of the tokens is needed)", "follows": "iOS, iPadOS" },
+      { "part": "B", "attribute": "Text", "token": "plx-sys-content-default", "value": "DM Sans at the body size (Plenix.Platform.textBodySize), Plenix.Colors.contentDefault, Dynamic Type", "apple": "SF Pro, body", "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).foregroundStyle(Plenix.Colors.contentDefault)", "uikit": "font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: Plenix.Font.sans, size: Plenix.Platform.textBodySize)!); adjustsFontForContentSizeCategory = true", "appkit": "NSFont(name: Plenix.Font.sans, size: …) (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "B", "attribute": "Links", "token": "plx-sys-content-link", "value": "Plenix.Colors.contentLink, underlined", "apple": "The tint color", "swiftui": ".tint(Plenix.Colors.contentLink)", "uikit": "linkTextAttributes = [.foregroundColor: Plenix.Colors.contentLink, .underlineStyle: NSUnderlineStyle.single.rawValue]", "appkit": "linkTextAttributes with the same token (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "C", "attribute": "Format on", "token": "plx-sys-state-selected, plx-sys-state-selected-border", "value": "The bar button of each format at the caret in the selected state", "apple": "The keyboard toolbar buttons", "swiftui": "Button with .background(isBold ? Plenix.Colors.stateSelected : .clear) and .accessibilityAddTraits(isBold ? .isSelected : [])", "uikit": "UIBarButtonItem with isSelected from typingAttributes", "appkit": "The Format menu items’ checkmarks", "follows": "iOS, iPadOS" },
+      { "part": "D", "attribute": "Placeholder", "token": "plx-sys-content-subtle", "value": "Plenix.Colors.contentSubtle", "apple": "None: a text view has no placeholder", "swiftui": "Text(placeholder).foregroundStyle(Plenix.Colors.contentSubtle) in an overlay while the text is empty", "uikit": "A UILabel over the text view, hidden once there is text", "appkit": "placeholderAttributedString with the same token (a macOS build of the tokens is needed)", "follows": "Best practices" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-sys-control-border", "swiftui": "The control border on the control surface", "uikit": "The control border on the control surface", "appkit": "The control border" },
+      { "state": "Editing", "token": "plx-sys-focus-ring-color", "swiftui": "The border in Plenix.Colors.focusRingColor while focused; the formatting bar above the keyboard", "uikit": "The border in the focus color while editing; the inputAccessoryView shows", "appkit": "The border in the focus color while first responder" },
+      { "state": "Invalid", "token": "plx-sys-feedback-danger-solid", "swiftui": "The border in Plenix.Colors.feedbackDangerSolid and the message under the field", "uikit": "The border in the danger color", "appkit": "The border in the danger color" },
+      { "state": "Read-only", "token": "plx-sys-surface-sunken", "swiftui": "Text with .textSelection(.enabled) on Plenix.Colors.surfaceSunken, no formatting bar", "uikit": "isEditable = false on the sunken surface", "appkit": "isEditable = false" },
+      { "state": "Disabled", "token": "plx-sys-fill-neutral, plx-sys-content-disabled", "swiftui": ".disabled(true): Plenix.Colors.fillNeutral surface, Plenix.Colors.contentDisabled text", "uikit": "isEditable = false, isSelectable = false with the same tokens", "appkit": "isEditable = false, isSelectable = false" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// The Plenix rich-text editor on iOS: the system text editor with attributed text, framed like a Plenix field (PlenixTokens.swift).",
+        "struct PlenixRichTextEditor: View {",
+        "    @Binding var text: AttributedString",
+        "    @State private var selection = AttributedTextSelection()",
+        "    @FocusState private var focused: Bool",
+        "",
+        "    var body: some View {",
+        "        TextEditor(text: $text, selection: $selection)",
+        "            .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+        "            .foregroundStyle(Plenix.Colors.contentDefault)",
+        "            .tint(Plenix.Colors.contentLink)",
+        "            .scrollContentBackground(.hidden)",
+        "            .padding(.horizontal, Plenix.Space.spaceInsetMd)",
+        "            .padding(.vertical, Plenix.Space.spaceInsetSm)",
+        "            .background(Plenix.Colors.controlBackground, in: RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl))",
+        "            .overlay(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)",
+        "                .stroke(focused ? Plenix.Colors.focusRingColor : Plenix.Colors.controlBorder, lineWidth: Plenix.Border.borderWidthThin))",
+        "            .focused($focused)",
+        "            .toolbar {",
+        "                ToolbarItemGroup(placement: .keyboard) {",
+        "                    Button(\"Bold\") { text.transformAttributes(in: &selection) { $0.font = ($0.font ?? .body).bold() } }",
+        "                    Button(\"Italic\") { text.transformAttributes(in: &selection) { $0.font = ($0.font ?? .body).italic() } }",
+        "                }",
+        "            }",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "import UIKit",
+        "",
+        "/// The Plenix rich-text editor on iOS: a UITextView with attributed text and a formatting bar above the keyboard (PlenixTokens.swift).",
+        "final class PlenixRichTextView: UITextView, UITextViewDelegate {",
+        "    override init(frame: CGRect, textContainer: NSTextContainer?) {",
+        "        super.init(frame: frame, textContainer: textContainer)",
+        "        allowsEditingTextAttributes = true",
+        "        font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: Plenix.Font.sans, size: Plenix.Platform.textBodySize)!)",
+        "        adjustsFontForContentSizeCategory = true",
+        "        textColor = Plenix.Colors.contentDefault",
+        "        linkTextAttributes = [.foregroundColor: Plenix.Colors.contentLink, .underlineStyle: NSUnderlineStyle.single.rawValue]",
+        "        backgroundColor = Plenix.Colors.controlBackground",
+        "        layer.cornerRadius = Plenix.Radius.radiusControl",
+        "        layer.borderWidth = Plenix.Border.borderWidthThin",
+        "        layer.borderColor = Plenix.Colors.controlBorder.cgColor",
+        "        textContainerInset = UIEdgeInsets(top: Plenix.Space.spaceInsetSm, left: Plenix.Space.spaceInsetMd, bottom: Plenix.Space.spaceInsetSm, right: Plenix.Space.spaceInsetMd)",
+        "        delegate = self",
+        "    }",
+        "    required init?(coder: NSCoder) { fatalError(\"init(coder:) is not supported\") }",
+        "    func textViewDidBeginEditing(_ textView: UITextView) { layer.borderColor = Plenix.Colors.focusRingColor.cgColor }",
+        "    func textViewDidEndEditing(_ textView: UITextView) { layer.borderColor = Plenix.Colors.controlBorder.cgColor }",
+        "}"
+      ],
+      "appkit": [
+        "import AppKit",
+        "",
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "let textView = NSTextView()",
+        "textView.isRichText = true",
+        "textView.allowsUndo = true",
+        "textView.usesFontPanel = false",
+        "// textView.font, textColor, linkTextAttributes and the frame from the Plenix tokens once they are built for macOS"
+      ]
+    }
+  }
+}

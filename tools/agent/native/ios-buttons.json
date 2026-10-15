@@ -1,0 +1,352 @@
+{
+ "ios-actions|Buttons": {
+  "summary": "A Plenix button on iOS is the system Button, kept native in behavior (pressed feedback, Dynamic Type, VoiceOver, keyboard focus) and styled with the Plenix tokens: a 6-point rounded rectangle at least 44 points tall, a DM Sans semibold label at the label text role, and the Plenix action colors. Apple’s default is a capsule in the system tint with an SF Pro label; Plenix keeps Apple’s structure and replaces the look.",
+  "figma": {
+   "compare": "12898:621",
+   "anatomy": "12899:523",
+   "page": "507:24673"
+  },
+  "images": {
+   "compare": {
+    "src": "native/ios-buttons-compare.png",
+    "alt": "Buttons on iOS: the Apple kit default in light and dark, and the same kit component styled with the Plenix variables in light and dark, for the Primary, Secondary, Ghost, Danger and Danger secondary variants."
+   },
+   "anatomy": {
+    "src": "native/ios-buttons-anatomy.png",
+    "alt": "The Plenix iOS primary button with its parts lettered: A container, B label, C symbol."
+   }
+  },
+  "variants": [
+   {
+    "name": "Primary",
+    "apple": "Bordered - Prominent",
+    "web": "actions|Primary button",
+    "background": "plx-sys-action-primary-background",
+    "content": "plx-sys-action-primary-content",
+    "border": null,
+    "swiftui": ".buttonStyle(PlenixButtonStyle(variant: .primary)) (system equivalent: .borderedProminent with .tint)",
+    "uikit": "UIButton.Configuration.filled(), baseBackgroundColor and baseForegroundColor",
+    "appkit": "NSButton, bezelStyle .push, bezelColor, keyEquivalent \"\\r\" for the default action",
+    "use": "The one most likely action on a screen or in a sheet."
+   },
+   {
+    "name": "Secondary",
+    "apple": "Bordered",
+    "web": "actions|Secondary button",
+    "background": "plx-sys-control-background",
+    "content": "plx-sys-content-default",
+    "border": "plx-sys-control-border",
+    "swiftui": ".buttonStyle(PlenixButtonStyle(variant: .secondary)) (system equivalent: .bordered)",
+    "uikit": "UIButton.Configuration.plain() with background.strokeColor and strokeWidth",
+    "appkit": "NSButton, bezelStyle .push",
+    "use": "Every other action beside a primary one, such as Cancel."
+   },
+   {
+    "name": "Ghost",
+    "apple": "Borderless",
+    "web": "actions|Ghost button",
+    "background": null,
+    "content": "plx-sys-content-muted",
+    "border": null,
+    "swiftui": ".buttonStyle(PlenixButtonStyle(variant: .ghost)) (system equivalent: .borderless)",
+    "uikit": "UIButton.Configuration.plain()",
+    "appkit": "NSButton with isBordered = false",
+    "use": "Low-emphasis actions in toolbars, rows and dense layouts."
+   },
+   {
+    "name": "Danger",
+    "apple": "Bordered - Prominent, Destructive",
+    "web": "actions|Destructive button",
+    "background": "plx-sys-action-danger-background",
+    "content": "plx-sys-action-danger-content",
+    "border": null,
+    "swiftui": "Button(role: .destructive) with PlenixButtonStyle(variant: .danger)",
+    "uikit": "UIButton.Configuration.filled() with the danger colors; UIAction attributes .destructive in menus",
+    "appkit": "NSButton with hasDestructiveAction = true and bezelColor",
+    "use": "The confirming action of a destructive task, such as Delete in a confirmation."
+   },
+   {
+    "name": "Danger secondary",
+    "apple": "Bordered, Destructive",
+    "web": "actions|Destructive button",
+    "background": "plx-sys-control-background",
+    "content": "plx-sys-feedback-danger-content",
+    "border": "plx-sys-feedback-danger-content",
+    "swiftui": "Button(role: .destructive) with PlenixButtonStyle(variant: .dangerSecondary)",
+    "uikit": "UIButton.Configuration.plain() with the danger content color and stroke",
+    "appkit": "NSButton with hasDestructiveAction = true",
+    "use": "A destructive action that is not the main action, such as Remove beside Save."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Container",
+    "about": "The rounded rectangle that takes the press; at least 44 by 44 points."
+   },
+   {
+    "part": "B",
+    "name": "Label",
+    "about": "The title, in DM Sans semibold at the label text role; scales with Dynamic Type."
+   },
+   {
+    "part": "C",
+    "name": "Symbol",
+    "about": "An optional SF Symbol before the label, in the label color."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Minimum height",
+    "token": "plx-sys-control-height-standard",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "34 pt control, 44 pt target",
+    "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "uikit": "heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin)",
+    "appkit": "controlSize = .large",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-comp-button-radius",
+    "value": "6 pt (Plenix.Radius.radiusControl)",
+    "apple": "Capsule",
+    "swiftui": ".background(_, in: .rect(cornerRadius: Plenix.Radius.radiusControl)); system styles: .buttonBorderShape(.roundedRectangle(radius:))",
+    "uikit": "configuration.cornerStyle = .fixed; configuration.background.cornerRadius",
+    "appkit": "wantsLayer = true; layer?.cornerRadius (a custom-drawn button)",
+    "follows": "Style"
+   },
+   {
+    "part": "A",
+    "attribute": "Inline padding",
+    "token": "plx-comp-button-padding-inline",
+    "value": "12 pt (Plenix.Space.spaceInlineMd)",
+    "apple": "14 pt",
+    "swiftui": ".padding(.horizontal, Plenix.Space.spaceInlineMd)",
+    "uikit": "configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Plenix.Component.buttonPaddingInline, bottom: 0, trailing: Plenix.Component.buttonPaddingInline)",
+    "appkit": "Set by the button cell; a custom NSButtonCell draws other insets",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "See Variants (background)",
+    "value": "Per variant",
+    "apple": "System tint or a tertiary fill",
+    "swiftui": ".background(_:in:) in the ButtonStyle; system styles: .tint(_:)",
+    "uikit": "configuration.baseBackgroundColor",
+    "appkit": "bezelColor",
+    "follows": "Style"
+   },
+   {
+    "part": "A",
+    "attribute": "Border",
+    "token": "plx-comp-button-border-width and the variant border",
+    "value": "1 pt, per variant",
+    "apple": "None",
+    "swiftui": ".overlay { RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl).strokeBorder(_, lineWidth: Plenix.Component.buttonBorderWidth) }",
+    "uikit": "configuration.background.strokeColor, strokeWidth",
+    "appkit": "layer?.borderColor, borderWidth",
+    "follows": "Style"
+   },
+   {
+    "part": "B",
+    "attribute": "Typeface and weight",
+    "token": "plx-comp-button-font-family, plx-comp-button-font-weight",
+    "value": "DM Sans, semibold (600) (Plenix.Font.sans)",
+    "apple": "SF Pro Regular",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold))",
+    "uikit": "configuration.titleTextAttributesTransformer with UIFontMetrics(forTextStyle: .subheadline).scaledFont(for: UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textLabelSize))",
+    "appkit": "font = NSFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textLabelSize)",
+    "follows": "Content"
+   },
+   {
+    "part": "B",
+    "attribute": "Size and line height",
+    "token": "plx-text--label (iOS label role)",
+    "value": "15 pt on 20 pt, relative to Subheadline (Plenix.Platform.textLabelSize, textLabelLineHeight)",
+    "apple": "15 pt on 20 pt",
+    "swiftui": "relativeTo: .subheadline (Dynamic Type)",
+    "uikit": "UIFontMetrics(forTextStyle: .subheadline); adjustsFontForContentSizeCategory",
+    "appkit": "A fixed size (the Mac has no Dynamic Type)",
+    "follows": "Content"
+   },
+   {
+    "part": "B",
+    "attribute": "Label color",
+    "token": "See Variants (content)",
+    "value": "Per variant",
+    "apple": "White on prominent, the tint elsewhere",
+    "swiftui": ".foregroundStyle(_:)",
+    "uikit": "configuration.baseForegroundColor",
+    "appkit": "contentTintColor",
+    "follows": "Style"
+   },
+   {
+    "part": "C",
+    "attribute": "Symbol and label gap",
+    "token": "plx-comp-button-gap",
+    "value": "4 pt (Plenix.Space.spaceInlineXs)",
+    "apple": "4 pt",
+    "swiftui": "Label(_:systemImage:) with a LabelStyle using HStack(spacing: Plenix.Space.spaceInlineXs)",
+    "uikit": "configuration.imagePadding",
+    "appkit": "imagePosition = .imageLeading (the cell sets the gap)",
+    "follows": "Content"
+   },
+   {
+    "part": "C",
+    "attribute": "Symbol size",
+    "token": "plx-sys-control-icon-standard",
+    "value": "20 pt on touch",
+    "apple": "The label’s text style",
+    "swiftui": ".imageScale(.medium), or .font for the symbol",
+    "uikit": "configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: Plenix.Icon.iconSizeMd)",
+    "appkit": "symbolConfiguration = NSImage.SymbolConfiguration(pointSize: Plenix.Icon.iconSizeMd, weight: .semibold)",
+    "follows": "Content"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "The variant background, content and border",
+    "swiftui": "ButtonStyle.makeBody(configuration:)",
+    "uikit": "UIButton.Configuration",
+    "appkit": "NSButton"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-action-primary-background-pressed (Primary), plx-sys-action-danger-background-pressed (Danger), plx-sys-state-pressed (others)",
+    "swiftui": "configuration.isPressed",
+    "uikit": "configurationUpdateHandler reading button.isHighlighted",
+    "appkit": "isHighlighted"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-button-disabled-background, -border, -text",
+    "swiftui": ".disabled(true); @Environment(\\.isEnabled) in the style",
+    "uikit": "isEnabled = false",
+    "appkit": "isEnabled = false"
+   },
+   {
+    "state": "Focused (keyboard, iPad and Mac)",
+    "token": "The system focus effect",
+    "swiftui": ".focusable(); the system draws the focus effect",
+    "uikit": "The focus system (canBecomeFocused)",
+    "appkit": "focusRingType = .default"
+   },
+   {
+    "state": "Loading",
+    "token": "Loading button on the web",
+    "swiftui": "A ProgressView in the label, the button disabled",
+    "uikit": "configuration.showsActivityIndicator = true",
+    "appkit": "An NSProgressIndicator beside the title"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix button on iOS: the system Button, styled with the Plenix tokens (PlenixTokens.swift).",
+    "struct PlenixButtonStyle: ButtonStyle {",
+    "    enum Variant { case primary, secondary, ghost, danger, dangerSecondary }",
+    "    var variant: Variant = .secondary",
+    "    @Environment(\\.isEnabled) private var isEnabled",
+    "",
+    "    func makeBody(configuration: Configuration) -> some View {",
+    "        let shape = RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)",
+    "        return configuration.label",
+    "            .font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold))",
+    "            .foregroundStyle(isEnabled ? content : Plenix.Colors.contentDisabled)",
+    "            .padding(.horizontal, Plenix.Space.spaceInlineMd)",
+    "            .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "            .background(background(pressed: configuration.isPressed), in: shape)",
+    "            .overlay { if let border { shape.strokeBorder(border, lineWidth: Plenix.Component.buttonBorderWidth) } }",
+    "            .contentShape(shape)",
+    "    }",
+    "",
+    "    private var content: Color {",
+    "        switch variant {",
+    "        case .primary: Plenix.Colors.actionPrimaryContent",
+    "        case .secondary: Plenix.Colors.contentDefault",
+    "        case .ghost: Plenix.Colors.contentMuted",
+    "        case .danger: Plenix.Colors.actionDangerContent",
+    "        case .dangerSecondary: Plenix.Colors.feedbackDangerContent",
+    "        }",
+    "    }",
+    "    private func background(pressed: Bool) -> Color {",
+    "        switch variant {",
+    "        case .primary: pressed ? Plenix.Colors.actionPrimaryBackgroundPressed : Plenix.Colors.actionPrimaryBackground",
+    "        case .danger: pressed ? Plenix.Colors.actionDangerBackgroundPressed : Plenix.Colors.actionDangerBackground",
+    "        case .ghost: pressed ? Plenix.Colors.statePressed : .clear",
+    "        case .secondary, .dangerSecondary: pressed ? Plenix.Colors.statePressed : Plenix.Colors.controlBackground",
+    "        }",
+    "    }",
+    "    private var border: Color? {",
+    "        switch variant {",
+    "        case .secondary: Plenix.Colors.controlBorder",
+    "        case .dangerSecondary: Plenix.Colors.feedbackDangerContent",
+    "        default: nil",
+    "        }",
+    "    }",
+    "}",
+    "",
+    "// In a view",
+    "Button(\"Save\", action: save).buttonStyle(PlenixButtonStyle(variant: .primary))",
+    "Button(\"Cancel\", role: .cancel, action: dismiss).buttonStyle(PlenixButtonStyle())",
+    "Button(\"Delete\", role: .destructive, action: delete).buttonStyle(PlenixButtonStyle(variant: .danger))"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix button on iOS in UIKit: a UIButton with a Plenix configuration.",
+    "extension UIButton.Configuration {",
+    "    static func plenix(background: Color?, content: Color, border: Color? = nil) -> UIButton.Configuration {",
+    "        var c = UIButton.Configuration.plain()",
+    "        c.cornerStyle = .fixed",
+    "        c.background.cornerRadius = Plenix.Radius.radiusControl",
+    "        c.background.backgroundColor = background.map(UIColor.init)",
+    "        if let border { c.background.strokeColor = UIColor(border); c.background.strokeWidth = Plenix.Component.buttonBorderWidth }",
+    "        c.baseForegroundColor = UIColor(content)",
+    "        c.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Plenix.Space.spaceInlineMd, bottom: 0, trailing: Plenix.Space.spaceInlineMd)",
+    "        c.imagePadding = Plenix.Space.spaceInlineXs",
+    "        c.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in",
+    "            var a = attributes",
+    "            let font = UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textLabelSize) ?? .preferredFont(forTextStyle: .subheadline)",
+    "            a.font = UIFontMetrics(forTextStyle: .subheadline).scaledFont(for: font)",
+    "            return a",
+    "        }",
+    "        return c",
+    "    }",
+    "}",
+    "",
+    "let save = UIButton(configuration: .plenix(background: Plenix.Colors.actionPrimaryBackground, content: Plenix.Colors.actionPrimaryContent),",
+    "                    primaryAction: UIAction(title: \"Save\") { _ in save() })",
+    "save.heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin).isActive = true",
+    "save.configurationUpdateHandler = { button in",
+    "    button.configuration?.background.backgroundColor = UIColor(button.isHighlighted ? Plenix.Colors.actionPrimaryBackgroundPressed : Plenix.Colors.actionPrimaryBackground)",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix button on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let save = NSButton(title: \"Save\", target: self, action: #selector(save(_:)))",
+    "save.bezelStyle = .push",
+    "save.controlSize = .large",
+    "save.bezelColor = NSColor(Plenix.Colors.actionPrimaryBackground)",
+    "save.contentTintColor = NSColor(Plenix.Colors.actionPrimaryContent)",
+    "save.font = NSFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textLabelSize)",
+    "save.keyEquivalent = \"\r\"   // the default action",
+    "",
+    "let delete = NSButton(title: \"Delete\", target: self, action: #selector(delete(_:)))",
+    "delete.bezelStyle = .push",
+    "delete.hasDestructiveAction = true"
+   ]
+  }
+ }
+}

@@ -1,0 +1,73 @@
+{
+  "ios-content|Image views": {
+    "summary": "A Plenix image on iOS is the system image view in a frame of a fixed ratio from the Plenix aspect-ratio scale: the picture fills the frame (scaledToFill) or shows whole (scaledToFit) on the neutral fill, and a remote picture shows that fill while it loads and the image symbol with “Image not available” when it fails. Corners are square inside a card and the media radius when the picture stands alone. VoiceOver reads its label; a decorative picture is hidden from it.",
+    "variants": [
+      { "name": "Cover (default)", "apple": "Image with scaledToFill", "web": "content|Image", "background": "plx-comp-image-placeholder-background", "content": null, "border": null, "swiftui": ".resizable().scaledToFill() in a frame with .aspectRatio(4 / 3, contentMode: .fit) and .clipped()", "uikit": "UIImageView with contentMode = .scaleAspectFill and clipsToBounds", "appkit": "NSImageView with imageScaling = .scaleProportionallyUpOrDown", "use": "Thumbnails and previews in a grid of one ratio." },
+      { "name": "Contain", "apple": "Image with scaledToFit", "web": "content|Image", "background": "plx-comp-image-contain-background", "content": null, "border": null, "swiftui": ".resizable().scaledToFit() on Plenix.Colors.surfaceSunken", "uikit": "UIImageView with contentMode = .scaleAspectFit", "appkit": "NSImageView with imageScaling = .scaleProportionallyDown", "use": "Logos, documents and drawings that must not be cropped." },
+      { "name": "Rounded", "apple": "Image with a clip shape", "web": "content|Image", "background": null, "content": null, "border": null, "swiftui": ".clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px))", "uikit": "layer.cornerRadius = Plenix.Radius.radiusMedia4px", "appkit": "layer?.cornerRadius = Plenix.Radius.radiusMedia4px (a macOS build of the tokens is needed)", "use": "A picture standing alone in content." },
+      { "name": "Error fallback", "apple": "AsyncImage failure phase", "web": "content|Image", "background": "plx-comp-image-fallback-background", "content": "plx-comp-image-fallback-text", "border": null, "swiftui": "AsyncImage phase .failure: the photo symbol and “Image not available”", "uikit": "the image view shows the fallback view when the download fails", "appkit": "NSImageView with the fallback image (a macOS build of the tokens is needed)", "use": "Every remote picture that can fail to load." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Frame", "about": "The box with its ratio from the aspect-ratio scale; it keeps its size before the picture arrives." },
+      { "part": "B", "name": "Picture", "about": "The image, cropped to the frame or shown whole." },
+      { "part": "C", "name": "Fallback", "about": "The photo symbol and “Image not available” on the neutral fill when the picture fails." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Loading fill", "token": "plx-comp-image-placeholder-background", "value": "The neutral fill (Plenix.Colors.fillNeutral)", "apple": "Clear", "swiftui": "AsyncImage placeholder: Plenix.Colors.fillNeutral", "uikit": "backgroundColor = Plenix.Colors.fillNeutral until the picture is set", "appkit": "layer?.backgroundColor from fillNeutral (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "A", "attribute": "Corners", "token": "plx-comp-image-radius", "value": "Square, or the media radius when rounded (Plenix.Radius.radiusMedia4px)", "apple": "Square", "swiftui": ".clipShape(RoundedRectangle(cornerRadius: Plenix.Radius.radiusMedia4px))", "uikit": "layer.cornerRadius = Plenix.Radius.radiusMedia4px", "appkit": "layer?.cornerRadius (a macOS build of the tokens is needed)", "follows": "Best practices" },
+      { "part": "C", "attribute": "Fallback text", "token": "plx-comp-image-fallback-text", "value": "The muted content color in DM Sans (Plenix.Colors.contentMuted)", "apple": "None", "swiftui": "Text(\"Image not available\").font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.contentMuted)", "uikit": "UILabel with textColor = Plenix.Colors.contentMuted", "appkit": "NSTextField label with the muted color (a macOS build of the tokens is needed)", "follows": "Content" }
+    ],
+    "states": [
+      { "state": "Loading", "token": "plx-comp-image-placeholder-background", "swiftui": "AsyncImage phase .empty", "uikit": "image == nil", "appkit": "image == nil" },
+      { "state": "Loaded", "token": "The picture", "swiftui": "AsyncImage phase .success", "uikit": "image set", "appkit": "image set" },
+      { "state": "Failed", "token": "plx-comp-image-fallback-background", "swiftui": "AsyncImage phase .failure", "uikit": "the download failed: the fallback view shows", "appkit": "the fallback image shows" }
+    ],
+    "code": {
+      "swiftui": [
+        "import SwiftUI",
+        "",
+        "/// The Plenix image on iOS: a remote picture in a 4:3 frame, the neutral fill while it loads, the fallback when it fails.",
+        "struct PlenixImage: View {",
+        "    let url: URL",
+        "    let label: String",
+        "",
+        "    var body: some View {",
+        "        Color.clear",
+        "            .aspectRatio(4 / 3, contentMode: .fit) // the aspect-ratio scale (4:3)",
+        "            .overlay {",
+        "                AsyncImage(url: url) { phase in",
+        "                    switch phase {",
+        "                    case .success(let image): image.resizable().scaledToFill()",
+        "                    case .failure:",
+        "                        VStack(spacing: Plenix.Space.spaceStackXs) {",
+        "                            Image(systemName: \"photo\")",
+        "                            Text(\"Image not available\").font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote))",
+        "                        }",
+        "                        .foregroundStyle(Plenix.Colors.contentMuted)",
+        "                    default: Plenix.Colors.fillNeutral",
+        "                    }",
+        "                }",
+        "            }",
+        "            .clipped()",
+        "            .accessibilityLabel(label)",
+        "    }",
+        "}"
+      ],
+      "uikit": [
+        "let imageView = UIImageView()",
+        "imageView.contentMode = .scaleAspectFill",
+        "imageView.clipsToBounds = true",
+        "imageView.backgroundColor = Plenix.Colors.fillNeutral   // the loading fill",
+        "imageView.isAccessibilityElement = true",
+        "imageView.accessibilityLabel = \"The finished kitchen\"",
+        "imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 3.0 / 4.0).isActive = true // the aspect-ratio scale (4:3), not a system value"
+      ],
+      "appkit": [
+        "// AppKit: PlenixTokens.swift is iOS-only (UIColor); a macOS build of the tokens is needed for these names.",
+        "let imageView = NSImageView()",
+        "imageView.imageScaling = .scaleProportionallyUpOrDown",
+        "imageView.setAccessibilityLabel(\"The finished kitchen\")"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "android-content|Images": {
+    "summary": "A Plenix image on Android is the Compose Image (or AsyncImage from the app’s image loader) in a frame of a fixed ratio from the Plenix aspect-ratio scale: the picture fills the frame (ContentScale.Crop) or shows whole (ContentScale.Fit) on the neutral fill, shows that fill while it loads and the image symbol with “Image not available” when it fails. Corners are square inside a card and the media radius when the picture stands alone. TalkBack reads its content description; a decorative picture has none.",
+    "variants": [
+      { "name": "Cover (default)", "material": "Image with ContentScale.Crop", "web": "content|Image", "background": "plx-comp-image-placeholder-background", "content": null, "border": null, "compose": "Image(painter, contentDescription, Modifier.aspectRatio(4f / 3f), contentScale = ContentScale.Crop)", "views": "ImageView with scaleType = CENTER_CROP", "use": "Thumbnails and previews in a grid of one ratio." },
+      { "name": "Contain", "material": "Image with ContentScale.Fit", "web": "content|Image", "background": "plx-comp-image-contain-background", "content": null, "border": null, "compose": "contentScale = ContentScale.Fit on PlenixColors.surfaceSunken", "views": "ImageView with scaleType = FIT_CENTER", "use": "Logos, documents and drawings that must not be cropped." },
+      { "name": "Rounded", "material": "Image clipped to a shape", "web": "content|Image", "background": null, "content": null, "border": null, "compose": "Modifier.clip(RoundedCornerShape(PlenixRadius.radiusMedia4px))", "views": "ShapeableImageView with the media corner", "use": "A picture standing alone in content." },
+      { "name": "Error fallback", "material": "Image loader error slot", "web": "content|Image", "background": "plx-comp-image-fallback-background", "content": "plx-comp-image-fallback-text", "border": null, "compose": "the error slot: the image symbol and “Image not available”", "views": "the loader’s error drawable and a TextView", "use": "Every remote picture that can fail to load." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Frame", "about": "The box with its ratio from the aspect-ratio scale; it keeps its size before the picture arrives." },
+      { "part": "B", "name": "Picture", "about": "The image, cropped to the frame or shown whole." },
+      { "part": "C", "name": "Fallback", "about": "The image symbol and “Image not available” on the neutral fill when the picture fails." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Loading fill", "token": "plx-comp-image-placeholder-background", "value": "The neutral fill (PlenixColors.fillNeutral)", "material": "None", "compose": "Modifier.background(PlenixColors.fillNeutral.current())", "views": "setBackgroundColor(fillNeutral) until the picture is set", "follows": "Material 3: Imagery", "followsUrl": "https://m3.material.io/styles/imagery/overview" },
+      { "part": "A", "attribute": "Corners", "token": "plx-comp-image-radius", "value": "Square, or the media radius when rounded (PlenixRadius.radiusMedia4px)", "material": "Shape of the container", "compose": "Modifier.clip(RoundedCornerShape(PlenixRadius.radiusMedia4px))", "views": "ShapeableImageView shapeAppearance with the media corner", "follows": "Material 3: Shape", "followsUrl": "https://m3.material.io/styles/shape/overview" },
+      { "part": "C", "attribute": "Fallback text", "token": "plx-comp-image-fallback-text", "value": "The muted content color in DM Sans (PlenixColors.contentMuted)", "material": "None", "compose": "Text(\"Image not available\", color = PlenixColors.contentMuted.current())", "views": "TextView with the muted color", "follows": "Material 3: Imagery", "followsUrl": "https://m3.material.io/styles/imagery/overview" }
+    ],
+    "states": [
+      { "state": "Loading", "token": "plx-comp-image-placeholder-background", "compose": "the loader’s loading state", "views": "drawable == null" },
+      { "state": "Loaded", "token": "The picture", "compose": "the loader’s success state", "views": "drawable set" },
+      { "state": "Failed", "token": "plx-comp-image-fallback-background", "compose": "the loader’s error state", "views": "the error drawable shows" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixImage(painter: Painter, description: String?) {",
+        "    Box(",
+        "        Modifier.fillMaxWidth().aspectRatio(4f / 3f) // the aspect-ratio scale (4:3), not a Material value",
+        "            .background(PlenixColors.fillNeutral.current())",
+        "    ) {",
+        "        Image(painter, contentDescription = description, modifier = Modifier.matchParentSize(), contentScale = ContentScale.Crop)",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "val image = ShapeableImageView(context).apply {",
+        "    scaleType = ImageView.ScaleType.CENTER_CROP",
+        "    contentDescription = \"The finished kitchen\"",
+        "}"
+      ]
+    }
+  }
+}

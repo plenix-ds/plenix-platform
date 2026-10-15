@@ -1,0 +1,341 @@
+{
+ "ios-navigation|Tab bars": {
+  "summary": "A Plenix tab bar on iOS is the system TabView (UITabBarController), kept native in behavior: it floats over the content, minimizes on scroll, keeps the search tab at its trailing end, becomes a sidebar on iPad, and supports Dynamic Type, VoiceOver and the keyboard. Plenix keeps the system glass material and changes the look of the items: filled symbols at 20 points, DM Sans labels at the caption text role, the Plenix muted color for tabs that are not selected, the Plenix selected color for the current tab and the Plenix danger color for badges. It is the iOS form of the Web mobile navigation bar.",
+  "variants": [
+   {
+    "name": "Standard",
+    "apple": "Tab Bar - iPhone, Type=Default, Minimized=False",
+    "web": "navigation|Mobile tab bar",
+    "background": "plx-comp-nav-bar-background (the system glass on iOS)",
+    "content": "plx-comp-nav-bar-item-text, plx-comp-nav-bar-item-current-text",
+    "border": null,
+    "swiftui": "TabView { Tab(_:systemImage:value:) } with .tint(Plenix.Colors.selectedContent)",
+    "uikit": "UITabBarController with a Plenix UITabBarAppearance",
+    "appkit": "NSTabViewController with tabStyle .toolbar",
+    "use": "Two to five top-level sections of an app on iPhone, each with a one-word label and a filled symbol."
+   },
+   {
+    "name": "With search tab",
+    "apple": "Tab Bar - iPhone, Type=Search Role",
+    "web": "navigation|Mobile tab bar",
+    "background": "plx-comp-nav-bar-background (the system glass on iOS)",
+    "content": "plx-comp-nav-bar-item-text, plx-comp-nav-bar-item-current-text",
+    "border": null,
+    "swiftui": "Tab(value:role: .search) { SearchView() } as the last tab",
+    "uikit": "UISearchTab as the last tab of the UITabBarController",
+    "appkit": "An NSSearchToolbarItem in the window toolbar",
+    "use": "An app where search reaches across every section; the system places the search tab apart at the trailing end."
+   },
+   {
+    "name": "Minimized",
+    "apple": "Tab Bar - iPhone, Type=Default, Minimized=True",
+    "web": "navigation|Mobile tab bar",
+    "background": "plx-comp-nav-bar-background (the system glass on iOS)",
+    "content": "plx-comp-nav-bar-item-current-text",
+    "border": null,
+    "swiftui": ".tabBarMinimizeBehavior(.onScrollDown)",
+    "uikit": "tabBarController.tabBarMinimizeBehavior = .onScrollDown",
+    "appkit": "Not on the Mac (the toolbar stays)",
+    "use": "Reading and browsing screens where the content deserves the room; the bar collapses to the current tab while scrolling down."
+   },
+   {
+    "name": "iPad top bar",
+    "apple": "Tab Bar - iPad",
+    "web": "navigation|Tabs",
+    "background": "plx-comp-nav-bar-background (the system glass on iPadOS)",
+    "content": "plx-comp-nav-bar-item-text, plx-comp-nav-bar-item-current-text",
+    "border": null,
+    "swiftui": "TabView with .tabViewStyle(.sidebarAdaptable)",
+    "uikit": "UITabBarController with mode = .tabSidebar",
+    "appkit": "NSTabViewController with tabStyle .toolbar, or a sidebar (see Sidebars)",
+    "use": "The same sections on iPad, where the bar sits near the top and can turn into a sidebar."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Bar",
+    "about": "The floating container in the system glass material; it holds the tabs and stays on screen in every section."
+   },
+   {
+    "part": "B",
+    "name": "Tab symbol",
+    "about": "A filled SF Symbol at 20 points; the selected tab’s symbol takes the Plenix selected color."
+   },
+   {
+    "part": "C",
+    "name": "Tab label",
+    "about": "One word in DM Sans at the caption text role, below the symbol; it scales with Dynamic Type."
+   },
+   {
+    "part": "D",
+    "name": "Selected tab",
+    "about": "The current section, shown with the selected color and the system’s selection highlight."
+   },
+   {
+    "part": "E",
+    "name": "Search tab",
+    "about": "The optional search tab, placed apart at the trailing end of the bar by the system."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Bar height",
+    "token": "plx-comp-nav-bar-height",
+    "value": "Set by the system; 50 pt reference (Plenix.Platform.navBarHeight)",
+    "apple": "Set by the system",
+    "swiftui": "Set by TabView",
+    "uikit": "Set by UITabBar (never change its frame)",
+    "appkit": "Set by the window toolbar",
+    "follows": "iOS"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-comp-nav-bar-background",
+    "value": "The system glass material; plx-sys-surface-default only on a bar that does not float",
+    "apple": "Liquid Glass",
+    "swiftui": "The glass stays; .toolbarBackground(Plenix.Colors.surfaceDefault, for: .tabBar) only on a non-floating bar",
+    "uikit": "appearance.configureWithDefaultBackground(); backgroundColor only on a non-floating bar",
+    "appkit": "The toolbar material",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Touch target",
+    "token": "plx-comp-nav-bar-item-target",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "44 pt",
+    "swiftui": "Set by TabView",
+    "uikit": "Set by UITabBar",
+    "appkit": "Set by the toolbar item",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Symbol size and style",
+    "token": "plx-comp-nav-bar-icon-size",
+    "value": "20 pt, filled",
+    "apple": "The system size, filled",
+    "swiftui": "Tab(_:systemImage:) with a .fill symbol; .symbolVariant(.fill)",
+    "uikit": "UITabBarItem(title:image:selectedImage:) with UIImage(systemName:) .fill symbols",
+    "appkit": "NSImage(systemSymbolName:accessibilityDescription:)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Unselected color",
+    "token": "plx-comp-nav-bar-item-text",
+    "value": "plx-sys-content-muted (Plenix.Colors.contentMuted)",
+    "apple": "The system secondary label color",
+    "swiftui": "UITabBarItemAppearance normal.iconColor (no SwiftUI modifier)",
+    "uikit": "itemAppearance.normal.iconColor, titleTextAttributes[.foregroundColor]",
+    "appkit": "contentTintColor of the unselected items",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Selected color",
+    "token": "plx-comp-nav-bar-item-current-text",
+    "value": "plx-sys-selected-content (Plenix.Colors.selectedContent)",
+    "apple": "The app tint (system blue)",
+    "swiftui": ".tint(Plenix.Colors.selectedContent) on the TabView",
+    "uikit": "tabBar.tintColor; itemAppearance.selected.iconColor",
+    "appkit": "The selected item’s contentTintColor",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Label typeface and size",
+    "token": "plx-comp-nav-bar-label-font-size (iOS caption role)",
+    "value": "DM Sans medium, 12 pt on 16 pt, relative to Caption 1 (Plenix.Platform.textCaptionSize, textCaptionLineHeight)",
+    "apple": "SF Pro, 10 pt",
+    "swiftui": "UITabBarItemAppearance titleTextAttributes (TabView has no font modifier)",
+    "uikit": "titleTextAttributes[.font] = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: UIFont(name: \"DMSans-Medium\", size: Plenix.Platform.textCaptionSize))",
+    "appkit": "A fixed size (the Mac has no Dynamic Type)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Symbol and label gap",
+    "token": "plx-comp-nav-bar-label-gap",
+    "value": "4 pt; set by the system on iOS",
+    "apple": "Set by the system",
+    "swiftui": "Set by TabView",
+    "uikit": "titlePositionAdjustment stays at zero",
+    "appkit": "Set by the toolbar item",
+    "follows": "iOS"
+   },
+   {
+    "part": "D",
+    "attribute": "Badge",
+    "token": "plx-sys-feedback-danger-solid, plx-sys-feedback-danger-on-solid",
+    "value": "Plenix.Colors.feedbackDangerSolid with Plenix.Colors.feedbackDangerOnSolid",
+    "apple": "System red",
+    "swiftui": ".badge(_:) on the Tab; the color comes from UITabBarItemAppearance",
+    "uikit": "itemAppearance.normal.badgeBackgroundColor, badgeTextAttributes",
+    "appkit": "NSDockTile badgeLabel for the app; no tab badge",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Search tab placement",
+    "token": "None (the system places it)",
+    "value": "The trailing end of the bar",
+    "apple": "The trailing end of the bar",
+    "swiftui": "Tab(value:role: .search)",
+    "uikit": "UISearchTab",
+    "appkit": "NSSearchToolbarItem",
+    "follows": "iOS"
+   }
+  ],
+  "states": [
+   {
+    "state": "Unselected",
+    "token": "plx-comp-nav-bar-item-text",
+    "swiftui": "A Tab whose value is not the selection",
+    "uikit": "itemAppearance.normal",
+    "appkit": "An unselected tab view item"
+   },
+   {
+    "state": "Selected",
+    "token": "plx-comp-nav-bar-item-current-text",
+    "swiftui": "TabView(selection:)",
+    "uikit": "itemAppearance.selected; selectedIndex",
+    "appkit": "selectedTabViewItemIndex"
+   },
+   {
+    "state": "Pressed",
+    "token": "The system press effect",
+    "swiftui": "Drawn by the system",
+    "uikit": "Drawn by the system",
+    "appkit": "Drawn by the system"
+   },
+   {
+    "state": "Badged",
+    "token": "plx-sys-feedback-danger-solid",
+    "swiftui": ".badge(_:)",
+    "uikit": "tabBarItem.badgeValue",
+    "appkit": "Not on the Mac"
+   },
+   {
+    "state": "Minimized",
+    "token": "plx-comp-nav-bar-item-current-text",
+    "swiftui": ".tabBarMinimizeBehavior(.onScrollDown)",
+    "uikit": "tabBarMinimizeBehavior",
+    "appkit": "Not on the Mac"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-nav-bar-item-disabled-text (Plenix never disables a tab; it shows the empty section instead)",
+    "swiftui": "Not used",
+    "uikit": "Not used (tabBarItem.isEnabled stays true)",
+    "appkit": "Not used"
+   },
+   {
+    "state": "Focused (keyboard, iPad)",
+    "token": "The system focus effect",
+    "swiftui": "Drawn by the system",
+    "uikit": "The focus system",
+    "appkit": "focusRingType = .default"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix tab bar on iOS: the system TabView, kept native, with the Plenix colors and type (PlenixTokens.swift).",
+    "struct PlenixTabs: View {",
+    "    enum Section: Hashable { case home, library, activity, search }",
+    "    @State private var selection = Section.home",
+    "",
+    "    init() { PlenixTabBarAppearance.apply() }   // the label font and colors (TabView has no modifier for them)",
+    "",
+    "    var body: some View {",
+    "        TabView(selection: $selection) {",
+    "            Tab(\"Home\", systemImage: \"house.fill\", value: .home) { HomeView() }",
+    "            Tab(\"Library\", systemImage: \"square.stack.fill\", value: .library) { LibraryView() }",
+    "            Tab(\"Activity\", systemImage: \"bell.fill\", value: .activity) { ActivityView() }",
+    "                .badge(3)",
+    "            Tab(value: .search, role: .search) { SearchView() }",
+    "        }",
+    "        .tint(Plenix.Colors.selectedContent)",
+    "        .tabViewStyle(.sidebarAdaptable)          // iPad: the bar can become a sidebar",
+    "        .tabBarMinimizeBehavior(.onScrollDown)",
+    "    }",
+    "}",
+    "",
+    "enum PlenixTabBarAppearance {",
+    "    static func apply() {",
+    "        let base = UIFont(name: \"DMSans-Medium\", size: Plenix.Platform.textCaptionSize) ?? .preferredFont(forTextStyle: .caption1)",
+    "        let font = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: base)",
+    "        let item = UITabBarItemAppearance()",
+    "        item.normal.iconColor = UIColor(Plenix.Colors.contentMuted)",
+    "        item.normal.titleTextAttributes = [.font: font, .foregroundColor: UIColor(Plenix.Colors.contentMuted)]",
+    "        item.selected.iconColor = UIColor(Plenix.Colors.selectedContent)",
+    "        item.selected.titleTextAttributes = [.font: font, .foregroundColor: UIColor(Plenix.Colors.selectedContent)]",
+    "        item.normal.badgeBackgroundColor = UIColor(Plenix.Colors.feedbackDangerSolid)",
+    "        item.normal.badgeTextAttributes = [.foregroundColor: UIColor(Plenix.Colors.feedbackDangerOnSolid)]",
+    "        let bar = UITabBarAppearance()",
+    "        bar.configureWithDefaultBackground()     // the system glass stays",
+    "        bar.stackedLayoutAppearance = item",
+    "        bar.inlineLayoutAppearance = item",
+    "        bar.compactInlineLayoutAppearance = item",
+    "        UITabBar.appearance().standardAppearance = bar",
+    "        UITabBar.appearance().scrollEdgeAppearance = bar",
+    "    }",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix tab bar on iOS in UIKit: a UITabBarController with a Plenix appearance.",
+    "let tabs = UITabBarController(tabs: [",
+    "    UITab(title: \"Home\", image: UIImage(systemName: \"house.fill\"), identifier: \"home\") { _ in HomeViewController() },",
+    "    UITab(title: \"Library\", image: UIImage(systemName: \"square.stack.fill\"), identifier: \"library\") { _ in LibraryViewController() },",
+    "    UITab(title: \"Activity\", image: UIImage(systemName: \"bell.fill\"), identifier: \"activity\") { _ in ActivityViewController() },",
+    "    UISearchTab { _ in SearchViewController() }",
+    "])",
+    "tabs.mode = .tabSidebar                      // iPad: the bar can become a sidebar",
+    "tabs.tabBarMinimizeBehavior = .onScrollDown",
+    "tabs.tabBar.tintColor = UIColor(Plenix.Colors.selectedContent)",
+    "",
+    "let base = UIFont(name: \"DMSans-Medium\", size: Plenix.Platform.textCaptionSize) ?? .preferredFont(forTextStyle: .caption1)",
+    "let font = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: base)",
+    "let item = UITabBarItemAppearance()",
+    "item.normal.iconColor = UIColor(Plenix.Colors.contentMuted)",
+    "item.normal.titleTextAttributes = [.font: font, .foregroundColor: UIColor(Plenix.Colors.contentMuted)]",
+    "item.selected.iconColor = UIColor(Plenix.Colors.selectedContent)",
+    "item.selected.titleTextAttributes = [.font: font, .foregroundColor: UIColor(Plenix.Colors.selectedContent)]",
+    "item.normal.badgeBackgroundColor = UIColor(Plenix.Colors.feedbackDangerSolid)",
+    "let appearance = UITabBarAppearance()",
+    "appearance.configureWithDefaultBackground()  // the system glass stays",
+    "appearance.stackedLayoutAppearance = item",
+    "appearance.inlineLayoutAppearance = item",
+    "appearance.compactInlineLayoutAppearance = item",
+    "tabs.tabBar.standardAppearance = appearance",
+    "tabs.tabBar.scrollEdgeAppearance = appearance",
+    "tabs.tabs[2].badgeValue = \"3\""
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix tab bar on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let tabs = NSTabViewController()",
+    "tabs.tabStyle = .toolbar                    // the Mac shows sections as toolbar items; larger apps use a sidebar",
+    "for (title, symbol, controller) in [(\"Home\", \"house\", HomeViewController()), (\"Library\", \"square.stack\", LibraryViewController())] {",
+    "    let item = NSTabViewItem(viewController: controller)",
+    "    item.label = title",
+    "    item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: title)",
+    "    tabs.addTabViewItem(item)",
+    "}",
+    "// The toolbar draws the selected item in the app accent color: set AccentColor in the asset catalog to the value of",
+    "// Plenix.Colors.selectedContent (NSColor(Plenix.Colors.selectedContent) with the macOS build)."
+   ]
+  }
+ }
+}

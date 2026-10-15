@@ -1,0 +1,234 @@
+{
+  "android-actions|Floating action button": {
+    "summary": "A Plenix floating action button on Android is Material 3’s FloatingActionButton (small, standard and large) and ExtendedFloatingActionButton, kept native in behavior (ripple, elevation, TalkBack reads its label, it stays put while the content scrolls under it) and styled with the Plenix roles of the web FloatingActionButton: the action color with its content color for primary, the raised surface with the border and the content color for secondary, the Plenix control radii and DM Sans for the extended label. Its sizes are Material’s own (40, 56 and 96 dp), the same steps as the web component.",
+    "variants": [
+      {
+        "name": "Standard",
+        "material": "FloatingActionButton",
+        "web": "actions|Floating action button",
+        "background": "plx-sys-action-primary-background",
+        "content": "plx-sys-action-primary-content",
+        "border": null,
+        "compose": "PlenixFab(icon = Icons.Outlined.Add, label = \"New asset\", onClick = create)",
+        "views": "fab.plenix(dark)",
+        "use": "The one main create or compose action of a screen."
+      },
+      {
+        "name": "Small",
+        "material": "SmallFloatingActionButton",
+        "web": "actions|Floating action button",
+        "background": "plx-sys-action-primary-background",
+        "content": "plx-sys-action-primary-content",
+        "border": null,
+        "compose": "PlenixFab(icon = Icons.Outlined.Edit, label = \"Compose\", size = FabSize.Small, onClick = compose)",
+        "views": "fab.size = FloatingActionButton.SIZE_MINI; fab.plenix(dark)",
+        "use": "A secondary floating action beside a list, or a narrow screen."
+      },
+      {
+        "name": "Large",
+        "material": "LargeFloatingActionButton",
+        "web": "actions|Floating action button",
+        "background": "plx-sys-action-primary-background",
+        "content": "plx-sys-action-primary-content",
+        "border": null,
+        "compose": "PlenixFab(icon = Icons.Outlined.Add, label = \"New board\", size = FabSize.Large, onClick = create)",
+        "views": "fab.customSize = PlenixPlatform.buttonHeightLarge.value.toInt(); fab.plenix(dark)",
+        "use": "The hero action of a large, empty screen."
+      },
+      {
+        "name": "Extended",
+        "material": "ExtendedFloatingActionButton",
+        "web": "actions|Floating action button",
+        "background": "plx-sys-action-primary-background",
+        "content": "plx-sys-action-primary-content",
+        "border": null,
+        "compose": "PlenixExtendedFab(icon = Icons.Outlined.Upload, label = \"Upload\", onClick = upload)",
+        "views": "extendedFab.plenix(dark)",
+        "use": "An action the icon alone does not explain."
+      },
+      {
+        "name": "Secondary",
+        "material": "FloatingActionButton (surface container)",
+        "web": "actions|Floating action button",
+        "background": "plx-sys-surface-raised",
+        "content": "plx-sys-content-default",
+        "border": "plx-sys-border-default",
+        "compose": "PlenixFab(icon = Icons.Outlined.Edit, label = \"Compose\", secondary = true, onClick = compose)",
+        "views": "fab.plenix(dark, secondary = true)",
+        "use": "A floating action over a busy, colorful canvas."
+      }
+    ],
+    "anatomy": [
+      {
+        "part": "A",
+        "name": "Container",
+        "about": "The raised square (40, 56 or 96 dp) with its corner and elevation."
+      },
+      {
+        "part": "B",
+        "name": "Icon",
+        "about": "The action’s icon, 24 dp (48 dp on the large button)."
+      },
+      {
+        "part": "C",
+        "name": "Label",
+        "about": "The action as a verb, beside the icon on the extended button."
+      }
+    ],
+    "attributes": [
+      {
+        "part": "A",
+        "attribute": "Background (primary)",
+        "token": "plx-sys-action-primary-background",
+        "value": "actionPrimaryBackground (the action blue)",
+        "material": "primaryContainer",
+        "compose": "containerColor = PlenixColors.actionPrimaryBackground.current()",
+        "views": "backgroundTintList = ColorStateList.valueOf(PlenixColors.actionPrimaryBackground.light.toArgb())",
+        "follows": "Material 3: FAB",
+        "followsUrl": "https://m3.material.io/components/floating-action-button/specs"
+      },
+      {
+        "part": "A",
+        "attribute": "Background (secondary)",
+        "token": "plx-sys-surface-raised",
+        "value": "surfaceRaised (white; dark gray in dark)",
+        "material": "surfaceContainerHigh",
+        "compose": "containerColor = PlenixColors.surfaceRaised.current()",
+        "views": "backgroundTintList = ColorStateList.valueOf(PlenixColors.surfaceRaised.light.toArgb())",
+        "follows": "Material 3: FAB",
+        "followsUrl": "https://m3.material.io/components/floating-action-button/specs"
+      },
+      {
+        "part": "A",
+        "attribute": "Size (standard)",
+        "token": "plx-sys-control-target-min",
+        "value": "56 dp (Material’s standard FAB, PlenixPlatform.buttonHeightMedium)",
+        "material": "md.comp.fab.primary.container.height",
+        "compose": "Modifier.size(PlenixPlatform.buttonHeightMedium)",
+        "views": "customSize = PlenixPlatform.buttonHeightMedium.value.toInt()",
+        "follows": "Material 3: FAB",
+        "followsUrl": "https://m3.material.io/components/floating-action-button/specs"
+      },
+      {
+        "part": "A",
+        "attribute": "Corner",
+        "token": "plx-sys-radius-control-12px",
+        "value": "12 dp (8 dp small, 16 dp large)",
+        "material": "md.comp.fab.primary.container.shape",
+        "compose": "shape = RoundedCornerShape(PlenixRadius.radiusControl12px)",
+        "views": "shapeAppearanceModel = ShapeAppearanceModel.builder().setAllCornerSizes(PlenixRadius.radiusControl12px.value).build()",
+        "follows": "Material 3: FAB",
+        "followsUrl": "https://m3.material.io/components/floating-action-button/specs"
+      },
+      {
+        "part": "B",
+        "attribute": "Icon size",
+        "token": "plx-sys-icon-size-lg",
+        "value": "24 dp (48 dp on the large button)",
+        "material": "md.comp.fab.primary.icon.size",
+        "compose": "Modifier.size(PlenixIcon.iconSizeLg)",
+        "views": "customSize icon: setMaxImageSize(PlenixIcon.iconSizeLg.value.toInt())",
+        "follows": "Material 3: FAB",
+        "followsUrl": "https://m3.material.io/components/floating-action-button/specs"
+      },
+      {
+        "part": "C",
+        "attribute": "Label",
+        "token": "plx-sys-action-primary-content",
+        "value": "DM Sans semibold on actionPrimaryContent",
+        "material": "labelLarge on onPrimaryContainer",
+        "compose": "Text(label, color = PlenixColors.actionPrimaryContent.current(), fontWeight = FontWeight.SemiBold)",
+        "views": "setTextColor(PlenixColors.actionPrimaryContent.light.toArgb())",
+        "follows": "Material 3: Extended FAB",
+        "followsUrl": "https://m3.material.io/components/extended-fab/specs"
+      },
+      {
+        "part": "A",
+        "attribute": "Margin from the screen edges",
+        "token": "plx-sys-space-layout-md",
+        "value": "24 dp from the bottom and end edges",
+        "material": "16 dp",
+        "compose": "Modifier.padding(PlenixSpace.spaceLayoutMd)",
+        "views": "layout_margin from PlenixSpace.spaceLayoutMd",
+        "follows": "Material 3: FAB",
+        "followsUrl": "https://m3.material.io/components/floating-action-button/guidelines"
+      }
+    ],
+    "states": [
+      {
+        "state": "Enabled",
+        "token": "plx-sys-action-primary-background",
+        "compose": "FloatingActionButton(onClick = …)",
+        "views": "isEnabled = true"
+      },
+      {
+        "state": "Pressed",
+        "token": "plx-sys-action-primary-background-pressed",
+        "compose": "Material ripple over the container (system)",
+        "views": "Material ripple (system)"
+      },
+      {
+        "state": "Focused",
+        "token": "plx-sys-focus-ring-color",
+        "compose": "Modifier.border(PlenixBorder.borderWidthMedium, PlenixColors.focusRingColor.current(), RoundedCornerShape(PlenixRadius.radiusControl12px)) while focused",
+        "views": "android:foreground focus ring in focusRingColor"
+      },
+      {
+        "state": "Disabled",
+        "token": "plx-sys-content-disabled",
+        "compose": "Not applicable: a FAB is hidden, not disabled, when its action is not available",
+        "views": "Not applicable: hide() the button"
+      }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.shape.RoundedCornerShape",
+        "import androidx.compose.material3.*",
+        "import plenix.tokens.*",
+        "",
+        "enum class FabSize { Small, Standard, Large }",
+        "",
+        "/** The Plenix floating action button: Material's FAB in the Plenix roles. One per screen. */",
+        "@Composable",
+        "fun PlenixFab(icon: ImageVector, label: String, onClick: () -> Unit, size: FabSize = FabSize.Standard, secondary: Boolean = false) {",
+        "    val container = if (secondary) PlenixColors.surfaceRaised.current() else PlenixColors.actionPrimaryBackground.current()",
+        "    val content = if (secondary) PlenixColors.contentDefault.current() else PlenixColors.actionPrimaryContent.current()",
+        "    val icon = @Composable { Icon(icon, contentDescription = label, modifier = Modifier.size(if (size == FabSize.Large) PlenixIcon.iconSizeXl else PlenixIcon.iconSizeLg)) }",
+        "    when (size) {",
+        "        FabSize.Small -> SmallFloatingActionButton(onClick, shape = RoundedCornerShape(PlenixRadius.radiusControl8px), containerColor = container, contentColor = content) { icon() }",
+        "        FabSize.Standard -> FloatingActionButton(onClick, shape = RoundedCornerShape(PlenixRadius.radiusControl12px), containerColor = container, contentColor = content) { icon() }",
+        "        FabSize.Large -> LargeFloatingActionButton(onClick, shape = RoundedCornerShape(PlenixShape.shapeXl), containerColor = container, contentColor = content) { icon() }",
+        "    }",
+        "}",
+        "",
+        "@Composable",
+        "fun PlenixExtendedFab(icon: ImageVector, label: String, onClick: () -> Unit) =",
+        "    ExtendedFloatingActionButton(onClick = onClick, icon = { Icon(icon, contentDescription = null) }, text = { Text(label, fontWeight = FontWeight.SemiBold) },",
+        "        shape = RoundedCornerShape(PlenixRadius.radiusControl12px), containerColor = PlenixColors.actionPrimaryBackground.current(), contentColor = PlenixColors.actionPrimaryContent.current())",
+        "",
+        "// In a Scaffold: floatingActionButton = { PlenixFab(Icons.Outlined.Add, \"New asset\", onClick = create) }; Scaffold places it at the bottom end corner"
+      ],
+      "views": [
+        "import com.google.android.material.floatingactionbutton.FloatingActionButton",
+        "import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton",
+        "import com.google.android.material.shape.ShapeAppearanceModel",
+        "import plenix.tokens.*",
+        "",
+        "/** Styles a Material FAB in the Plenix roles (light or dark from the configuration). One per screen. */",
+        "fun FloatingActionButton.plenix(dark: Boolean, secondary: Boolean = false) {",
+        "    val container = if (secondary) PlenixColors.surfaceRaised else PlenixColors.actionPrimaryBackground",
+        "    val content = if (secondary) PlenixColors.contentDefault else PlenixColors.actionPrimaryContent",
+        "    backgroundTintList = ColorStateList.valueOf((if (dark) container.dark else container.light).toArgb())",
+        "    imageTintList = ColorStateList.valueOf((if (dark) content.dark else content.light).toArgb())",
+        "    shapeAppearanceModel = ShapeAppearanceModel.builder().setAllCornerSizes(PlenixRadius.radiusControl12px.value * resources.displayMetrics.density).build()",
+        "}",
+        "",
+        "fun ExtendedFloatingActionButton.plenix(dark: Boolean) {",
+        "    val c = PlenixColors.actionPrimaryBackground; val t = PlenixColors.actionPrimaryContent",
+        "    backgroundTintList = ColorStateList.valueOf((if (dark) c.dark else c.light).toArgb())",
+        "    setTextColor((if (dark) t.dark else t.light).toArgb()); iconTint = textColors",
+        "}"
+      ]
+    }
+  }
+}

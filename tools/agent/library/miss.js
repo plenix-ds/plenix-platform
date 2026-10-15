@@ -1,0 +1,16 @@
+const fs=require('fs'),vm=require('vm');
+const D='D:/Documents/Projects/Projects_Applications/Plenix/platform/design-system/';
+const px=new Proxy(function(){},{get:(t,k)=>px,apply:()=>px});
+const ctx={window:{},React:{createElement:()=>null,useState:v=>[v,()=>{}]},DS:{sampleClass:()=>''},console};
+ctx.window.Plenix=px; vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(D+'inventory-taxonomy.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync(D+'inventory.js','utf8'),ctx);
+const T=ctx.window.DSTaxonomy.filter(s=>!s.platform||s.platform==='web'),R=ctx.window.DSInventory;
+const SEC={};T.forEach(s=>SEC[s.id]=s);
+const A={};R.forEach(r=>A[r.sec+'|'+r.leaf]=1);R.forEach(r=>r.covers.forEach(c=>{const k=c.indexOf('/')>0&&SEC[c.split('/')[0]]?c.replace('/','|'):r.sec+'|'+c;A[k]=1}));
+const miss={};let n=0,all=0;T.forEach(s=>s.subs.forEach(([sub,ls])=>ls.split('|').forEach(l=>{all++;if(!A[s.id+'|'+l]){(miss[s.n+' '+s.id]=miss[s.n+' '+s.id]||[]).push(sub+' > '+l);n++}})));
+console.log(n,all, T.length);fs.writeFileSync('miss-mine.json',JSON.stringify(miss,null,1));
+const m=JSON.parse(fs.readFileSync('C:/Users/AdminMan/AppData/Local/Temp/missing.json','utf8'));
+const mine=new Set();for(const k in miss)miss[k].forEach(x=>mine.add(k.split(' ')[1]+'|'+x.split(' > ')[1]));
+const ids=T.map(s=>s.id);const theirs=new Set();Object.keys(m).forEach((k,i)=>m[k].forEach(l=>theirs.add(ids[i]+'|'+l)));
+console.log('in theirs not mine',[...theirs].filter(x=>!mine.has(x)));console.log('in mine not theirs',[...mine].filter(x=>!theirs.has(x)));

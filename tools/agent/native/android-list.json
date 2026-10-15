@@ -1,0 +1,359 @@
+{
+ "android-data-display|List": {
+  "summary": "A Plenix list on Android is a LazyColumn of Material 3 ListItem rows, kept native in behavior (ripple, row semantics for TalkBack, font scale) and styled with the Plenix tokens: rows at least 48 dp tall on the default surface, DM Sans text at the body and secondary roles, a 20 dp leading icon in its tone, 1 dp divider lines and the Plenix pressed and selected fills. Material’s default is a 56 dp row in the surface color with Roboto text; Plenix keeps Material’s structure and replaces the look.",
+  "variants": [
+   {
+    "name": "Statement",
+    "material": "One-line list item, not clickable",
+    "web": "data-display|List",
+    "background": null,
+    "content": "plx-comp-list-item-text",
+    "border": null,
+    "compose": "PlenixListRow(headline, leading = a tone icon) without onClick",
+    "views": "A RecyclerView row without a click listener; the icon as a start compound drawable",
+    "use": "Short statements with a tone icon: do and don’t, features, requirements."
+   },
+   {
+    "name": "Interactive",
+    "material": "List item with Modifier.clickable",
+    "web": "data-display|Interactive list",
+    "background": "plx-sys-surface-default",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "compose": "PlenixListRow(headline, supporting, onClick = open)",
+    "views": "A row with a RippleDrawable background and a click listener",
+    "use": "Rows that open a record."
+   },
+   {
+    "name": "Selectable",
+    "material": "List item with Modifier.selectable",
+    "web": "data-display|Selectable list",
+    "background": "plx-comp-row-button-selected-background",
+    "content": "plx-sys-selected-content",
+    "border": null,
+    "compose": "PlenixListRow(…, selected = row.id == openId, onClick = open)",
+    "views": "itemView.isActivated = selected, with an activated fill in the background state list",
+    "use": "The row whose details are shown beside or after the list."
+   },
+   {
+    "name": "Two-line with avatar",
+    "material": "Two-line list item with a leading avatar",
+    "web": "data-display|Activity stream",
+    "background": "plx-sys-surface-default",
+    "content": "plx-comp-activity-list-title-text",
+    "border": null,
+    "compose": "PlenixListRow(headline, supporting, leading = { PlenixAvatar(name, size = AvatarSize.S40) }, trailing = { time })",
+    "views": "A row layout: avatar, two TextViews, a trailing time",
+    "use": "People, activity and records that need a line of details."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Row",
+    "about": "The whole row; it takes the press when the row opens something. At least 48 dp tall."
+   },
+   {
+    "part": "B",
+    "name": "Leading icon or avatar",
+    "about": "A 20 dp icon in its tone, or an avatar, at the start."
+   },
+   {
+    "part": "C",
+    "name": "Headline",
+    "about": "The main text, in DM Sans at the body role; scales with the font size setting."
+   },
+   {
+    "part": "D",
+    "name": "Supporting text",
+    "about": "An optional line of details under the headline, muted, at the secondary role."
+   },
+   {
+    "part": "E",
+    "name": "Trailing content",
+    "about": "An optional time, count or icon at the end, muted."
+   },
+   {
+    "part": "F",
+    "name": "Divider",
+    "about": "A 1 dp line between rows in the divider color; none after the last row."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Minimum height",
+    "token": "plx-sys-control-target-min",
+    "value": "48 dp (PlenixPlatform.controlTargetMin); two-line rows grow with their text",
+    "material": "56 dp one-line, 72 dp two-line",
+    "compose": "Modifier.heightIn(min = PlenixPlatform.controlTargetMin)",
+    "views": "itemView.minimumHeight = px(PlenixPlatform.controlTargetMin)",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Padding",
+    "token": "plx-sys-space-inset-lg, plx-sys-space-inset-sm",
+    "value": "16 dp inline, 8 dp block (PlenixSpace.spaceInsetLg, spaceInsetSm)",
+    "material": "16 dp inline, 8 dp block",
+    "compose": "ListItem’s own padding, which already matches",
+    "views": "setPaddingRelative(px(PlenixSpace.spaceInsetLg), px(PlenixSpace.spaceInsetSm), px(PlenixSpace.spaceInsetLg), px(PlenixSpace.spaceInsetSm))",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-sys-surface-default",
+    "value": "The default surface (PlenixColors.surfaceDefault)",
+    "material": "surface",
+    "compose": "ListItemDefaults.colors(containerColor = PlenixColors.surfaceDefault.current())",
+    "views": "The base layer of the row’s StateListDrawable",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Icon size",
+    "token": "plx-sys-control-icon-standard",
+    "value": "20 dp (PlenixPlatform.controlIconStandard)",
+    "material": "24 dp",
+    "compose": "Icon(…, Modifier.size(PlenixPlatform.controlIconStandard))",
+    "views": "drawable.setBounds(0, 0, px(PlenixPlatform.controlIconStandard), px(PlenixPlatform.controlIconStandard))",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Icon color",
+    "token": "plx-comp-list-item-neutral-icon-text, plx-comp-list-item-success-icon-text, plx-comp-list-item-danger-icon-text, plx-comp-list-item-info-icon-text, plx-comp-list-item-warning-icon-text",
+    "value": "Per tone: muted (neutral), or the success, danger, info or warning content color",
+    "material": "onSurfaceVariant",
+    "compose": "Icon(tint = toneColor(tone))",
+    "views": "TextViewCompat.setCompoundDrawableTintList(row, ColorStateList.valueOf(argb(…)))",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Icon and text gap",
+    "token": "plx-comp-list-item-gap",
+    "value": "16 dp: ListItem’s fixed gap after the leading slot (PlenixSpace.spaceInlineLg); the web gap is 8 px",
+    "material": "16 dp",
+    "compose": "Set by ListItem",
+    "views": "compoundDrawablePadding = px(PlenixSpace.spaceInlineLg)",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Headline type",
+    "token": "plx-comp-list-item-font-size (body role)",
+    "value": "DM Sans regular, 16 sp on 24 sp, Body large (PlenixPlatform.textBodySize, textBodyLineHeight)",
+    "material": "Roboto 16 sp, Body large",
+    "compose": "textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, PlenixPlatform.textBodyWeight)",
+    "views": "headline.textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, R.font.dm_sans_regular)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/type-scale-tokens"
+   },
+   {
+    "part": "C",
+    "attribute": "Headline color",
+    "token": "plx-comp-list-item-text",
+    "value": "contentDefault",
+    "material": "onSurface",
+    "compose": "ListItemDefaults.colors(headlineColor = PlenixColors.contentDefault.current())",
+    "views": "headline.setTextColor(argb(PlenixColors.contentDefault.light, PlenixColors.contentDefault.dark))",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "D",
+    "attribute": "Supporting text",
+    "token": "plx-comp-activity-list-meta-text",
+    "value": "DM Sans 14 sp on 20 sp, Body medium (PlenixPlatform.textSecondarySize), contentMuted",
+    "material": "Roboto 14 sp, Body medium, onSurfaceVariant",
+    "compose": "supportingContent with textRole(PlenixPlatform.textSecondarySize, …); ListItemDefaults.colors(supportingColor = PlenixColors.contentMuted.current())",
+    "views": "supporting.textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, R.font.dm_sans_regular)",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "E",
+    "attribute": "Trailing text",
+    "token": "plx-comp-activity-list-time-text",
+    "value": "12 sp on 16 sp, Body small (PlenixPlatform.textCaptionSize), contentMuted",
+    "material": "Label small, onSurfaceVariant",
+    "compose": "trailingContent = { Text(time, style = textRole(PlenixPlatform.textCaptionSize, PlenixPlatform.textCaptionLineHeight, PlenixPlatform.textCaptionWeight)) }",
+    "views": "time.textRole(PlenixPlatform.textCaptionSize, PlenixPlatform.textCaptionLineHeight, R.font.dm_sans_regular)",
+    "follows": "Material 3: Lists",
+    "followsUrl": "https://m3.material.io/components/lists/specs"
+   },
+   {
+    "part": "F",
+    "attribute": "Divider",
+    "token": "plx-comp-activity-list-item-border-bottom-color, plx-comp-activity-list-item-border-bottom-width",
+    "value": "1 dp in borderDivider, between rows only",
+    "material": "None by default; a HorizontalDivider in outlineVariant",
+    "compose": "HorizontalDivider(thickness = PlenixComponent.activityListItemBorderBottomWidth, color = PlenixColors.borderDivider.current())",
+    "views": "MaterialDividerItemDecoration: dividerColor, dividerThickness, isLastItemDecorated = false",
+    "follows": "Material 3: Dividers",
+    "followsUrl": "https://m3.material.io/components/divider/specs"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-sys-surface-default, plx-comp-list-item-text",
+    "compose": "ListItemDefaults.colors",
+    "views": "The row’s StateListDrawable base layer"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-state-pressed",
+    "compose": "The Material ripple in PlenixColors.statePressed (LocalRippleConfiguration)",
+    "views": "RippleDrawable(ColorStateList.valueOf(argb(PlenixColors.statePressed.light, PlenixColors.statePressed.dark)), fill, null)"
+   },
+   {
+    "state": "Hovered (mouse)",
+    "token": "plx-comp-row-button-hover-background",
+    "compose": "The ripple’s hover state layer",
+    "views": "android.R.attr.state_hovered in the StateListDrawable"
+   },
+   {
+    "state": "Selected",
+    "token": "plx-comp-row-button-selected-background, plx-sys-selected-content",
+    "compose": "Modifier.selectable(selected); containerColor = PlenixColors.stateSelected, headlineColor = PlenixColors.selectedContent",
+    "views": "itemView.isActivated = true with android.R.attr.state_activated in the StateListDrawable"
+   },
+   {
+    "state": "Focused (keyboard)",
+    "token": "plx-comp-row-button-focus-outline-color, plx-comp-row-button-focus-outline-width",
+    "compose": "The ripple’s focus layer; Modifier.border(PlenixComponent.rowButtonFocusOutlineWidth, PlenixColors.focusRingColor.current()) while focused for the Plenix ring",
+    "views": "android.R.attr.state_focused: a PlenixComponent.rowButtonFocusOutlineWidth stroke in focusRingColor"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-row-button-disabled-text",
+    "compose": "Modifier.selectable(enabled = false); ListItemDefaults.colors(disabledHeadlineColor = PlenixColors.contentDisabled.current())",
+    "views": "itemView.isEnabled = false; text in contentDisabled"
+   }
+  ],
+  "code": {
+   "compose": [
+    "import androidx.compose.foundation.lazy.LazyColumn",
+    "import androidx.compose.foundation.lazy.itemsIndexed",
+    "import androidx.compose.foundation.selection.selectable",
+    "import androidx.compose.material3.*",
+    "import plenix.tokens.*",
+    "",
+    "// Sans: the DM Sans family (PlenixFonts.SANS), set once in the app theme, e.g.",
+    "// val Sans = FontFamily(Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Normal), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.SemiBold), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Bold))",
+    "fun textRole(size: TextUnit, lineHeight: TextUnit, weight: Int) =",
+    "    TextStyle(fontFamily = Sans, fontSize = size, lineHeight = lineHeight, fontWeight = FontWeight(weight))",
+    "",
+    "enum class Tone { Neutral, Success, Danger, Info, Warning }",
+    "",
+    "@Composable",
+    "fun toneColor(tone: Tone): Color = when (tone) {",
+    "    Tone.Neutral -> PlenixColors.contentMuted.current()",
+    "    Tone.Success -> PlenixColors.feedbackSuccessContent.current()",
+    "    Tone.Danger -> PlenixColors.feedbackDangerContent.current()",
+    "    Tone.Info -> PlenixColors.feedbackInfoContent.current()",
+    "    Tone.Warning -> PlenixColors.feedbackWarningContent.current()",
+    "}",
+    "",
+    "/** The Plenix list row on Android: the Material 3 ListItem, styled with the Plenix tokens (package plenix.tokens). */",
+    "@OptIn(ExperimentalMaterial3Api::class)",
+    "@Composable",
+    "fun PlenixListRow(",
+    "    headline: String,",
+    "    supporting: String? = null,",
+    "    leading: (@Composable () -> Unit)? = null,",
+    "    trailing: (@Composable () -> Unit)? = null,",
+    "    selected: Boolean = false,",
+    "    onClick: (() -> Unit)? = null,",
+    ") {",
+    "    val press = if (onClick != null) Modifier.selectable(selected = selected, onClick = onClick) else Modifier",
+    "    CompositionLocalProvider(LocalRippleConfiguration provides RippleConfiguration(color = PlenixColors.statePressed.current())) {",
+    "        ListItem(",
+    "            headlineContent = { Text(headline, style = textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, PlenixPlatform.textBodyWeight)) },",
+    "            supportingContent = supporting?.let { { Text(it, style = textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, PlenixPlatform.textSecondaryWeight)) } },",
+    "            leadingContent = leading,",
+    "            trailingContent = trailing,",
+    "            modifier = press.heightIn(min = PlenixPlatform.controlTargetMin),",
+    "            colors = ListItemDefaults.colors(",
+    "                containerColor = if (selected) PlenixColors.stateSelected.current() else PlenixColors.surfaceDefault.current(),",
+    "                headlineColor = if (selected) PlenixColors.selectedContent.current() else PlenixColors.contentDefault.current(),",
+    "                supportingColor = PlenixColors.contentMuted.current(),",
+    "                leadingIconColor = PlenixColors.contentMuted.current(),",
+    "                trailingIconColor = PlenixColors.contentMuted.current(),",
+    "                disabledHeadlineColor = PlenixColors.contentDisabled.current(),",
+    "            ),",
+    "        )",
+    "    }",
+    "}",
+    "",
+    "// A list of records that open",
+    "LazyColumn {",
+    "    itemsIndexed(records) { i, r ->",
+    "        PlenixListRow(r.name, supporting = r.meta, selected = r.id == openId, onClick = { open(r) })",
+    "        if (i < records.lastIndex) HorizontalDivider(thickness = PlenixComponent.activityListItemBorderBottomWidth, color = PlenixColors.borderDivider.current())",
+    "    }",
+    "}",
+    "",
+    "// A statement with a tone icon (not clickable)",
+    "PlenixListRow(\"Use it for one record per row\", leading = {",
+    "    Icon(Icons.Sharp.CheckCircle, contentDescription = null, Modifier.size(PlenixPlatform.controlIconStandard), tint = toneColor(Tone.Success))",
+    "})"
+   ],
+   "views": [
+    "import android.content.res.ColorStateList",
+    "import android.graphics.drawable.*",
+    "import com.google.android.material.divider.MaterialDividerItemDecoration",
+    "import plenix.tokens.*",
+    "",
+    "// Views read the same values from the generated plenix.tokens package through three helpers:",
+    "fun Context.argb(light: Color, dark: Color): Int {",
+    "    val night = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES",
+    "    return (if (night) dark else light).toArgb()",
+    "}",
+    "fun Context.px(dp: Dp): Int = (dp.value * resources.displayMetrics.density).roundToInt()",
+    "fun TextView.textRole(size: TextUnit, lineHeight: TextUnit, @FontRes font: Int) {",
+    "    typeface = ResourcesCompat.getFont(context, font)   // R.font.dm_sans_*: DM Sans (PlenixFonts.SANS) bundled with the app",
+    "    setTextSize(TypedValue.COMPLEX_UNIT_SP, size.value)",
+    "    TextViewCompat.setLineHeight(this, TypedValue.COMPLEX_UNIT_SP, lineHeight.value)",
+    "}",
+    "",
+    "/** Styles one list row (res/layout/row.xml: headline, supporting and time TextViews) with the Plenix tokens. */",
+    "fun styleRow(row: View, headline: TextView, supporting: TextView?) {",
+    "    val c = row.context",
+    "    row.minimumHeight = c.px(PlenixPlatform.controlTargetMin)",
+    "    row.setPaddingRelative(c.px(PlenixSpace.spaceInsetLg), c.px(PlenixSpace.spaceInsetSm), c.px(PlenixSpace.spaceInsetLg), c.px(PlenixSpace.spaceInsetSm))",
+    "    val fill = StateListDrawable().apply {",
+    "        addState(intArrayOf(android.R.attr.state_activated), ColorDrawable(c.argb(PlenixColors.stateSelected.light, PlenixColors.stateSelected.dark)))",
+    "        addState(intArrayOf(android.R.attr.state_hovered), ColorDrawable(c.argb(PlenixColors.stateHover.light, PlenixColors.stateHover.dark)))",
+    "        addState(intArrayOf(), ColorDrawable(c.argb(PlenixColors.surfaceDefault.light, PlenixColors.surfaceDefault.dark)))",
+    "    }",
+    "    row.background = RippleDrawable(ColorStateList.valueOf(c.argb(PlenixColors.statePressed.light, PlenixColors.statePressed.dark)), fill, null)",
+    "    headline.textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, R.font.dm_sans_regular)",
+    "    headline.setTextColor(ColorStateList(",
+    "        arrayOf(intArrayOf(android.R.attr.state_activated), intArrayOf(-android.R.attr.state_enabled), intArrayOf()),",
+    "        intArrayOf(c.argb(PlenixColors.selectedContent.light, PlenixColors.selectedContent.dark),",
+    "            c.argb(PlenixColors.contentDisabled.light, PlenixColors.contentDisabled.dark),",
+    "            c.argb(PlenixColors.contentDefault.light, PlenixColors.contentDefault.dark))))",
+    "    supporting?.textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, R.font.dm_sans_regular)",
+    "    supporting?.setTextColor(c.argb(PlenixColors.contentMuted.light, PlenixColors.contentMuted.dark))",
+    "}",
+    "",
+    "// In the adapter: styleRow(itemView, headline, supporting); itemView.isActivated = item.id == openId",
+    "recycler.addItemDecoration(MaterialDividerItemDecoration(context, LinearLayoutManager.VERTICAL).apply {",
+    "    dividerColor = context.argb(PlenixColors.borderDivider.light, PlenixColors.borderDivider.dark)",
+    "    dividerThickness = context.px(PlenixComponent.activityListItemBorderBottomWidth)",
+    "    isLastItemDecorated = false",
+    "})"
+   ]
+  }
+ }
+}

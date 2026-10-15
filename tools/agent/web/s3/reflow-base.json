@@ -1,0 +1,47 @@
+{
+ "dashboard/index.html": {
+  "scroller": 1
+ },
+ "dam/index.html": {
+  "cut-off": 1
+ },
+ "dam/settings-system.html": {
+  "scroller": 1
+ },
+ "design-system #/foundations/design-tokens": {
+  "scroller": 1
+ },
+ "design-system #/layout/grid": {
+  "scroller": 1
+ },
+ "design-system #/content/text": {
+  "scroller": 1
+ },
+ "design-system #/actions/button": {
+  "scroller": 1
+ },
+ "design-system #/forms/fieldset": {
+  "scroller": 1
+ },
+ "design-system #/navigation/application-header": {
+  "scroller": 1
+ },
+ "design-system #/data-display/badge": {
+  "scroller": 1
+ },
+ "design-system #/specialized/preview": {
+  "scroller": 1
+ },
+ "design-system #/feedback/notice": {
+  "scroller": 1
+ },
+ "design-system #/overlays/dialog": {
+  "scroller": 1
+ },
+ "design-system #/page-structures/application-shell": {
+  "scroller": 1
+ },
+ "design-system #/interaction/focus-ring": {
+  "scroller": 1
+ }
+}

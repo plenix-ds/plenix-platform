@@ -1,0 +1,285 @@
+{
+ "ios-page-structures|Windows": {
+  "summary": "A Plenix window on iPadOS is the system window (a WindowGroup scene), with the system frame, window controls, resizing and multitasking left exactly as the system draws them. Plenix styles only what the app owns inside the window, the way the Web AppShell does: the Plenix canvas behind the content, a sidebar in the Plenix pane surface with a 44-point header area, DM Sans titles at the heading role, and a layout that adapts smoothly to every size the window can take. The system window frame is never imitated.",
+  "variants": [
+   {
+    "name": "Window",
+    "apple": "Window",
+    "web": "page-structures|Single-pane workspace",
+    "background": "plx-sys-surface-canvas",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "WindowGroup { ContentView().background(Plenix.Colors.surfaceCanvas) }",
+    "uikit": "UIWindowScene with a root view controller on the Plenix canvas",
+    "appkit": "NSWindow with the standard style mask",
+    "use": "A single-pane app or a document opened in its own window."
+   },
+   {
+    "name": "Window with sidebar",
+    "apple": "Window with Sidebar, Mode=Active",
+    "web": "page-structures|Two-pane workspace",
+    "background": "plx-sys-surface-canvas, plx-comp-nav-pane-background",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "WindowGroup { NavigationSplitView { Sidebar() } detail: { Detail() } }",
+    "uikit": "UISplitViewController(style: .doubleColumn) as the root",
+    "appkit": "NSSplitViewController with a sidebar item",
+    "use": "The main window of an app with several areas: the sidebar and the content side by side."
+   },
+   {
+    "name": "Inactive window",
+    "apple": "Window with Sidebar, Mode=Inactive",
+    "web": "page-structures|Two-pane workspace",
+    "background": "plx-sys-surface-canvas, plx-comp-nav-pane-background",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "@Environment(\\.controlActiveState) (the system dims the controls)",
+    "uikit": "UIWindowScene.activationState",
+    "appkit": "NSWindow isKeyWindow, isMainWindow",
+    "use": "A window that is open but not in front; the system draws its frame and controls inactive."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Window frame",
+    "about": "The system frame, corners and shadow; Plenix never draws or restyles it."
+   },
+   {
+    "part": "B",
+    "name": "Window controls",
+    "about": "The system close, minimize and full-screen controls at the leading top corner."
+   },
+   {
+    "part": "C",
+    "name": "Sidebar",
+    "about": "The optional leading pane in the Plenix pane surface, with the Plenix sidebar rows."
+   },
+   {
+    "part": "D",
+    "name": "Header area",
+    "about": "The 44-point area at the top of each pane for the title and toolbar items, clear of the window controls."
+   },
+   {
+    "part": "E",
+    "name": "Content",
+    "about": "The main pane on the Plenix canvas; it adapts to every window size."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Window frame and controls",
+    "token": "None (the system draws them)",
+    "value": "The system frame, corners, shadow and controls",
+    "apple": "The system frame",
+    "swiftui": "WindowGroup; never a custom frame",
+    "uikit": "UIWindowScene; never a custom frame",
+    "appkit": "styleMask [.titled, .closable, .miniaturizable, .resizable]",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Canvas",
+    "token": "plx-sys-surface-canvas",
+    "value": "Plenix.Colors.surfaceCanvas",
+    "apple": "The system background",
+    "swiftui": ".background(Plenix.Colors.surfaceCanvas)",
+    "uikit": "view.backgroundColor = UIColor(Plenix.Colors.surfaceCanvas)",
+    "appkit": "contentView backgroundColor (a layer-backed view)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Sidebar surface",
+    "token": "plx-comp-nav-pane-background",
+    "value": "The system glass on a floating sidebar; plx-sys-surface-default (Plenix.Colors.surfaceDefault) otherwise",
+    "apple": "Liquid Glass",
+    "swiftui": "The glass stays on a floating sidebar",
+    "uikit": "primary column background in the split view",
+    "appkit": "NSSplitViewItem(sidebarWithViewController:) keeps the material",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Sidebar width",
+    "token": "plx-sys-shell-nav-width, plx-sys-shell-nav-min-width, plx-sys-shell-nav-max-width, plx-comp-nav-pane-width",
+    "value": "240 pt ideal, 140 to 320 pt",
+    "apple": "Set by the system",
+    "swiftui": ".navigationSplitViewColumnWidth(min: Plenix.Shell.shellNavMinWidth, ideal: Plenix.Component.navPaneWidth, max: Plenix.Shell.shellNavMaxWidth)",
+    "uikit": "preferredPrimaryColumnWidth, minimumPrimaryColumnWidth, maximumPrimaryColumnWidth",
+    "appkit": "minimumThickness, maximumThickness",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Header height",
+    "token": "plx-sys-shell-header-height",
+    "value": "44 pt (Plenix.Platform.shellHeaderHeight)",
+    "apple": "The system toolbar height",
+    "swiftui": "Set by the navigation bar (.toolbar)",
+    "uikit": "Set by UINavigationBar",
+    "appkit": "Set by the NSToolbar",
+    "follows": "iPadOS"
+   },
+   {
+    "part": "D",
+    "attribute": "Title",
+    "token": "plx-text--heading (iOS heading role)",
+    "value": "DM Sans semibold, 17 pt on 22 pt, relative to Headline (Plenix.Platform.textHeadingSize)",
+    "apple": "SF Pro Semibold, 17 pt",
+    "swiftui": ".navigationTitle(_:) with UINavigationBarAppearance titleTextAttributes",
+    "uikit": "UINavigationBarAppearance titleTextAttributes[.font]",
+    "appkit": "window.title (the system font); a custom title view is avoided",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Toolbar clearance",
+    "token": "None (the system layout margins)",
+    "value": "Leading toolbar items move inward when the window controls show",
+    "apple": "The window controls take the leading top corner",
+    "swiftui": "Toolbar placements; the system moves them",
+    "uikit": "Use the safe area and layout margins; never fixed leading offsets",
+    "appkit": "titlebarAppearsTransparent = false; toolbar items in the toolbar",
+    "follows": "iPadOS"
+   },
+   {
+    "part": "E",
+    "attribute": "Content inset",
+    "token": "plx-sys-space-inset-lg",
+    "value": "16 pt (Plenix.Space.spaceInsetLg), within the safe area",
+    "apple": "The readable content margins",
+    "swiftui": ".padding(Plenix.Space.spaceInsetLg); .safeAreaPadding",
+    "uikit": "directionalLayoutMargins",
+    "appkit": "NSStackView edgeInsets",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Adaptive layout",
+    "token": "plx-sys-shell-rail-below, plx-sys-shell-phone-below",
+    "value": "The sidebar collapses in a narrow window; the layout follows the size class, not the device",
+    "apple": "Size classes",
+    "swiftui": "@Environment(\\.horizontalSizeClass); NavigationSplitView collapses by itself",
+    "uikit": "traitCollection.horizontalSizeClass; the split view collapses",
+    "appkit": "NSSplitViewItem canCollapse with automatic collapse",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Active",
+    "token": "The system window appearance",
+    "swiftui": "@Environment(\\.scenePhase) == .active",
+    "uikit": "activationState == .foregroundActive",
+    "appkit": "isKeyWindow"
+   },
+   {
+    "state": "Inactive",
+    "token": "The system dims its controls; the Plenix content keeps its colors",
+    "swiftui": "@Environment(\\.controlActiveState) == .inactive",
+    "uikit": "activationState == .foregroundInactive",
+    "appkit": "isKeyWindow == false"
+   },
+   {
+    "state": "Resized",
+    "token": "The layout adapts (no fixed sizes)",
+    "swiftui": "Size classes and flexible frames",
+    "uikit": "viewWillTransition(to:with:)",
+    "appkit": "windowDidResize(_:)"
+   },
+   {
+    "state": "Full screen",
+    "token": "The system full-screen appearance",
+    "swiftui": "Drawn by the system",
+    "uikit": "Drawn by the system",
+    "appkit": "toggleFullScreen(_:)"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// A Plenix window on iPadOS: the system WindowGroup and frame; Plenix styles only the content (PlenixTokens.swift).",
+    "@main",
+    "struct PlenixApp: App {",
+    "    var body: some Scene {",
+    "        WindowGroup {",
+    "            NavigationSplitView {",
+    "                PlenixSidebar()",
+    "                    .navigationSplitViewColumnWidth(min: Plenix.Shell.shellNavMinWidth, ideal: Plenix.Component.navPaneWidth, max: Plenix.Shell.shellNavMaxWidth) (no generated name yet)",
+    "            } detail: {",
+    "                DetailView()",
+    "                    .padding(Plenix.Space.spaceInsetLg)",
+    "                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)",
+    "                    .background(Plenix.Colors.surfaceCanvas)",
+    "                    .navigationTitle(\"Assets\")",
+    "            }",
+    "        }",
+    "        // A second window is a command, not the default:",
+    "        WindowGroup(\"Asset\", for: Asset.ID.self) { $id in AssetView(id: id).background(Plenix.Colors.surfaceCanvas) }",
+    "    }",
+    "}",
+    "",
+    "// Open an item in its own window from a command or a gesture",
+    "struct OpenInWindow: View {",
+    "    @Environment(\\.openWindow) private var openWindow",
+    "    let asset: Asset",
+    "    var body: some View { Button(\"Open in New Window\") { openWindow(value: asset.id) } }",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// A Plenix window on iPadOS in UIKit: the system UIWindowScene; Plenix styles only the content.",
+    "final class SceneDelegate: UIResponder, UIWindowSceneDelegate {",
+    "    var window: UIWindow?",
+    "    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIScene.ConnectionOptions) {",
+    "        guard let scene = scene as? UIWindowScene else { return }",
+    "        let split = UISplitViewController(style: .doubleColumn)",
+    "        split.preferredPrimaryColumnWidth = Plenix.Component.navPaneWidth",
+    "        split.minimumPrimaryColumnWidth = Plenix.Shell.shellNavMinWidth",
+    "        split.maximumPrimaryColumnWidth = Plenix.Shell.shellNavMaxWidth",
+    "        split.setViewController(SidebarViewController(), for: .primary)",
+    "        let detail = DetailViewController()",
+    "        detail.view.backgroundColor = UIColor(Plenix.Colors.surfaceCanvas)",
+    "        detail.view.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Plenix.Space.spaceInsetLg, leading: Plenix.Space.spaceInsetLg, bottom: Plenix.Space.spaceInsetLg, trailing: Plenix.Space.spaceInsetLg)",
+    "        split.setViewController(detail, for: .secondary)",
+    "",
+    "        let title = UINavigationBarAppearance()",
+    "        title.configureWithDefaultBackground()",
+    "        title.titleTextAttributes = [.font: UIFontMetrics(forTextStyle: .headline).scaledFont(for: UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textHeadingSize) ?? .preferredFont(forTextStyle: .headline))]",
+    "        UINavigationBar.appearance().standardAppearance = title",
+    "",
+    "        window = UIWindow(windowScene: scene)",
+    "        window?.rootViewController = split",
+    "        window?.makeKeyAndVisible()",
+    "    }",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// A Plenix window on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let window = NSWindow(contentRect: .zero, styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)",
+    "window.title = \"Assets\"",
+    "let split = NSSplitViewController()",
+    "let sidebar = NSSplitViewItem(sidebarWithViewController: SidebarViewController())",
+    "sidebar.minimumThickness = Plenix.Shell.shellNavMinWidth",
+    "sidebar.maximumThickness = Plenix.Shell.shellNavMaxWidth",
+    "sidebar.canCollapse = true",
+    "split.addSplitViewItem(sidebar)",
+    "let content = DetailViewController()",
+    "content.view.wantsLayer = true",
+    "content.view.layer?.backgroundColor = NSColor(Plenix.Colors.surfaceCanvas).cgColor",
+    "split.addSplitViewItem(NSSplitViewItem(viewController: content))",
+    "window.contentViewController = split",
+    "window.toolbar = NSToolbar(identifier: \"main\")   // a bottom bar only for a little window status"
+   ]
+  }
+ }
+}

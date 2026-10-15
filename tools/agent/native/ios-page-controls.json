@@ -1,0 +1,235 @@
+{
+ "ios-navigation|Page controls": {
+  "summary": "A Plenix page control on iOS is the system page control, kept native in behavior (tapping and scrubbing to change pages, the animated change, VoiceOver’s adjustable page value) with its indicator colors set to Plenix content roles that keep the system’s contrast relation: the current page in the default content color, the other pages in the strong border color, in both themes. It sits centered near the bottom of the view. Apple’s default uses the system label colors; Plenix keeps the system control, its sizes and its background styles.",
+  "variants": [
+   {
+    "name": "Minimal",
+    "apple": "Page Control, Pages=1-6 (no background)",
+    "web": "data-display|Carousel",
+    "background": null,
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "PlenixPageControl(background: .minimal) (UIPageControl through UIViewRepresentable)",
+    "uikit": "UIPageControl, backgroundStyle .minimal, allowsContinuousInteraction = false",
+    "appkit": "No page control; dots drawn beside an NSPageController",
+    "use": "A carousel of peer pages, such as a set of media or onboarding screens, where the dots only show the position."
+   },
+   {
+    "name": "Prominent",
+    "apple": "Page Control, Pages=1-6 (with background)",
+    "web": "navigation|Pagination",
+    "background": "plx-sys-fill-neutral",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "PlenixPageControl(background: .prominent)",
+    "uikit": "UIPageControl, backgroundStyle .prominent",
+    "appkit": "No page control; dots drawn beside an NSPageController",
+    "use": "When the page control is the main way to move between pages and scrubbing should be easy to find."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Current indicator",
+    "about": "The dot of the page on screen, in the default content color."
+   },
+   {
+    "part": "B",
+    "name": "Page indicators",
+    "about": "One dot for each other page, in the strong border color."
+   },
+   {
+    "part": "C",
+    "name": "Background",
+    "about": "The system platter behind the dots, shown with the prominent style or while scrubbing."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Current indicator color",
+    "token": "plx-sys-content-default",
+    "value": "Black in light, near white in dark (Plenix.Colors.contentDefault)",
+    "apple": "The label color",
+    "swiftui": "currentPageIndicatorTintColor in the representable",
+    "uikit": "currentPageIndicatorTintColor = UIColor(Plenix.Colors.contentDefault)",
+    "appkit": "The dot fill of the custom indicator",
+    "follows": "Customizing indicators"
+   },
+   {
+    "part": "B",
+    "attribute": "Page indicator color",
+    "token": "plx-sys-border-strong",
+    "value": "Gray 500 in both themes, at least 3 to 1 against the canvas (Plenix.Colors.borderStrong)",
+    "apple": "The label color at 30 percent",
+    "swiftui": "pageIndicatorTintColor in the representable",
+    "uikit": "pageIndicatorTintColor = UIColor(Plenix.Colors.borderStrong)",
+    "appkit": "The dot fill of the custom indicator",
+    "follows": "Customizing indicators"
+   },
+   {
+    "part": "B",
+    "attribute": "Indicator image",
+    "token": "None (an SF Symbol)",
+    "value": "The dot; one special page may use a symbol, two images at most",
+    "apple": "The dot",
+    "swiftui": "setIndicatorImage(UIImage(systemName: \"location.fill\"), forPage: 0) in the representable",
+    "uikit": "setIndicatorImage(_:forPage:), preferredIndicatorImage",
+    "appkit": "An NSImage in the custom indicator",
+    "follows": "Customizing indicators"
+   },
+   {
+    "part": "C",
+    "attribute": "Background style",
+    "token": "None (a system platter)",
+    "value": ".minimal for decoration, .prominent when it is the main navigation",
+    "apple": ".automatic",
+    "swiftui": ".indexViewStyle(.page(backgroundDisplayMode: .always)) on a page TabView, or backgroundStyle in the representable",
+    "uikit": "backgroundStyle = .minimal or .prominent",
+    "appkit": "Not available",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "C",
+    "attribute": "Scrubbing",
+    "token": "None (a behavior)",
+    "value": "On with the prominent style, off with the minimal one",
+    "apple": "On",
+    "swiftui": "allowsContinuousInteraction in the representable",
+    "uikit": "allowsContinuousInteraction = (backgroundStyle == .prominent)",
+    "appkit": "Not available",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "C",
+    "attribute": "Placement",
+    "token": "plx-sys-space-stack-lg",
+    "value": "Centered, 16 pt above the bottom safe area (Plenix.Space.spaceStackLg)",
+    "apple": "Centered near the bottom",
+    "swiftui": ".frame(maxWidth: .infinity).padding(.bottom, Plenix.Space.spaceStackLg)",
+    "uikit": "centerXAnchor, bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -Plenix.Space.spaceStackLg)",
+    "appkit": "Centered under the page controller’s view",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Number of pages",
+    "token": "None",
+    "value": "About ten at most; more pages need a grid or a list",
+    "apple": "Dots shrink past the visible limit",
+    "swiftui": "numberOfPages",
+    "uikit": "numberOfPages",
+    "appkit": "arrangedObjects.count",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-sys-content-default (current), plx-sys-border-strong (others)",
+    "swiftui": "currentPage",
+    "uikit": "currentPage",
+    "appkit": "selectedIndex"
+   },
+   {
+    "state": "Tapped (page changes with animation)",
+    "token": "The same colors",
+    "swiftui": "withAnimation { page = newValue }",
+    "uikit": ".valueChanged, then scroll with animation",
+    "appkit": "animator().selectedIndex"
+   },
+   {
+    "state": "Scrubbing (no animation)",
+    "token": "The system platter",
+    "swiftui": "interactionState == .continuous: set the page without animation",
+    "uikit": "interactionState == .continuous",
+    "appkit": "Not available"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-sys-content-disabled",
+    "swiftui": ".disabled(true)",
+    "uikit": "isEnabled = false",
+    "appkit": "Not available"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "import UIKit",
+    "",
+    "/// The Plenix page control on iOS: the system UIPageControl with the Plenix indicator colors.",
+    "struct PlenixPageControl: UIViewRepresentable {",
+    "    @Binding var currentPage: Int",
+    "    let numberOfPages: Int",
+    "    var background: UIPageControl.BackgroundStyle = .minimal",
+    "",
+    "    func makeUIView(context: Context) -> UIPageControl {",
+    "        let control = UIPageControl()",
+    "        control.currentPageIndicatorTintColor = UIColor(Plenix.Colors.contentDefault)",
+    "        control.pageIndicatorTintColor = UIColor(Plenix.Colors.borderStrong)",
+    "        control.backgroundStyle = background",
+    "        control.allowsContinuousInteraction = background == .prominent   // no scrubbing with the minimal style",
+    "        control.addAction(UIAction { [weak control] _ in",
+    "            guard let control else { return }",
+    "            if control.interactionState == .continuous { currentPage = control.currentPage }",
+    "            else { withAnimation { currentPage = control.currentPage } }   // animate taps, not scrubbing",
+    "        }, for: .valueChanged)",
+    "        return control",
+    "    }",
+    "    func updateUIView(_ control: UIPageControl, context: Context) {",
+    "        control.numberOfPages = numberOfPages",
+    "        control.currentPage = currentPage",
+    "    }",
+    "}",
+    "",
+    "// In a view: an ordered, flat set of peer pages, the control centered near the bottom",
+    "ZStack(alignment: .bottom) {",
+    "    TabView(selection: $page) {",
+    "        ForEach(slides.indices, id: \\.self) { SlideView(slide: slides[$0]).tag($0) }",
+    "    }",
+    "    .tabViewStyle(.page(indexDisplayMode: .never))",
+    "    PlenixPageControl(currentPage: $page, numberOfPages: slides.count)",
+    "        .fixedSize()",
+    "        .padding(.bottom, Plenix.Space.spaceStackLg)",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix page control in UIKit.",
+    "let pageControl = UIPageControl()",
+    "pageControl.numberOfPages = slides.count",
+    "pageControl.currentPageIndicatorTintColor = UIColor(Plenix.Colors.contentDefault)",
+    "pageControl.pageIndicatorTintColor = UIColor(Plenix.Colors.borderStrong)",
+    "pageControl.backgroundStyle = .minimal",
+    "pageControl.allowsContinuousInteraction = false",
+    "pageControl.translatesAutoresizingMaskIntoConstraints = false",
+    "view.addSubview(pageControl)",
+    "NSLayoutConstraint.activate([",
+    "    pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),",
+    "    pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Plenix.Space.spaceStackLg)",
+    "])",
+    "pageControl.addAction(UIAction { [weak self] _ in",
+    "    guard let self else { return }",
+    "    let animated = pageControl.interactionState != .continuous   // animate taps, not scrubbing",
+    "    self.scrollTo(page: pageControl.currentPage, animated: animated)",
+    "}, for: .valueChanged)"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app needs a macOS build of",
+    "// PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "// AppKit has no page control. A Mac app pages with NSPageController (swipe and arrow keys) and, when it needs the",
+    "// dots, draws them in Plenix.Colors.contentDefault (current) and Plenix.Colors.borderStrong (others).",
+    "let pager = NSPageController()",
+    "pager.transitionStyle = .horizontalStrip",
+    "pager.arrangedObjects = slides",
+    "pager.selectedIndex = 0"
+   ]
+  }
+ }
+}

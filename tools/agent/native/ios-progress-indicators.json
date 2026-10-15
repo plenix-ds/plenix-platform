@@ -1,0 +1,342 @@
+{
+ "ios-feedback|Progress indicators": {
+  "summary": "A Plenix progress indicator on iOS is the system ProgressView (UIProgressView and UIActivityIndicatorView), kept native in behavior: it reports its value to VoiceOver, animates with the system, and respects Reduce Motion. Plenix changes the look to match the Web ProgressBar and Spinner: an 8-point pill track in the Plenix neutral fill with a fill in the tone color (info by default, success, warning or danger), a DM Sans label that names the task, an optional muted value in tabular digits, and a spinner in the Plenix primary action color. Determinate progress is used whenever the amount of work is known.",
+  "variants": [
+   {
+    "name": "Bar",
+    "apple": "Progress Bar - Determinate Linear",
+    "web": "feedback|Progress bar",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-info-fill",
+    "border": null,
+    "swiftui": "ProgressView(_:value:total:).progressViewStyle(PlenixProgressStyle())",
+    "uikit": "UIProgressView(progressViewStyle: .default) with progressTintColor and trackTintColor",
+    "appkit": "NSProgressIndicator(style: .bar), isIndeterminate = false",
+    "use": "Work of a known amount, such as an upload or an export."
+   },
+   {
+    "name": "Bar · Success",
+    "apple": "Progress Bar - Determinate Linear, Value=100%",
+    "web": "feedback|Progress bar",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-success-fill",
+    "border": null,
+    "swiftui": "PlenixProgressStyle(tone: .success)",
+    "uikit": "progressTintColor = UIColor(Plenix.Colors.feedbackSuccessSolid)",
+    "appkit": "contentFilters or a custom-drawn bar",
+    "use": "Finished work, or a measure where full is good, such as tasks done."
+   },
+   {
+    "name": "Bar · Danger",
+    "apple": "Progress Bar - Determinate Linear",
+    "web": "feedback|Progress bar",
+    "background": "plx-comp-progress-bar-track-background",
+    "content": "plx-comp-progress-bar-danger-fill",
+    "border": null,
+    "swiftui": "PlenixProgressStyle(tone: .danger)",
+    "uikit": "progressTintColor = UIColor(Plenix.Colors.feedbackDangerSolid)",
+    "appkit": "A custom-drawn bar",
+    "use": "A measure that becomes a problem as it fills, such as storage almost full, or stalled work with a reason beside it."
+   },
+   {
+    "name": "Spinner",
+    "apple": "Progress Bar - Indeterminate Circular (\"Spinner\"), Size=Regular",
+    "web": "feedback|Spinner",
+    "background": null,
+    "content": "plx-comp-spinner-border-left-color",
+    "border": null,
+    "swiftui": "ProgressView().tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "UIActivityIndicatorView(style: .medium) with color",
+    "appkit": "NSProgressIndicator(style: .spinning), controlSize .small",
+    "use": "Work of an unknown amount, inside a field, beside a button or in a small space."
+   },
+   {
+    "name": "Spinner · Large",
+    "apple": "Progress Bar - Indeterminate Circular (\"Spinner\"), Size=Large",
+    "web": "feedback|Spinner",
+    "background": null,
+    "content": "plx-comp-spinner-border-left-color",
+    "border": null,
+    "swiftui": "ProgressView().controlSize(.large).tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "UIActivityIndicatorView(style: .large)",
+    "appkit": "NSProgressIndicator(style: .spinning), controlSize .regular",
+    "use": "Loading a whole view whose size is unknown, centered in the place the content will take."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Label",
+    "about": "A short description of the task in DM Sans at the label text role; never a generic word such as loading."
+   },
+   {
+    "part": "B",
+    "name": "Value",
+    "about": "The optional amount done, muted, in DM Mono at the data text role."
+   },
+   {
+    "part": "C",
+    "name": "Track",
+    "about": "The 8-point pill in the Plenix neutral fill that shows the whole task."
+   },
+   {
+    "part": "D",
+    "name": "Fill",
+    "about": "The pill that grows with the work done, in the tone color."
+   },
+   {
+    "part": "E",
+    "name": "Spinner",
+    "about": "The system activity indicator in the Plenix primary action color, for work of an unknown amount."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "C",
+    "attribute": "Track height",
+    "token": "plx-comp-progress-bar-track-height",
+    "value": "8 pt; 4 pt in the small size (plx-comp-progress-bar-sm-track-height)",
+    "apple": "4 pt",
+    "swiftui": ".frame(height: Plenix.Component.progressBarTrackHeight) in the ProgressViewStyle",
+    "uikit": "A height constraint of Plenix.Component.progressBarTrackHeight on the UIProgressView (its layer scales the track)",
+    "appkit": "controlSize; a custom-drawn bar for Plenix.Component.progressBarTrackHeight",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Track color",
+    "token": "plx-comp-progress-bar-track-background",
+    "value": "plx-sys-fill-neutral (Plenix.Colors.fillNeutral)",
+    "apple": "The system fill at 20% opacity",
+    "swiftui": "Capsule().fill(Plenix.Colors.fillNeutral)",
+    "uikit": "trackTintColor = UIColor(Plenix.Colors.fillNeutral)",
+    "appkit": "Drawn by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Track and fill shape",
+    "token": "plx-comp-progress-bar-track-radius, plx-comp-progress-bar-fill-radius",
+    "value": "Pill (half the height)",
+    "apple": "Pill",
+    "swiftui": "Capsule()",
+    "uikit": "layer.cornerRadius = height / 2; clipsToBounds = true; subviews.forEach { $0.layer.cornerRadius = height / 2 }",
+    "appkit": "Drawn by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Fill color",
+    "token": "plx-comp-progress-bar-info-fill (default), -success-fill, -warning-fill, -danger-fill",
+    "value": "Plenix.Colors.feedbackInfoSolid by default; feedbackSuccessSolid, feedbackWarningSolid, feedbackDangerSolid per tone",
+    "apple": "The app tint",
+    "swiftui": "Capsule().fill(tone color) in the ProgressViewStyle; system style: .tint(_:)",
+    "uikit": "progressTintColor",
+    "appkit": "A custom-drawn bar (the system bar uses the accent color)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Fill motion",
+    "token": "plx-comp-progress-bar-fill-duration",
+    "value": "0.2 s, an even pace; none with Reduce Motion",
+    "apple": "The system animation",
+    "swiftui": ".animation(.easeInOut(duration: Plenix.Component.progressBarFillDuration), value: fraction); @Environment(\\.accessibilityReduceMotion)",
+    "uikit": "setProgress(_:animated:) with animated false under UIAccessibility.isReduceMotionEnabled",
+    "appkit": "Drawn by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Label typeface and size",
+    "token": "plx-comp-progress-bar-label-font-size (iOS label role), plx-comp-progress-bar-label-text",
+    "value": "DM Sans semibold, 15 pt on 20 pt, relative to Subheadline (Plenix.Platform.textLabelSize), plx-sys-content-default",
+    "apple": "SF Pro Regular, 17 pt",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold)).foregroundStyle(Plenix.Colors.contentDefault)",
+    "uikit": "A UILabel above the bar with UIFontMetrics(forTextStyle: .subheadline)",
+    "appkit": "An NSTextField above the indicator",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Value",
+    "token": "plx-comp-progress-bar-value-text",
+    "value": "DM Mono, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textDataSize): the data role, plx-sys-content-muted",
+    "apple": "None",
+    "swiftui": "currentValueLabel with .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+    "uikit": "A UILabel with UIFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role), scaled by UIFontMetrics(forTextStyle: .footnote)",
+    "appkit": "An NSTextField with NSFont(name: Plenix.Font.mono, size: Plenix.Platform.textDataSize) (the data role)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Label and track gap",
+    "token": "plx-comp-progress-bar-row-gap",
+    "value": "4 pt (Plenix.Space.spaceStackXs)",
+    "apple": "3 pt",
+    "swiftui": "VStack(alignment: .leading, spacing: Plenix.Space.spaceStackXs)",
+    "uikit": "UIStackView spacing",
+    "appkit": "NSStackView spacing",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Spinner color",
+    "token": "plx-comp-spinner-border-left-color",
+    "value": "plx-sys-action-primary-background (Plenix.Colors.actionPrimaryBackground)",
+    "apple": "The system secondary label color",
+    "swiftui": "ProgressView().tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "activityIndicator.color = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "appkit": "Drawn by the system (contentFilters to tint)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Spinner size",
+    "token": "plx-comp-spinner-md-width, plx-comp-spinner-lg-width",
+    "value": "The system sizes on iOS: medium beside controls, large for a whole view",
+    "apple": "Small, Regular, Large",
+    "swiftui": ".controlSize(.regular) or .controlSize(.large)",
+    "uikit": "style = .medium or .large",
+    "appkit": "controlSize = .small (background work) or .regular",
+    "follows": "macOS"
+   }
+  ],
+  "states": [
+   {
+    "state": "Determinate",
+    "token": "plx-comp-progress-bar-info-fill",
+    "swiftui": "ProgressView(value:total:)",
+    "uikit": "UIProgressView.progress",
+    "appkit": "isIndeterminate = false; doubleValue"
+   },
+   {
+    "state": "Indeterminate",
+    "token": "plx-comp-spinner-border-left-color; plx-comp-progress-bar-indeterminate-fill-animation-duration on the Web",
+    "swiftui": "ProgressView()",
+    "uikit": "UIActivityIndicatorView.startAnimating()",
+    "appkit": "isIndeterminate = true; startAnimation(_:)"
+   },
+   {
+    "state": "Complete",
+    "token": "plx-comp-progress-bar-success-fill",
+    "swiftui": "value == total, then remove the bar or show the result",
+    "uikit": "progress = 1",
+    "appkit": "doubleValue = maxValue"
+   },
+   {
+    "state": "Stalled or failed",
+    "token": "plx-comp-progress-bar-danger-fill with a message and an action",
+    "swiftui": "PlenixProgressStyle(tone: .danger) and a Text with the reason",
+    "uikit": "progressTintColor in the danger color and a label",
+    "appkit": "A message beside the indicator"
+   },
+   {
+    "state": "Reduce Motion",
+    "token": "No fill animation",
+    "swiftui": "@Environment(\\.accessibilityReduceMotion)",
+    "uikit": "UIAccessibility.isReduceMotionEnabled",
+    "appkit": "NSWorkspace.shared.accessibilityDisplayShouldReduceMotion"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix progress bar on iOS: the system ProgressView, styled with the Plenix tokens (PlenixTokens.swift).",
+    "struct PlenixProgressStyle: ProgressViewStyle {",
+    "    enum Tone { case info, success, warning, danger }",
+    "    var tone: Tone = .info",
+    "    var small = false",
+    "    @Environment(\\.accessibilityReduceMotion) private var reduceMotion",
+    "",
+    "    func makeBody(configuration: Configuration) -> some View {",
+    "        let fraction = configuration.fractionCompleted ?? 0",
+    "        return VStack(alignment: .leading, spacing: Plenix.Space.spaceStackXs) {",
+    "            HStack(spacing: Plenix.Space.spaceInlineSm) {",
+    "                configuration.label",
+    "                    .font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold))",
+    "                    .foregroundStyle(Plenix.Colors.contentDefault)",
+    "                Spacer()",
+    "                configuration.currentValueLabel",
+    "                    .font(Plenix.Font.mono(Plenix.Platform.textDataSize, relativeTo: .footnote))",
+    "                    .foregroundStyle(Plenix.Colors.contentMuted)",
+    "            }",
+    "            GeometryReader { proxy in",
+    "                ZStack(alignment: .leading) {",
+    "                    Capsule().fill(Plenix.Colors.fillNeutral)",
+    "                    Capsule().fill(fill).frame(width: proxy.size.width * fraction)",
+    "                }",
+    "            }",
+    "            .frame(height: small ? Plenix.Space.spaceInsetXs : Plenix.Component.progressBarTrackHeight)",
+    "            .animation(reduceMotion ? nil : .easeInOut(duration: Plenix.Component.progressBarFillDuration), value: fraction)",
+    "        }",
+    "        .accessibilityElement(children: .combine)",
+    "        .accessibilityValue(Text(fraction, format: .percent))",
+    "    }",
+    "",
+    "    private var fill: Color {",
+    "        switch tone {",
+    "        case .info: Plenix.Colors.feedbackInfoSolid",
+    "        case .success: Plenix.Colors.feedbackSuccessSolid",
+    "        case .warning: Plenix.Colors.feedbackWarningSolid",
+    "        case .danger: Plenix.Colors.feedbackDangerSolid",
+    "        }",
+    "    }",
+    "}",
+    "",
+    "// In a view",
+    "ProgressView(\"Uploading 12 photos\", value: done, total: 12) { } currentValueLabel: { Text(\"\\(Int(done)) of 12\") }",
+    "    .progressViewStyle(PlenixProgressStyle())",
+    "ProgressView().tint(Plenix.Colors.actionPrimaryBackground)          // unknown amount"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix progress bar and spinner on iOS in UIKit.",
+    "let bar = UIProgressView(progressViewStyle: .default)",
+    "bar.trackTintColor = UIColor(Plenix.Colors.fillNeutral)",
+    "bar.progressTintColor = UIColor(Plenix.Colors.feedbackInfoSolid)",
+    "bar.heightAnchor.constraint(equalToConstant: Plenix.Component.progressBarTrackHeight).isActive = true",
+    "bar.layer.cornerRadius = Plenix.Component.progressBarTrackHeight / 2",
+    "bar.clipsToBounds = true",
+    "bar.subviews.forEach { $0.layer.cornerRadius = Plenix.Component.progressBarTrackHeight / 2; $0.clipsToBounds = true }",
+    "bar.setProgress(0.6, animated: !UIAccessibility.isReduceMotionEnabled)",
+    "",
+    "let label = UILabel()",
+    "label.text = \"Uploading 12 photos\"",
+    "label.font = UIFontMetrics(forTextStyle: .subheadline).scaledFont(for: UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textLabelSize) ?? .preferredFont(forTextStyle: .subheadline))",
+    "label.adjustsFontForContentSizeCategory = true",
+    "label.textColor = UIColor(Plenix.Colors.contentDefault)",
+    "let stack = UIStackView(arrangedSubviews: [label, bar])",
+    "stack.axis = .vertical",
+    "stack.spacing = Plenix.Space.spaceStackXs",
+    "",
+    "let spinner = UIActivityIndicatorView(style: .medium)",
+    "spinner.color = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "spinner.startAnimating()"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix progress indicators on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native",
+    "// AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet).",
+    "let bar = NSProgressIndicator()",
+    "bar.style = .bar",
+    "bar.isIndeterminate = false",
+    "bar.minValue = 0",
+    "bar.maxValue = 12",
+    "bar.doubleValue = 7",
+    "",
+    "let spinner = NSProgressIndicator()",
+    "spinner.style = .spinning",
+    "spinner.controlSize = .small                 // background work or a tight space; unlabeled",
+    "spinner.startAnimation(nil)",
+    "// The system draws both in the accent color; a bar in a Plenix tone color (NSColor(Plenix.Colors.feedbackInfoSolid))",
+    "// is a custom-drawn NSView with two rounded rectangles."
+   ]
+  }
+ }
+}

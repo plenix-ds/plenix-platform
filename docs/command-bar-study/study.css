@@ -1,0 +1,129 @@
+/* Command bar study (owner review, 2026-10-14): the bar's looks and the parts Plenix does not have yet (a floating bar and
+   a ghost danger button), built only from existing tokens. A study stylesheet, not a Platform part: what the
+   owner chooses becomes a CommandBar pattern with its own tokens. */
+
+/* the bar: white and framed (the default look) */
+.study-bar{align-items:center;background-color:var(--plx-sys-surface-default);min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-block:var(--plx-ref-space-8px);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-8px);border-style:solid;border-width:var(--plx-sys-border-width-thin);box-sizing:border-box;display:flex;gap:var(--plx-ref-space-4px);padding-inline:var(--plx-ref-space-8px);}
+.study-bar>.plx-toolbar{align-items:center;display:flex;flex:1 1 auto;flex-wrap:wrap;gap:var(--plx-ref-space-8px);min-inline-size:0;}
+.study-bar .plx-toolbar__group,.study-bar .plx-toolbar-group{align-items:center;display:flex;flex-wrap:nowrap;gap:var(--plx-ref-space-4px);}
+
+/* the Plenix bar look is decided (3A: white, framed, never tinted while selecting); the enterprise references keep their
+   own looks: borderless on the page, or a rule under it only */
+.study-bar--flat{background-color:transparent;border-color:transparent;padding-inline:0;}
+.study-bar--flat-ruled{background-color:transparent;border-block-end-color:var(--plx-sys-border-default);border-block-start-color:transparent;border-inline-color:transparent;border-radius:0;padding-inline:0;}
+
+/* the enterprise references only: Ant's selection alert (the bulk bar's selection tint) */
+.study-bar.study-bar--selection{background-color:var(--plx-comp-bulk-actions-background);border-color:var(--plx-comp-bulk-actions-border-color);}
+
+/* a ghost button in the danger color (Delete in a bar of ghost buttons) */
+.plx-button.study-danger{--plx-comp-button-ghost-text:var(--plx-sys-feedback-danger-content);--plx-comp-button-ghost-hover-text:var(--plx-sys-feedback-danger-content);}
+
+
+/* small layouts inside a bar */
+.study-count{white-space:nowrap;}
+.study-select{align-items:center;display:inline-flex;}
+.study-labeled{align-items:center;display:inline-flex;gap:var(--plx-ref-space-8px);white-space:nowrap;}
+.study-condition{align-items:center;display:grid;gap:var(--plx-ref-space-8px);grid-template-columns:var(--plx-ref-size-48px) var(--plx-ref-size-120px) var(--plx-ref-size-100px) var(--plx-ref-size-140px) auto;}
+
+/* the study's label above each screen: which standard, when to use it */
+.study-note{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);padding:var(--plx-ref-space-16px);}
+/* compare view: only the bars; each layout's page header and table are hidden; the floating bar sits in the flow */
+.study-compare .plx-data-table,.study-compare:not(.study-compare--ent) .plx-record-page__header:not(:has(button)){display:none;}
+/* compare view: each variation in its own bordered frame, with wide space between the frames */
+.study-compare{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-12px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
+
+/* enterprise systems (group 8): a header row with a start and an end, a gray panel (Salesforce's list header, SAP's filter
+   bar), a white framed panel (Ant's query form, ServiceNow's condition builder), a row of fields, a row of tokens or chips */
+.study-head{align-items:center;display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-12px);justify-content:space-between;}
+.study-head__start{align-items:center;display:flex;gap:var(--plx-ref-space-12px);min-inline-size:0;}
+.study-head__text{display:flex;flex-direction:column;gap:var(--plx-ref-space-4px);}
+.study-panel{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;flex-direction:column;gap:var(--plx-ref-space-12px);padding:var(--plx-ref-space-12px);}
+.study-panel--framed{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-style:solid;border-width:var(--plx-sys-border-width-thin);}
+.study-form{align-items:end;display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-12px);}
+.study-form>.plx-field{inline-size:var(--plx-ref-size-200px);}
+.study-tokens{align-items:center;display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-8px);}
+.study-muted{color:var(--plx-sys-content-muted);}
+.study-compare-section{padding-block-start:var(--plx-sys-space-layout-md);}
+/* compare view: the label row sits above each frame; the frame holds only the pattern. The part switch hides the action parts
+   (Filter bar only) or the find-and-view parts (Menu bar only) */
+.study-compare-root--find .study-part--actions,.study-compare-root--actions .study-part--find{display:none;}
+
+/* the guided chooser: the summary line, the steps, each option's frame,
+   a saved note, the enterprise peek (bars only) */
+.study-steps{flex-wrap:wrap;}
+.study-summary{align-items:center;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-8px);padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
+.study-summary__text{flex:1 1 auto;min-inline-size:0;}
+.study-option{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-12px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
+.study-built__stack{display:flex;flex-direction:column;gap:var(--plx-ref-space-8px);}
+/* fixed at the top (owner, 2026-10-14: "the menu is always on the top… does not move"): a page-high frame; the header and
+   the bars keep their place and the table scrolls in the room left under them */
+.study-built--fixed,.study-built--fixed>.study-built__stack{block-size:var(--plx-ref-size-560px);}
+.study-built--fixed .study-table-room{flex:1 1 auto;min-block-size:0;}
+.study-saved-note{align-items:start;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;gap:var(--plx-ref-space-12px);justify-content:space-between;padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
+.study-peek .plx-data-table{display:none;}
+
+/* segmented controls, look A (decided, owner 2026-10-14): a ButtonGroup of pressed Buttons, bordered and joined, at the
+   buttons' own height; the chosen segment takes the selected tint (blue text and icon) and keeps the group's border */
+.study-seg>.plx-button.is-selected{--plx-comp-button-selected-border:var(--plx-comp-button-secondary-border);}
+
+/* the caret (decided, owner 2026-10-14): the thin chevron (chevron-down, muted) on every menu button, in place of the small
+   filled triangle; it keeps the Button caret's own turn while the menu is open */
+.plx-app-shell .plx-button__caret{-webkit-mask-image:var(--plx-comp-icon-glyph-expand-more);background-color:var(--plx-sys-content-muted);block-size:var(--plx-comp-button-icon);inline-size:var(--plx-comp-button-icon);mask-image:var(--plx-comp-icon-glyph-expand-more);}
+
+/* Controls, side by side: the identical bar (one row, never wrapping), its narrower search, the cards in two columns */
+.study-ctl-bar>.plx-toolbar{flex-wrap:nowrap;}
+.study-ctl-bar .study-ctl-search{flex:none;inline-size:var(--plx-ref-size-160px);}
+.study-ctl-slot{min-inline-size:0;}
+.study-ctl-grid{display:grid;gap:var(--plx-sys-space-layout-md);grid-template-columns:repeat(2,minmax(0,1fr));}
+.study-ctl-section{border-block-start-color:var(--plx-sys-border-default);border-block-start-style:solid;border-block-start-width:var(--plx-sys-border-width-thin);padding-block-start:var(--plx-sys-space-layout-md);}
+.study-ctl-na{align-items:center;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-control-8px);box-sizing:border-box;display:flex;min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-inline:var(--plx-ref-space-12px);}
+.study-gallery-room{max-block-size:var(--plx-ref-size-320px);overflow-y:auto;}
+
+/* the thin outline caret on the sample tables' column header buttons (Airtable's chevron, owner 2026-10-14): chevron-down,
+   muted, in place of the header button's own icon */
+.study-thin-caret .tabulator-header-popup-button .plx-icon{--plx-comp-icon-outline:var(--plx-comp-icon-glyph-expand-more);--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-expand-more-24);--plx-comp-icon-filled:var(--plx-comp-icon-glyph-expand-more);--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-expand-more-24);}
+.study-thin-caret .tabulator-header-popup-button{color:var(--plx-sys-content-muted);}
+
+/* the group-by icon (view_agenda), added to platform/icons/map.json; until build-icons.js runs, it borrows the glyph the
+   generated stylesheet already holds (cards-large is the same symbol) */
+.plx-icon--group-by{--plx-comp-icon-filled:var(--plx-comp-icon-glyph-view-agenda-fill);--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-view-agenda-24-fill);--plx-comp-icon-outline:var(--plx-comp-icon-glyph-view-agenda);--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-view-agenda-24);}
+
+/* the Columns list: a handle, the checkbox, Make first column (or the pinned mark), Move up and Move down */
+.study-col-list{display:flex;flex-direction:column;gap:var(--plx-ref-space-4px);}
+.study-col-row{align-items:center;border-radius:var(--plx-sys-radius-control-4px);display:grid;gap:var(--plx-ref-space-8px);grid-template-columns:auto minmax(var(--plx-ref-size-120px),1fr) auto auto auto;padding-block:var(--plx-ref-space-4px);padding-inline:var(--plx-ref-space-4px);}
+.study-col-row:hover{background-color:var(--plx-sys-state-hover);}
+.study-col-row:focus-visible,.study-level-row:focus-visible{outline-color:var(--plx-sys-focus-ring-color);outline-offset:var(--plx-sys-focus-ring-offset);outline-style:solid;outline-width:var(--plx-sys-border-width-medium);}
+.study-col-row.is-dragging{opacity:var(--plx-sys-state-dragged-opacity);}
+.study-col-row__handle{color:var(--plx-sys-content-muted);cursor:grab;display:inline-flex;}
+.study-col-row__first{align-items:center;color:var(--plx-sys-content-muted);display:inline-flex;gap:var(--plx-ref-space-4px);}
+
+/* the Airtable-style panels (Filter, Sort, Group): one row look, the same control height (md) and spacing in all three */
+.study-panel{min-inline-size:var(--plx-ref-size-400px);}
+.study-panel-head{align-items:center;display:flex;gap:var(--plx-ref-space-12px);justify-content:space-between;}
+.study-levels{display:flex;flex-direction:column;gap:var(--plx-ref-space-8px);}
+.study-levels--framed{border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-8px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding:var(--plx-ref-space-8px);}
+.study-levels--nested{background-color:var(--plx-sys-surface-sunken);}
+.study-level-row{align-items:center;border-radius:var(--plx-sys-radius-control-4px);display:flex;gap:var(--plx-ref-space-8px);}
+.study-level-handle{cursor:grab;}
+.study-pick{justify-content:flex-start;}
+.study-pick .plx-button__label{flex:1 1 auto;min-inline-size:0;overflow:hidden;text-align:start;text-overflow:ellipsis;white-space:nowrap;}
+.study-pick--field{inline-size:var(--plx-ref-size-160px);}
+.study-pick--dir{inline-size:var(--plx-ref-size-160px);}
+.study-pick--op{inline-size:var(--plx-ref-size-140px);}
+.study-pick--value{flex:none;inline-size:var(--plx-ref-size-220px);}
+.study-pick--conj{inline-size:var(--plx-ref-size-72px);}
+.study-conj{flex:none;inline-size:var(--plx-ref-size-72px);}
+.study-cond-group{flex:1 1 auto;}
+.study-pills{display:inline-flex;gap:var(--plx-ref-space-4px);min-inline-size:0;overflow:hidden;}
+/* a pill in a category color: the badge's geometry, the category fill and its on-color, its own 1px border */
+.study-pill{align-items:center;background-color:var(--plx-comp-data-color-soft);border-color:var(--plx-comp-data-color);border-radius:var(--plx-comp-badge-radius);border-style:solid;border-width:var(--plx-comp-badge-border-width);color:var(--plx-comp-data-color-on-soft);display:inline-flex;font-size:var(--plx-comp-badge-font-size);font-weight:var(--plx-comp-badge-font-weight);padding-inline:var(--plx-comp-badge-padding-inline);white-space:nowrap;}
+.study-gallery-room--fill{block-size:100%;max-block-size:none;}
+/* the panels drawn open on Decided so far: a popover's frame (surface, border, menu radius) */
+.study-panel-frame{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-menu-8px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding:var(--plx-ref-space-16px);}
+/* the search rule (owner, 2026-10-14): the bar search at one fixed width, never squeezed; in a panel the find field fills
+   the width; narrow, the opened field lies across the bar, over its other controls */
+.study-search-bar{flex:none;inline-size:var(--plx-ref-size-240px);}
+.study-panel-search{inline-size:100%;}
+.study-bar{position:relative;}
+.study-search-over{align-items:center;background-color:var(--plx-sys-surface-default);border-radius:var(--plx-sys-radius-control-8px);display:flex;inset-block:0;inset-inline:0;padding-inline:var(--plx-ref-space-8px);position:absolute;z-index:var(--plx-sys-layer-overlay);}
+.study-query{inline-size:var(--plx-ref-size-360px);}

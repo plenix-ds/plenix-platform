@@ -1,0 +1,95 @@
+{
+ "ios-actions|Activity views": {
+  "summary": "The activity view (the share sheet) is a system surface: iOS draws it in its own look in every app, so Plenix does not restyle it. The Plenix part is what the app controls: the standard Share button in the Plenix button style that opens it, the items it shares, the system activities it excludes, and custom activities with a Plenix symbol and a short verb-phrase title. Apple’s default and the Plenix version therefore look the same inside the sheet.",
+  "variants": [
+   {
+    "name": "iPhone",
+    "apple": "Activity View - iPhone",
+    "web": "actions|Share",
+    "background": null,
+    "content": null,
+    "border": null,
+    "swiftui": "ShareLink(item:subject:message:preview:) in the Plenix button style",
+    "uikit": "UIActivityViewController(activityItems:applicationActivities:) presented as a sheet",
+    "appkit": "NSSharingServicePicker(items:).show(relativeTo:of:preferredEdge:)",
+    "use": "Share or act on the current item from the standard Share button; the system shows it as a sheet."
+   },
+   {
+    "name": "iPad",
+    "apple": "Activity View - iPad",
+    "web": "actions|Share",
+    "background": null,
+    "content": null,
+    "border": null,
+    "swiftui": "ShareLink; the system shows a popover from the button",
+    "uikit": "popoverPresentationController?.sourceItem = shareButton",
+    "appkit": "NSSharingServicePicker",
+    "use": "The same, shown as a popover anchored to the Share button."
+   }
+  ],
+  "anatomy": [
+   { "part": "A", "name": "Share button", "about": "The standard Share button that opens the sheet, in the Plenix button style with the square.and.arrow.up symbol." },
+   { "part": "B", "name": "Header", "about": "The system preview of the shared item: its title, type and thumbnail, from the item the app provides." },
+   { "part": "C", "name": "People and apps", "about": "System rows of suggested people and share targets; the app does not change them." },
+   { "part": "D", "name": "Actions", "about": "The action list, where the app’s custom activities appear with a symbol and a short verb-phrase title." }
+  ],
+  "attributes": [
+   { "part": "A", "attribute": "Share button", "token": "The Plenix button variants (Ghost in toolbars, Secondary elsewhere)", "value": "44 pt (Plenix.Platform.controlTargetMin), 6 pt radius", "apple": "A toolbar symbol button in the tint", "swiftui": "ShareLink(item: url).buttonStyle(PlenixButtonStyle(variant: .ghost))", "uikit": "UIButton(configuration: .plenix(background: nil, content: Plenix.Colors.contentMuted)) with UIImage(systemName: \"square.and.arrow.up\")", "appkit": "NSSharingServicePicker.standardShareMenuItem, or NSButton with the share symbol", "follows": "Best practices" },
+   { "part": "A", "attribute": "Share symbol", "token": "plx-sys-control-icon-standard", "value": "square.and.arrow.up at 20 pt", "apple": "The same symbol", "swiftui": "Label(\"Share\", systemImage: \"square.and.arrow.up\")", "uikit": "configuration.image = UIImage(systemName: \"square.and.arrow.up\")", "appkit": "NSImage(systemSymbolName: \"square.and.arrow.up\", accessibilityDescription: \"Share\")", "follows": "Best practices" },
+   { "part": "B", "attribute": "Preview", "token": "None (system surface)", "value": "The item’s title and a thumbnail the app provides", "apple": "The same", "swiftui": "ShareLink(item:preview: SharePreview(title, image:))", "uikit": "UIActivityItemsConfiguration or LPLinkMetadata from activityViewControllerLinkMetadata(_:)", "appkit": "NSPreviewRepresentingActivityItem", "follows": "Best practices" },
+   { "part": "C", "attribute": "Excluded activities", "token": "None (behavior)", "value": "System activities that make no sense for the item are left out", "apple": "All that apply", "swiftui": "Use UIActivityViewController through UIViewControllerRepresentable to exclude", "uikit": "excludedActivityTypes = [.assignToContact, .addToReadingList]", "appkit": "NSSharingServicePickerDelegate sharingServicePicker(_:sharingServicesForItems:proposedSharingServices:)", "follows": "Best practices" },
+   { "part": "D", "attribute": "Custom activity title", "token": "None (system surface)", "value": "A short verb phrase without the app name, such as Add to collection", "apple": "The system font, set by the sheet", "swiftui": "Through UIKit (a UIActivity subclass)", "uikit": "override var activityTitle: String? { \"Add to collection\" }", "appkit": "NSSharingService(title:image:alternateImage:handler:)", "follows": "Best practices" },
+   { "part": "D", "attribute": "Custom activity symbol", "token": "None (system surface)", "value": "An SF Symbol or a Plenix icon centered in its square", "apple": "A template image", "swiftui": "Through UIKit (a UIActivity subclass)", "uikit": "override var activityImage: UIImage? { UIImage(systemName: \"rectangle.stack.badge.plus\") }", "appkit": "NSSharingService image", "follows": "Best practices" },
+   { "part": "D", "attribute": "Look inside the sheet", "token": "None (system surface)", "value": "The system look in light and dark; not restyled", "apple": "The same", "swiftui": "Not customizable", "uikit": "Not customizable (overrideUserInterfaceStyle only follows the app’s mode)", "appkit": "Not customizable", "follows": "Share and action extensions" }
+  ],
+  "states": [
+   { "state": "Share button default", "token": "The Plenix button variant", "swiftui": "ShareLink with PlenixButtonStyle", "uikit": "UIButton.Configuration.plenix", "appkit": "NSButton" },
+   { "state": "Share button pressed", "token": "plx-sys-state-pressed", "swiftui": "configuration.isPressed", "uikit": "configurationUpdateHandler reading isHighlighted", "appkit": "isHighlighted" },
+   { "state": "Presented", "token": "The system sheet (iPhone) or popover (iPad)", "swiftui": "ShareLink presents it", "uikit": "present(_:animated:)", "appkit": "show(relativeTo:of:preferredEdge:)" },
+   { "state": "Completed or cancelled", "token": "None (behavior)", "swiftui": "No callback from ShareLink; use UIKit for the result", "uikit": "completionWithItemsHandler", "appkit": "sharingServicePicker(_:didChoose:)" }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix share button on iOS: ShareLink in the Plenix button style opens the system activity view.",
+    "ShareLink(item: report.url, subject: Text(report.title), preview: SharePreview(report.title, image: Image(systemName: \"doc.text\"))) {",
+    "    Label(\"Share\", systemImage: \"square.and.arrow.up\")",
+    "}",
+    ".buttonStyle(PlenixButtonStyle(variant: .ghost))",
+    ".frame(minHeight: Plenix.Platform.controlTargetMin)"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// A Plenix custom activity: a symbol and a short verb-phrase title. The sheet itself keeps the system look.",
+    "final class AddToCollectionActivity: UIActivity {",
+    "    override var activityTitle: String? { \"Add to collection\" }",
+    "    override var activityImage: UIImage? { UIImage(systemName: \"rectangle.stack.badge.plus\") }",
+    "    override class var activityCategory: UIActivity.Category { .action }",
+    "    override func canPerform(withActivityItems items: [Any]) -> Bool { items.contains { $0 is URL } }",
+    "}",
+    "",
+    "let share = UIButton(configuration: .plenix(background: nil, content: Plenix.Colors.contentMuted), primaryAction: UIAction(title: \"Share\", image: UIImage(systemName: \"square.and.arrow.up\")) { [weak self] action in",
+    "    let sheet = UIActivityViewController(activityItems: [report.url], applicationActivities: [AddToCollectionActivity()])",
+    "    sheet.excludedActivityTypes = [.assignToContact, .addToReadingList]",
+    "    sheet.popoverPresentationController?.sourceItem = action.sender as? UIButton   // iPad: a popover",
+    "    self?.present(sheet, animated: true)",
+    "})",
+    "share.heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin).isActive = true"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The share picker on the Mac keeps the system look. A Mac Catalyst app uses the iOS tokens and the UIKit code above.",
+    "// A native AppKit app needs a macOS build of PlenixTokens.swift for the Share button (it uses UIColor today; the macOS",
+    "// build is not generated yet).",
+    "let picker = NSSharingServicePicker(items: [report.url])",
+    "picker.delegate = self   // leave out services that make no sense for the item",
+    "picker.show(relativeTo: shareButton.bounds, of: shareButton, preferredEdge: .minY)"
+   ]
+  }
+ }
+}

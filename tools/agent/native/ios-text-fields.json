@@ -1,0 +1,335 @@
+{
+ "ios-forms|Text fields": {
+  "summary": "A Plenix text field on iOS is the system TextField (UITextField), kept native in behavior (the keyboard and its type, autofill, the text selection and edit menu, the Clear button, Dynamic Type, VoiceOver) and given the Plenix look: a 6-point rounded rectangle on the Plenix control background with a 1-point control border, at least 44 points tall, text in DM Sans at the body role and a visible label above it. Focus and errors change only the border color. Apple’s default is a borderless field on a list row with a separator under it.",
+  "variants": [
+   {
+    "name": "Text field",
+    "apple": "Text Field",
+    "web": "forms|Text field",
+    "background": "plx-comp-input-background",
+    "content": "plx-comp-input-text",
+    "border": "plx-comp-input-border-color",
+    "swiftui": "TextField(_:text:prompt:) with .textFieldStyle(PlenixTextFieldStyle())",
+    "uikit": "UITextField with borderStyle .none and a Plenix layer",
+    "appkit": "NSTextField with isBezeled = false and a layer",
+    "use": "A short single-line value such as a name, a title or an address."
+   },
+   {
+    "name": "Secure field",
+    "apple": "Text Field (secure entry)",
+    "web": "forms|Password field",
+    "background": "plx-comp-input-background",
+    "content": "plx-comp-input-text",
+    "border": "plx-comp-input-border-color",
+    "swiftui": "SecureField(_:text:) with PlenixTextFieldStyle and .textContentType(.password)",
+    "uikit": "UITextField with isSecureTextEntry = true",
+    "appkit": "NSSecureTextField",
+    "use": "A password or any other secret."
+   },
+   {
+    "name": "Number field",
+    "apple": "Text Field (number keyboard)",
+    "web": "forms|Number input",
+    "background": "plx-comp-input-background",
+    "content": "plx-comp-input-text",
+    "border": "plx-comp-input-border-color",
+    "swiftui": "TextField(_:value:format:) with .keyboardType(.decimalPad)",
+    "uikit": "UITextField with keyboardType .decimalPad and a NumberFormatter",
+    "appkit": "NSTextField with a NumberFormatter",
+    "use": "A number read and shown through a locale-aware formatter."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Container",
+    "about": "The rounded rectangle on the control background with a 1-point border; at least 44 points tall, 12 points of inline padding."
+   },
+   {
+    "part": "B",
+    "name": "Value or placeholder",
+    "about": "The text people type, in DM Sans at the body role; the placeholder is a hint in the placeholder color and leaves as people type."
+   },
+   {
+    "part": "C",
+    "name": "Label",
+    "about": "The visible name of the field above it, in DM Sans at the label role; a placeholder never replaces it."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Minimum height",
+    "token": "plx-comp-input-min-height",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "44 pt row",
+    "swiftui": ".frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "uikit": "heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin)",
+    "appkit": "controlSize = .large",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-comp-input-radius",
+    "value": "6 pt (Plenix.Radius.radiusControl)",
+    "apple": "None (a list row)",
+    "swiftui": ".background(_, in: .rect(cornerRadius: Plenix.Radius.radiusControl))",
+    "uikit": "layer.cornerRadius = Plenix.Radius.radiusControl; layer.cornerCurve = .continuous",
+    "appkit": "wantsLayer = true; layer?.cornerRadius",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-comp-input-background",
+    "value": "plx-sys-control-background (Plenix.Colors.controlBackground)",
+    "apple": "The grouped row background",
+    "swiftui": ".background(Plenix.Colors.controlBackground, in: shape)",
+    "uikit": "backgroundColor = UIColor(Plenix.Colors.controlBackground)",
+    "appkit": "backgroundColor; drawsBackground = true",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Border",
+    "token": "plx-comp-input-border-color, plx-comp-input-border-width",
+    "value": "plx-sys-control-border, 1 pt",
+    "apple": "A separator under the row",
+    "swiftui": ".overlay { shape.strokeBorder(Plenix.Colors.controlBorder, lineWidth: Plenix.Component.inputBorderWidth) }",
+    "uikit": "layer.borderColor = UIColor(Plenix.Colors.controlBorder).cgColor; layer.borderWidth = Plenix.Component.inputBorderWidth",
+    "appkit": "layer?.borderColor, borderWidth",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Inline padding",
+    "token": "plx-comp-input-padding-inline",
+    "value": "12 pt (Plenix.Space.spaceInsetMd)",
+    "apple": "16 pt row inset",
+    "swiftui": ".padding(.horizontal, Plenix.Space.spaceInsetMd)",
+    "uikit": "leftView and rightView spacers, or textRect(forBounds:) in a subclass",
+    "appkit": "A custom NSTextFieldCell drawing rect",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Text typeface and size",
+    "token": "plx-comp-input-font-family, plx-text--body (iOS body role)",
+    "value": "DM Sans 17 pt on 22 pt, relative to Body (Plenix.Platform.textBodySize)",
+    "apple": "SF Pro 17 pt",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "uikit": "font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize)); adjustsFontForContentSizeCategory = true",
+    "appkit": "font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Text color",
+    "token": "plx-comp-input-text",
+    "value": "plx-sys-content-default (Plenix.Colors.contentDefault)",
+    "apple": "The label color",
+    "swiftui": ".foregroundStyle(Plenix.Colors.contentDefault)",
+    "uikit": "textColor = UIColor(Plenix.Colors.contentDefault)",
+    "appkit": "textColor",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Placeholder color",
+    "token": "plx-comp-input-placeholder-text",
+    "value": "plx-sys-field-placeholder (Plenix.Colors.fieldPlaceholder)",
+    "apple": "The tertiary label color",
+    "swiftui": "prompt: Text(\"…\").foregroundStyle(Plenix.Colors.fieldPlaceholder)",
+    "uikit": "attributedPlaceholder with .foregroundColor: UIColor(Plenix.Colors.fieldPlaceholder)",
+    "appkit": "placeholderAttributedString",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Keyboard and autofill",
+    "token": "None",
+    "value": "The keyboard and content type that fit the value",
+    "apple": "The same",
+    "swiftui": ".keyboardType(_:), .textContentType(_:), .submitLabel(_:)",
+    "uikit": "keyboardType, textContentType, returnKeyType",
+    "appkit": "contentType",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Clear button",
+    "token": "None",
+    "value": "At the trailing end while editing",
+    "apple": "The same",
+    "swiftui": "UITextField.appearance().clearButtonMode = .whileEditing",
+    "uikit": "clearButtonMode = .whileEditing",
+    "appkit": "An NSSearchField cancel button where it fits",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "C",
+    "attribute": "Label",
+    "token": "plx-comp-field-label-text, plx-text--label (iOS label role)",
+    "value": "DM Sans semibold 15 pt on 20 pt (Plenix.Platform.textLabelSize), 8 pt above the field (Plenix.Space.spaceStackSm)",
+    "apple": "None (the placeholder only)",
+    "swiftui": "VStack(alignment: .leading, spacing: Plenix.Space.spaceStackSm) { Text(label) … }",
+    "uikit": "A UILabel above the field in a UIStackView; accessibilityLabel on the field",
+    "appkit": "An NSTextField label in an NSGridView row",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Placeholder",
+    "token": "plx-comp-input-placeholder-text",
+    "swiftui": "prompt:",
+    "uikit": "placeholder",
+    "appkit": "placeholderString"
+   },
+   {
+    "state": "Value entered",
+    "token": "plx-comp-input-text",
+    "swiftui": "text binding",
+    "uikit": "text",
+    "appkit": "stringValue"
+   },
+   {
+    "state": "Focused (editing)",
+    "token": "plx-comp-input-focus-border-color (the border only, no ring)",
+    "swiftui": "@FocusState; the border reads it",
+    "uikit": "editingDidBegin and editingDidEnd change layer.borderColor",
+    "appkit": "focusRingType = .none; becomeFirstResponder changes the border"
+   },
+   {
+    "state": "Invalid",
+    "token": "plx-comp-input-invalid-border-color, plx-comp-field-error-text",
+    "swiftui": "The border in Plenix.Colors.feedbackDangerContent and a message under the field",
+    "uikit": "layer.borderColor and a message label; post UIAccessibility.Notification.announcement",
+    "appkit": "layer?.borderColor and a message label"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-input-disabled-background, plx-comp-input-disabled-text",
+    "swiftui": ".disabled(true)",
+    "uikit": "isEnabled = false",
+    "appkit": "isEnabled = false"
+   },
+   {
+    "state": "Read-only",
+    "token": "plx-comp-input-readonly-background",
+    "swiftui": "Text(value).textSelection(.enabled) in the field frame",
+    "uikit": "A delegate returning false from textFieldShouldBeginEditing",
+    "appkit": "isEditable = false; isSelectable = true"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix text field on iOS: the system TextField in a Plenix frame (PlenixTokens.swift).",
+    "struct PlenixTextFieldStyle: TextFieldStyle {",
+    "    var isFocused = false",
+    "    var isInvalid = false",
+    "    @Environment(\\.isEnabled) private var isEnabled",
+    "",
+    "    func _body(configuration: TextField<Self._Label>) -> some View {",
+    "        let shape = RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl)",
+    "        return configuration",
+    "            .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "            .foregroundStyle(isEnabled ? Plenix.Colors.contentDefault : Plenix.Colors.contentDisabled)",
+    "            .padding(.horizontal, Plenix.Space.spaceInsetMd)",
+    "            .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "            .background(isEnabled ? Plenix.Colors.controlBackground : Plenix.Colors.fillNeutral, in: shape)",
+    "            .overlay { shape.strokeBorder(border, lineWidth: Plenix.Component.inputBorderWidth) }",
+    "    }",
+    "    private var border: Color {",
+    "        isInvalid ? Plenix.Colors.feedbackDangerContent : isFocused ? Plenix.Colors.focusRingColor : Plenix.Colors.controlBorder",
+    "    }",
+    "}",
+    "",
+    "/// A labeled field: the label stays visible above it.",
+    "struct PlenixField: View {",
+    "    let label: String",
+    "    @Binding var text: String",
+    "    var prompt = \"\"",
+    "    @FocusState private var focused: Bool",
+    "",
+    "    var body: some View {",
+    "        VStack(alignment: .leading, spacing: Plenix.Space.spaceStackSm) {",
+    "            Text(label)",
+    "                .font(Plenix.Font.sans(Plenix.Platform.textLabelSize, relativeTo: .subheadline).weight(.semibold))",
+    "                .foregroundStyle(Plenix.Colors.contentDefault)",
+    "            TextField(label, text: $text, prompt: Text(prompt).foregroundStyle(Plenix.Colors.fieldPlaceholder))",
+    "                .focused($focused)",
+    "                .textFieldStyle(PlenixTextFieldStyle(isFocused: focused))",
+    "        }",
+    "    }",
+    "}",
+    "",
+    "// In a view",
+    "PlenixField(label: \"Email\", text: $email, prompt: \"name@example.com\")",
+    "    .keyboardType(.emailAddress)",
+    "    .textContentType(.emailAddress)",
+    "    .textInputAutocapitalization(.never)"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix text field in UIKit: a UITextField with a Plenix frame.",
+    "final class PlenixTextField: UITextField {",
+    "    var isInvalid = false { didSet { updateBorder() } }",
+    "",
+    "    override init(frame: CGRect) {",
+    "        super.init(frame: frame)",
+    "        borderStyle = .none",
+    "        backgroundColor = UIColor(Plenix.Colors.controlBackground)",
+    "        textColor = UIColor(Plenix.Colors.contentDefault)",
+    "        layer.cornerRadius = Plenix.Radius.radiusControl",
+    "        layer.cornerCurve = .continuous",
+    "        layer.borderWidth = Plenix.Component.inputBorderWidth",
+    "        font = UIFontMetrics(forTextStyle: .body)",
+    "            .scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize) ?? .preferredFont(forTextStyle: .body))",
+    "        adjustsFontForContentSizeCategory = true",
+    "        clearButtonMode = .whileEditing",
+    "        heightAnchor.constraint(greaterThanOrEqualToConstant: Plenix.Platform.controlTargetMin).isActive = true",
+    "        addAction(UIAction { [weak self] _ in self?.updateBorder() }, for: [.editingDidBegin, .editingDidEnd])",
+    "        updateBorder()",
+    "    }",
+    "    required init?(coder: NSCoder) { fatalError(\"init(coder:) is not used\") }",
+    "",
+    "    override func textRect(forBounds bounds: CGRect) -> CGRect { bounds.insetBy(dx: Plenix.Space.spaceInsetMd, dy: 0) }",
+    "    override func editingRect(forBounds bounds: CGRect) -> CGRect { textRect(forBounds: bounds) }",
+    "",
+    "    func setPlaceholder(_ text: String) {",
+    "        attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: UIColor(Plenix.Colors.fieldPlaceholder)])",
+    "    }",
+    "    private func updateBorder() {",
+    "        let color = isInvalid ? Plenix.Colors.feedbackDangerContent : isEditing ? Plenix.Colors.focusRingColor : Plenix.Colors.controlBorder",
+    "        layer.borderColor = UIColor(color).cgColor",
+    "    }",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix text field on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above.",
+    "// A native AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let field = NSTextField(string: \"\")",
+    "field.placeholderString = \"name@example.com\"",
+    "field.font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "field.isBezeled = false",
+    "field.drawsBackground = true",
+    "field.backgroundColor = NSColor(Plenix.Colors.controlBackground)",
+    "field.focusRingType = .none   // focus changes the border color only",
+    "field.wantsLayer = true",
+    "field.layer?.cornerRadius = Plenix.Radius.radiusControl",
+    "field.layer?.borderWidth = Plenix.Component.inputBorderWidth",
+    "field.layer?.borderColor = NSColor(Plenix.Colors.controlBorder).cgColor",
+    "field.contentType = .emailAddress"
+   ]
+  }
+ }
+}

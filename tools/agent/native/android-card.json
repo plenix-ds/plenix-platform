@@ -1,0 +1,374 @@
+{
+ "android-data-display|Card": {
+  "summary": "A Plenix card on Android is the Material 3 OutlinedCard, kept native in behavior (ripple, one TalkBack stop for a card that opens, font scale) and styled with the Plenix tokens: a 12 dp rounded rectangle on the raised surface with a 1 dp border and no elevation, a DM Sans semibold title at the heading role, a muted details line, and the Plenix selected border and accent edge. Material’s default is a filled, elevated or outlined card on a tonal surface with Roboto text; Plenix keeps Material’s structure and replaces the look.",
+  "variants": [
+   {
+    "name": "Card",
+    "material": "Outlined card",
+    "web": "data-display|Card",
+    "background": "plx-comp-card-background",
+    "content": "plx-comp-card-body-text",
+    "border": "plx-comp-card-border-color",
+    "compose": "PlenixCard(title, meta) { body }",
+    "views": "MaterialCardView with cardElevation 0, strokeWidth and strokeColor",
+    "use": "One record in a list or grid, with a title, details and actions."
+   },
+   {
+    "name": "Interactive",
+    "material": "Outlined card with onClick",
+    "web": "data-display|Card",
+    "background": "plx-comp-card-background",
+    "content": "plx-comp-card-body-text",
+    "border": "plx-comp-card-border-color",
+    "compose": "PlenixCard(title, meta, onClick = open)",
+    "views": "MaterialCardView with a click listener (isClickable, isFocusable)",
+    "use": "A card that opens its record; the whole card is one target and one TalkBack stop."
+   },
+   {
+    "name": "Selectable",
+    "material": "Outlined card, checkable",
+    "web": "data-display|Selectable card",
+    "background": "plx-comp-card-background",
+    "content": "plx-comp-card-body-text",
+    "border": "plx-comp-card-selected-border-color",
+    "compose": "PlenixCard(…, selected = chosen, onClick = toggle) with Modifier.selectable semantics",
+    "views": "MaterialCardView isCheckable, isChecked, a checked strokeColor state list",
+    "use": "Choosing one or more options shown as cards."
+   },
+   {
+    "name": "Media card",
+    "material": "Outlined card with media",
+    "web": "data-display|Media card",
+    "background": "plx-comp-card-background",
+    "content": "plx-comp-card-meta-text",
+    "border": "plx-comp-card-border-color",
+    "compose": "PlenixCard with an Image (ContentScale.Crop, aspectRatio(4f / 3f)) above the title",
+    "views": "MaterialCardView with a ShapeableImageView above the title",
+    "use": "An asset tile: a picture with its name and technical details."
+   },
+   {
+    "name": "Accent",
+    "material": "— (Plenix only)",
+    "web": "data-display|Card",
+    "background": "plx-comp-card-background",
+    "content": "plx-comp-card-body-text",
+    "border": "plx-comp-card-accent",
+    "compose": "PlenixCard(…, accent = PlenixColors.dataColorBlue.current())",
+    "views": "A LayerDrawable foreground with a PlenixComponent.cardAccentBorderInlineStartWidth start bar",
+    "use": "A card that carries a color from the data, such as a project’s color."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Container",
+    "about": "The rounded rectangle with its border; the whole card takes the press when it opens something."
+   },
+   {
+    "part": "B",
+    "name": "Title",
+    "about": "The card’s name, in DM Sans semibold at the heading role; a heading for TalkBack."
+   },
+   {
+    "part": "C",
+    "name": "Details",
+    "about": "An optional muted line under the title: counts, dates, owners."
+   },
+   {
+    "part": "D",
+    "name": "Body",
+    "about": "The content, at the body role."
+   },
+   {
+    "part": "E",
+    "name": "Actions",
+    "about": "Optional Plenix buttons at the end of the header or below the body; each its own target."
+   },
+   {
+    "part": "F",
+    "name": "Accent edge",
+    "about": "An optional 3 dp bar at the start edge in a color from the data."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-comp-card-radius",
+    "value": "12 dp (PlenixRadius.radiusCard12px)",
+    "material": "12 dp",
+    "compose": "shape = RoundedCornerShape(PlenixRadius.radiusCard12px)",
+    "views": "radius = px(PlenixRadius.radiusCard12px).toFloat()",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-comp-card-background",
+    "value": "surfaceRaised",
+    "material": "surface (outlined), surfaceContainerLow (elevated), surfaceContainerHighest (filled)",
+    "compose": "CardDefaults.outlinedCardColors(containerColor = PlenixColors.surfaceRaised.current())",
+    "views": "setCardBackgroundColor(argb(PlenixColors.surfaceRaised.light, PlenixColors.surfaceRaised.dark))",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Border",
+    "token": "plx-comp-card-border-color, plx-comp-card-border-width",
+    "value": "1 dp in borderDefault",
+    "material": "1 dp in outlineVariant (outlined card)",
+    "compose": "border = BorderStroke(PlenixComponent.cardBorderWidth, PlenixColors.borderDefault.current())",
+    "views": "strokeWidth = px(PlenixComponent.cardBorderWidth); strokeColor = argb(PlenixColors.borderDefault.light, PlenixColors.borderDefault.dark)",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Elevation",
+    "token": "None: a Plenix card is flat; the border separates it",
+    "value": "0 dp, no tonal tint",
+    "material": "0 dp outlined, 1 dp elevated",
+    "compose": "CardDefaults.outlinedCardElevation(defaultElevation = 0.dp)",
+    "views": "cardElevation = 0f",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Padding",
+    "token": "plx-comp-card-padding",
+    "value": "16 dp (PlenixSpace.spaceContainerInsetMd); 12 dp in Compact",
+    "material": "16 dp",
+    "compose": "Column(Modifier.padding(PlenixSpace.spaceContainerInsetMd))",
+    "views": "setContentPadding(p, p, p, p) with p = px(PlenixSpace.spaceContainerInsetMd)",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "A",
+    "attribute": "Gaps",
+    "token": "plx-comp-card-title-content-gap, plx-comp-card-content-actions-gap",
+    "value": "12 dp title to body (PlenixSpace.spaceStackMd), 16 dp body to actions (PlenixSpace.spaceStackLg)",
+    "material": "Set by the content",
+    "compose": "Spacer(Modifier.height(PlenixSpace.spaceStackMd)) and Spacer(Modifier.height(PlenixSpace.spaceStackLg))",
+    "views": "Top margins of px(PlenixSpace.spaceStackMd) and px(PlenixSpace.spaceStackLg)",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "B",
+    "attribute": "Title type",
+    "token": "plx-comp-card-title-font-size, plx-comp-card-title-font-weight",
+    "value": "DM Sans semibold (600), 16 sp on 24 sp, Title medium (PlenixPlatform.textHeadingSize, textHeadingWeight)",
+    "material": "Roboto, Title medium",
+    "compose": "textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight); Modifier.semantics { heading() }",
+    "views": "title.textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, R.font.dm_sans_semibold); ViewCompat.setAccessibilityHeading(title, true)",
+    "follows": "Material 3: Typography",
+    "followsUrl": "https://m3.material.io/styles/typography/type-scale-tokens"
+   },
+   {
+    "part": "B",
+    "attribute": "Title color",
+    "token": "plx-comp-card-title-text",
+    "value": "contentDefault",
+    "material": "onSurface",
+    "compose": "color = PlenixColors.contentDefault.current()",
+    "views": "title.setTextColor(argb(PlenixColors.contentDefault.light, PlenixColors.contentDefault.dark))",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "C",
+    "attribute": "Details",
+    "token": "plx-comp-card-meta-text, plx-comp-card-meta-font-size",
+    "value": "DM Sans 14 sp on 20 sp, Body medium (PlenixPlatform.textSecondarySize), contentMuted",
+    "material": "Body medium, onSurfaceVariant",
+    "compose": "textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, PlenixPlatform.textSecondaryWeight), color = PlenixColors.contentMuted.current()",
+    "views": "meta.textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, R.font.dm_sans_regular)",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "D",
+    "attribute": "Body",
+    "token": "plx-comp-card-body-text, plx-comp-card-body-font-size",
+    "value": "DM Sans 16 sp on 24 sp, Body large (PlenixPlatform.textBodySize), contentDefault",
+    "material": "Body medium",
+    "compose": "textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, PlenixPlatform.textBodyWeight)",
+    "views": "body.textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, R.font.dm_sans_regular)",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   },
+   {
+    "part": "E",
+    "attribute": "Action gap",
+    "token": "plx-comp-button-cluster-gap",
+    "value": "8 dp between buttons (PlenixPlatform.buttonClusterGap)",
+    "material": "8 dp",
+    "compose": "Row(horizontalArrangement = Arrangement.spacedBy(PlenixPlatform.buttonClusterGap, Alignment.End))",
+    "views": "MaterialButtonGroup spacing, or margins of px(PlenixPlatform.buttonClusterGap)",
+    "follows": "Material 3: Accessibility: target spacing",
+    "followsUrl": "https://m3.material.io/foundations/designing/structure"
+   },
+   {
+    "part": "F",
+    "attribute": "Accent edge",
+    "token": "plx-comp-card-accent-border-inline-start-width, plx-comp-card-accent",
+    "value": "3 dp at the start edge, in a data color (PlenixColors.dataColorBlue …); mirrors in right-to-left layouts",
+    "material": "None",
+    "compose": "Modifier.drawWithContent { drawContent(); drawRect(accent, topLeft = Offset(if (layoutDirection == LayoutDirection.Rtl) size.width - PlenixComponent.cardAccentBorderInlineStartWidth.toPx() else 0f, 0f), size = Size(PlenixComponent.cardAccentBorderInlineStartWidth.toPx(), size.height)) }",
+    "views": "foreground = LayerDrawable(arrayOf(ColorDrawable(accent))).apply { setLayerWidth(0, px(PlenixComponent.cardAccentBorderInlineStartWidth)); setLayerGravity(0, Gravity.START or Gravity.FILL_VERTICAL) }",
+    "follows": "Material 3: Cards",
+    "followsUrl": "https://m3.material.io/components/cards/specs"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-comp-card-background, plx-comp-card-border-color",
+    "compose": "OutlinedCard",
+    "views": "MaterialCardView"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-state-pressed",
+    "compose": "OutlinedCard(onClick) ripple in PlenixColors.statePressed (LocalRippleConfiguration)",
+    "views": "rippleColor = ColorStateList.valueOf(argb(PlenixColors.statePressed.light, PlenixColors.statePressed.dark))"
+   },
+   {
+    "state": "Hovered (mouse)",
+    "token": "plx-comp-card-interactive-hover-shadow",
+    "compose": "The ripple’s hover state layer; no elevation change",
+    "views": "The ripple’s hover layer"
+   },
+   {
+    "state": "Selected",
+    "token": "plx-comp-card-selected-border-color",
+    "compose": "border = BorderStroke(PlenixComponent.cardBorderWidth, PlenixColors.actionPrimaryBackground.current()); Modifier.semantics { selected = true }",
+    "views": "isChecked = true; setStrokeColor(ColorStateList) with android.R.attr.state_checked; checkedIcon = null"
+   },
+   {
+    "state": "Focused (keyboard)",
+    "token": "plx-comp-card-interactive-opener-focus-outline-color, plx-comp-card-interactive-opener-focus-outline-width",
+    "compose": "A PlenixComponent.cardInteractiveOpenerFocusOutlineWidth focusRingColor border while focused (Modifier.onFocusChanged)",
+    "views": "strokeColor state list with android.R.attr.state_focused, strokeWidth PlenixComponent.cardInteractiveOpenerFocusOutlineWidth while focused"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-sys-content-disabled",
+    "compose": "OutlinedCard(enabled = false); disabledContentColor = PlenixColors.contentDisabled.current()",
+    "views": "isEnabled = false; text in contentDisabled"
+   }
+  ],
+  "code": {
+   "compose": [
+    "import androidx.compose.foundation.BorderStroke",
+    "import androidx.compose.material3.*",
+    "import plenix.tokens.*",
+    "",
+    "// Sans: the DM Sans family (PlenixFonts.SANS), set once in the app theme, e.g.",
+    "// val Sans = FontFamily(Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Normal), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.SemiBold), Font(GoogleFont(PlenixFonts.SANS), fontProvider, FontWeight.Bold))",
+    "fun textRole(size: TextUnit, lineHeight: TextUnit, weight: Int) =",
+    "    TextStyle(fontFamily = Sans, fontSize = size, lineHeight = lineHeight, fontWeight = FontWeight(weight))",
+    "",
+    "/** The Plenix card on Android: the Material 3 OutlinedCard, styled with the Plenix tokens (package plenix.tokens). */",
+    "@Composable",
+    "fun PlenixCard(",
+    "    title: String,",
+    "    meta: String? = null,",
+    "    selected: Boolean = false,",
+    "    accent: Color? = null,",
+    "    onClick: (() -> Unit)? = null,",
+    "    actions: (@Composable RowScope.() -> Unit)? = null,",
+    "    body: @Composable ColumnScope.() -> Unit = {},",
+    ") {",
+    "    val shape = RoundedCornerShape(PlenixRadius.radiusCard12px)",
+    "    val colors = CardDefaults.outlinedCardColors(",
+    "        containerColor = PlenixColors.surfaceRaised.current(),",
+    "        contentColor = PlenixColors.contentDefault.current(),",
+    "        disabledContentColor = PlenixColors.contentDisabled.current(),",
+    "    )",
+    "    val border = BorderStroke(PlenixComponent.cardBorderWidth, if (selected) PlenixColors.actionPrimaryBackground.current() else PlenixColors.borderDefault.current())",
+    "    val elevation = CardDefaults.outlinedCardElevation(defaultElevation = 0.dp)",
+    "    val edge = accent?.let { a -> Modifier.drawWithContent {",
+    "        drawContent()",
+    "        val w = PlenixComponent.cardAccentBorderInlineStartWidth.toPx()",
+    "        drawRect(a, topLeft = Offset(if (layoutDirection == LayoutDirection.Rtl) size.width - w else 0f, 0f), size = Size(w, size.height))",
+    "    } } ?: Modifier",
+    "    val content: @Composable ColumnScope.() -> Unit = {",
+    "        Column(Modifier.padding(PlenixSpace.spaceContainerInsetMd)) {",
+    "            Text(title, style = textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight), modifier = Modifier.semantics { heading() })",
+    "            meta?.let { Text(it, style = textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, PlenixPlatform.textSecondaryWeight), color = PlenixColors.contentMuted.current()) }",
+    "            Spacer(Modifier.height(PlenixSpace.spaceStackMd))",
+    "            ProvideTextStyle(textRole(PlenixPlatform.textBodySize, PlenixPlatform.textBodyLineHeight, PlenixPlatform.textBodyWeight)) { body() }",
+    "            actions?.let {",
+    "                Spacer(Modifier.height(PlenixSpace.spaceStackLg))",
+    "                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(PlenixPlatform.buttonClusterGap, Alignment.End), content = it)",
+    "            }",
+    "        }",
+    "    }",
+    "    CompositionLocalProvider(LocalRippleConfiguration provides RippleConfiguration(color = PlenixColors.statePressed.current())) {",
+    "        if (onClick != null) OutlinedCard(onClick = onClick, modifier = edge.semantics { this.selected = selected }, shape = shape, colors = colors, elevation = elevation, border = border, content = content)",
+    "        else OutlinedCard(modifier = edge, shape = shape, colors = colors, elevation = elevation, border = border, content = content)",
+    "    }",
+    "}",
+    "",
+    "// In a view",
+    "PlenixCard(title = \"Brand kit\", meta = \"12 assets\", onClick = { open(kit) }) { Text(\"Logos, colors and type for the spring campaign.\") }",
+    "PlenixCard(title = \"Website\", meta = \"Project\", accent = PlenixColors.dataColorBlue.current())"
+   ],
+   "views": [
+    "import android.content.res.ColorStateList",
+    "import com.google.android.material.card.MaterialCardView",
+    "import plenix.tokens.*",
+    "",
+    "// Views read the same values from the generated plenix.tokens package through three helpers:",
+    "fun Context.argb(light: Color, dark: Color): Int {",
+    "    val night = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES",
+    "    return (if (night) dark else light).toArgb()",
+    "}",
+    "fun Context.px(dp: Dp): Int = (dp.value * resources.displayMetrics.density).roundToInt()",
+    "fun TextView.textRole(size: TextUnit, lineHeight: TextUnit, @FontRes font: Int) {",
+    "    typeface = ResourcesCompat.getFont(context, font)   // R.font.dm_sans_*: DM Sans (PlenixFonts.SANS) bundled with the app",
+    "    setTextSize(TypedValue.COMPLEX_UNIT_SP, size.value)",
+    "    TextViewCompat.setLineHeight(this, TypedValue.COMPLEX_UNIT_SP, lineHeight.value)",
+    "}",
+    "",
+    "/** Styles a MaterialCardView (res/layout/card.xml: title, meta, body) with the Plenix tokens. */",
+    "fun MaterialCardView.plenixCard(selectable: Boolean = false) {",
+    "    val c = context",
+    "    radius = c.px(PlenixRadius.radiusCard12px).toFloat()",
+    "    cardElevation = 0f",
+    "    setCardBackgroundColor(c.argb(PlenixColors.surfaceRaised.light, PlenixColors.surfaceRaised.dark))",
+    "    strokeWidth = c.px(PlenixComponent.cardBorderWidth)",
+    "    setStrokeColor(ColorStateList(",
+    "        arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf(android.R.attr.state_focused), intArrayOf()),",
+    "        intArrayOf(c.argb(PlenixColors.actionPrimaryBackground.light, PlenixColors.actionPrimaryBackground.dark),",
+    "            c.argb(PlenixColors.focusRingColor.light, PlenixColors.focusRingColor.dark),",
+    "            c.argb(PlenixColors.borderDefault.light, PlenixColors.borderDefault.dark))))",
+    "    rippleColor = ColorStateList.valueOf(c.argb(PlenixColors.statePressed.light, PlenixColors.statePressed.dark))",
+    "    val p = c.px(PlenixSpace.spaceContainerInsetMd)",
+    "    setContentPadding(p, p, p, p)",
+    "    isCheckable = selectable",
+    "    checkedIcon = null   // the Plenix selected state is the border",
+    "    findViewById<TextView>(R.id.title).apply {",
+    "        textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, R.font.dm_sans_semibold)",
+    "        setTextColor(c.argb(PlenixColors.contentDefault.light, PlenixColors.contentDefault.dark))",
+    "        ViewCompat.setAccessibilityHeading(this, true)",
+    "    }",
+    "    findViewById<TextView>(R.id.meta).apply {",
+    "        textRole(PlenixPlatform.textSecondarySize, PlenixPlatform.textSecondaryLineHeight, R.font.dm_sans_regular)",
+    "        setTextColor(c.argb(PlenixColors.contentMuted.light, PlenixColors.contentMuted.dark))",
+    "    }",
+    "}",
+    "",
+    "card.plenixCard()",
+    "card.setOnClickListener { open(kit) }",
+    "option.plenixCard(selectable = true)",
+    "option.setOnClickListener { option.isChecked = !option.isChecked }"
+   ]
+  }
+ }
+}

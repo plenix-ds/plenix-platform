@@ -1,0 +1,176 @@
+{
+ "ios-actions|Edit menus": {
+  "summary": "A Plenix edit menu on iOS is the system edit menu (UIEditMenuInteraction), never a copy of it: it opens with the standard gestures on a text or content selection, lays out horizontally for touch and vertically for a pointer, moves aside when it would cover the selection, and works with VoiceOver and the keyboard. Plenix decides only what it adds: a few custom commands with short verb labels, placed beside the related system commands, and only the commands that apply now, with undo and redo behind them. The system draws the menu, so its look stays Apple’s; the Plenix rows show the Plenix menu tokens for comparison and for a Plenix-drawn selection bar, such as on a canvas that is not text.",
+  "variants": [
+   {
+    "name": "Horizontal (touch)",
+    "apple": "Edit Menu",
+    "web": "actions|Selection toolbar",
+    "background": "plx-comp-menu-background",
+    "content": "plx-comp-menu-item-text",
+    "border": "plx-comp-menu-border-color",
+    "swiftui": "The system edit menu of a TextField, TextEditor or Text with .textSelection(.enabled)",
+    "uikit": "UIEditMenuInteraction, presentEditMenu(with: UIEditMenuConfiguration)",
+    "appkit": "The text view’s context menu and the Edit menu in the menu bar",
+    "use": "A text or content selection on touch; a row of commands above the selection."
+   },
+   {
+    "name": "Vertical (pointer)",
+    "apple": "Edit Menu, pointer layout",
+    "web": "actions|Context menu",
+    "background": "plx-comp-menu-background",
+    "content": "plx-comp-menu-item-text",
+    "border": "plx-comp-menu-border-color",
+    "swiftui": "The same system menu; the system picks the layout for the input",
+    "uikit": "The same interaction; preferredArrowDirection and the input decide the layout",
+    "appkit": "NSMenu from menu(for:) on a secondary click",
+    "use": "A selection on iPad with a pointer or trackpad; a list of commands at the pointer."
+   },
+   {
+    "name": "Text selection",
+    "apple": "Text Selection",
+    "web": "actions|Selection toolbar",
+    "background": "plx-sys-state-selected",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": ".textSelection(.enabled); .tint(Plenix.Colors.actionPrimaryBackground) colors the handles",
+    "uikit": "UITextView with tintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "appkit": "NSTextView.selectedTextAttributes",
+    "use": "The highlighted range and its handles that the edit menu acts on."
+   }
+  ],
+  "anatomy": [
+   { "part": "A", "name": "Container", "about": "The bar or list the system draws above or beside the selection." },
+   { "part": "B", "name": "System command", "about": "Cut, Copy, Paste, Select All and the other commands that apply now." },
+   { "part": "C", "name": "Custom command", "about": "A command the app adds, a short verb beside its related system commands." },
+   { "part": "D", "name": "More arrow", "about": "Pages to further commands when they do not fit the row." },
+   { "part": "E", "name": "Selection", "about": "The highlighted range with its handles, in the Plenix tint." }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Container",
+    "token": "plx-comp-menu-background, plx-sys-radius-menu-8px",
+    "value": "Drawn by the system; a Plenix-drawn selection bar uses the overlay surface, 8 pt (Plenix.Radius.radiusMenu8px)",
+    "apple": "Glass capsule",
+    "swiftui": "Drawn by the system",
+    "uikit": "Drawn by the system",
+    "appkit": "Drawn by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Position",
+    "token": "None (the system places it)",
+    "value": "Above the selection, moved when it covers important content",
+    "apple": "Above the selection",
+    "swiftui": "Set by the system",
+    "uikit": "editMenuInteraction(_:targetRectFor:) returns the rect to avoid",
+    "appkit": "At the pointer",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "B",
+    "attribute": "Commands shown",
+    "token": "None (behavior)",
+    "value": "Only what applies now: no Copy without a selection, no Paste with an empty pasteboard",
+    "apple": "The same",
+    "swiftui": "Set by the system from the field’s state",
+    "uikit": "canPerformAction(_:withSender:) returns false for commands that do not apply",
+    "appkit": "validateMenuItem(_:)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Label typeface",
+    "token": "plx-comp-menu-item-text",
+    "value": "System font in the system menu; DM Sans at the label role in a Plenix-drawn bar (Plenix.Platform.textLabelSize)",
+    "apple": "SF Pro Regular 15 pt",
+    "swiftui": "Drawn by the system",
+    "uikit": "Drawn by the system",
+    "appkit": "Drawn by the system",
+    "follows": "Content"
+   },
+   {
+    "part": "C",
+    "attribute": "Custom commands",
+    "token": "None (content)",
+    "value": "A few short verbs, next to the related system commands",
+    "apple": "After the system commands",
+    "swiftui": "A UIViewRepresentable around UITextView with the UIKit delegate",
+    "uikit": "editMenuInteraction(_:menuFor:suggestedActions:) returns UIMenu(children: suggestedActions + [UIAction(title: \"Translate\")])",
+    "appkit": "menu(for:) adds NSMenuItem entries to the text view’s menu",
+    "follows": "Content"
+   },
+   {
+    "part": "E",
+    "attribute": "Selection color",
+    "token": "plx-sys-state-selected, plx-sys-action-primary-background",
+    "value": "Plenix.Colors.stateSelected range, Plenix.Colors.actionPrimaryBackground handles",
+    "apple": "The system tint",
+    "swiftui": ".tint(Plenix.Colors.actionPrimaryBackground)",
+    "uikit": "tintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "appkit": "selectedTextAttributes = [.backgroundColor: NSColor(Plenix.Colors.stateSelected)]",
+    "follows": "iOS, iPadOS"
+   }
+  ],
+  "states": [
+   { "state": "Hidden", "token": "No menu; the selection only", "swiftui": "Selection without a menu", "uikit": "No presentation", "appkit": "No menu" },
+   { "state": "Shown (touch)", "token": "Drawn by the system", "swiftui": "Drawn by the system", "uikit": "presentEditMenu(with:)", "appkit": "Not on the Mac" },
+   { "state": "Shown (pointer)", "token": "Drawn by the system", "swiftui": "Drawn by the system", "uikit": "The same, vertical layout", "appkit": "menu(for:)" },
+   { "state": "Command pressed", "token": "plx-sys-state-pressed", "swiftui": "Drawn by the system", "uikit": "Drawn by the system", "appkit": "highlightedItem" },
+   { "state": "Command unavailable", "token": "Removed, not dimmed", "swiftui": "Set by the system", "uikit": "canPerformAction returns false", "appkit": "validateMenuItem returns false" }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix edit menu on iOS: the system edit menu of the text views, in the Plenix tint.",
+    "TextEditor(text: $caption)",
+    "    .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "    .tint(Plenix.Colors.actionPrimaryBackground)",
+    "",
+    "// Read-only content people may copy",
+    "Text(asset.description)",
+    "    .textSelection(.enabled)",
+    "    .tint(Plenix.Colors.actionPrimaryBackground)"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix edit menu on iOS in UIKit: UITextView’s system edit menu with one custom command beside Copy.",
+    "final class CaptionView: UITextView {",
+    "    override init(frame: CGRect, textContainer: NSTextContainer?) {",
+    "        super.init(frame: frame, textContainer: textContainer)",
+    "        tintColor = UIColor(Plenix.Colors.actionPrimaryBackground)",
+    "    }",
+    "    required init?(coder: NSCoder) { fatalError() }",
+    "}",
+    "",
+    "extension CaptionController: UITextViewDelegate {",
+    "    func textView(_ textView: UITextView, editMenuForTextIn range: NSRange,",
+    "                  suggestedActions: [UIMenuElement]) -> UIMenu? {",
+    "        guard range.length > 0 else { return UIMenu(children: suggestedActions) }",
+    "        let translate = UIAction(title: \"Translate\", image: UIImage(systemName: \"translate\")) { _ in self.translate(range) }",
+    "        return UIMenu(children: suggestedActions + [translate])",
+    "    }",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix edit menu on the Mac: the text view’s own menu and the Edit menu in the menu bar. A Mac Catalyst app",
+    "// uses the UIKit code above. A native AppKit app needs a macOS build of PlenixTokens.swift (not generated yet).",
+    "final class CaptionTextView: NSTextView {",
+    "    override func menu(for event: NSEvent) -> NSMenu? {",
+    "        let menu = super.menu(for: event) ?? NSMenu()",
+    "        menu.addItem(withTitle: \"Translate\", action: #selector(translate(_:)), keyEquivalent: \"\")",
+    "        return menu",
+    "    }",
+    "}"
+   ]
+  }
+ }
+}

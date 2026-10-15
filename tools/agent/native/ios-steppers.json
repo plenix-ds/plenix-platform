@@ -1,0 +1,280 @@
+{
+ "ios-forms|Steppers": {
+  "summary": "A Plenix stepper on iOS is the system Stepper, kept native in behavior (the minus and plus taps, repeat while held, VoiceOver’s adjustable value, the range and step) and given the Plenix look: a 6-point rounded rectangle in the Plenix neutral fill, the minus and plus symbols in the Plenix default content color, a divider in the default border color, and the value it changes shown beside it in DM Sans. Apple’s default is a capsule in the system fill; in SwiftUI the shape stays the system one, and UIKit draws the Plenix shape through the stepper’s background images.",
+  "variants": [
+   {
+    "name": "Stepper",
+    "apple": "Stepper",
+    "web": "forms|Stepper",
+    "background": "plx-sys-fill-neutral",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "Stepper(_:value:in:step:)",
+    "uikit": "UIStepper with setBackgroundImage(_:for:), setDividerImage and tintColor",
+    "appkit": "NSStepper beside an NSTextField",
+    "use": "A small whole-number value changed by one step at a time, with the value beside it."
+   },
+   {
+    "name": "Stepper with number field",
+    "apple": "Stepper",
+    "web": "forms|Number input",
+    "background": "plx-comp-input-background",
+    "content": "plx-comp-input-text",
+    "border": "plx-comp-input-border-color",
+    "swiftui": "TextField(value:format:) with .keyboardType(.numberPad) beside a Stepper",
+    "uikit": "A UITextField with keyboardType .numberPad beside a UIStepper",
+    "appkit": "An NSTextField with a NumberFormatter bound to the NSStepper",
+    "use": "A value that can vary widely, typed directly or nudged by a step."
+   },
+   {
+    "name": "Quantity",
+    "apple": "Stepper",
+    "web": "forms|Quantity selector",
+    "background": "plx-sys-fill-neutral",
+    "content": "plx-sys-content-default",
+    "border": null,
+    "swiftui": "Stepper(value:in:) with the count in its label",
+    "uikit": "UIStepper with minimumValue 1",
+    "appkit": "NSStepper",
+    "use": "A count of items, such as copies or seats, with a minimum of one."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Container",
+    "about": "The rounded rectangle that holds both buttons, in the Plenix neutral fill; each half is a 44-point target."
+   },
+   {
+    "part": "B",
+    "name": "Decrement",
+    "about": "The minus button; it dims at the minimum unless the value wraps."
+   },
+   {
+    "part": "C",
+    "name": "Divider",
+    "about": "The thin line between the two buttons, in the default border color."
+   },
+   {
+    "part": "D",
+    "name": "Increment",
+    "about": "The plus button; it dims at the maximum unless the value wraps."
+   },
+   {
+    "part": "E",
+    "name": "Value",
+    "about": "The current value beside the stepper, in DM Sans with tabular digits, since the stepper itself shows none."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Container fill",
+    "token": "plx-sys-fill-neutral",
+    "value": "Plenix.Colors.fillNeutral",
+    "apple": "The system tertiary fill",
+    "swiftui": "Set by the system (SwiftUI Stepper takes no style); use the UIKit stepper through UIViewRepresentable for the Plenix fill",
+    "uikit": "setBackgroundImage(_:for: .normal) drawn in Plenix.Colors.fillNeutral",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Corner radius",
+    "token": "plx-sys-radius-control",
+    "value": "6 pt (Plenix.Radius.radiusControl)",
+    "apple": "Capsule",
+    "swiftui": "Set by the system",
+    "uikit": "The background image is a rounded rectangle of Plenix.Radius.radiusControl, made resizable",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "A",
+    "attribute": "Size",
+    "token": "plx-sys-control-target-min (each half)",
+    "value": "94 by 32 pt drawn, 44 pt touch target",
+    "apple": "94 by 32 pt",
+    "swiftui": "Set by the system; the row gives .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "uikit": "Set by UIStepper (intrinsicContentSize); the system extends the hit area",
+    "appkit": "controlSize = .regular",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Symbol color",
+    "token": "plx-sys-content-default",
+    "value": "Plenix.Colors.contentDefault",
+    "apple": "The label color",
+    "swiftui": "Set by the system",
+    "uikit": "tintColor = UIColor(Plenix.Colors.contentDefault)",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Divider color",
+    "token": "plx-sys-border-default",
+    "value": "Plenix.Colors.borderDefault, 1 pt",
+    "apple": "The system separator",
+    "swiftui": "Set by the system",
+    "uikit": "setDividerImage(_:forLeftSegmentState:rightSegmentState:) drawn in Plenix.Colors.borderDefault",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Pressed half",
+    "token": "plx-sys-fill-neutral-pressed",
+    "value": "Plenix.Colors.fillNeutralPressed",
+    "apple": "A darker fill",
+    "swiftui": "Set by the system",
+    "uikit": "setBackgroundImage(_:for: .highlighted) in Plenix.Colors.fillNeutralPressed",
+    "appkit": "Set by the system",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Value text",
+    "token": "plx-text--body (iOS body role), plx-sys-content-default",
+    "value": "DM Sans 17 pt on 22 pt, tabular digits (Plenix.Platform.textBodySize)",
+    "apple": "SF Pro 17 pt",
+    "swiftui": "Text(value, format: .number).font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body)).monospacedDigit()",
+    "uikit": "A UILabel with UIFontMetrics(forTextStyle: .body) and DM Sans",
+    "appkit": "An NSTextField with a NumberFormatter",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Value to stepper gap",
+    "token": "plx-sys-space-inline-sm",
+    "value": "8 pt (Plenix.Space.spaceInlineSm); in a row the value leads and the stepper trails",
+    "apple": "The row layout",
+    "swiftui": "Stepper label in a List row",
+    "uikit": "UIStackView spacing = Plenix.Space.spaceInlineSm",
+    "appkit": "NSStackView spacing",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Larger step",
+    "token": "None",
+    "value": "Shift-click on the Mac for a larger step when the range is big",
+    "apple": "None",
+    "swiftui": "Not on iOS",
+    "uikit": "Not on iOS",
+    "appkit": "Read NSEvent.modifierFlags.contains(.shift) in the action and add the larger step",
+    "follows": "macOS"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-sys-fill-neutral, plx-sys-content-default",
+    "swiftui": "Stepper(value:in:step:)",
+    "uikit": "UIStepper",
+    "appkit": "NSStepper"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-fill-neutral-pressed",
+    "swiftui": "Set by the system",
+    "uikit": "setBackgroundImage(_:for: .highlighted)",
+    "appkit": "Set by the system"
+   },
+   {
+    "state": "Repeat while held",
+    "token": "None",
+    "swiftui": "On by default",
+    "uikit": "autorepeat = true",
+    "appkit": "autorepeat = true"
+   },
+   {
+    "state": "At the minimum or maximum",
+    "token": "plx-sys-content-disabled on that half",
+    "swiftui": "The system dims the half",
+    "uikit": "The system dims the half (wraps = false)",
+    "appkit": "valueWraps = false"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-sys-content-disabled",
+    "swiftui": ".disabled(true)",
+    "uikit": "isEnabled = false",
+    "appkit": "isEnabled = false"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix stepper row on iOS: the system Stepper with the value beside it in DM Sans (PlenixTokens.swift).",
+    "struct PlenixStepperRow: View {",
+    "    let title: String",
+    "    @Binding var value: Int",
+    "    var range: ClosedRange<Int> = 1...99",
+    "",
+    "    var body: some View {",
+    "        Stepper(value: $value, in: range) {",
+    "            HStack(spacing: Plenix.Space.spaceInlineSm) {",
+    "                Text(title)",
+    "                    .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "                    .foregroundStyle(Plenix.Colors.contentDefault)",
+    "                Spacer()",
+    "                Text(value, format: .number)",
+    "                    .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "                    .monospacedDigit()",
+    "                    .foregroundStyle(Plenix.Colors.contentMuted)",
+    "            }",
+    "        }",
+    "        .frame(minHeight: Plenix.Platform.controlTargetMin)",
+    "    }",
+    "}",
+    "// The SwiftUI Stepper keeps the system capsule; for the Plenix shape, wrap the UIKit stepper below in UIViewRepresentable."
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix stepper in UIKit: a UIStepper drawn with Plenix background and divider images.",
+    "func plenixImage(_ color: Color, width: CGFloat = Plenix.Border.borderWidthThin, radius: CGFloat = Plenix.Radius.radiusControl) -> UIImage {",
+    "    let size = CGSize(width: max(width, radius * 2 + Plenix.Border.borderWidthThin), height: 32)   // 32: Apple’s UIStepper height; the middle stretches",
+    "    let image = UIGraphicsImageRenderer(size: size).image { _ in",
+    "        UIColor(color).setFill()",
+    "        UIBezierPath(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: radius).fill()",
+    "    }",
+    "    return image.resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: radius, bottom: 0, right: radius))",
+    "}",
+    "",
+    "let stepper = UIStepper()",
+    "stepper.minimumValue = 1",
+    "stepper.maximumValue = 99",
+    "stepper.stepValue = 1",
+    "stepper.autorepeat = true",
+    "stepper.tintColor = UIColor(Plenix.Colors.contentDefault)",
+    "stepper.setBackgroundImage(plenixImage(Plenix.Colors.fillNeutral), for: .normal)",
+    "stepper.setBackgroundImage(plenixImage(Plenix.Colors.fillNeutralPressed), for: .highlighted)",
+    "stepper.setDividerImage(plenixImage(Plenix.Colors.borderDefault, radius: 0), forLeftSegmentState: .normal, rightSegmentState: .normal)",
+    "stepper.addAction(UIAction { _ in valueLabel.text = \"\\(Int(stepper.value))\" }, for: .valueChanged)"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix stepper on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above.",
+    "// A native AppKit app needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let field = NSTextField(string: \"1\")",
+    "field.font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "field.formatter = NumberFormatter()",
+    "let stepper = NSStepper()",
+    "stepper.minValue = 1",
+    "stepper.maxValue = 99",
+    "stepper.increment = 1",
+    "stepper.autorepeat = true",
+    "stepper.valueWraps = false",
+    "stepper.target = self",
+    "stepper.action = #selector(stepped(_:))   // add a larger step when NSEvent.modifierFlags contains .shift"
+   ]
+  }
+ }
+}

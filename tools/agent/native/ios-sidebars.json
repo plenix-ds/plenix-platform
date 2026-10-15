@@ -1,0 +1,379 @@
+{
+ "ios-navigation|Sidebars": {
+  "summary": "A Plenix sidebar on iOS is the system sidebar list (a List with the sidebar style in a NavigationSplitView, or a UICollectionView sidebar layout), kept native in behavior: it shows by default, hides with the usual gesture or command, folds disclosure groups, floats over rich content on iPad, and supports Dynamic Type, VoiceOver and the keyboard. Plenix changes the look to match the Web NavPane and NavList: 44-point rows with a 6-point rounded selection in the Plenix selected colors, DM Sans row titles at the body text role, muted section headers at the eyebrow role, and muted symbols with color only when it carries meaning.",
+  "variants": [
+   {
+    "name": "Row",
+    "apple": "Sidebar Row, State=Default, Indent Level=0",
+    "web": "navigation|Sidebar navigation",
+    "background": null,
+    "content": "plx-comp-nav-list-item-text",
+    "border": null,
+    "swiftui": "NavigationLink(value:) { Label(_:systemImage:) } in a List with .listStyle(.sidebar)",
+    "uikit": "UICollectionLayoutListConfiguration(appearance: .sidebar) with UIListContentConfiguration.sidebarCell()",
+    "appkit": "NSOutlineView with style .sourceList",
+    "use": "A top-level area of the app."
+   },
+   {
+    "name": "Selected row",
+    "apple": "Sidebar Row, State=Selected",
+    "web": "navigation|Sidebar navigation",
+    "background": "plx-comp-nav-list-item-current-background",
+    "content": "plx-comp-nav-list-item-current-text",
+    "border": null,
+    "swiftui": "List(selection:) with .listRowBackground for the selected row",
+    "uikit": "UIBackgroundConfiguration.listSidebarCell() updated for state.isSelected",
+    "appkit": "NSOutlineView selectionHighlightStyle .sourceList",
+    "use": "The area on screen; it stays highlighted while its content shows."
+   },
+   {
+    "name": "Disclosure group",
+    "apple": "Sidebar Row, State=Disclosable",
+    "web": "navigation|Sidebar navigation",
+    "background": null,
+    "content": "plx-comp-nav-list-item-text",
+    "border": null,
+    "swiftui": "DisclosureGroup or Section(isExpanded:) in the sidebar List",
+    "uikit": "UICellAccessory.outlineDisclosure() with NSDiffableDataSourceSectionSnapshot",
+    "appkit": "An expandable NSOutlineView item",
+    "use": "A short group title that folds a set of rows, so a long sidebar stays short."
+   },
+   {
+    "name": "Nested row",
+    "apple": "Sidebar Row, State=Default, Indent Level=1",
+    "web": "navigation|Sidebar navigation",
+    "background": null,
+    "content": "plx-comp-nav-list-item-text",
+    "border": null,
+    "swiftui": "A row inside a DisclosureGroup (the list indents it)",
+    "uikit": "indentationLevel from the section snapshot",
+    "appkit": "A child item of the NSOutlineView",
+    "use": "The second and last level of the sidebar; deeper data goes into a content list beside it."
+   },
+   {
+    "name": "Disabled row",
+    "apple": "Sidebar Row, State=Disabled",
+    "web": "navigation|Sidebar navigation",
+    "background": null,
+    "content": "plx-comp-nav-list-item-disabled-text",
+    "border": null,
+    "swiftui": ".disabled(true) on the row",
+    "uikit": "Return false from collectionView(_:shouldSelectItemAt:); content in the disabled color",
+    "appkit": "Return false from outlineView(_:shouldSelectItem:)",
+    "use": "An area the person cannot open now, such as one that needs a permission."
+   },
+   {
+    "name": "Section header",
+    "apple": "Section Header",
+    "web": "navigation|Sidebar navigation",
+    "background": null,
+    "content": "plx-comp-nav-list-heading-text",
+    "border": null,
+    "swiftui": "Section(\"Library\") { … } in the sidebar List",
+    "uikit": "headerMode = .supplementary with UIListContentConfiguration.sidebarHeader()",
+    "appkit": "A group item of the source list",
+    "use": "A short title over a set of rows."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Sidebar",
+    "about": "The leading column of the split view; on iPad it floats over the content in the system glass."
+   },
+   {
+    "part": "B",
+    "name": "Section header",
+    "about": "A short muted title over a group of rows, in DM Sans at the eyebrow text role."
+   },
+   {
+    "part": "C",
+    "name": "Row",
+    "about": "A 44-point row with a symbol and a title in DM Sans at the body text role."
+   },
+   {
+    "part": "D",
+    "name": "Selection",
+    "about": "The 6-point rounded highlight in the Plenix selected colors on the current row."
+   },
+   {
+    "part": "E",
+    "name": "Disclosure",
+    "about": "The chevron that folds and unfolds a group of rows."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "Width",
+    "token": "plx-sys-shell-nav-width, plx-comp-nav-pane-width",
+    "value": "Set by the split view; 240 pt on the Web (140 to 320)",
+    "apple": "Set by the system",
+    "swiftui": ".navigationSplitViewColumnWidth(min: Plenix.Shell.shellNavMinWidth, ideal: Plenix.Component.navPaneWidth, max: Plenix.Shell.shellNavMaxWidth)",
+    "uikit": "preferredPrimaryColumnWidth, minimumPrimaryColumnWidth, maximumPrimaryColumnWidth",
+    "appkit": "NSSplitViewItem(sidebarWithViewController:) minimumThickness, maximumThickness",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "A",
+    "attribute": "Background",
+    "token": "plx-comp-nav-pane-background",
+    "value": "The system glass on a floating sidebar; plx-sys-surface-default (Plenix.Colors.surfaceDefault) on iPhone",
+    "apple": "Liquid Glass (iPad), the grouped background (iPhone)",
+    "swiftui": "The glass stays; .scrollContentBackground(.hidden) with .background(Plenix.Colors.surfaceDefault) on iPhone",
+    "uikit": "collectionView.backgroundColor = UIColor(Plenix.Colors.surfaceDefault) on iPhone",
+    "appkit": "The source list material",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Row height",
+    "token": "plx-comp-nav-list-item-min-height",
+    "value": "44 pt (Plenix.Platform.controlTargetMin)",
+    "apple": "44 pt",
+    "swiftui": ".environment(\\.defaultMinListRowHeight, Plenix.Platform.controlTargetMin)",
+    "uikit": "The list layout sizes rows; minimum Plenix.Platform.controlTargetMin",
+    "appkit": "rowSizeStyle = .default",
+    "follows": "iOS, iPadOS"
+   },
+   {
+    "part": "C",
+    "attribute": "Row inset",
+    "token": "plx-comp-nav-list-item-padding-inline",
+    "value": "8 pt on the Web; the list margins on iOS (Plenix.Space.spaceInsetSm)",
+    "apple": "The list layout margins",
+    "swiftui": ".listRowInsets(EdgeInsets(top: 0, leading: Plenix.Space.spaceInsetSm, bottom: 0, trailing: Plenix.Space.spaceInsetSm))",
+    "uikit": "content.directionalLayoutMargins",
+    "appkit": "Set by the source list",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Title typeface and size",
+    "token": "plx-comp-nav-list-item-font-size (iOS body role)",
+    "value": "DM Sans regular, 17 pt on 22 pt, relative to Body (Plenix.Platform.textBodySize, textBodyLineHeight)",
+    "apple": "SF Pro Regular, 17 pt",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body))",
+    "uikit": "content.textProperties.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize))",
+    "appkit": "font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize) (the Mac sidebar size)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Title color",
+    "token": "plx-comp-nav-list-item-text",
+    "value": "plx-sys-content-default (Plenix.Colors.contentDefault)",
+    "apple": "The system label color",
+    "swiftui": ".foregroundStyle(Plenix.Colors.contentDefault)",
+    "uikit": "content.textProperties.color",
+    "appkit": "textColor",
+    "follows": "Best practices"
+   },
+   {
+    "part": "C",
+    "attribute": "Symbol and gap",
+    "token": "plx-sys-control-icon-standard, plx-comp-nav-list-item-gap",
+    "value": "20 pt symbol in plx-sys-content-muted; 8 pt gap (Plenix.Space.spaceInlineSm)",
+    "apple": "The system tint",
+    "swiftui": "Label with .foregroundStyle(Plenix.Colors.contentMuted) on the symbol",
+    "uikit": "content.imageProperties.tintColor; content.imageToTextPadding",
+    "appkit": "NSImage(systemSymbolName:) with contentTintColor",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Selection background and radius",
+    "token": "plx-comp-nav-list-item-current-background, plx-comp-nav-list-item-radius",
+    "value": "plx-sys-state-selected (Plenix.Colors.stateSelected), 6 pt (Plenix.Radius.radiusControl)",
+    "apple": "The system tint, rounded",
+    "swiftui": ".listRowBackground(RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl).fill(Plenix.Colors.stateSelected))",
+    "uikit": "background.backgroundColor and background.cornerRadius in configurationUpdateHandler",
+    "appkit": "A custom NSTableRowView drawSelection(in:)",
+    "follows": "Best practices"
+   },
+   {
+    "part": "D",
+    "attribute": "Selected title color",
+    "token": "plx-comp-nav-list-item-current-text",
+    "value": "plx-sys-selected-content (Plenix.Colors.selectedContent), medium",
+    "apple": "White on the tint",
+    "swiftui": ".foregroundStyle(Plenix.Colors.selectedContent) when selected",
+    "uikit": "content.textProperties.color for state.isSelected",
+    "appkit": "The row view’s interiorBackgroundStyle",
+    "follows": "Best practices"
+   },
+   {
+    "part": "B",
+    "attribute": "Section header",
+    "token": "plx-comp-nav-list-heading-text, plx-comp-nav-list-heading-font-weight",
+    "value": "DM Sans semibold, 12 pt on 16 pt, relative to Caption 1 (Plenix.Platform.textEyebrowSize), plx-sys-content-muted",
+    "apple": "SF Pro Semibold, the secondary label color",
+    "swiftui": "Section header Text with .font(Plenix.Font.sans(Plenix.Platform.textEyebrowSize, relativeTo: .caption).weight(.semibold))",
+    "uikit": "UIListContentConfiguration.sidebarHeader() with textProperties.font and color",
+    "appkit": "A group row with the muted color",
+    "follows": "Best practices"
+   },
+   {
+    "part": "E",
+    "attribute": "Nesting",
+    "token": "plx-comp-nav-list-items-nested-padding-inline-start",
+    "value": "One indent level; two levels at most",
+    "apple": "Up to three indent levels in the kit",
+    "swiftui": "DisclosureGroup (the list indents it)",
+    "uikit": "UICellAccessory.outlineDisclosure(); indentationLevel",
+    "appkit": "NSOutlineView indentationPerLevel",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-comp-nav-list-item-text",
+    "swiftui": "A NavigationLink row",
+    "uikit": "UICellConfigurationState default",
+    "appkit": "An unselected row"
+   },
+   {
+    "state": "Selected",
+    "token": "plx-comp-nav-list-item-current-background, plx-comp-nav-list-item-current-text",
+    "swiftui": "List(selection:)",
+    "uikit": "state.isSelected",
+    "appkit": "selectedRowIndexes"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-state-pressed",
+    "swiftui": "Drawn by the list",
+    "uikit": "state.isHighlighted",
+    "appkit": "Drawn by the source list"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-comp-nav-list-item-disabled-text",
+    "swiftui": ".disabled(true)",
+    "uikit": "shouldSelectItemAt returns false",
+    "appkit": "shouldSelectItem returns false"
+   },
+   {
+    "state": "Expanded and collapsed",
+    "token": "The system disclosure chevron",
+    "swiftui": "DisclosureGroup(isExpanded:)",
+    "uikit": "sectionSnapshot.expand(_:), collapse(_:)",
+    "appkit": "expandItem(_:), collapseItem(_:)"
+   },
+   {
+    "state": "Focused (keyboard, iPad and Mac)",
+    "token": "The system focus effect",
+    "swiftui": "Drawn by the list",
+    "uikit": "The focus system (selectionFollowsFocus)",
+    "appkit": "focusRingType = .default"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix sidebar on iOS: the system sidebar List in a NavigationSplitView, styled with the Plenix tokens.",
+    "struct PlenixSidebar: View {",
+    "    @State private var selection: Area? = .inbox",
+    "",
+    "    var body: some View {",
+    "        NavigationSplitView {",
+    "            List(selection: $selection) {",
+    "                Section {",
+    "                    row(.inbox, \"Inbox\", \"tray\")",
+    "                    row(.assets, \"Assets\", \"photo.on.rectangle\")",
+    "                } header: { header(\"Library\") }",
+    "                Section {",
+    "                    DisclosureGroup(\"Projects\") {",
+    "                        row(.spring, \"Spring launch\", \"folder\")",
+    "                    }",
+    "                } header: { header(\"Work\") }",
+    "            }",
+    "            .listStyle(.sidebar)",
+    "            .environment(\\.defaultMinListRowHeight, Plenix.Platform.controlTargetMin)",
+    "            .navigationSplitViewColumnWidth(min: Plenix.Shell.shellNavMinWidth, ideal: Plenix.Component.navPaneWidth, max: Plenix.Shell.shellNavMaxWidth) (no generated name yet)",
+    "        } detail: {",
+    "            DetailView(area: selection)",
+    "        }",
+    "    }",
+    "",
+    "    private func row(_ area: Area, _ title: String, _ symbol: String) -> some View {",
+    "        let selected = selection == area",
+    "        return NavigationLink(value: area) {",
+    "            Label { Text(title) } icon: { Image(systemName: symbol).foregroundStyle(Plenix.Colors.contentMuted) }",
+    "                .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body).weight(selected ? .medium : .regular))",
+    "                .foregroundStyle(selected ? Plenix.Colors.selectedContent : Plenix.Colors.contentDefault)",
+    "        }",
+    "        .listRowBackground(selected ? RoundedRectangle(cornerRadius: Plenix.Radius.radiusControl).fill(Plenix.Colors.stateSelected) : nil)",
+    "    }",
+    "",
+    "    private func header(_ title: String) -> some View {",
+    "        Text(title)",
+    "            .font(Plenix.Font.sans(Plenix.Platform.textEyebrowSize, relativeTo: .caption).weight(.semibold))",
+    "            .foregroundStyle(Plenix.Colors.contentMuted)",
+    "    }",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix sidebar on iOS in UIKit: a sidebar list layout with Plenix cell configurations.",
+    "var config = UICollectionLayoutListConfiguration(appearance: .sidebar)",
+    "config.headerMode = .supplementary",
+    "let layout = UICollectionViewCompositionalLayout.list(using: config)",
+    "",
+    "let body = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize) ?? .preferredFont(forTextStyle: .body))",
+    "let rowRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Area> { cell, _, area in",
+    "    var content = UIListContentConfiguration.sidebarCell()",
+    "    content.text = area.title",
+    "    content.image = UIImage(systemName: area.symbol)",
+    "    content.textProperties.font = body",
+    "    content.imageToTextPadding = Plenix.Space.spaceInlineSm",
+    "    cell.configurationUpdateHandler = { cell, state in",
+    "        var c = content",
+    "        c.textProperties.color = UIColor(state.isSelected ? Plenix.Colors.selectedContent : Plenix.Colors.contentDefault)",
+    "        c.imageProperties.tintColor = UIColor(Plenix.Colors.contentMuted)",
+    "        cell.contentConfiguration = c",
+    "        var background = UIBackgroundConfiguration.listSidebarCell().updated(for: state)",
+    "        background.cornerRadius = Plenix.Radius.radiusControl",
+    "        background.backgroundColor = state.isSelected ? UIColor(Plenix.Colors.stateSelected) : (state.isHighlighted ? UIColor(Plenix.Colors.statePressed) : .clear)",
+    "        cell.backgroundConfiguration = background",
+    "    }",
+    "    if area.hasChildren { cell.accessories = [.outlineDisclosure()] }",
+    "}",
+    "",
+    "let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { header, _, indexPath in",
+    "    var content = UIListContentConfiguration.sidebarHeader()",
+    "    content.text = sections[indexPath.section].title",
+    "    content.textProperties.font = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: UIFont(name: \"DMSans-SemiBold\", size: Plenix.Platform.textEyebrowSize) ?? .preferredFont(forTextStyle: .caption1))",
+    "    content.textProperties.color = UIColor(Plenix.Colors.contentMuted)",
+    "    header.contentConfiguration = content",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix sidebar on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let outline = NSOutlineView()",
+    "outline.style = .sourceList",
+    "outline.rowSizeStyle = .default",
+    "outline.floatsGroupRows = false",
+    "let sidebar = NSSplitViewItem(sidebarWithViewController: SidebarViewController(outline: outline))",
+    "sidebar.minimumThickness = Plenix.Shell.shellNavMinWidth",
+    "sidebar.maximumThickness = Plenix.Shell.shellNavMaxWidth",
+    "sidebar.canCollapse = true                   // collapses when the window gets narrow",
+    "",
+    "final class PlenixRowView: NSTableRowView {",
+    "    override func drawSelection(in dirtyRect: NSRect) {",
+    "        NSColor(Plenix.Colors.stateSelected).setFill()",
+    "        NSBezierPath(roundedRect: bounds.insetBy(dx: Plenix.Space.spaceInsetSm, dy: 0), xRadius: Plenix.Radius.radiusControl, yRadius: Plenix.Radius.radiusControl).fill()",
+    "    }",
+    "}"
+   ]
+  }
+ }
+}

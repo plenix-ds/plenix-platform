@@ -1,0 +1,83 @@
+{
+  "android-forms|Multi-line text field": {
+    "summary": "On Android the Plenix multi-line field, and the rich-text editor built on it, is the Material 3 outlined text field with several lines, kept native in behavior (the soft keyboard with a new-line key, selection handles, the text toolbar, the font scale, TalkBack): the Plenix field roles (the control surface, the control border that takes the focus color, the 6-dp control corners) and DM Sans at the body size. It grows a line at a time to its maximum, then scrolls inside. As a rich-text editor its text is a styled string limited to the Plenix formats (bold, italic, links, lists), with a formatting row of Plenix toggle buttons above it; read-only takes the sunken surface.",
+    "follows": "Material 3: Text fields",
+    "followsUrl": "https://m3.material.io/components/text-fields/guidelines",
+    "variants": [
+      { "name": "Multi-line field", "material": "Outlined text field, multi-line", "web": "forms|Text area", "background": "plx-comp-input-background", "content": "plx-comp-input-text", "border": "plx-comp-input-border-color", "compose": "PlenixMultiLineField(value, onValueChange, label, minLines, maxLines)", "views": "TextInputLayout (OutlinedBox) with a TextInputEditText, inputType textMultiLine", "use": "Notes, descriptions and messages of several lines." },
+      { "name": "Rich-text editor", "material": "Outlined text field with a styled string and a formatting row", "web": "forms|Rich-text editor", "background": "plx-comp-input-background", "content": "plx-comp-input-text", "border": "plx-comp-input-border-color", "compose": "PlenixMultiLineField with a TextFieldValue whose AnnotatedString holds the formats, and a Row of toggle buttons above it", "views": "TextInputEditText with Spannable text (StyleSpan, URLSpan) and a MaterialButtonToggleGroup above it", "use": "Descriptions and comments with bold, italic, links and lists." },
+      { "name": "Read-only", "material": "Outlined text field, read-only", "web": "forms|Rich-text editor", "background": "plx-sys-surface-sunken", "content": "plx-comp-input-text", "border": "plx-comp-input-border-color", "compose": "PlenixMultiLineField(readOnly = true)", "views": "TextInputEditText with isFocusable false and textIsSelectable true", "use": "Showing what someone wrote; it can be selected and copied." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Container", "about": "The control surface with the control border and corners; the border takes the focus color while typing." },
+      { "part": "B", "name": "Text", "about": "DM Sans at the body size; several lines, growing to the maximum, then scrolling inside." },
+      { "part": "C", "name": "Label", "about": "Above the field (a Plenix Field), not floating inside the border." },
+      { "part": "D", "name": "Formatting row", "about": "For the rich-text editor: Plenix toggle buttons above the field, each pressed when the text at the caret has its format." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Minimum height", "token": "plx-comp-input-min-height", "value": "56 dp (PlenixPlatform.inputMinHeight), then a line at a time", "material": "56 dp", "compose": "Modifier.heightIn(min = PlenixPlatform.inputMinHeight) with minLines and maxLines", "views": "editText.minHeight = px(PlenixPlatform.inputMinHeight); maxLines on the EditText", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/specs" },
+      { "part": "A", "attribute": "Surface and border", "token": "plx-comp-input-background, plx-comp-input-border-color", "value": "PlenixColors.controlBackground, PlenixColors.controlBorder", "material": "Surface and outline roles", "compose": "OutlinedTextFieldDefaults.colors(unfocusedContainerColor = PlenixColors.controlBackground.current(), unfocusedBorderColor = PlenixColors.controlBorder.current())", "views": "boxBackgroundColor and boxStrokeColor from the Plenix colors", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/specs" },
+      { "part": "A", "attribute": "Border while typing", "token": "plx-sys-focus-ring-color", "value": "PlenixColors.focusRingColor on the border, never a ring outside it", "material": "The primary role, thicker", "compose": "focusedBorderColor = PlenixColors.focusRingColor.current(), focusedBorderThickness = PlenixBorder.borderWidthThin", "views": "boxStrokeColor (focused) and boxStrokeWidthFocused from the Plenix tokens", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/specs" },
+      { "part": "A", "attribute": "Corner radius", "token": "plx-sys-radius-control", "value": "6 dp (PlenixRadius.radiusControl)", "material": "4 dp", "compose": "shape = RoundedCornerShape(PlenixRadius.radiusControl)", "views": "setBoxCornerRadii from PlenixRadius.radiusControl", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/specs" },
+      { "part": "B", "attribute": "Text", "token": "plx-comp-input-text", "value": "DM Sans at the body size (PlenixPlatform.textBodySize), PlenixColors.contentDefault, the font scale", "material": "Roboto, body large", "compose": "textStyle = TextStyle(fontFamily = DmSans, fontSize = PlenixPlatform.textBodySize, lineHeight = PlenixPlatform.textBodyLineHeight)", "views": "android:fontFamily=\"@font/dm_sans\" with the body text size from the tokens", "follows": "Material 3: Text fields", "followsUrl": "https://m3.material.io/components/text-fields/specs" },
+      { "part": "D", "attribute": "Format on", "token": "plx-sys-state-selected, plx-sys-state-selected-border", "value": "The toggle of each format at the caret in the selected state", "material": "Toggle icon buttons", "compose": "IconToggleButton(checked = isBold, …) with colors from PlenixColors.stateSelected", "views": "MaterialButtonToggleGroup with checked buttons in the selected state", "follows": "Material 3: Icon buttons", "followsUrl": "https://m3.material.io/components/icon-buttons/guidelines" }
+    ],
+    "states": [
+      { "state": "Default", "token": "plx-comp-input-border-color, plx-comp-input-background", "compose": "unfocusedBorderColor, unfocusedContainerColor", "views": "boxStrokeColor (default entry)" },
+      { "state": "Typing", "token": "plx-sys-focus-ring-color", "compose": "focusedBorderColor", "views": "boxStrokeColor (focused entry)" },
+      { "state": "Invalid", "token": "plx-sys-feedback-danger-content", "compose": "isError = true: errorBorderColor and the message under the field", "views": "textInputLayout.error = message" },
+      { "state": "Read-only", "token": "plx-sys-surface-sunken", "compose": "readOnly = true on the sunken container", "views": "isFocusable = false, textIsSelectable = true" },
+      { "state": "Disabled", "token": "plx-sys-fill-neutral, plx-sys-content-disabled", "compose": "enabled = false: disabledContainerColor, disabledTextColor", "views": "isEnabled = false" }
+    ],
+    "code": {
+      "compose": [
+        "import androidx.compose.foundation.layout.heightIn",
+        "import androidx.compose.foundation.shape.RoundedCornerShape",
+        "import androidx.compose.material3.*",
+        "import androidx.compose.runtime.Composable",
+        "import androidx.compose.ui.Modifier",
+        "import androidx.compose.ui.text.TextStyle",
+        "import plenix.tokens.*",
+        "",
+        "/** The Plenix multi-line field on Android: the Material 3 outlined field with several lines; focus and error change only the border color. */",
+        "@Composable",
+        "fun PlenixMultiLineField(value: String, onValueChange: (String) -> Unit, label: String, minLines: Int = 3, maxLines: Int = 10, readOnly: Boolean = false, modifier: Modifier = Modifier) {",
+        "    val container = if (readOnly) PlenixColors.surfaceSunken.current() else PlenixColors.controlBackground.current()",
+        "    OutlinedTextField(",
+        "        value = value, onValueChange = onValueChange, readOnly = readOnly,",
+        "        minLines = minLines, maxLines = maxLines,",
+        "        modifier = modifier.heightIn(min = PlenixPlatform.inputMinHeight),",
+        "        shape = RoundedCornerShape(PlenixRadius.radiusControl),",
+        "        textStyle = TextStyle(fontFamily = DmSans, fontSize = PlenixPlatform.textBodySize, lineHeight = PlenixPlatform.textBodyLineHeight),",
+        "        colors = OutlinedTextFieldDefaults.colors(",
+        "            focusedContainerColor = container, unfocusedContainerColor = container,",
+        "            focusedBorderColor = PlenixColors.focusRingColor.current(),",
+        "            unfocusedBorderColor = PlenixColors.controlBorder.current(),",
+        "            errorBorderColor = PlenixColors.feedbackDangerContent.current(),",
+        "            disabledContainerColor = PlenixColors.fillNeutral.current(),",
+        "            disabledTextColor = PlenixColors.contentDisabled.current(),",
+        "        ),",
+        "    )",
+        "}"
+      ],
+      "views": [
+        "<com.google.android.material.textfield.TextInputLayout",
+        "    android:id=\"@+id/notes_layout\"",
+        "    style=\"@style/Widget.Material3.TextInputLayout.OutlinedBox\"",
+        "    android:layout_width=\"match_parent\"",
+        "    android:layout_height=\"wrap_content\"",
+        "    app:boxStrokeColor=\"@color/plenix_field_stroke\"",
+        "    app:boxBackgroundColor=\"@color/plenix_control_background\">",
+        "    <com.google.android.material.textfield.TextInputEditText",
+        "        android:layout_width=\"match_parent\"",
+        "        android:layout_height=\"wrap_content\"",
+        "        android:inputType=\"textMultiLine|textCapSentences\"",
+        "        android:gravity=\"top|start\"",
+        "        android:minLines=\"3\"",
+        "        android:maxLines=\"10\"",
+        "        android:fontFamily=\"@font/dm_sans\" />",
+        "</com.google.android.material.textfield.TextInputLayout>"
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "purpose": "Holds a short, self-contained task or the details of a selection over the screen, then returns the person to the same place. It takes the form the window allows: a bottom sheet on a phone, a side sheet on a tablet, a dialog on a wide screen.",
+  "anatomy": [
+    "Scrim — the veil over the screen behind it (required)",
+    "Grabber — a bar at the top of the bottom sheet; a button that changes its height (required at Narrow)",
+    "Header — Cancel on the leading edge, the title, Done on the trailing edge; or the title and Close (required)",
+    "Body — the content, scrolling when tall (required)",
+    "Footer — more actions pinned to the bottom (optional)"
+  ],
+  "behavior": {
+    "pointer": "Cancel, Close and a click on the scrim run `onClose`; Done runs `onDone`. Pressing the grabber moves between the medium and large heights; dragging it up opens the large height, dragging it down returns to the medium height or closes the sheet.",
+    "keyboard": "Escape runs `onClose` unless `dismissible` is false. Tab and Shift+Tab cycle inside the sheet. Enter or Space on the grabber changes the height.",
+    "focus": "Focus moves to `initialFocus`, else the first control in the body, else the first footer action. It is trapped and returns to the opener.",
+    "responsive": "Narrow (under 600px): a bottom sheet at the medium height (about half the window) or the large height. Medium (600–839px): a side sheet, the Drawer. Wide: a dialog, unless the caller shows a pane there (SidePanel). `form` fixes one form.",
+    "motion": "The bottom sheet rises and fades in at --plx-sys-motion-duration-base.",
+    "loading": "No loading state of its own. Show Spinner or Skeleton in the body.",
+    "error": "No error state of its own. Show a Notice or field errors in the body."
+  },
+  "a11y": {
+    "name": "aria-labelledby the title; aria-describedby the description when given. Close is named by `closeLabel`; the grabber by its action (Expand sheet, Shrink sheet).",
+    "announce": "role=\"dialog\" with aria-modal=\"true\", announced with its title when focus moves in.",
+    "focus": "Focus stays inside. Controls show the standard focus ring; the grabber shows it around its target.",
+    "contrast": "It uses the overlay surface and the dialog chrome border roles, readable in light and dark; the grabber bar uses the strong border role.",
+    "motion": "With reduced motion the sheet appears without rising."
+  },
+  "content": {
+    "labels": "Write the title as a short noun phrase or the task in sentence case (\"Rename collection\", \"Details\").",
+    "actions": "Show Cancel and Done (or Save, Add), or Back in a multi-step flow, never all three. Only one sheet shows at a time.",
+    "errors": "Place errors next to the field that caused them; keep Done available and say what to fix.",
+    "localization": "Cancel and Done follow the reading direction: Cancel on the leading edge. The title truncates on one line."
+  }
+}

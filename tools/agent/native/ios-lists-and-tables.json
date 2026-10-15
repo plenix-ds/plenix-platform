@@ -1,0 +1,391 @@
+{
+ "ios-data-display|Lists and tables": {
+  "summary": "A Plenix list on iOS is the system List (UICollectionView with a list layout), kept native in behavior: swipe actions, editing and reordering, disclosure into a detail view, section headers, Dynamic Type and VoiceOver. Plenix changes the look to match the Web List and DataTable: rows of at least 44 points on the table surface with table lines drawn the full width, DM Sans titles at the body text role and muted subtitles at the secondary role, muted section headers, an 8-point rounded frame for grouped sections, and the Plenix selected colors for the chosen row. A multicolumn table on iPad and the Mac uses the same tokens.",
+  "variants": [
+   {
+    "name": "Row",
+    "apple": "Row, Height=Regular",
+    "web": "data-display|List item",
+    "background": "plx-sys-table-surface",
+    "content": "plx-sys-table-text",
+    "border": "plx-sys-table-line",
+    "swiftui": "A row in List with .listStyle(.insetGrouped) and the Plenix row modifiers",
+    "uikit": "UICollectionViewListCell with UIListContentConfiguration.cell()",
+    "appkit": "NSTableView row with style .inset",
+    "use": "One line of text-first content, such as a setting or a record title."
+   },
+   {
+    "name": "Row with subtitle",
+    "apple": "Row, Height=Tall",
+    "web": "data-display|List item",
+    "background": "plx-sys-table-surface",
+    "content": "plx-sys-table-text, plx-sys-table-text-muted",
+    "border": "plx-sys-table-line",
+    "swiftui": "VStack(alignment: .leading) { title; subtitle } in the row",
+    "uikit": "UIListContentConfiguration.subtitleCell()",
+    "appkit": "An NSTableCellView with two text fields",
+    "use": "A record with a short second line, such as a file with its size and date."
+   },
+   {
+    "name": "Selected row",
+    "apple": "Row with a checkmark (system selection)",
+    "web": "data-display|Selectable list",
+    "background": "plx-sys-data-table-row-selected",
+    "content": "plx-sys-data-table-row-selected-text",
+    "border": "plx-sys-table-line",
+    "swiftui": "List(selection:) or a checkmark in the trailing edge",
+    "uikit": "UICellAccessory.checkmark() and state.isSelected",
+    "appkit": "NSTableView selectedRowIndexes",
+    "use": "The chosen option in a list of choices, marked with a checkmark, or the open row of a navigation list."
+   },
+   {
+    "name": "Button row",
+    "apple": "Row - Button, Value=Default",
+    "web": "data-display|Interactive list",
+    "background": "plx-sys-table-surface",
+    "content": "plx-sys-content-link",
+    "border": "plx-sys-table-line",
+    "swiftui": "Button(_:action:) as a row",
+    "uikit": "A list cell whose selection runs the action",
+    "appkit": "An NSButton in a table row",
+    "use": "An action inside a grouped list, such as Add account."
+   },
+   {
+    "name": "Destructive row",
+    "apple": "Row - Button, Value=Destructive",
+    "web": "data-display|Interactive list",
+    "background": "plx-sys-table-surface",
+    "content": "plx-sys-feedback-danger-content",
+    "border": "plx-sys-table-line",
+    "swiftui": "Button(_:role: .destructive, action:) as a row",
+    "uikit": "A list cell with the danger content color",
+    "appkit": "An NSButton with hasDestructiveAction = true",
+    "use": "A destructive action at the end of a grouped list, such as Sign out or Delete account."
+   },
+   {
+    "name": "Section header",
+    "apple": "Header, Type=Nested",
+    "web": "data-display|Grouped list",
+    "background": null,
+    "content": "plx-sys-table-text-muted",
+    "border": null,
+    "swiftui": "Section { … } header: { Text(…) }",
+    "uikit": "headerMode = .supplementary with UIListContentConfiguration.groupedHeader()",
+    "appkit": "A group row, or the table header for columns",
+    "use": "A short label over a group of rows, so a single-column list has context."
+   }
+  ],
+  "anatomy": [
+   {
+    "part": "A",
+    "name": "Section",
+    "about": "The grouped container on the table surface with an 8-point rounded frame."
+   },
+   {
+    "part": "B",
+    "name": "Section header",
+    "about": "A short muted label over the section, in DM Sans at the secondary text role."
+   },
+   {
+    "part": "C",
+    "name": "Row",
+    "about": "At least 44 points tall: an optional symbol, a title at the body text role and an optional muted subtitle."
+   },
+   {
+    "part": "D",
+    "name": "Trailing accessory",
+    "about": "A value, a checkmark, a switch or the disclosure chevron that drills into a detail view."
+   },
+   {
+    "part": "E",
+    "name": "Separator",
+    "about": "The table line between rows, drawn the full width of the section."
+   }
+  ],
+  "attributes": [
+   {
+    "part": "A",
+    "attribute": "List style",
+    "token": "None (a structural choice)",
+    "value": "Inset grouped for settings and forms; plain for long records",
+    "apple": "Inset grouped",
+    "swiftui": ".listStyle(.insetGrouped) or .listStyle(.plain)",
+    "uikit": "UICollectionLayoutListConfiguration(appearance: .insetGrouped)",
+    "appkit": "NSTableView style .inset or .fullWidth",
+    "follows": "Style"
+   },
+   {
+    "part": "A",
+    "attribute": "Section background",
+    "token": "plx-sys-table-surface",
+    "value": "Plenix.Colors.tableSurface on plx-sys-surface-canvas (Plenix.Colors.surfaceCanvas)",
+    "apple": "The secondary grouped background",
+    "swiftui": ".listRowBackground(Plenix.Colors.tableSurface); .scrollContentBackground(.hidden).background(Plenix.Colors.surfaceCanvas)",
+    "uikit": "config.backgroundColor = UIColor(Plenix.Colors.surfaceCanvas); cell background UIColor(Plenix.Colors.tableSurface)",
+    "appkit": "backgroundColor of the table",
+    "follows": "Style"
+   },
+   {
+    "part": "A",
+    "attribute": "Section corner radius",
+    "token": "plx-comp-table-radius",
+    "value": "8 pt (Plenix.Radius.radiusSurface8px)",
+    "apple": "26 pt",
+    "swiftui": "Set by the inset grouped style; a custom section uses .clipShape(.rect(cornerRadius: Plenix.Radius.radiusSurface8px))",
+    "uikit": "The inset grouped layout draws it; a custom background uses cornerRadius",
+    "appkit": "layer?.cornerRadius on the scroll view",
+    "follows": "Style"
+   },
+   {
+    "part": "C",
+    "attribute": "Row height",
+    "token": "plx-sys-table-row-height",
+    "value": "44 pt minimum on touch (Plenix.Platform.controlTargetMin)",
+    "apple": "44 pt (Regular), 60 pt (Tall)",
+    "swiftui": ".environment(\\.defaultMinListRowHeight, Plenix.Platform.controlTargetMin)",
+    "uikit": "The list layout sizes rows; content.directionalLayoutMargins keep the Plenix.Platform.controlTargetMin minimum",
+    "appkit": "rowHeight (the Mac system default)",
+    "follows": "Style"
+   },
+   {
+    "part": "C",
+    "attribute": "Row inset",
+    "token": "plx-comp-table-cell-padding-inline",
+    "value": "16 pt on touch (Plenix.Space.spaceInsetLg)",
+    "apple": "16 pt",
+    "swiftui": ".listRowInsets(EdgeInsets(top: 0, leading: Plenix.Space.spaceInsetLg, bottom: 0, trailing: Plenix.Space.spaceInsetLg))",
+    "uikit": "content.directionalLayoutMargins",
+    "appkit": "intercellSpacing and the cell view constraints",
+    "follows": "Style"
+   },
+   {
+    "part": "C",
+    "attribute": "Title",
+    "token": "plx-sys-table-text (iOS body role)",
+    "value": "DM Sans regular, 17 pt on 22 pt, relative to Body (Plenix.Platform.textBodySize), tabular digits",
+    "apple": "SF Pro Regular, 17 pt",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body).monospacedDigit()).foregroundStyle(Plenix.Colors.tableText)",
+    "uikit": "content.textProperties.font, .color = UIColor(Plenix.Colors.tableText)",
+    "appkit": "font = NSFont(name: \"DMSans-Regular\", size: NSFont.systemFontSize)",
+    "follows": "Content"
+   },
+   {
+    "part": "C",
+    "attribute": "Subtitle",
+    "token": "plx-sys-table-text-muted (iOS secondary role)",
+    "value": "DM Sans regular, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textSecondarySize)",
+    "apple": "SF Pro Regular, 15 pt, secondary label",
+    "swiftui": ".font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote)).foregroundStyle(Plenix.Colors.tableTextMuted)",
+    "uikit": "content.secondaryTextProperties.font, .color",
+    "appkit": "A second NSTextField with the muted color",
+    "follows": "Content"
+   },
+   {
+    "part": "D",
+    "attribute": "Disclosure and info",
+    "token": "plx-sys-table-text-muted",
+    "value": "The system chevron in the muted color; an info button only to show more about a row",
+    "apple": "The system chevron, tertiary label",
+    "swiftui": "NavigationLink draws the chevron",
+    "uikit": "UICellAccessory.disclosureIndicator(options: .init(tintColor: UIColor(Plenix.Colors.tableTextMuted)))",
+    "appkit": "An outline view or a push button; the Mac has no chevron",
+    "follows": "iOS, iPadOS, visionOS"
+   },
+   {
+    "part": "E",
+    "attribute": "Separator",
+    "token": "plx-sys-table-line",
+    "value": "1 pt, Plenix.Colors.tableLine, full width (inset 0)",
+    "apple": "The system separator, inset to the text",
+    "swiftui": ".listRowSeparatorTint(Plenix.Colors.tableLine); .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }",
+    "uikit": "config.separatorConfiguration.color = UIColor(Plenix.Colors.tableLine); bottomSeparatorInsets = .zero",
+    "appkit": "gridColor; gridStyleMask = .solidHorizontalGridLineMask",
+    "follows": "Style"
+   },
+   {
+    "part": "B",
+    "attribute": "Section header",
+    "token": "plx-sys-table-text-muted, plx-comp-table-header-font-weight",
+    "value": "DM Sans semibold, 13 pt on 18 pt, relative to Footnote (Plenix.Platform.textSecondarySize)",
+    "apple": "SF Pro Regular, 13 pt, uppercase in older styles",
+    "swiftui": "Section header Text with .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote).weight(.semibold))",
+    "uikit": "UIListContentConfiguration.groupedHeader() with textProperties.font and color",
+    "appkit": "NSTableHeaderView for column headings; a group row for sections",
+    "follows": "Content"
+   },
+   {
+    "part": "C",
+    "attribute": "Selected row",
+    "token": "plx-sys-data-table-row-selected, plx-sys-data-table-row-selected-text",
+    "value": "Plenix.Colors.dataTableRowSelected with Plenix.Colors.dataTableRowSelectedText; a checkmark for chosen options",
+    "apple": "The system gray highlight, a tint checkmark",
+    "swiftui": ".listRowBackground(Plenix.Colors.dataTableRowSelected) when selected",
+    "uikit": "background.backgroundColor for state.isSelected; UICellAccessory.checkmark()",
+    "appkit": "A custom NSTableRowView drawSelection(in:)",
+    "follows": "Best practices"
+   }
+  ],
+  "states": [
+   {
+    "state": "Default",
+    "token": "plx-sys-table-surface, plx-sys-table-text",
+    "swiftui": "A List row",
+    "uikit": "UICellConfigurationState default",
+    "appkit": "An unselected row"
+   },
+   {
+    "state": "Pressed",
+    "token": "plx-sys-data-table-row-hover",
+    "swiftui": "Drawn by the list",
+    "uikit": "state.isHighlighted",
+    "appkit": "Drawn by the table"
+   },
+   {
+    "state": "Selected",
+    "token": "plx-sys-data-table-row-selected, plx-sys-data-table-row-selected-text",
+    "swiftui": "List(selection:)",
+    "uikit": "state.isSelected",
+    "appkit": "selectedRowIndexes"
+   },
+   {
+    "state": "Editing (reorder and delete)",
+    "token": "plx-sys-feedback-danger-content for delete",
+    "swiftui": ".onMove, .onDelete, EditButton()",
+    "uikit": "isEditing; UICellAccessory.reorder(), .delete()",
+    "appkit": "Drag and drop of rows"
+   },
+   {
+    "state": "Swipe actions",
+    "token": "plx-sys-action-danger-background (Delete), plx-sys-action-primary-background (others)",
+    "swiftui": ".swipeActions { Button(role: .destructive) { … } }",
+    "uikit": "trailingSwipeActionsConfigurationProvider",
+    "appkit": "tableView(_:rowActionsForRow:edge:)"
+   },
+   {
+    "state": "Disabled",
+    "token": "plx-sys-content-disabled",
+    "swiftui": ".disabled(true)",
+    "uikit": "shouldSelectItemAt returns false; content in the disabled color",
+    "appkit": "shouldSelectRow returns false"
+   }
+  ],
+  "code": {
+   "swiftui": [
+    "import SwiftUI",
+    "",
+    "/// The Plenix list on iOS: the system List, styled with the Plenix tokens (PlenixTokens.swift).",
+    "struct PlenixListRow: ViewModifier {",
+    "    var selected = false",
+    "    func body(content: Content) -> some View {",
+    "        content",
+    "            .font(Plenix.Font.sans(Plenix.Platform.textBodySize, relativeTo: .body).monospacedDigit())",
+    "            .foregroundStyle(selected ? Plenix.Colors.dataTableRowSelectedText : Plenix.Colors.tableText)",
+    "            .listRowBackground(selected ? Plenix.Colors.dataTableRowSelected : Plenix.Colors.tableSurface)",
+    "            .listRowSeparatorTint(Plenix.Colors.tableLine)",
+    "            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }   // Plenix table lines run the full width",
+    "            .listRowInsets(EdgeInsets(top: 0, leading: Plenix.Space.spaceInsetLg, bottom: 0, trailing: Plenix.Space.spaceInsetLg))",
+    "    }",
+    "}",
+    "",
+    "struct FilesList: View {",
+    "    @State private var files: [File]",
+    "    var body: some View {",
+    "        List {",
+    "            Section {",
+    "                ForEach(files) { file in",
+    "                    NavigationLink(value: file) {",
+    "                        VStack(alignment: .leading) {",
+    "                            Text(file.name).truncationMode(.middle)",
+    "                            Text(file.detail)",
+    "                                .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote))",
+    "                                .foregroundStyle(Plenix.Colors.tableTextMuted)",
+    "                        }",
+    "                        .frame(minHeight: Plenix.Platform.controlTargetMin, alignment: .leading)",
+    "                    }",
+    "                    .modifier(PlenixListRow())",
+    "                    .swipeActions { Button(\"Delete\", role: .destructive) { delete(file) } }",
+    "                }",
+    "                .onMove { files.move(fromOffsets: $0, toOffset: $1) }",
+    "            } header: {",
+    "                Text(\"Recent files\")",
+    "                    .font(Plenix.Font.sans(Plenix.Platform.textSecondarySize, relativeTo: .footnote).weight(.semibold))",
+    "                    .foregroundStyle(Plenix.Colors.tableTextMuted)",
+    "            }",
+    "            Section {",
+    "                Button(\"Delete all\", role: .destructive, action: deleteAll)",
+    "                    .modifier(PlenixListRow())",
+    "                    .foregroundStyle(Plenix.Colors.feedbackDangerContent)",
+    "            }",
+    "        }",
+    "        .listStyle(.insetGrouped)",
+    "        .scrollContentBackground(.hidden)",
+    "        .background(Plenix.Colors.surfaceCanvas)",
+    "        .environment(\\.defaultMinListRowHeight, Plenix.Platform.controlTargetMin)",
+    "    }",
+    "}"
+   ],
+   "uikit": [
+    "import UIKit",
+    "import SwiftUI",
+    "",
+    "/// The Plenix list on iOS in UIKit: a list layout with Plenix cell configurations.",
+    "var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)",
+    "config.backgroundColor = UIColor(Plenix.Colors.surfaceCanvas)",
+    "config.headerMode = .supplementary",
+    "config.separatorConfiguration.color = UIColor(Plenix.Colors.tableLine)",
+    "config.separatorConfiguration.bottomSeparatorInsets = .zero   // Plenix table lines run the full width",
+    "config.trailingSwipeActionsConfigurationProvider = { indexPath in",
+    "    let delete = UIContextualAction(style: .destructive, title: \"Delete\") { _, _, done in remove(at: indexPath); done(true) }",
+    "    delete.backgroundColor = UIColor(Plenix.Colors.actionDangerBackground)",
+    "    return UISwipeActionsConfiguration(actions: [delete])",
+    "}",
+    "let layout = UICollectionViewCompositionalLayout.list(using: config)",
+    "",
+    "let title = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textBodySize) ?? .preferredFont(forTextStyle: .body))",
+    "let subtitle = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: UIFont(name: \"DMSans-Regular\", size: Plenix.Platform.textSecondarySize) ?? .preferredFont(forTextStyle: .footnote))",
+    "let rows = UICollectionView.CellRegistration<UICollectionViewListCell, File> { cell, _, file in",
+    "    cell.accessories = [.disclosureIndicator(options: .init(tintColor: UIColor(Plenix.Colors.tableTextMuted))), .reorder()]",
+    "    cell.configurationUpdateHandler = { cell, state in",
+    "        var content = UIListContentConfiguration.subtitleCell()",
+    "        content.text = file.name",
+    "        content.secondaryText = file.detail",
+    "        content.textProperties.font = title",
+    "        content.textProperties.lineBreakMode = .byTruncatingMiddle",
+    "        content.textProperties.color = UIColor(state.isSelected ? Plenix.Colors.dataTableRowSelectedText : Plenix.Colors.tableText)",
+    "        content.secondaryTextProperties.font = subtitle",
+    "        content.secondaryTextProperties.color = UIColor(Plenix.Colors.tableTextMuted)",
+    "        cell.contentConfiguration = content",
+    "        var background = UIBackgroundConfiguration.listGroupedCell().updated(for: state)",
+    "        background.backgroundColor = UIColor(state.isSelected ? Plenix.Colors.dataTableRowSelected : (state.isHighlighted ? Plenix.Colors.dataTableRowHover : Plenix.Colors.tableSurface))",
+    "        cell.backgroundConfiguration = background",
+    "    }",
+    "}"
+   ],
+   "appkit": [
+    "import AppKit",
+    "import SwiftUI",
+    "",
+    "// The Plenix table on the Mac. A Mac Catalyst app uses the iOS tokens and the UIKit code above. A native AppKit app",
+    "// needs a macOS build of PlenixTokens.swift (it uses UIColor today; the macOS build is not generated yet). With it:",
+    "let table = NSTableView()",
+    "table.style = .inset",
+    "table.backgroundColor = NSColor(Plenix.Colors.tableSurface)",
+    "table.gridColor = NSColor(Plenix.Colors.tableLine)",
+    "table.gridStyleMask = [.solidHorizontalGridLineMask, .solidVerticalGridLineMask]",
+    "table.usesAlternatingRowBackgroundColors = false",
+    "table.allowsColumnResizing = true",
+    "let name = NSTableColumn(identifier: .init(\"name\"))",
+    "name.title = \"Name\"                          // short noun headings, no ending punctuation",
+    "name.sortDescriptorPrototype = NSSortDescriptor(key: \"name\", ascending: true)",
+    "table.addTableColumn(name)",
+    "",
+    "final class PlenixRowView: NSTableRowView {",
+    "    override func drawSelection(in dirtyRect: NSRect) {",
+    "        NSColor(Plenix.Colors.dataTableRowSelected).setFill()",
+    "        bounds.fill()",
+    "    }",
+    "}"
+   ]
+  }
+ }
+}

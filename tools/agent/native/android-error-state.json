@@ -1,0 +1,57 @@
+{
+  "android-feedback|Error state": {
+    "summary": "A Plenix error state on Android is a centered Column in the region that failed: the tone’s icon (danger, warning or success solid on the surface; the muted content color for the neutral kinds), a DM Sans title at the label role, the text at the secondary role in the subtle content color, and one outlined button that recovers or moves on. The kinds (offline, degraded, permission denied, not found, maintenance, completion) bring their icon, tone and words from string resources. The error tone is a live region so TalkBack reads it when it replaces the content; Material 3 has no error-state component, so Plenix composes it.",
+    "variants": [
+      { "name": "Error", "material": "Column (no Material component)", "web": "feedback|Error state", "background": null, "content": "plx-comp-empty-state-error-icon-text", "border": null, "compose": "PlenixErrorState(Tone.Danger, \"The assets could not load\", \"The server did not answer.\") { OutlinedButton(onClick = retry) { Text(\"Retry\") } }", "views": "PlenixStateView with app:tone=\"error\"", "use": "Content that failed to load, with Retry." },
+      { "name": "Warning", "material": "Column (no Material component)", "web": "feedback|Warning state", "background": null, "content": "plx-sys-feedback-warning-solid", "border": null, "compose": "PlenixErrorState(Tone.Warning, \"Showing saved results\", \"…\")", "views": "PlenixStateView with app:tone=\"warning\"", "use": "Something needs care before the region works fully." },
+      { "name": "Offline", "material": "Column (no Material component)", "web": "feedback|Offline state", "background": null, "content": "plx-sys-feedback-warning-solid", "border": null, "compose": "PlenixErrorState(Kind.Offline) { OutlinedButton(onClick = retry) { Text(stringResource(R.string.try_again)) } }", "views": "PlenixStateView with app:kind=\"offline\"", "use": "No connection." },
+      { "name": "Permission denied", "material": "Column (no Material component)", "web": "feedback|Permission-denied state", "background": null, "content": "plx-comp-empty-state-icon-text", "border": null, "compose": "PlenixErrorState(Kind.PermissionDenied)", "views": "PlenixStateView with app:kind=\"permission_denied\"", "use": "A screen the person may not open." },
+      { "name": "Completion", "material": "Column (no Material component)", "web": "feedback|Completion state", "background": null, "content": "plx-sys-feedback-success-solid", "border": null, "compose": "PlenixErrorState(Kind.Completion)", "views": "PlenixStateView with app:kind=\"completion\"", "use": "Nothing left to do." }
+    ],
+    "anatomy": [
+      { "part": "A", "name": "Icon", "about": "The kind’s icon in the tone’s solid color, or the muted content color for neutral kinds." },
+      { "part": "B", "name": "Title", "about": "What happened, in DM Sans at the label role." },
+      { "part": "C", "name": "Text", "about": "Why, and what to do, at the secondary role." },
+      { "part": "D", "name": "Action", "about": "One outlined button: Retry, Try again, Go back." }
+    ],
+    "attributes": [
+      { "part": "A", "attribute": "Icon color", "token": "plx-comp-empty-state-error-icon-text, plx-sys-feedback-warning-solid, plx-sys-feedback-success-solid, plx-comp-empty-state-icon-text", "value": "feedbackDangerSolid, feedbackWarningSolid, feedbackSuccessSolid; neutral kinds in the muted content color", "material": "None", "compose": "Icon(kind.icon, contentDescription = null, tint = PlenixColors.feedbackDangerSolid.current(), modifier = Modifier.size(PlenixIcon.iconSizeLg))", "views": "ImageView with imageTintList from feedbackDangerSolid", "follows": "Material 3: Icons", "followsUrl": "https://m3.material.io/styles/icons/overview" },
+      { "part": "B", "attribute": "Title", "token": "plx-comp-empty-state-title-text, plx-comp-empty-state-title-font-weight", "value": "DM Sans semibold at the label role in the default content color", "material": "None", "compose": "Text(title, color = PlenixColors.contentDefault.current(), fontFamily = PlenixFonts.SANS, fontWeight = FontWeight.SemiBold, fontSize = PlenixPlatform.textLabelSize)", "views": "TextView with the DM Sans semibold font and textSize from textLabelSize", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/applying-type" },
+      { "part": "C", "attribute": "Text", "token": "plx-comp-empty-state-text", "value": "DM Sans at the secondary role in the subtle content color, centered", "material": "None", "compose": "Text(text, color = PlenixColors.contentSubtle.current(), fontFamily = PlenixFonts.SANS, fontSize = PlenixPlatform.textSecondarySize, textAlign = TextAlign.Center)", "views": "TextView with gravity center and textColor from contentSubtle", "follows": "Material 3: Typography", "followsUrl": "https://m3.material.io/styles/typography/applying-type" },
+      { "part": "D", "attribute": "Spacing", "token": "plx-comp-empty-state-row-gap, plx-comp-empty-state-action-margin-block-start", "value": "8 dp between the parts, 4 dp more above the action (PlenixSpace.spaceStackSm, spaceStackXs)", "material": "None", "compose": "Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm))", "views": "LinearLayout vertical with gravity center and spacing from PlenixSpace.spaceStackSm", "follows": "Material 3: Layout", "followsUrl": "https://m3.material.io/foundations/layout/understanding-layout/spacing" }
+    ],
+    "states": [
+      { "state": "Failed", "token": "plx-comp-empty-state-error-icon-text", "compose": "Modifier.semantics { liveRegion = LiveRegionMode.Polite } on the title", "views": "accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE" },
+      { "state": "Retrying", "token": "plx-comp-empty-state-text", "compose": "the region shows its CircularProgressIndicator while the attempt runs", "views": "a CircularProgressIndicator replaces the state" },
+      { "state": "Recovered", "token": "plx-comp-empty-state-text", "compose": "the content replaces the state", "views": "the content view becomes visible" }
+    ],
+    "code": {
+      "compose": [
+        "@Composable",
+        "fun PlenixErrorState(tone: Tone, title: String, text: String, action: @Composable () -> Unit = {}) {",
+        "    Column(",
+        "        Modifier.fillMaxWidth().padding(PlenixSpace.spaceInsetMd),",
+        "        horizontalAlignment = Alignment.CenterHorizontally,",
+        "        verticalArrangement = Arrangement.spacedBy(PlenixSpace.spaceStackSm)",
+        "    ) {",
+        "        Icon(tone.icon, contentDescription = null, tint = tone.solid(), modifier = Modifier.size(PlenixIcon.iconSizeLg))",
+        "        Text(title, color = PlenixColors.contentDefault.current(), fontFamily = PlenixFonts.SANS, fontWeight = FontWeight.SemiBold, fontSize = PlenixPlatform.textLabelSize,",
+        "            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })",
+        "        Text(text, color = PlenixColors.contentSubtle.current(), fontFamily = PlenixFonts.SANS, fontSize = PlenixPlatform.textSecondarySize, textAlign = TextAlign.Center)",
+        "        Box(Modifier.padding(top = PlenixSpace.spaceStackXs)) { action() }",
+        "    }",
+        "}"
+      ],
+      "views": [
+        "<!-- res/layout/plenix_error_state.xml -->",
+        "<com.plenix.PlenixStateView",
+        "    android:layout_width=\"match_parent\"",
+        "    android:layout_height=\"wrap_content\"",
+        "    app:tone=\"error\"",
+        "    app:title=\"@string/assets_could_not_load\"",
+        "    app:text=\"@string/server_no_answer\"",
+        "    app:actionText=\"@string/retry\" />"
+      ]
+    }
+  }
+}
