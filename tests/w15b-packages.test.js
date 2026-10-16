@@ -73,9 +73,9 @@ async function main() {
     ok(!exampleResult.errored && exampleResult.results.length === 1 && exampleResult.results[0].warnings.length === 0, 'packaged Stylelint sample config and source run');
   } else console.log('SKIP Stylelint peer integration.');
   if (has('typescript') && has('vue') && has('@types/react/package.json')) {
-    const fixture = path.join(temp, 'types.ts');
-    write(fixture, 'import { Input, Button, PlenixVue, configurePlenix } from "./packages/vue/index";\nimport { createApp, h } from "vue";\ncreateApp({render:()=>h(Button,{disabled:true})}).use(PlenixVue);\nconst input: typeof Input = Input;\n');
-    const result = spawnSync(process.execPath, [peers.resolve('typescript/bin/tsc'), '--noEmit', '--strict', '--skipLibCheck', 'false', '--moduleResolution', 'node', '--target', 'es2020', fixture], { encoding: 'utf8' });
+    const fixture = path.join(temp, 'types.mts');
+    write(fixture, 'import { Input, Button, PlenixVue, configurePlenix } from "./packages/vue/index.js";\nimport { createApp, h } from "vue";\ncreateApp({render:()=>h(Button,{disabled:true})}).use(PlenixVue);\nconst input: typeof Input = Input;\n');
+    const result = spawnSync(process.execPath, [peers.resolve('typescript/bin/tsc'), '--noEmit', '--strict', '--skipLibCheck', 'false', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'es2022', fixture], { encoding: 'utf8' });
     ok(result.status === 0, 'generated Vue declaration compile: ' + result.stdout + result.stderr);
   } else console.log('SKIP TypeScript peer integration.');
   if (has('vue') && has('react') && has('react-dom/client') && has('jsdom')) {
