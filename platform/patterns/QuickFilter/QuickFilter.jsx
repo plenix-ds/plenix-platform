@@ -12,7 +12,9 @@
      label: the button's words ("Category", "Type", "Tags", "Date")
      icon: its icon
      noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list) the values: [{ value, label, color }] or strings; colors default to the category colors in order
+     options: (list) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
+     counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
+       An option's explicit count wins, including zero; without counts the existing labels remain unchanged
      value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
      onChange(value): runs on every change
      inline: draws the panel alone (open, in a frame); default false
@@ -32,15 +34,19 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
+import { Inline } from '../../components/Stack/Stack.jsx';
+import { formatNumber } from '../../utils/format.js';
 import { PanelTrigger, Pill, toggle, fill } from '../CommandBar/panel-parts.jsx';
 import { DATE_PRESETS, CATEGORY_ORDER } from '../../utils/fields.js';
 
 const STRINGS = { find: 'Find a {noun}', none: 'No {noun} matches', clear: 'Clear', presets: DATE_PRESETS, custom: 'Custom range', from: 'From', to: 'To' };
 const asOptions = (options) => (options || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 
-export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, inline = false, strings }) {
+export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, counts, inline = false, strings }) {
   const t = Object.assign({}, STRINGS, strings);
   const [q, setQ] = React.useState('');
+  const countOf = (o) => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
+  const counted = (o, label) => { const n = countOf(o); return n === undefined || n === null ? label : <Inline as="span" gap="xs">{label}<Text variant="data">{formatNumber(n)}</Text></Inline>; };
   if (kind === 'date') {
     const d = Object.assign({ preset: 'any', from: '', to: '' }, value);
     const range = (k, v) => onChange(Object.assign({}, d, { preset: 'custom', [k]: v }));
@@ -48,7 +54,7 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
     const body = (
       <div className="plx-find-panel plx-find-panel--date">
         <RadioGroup label={label} value={d.preset} onChange={(v) => onChange(Object.assign({}, d, { preset: v }))}
-          options={t.presets.map((x) => ({ value: x.value, label: x.label })).concat({ value: 'custom', label: t.custom })} />
+          options={t.presets.map((x) => ({ value: x.value, label: counted(x, x.label) })).concat({ value: 'custom', label: counted({ value: 'custom' }, t.custom) })} />
         <div className="plx-find-panel__range">
           <Field label={t.from}><Input type="date" data value={d.from} onChange={(e) => range('from', e.target.value)} /></Field>
           <Field label={t.to}><Input type="date" data value={d.to} onChange={(e) => range('to', e.target.value)} /></Field>
@@ -64,7 +70,7 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
     <div className="plx-find-panel plx-find-panel--checklist">
       <SearchField width="fill" value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder={fill(t.find, { noun })} label={fill(t.find, { noun })} />
       <div className="plx-find-panel__checklist">
-        {shown.length ? shown.map((o) => <Checkbox key={o.value} label={<Pill color={o.color}>{o.label}</Pill>} checked={chosen.indexOf(o.value) >= 0} onChange={() => onChange(toggle(chosen, o.value))} />)
+        {shown.length ? shown.map((o) => <Checkbox key={o.value} label={counted(o, <Pill color={o.color}>{o.label}</Pill>)} checked={chosen.indexOf(o.value) >= 0} onChange={() => onChange(toggle(chosen, o.value))} />)
           : <Text variant="secondary">{fill(t.none, { noun })}</Text>}
       </div>
     </div>
