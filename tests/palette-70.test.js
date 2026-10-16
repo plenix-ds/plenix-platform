@@ -6,7 +6,7 @@
    Notes: Contrast stays in contrast.test.js with its unchanged thresholds. */
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const {execFileSync}=require('child_process');
-const {rows,validateChart,flatten,resolve,validateGraph,mapIdentity}=require('../tools/agent/color-migration-70');
+const {categoryBorders,lightness,rows,validateChart,flatten,resolve,validateGraph,mapIdentity}=require('../tools/agent/color-migration-70');
 const root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8'),json=f=>JSON.parse(read(f));
 let count=0;const check=(name,fn)=>{fn();count++;};
 const final=validateChart(),R=json('platform/tokens/reference.tokens.json')['plx-ref'];
@@ -27,6 +27,18 @@ for(const mode of ['light','dark']){
  const graph=Object.assign({},...files.map(f=>flatten(json(f))));check('all '+mode+'references present and acyclic',()=>validateGraph(graph));
  for(const name of Object.keys(R).filter(n=>n.startsWith('color-')))check(mode+' '+name+' resolves',()=>assert.match(resolve(graph,'plx-ref.'+name),/^#[0-9a-f]{6,8}$/i));
  const S=json('platform/tokens/theme-default.'+mode+'.tokens.json')['plx-sys'];
+ const palette=Object.entries(R).filter(([k,v])=>k.startsWith('color-')&&!v.$deprecated&&/^#[0-9a-f]{6}$/i.test(v.$value));
+ const contrastSource=read('platform/utils/contrast.js').replace(/^export (const|function) /gm,'$1 '),context={};require('vm').createContext(context);require('vm').runInContext(contrastSource+'\nthis.ratio=contrastRatio;',context);
+ for(const key of Object.keys(S).filter(k=>/^category-[a-z]+$/.test(k)))check(mode+'category border and text '+key,()=>{
+   const base=resolve(graph,'plx-sys.'+key),border=resolve(graph,'plx-sys.'+key+'-soft-border');assert.notEqual(border,base);
+   const text=resolve(graph,'plx-sys.'+key+'-on-soft'),soft=resolve(graph,'plx-sys.'+key+'-soft');assert.ok(context.ratio(text,soft)>=4.5);
+ });
+ for(const [name,dest]of [['cyan','cyan-700'],['pink','pink-700'],['lavender','purple-500']])check(mode+'approved border '+name,()=>assert.equal(S['category-'+name+'-soft-border'].$value,'{plx-ref.color-'+dest+'}'));
+ const fixture=structuredClone(json('platform/tokens/theme-default.'+mode+'.tokens.json'));
+ for(const name of ['cyan','pink','lavender'])fixture['plx-sys']['category-'+name+'-soft-border'].$value=fixture['plx-sys']['category-'+name].$value;
+ const applied=categoryBorders({'plx-ref':R},fixture);check(mode+'generic next-darker policy',()=>{assert.equal(applied.length,3);for(const c of applied){const base=resolve(graph,'plx-sys.category-'+c.category),baseName=palette.find(([,v])=>v.$value===base)[0],borderName=c.after.replace(/^\{plx-ref\.color-/, '').replace(/\}$/, '');assert.equal(borderName.split('-')[0],baseName.slice(6).split('-')[0]);assert.ok(lightness(c.hex)<lightness(base));}});
+ check(mode+'border policy idempotent',()=>assert.deepEqual(categoryBorders({'plx-ref':R},fixture),[]));
+
  for(const [name,destination]of [['category-brown','orange-500'],['category-brown-on-soft','brown-700'],['category-yellow-on-soft','brown-600'],['category-lime','yellow-150'],['category-blue','blue-400']])check(mode+'role '+name,()=>assert.equal(S[name].$value,'{plx-ref.color-'+destination+'}'));
 }
 check('reject missing ref',()=>assert.throws(()=>validateGraph({'plx-ref.a':{$value:'{plx-ref.absent}'}}),/Missing/));

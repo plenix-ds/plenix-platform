@@ -2571,9 +2571,9 @@
       }
     },
     "category-cyan-soft-border": {
-      "$value": "{plx-ref.color-cyan-300}",
+      "$value": "{plx-ref.color-cyan-700}",
       "$type": "color",
-      "$description": "The cyan category pill border, 1px: cyan-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
+      "$description": "Category border: next darker same-family shade when the base and border coincide (owner, 2026-10-16).",
       "$extensions": {
         "plenix": {
           "group": "dataviz",
@@ -2736,9 +2736,9 @@
       }
     },
     "category-pink-soft-border": {
-      "$value": "{plx-ref.color-pink-300}",
+      "$value": "{plx-ref.color-pink-700}",
       "$type": "color",
-      "$description": "The pink category pill border, 1px: pink-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
+      "$description": "Category border: next darker same-family shade when the base and border coincide (owner, 2026-10-16).",
       "$extensions": {
         "plenix": {
           "group": "dataviz",
@@ -2846,9 +2846,9 @@
       }
     },
     "category-lavender-soft-border": {
-      "$value": "{plx-ref.color-purple-300}",
+      "$value": "{plx-ref.color-purple-500}",
       "$type": "color",
-      "$description": "The lavender category pill border, 1px: purple-300 of the canonical palette. The same in every theme, so a category is always recognized (owner, 2026-10-15, the palette consolidation; docs/pills-and-colors.md).",
+      "$description": "Category border: next darker same-family shade when the base and border coincide (owner, 2026-10-16).",
       "$extensions": {
         "plenix": {
           "group": "dataviz",

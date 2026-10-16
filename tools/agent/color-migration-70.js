@@ -71,6 +71,25 @@ function mapIdentity(R, chart, name) {
     }
     return byOld.get(id)?.newToken||id;
 }
+// Owner rule: compare resolved colors after the chart, then choose the nearest darker shade in the same family.
+function categoryBorders(reference, theme) {
+  const graph=Object.assign({},flatten(reference),flatten(theme)), changed=[];
+  const palette=Object.entries(reference['plx-ref']).filter(([key,t])=>key.startsWith('color-')&&!t.$deprecated&&/^#[0-9a-f]{6}$/i.test(t.$value));
+  for(const key of Object.keys(theme['plx-sys']).filter(k=>/^category-[a-z]+$/.test(k))){
+    const base=resolve(graph,'plx-sys.'+key), borderKey=key+'-soft-border';
+    if(resolve(graph,'plx-sys.'+borderKey)!==base)continue;
+    const canonical=palette.find(([,t])=>t.$value===base);
+    if(!canonical)throw Error('No canonical category base '+key);
+    const name=canonical[0].slice(6), f=family(name), level=+name.split('-').pop();
+    const next=palette.filter(([k,t])=>family(k.slice(6))===f&&+k.split('-').pop()>level&&lightness(t.$value)<lightness(base)).sort((a,b)=>+a[0].split('-').pop()-+b[0].split('-').pop())[0];
+    if(!next)throw Error('No darker same-family category border '+key);
+    const before=theme['plx-sys'][borderKey].$value, after='{plx-ref.'+next[0]+'}';
+    theme['plx-sys'][borderKey].$value=after;
+    theme['plx-sys'][borderKey].$description='Category border: next darker same-family shade when the base and border coincide (owner, 2026-10-16).';
+    changed.push({category:key.slice(9),before,after,hex:next[1].$value});
+  }
+  return changed;
+}
 function migrate(options={}) {
   const dest=validateChart(), changes=new Map(), report=[];
   const ref=json(refFile), R=ref['plx-ref'];
@@ -111,6 +130,14 @@ function migrate(options={}) {
     const text=read(file), next=replace(text);
     if(next!==text){changes.set(file,next);const lines=text.split('\n');lines.forEach((line,i)=>{if(replace(line)!==line)report.push('Direct '+file+':'+(i+1)+' '+line.trim()+' -> '+replace(line).trim());});}
   }
+  const borderChanges=[];
+  for(const mode of ['light','dark']){
+    const file='platform/tokens/theme-default.'+mode+'.tokens.json', theme=afterDocs.get(file);
+    for(const change of categoryBorders(finalRef,theme))borderChanges.push({mode,...change});
+    if(format(beforeDocs.get(file))!==format(theme))changes.set(file,format(theme));
+  }
+  report.push('\n## Owner-approved category border changes','| Mode | Category | Border before → after | Final color |','|---|---|---|---|');
+  for(const c of borderChanges)report.push('| '+[c.mode,c.category,c.before+' → '+c.after,c.hex].join(' | ')+' |');
   const themes=['light','dark'];
   const graphFor=(docs,mode,reference)=>Object.assign({},flatten(reference),...Array.from(docs).filter(([f])=>!/^platform\/tokens\/theme-.+\.(light|dark)\.tokens\.json$/.test(f)||f==='platform/tokens/theme-default.'+mode+'.tokens.json').map(([,d])=>flatten(d)));
   for(const mode of themes)validateGraph(graphFor(afterDocs,mode,finalRef));
@@ -147,7 +174,8 @@ function migrate(options={}) {
   const semantic=[['Neutral','neutral'],['Success','success'],['Active','active'],['Waiting','waiting'],['Action required','action-required'],['Negative','negative']];
   for(const [label,key]of semantic){const g=modeGraphs.light[1], prefix='status-pill-'+key;pills+='| '+label+' | '+roleCell('light',prefix+'-background')+' | '+roleCell('light',prefix+'-border')+' | '+roleCell('light',prefix+'-text')+' | '+contrastRatio(resolve(g,'plx-sys.'+prefix+'-text'),resolve(g,'plx-sys.'+prefix+'-background')).toFixed(2)+' |\n';}
   for(const mode of themes){pills+='\n## Categories — '+mode+'\n\n| Category | Base | Soft | Border | Text | Text contrast |\n|---|---|---|---|---|---|\n';for(const key of categoryKeys){const g=modeGraphs[mode][1];pills+='| '+key.slice(9)+' | '+['','-soft','-soft-border','-on-soft'].map(s=>roleCell(mode,key+s)).join(' | ')+' | '+contrastRatio(resolve(g,'plx-sys.'+key+'-on-soft'),resolve(g,'plx-sys.'+key+'-soft')).toFixed(2)+' |\n';}}
-  pills+='\n## Owner review\n\nBrown and Orange now share their base, soft and border; Lime and Yellow share their base. Blue’s base becomes the primary brand blue; Cyan’s base equals its own border. Olive’s base becomes Green 500, and Beige’s border becomes Orange 200. No alternate mapping has been invented.\n\n| Mode | Channel | Categories | Final color |\n|---|---|---|---|\n'+collisions.map(r=>'| '+r.join(' | ')+' |').join('\n')+'\n';
+  pills+='\n## Owner review\n\nBrown and Orange now share their base, soft and border; Lime and Yellow share their base. Blue’s base becomes the primary brand blue; Cyan, Pink and Lavender borders use the next darker same-family shade, distinct from their bases. Olive’s base becomes Green 500, and Beige’s border becomes Orange 200. No alternate mapping has been invented.\n\n| Mode | Channel | Categories | Final color |\n|---|---|---|---|\n'+collisions.map(r=>'| '+r.join(' | ')+' |').join('\n')+'\n';
+  pills+='\n## Category border rule\n\nA category border never equals its base. When their resolved colors coincide after migration, use the next darker canonical shade in the same family. Keep on-soft text contrast at least 4.5:1.\n\n| Mode | Category | Border before → after | Final color |\n|---|---|---|---|\n'+borderChanges.map(c=>'| '+[c.mode,c.category,c.before+' → '+c.after,c.hex].join(' | ')+' |').join('\n')+'\n';
   changes.set('docs/pills-and-colors.md',pills);
   console.log('PALETTE_70:83 rows,70 canonical,'+Object.values(out).filter(v=>v.$deprecated).length+' aliases; no new hex; all families darker by number; both theme graphs valid.');
   if(!report.some(r=>r.startsWith('Direct ')))report.push('Direct CSS/JSX/JSON consumers outside token files: none. Historical proposals/logs are preserved; palette and pill docs are regenerated.');
@@ -156,5 +184,5 @@ function migrate(options={}) {
   console.log(options.apply?'Applied from original snapshot.':'Dry run: nothing written.');
   return {changes,report,roleChanges,collisions};
 }
-module.exports={mapIdentity,validateChart,flatten,resolve,validateGraph,lightness,migrate,rows};
+module.exports={categoryBorders,mapIdentity,validateChart,flatten,resolve,validateGraph,lightness,migrate,rows};
 if(require.main===module){try{migrate({apply:process.argv.includes('--apply')});}catch(e){console.error('PALETTE_70_FAIL '+e.message);process.exitCode=1;}}
