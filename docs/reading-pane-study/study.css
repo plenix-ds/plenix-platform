@@ -1,10 +1,41 @@
-/* Reading pane study (owner, 2026-10-16): the two panes beside the navigation pane. A study stylesheet, not a Platform
-   part: tokens only; what the owner chooses becomes a page template with its own tokens. */
-.study-panes{display:grid;gap:var(--plx-ref-space-16px);min-block-size:0;}
-.study-area{container-name:study-area;container-type:inline-size;}
-.study-panes--right{align-items:start;grid-template-columns:minmax(0,auto) minmax(var(--plx-ref-size-320px),1fr);}
-.study-panes--bottom{grid-template-rows:auto auto;}
-.study-reading{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-surface-8px);border-style:solid;border-width:var(--plx-sys-border-width-default);min-inline-size:0;padding:var(--plx-ref-space-24px);}
-.study-list{min-inline-size:0;}
-/* not room for both (the list at its size plus a 320px reading pane): the reading pane goes under the list */
-@container study-area (width < 900px){.study-panes--right{grid-template-columns:minmax(0,1fr);}}
+/* Reading pane study (owner, 2026-10-16): the panes beside the navigation pane. A study stylesheet, not a Platform part:
+   tokens only; what the owner chooses becomes a page template with its own tokens.
+   Owner: the table and the reading pane fill the window's height and match it; a divider between them resizes; stacked,
+   they are the same width; the reading pane's frame is the table's frame. */
+
+/* the page: the switches, the command bar across both panes (Outlook's ribbon), then the panes to the bottom */
+.study-page{block-size:100%;box-sizing:border-box;display:flex;flex:1 1 0%;min-inline-size:0;flex-direction:column;gap:var(--plx-ref-space-12px);min-block-size:0;padding-block:var(--plx-ref-space-16px);padding-inline:var(--plx-ref-space-24px);}
+.study-mail{container-type:inline-size;display:flex;flex:1 1 0%;flex-direction:column;gap:var(--plx-ref-space-12px);min-block-size:0;}
+.study-panes{display:flex;flex:1 1 0%;gap:var(--plx-ref-space-16px);min-block-size:0;min-inline-size:0;}
+.study-panes--right{flex-direction:row;}
+.study-panes--bottom,.study-panes--off{flex-direction:column;}
+
+/* the list: its frame is the DataTable's; it fills its pane (the grid's "fill" mode scrolls inside it) */
+.study-list{display:flex;flex-direction:column;flex-shrink:0;min-block-size:0;min-inline-size:0;}
+.study-list .plx-resizable__content{display:flex;flex-direction:column;}
+.study-list .plx-data-table{flex:1 1 0%;min-block-size:0;}
+.study-panes--right>.study-list{block-size:100%;}
+.study-panes--bottom>.study-list{inline-size:100%;}
+.study-panes--off>.study-list{flex:1 1 0%;}
+
+/* the reading pane: the same frame as the table (its border, corners and width tokens), the rest of the room, its
+   own scrolling */
+.study-reading{background-color:var(--plx-sys-surface-default);border-color:var(--plx-comp-data-table-border-color);border-radius:var(--plx-comp-data-table-radius);border-style:solid;border-width:var(--plx-comp-data-table-border-width);box-sizing:border-box;flex:1 1 0%;min-block-size:0;min-inline-size:var(--plx-ref-size-320px);overflow-y:auto;padding:var(--plx-ref-space-24px);}
+.study-panes--bottom>.study-reading,.study-panes--off>.study-reading{inline-size:100%;min-inline-size:0;}
+
+/* the divider: the list's resize edge, drawn as a line in the middle of the gap with a grip, the focus color while
+   dragged, hovered or focused */
+.study-panes .plx-resizable__edge{align-items:center;display:flex;justify-content:center;}
+.study-panes .plx-resizable__edge--inline{inline-size:var(--plx-ref-space-16px);inset-inline-end:calc(-1 * var(--plx-ref-space-16px));}
+.study-panes .plx-resizable__edge--block{block-size:var(--plx-ref-space-16px);inset-block-end:calc(-1 * var(--plx-ref-space-16px));}
+.study-panes .plx-resizable__edge::before{background-color:var(--plx-comp-data-table-border-color);content:"";position:absolute;}
+.study-panes .plx-resizable__edge--inline::before{block-size:100%;inline-size:var(--plx-sys-border-width-default);}
+.study-panes .plx-resizable__edge--block::before{block-size:var(--plx-sys-border-width-default);inline-size:100%;}
+.study-panes .plx-resizable__edge::after{background-color:var(--plx-sys-content-muted);border-radius:var(--plx-sys-radius-pill);content:"";position:relative;}
+.study-panes .plx-resizable__edge--inline::after{block-size:var(--plx-ref-space-32px);inline-size:var(--plx-ref-space-4px);}
+.study-panes .plx-resizable__edge--block::after{block-size:var(--plx-ref-space-4px);inline-size:var(--plx-ref-space-32px);}
+.study-panes .plx-resizable__edge:hover::before,.study-panes .plx-resizable__edge:focus-visible::before{background-color:var(--plx-sys-focus-ring-color);}
+.study-panes .plx-resizable__edge:hover::after,.study-panes .plx-resizable__edge:focus-visible::after{background-color:var(--plx-sys-focus-ring-color);}
+
+/* not room for both side by side (the list at its size plus a 320px reading pane): they stack */
+@container (width < 900px){.study-panes--right{flex-direction:column;}.study-panes--right>.study-list{block-size:auto;inline-size:100%;}}

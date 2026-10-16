@@ -161,6 +161,7 @@ function Mail({
 }) {
   const [sel, setSel] = useState([1]);
   const [open, setOpen] = useState(1);
+  const [reading, setReading] = useState(false); // the reading pane "off": an item opened full width
   const item = ITEMS.find(x => x.id === open) || null;
   const count = sel.length;
   const bar = /*#__PURE__*/React.createElement(CommandBar, {
@@ -195,11 +196,18 @@ function Mail({
       onClear: () => setSel(open ? [open] : [])
     } : undefined
   });
+  const pick = id => {
+    setOpen(id);
+    setSel([id]);
+    if (pane === 'off') setReading(true);
+  };
+  // the grid fills its pane and scrolls inside it (mode "fill"), so the table and the reading pane are the same height
   const table = /*#__PURE__*/React.createElement(DataTable, {
     label: "Inbox",
     data: ITEMS,
     columns: rows === 'two' ? COLS_TWO : COLS_ONE,
     rowHeight: rows === 'two' ? 'medium' : 'short',
+    mode: "fill",
     selectable: true,
     selected: sel,
     onSelectionChange: k => {
@@ -207,46 +215,25 @@ function Mail({
       if (k.length === 1) setOpen(k[0]);
     },
     on: {
-      rowClick: (e, row) => {
-        const id = row.getData().id;
-        setOpen(id);
-        setSel([id]);
-      }
+      rowClick: (e, row) => pick(row.getData().id)
     },
     narrow: "table",
     viewMenu: false
   });
-  if (pane === 'off') {
-    return item && count === 1 && open && sel[0] === open && OPENED.current ? /*#__PURE__*/React.createElement(Reading, {
-      item: item,
-      count: 1,
-      onBack: () => {
-        OPENED.current = false;
-        setSel([]);
-      }
-    }) : /*#__PURE__*/React.createElement(Stack, {
-      gap: "sm"
-    }, bar, /*#__PURE__*/React.createElement(DataTable, {
-      label: "Inbox",
-      data: ITEMS,
-      columns: rows === 'two' ? COLS_TWO : COLS_ONE,
-      rowHeight: rows === 'two' ? 'medium' : 'short',
-      selectable: true,
-      selected: sel,
-      onSelectionChange: setSel,
-      on: {
-        rowClick: (e, row) => {
-          const id = row.getData().id;
-          OPENED.current = true;
-          setOpen(id);
-          setSel([id]);
-        }
-      },
-      narrow: "table",
-      viewMenu: false
-    }));
-  }
+  if (pane === 'off') return /*#__PURE__*/React.createElement("div", {
+    className: "study-mail"
+  }, reading && item ? null : bar, /*#__PURE__*/React.createElement("div", {
+    className: "study-panes study-panes--off"
+  }, reading && item ? /*#__PURE__*/React.createElement(Reading, {
+    item: item,
+    count: 1,
+    onBack: () => setReading(false)
+  }) : /*#__PURE__*/React.createElement("div", {
+    className: "study-list"
+  }, table)));
   return /*#__PURE__*/React.createElement("div", {
+    className: "study-mail"
+  }, bar, /*#__PURE__*/React.createElement("div", {
     className: 'study-panes study-panes--' + pane
   }, /*#__PURE__*/React.createElement(Resizable, {
     label: "Message list",
@@ -254,16 +241,11 @@ function Mail({
     defaultWidth: pane === 'right' ? 560 : undefined,
     defaultHeight: pane === 'bottom' ? 320 : undefined,
     className: "study-list"
-  }, /*#__PURE__*/React.createElement(Stack, {
-    gap: "sm"
-  }, bar, table)), /*#__PURE__*/React.createElement(Reading, {
+  }, table), /*#__PURE__*/React.createElement(Reading, {
     item: item,
     count: count
-  }));
+  })));
 }
-const OPENED = {
-  current: false
-};
 function App() {
   const [folder, setFolder] = useState('inbox');
   const [pane, setPane] = useState('right');
@@ -289,9 +271,7 @@ function App() {
       end: /*#__PURE__*/React.createElement("span", null, "Reading pane: ", pane)
     })
   }, /*#__PURE__*/React.createElement("div", {
-    className: "plx-app-shell__page"
-  }, /*#__PURE__*/React.createElement(PageContent, null, /*#__PURE__*/React.createElement(Stack, {
-    gap: "md"
+    className: "study-page"
   }, /*#__PURE__*/React.createElement(Inline, {
     gap: "lg",
     wrap: true,
@@ -322,13 +302,11 @@ function App() {
       value: 'two',
       label: 'Two lines'
     }]
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "study-area"
-  }, /*#__PURE__*/React.createElement(Mail, {
+  })), /*#__PURE__*/React.createElement(Mail, {
     key: pane + rows,
     pane: pane,
     rows: rows
-  }))))));
+  })));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(SessionProvider, null, /*#__PURE__*/React.createElement(App, null)));
 })();

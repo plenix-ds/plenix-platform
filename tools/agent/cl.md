@@ -1,5 +1,5 @@
-### Added
-- docs/reading-pane-study: an Outlook-style layout drawn live with Platform components (owner, 2026-10-16): the header
-  row, the navigation pane, a table, and the selected item's reading pane, with Outlook's switches (reading pane
-  right, bottom or off; one-line or two-line rows) and the pane going under the list when there is no room. A study for
-  the owner, not a Platform part yet.
+### Changed
+- docs/reading-pane-study, after the owner's review (2026-10-16): the table and the reading pane fill the window's height
+  and match it, each scrolling on its own; a divider between them resizes (a line with a grip, the focus color on hover
+  and focus; drag, arrow keys or the size menu); stacked, both are the full width; the reading pane takes the table's
+  frame (its border, corners and width tokens); the command bar spans both panes, as Outlook's ribbon does.
