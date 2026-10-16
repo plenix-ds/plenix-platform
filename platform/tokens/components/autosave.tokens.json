@@ -1,0 +1,10 @@
+{
+  "$description": "Autosave: space between existing Platform regions.",
+  "plx-comp": {
+    "autosave-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "Autosave: spacing between regions."
+    }
+  }
+}

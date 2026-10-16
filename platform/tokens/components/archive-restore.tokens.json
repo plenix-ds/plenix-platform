@@ -1,0 +1,10 @@
+{
+  "$description": "ArchiveRestore: space between existing Platform regions.",
+  "plx-comp": {
+    "archive-restore-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "ArchiveRestore: spacing between regions."
+    }
+  }
+}

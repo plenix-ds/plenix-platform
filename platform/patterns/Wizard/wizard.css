@@ -1,0 +1,4 @@
+/* Plenix · Wizard: spacing between composed Platform regions. */
+.plx-wizard{row-gap:var(--plx-comp-wizard-gap);}
+.plx-wizard__step{border:0;margin:0;padding:0;min-inline-size:0;}
+.plx-wizard__step[hidden]{display:none;}

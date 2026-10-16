@@ -1,0 +1,10 @@
+{
+  "$description": "SaveAs: space between existing Platform regions.",
+  "plx-comp": {
+    "save-as-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "SaveAs: spacing between regions."
+    }
+  }
+}

@@ -1,0 +1,2 @@
+/* Plenix · Autosave: spacing between composed Platform regions. */
+.plx-autosave{row-gap:var(--plx-comp-autosave-gap);}

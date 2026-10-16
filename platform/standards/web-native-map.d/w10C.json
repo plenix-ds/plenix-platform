@@ -1,0 +1,85 @@
+{
+  "$description": "Forms and records flows: native form, sheet, step-flow and feedback counterparts.",
+  "map": {
+    "patterns|Wizard": {
+      "ios": [
+        "ios-overlays|Sheets"
+      ],
+      "android": [
+        "android-patterns|Step flow"
+      ]
+    },
+    "overlays|Wizard dialog": {
+      "ios": [
+        "ios-overlays|Sheets"
+      ],
+      "android": [
+        "android-patterns|Step flow"
+      ]
+    },
+    "patterns|Create flow": {
+      "ios": [
+        "ios-overlays|Sheets"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    },
+    "patterns|Autosave": {
+      "ios": [
+        "ios-feedback|Feedback"
+      ],
+      "android": [
+        "android-feedback|App state"
+      ]
+    },
+    "patterns|Draft state": {
+      "ios": [
+        "ios-feedback|Feedback"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    },
+    "patterns|Save as": {
+      "ios": [
+        "ios-overlays|Sheets"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    },
+    "patterns|Archive": {
+      "ios": [
+        "ios-feedback|Feedback"
+      ],
+      "android": [
+        "android-patterns|Confirmation"
+      ]
+    },
+    "patterns|Multi-step form": {
+      "ios": [
+        "ios-overlays|Sheets"
+      ],
+      "android": [
+        "android-patterns|Step flow"
+      ]
+    },
+    "patterns|Edit flow": {
+      "ios": [
+        "ios-overlays|Sheets"
+      ],
+      "android": [
+        "android-patterns|Form"
+      ]
+    },
+    "patterns|Restore": {
+      "ios": [
+        "ios-feedback|Feedback"
+      ],
+      "android": [
+        "android-patterns|Confirmation"
+      ]
+    }
+  }
+}

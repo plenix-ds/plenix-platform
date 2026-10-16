@@ -1,0 +1,10 @@
+{
+  "$description": "DraftState: space between existing Platform regions.",
+  "plx-comp": {
+    "draft-state-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "DraftState: spacing between regions."
+    }
+  }
+}

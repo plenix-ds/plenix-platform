@@ -1,0 +1,10 @@
+{
+  "$description": "WizardDialog: space between existing Platform regions.",
+  "plx-comp": {
+    "wizard-dialog-gap": {
+      "$value": "{plx-sys.space-stack-md}",
+      "$type": "dimension",
+      "$description": "WizardDialog: spacing between regions."
+    }
+  }
+}
