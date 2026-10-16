@@ -73,7 +73,7 @@
       if (!n) continue;
       if (m[2].toLowerCase() === 'px' && Math.abs(n) === context(el).thin && (/^border(?:-(?:top|right|bottom|left|block(?:-(?:start|end))?|inline(?:-(?:start|end))?))?-width$/.test(property) || (el.getAttribute('role') === 'separator' && /^(?:width|height|inline-size|block-size)$/.test(property)))) continue;
       if (m[2].toLowerCase() !== 'px') return m[0];
-      var q = Math.abs(n) / step; if (Math.abs(q - Math.round(q)) * step > 0.5) return m[0];
+      var q = Math.abs(n) / step; if (Math.abs(q - Math.round(q)) * step > .001) return m[0];
     }
     return null;
   }
