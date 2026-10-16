@@ -591,12 +591,12 @@ export function TableEngine(props) {
   const groupBy = (t, field) => { t.setGroupBy(field); latest.current._onGroupChange?.(field); tintGrouped(t); saveView(); };
   // the page's view (filter, sort, groupBy, columnOrder, hiddenColumns: the command bar's panels), applied to the grid;
   // a part left undefined is not touched
-  const applyView = (t) => {
+  const applyView = (t, batched = false) => {
     const p = latest.current;
     if (!t || isStatic) return;
     const col = (f) => t.getColumns().find((c) => c.getField() === f);
     const wasRestoring = restoring.current; restoring.current = true;
-    t.blockRedraw();
+    if (!batched) t.blockRedraw();
     try {
     if (typeof p.filter === 'function') {
       if (!t.plxViewFilter) { t.plxViewFilter = (d) => { const fn = latest.current.filter; return typeof fn === 'function' ? !!fn(d) : true; }; t.addFilter(t.plxViewFilter); }
@@ -632,7 +632,7 @@ export function TableEngine(props) {
     if (Array.isArray(p.hiddenColumns)) {
       t.getColumns().forEach((c) => { const f = c.getField(); if (!f) return; const hide = p.hiddenColumns.indexOf(f) >= 0; if (hide && c.isVisible()) c.hide(); else if (!hide && !c.isVisible()) c.show(); });
     }
-    } finally { t.restoreRedraw(); restoring.current = wasRestoring; }
+    } finally { if (!batched) t.restoreRedraw(); restoring.current = wasRestoring; }
     saveView();
   };
   // the columns a group row's cells follow: the first cell spans the mark columns at the start and the first value column
@@ -1066,6 +1066,9 @@ export function TableEngine(props) {
       table = new Tabulator(host, opts);
       shown.current = snap(opts.data);
       tableRef.current = table;
+      table.plxNaturalRows = isStatic || listNow;
+      table.plxColumnShape = shape;
+      table.plxMenuColumn = optsRowMenu;
       if (initialView) { table.plxViewFilter = initialView.filter; table.plxViewFilterSource = p.filter; table.plxViewSort = initialView.sort; }
       // what the virtual renderer and the group rows need from the grid (strict.js): its token boxes, the add rows, and
       // the callbacks that draw a group row's parts and the add row after the last group
@@ -1232,9 +1235,9 @@ export function TableEngine(props) {
       if (table) { try { table.destroy(); } catch (e) { /* already gone */ } }
       tableRef.current = null; cells.current = new Map(); owners.current = new Map();
     };
-    // built once per column shape; the data is replaced in place below
+    // the engine stays for table column-set changes; narrow layouts rebuild and data is replaced in place below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shape, index, narrow, narrowAt, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
+  }, [narrow === 'table' ? '' : shape, index, narrow, narrowAt, selectable, headerMenu, !!rowMenu, props.rowMenuButton, typeof height === 'string' ? height : '', narrow === 'table' ? '' : keys.join(SEP), attempt, storageKey || '', virtual, M, remote, step, viewMenu, !!onAddToGroup]);
 
   // the footer's numbers, after each render of the rows: the page, its range and the total ("pages"), or the rows shown
   // and the total ("load-more"); a page's rows carry their place in the whole set
@@ -1496,6 +1499,26 @@ export function TableEngine(props) {
     titleTips(); syncSticky(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowStep, wrapHead]);
+
+  // A table's column set changes in one native operation; its rows and engine stay alive.
+  // Narrow lists rebuild when their key-column layout changes (the renderer itself changes).
+  React.useEffect(() => {
+    const t = tableRef.current; if (!t || !builtRef.current || t.plxColumnShape === shape) return;
+    const p = latest.current, previous = t.getColumns(), order = previous.map(c => c.getField());
+    const defs = defsOf(p.columns, hostRef.current).concat(t.plxMenuColumn ? [t.plxMenuColumn] : []);
+    defs.forEach(d => {
+      const before = previous.find(c => c.getField() === d.field);
+      if (before) d.visible = before.isVisible();
+      if (resized.current[d.field]) d.width = viewPx(resized.current[d.field]);
+    });
+    const free = defs.filter(d => !d.frozen), desired = (p.columnOrder || order).map(f => free.find(d => d.field === f)).filter(Boolean);
+    const ordered = [...new Set(desired.concat(free))]; let at = 0;
+    const columns = defs.map(d => d.frozen ? d : ordered[at++]);
+    t.blockRedraw();
+    try { t.setColumns(columns); t.plxColumnShape = shape; applyView(t, true); tintGrouped(t); }
+    finally { t.restoreRedraw(); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shape]);
 
   // the page's view changed (the command bar's panels): applied to the grid already built
   const viewKey = JSON.stringify([props.sort, props.groupBy, props.columnOrder, props.hiddenColumns]);

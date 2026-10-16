@@ -138,11 +138,16 @@ export function syncGeometry(table) {
 }
 // Native rendering draws every loaded record for printing and restores its own virtual window afterward.
 export function virtualPrint(table, on) {
-  const rm=table && table.rowManager;if(!rm || rm.renderMode!=='virtual')return;
-  if(on){table.plxPrint={fixed:rm.fixedHeight,top:rm.element.scrollTop,max:table.options.maxHeight,height:table.options.height};rm.fixedHeight=false;table.options.maxHeight=false;table.setHeight(false);}
-  else if(table.plxPrint){rm.fixedHeight=table.plxPrint.fixed;table.options.maxHeight=table.plxPrint.max;table.setHeight(table.plxPrint.height);}
-  table.redraw();
-  if(!on && table.plxPrint){rm.element.scrollTop=table.plxPrint.top;delete table.plxPrint;}
+  const rm=table && table.rowManager;if(!rm || (rm.renderMode!=='virtual'&&!table.plxPrint))return;
+  if(on){
+    if(table.plxPrint)return;
+    table.plxPrint={fixed:rm.fixedHeight,top:rm.element.scrollTop,max:table.options.maxHeight,height:table.options.height,renderer:table.options.renderVertical};
+    table.options.renderVertical='basic';table.options.maxHeight=false;table.setHeight(false);
+  } else if(table.plxPrint){
+    const saved=table.plxPrint;
+    table.options.renderVertical=saved.renderer;table.options.maxHeight=saved.max;table.setHeight(saved.height);
+    rm.fixedHeight=saved.fixed;rm.element.scrollTop=saved.top;delete table.plxPrint;
+  }
 }
 
 // a Tabulator menu (the column menu, the row menu, a handle's moves) as an ARIA menu the keyboard works: its items are
@@ -219,6 +224,13 @@ export function strictTabulator(Tabulator, win) {
         const hide = Col.hide, show = Col.show;
         Col.hide = function () { hide.apply(this, arguments); if (this.element) { this.element.classList.add(HIDDEN); keepWidths(this.element); } };
         Col.show = function () { show.apply(this, arguments); if (this.element) { this.element.classList.remove(HIDDEN); keepWidths(this.element); } };
+      }
+      // Static wrapping Tables and narrow lists keep their intrinsic CSS height, as before.
+      // Interactive table rows use Tabulator's native token-height normalization unchanged.
+      const firstCell = probe.rowManager.rows[0] && probe.rowManager.rows[0].cells[0];
+      if (firstCell) {
+        const Cell = Object.getPrototypeOf(firstCell), setHeight = Cell.setHeight;
+        Cell.setHeight = function () { if (!this.table.plxNaturalRows) return setHeight.apply(this, arguments); };
       }
       const CM = Object.getPrototypeOf(probe.columnManager);
       ['verticalAlignHeaders'].forEach((n) => { if (typeof CM[n] === 'function') CM[n] = OFF; });
